@@ -81,7 +81,9 @@ public class ChatPanel implements Chat, MessageListener
      * Messages cache used by this session; to cache msg arrived when the chatFragment
      * is not in view e.g. standby, while in contactList view or when scroll out of view.
      */
-    private List<ChatMessage> msgCache = new LinkedList<>();
+    // Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
+    // private List<ChatMessage> msgCache = new LinkedList<>();
+    private List<ChatMessage> msgCache = new CopyOnWriteArrayList<>();
 
     /**
      * Synchronization root for messages cache.

@@ -1,3 +1,20 @@
+/*
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.atalk.persistance;
 
 import android.content.ContentResolver;
@@ -35,15 +52,16 @@ public class FileBackend
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     public static String FP_aTALK = "aTalk";
-    public static String EXPROT_DB = "EXPROT_DB";
+    public static String EXPROT_DB = "EXPORT_DB";
 
     public static String MEDIA = "Media";
-    public static String MEDIA_DOCUMENT = "Media/Text";
+    public static String MEDIA_CAMERA = "Media/Camera";
+    public static String MEDIA_DOCUMENT = "Media/Documents";
     public static String MEDIA_VOICE_RECEIVE = "Media/Voice_Receive";
     public static String MEDIA_VOICE_SEND = "Media/Voice_Send";
     public static String TMP = "tmp";
 
-    public static boolean IsExternalStorageWriteable()
+    public static boolean IsExternalStorageWritable()
     {
         // boolean mExternalStorageAvailable = false;
         boolean mExternalStorageWriteable;
@@ -89,9 +107,9 @@ public class FileBackend
             throw new FileNotFoundException("Source Path not found: " + srcPath);
         }
 
-        // ensure target is a directory and exists
-        if ((targetPath == null) || !targetPath.exists() || !targetPath.isDirectory()) {
-            throw new FileNotFoundException("Target directory not found: " + targetPath);
+        // ensure target is a directory if exists
+        if ((targetPath == null) || (targetPath.exists() && !targetPath.isDirectory())) {
+            throw new FileNotFoundException("Target is null or not a directory: " + targetPath);
         }
         // Form full destination path
         File dstPath = targetPath;
@@ -105,12 +123,12 @@ public class FileBackend
             // file:///SDCard/tmp/ --> file:///SDCard/tmp/ ==> NO!
             // file:///SDCard/tmp/ --> file:///SDCard/tmp2/ ==> OK
 
-            if (dstPath == srcPath) {
+            if (dstPath.equals(srcPath)) {
                 throw new IOException("Cannot copy directory into itself.");
             }
 
-            // create the destination directory
-            if (!dstPath.mkdir())
+            // create the destination directory if non-exist
+            if (!dstPath.exists() && !dstPath.mkdir())
                 throw new IOException("Cannot create destination directory.");
 
             // recursively copy directory contents
@@ -135,7 +153,7 @@ public class FileBackend
                 else if (!dstPath.delete())
                     throw new IOException("Cannot delete old file. " + dstPath);
             }
-            if (!dstPath.createNewFile())
+            if (!dstPath.exists() && !dstPath.createNewFile())
                 throw new IOException("Cannot create file to copy. " + dstPath);
             try {
                 InputStream inputStream = new FileInputStream(srcPath);
@@ -181,18 +199,19 @@ public class FileBackend
      * This method buffers the input internally, so there is no need to use a
      * <code>BufferedInputStream</code>.
      *
-     * @param input  the <code>InputStream</code> to read from
-     * @param output  the <code>OutputStream</code> to write to
+     * @param input the <code>InputStream</code> to read from
+     * @param output the <code>OutputStream</code> to write to
      * @return the number of bytes copied
      * @throws NullPointerException if the input or output is null
      * @throws IOException if an I/O error occurs
      * @since Commons IO 1.3
      */
     public static long copy(InputStream input, OutputStream output)
-            throws IOException {
+            throws IOException
+    {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
-        int n = 0;
+        int n;
         while (-1 != (n = input.read(buffer))) {
             output.write(buffer, 0, n);
             count += n;
@@ -206,31 +225,25 @@ public class FileBackend
      * @param subFolder subFolder to be created under aTalk downloadable directory, null if root
      * @return aTalk default directory
      */
-    public static File getaTalkStore(String subFolder)
+    public static File getaTalkStore(String subFolder, boolean createNew)
     {
         String filePath = FP_aTALK;
         if (!TextUtils.isEmpty(subFolder))
             filePath += File.separator + subFolder;
 
-        File atalkDLDir
-                = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filePath);
-        if (!atalkDLDir.exists() && !atalkDLDir.mkdirs()) {
-            Timber.e("Could not create atalk folder: %s", atalkDLDir);
+        File atalkDLDir = new File(Environment.getExternalStorageDirectory(), filePath);
+        if (createNew && !atalkDLDir.exists() && !atalkDLDir.mkdirs()) {
+            Timber.e("Could not create aTalk folder: %s", atalkDLDir);
         }
         return atalkDLDir;
     }
 
     /**
-     * Create a File for saving an image or video
+     * Create a new File for saving image or video captured by camera
      */
     public static File getOutputMediaFile(int type)
     {
-        File appMediaDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        File aTalkMediaDir = new File(appMediaDir, FP_aTALK);
-        if (!aTalkMediaDir.exists() && !aTalkMediaDir.mkdirs()) {
-            Timber.d("MyCameraApp failed to create directory");
-            return null;
-        }
+        File aTalkMediaDir = getaTalkStore(MEDIA_CAMERA, true);
 
         // Create a media file name
         File mediaFile = null;
@@ -266,7 +279,67 @@ public class FileBackend
         }
     }
 
-    // url = content:// or file:// or whatever suitable URL you want.
+    /**
+     * To guess if a given link is a file link address
+     *
+     * @param link a string to be checked for file link
+     * @return true if the string is likely to be a link
+     */
+    public static boolean isHttpFileDnLink(String link)
+    {
+        boolean isFileLink = false;
+        Context context = aTalkApp.getGlobalContext();
+
+        if (link != null) {
+            if (link.matches("(?s)^aesgcm:.*")) {
+                isFileLink = true;
+            }
+            else if (link.matches("(?s)^http[s]:.*") && !link.contains("\\s")) {
+                Uri uri = Uri.parse(link);
+                String mimeType = getMimeType(context, uri);
+                if (mimeType == null) {
+                    isFileLink = true;
+                }
+                // web common extensions: asp, cgi, [s]htm[l], js, php, pl
+                // android asp, cgi shtm, shtml, js, php, pl => mimeType == null
+                else if (!mimeType.matches("(?s)^text/s*[achjp][sgthl][pim]*[l]*$")) {
+                    isFileLink = true;
+                }
+            }
+        }
+        return isFileLink;
+    }
+
+    /**
+     * To guess the mime type of a given uri using the mimeMap or from path name
+     *
+     * @param ctx the reference Context
+     * @param uri content:// or file:// or whatever suitable Uri you want.
+     * @param mime a reference mime type (from attachment)
+     * @return mime type of the given uri
+     */
+    public static String getMimeType(final Context ctx, final Uri uri, final String mime)
+    {
+        Timber.d("guessMimeTypeFromUriAndMime %s and mime = %s", uri, mime);
+        if (mime == null || mime.equals("application/octet-stream")) {
+            final String guess = getMimeType(ctx, uri);
+            if (guess != null) {
+                return guess;
+            }
+            else {
+                return mime;
+            }
+        }
+        return getMimeType(ctx, uri);
+    }
+
+    /**
+     * To guess the mime type of a given uri using the mimeMap or from path name
+     *
+     * @param ctx the reference Context
+     * @param uri content:// or file:// or whatever suitable Uri you want.
+     * @return mime type of the given uri
+     */
     public static String getMimeType(Context ctx, Uri uri)
     {
         String mimeType = null;
@@ -279,11 +352,25 @@ public class FileBackend
             if (fileExtension != null)
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase());
         }
+
+        // Make a guess base on filePath
+        if ((mimeType == null) || mimeType.equals(("application/octet-stream"))) {
+            String fileName = uri.getPath();
+            if (fileName != null) {
+                if (fileName.contains("image"))
+                    mimeType = "image/*";
+                else if (fileName.contains("video"))
+                    mimeType = "video/*";
+            }
+        }
         return mimeType;
     }
 
-    /*
+    /**
      * Check if the file has media content
+     *
+     * @param file File to be check
+     * @return true if the given file has media content
      */
     public static boolean isMediaFile(File file)
     {
@@ -295,7 +382,9 @@ public class FileBackend
         if ((mimeType == null) || mimeType.equals(("application/octet-stream"))) {
             try {
                 InputStream is = new FileInputStream(file);
-                mimeType = guessContentTypeFromStream(is);
+                String tmp = guessContentTypeFromStream(is);
+                if (tmp != null)
+                    mimeType = tmp;
             } catch (IOException ignore) {
             }
         }
@@ -327,7 +416,7 @@ public class FileBackend
      * @see java.io.InputStream#markSupported()
      * @see java.net.URLConnection#getContentType()
      */
-    public static String guessContentTypeFromStream(InputStream is)
+    private static String guessContentTypeFromStream(InputStream is)
             throws IOException
     {
         int c1 = is.read();

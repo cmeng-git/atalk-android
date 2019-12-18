@@ -38,7 +38,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountsListActivity;
-import org.atalk.android.gui.call.conference.ConferenceInviteDialog;
+import org.atalk.android.gui.chat.conference.ConferenceInviteDialog;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;

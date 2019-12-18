@@ -9,19 +9,27 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.util.XhtmlUtil;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.muc.*;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
+import org.jivesoftware.smackx.omemo.element.OmemoElement;
+import org.jivesoftware.smackx.omemo.exceptions.*;
 import org.jivesoftware.smackx.omemo.listener.OmemoMucMessageListener;
+import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -31,12 +39,10 @@ import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import java.io.IOException;
 import java.util.*;
 
 import timber.log.Timber;
-
-import static net.java.sip.communicator.service.protocol.IMessage.ENCODE_PLAIN;
-import static net.java.sip.communicator.service.protocol.IMessage.ENCRYPTION_OMEMO;
 
 /**
  * A jabber implementation of the multi user chat operation set.
@@ -53,6 +59,19 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * The currently valid Jabber protocol provider service implementation.
      */
     private final ProtocolProviderServiceJabberImpl jabberProvider;
+    private XMPPConnection mConnection = null;
+
+    private OmemoManager mOmemoManager;
+
+    private final OmemoVAxolotlProvider omemoVAxolotlProvider = new OmemoVAxolotlProvider();
+
+    /**
+     * A reference of the MultiUserChatManager
+     */
+    private MultiUserChatManager mMucMgr = null;
+
+    private SmackInvitationListener mInvitationListener;
+
 
     /**
      * A list of the rooms that are currently open by this account. Note that we have not
@@ -65,15 +84,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * to <tt>Contact</tt>s and vice versa.
      */
     private OperationSetPersistentPresenceJabberImpl opSetPersPresence;
-
-    /**
-     * A reference of the MultiUserChatManager
-     */
-    private MultiUserChatManager mMucMgr = null;
-
-    private SmackInvitationListener mInvitationListener;
-
-    private XMPPConnection mConnection = null;
 
     /**
      * Instantiates the user operation set with a currently valid instance of the Jabber protocol provider.
@@ -732,12 +742,14 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
 
     public void registerOmemoMucListener(OmemoManager omemoManager)
     {
+        mOmemoManager = omemoManager;
         omemoManager.addOmemoMucMessageListener(this);
     }
 
     public void unRegisterOmemoMucListener(OmemoManager omemoManager)
     {
         omemoManager.removeOmemoMucMessageListener(this);
+        mOmemoManager = null;
     }
 
     /**
@@ -748,23 +760,52 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param decryptedOmemoMessage decrypted Omemo message
      */
     @Override
-    public void onOmemoMucMessageReceived(MultiUserChat muc, Stanza stanza, OmemoMessage.Received
-            decryptedOmemoMessage)
+    public void onOmemoMucMessageReceived(MultiUserChat muc, Stanza stanza,
+            OmemoMessage.Received decryptedOmemoMessage)
     {
+        // Do not process if decryptedMessage isKeyTransportMessage i.e. msgBody == null
+        if (decryptedOmemoMessage.isKeyTransportMessage())
+            return;
+
         Message message = (Message) stanza;
-        String decryptedBody = decryptedOmemoMessage.getBody();
-
         Date timeStamp = getTimeStamp(message);
-        ChatRoomJabberImpl chatRoom = getChatRoom(muc.getRoom());
-        EntityFullJid msgFrom = (EntityFullJid) message.getFrom();
-        ChatRoomMemberJabberImpl member = chatRoom.findMemberFromParticipant(msgFrom);
+        BareJid sender = decryptedOmemoMessage.getSenderDevice().getJid();
 
-        int encType = ENCRYPTION_OMEMO | ENCODE_PLAIN;
-        IMessage newMessage
-                = new MessageJabberImpl(decryptedBody, encType, "", message.getStanzaId());
-        newMessage.setRemoteMsgId(message.getStanzaId());
-        ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
-                chatRoom, member, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_IN);
+        ChatRoomJabberImpl chatRoom = getChatRoom(muc.getRoom());
+        ChatRoomMemberJabberImpl member = chatRoom.findMemberFromParticipant(message.getFrom());
+
+        String msgID = message.getStanzaId();
+        int encType = IMessage.ENCRYPTION_OMEMO;
+        String msgBody = decryptedOmemoMessage.getBody();
+
+        // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
+        if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+            encType |= IMessage.ENCODE_HTML;
+        }
+        else {
+            encType |= IMessage.ENCODE_PLAIN;
+        }
+        IMessage newMessage = new MessageJabberImpl(msgBody, encType, null, msgID);
+
+        // check if the message is available in xhtml
+        String xhtmString = XhtmlUtil.getXhtmlExtension(message);
+        if (xhtmString != null) {
+            try {
+                XmlPullParser xpp = PacketParserUtils.getParserFor(xhtmString);
+                OmemoElement omemoElement = omemoVAxolotlProvider.parse(xpp);
+
+                OmemoMessage.Received xhtmlMessage = mOmemoManager.decrypt(sender, omemoElement);
+                encType |= IMessage.ENCODE_HTML;
+                newMessage = new MessageJabberImpl(xhtmlMessage.getBody(), encType, null, msgID);
+            } catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
+                    | NoRawSessionException | CryptoFailedException | XmlPullParserException | SmackParsingException e) {
+                Timber.e("Error decrypting xhtmlExtension message %s:", e.getMessage());
+            }
+        }
+        newMessage.setRemoteMsgId(msgID);
+
+        ChatRoomMessageReceivedEvent msgReceivedEvt
+                = new ChatRoomMessageReceivedEvent(chatRoom, member, timeStamp, newMessage, ChatMessage.MESSAGE_MUC_IN);
         chatRoom.fireMessageEvent(msgReceivedEvt);
     }
 }

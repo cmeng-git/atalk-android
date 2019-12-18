@@ -47,7 +47,7 @@ public class LogUploadServiceImpl implements LogUploadService
     public void sendLogs(String[] destinations, String subject, String title)
     {
         /* The path pointing to directory used to store temporary log archives. */
-        File logStorageDir = FileBackend.getaTalkStore("atalk-logs");
+        File logStorageDir = FileBackend.getaTalkStore("atalk-logs", true);
         if (logStorageDir != null) {
             File logcatFile = null;
             File externalStorageFile = null;

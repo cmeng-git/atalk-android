@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/contactStatusIcon"
-            android:layout_width="16dip"
-            android:layout_height="16dip"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:src="@drawable/contact_online" />
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:layout_marginStart="8dip"
+        android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/avatarLayout"
         android:layout_toStartOf="@+id/callButtonLayout"
         android:orientation="vertical">
@@ -85,8 +85,8 @@
 
         <ImageView
             android:id="@+id/buttonSeparatorView"
-            android:layout_width="1dip"
-            android:layout_height="40dip"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/contact_list_v_separator_dark" />
 
@@ -108,8 +108,8 @@
 
         <ImageView
             android:id="@+id/buttonSeparatorView2"
-            android:layout_width="1dip"
-            android:layout_height="40dip"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/contact_list_v_separator_dark" />
 
@@ -141,7 +141,7 @@
 
     <LinearLayout
         android:id="@+id/rightShadowTop"
-        android:layout_width="7dip"
+        android:layout_width="7dp"
         android:layout_height="fill_parent"
         android:layout_above="@id/selectedBackgroundIcon"
         android:layout_alignParentEnd="true"
@@ -151,7 +151,7 @@
 
     <LinearLayout
         android:id="@+id/rightShadowBottom"
-        android:layout_width="7dip"
+        android:layout_width="7dp"
         android:layout_height="fill_parent"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/selectedBackgroundIcon"
@@ -161,7 +161,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="1dip"
+        android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/contact_list_h_separator_dark" />
 

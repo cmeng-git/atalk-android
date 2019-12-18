@@ -1,12 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/chatTypingArea"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/msg_input_bar_bg"
-                android:orientation="horizontal"
-                android:padding="6dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chatTypingArea"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/msg_input_bar_bg"
+    android:padding="6dp" >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/media_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_rounded"
+        android:layout_alignStart="@+id/chatWriteTextBg"
+        android:layout_alignEnd="@+id/chatWriteText"
+        android:paddingTop="8dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        android:requiresFadingEdge="horizontal"
+        tools:listitem="@layout/media_preview" />
+
+    <TextView
+        android:id="@+id/chatMsgReply"
+        style="@style/SmallFont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/chatWriteTextBg"
+        android:layout_toStartOf="@+id/chatReplyCancel"
+        android:paddingEnd="24dp"
+        android:paddingStart="5dp"
+        android:background="@drawable/background_quote" />
+
+    <ImageView
+        android:id="@+id/chatReplyCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignEnd="@+id/chatWriteTextBg"
+        android:src="@drawable/ic_action_cancel_light" />
 
     <ImageView
         android:id="@+id/chatWriteTextBg"
@@ -24,6 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_below="@id/chatMsgReply"
         android:layout_toEndOf="@+id/cancelCorrectionBtn"
         android:layout_alignEnd="@+id/chatWriteTextBg"
         android:background="@null"

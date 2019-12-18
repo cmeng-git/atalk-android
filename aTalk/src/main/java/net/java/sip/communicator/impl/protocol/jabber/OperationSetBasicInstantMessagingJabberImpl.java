@@ -5,7 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
 
@@ -16,6 +15,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.jivesoftware.smack.*;
@@ -25,7 +25,11 @@ import org.jivesoftware.smack.chat2.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
@@ -36,10 +40,10 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
-import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
-import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
+import org.jivesoftware.smackx.omemo.exceptions.*;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
+import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -132,6 +136,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * The provider that created us.
      */
     private final ProtocolProviderServiceJabberImpl jabberProvider;
+
+    private OmemoManager mOmemoManager;
+
+    private final OmemoVAxolotlProvider omemoVAxolotlProvider = new OmemoVAxolotlProvider();
 
     /**
      * A reference to the persistent presence operation set that we use to match incoming messages
@@ -400,10 +408,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             String content = event.getSourceMessage().getContent();
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                    msg.setBody(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
-                else
-                    msg.setBody(Html.fromHtml(content));
+                msg.setBody(Html.fromHtml(content));
 
                 // Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
                 // Also carbon messages may send to buddy on difference clients with different capabilities
@@ -501,35 +506,35 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
             OmemoManager omemoManager)
     {
-        Jid toJid = to.getJid();
+        EntityBareJid entityBareJid = to.getJid().asEntityBareJidIfPossible();
         String msgContent = message.getContent();
-        OmemoMessage.Sent encryptedMessage;
         String errMessage = null;
 
-        /*
-         * Temporary comment out to support lightweight text markup chat message for OMEMO
-         * Send html tags in OMEMO encrypted body
-         */
-        // OMEMO message content will strip off any html tags info => XHTML not supported
-//        if (IMessage.ENCODE_HTML == message.getMimeType()) {
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-//                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
-//            else
-//                msgContent = Html.fromHtml(msgContent).toString();
-//        }
-
         try {
-            encryptedMessage = omemoManager.encrypt(toJid.asBareJid(), msgContent);
-            Message sendMessage = encryptedMessage.asMessage(toJid);
+            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(entityBareJid, msgContent);
+            Message sendMessage = encryptedMessage.asMessage(entityBareJid);
+
+            if (IMessage.ENCODE_HTML == message.getMimeType()) {
+                String xhtmlBody = encryptedMessage.getElement().toXML().toString();
+                XHTMLText htmlBody = new XHTMLText("", "us").append(xhtmlBody).appendCloseBodyTag();
+
+                // OMEMO body message content will strip off any html tags info
+                msgContent = Html.fromHtml(msgContent).toString();
+                encryptedMessage = omemoManager.encrypt(entityBareJid, msgContent);
+                sendMessage = encryptedMessage.asMessage(entityBareJid);
+
+                // Add the XHTML text to the message
+                XHTMLManager.addBody(sendMessage, htmlBody);
+            }
+
+            // proceed to send message if no exceptions.
             if (correctedMessageUID != null)
                 sendMessage.addExtension(new MessageCorrectExtension(correctedMessageUID));
             sendMessage.setStanzaId(message.getMessageUID());
-            message.setServerMsgId(sendMessage.getStanzaId());
-
-            mChat = mChatManager.chatWith(toJid.asEntityBareJidIfPossible());
+            mChat = mChatManager.chatWith(entityBareJid);
             mChat.send(sendMessage);
 
-            // proceed to send message if no exceptions.
+            message.setServerMsgId(sendMessage.getStanzaId());
             message.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
             MessageDeliveredEvent msgDelivered;
             if (correctedMessageUID == null)
@@ -659,8 +664,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED) {
                 if (connection != null) {  // must not assume - may call after log off
                     if (connection.isAuthenticated()) {
-                        omemoManager = OmemoManager.getInstanceFor(connection);
-                        unRegisterOmemoListener(omemoManager);
+                        unRegisterOmemoListener(mOmemoManager);
                     }
                     if (smackSvrMessageListener != null)
                         connection.removeAsyncStanzaListener(smackSvrMessageListener);
@@ -811,31 +815,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
 
         // check if the message is available in xhtml
-        if (XHTMLManager.isXHTMLMessage(message)) {
-            XHTMLExtension xhtmlExt = (XHTMLExtension) message.getExtension(XHTMLExtension.NAMESPACE);
-
-            // parse all bodies
-            List<CharSequence> bodies = xhtmlExt.getBodies();
-            StringBuilder messageBuff = new StringBuilder();
-            for (CharSequence body : bodies) {
-                messageBuff.append(body);
-            }
-
-            if (messageBuff.length() > 0) {
-                // we remove body tags around message cause their end body tag is breaking the
-                // visualization as html in the UI
-                String receivedMessage = messageBuff.toString()
-                        // removes <body> start tag
-                        .replaceAll("<[bB][oO][dD][yY].*?>", "")
-                        // removes </body> end tag
-                        .replaceAll("</[bB][oO][dD][yY].*?>", "");
-
-                // for some reason &apos; is not rendered correctly from our ui, lets use its
-                // equivalent. Other similar chars(< > & ") seem ok.
-                receivedMessage = receivedMessage.replaceAll("&apos;", "&#39;");
-                encType = encryption | IMessage.ENCODE_HTML;
-                newMessage = createMessageWithUID(receivedMessage, encType, msgID);
-            }
+        String xhtmString = XhtmlUtil.getXhtmlExtension(message);
+        if (xhtmString != null) {
+            encType = encryption | IMessage.ENCODE_HTML;
+            newMessage = createMessageWithUID(xhtmString, encType, msgID);
         }
         newMessage.setRemoteMsgId(message.getStanzaId());
 
@@ -990,12 +973,14 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
     public void registerOmemoListener(OmemoManager omemoManager)
     {
+        mOmemoManager = omemoManager;
         omemoManager.addOmemoMessageListener(this);
     }
 
     private void unRegisterOmemoListener(OmemoManager omemoManager)
     {
         omemoManager.removeOmemoMessageListener(this);
+        mOmemoManager = null;
     }
 
     private boolean isForwardedSentOmemoMessage = false;
@@ -1009,28 +994,24 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     @Override
     public void onOmemoMessageReceived(Stanza stanza, OmemoMessage.Received decryptedMessage)
     {
-        // ignore KeyTransportMessages - causes problem: exit even it is false????
-//        if (decryptedMessage.isKeyTransportMessage())
-//            return;
-        /*
-         want to check to warn user ?
-         OmemoManager.isTrustedOmemoIdentity(decryptedMessage.getSenderDevice(), decryptedMessage.getSendersFingerprint())
-        */
+        // Do not process if decryptedMessage isKeyTransportMessage i.e. msgBody == null
+        if (decryptedMessage.isKeyTransportMessage())
+            return;
 
-        Message encryptedMessage = (Message) stanza;
-        Date timeStamp = getTimeStamp(encryptedMessage);
+        Message message = (Message) stanza;
+        Date timeStamp = getTimeStamp(message);
 
-        Jid userFullJid = isForwardedSentOmemoMessage ? encryptedMessage.getTo() : encryptedMessage.getFrom();
+        Jid userFullJid = isForwardedSentOmemoMessage ? message.getTo() : message.getFrom();
         BareJid userBareJid = userFullJid.asBareJid();
-        putJidForAddress(userBareJid, encryptedMessage.getThread());
+        putJidForAddress(userBareJid, message.getThread());
         Contact sourceContact = opSetPersPresence.findContactByID(userBareJid.toString());
         if (sourceContact == null) {
             // create new volatile contact
             sourceContact = opSetPersPresence.createVolatileContact(userBareJid);
         }
 
-        String msgID = encryptedMessage.getStanzaId();
-        String correctedMsgID = getCorrectionMessageId(encryptedMessage);
+        String msgID = message.getStanzaId();
+        String correctedMsgID = getCorrectionMessageId(message);
         int encType = IMessage.ENCRYPTION_OMEMO;
         String msgBody = decryptedMessage.getBody();
 
@@ -1041,8 +1022,23 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         else {
             encType |= IMessage.ENCODE_PLAIN;
         }
-
         IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
+
+        // check if the message is available in xhtml
+        String xhtmString = XhtmlUtil.getXhtmlExtension(message);
+        if (xhtmString != null) {
+            try {
+                XmlPullParser xpp = PacketParserUtils.getParserFor(xhtmString);
+                OmemoElement omemoElement = omemoVAxolotlProvider.parse(xpp);
+
+                OmemoMessage.Received xhtmlMessage = mOmemoManager.decrypt(userBareJid, omemoElement);
+                encType |= IMessage.ENCODE_HTML;
+                newMessage = createMessageWithUID(xhtmlMessage.getBody(), encType, msgID);
+            } catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
+                    | NoRawSessionException | CryptoFailedException | XmlPullParserException | SmackParsingException e) {
+                Timber.e("Error decrypting xhtmlExtension message %s:", e.getMessage());
+            }
+        }
         newMessage.setRemoteMsgId(msgID);
 
         EventObject msgEvt;

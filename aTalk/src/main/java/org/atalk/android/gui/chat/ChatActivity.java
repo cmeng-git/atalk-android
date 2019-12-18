@@ -5,16 +5,18 @@
  */
 package org.atalk.android.gui.chat;
 
-import android.annotation.SuppressLint;
-import android.content.*;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.*;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
@@ -34,6 +36,8 @@ import org.atalk.android.gui.chatroomslist.ChatRoomInfoDialog;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
+import org.atalk.android.gui.share.Attachment;
+import org.atalk.android.gui.share.MediaPreviewAdapter;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
@@ -54,6 +58,7 @@ import java.text.DateFormat;
 import java.util.*;
 
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import timber.log.Timber;
@@ -69,6 +74,16 @@ import static org.atalk.persistance.FileBackend.getMimeType;
  */
 public class ChatActivity extends OSGiActivity implements OnPageChangeListener, TaskCompleted
 {
+    private static final int REQUEST_CODE_SELECT_PHOTO = 100;
+    private static final int REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY = 101;
+    private static final int REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY = 102;
+    private static final int REQUEST_CODE_SELECT_VIDEO = 103;
+    private static final int REQUEST_CODE_CHOOSE_FILE_ACTIVITY = 104;
+    private static final int REQUEST_CODE_OPEN_FILE = 105;
+
+    private static final int REQUEST_CODE_SHARE_WITH = 200;
+    private static final int REQUEST_CODE_FORWARD = 201;
+
     public final static String CRYPTO_FRAGMENT = "crypto_fragment";
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access
@@ -80,6 +95,13 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private ChatPagerAdapter chatPagerAdapter;
+
+    /**
+     * The media preview adapter, which provides views of all attachments.
+     */
+    private MediaPreviewAdapter mediaPreviewAdapter;
+
+    // private static List<Object> msgFilesShare = new ArrayList<>();
 
     /**
      * Set the number of pages that should be retained to either side of the current page in the
@@ -122,15 +144,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private ChatPanel selectedChatPanel;
     private static Contact mRecipient;
 
+    /**
+     * file for camera picture or video capture
+     */
     private static File mCameraFilePath = null;
-    final private List<Uri> mPendingImageUris = new ArrayList<>();
-
-    private static final int SELECT_PHOTO = 100;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 101;
-    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 102;
-    private static final int SELECT_VIDEO = 103;
-    private static final int CHOOSE_FILE_ACTIVITY_REQUEST_CODE = 104;
-    private static final int OPEN_FILE_REQUEST_CODE = 105;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -149,7 +166,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat);
+        setContentView(R.layout.chat_main);
 
         // If chat notification has been clicked and OSGi service has been killed in the meantime
         // then we have to start it and restore this activity
@@ -165,6 +182,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         chatPager.setAdapter(chatPagerAdapter);
         chatPager.setOffscreenPageLimit(CHAT_PAGER_SIZE);
         chatPager.addOnPageChangeListener(this);
+
+        /*
+         * Media Preview display area for user confirmation before sending
+         */
+        ImageView imagePreview = findViewById(R.id.imagePreview);
+        RecyclerView mediaPreview = findViewById(R.id.media_preview);
+        mediaPreviewAdapter = new MediaPreviewAdapter(this, imagePreview);
+        mediaPreview.setAdapter(mediaPreviewAdapter);
 
         handleIntent(getIntent(), savedInstanceState);
     }
@@ -207,6 +232,17 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         // setCurrentChatId(chatPanel.getChatSession().getChatId());
         setCurrentChatId(chatId);
         chatPager.setCurrentItem(chatPagerAdapter.getChatIdx(currentChatId));
+
+        if (intent.getClipData() != null) {
+            if (intent.getCategories() != null)
+                onActivityResult(REQUEST_CODE_FORWARD, RESULT_OK, intent);
+            else
+                onActivityResult(REQUEST_CODE_SHARE_WITH, RESULT_OK, intent);
+
+        }
+//        else if (!msgFilesShare.isEmpty()) {
+//            onActivityResult(REQUEST_CODE_FORWARD, RESULT_OK, null);
+//        }
     }
 
     /**
@@ -266,11 +302,23 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     protected void onDestroy()
     {
         super.onDestroy();
-        if (chatPagerAdapter != null)
+        if (chatPagerAdapter != null) {
             chatPagerAdapter.dispose();
+        }
 
         // Clear last chat intent
         AndroidUtils.clearGeneralNotification(aTalkApp.getGlobalContext());
+    }
+
+    /**
+     * Must check chatFragment for non-null before proceed
+     * User by ShareUtil to toggle media preview if any
+     */
+    public void toggleInputMethod()
+    {
+        ChatFragment chatFragment;
+        if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null)
+            chatFragment.getChatController().updateSendModeState();
     }
 
     /**
@@ -723,7 +771,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, SELECT_PHOTO);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_PHOTO);
+                break;
+
+            case video:
+                intent.setType("video/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
                 break;
 
             case camera:
@@ -736,13 +791,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                break;
-
-            case video:
-                intent.setType("video/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, SELECT_VIDEO);
+                startActivityForResult(intent, REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY);
                 break;
 
             case video_record:
@@ -753,7 +802,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 // create Intent to record video and return control to the calling application
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
-                startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(intent, REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
                 break;
 
             case share_file:
@@ -763,7 +812,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 try {
                     Intent chooseFile = Intent.createChooser(intent, getString(R.string.choose_file_activity_title));
-                    startActivityForResult(chooseFile, CHOOSE_FILE_ACTIVITY_REQUEST_CODE);
+                    startActivityForResult(chooseFile, REQUEST_CODE_CHOOSE_FILE_ACTIVITY);
                 } catch (android.content.ActivityNotFoundException ex) {
                     showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_APPLICATION);
                 }
@@ -772,55 +821,33 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode == RESULT_OK) {
             String filePath;
+            List<Attachment> attachments;
 
             switch (requestCode) {
-                case SELECT_PHOTO:
-                case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:
-                    mPendingImageUris.clear();
-                    mPendingImageUris.addAll(extractUriFromIntent(data));
-                    for (Iterator<Uri> i = mPendingImageUris.iterator(); i.hasNext(); i.remove()) {
-                        filePath = FilePathHelper.getPath(this, i.next());
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
+                case REQUEST_CODE_SELECT_PHOTO:
+                case REQUEST_CODE_SELECT_VIDEO:
+                case REQUEST_CODE_CHOOSE_FILE_ACTIVITY:
+                    attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
+                    mediaPreviewAdapter.addMediaPreviews(attachments);
                     break;
 
-                case SELECT_VIDEO:
-                    Uri selectedVideo = data.getData();
-                    if (selectedVideo != null) {
-                        filePath = FilePathHelper.getPath(this, selectedVideo);
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
-                    break;
-
-                case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-                case CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE:
+                case REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY:
+                case REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY:
                     if ((mCameraFilePath != null) && mCameraFilePath.exists()) {
-                        filePath = mCameraFilePath.getPath();
-                        if (!StringUtils.isNullOrEmpty(filePath)) {
-                            mCameraFilePath = null;
-                            sendFile(filePath);
-                        }
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                        Uri uri = FileBackend.getUriForFile(this, mCameraFilePath);
+                        attachments = Attachment.of(this, uri, Attachment.Type.IMAGE);
+                        mediaPreviewAdapter.addMediaPreviews(attachments);
                     }
-                    else
-                        aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     break;
 
-                case OPEN_FILE_REQUEST_CODE:
-                    if (data != null) {
-                        Uri uri = data.getData();
+                case REQUEST_CODE_OPEN_FILE:
+                    if (intent != null) {
+                        Uri uri = intent.getData();
                         if (uri != null) {
                             filePath = FilePathHelper.getPath(this, uri);
                             if (!StringUtils.isNullOrEmpty(filePath))
@@ -830,31 +857,70 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         }
                     }
                     break;
+
+                case REQUEST_CODE_SHARE_WITH:
+                    Timber.d("Share Intent with: REQUEST_CODE_SHARE_WITH");
+                    selectedChatPanel.setEditedText(null);
+                    if ("text/plain".equals(intent.getType())) {
+                        String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+                        if (!TextUtils.isEmpty(text)) {
+                            selectedChatPanel.setEditedText(text);
+                        }
+                    }
+                    else {
+                        attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
+                        mediaPreviewAdapter.addMediaPreviews(attachments);
+                    }
+                    // Switch to active chat fragment and update the chatController entry
+                    chatPagerAdapter.notifyDataSetChanged();
+                    toggleInputMethod();
+                    break;
+
+                case REQUEST_CODE_FORWARD:
+                    Timber.d("Share Intent with: REQUEST_CODE_FORWARD");
+                    selectedChatPanel.setEditedText(null);
+                    String text = (intent.getCategories() == null) ? null : intent.getCategories().toString();
+                    if (!TextUtils.isEmpty(text)) {
+                        selectedChatPanel.setEditedText(text);
+                    }
+
+                    attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
+                    mediaPreviewAdapter.addMediaPreviews(attachments);
+
+                    // Switch to active chat fragment and update the chatController entry
+                    chatPagerAdapter.notifyDataSetChanged();
+                    toggleInputMethod();
+                    break;
+
+                    // Alternate method must can only forward to single contact
+//                    selectedChatPanel.setEditedText(null);
+//                    for (Object obj : msgFilesShare) {
+//                        if (obj instanceof String) {
+//                            selectedChatPanel.setEditedText((String) obj);
+//                        }
+//                        else if ((obj instanceof ArrayList<?>) && !((ArrayList) obj).isEmpty()) {
+//                            if (((ArrayList) obj).get(0) instanceof Uri) {
+//                                List<Uri> imageUris = (ArrayList<Uri>) obj;
+//                                attachments = Attachment.of(this, imageUris);
+//                                mediaPreviewAdapter.addMediaPreviews(attachments);
+//                            }
+//                        }
+//                    }
+//                    msgFilesShare.clear();
+//                    break;
             }
         }
     }
 
-    @SuppressLint("NewApi")
-    private static List<Uri> extractUriFromIntent(final Intent intent)
-    {
-        List<Uri> uris = new ArrayList<>();
-        if (intent == null) {
-            return uris;
-        }
-        Uri uri = intent.getData();
-        if (uri == null) {
-            final ClipData clipData = intent.getClipData();
-            if (clipData != null) {
-                for (int i = 0; i < clipData.getItemCount(); ++i) {
-                    uris.add(clipData.getItemAt(i).getUri());
-                }
-            }
-        }
-        else {
-            uris.add(uri);
-        }
-        return uris;
-    }
+    /**
+     * Update content for forward to another user (only once) using msgFileShare method
+     *
+     * @param filesShare Array object of String & List<Uri>
+     */
+//    public void addForwardContent(List<Object> filesShare)
+//    {
+//        msgFilesShare = filesShare;
+//    }
 
     /**
      * Opens the given file through the <tt>DesktopService</tt>.

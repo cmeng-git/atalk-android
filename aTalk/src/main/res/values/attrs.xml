@@ -99,8 +99,4 @@
         <attr name="TextSizeHeadline" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="UnreadCountCustomView">
-        <attr name="backgroundColor" format="reference|color"/>
-    </declare-styleable>
-
 </resources>

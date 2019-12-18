@@ -10,7 +10,6 @@ import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Environment;
 

@@ -154,10 +154,8 @@ public class ActionBarUtil
      *
      * @return the default avatar {@link Drawable}
      */
-    @SuppressWarnings("deprecation")
     private static LayerDrawable getDefaultAvatarDrawable(Activity activity)
     {
-        //return (LayerDrawable) aTalkApplication.getAppResources()
         return (LayerDrawable) activity.getResources().getDrawable(R.drawable.avatar_layer_drawable);
     }
 }

@@ -449,12 +449,14 @@ public class ChatMessageImpl implements ChatMessage
         if (nextMsg == null)
             return false;
 
+        String bodyText = nextMsg.getMessage();
+
         // New FTRequest message always treated as non-consecutiveMessage
         boolean nonFTMsg = ((messageType != MESSAGE_FILE_TRANSFER_RECEIVE)
                 && (messageType != MESSAGE_FILE_TRANSFER_SEND) && (messageType != MESSAGE_STICKER_SEND));
         // New system message always treated as non-consecutiveMessage
-        boolean nonHttpFTMsg = (nextMsg.getMessage() == null)
-                || !nextMsg.getMessage().matches("(?s)^aesgcm:.*|^http[s].*");
+        boolean nonHttpFTMsg = (bodyText == null)
+                || !bodyText.matches("(?s)^aesgcm:.*|^http[s].*");
         boolean nonSystemMsg = (messageType != MESSAGE_SYSTEM);
         // New LatLng message always treated as non-consecutiveMessage
         boolean nonLatLng = (!TextUtils.isEmpty(message) && !message.contains("LatLng:"));
@@ -469,8 +471,9 @@ public class ChatMessageImpl implements ChatMessage
         boolean encTypeSame = (encryptionType == nextMsg.getEncryptionType());
         // true if the new message is within a minute from the last one
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
+        boolean isMarkUpText = (bodyText != null) && bodyText.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
 
-        return (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame && nonHttpFTMsg
+        return (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame && nonHttpFTMsg && !isMarkUpText
                 && (uidEqual || (mTypeJidEqual && inElapseTime)));
     }
 

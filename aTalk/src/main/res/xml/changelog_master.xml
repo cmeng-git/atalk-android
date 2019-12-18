@@ -6,6 +6,19 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.1.4 (12/18/2019)" versioncode="1114">
+        <change>Add support for Share, Quote and Forward for both message and media contents</change>
+        <change>Preview media contents of attachments for user confirmation before sending</change>
+        <change>Extend check for proper file extension on media file sharing; rename media file with best guess extension if possible</change>
+        <change>Full XEP-0071: XHTML-IM implementation for Omemo messages in send and receive</change>
+        <change>Fix ChatRoomBookmarksDialog crashes due to null value in either old or newly edited string</change>
+        <change>All Links entered are sent in XHTML extension to avoid treated incorrectly as HTTP File Download by receiver</change>
+        <change>Include all received media and outgoing tmp files for user optional deletion</change>
+        <change>Return chat view to the top of last deleted message group after message deletion</change>
+        <change>Enhance file handler and consolidate all user aTalk files into aTalk new directory structure</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.1.3 (11/28/2019)" versioncode="1113">
         <change>Support send and receive of instant messages that contain lightweight text markup (XEP-0071: XHTML-IM) e.g &lt;em>Wow&lt;/em>, I&apos;m &lt;span style='color:green'>green&lt;/span></change>
         <change>Enhance UI to add unread message badges in contact and chatRoom list views</change>

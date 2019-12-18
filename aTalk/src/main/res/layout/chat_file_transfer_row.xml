@@ -9,7 +9,7 @@
         android:layout_width="@dimen/chat_avatar"
         android:layout_height="@dimen/chat_avatar"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="5dip">
+        android:layout_marginStart="5dp">
 
         <ImageButton
             android:id="@+id/button_file"
@@ -25,12 +25,12 @@
         android:id="@+id/msg_body_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="30dip"
+        android:layout_marginEnd="30dp"
         android:layout_marginStart="@dimen/chat_text_margin"
         android:layout_toEndOf="@+id/incomingAvatarView"
         android:background="@drawable/holder_filexfer"
         android:orientation="vertical"
-        android:padding="5dip"
+        android:padding="5dp"
         android:layout_marginBottom="4dp">
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:paddingStart="5dip"
+            android:paddingStart="5dp"
             android:textColor="@color/grey"
             android:visibility="gone" />
 
@@ -50,7 +50,7 @@
             android:maxHeight="250dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:paddingStart="5dip" />
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/filexferTitleView"
@@ -58,8 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:paddingBottom="5dip"
-            android:paddingStart="5dip"
+            android:paddingBottom="5dp"
+            android:paddingStart="5dp"
             android:text="{Title text}"
             android:textColor="@color/black" />
 
@@ -71,8 +71,8 @@
 
             <ImageView
                 android:id="@+id/encFileStateView"
-                android:layout_width="18dip"
-                android:layout_height="18dip"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/encryption_omemo" />
 
             <TextView
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:paddingBottom="5dip"
+                android:paddingBottom="5dp"
                 android:layout_marginStart="@dimen/chat_text_margin"
                 android:text="{FileName text}"
                 android:textColor="@color/grey" />
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:paddingStart="5dip"
+            android:paddingStart="5dp"
             android:text="{Error text}"
             android:textColor="@color/red"
             android:visibility="gone" />
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:layout_gravity="center_horizontal"
-            android:padding="5dip"
+            android:padding="5dp"
             android:visibility="gone" />
 
         <TextView
@@ -114,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/chat_text_margin"
             android:gravity="start"
-            android:paddingStart="5dip"
+            android:paddingStart="5dp"
             android:text="{Transfer Speed}"
             android:textColor="@color/blue"
             android:visibility="gone" />
@@ -126,8 +126,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/chat_text_margin"
             android:gravity="start"
-            android:paddingStart="5dip"
-            android:paddingTop="5dip"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
             android:text="{Time left}"
             android:textColor="@color/blue"
             android:visibility="gone" />
@@ -142,7 +142,7 @@
                 android:id="@+id/button_accept"
                 style="@style/ButtonTop"
                 android:layout_marginEnd="2dp"
-                android:drawableStart="@drawable/ic_accept"
+                android:drawableStart="@drawable/ic_action_accept"
                 android:text="@string/service_gui_ACCEPT"
                 android:visibility="gone" />
 

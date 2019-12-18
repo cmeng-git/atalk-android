@@ -460,14 +460,14 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
             mDB.storeIdentityKey(contactDevice, contactKey, fingerprint, fpStatus);
             trustCache.remove(fingerprint);
         }
-        else {
+        // else {
             // Code for testing only
             // if (contactDevice.getJid().toString().contains("atalkuser1")) {
             //     contactDevice = new OmemoDevice(contactDevice.getJid(),1367773246);
             //     removeOmemoIdentityKey(null, contactDevice);
             // }
-            Timber.w("Skip Update duplicated identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
-        }
+            // Timber.d("Skip Update duplicated identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
+        //}
     }
 
     /**

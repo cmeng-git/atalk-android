@@ -49,6 +49,7 @@
     <string name="in_call_with">Anruf mit</string>
     <string name="network">Netzwerk</string>
     <string name="notification_setting">Benachrichtigungseinstellungen&#8230;</string>
+    <string name="no_application_found_to_open_file">Keine Anwendung zum Öffnen der Datei gefunden</string>
     <string name="password">Passwort</string>
     <string name="service_gui_PASSWORD">Passwort:</string>
     <string name="reason_label">Grund:</string>
@@ -67,9 +68,13 @@
     <string name="attachOptionDialog_videoRecord">Video aufnehmen</string>
     <string name="attachOptionDialog_shareFile">Datei schicken</string>
     <string name="chat_fileTransferButton">Öffnen</string>
-    <string name="chat_message_del">Nachricht löschen</string>
+    <string name="chat_message_copy">Kopieren</string>
+    <string name="chat_message_delete">Löschen</string>
     <string name="chat_message_edit">Bearbeiten</string>
+    <string name="chat_message_forward">Vorwärts…</string>
     <string name="chat_message_long_press_hint">Vermeide bitte in den Textbereich zu klicken um mehrere Objekte zu markieren.</string>
+    <string name="chat_message_quote">Zitat</string>
+    <string name="chat_message_reply">Antworten</string>
     <string name="chat_message_select_all">Alle auswählen</string>
     <string name="chatRoom_Subject">Betreff</string>
     <string name="choose_file_activity_title">Datei auswählen</string>
@@ -134,6 +139,9 @@
     <string name="service_gui_CONTACT_INVALID">Der ausgewählte Kontakt ist nicht gültig: %1$s</string>
     <string name="service_gui_Contacts">Kontakte</string>
     <string name="service_gui_DONE">OK</string>
+    <string name="service_gui_SHARE">Teilen…</string>
+    <string name="service_gui_SHARE_TEXT">Text teilen&#8230;</string>
+    <string name="service_gui_SHARE_FILE">Datei teilen&#8230;</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Automatische Teilnahme</string>
@@ -1493,7 +1501,7 @@
     <string name="phone_permission_denied_feedback">Telefonfunktionen sind erst verfügbar, wenn du die Berechtigung erteilt hast.</string>
 
     <string name="storage_permission_denied_dialog_title">Speichererlaubnisanforderung</string>
-    <string name="storage_permission_denied_feedback">Das Speichern empfangener Inhalte im externen Speicher ist erst zulässig, nachdem du die Berechtigung erteilt hast.</string>
+    <string name="storage_permission_denied_feedback">Das Speichern von gesendeten und empfangenen Inhalten im Speicher ist erst zulässig, nachdem du die Berechtigung erteilt hast.</string>
 
     <string name="all_permission_denied_dialog_title">Alle Berechtigungsanforderungen</string>
     <string name="all_permissions_denied_feedback">aTalk funktioniert möglicherweise nicht richtig oder zeigt ein unsachgemäßes Verhalten da einige Dienste abgelehnt wurden.\nWenn du die Option\"Nicht erneut nachfragen\" gewählt hast, musst du dich zu den Android-Einstellungen begeben: -> APP INFO für aTalk, zum Aktivieren der Ressourcenzugriffsberechtigungen</string>

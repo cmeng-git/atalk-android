@@ -13,11 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import android.net.Uri;
-
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.persistance.FileBackend;
 
 import java.util.Date;
 import java.util.EventObject;
@@ -203,9 +202,7 @@ public class MessageReceivedEvent extends EventObject
 
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
         // source.getContent() may be null (Omemo key send contains no body content)
-        if ((source.getContent() != null) && (source.getContent().matches("(?s)^aesgcm:.*|^http[s]:.*"))) {
-            Uri uri = Uri.parse(source.getContent());
-            if (uri.getLastPathSegment() != null)
+        if (FileBackend.isHttpFileDnLink(source.getContent())) {
                 eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
         }
 

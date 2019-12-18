@@ -4,6 +4,7 @@
     <color name="color_primary">#09354d</color>
     <color name="color_primary_dark">#021625</color>
     <color name="color_accent">#2DA4F2</color>
+    <color name="color_bg_share">#5D7E95</color>
 
     <color name="color_text_dark">@color/white85</color>
 

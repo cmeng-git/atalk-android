@@ -49,6 +49,7 @@
     <string name="in_call_with">Panggilan dengan</string>
     <string name="network">Jaringan</string>
     <string name="notification_setting">Pengaturan pemberitahuan&#8230;</string>
+    <string name="no_application_found_to_open_file">Tidak ada yang menambahkan aplikasi untuk perangkat lunak untuk arsip</string>
     <string name="password">kata sandi</string>
     <string name="service_gui_PASSWORD">Kata Sandi:</string>
     <string name="reason_label">Alasan:</string>
@@ -67,9 +68,13 @@
     <string name="attachOptionDialog_videoRecord">Rekam video</string>
     <string name="attachOptionDialog_shareFile">Bagikan Fail</string>
     <string name="chat_fileTransferButton">Buka</string>
-    <string name="chat_message_del">Hapus pesan</string>
+    <string name="chat_message_copy">Duplikat</string>
+    <string name="chat_message_delete">Hapuskan</string>
     <string name="chat_message_edit">Meredaksi</string>
+    <string name="chat_message_forward">Teruskan…</string>
     <string name="chat_message_long_press_hint">Hindari mengklik dalam area pesan untuk operasi pemilihan multi-item</string>
+    <string name="chat_message_quote">Mengutip</string>
+    <string name="chat_message_reply">Jawab</string>
     <string name="chat_message_select_all">Pilih semua</string>
     <string name="chatRoom_Subject">Subjek</string>
     <string name="choose_file_activity_title">Pilih fail</string>
@@ -134,6 +139,9 @@
     <string name="service_gui_CONTACT_INVALID">Kontak yang dipilih tidak dikenali: %1$s</string>
     <string name="service_gui_Contacts">Kontak</string>
     <string name="service_gui_DONE">Selesai</string>
+    <string name="service_gui_SHARE">Bagikan…</string>
+    <string name="service_gui_SHARE_TEXT">Bagikan teks&#8230;</string>
+    <string name="service_gui_SHARE_FILE">Bagikan file&#8230;</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
@@ -1507,7 +1515,7 @@
     <string name="phone_permission_denied_feedback">Fitur telepon tidak akan tersedia sampai anda memberikan permintaan izin</string>
 
     <string name="storage_permission_denied_dialog_title">Permintaan izin penyimpanan</string>
-    <string name="storage_permission_denied_feedback">Menyimpan konten yang diterima di penyimpanan eksternal tidak akan diizinkan sampai anda mengabulkan permintaan izin</string>
+    <string name="storage_permission_denied_feedback">Menyimpan konten yang dikirim dan diterima dalam penyimpanan tidak akan diizinkan sampai Anda mengabulkan permintaan izin</string>
 
     <string name="all_permission_denied_dialog_title">Semua permintaan izin</string>
     <string name="all_permissions_denied_feedback">aTalk mungkin tidak berfungsi dengan benar atau mungkin memiliki perilaku tidak terduga karena beberapa layanan telah ditolak!\nJika anda telah memilih \"Jangan tanyakan lagi \" pilihan, anda harus pergi ke Pengaturan Android - >INFO APP bagi aTalk untuk mengaktifkan izin akses sumber daya</string>

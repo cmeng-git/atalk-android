@@ -37,7 +37,7 @@ import java.util.Collection;
 import timber.log.Timber;
 
 /**
- * The activity display list of currently stored accounts showing it's protocol and current status.
+ * The activity display list of currently stored accounts showing the associated protocol and current status.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

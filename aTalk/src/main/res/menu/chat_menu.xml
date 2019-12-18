@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/send_file"
-        android:icon="@drawable/ic_attachment_dark"
+        android:icon="@drawable/ic_action_attach_dark"
         android:showAsAction="ifRoom"
         android:title="@string/service_gui_FILE_SEND_TO" />
     <item

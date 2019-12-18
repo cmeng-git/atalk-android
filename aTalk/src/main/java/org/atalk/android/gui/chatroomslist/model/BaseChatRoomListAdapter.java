@@ -133,7 +133,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         uiHandler.post(() -> {
             int count = getGroupCount();
             for (int position = 0; position < count; position++)
-                chatRoomListView.expandGroup(position);
+                if (chatRoomListView != null)
+                    chatRoomListView.expandGroup(position);
         });
     }
 
@@ -199,7 +200,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
         if (count == 0) {
             chatRoomViewHolder.unreadCount.setVisibility(View.GONE);
-        } else {
+        }
+        else {
             chatRoomViewHolder.unreadCount.setVisibility(View.VISIBLE);
             chatRoomViewHolder.unreadCount.setUnreadCount(count);
         }
@@ -298,7 +300,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         ChatRoomWrapper crWrapper = (ChatRoomWrapper) child;
         crwViewHolder.put(crWrapper, chatRoomViewHolder);
         updateUnreadCount(crWrapper, crWrapper.getUnreadCount());
-        
+
         UIChatRoomRenderer renderer = getChatRoomRenderer(groupPosition);
         if (renderer.isSelected(child)) {
             convertView.setBackgroundResource(R.drawable.list_selection_gradient);

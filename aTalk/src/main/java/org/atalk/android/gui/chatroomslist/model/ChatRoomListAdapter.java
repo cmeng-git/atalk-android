@@ -20,9 +20,8 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.*;
-import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;

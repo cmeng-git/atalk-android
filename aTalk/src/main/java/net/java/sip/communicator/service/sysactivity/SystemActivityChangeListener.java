@@ -15,18 +15,18 @@
  */
 package net.java.sip.communicator.service.sysactivity;
 
-import java.util.*;
+import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
 
-import net.java.sip.communicator.service.sysactivity.event.*;
+import java.util.EventListener;
 
 /**
  * The <tt>SystemActivityChangeListener</tt> is notified any time an event
  * in the operating system occurs.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
-public interface SystemActivityChangeListener
-    extends EventListener
+public interface SystemActivityChangeListener extends EventListener
 {
     /**
      * This method gets called when a notification action for a particular event
@@ -36,5 +36,5 @@ public interface SystemActivityChangeListener
      * @param event the <tt>NotificationActionTypeEvent</tt>, which is
      * dispatched when an action has been changed.
      */
-    public void activityChanged(SystemActivityEvent event);
+    void activityChanged(SystemActivityEvent event);
 }

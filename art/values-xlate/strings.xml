@@ -49,6 +49,7 @@
     <string name="in_call_with">In call with </string>
     <string name="network">Network</string>
     <string name="notification_setting">Notification Settings&#8230;</string>
+    <string name="no_application_found_to_open_file">No application found to open file</string>
     <string name="password">password</string>
     <string name="service_gui_PASSWORD">Password:</string>
     <string name="reason_label">Reason:</string>
@@ -67,9 +68,13 @@
     <string name="attachOptionDialog_videoRecord">Record video</string>
     <string name="attachOptionDialog_shareFile">Share File</string>
     <string name="chat_fileTransferButton">Open</string>
-    <string name="chat_message_del">Delete message</string>
+    <string name="chat_message_copy">Copy</string>
+    <string name="chat_message_delete">Delete</string>
     <string name="chat_message_edit">Edit</string>
+    <string name="chat_message_forward">Forward…</string>
     <string name="chat_message_long_press_hint">Avoid clicking within the message area for multi-item selection operation</string>
+    <string name="chat_message_quote">Quote</string>
+    <string name="chat_message_reply">Reply</string>
     <string name="chat_message_select_all">Select all</string>
     <string name="chatRoom_Subject">Subject</string>
     <string name="choose_file_activity_title">Choose a file</string>
@@ -134,6 +139,9 @@
     <string name="service_gui_CONTACT_INVALID">The selected contact is not valid: %1$s</string>
     <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
+    <string name="service_gui_SHARE">Share…</string>
+    <string name="service_gui_SHARE_TEXT">Share text&#8230;</string>
+    <string name="service_gui_SHARE_FILE">Share file&#8230;</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
@@ -1506,7 +1514,7 @@
     <string name="phone_permission_denied_feedback">Phone features will not be available until you grant the permission request</string>
 
     <string name="storage_permission_denied_dialog_title">Storage permission request</string>
-    <string name="storage_permission_denied_feedback">Saving of received contents in external storage will not be allowed until you grant the permission request</string>
+    <string name="storage_permission_denied_feedback">Saving of sent and received contents in storage will not be allowed until you grant the permission request</string>
 
     <string name="all_permission_denied_dialog_title">All permissions request</string>
     <string name="all_permissions_denied_feedback">aTalk may not work properly or may have unexpected behavior as some services have been denied!\nIf you have selected \"Don\'t ask again\" option, you need to go to android Settings -> APP INFO for aTalk to enable the resource access permission</string>

@@ -12,9 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
-import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.osgi.resource.Resource;
 
 import java.io.*;
 

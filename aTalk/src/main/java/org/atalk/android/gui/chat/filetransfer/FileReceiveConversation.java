@@ -252,11 +252,11 @@ public class FileReceiveConversation extends FileTransferConversation
         String downloadPath = FileBackend.MEDIA_DOCUMENT;
         if (incomingFileName.contains("voice-"))
             downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
-        else if (!StringUtils.isNullOrEmpty(mimeType)) {
+        else if (!StringUtils.isNullOrEmpty(mimeType) && !mimeType.startsWith("*")) {
             downloadPath = FileBackend.MEDIA + File.separator + mimeType.split("/")[0];
         }
 
-        File downloadDir = FileBackend.getaTalkStore(downloadPath);
+        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
         if (!downloadDir.exists() && !downloadDir.mkdirs()) {
             Timber.e("Could not create the download directory: %s", downloadDir.getAbsolutePath());
         }
@@ -332,8 +332,7 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who
-     * sent it.
+     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who sent it.
      *
      * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
      */
@@ -367,8 +366,7 @@ public class FileReceiveConversation extends FileTransferConversation
     /**
      * Called when an <tt>IncomingFileTransferRequest</tt> has been rejected.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was
-     * rejected.
+     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
      */
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
