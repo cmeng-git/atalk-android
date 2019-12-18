@@ -8,25 +8,25 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="3dip"
-        android:layout_marginBottom="5dip"
+        android:layout_height="3dp"
+        android:layout_marginBottom="5dp"
         android:background="@color/contact_list_divider" />
 
     <ExpandableListView
         android:id="@+id/ContactListView"
         android:layout_width="fill_parent"
-        android:layout_height="0dip"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:cacheColorHint="@color/white"
         android:choiceMode="multipleChoice"
         android:divider="@null"
-        android:dividerHeight="0dip"
+        android:dividerHeight="0dp"
         android:groupIndicator="@null" />
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="3dip"
-        android:layout_marginTop="5dip"
+        android:layout_height="3dp"
+        android:layout_marginTop="5dp"
         android:background="@color/contact_list_divider" />
 
     <LinearLayout

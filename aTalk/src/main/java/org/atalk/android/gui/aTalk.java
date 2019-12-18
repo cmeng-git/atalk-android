@@ -36,6 +36,7 @@ import org.atalk.android.gui.fragment.ActionBarStatusFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
+import org.atalk.persistance.migrations.MigrateDir;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
@@ -56,14 +57,15 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 {
     /**
      * A map reference to find the FragmentPagerAdapter's fragmentTag (String) by a given position (Integer)
-      */
+     */
     private static Map<Integer, String> mFragmentTags = new HashMap<>();
 
     private static FragmentManager mFragmentManager;
 
     public final static int CL_FRAGMENT = 0;
     public final static int CRL_FRAGMENT = 1;
-    public final static int WP_FRAGMENT = 2;
+    // public final static int WP_FRAGMENT = 2;
+
     /**
      * The action that will show contacts.
      */
@@ -125,16 +127,17 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         mPager.setPageTransformer(true, new DepthPageTransformer());
 
         handleIntent(getIntent(), savedInstanceState);
+        
+        // Migrate aTalk to new directory structure
+        MigrateDir.aTalkDirMigrate();
 
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
-        runOnUiThread(() -> {
-            new Handler().postDelayed(() -> {
-                ChangeLog cl = new ChangeLog(aTalk.this);
-                if (cl.isFirstRun() && !isFinishing()) {
-                    cl.getLogDialog().show();
-                }
-            }, 15000);
-        });
+        runOnUiThread(() -> new Handler().postDelayed(() -> {
+            ChangeLog cl = new ChangeLog(aTalk.this);
+            if (cl.isFirstRun() && !isFinishing()) {
+                cl.getLogDialog().show();
+            }
+        }, 15000));
     }
 
     /**
@@ -293,12 +296,12 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
          *
          * @param container The viewGroup
          * @param position The pager position
-         *
          * @return Fragment object at the specific location
          */
         @NotNull
         @Override
-        public Object instantiateItem(@NotNull ViewGroup container, int position) {
+        public Object instantiateItem(@NotNull ViewGroup container, int position)
+        {
             Object obj = super.instantiateItem(container, position);
             if (obj instanceof Fragment) {
                 Fragment f = (Fragment) obj;
@@ -319,15 +322,15 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * Get the fragment reference for the given position in pager
      *
      * @param position position in the mFragmentTags
-     *
      * @return the requested fragment for the specified postion or null
      */
-    public static Fragment getFragment(int position) {
+    public static Fragment getFragment(int position)
+    {
         String tag = mFragmentTags.get(position);
-        return (mFragmentManager != null)? mFragmentManager.findFragmentByTag(tag) : null;
+        return (mFragmentManager != null) ? mFragmentManager.findFragmentByTag(tag) : null;
     }
 
-    private class DepthPageTransformer implements ViewPager.PageTransformer
+    public class DepthPageTransformer implements ViewPager.PageTransformer
     {
         private static final float MIN_SCALE = 0.75f;
 

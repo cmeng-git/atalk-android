@@ -29,8 +29,9 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
-import org.atalk.android.gui.util.ContentEditText;
-import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.android.gui.share.Attachment;
+import org.atalk.android.gui.share.MediaPreviewAdapter;
+import org.atalk.android.gui.util.*;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.persistance.FilePathHelper;
@@ -42,6 +43,7 @@ import java.util.*;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 /**
@@ -94,6 +96,14 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * Chat chatPanel used by this controller and its parent chat fragment.
      */
+
+    private RecyclerView mediaPreview;
+    private ImageView imagePreview;
+
+    private View chatReplyCancel;
+    private TextView chatMessageReply;
+    private String quotedMessage;
+
     private ChatPanel chatPanel;
     /**
      * Current Chat Transport associates with this Chat Controller.
@@ -176,6 +186,16 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             cancelCorrectionBtn = parent.findViewById(R.id.cancelCorrectionBtn);
             cancelCorrectionBtn.setOnClickListener(this);
 
+            // Quoted reply message view
+            chatMessageReply = parent.findViewById(R.id.chatMsgReply);
+            chatMessageReply.setVisibility(View.GONE);
+            chatReplyCancel = parent.findViewById(R.id.chatReplyCancel);
+            chatReplyCancel.setVisibility(View.GONE);
+            chatReplyCancel.setOnClickListener(this);
+
+            imagePreview = parent.findViewById(R.id.imagePreview);
+            mediaPreview = parent.findViewById(R.id.media_preview);
+
             // Gets the send message button and hooks on click action
             sendBtn = parent.findViewById(R.id.sendMessageButton);
             sendBtn.setOnClickListener(this);
@@ -210,7 +230,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
             updateCorrectionState();
             initChatController();
-            showSendModeButton();
+            updateSendModeState();
         }
     }
 
@@ -266,6 +286,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             // Store edited text in chatPanel
             if ((chatPanel != null) && (msgEdit.getText() != null))
                 chatPanel.setEditedText(msgEdit.getText().toString());
+
+            mediaPreview.setVisibility(View.GONE);
         }
     }
 
@@ -380,6 +402,28 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         }
     }
 
+    public void setQuoteMessage(ChatMessage replyMessage)
+    {
+        if (replyMessage != null) {
+            chatMessageReply.setVisibility(View.VISIBLE);
+            chatReplyCancel.setVisibility(View.VISIBLE);
+
+            Html.ImageGetter imageGetter = new HtmlImageGetter();
+            String body = replyMessage.getMessage();
+            if (!body.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+                body = body.replace("\n", "<br/>");
+            }
+            quotedMessage = aTalkApp.getResString(R.string.service_gui_CHAT_REPLY,
+                    replyMessage.getContactName(), body);
+            chatMessageReply.setText(Html.fromHtml(quotedMessage, imageGetter, null));
+        }
+        else {
+            quotedMessage = null;
+            chatMessageReply.setVisibility(View.GONE);
+            chatReplyCancel.setVisibility(View.GONE);
+        }
+    }
+
     /**
      * Method fired when send message or cancel correction button's are clicked.
      * <p>
@@ -391,29 +435,63 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         switch (v.getId()) {
             case R.id.sendMessageButton:
                 if (chatPanel.getProtocolProvider().isRegistered()) {
-                    String correctionUID = chatPanel.getCorrectionUID();
-
-                    // allow last message correction to send empty string to clear last sent text
-                    String textEdit = ViewUtil.toString(msgEdit);
-                    if ((textEdit == null) && (correctionUID != null)) {
+                    if (mediaPreview.getVisibility() == View.VISIBLE) {
+                        MediaPreviewAdapter mpAdapter = (MediaPreviewAdapter) mediaPreview.getAdapter();
+                        if (mpAdapter != null) {
+                            List<Attachment> mediaPreviews = mpAdapter.getAttachments();
+                            if (!mediaPreviews.isEmpty()) {
+                                Date date = Calendar.getInstance().getTime();
+                                String sendTo = chatPanel.getChatSession().getCurrentChatTransport().getName();
+                                for (Attachment attachment : mediaPreviews) {
+                                    String filePath = FilePathHelper.getPath(parent, attachment);
+                                    if (!StringUtils.isNullOrEmpty(filePath))
+                                        chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND,
+                                                IMessage.ENCODE_PLAIN, filePath);
+                                }
+                                mpAdapter.clearPreviews();
+                            }
+                        }
+                    }
+                    else {
+                        // allow last message correction to send empty string to clear last sent text
+                        String correctionUID = chatPanel.getCorrectionUID();
+                        String textEdit = ViewUtil.toString(msgEdit);
+                        if ((textEdit == null) && (correctionUID != null)) {
                             textEdit = " ";
-                    }
-                    if (textEdit == null)
-                        return;
+                        }
+                        if ((textEdit == null) && (quotedMessage == null)) {
+                            return;
+                        }
 
-                    // if text contains markup tag then send message as ENCODE_HTML mode
-                    if (textEdit.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
-                        Timber.d("HTML text entry detected: %s", textEdit);
-                        msgEdit.setText(textEdit);
-                        sendMessage(textEdit, IMessage.ENCODE_HTML);
+                        if (quotedMessage != null) {
+                            textEdit = quotedMessage + textEdit;
+                        }
+                        // Send http link as xhtml to avoid being interpreted by receiver as http file download link
+                        else if (textEdit.matches("(?s)^http[s]:.*") && !textEdit.contains("\\s")) {
+                            textEdit = aTalkApp.getResString(R.string.service_gui_CHAT_LINK, textEdit, textEdit);
+                        }
+
+                        // if text contains markup tag then send message as ENCODE_HTML mode
+                        if (textEdit.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+                            Timber.d("HTML text entry detected: %s", textEdit);
+                            msgEdit.setText(textEdit);
+                            sendMessage(textEdit, IMessage.ENCODE_HTML);
+                        }
+                        else
+                            sendMessage(textEdit, IMessage.ENCODE_PLAIN);
                     }
-                    else
-                        sendMessage(textEdit, IMessage.ENCODE_PLAIN);
-                    showSendModeButton();
+                    updateSendModeState();
                 }
                 else {
                     aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
                 }
+                if (quotedMessage == null)
+                    break;
+                // else continue to cleanup quotedMessage after sending
+            case R.id.chatReplyCancel:
+                quotedMessage = null;
+                chatMessageReply.setVisibility(View.GONE);
+                chatReplyCancel.setVisibility(View.GONE);
                 break;
 
             case R.id.cancelCorrectionBtn:
@@ -427,7 +505,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     CallNotificationManager.get().backToCall();
                 }
                 else
-                    showSendModeButton();
+                    updateSendModeState();
                 break;
 
             case R.id.audioRecordButton:
@@ -634,19 +712,34 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     chatStateCtrlThread.refreshChatState();
             }
         }
-        showSendModeButton();
+        updateSendModeState();
     }
 
     /**
-     * Which button is shown for user action depends on the current state
+     * Update the view states of all send buttons based on the current available send contents.
+     * Send text button has higer priority over attachement if msgEdit is not empty
      */
-    private void showSendModeButton()
+    public void updateSendModeState()
     {
+        boolean hasAttachments = (mediaPreview.getAdapter() != null) &&
+                ((MediaPreviewAdapter) mediaPreview.getAdapter()).hasAttachments();
+        mediaPreview.setVisibility(View.GONE);
+        imagePreview.setVisibility(View.GONE);
+        imagePreview.setImageDrawable(null);
+
         callBtn.setVisibility(View.INVISIBLE);
         audioBtn.setVisibility(View.INVISIBLE);
+        msgEdit.setVisibility(View.VISIBLE);
 
         // Enabled send text button if text entry box contains text or in correction mode
+        // Sending Text before attachment
         if (!TextUtils.isEmpty(msgEdit.getText()) || (chatPanel.getCorrectionUID() != null)) {
+            sendBtn.setVisibility(View.VISIBLE);
+        }
+        else if (hasAttachments) {
+            msgEdit.setVisibility(View.GONE);
+            mediaPreview.setVisibility(View.VISIBLE);
+            imagePreview.setVisibility(View.VISIBLE);
             sendBtn.setVisibility(View.VISIBLE);
         }
         else {
@@ -837,5 +930,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public Activity getParent()
+    {
+        return parent;
     }
 }

@@ -20,7 +20,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -379,22 +379,26 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         }
 
         mBookmarkFocus = mBookmarkConferenceList.get(chatRoom);
-        mucNameField.setText(mBookmarkFocus.getName());
-        nicknameField.setText(mBookmarkFocus.getNickname());
-        mPasswordField.setText(mBookmarkFocus.getPassword());
-        mAutoJoin.setChecked(mBookmarkFocus.isAutoJoin());
-        mBookmark.setChecked(mBookmarkFocus.isBookmark());
-        return true;
+        if (mBookmarkFocus != null) {
+            mucNameField.setText(mBookmarkFocus.getName());
+            nicknameField.setText(mBookmarkFocus.getNickname());
+            mPasswordField.setText(mBookmarkFocus.getPassword());
+            mAutoJoin.setChecked(mBookmarkFocus.isAutoJoin());
+            mBookmark.setChecked(mBookmarkFocus.isBookmark());
+            return true;
+        }
+        return false;
     }
 
     private boolean updateBookmarkFocus()
     {
         if (mBookmarkFocus != null) {
-            hasChanges = !(mBookmarkFocus.getName().equals(ViewUtil.toString(mucNameField))
-                    && mBookmarkFocus.getNickname().toString().equals(ViewUtil.toString(nicknameField))
-                    && mBookmarkFocus.getPassword().equals(ViewUtil.toString(mPasswordField))
-                    && mBookmarkFocus.isAutoJoin() == mAutoJoin.isChecked()
-                    && mBookmarkFocus.isBookmark() == mBookmark.isChecked());
+            String nickName = (mBookmarkFocus.getNickname() != null) ? mBookmarkFocus.getNickname().toString() : null;
+            hasChanges = !(isEqual(mBookmarkFocus.getName(), ViewUtil.toString(mucNameField))
+                    && isEqual(nickName, ViewUtil.toString(nicknameField))
+                    && isEqual(mBookmarkFocus.getPassword(), ViewUtil.toString(mPasswordField))
+                    && (mBookmarkFocus.isAutoJoin() == mAutoJoin.isChecked()
+                    && (mBookmarkFocus.isBookmark() == mBookmark.isChecked())));
 
             // Timber.w("Fields have changes: %s", hasChanges);
             if (hasChanges) {
@@ -414,6 +418,20 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
             }
         }
         return true;
+    }
+
+    /**
+     * Compare two strings if they are equal. Must check for null before compare
+     *
+     * @param oldStr exiting string value
+     * @param newStr newly edited string
+
+     * @return true is both are equal
+     */
+    private boolean isEqual(String oldStr, String newStr)
+    {
+        return (TextUtils.isEmpty(oldStr) && TextUtils.isEmpty(newStr))
+                || ((oldStr != null) && oldStr.equals(newStr));
     }
 
     /**
@@ -502,53 +520,4 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         }
         return success;
     }
-
-//    private ChatRoomWrapper createChatRoom(ProtocolProviderService pps, BookmarkConference bookmarkConference)
-//    {
-//        String chatRoomID = bookmarkConference.getJid().toString();
-//        String nickName = bookmarkConference.getNickname().toString();
-//        String password = bookmarkConference.getPassword();
-//        Collection<String> contacts = new ArrayList<>();
-//        String reason = "Let's chat";
-//        boolean createNew = false;
-//
-//        // create new if chatRoom does not exist
-//        ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoomID(chatRoomID, pps);
-//        if (chatRoomWrapper == null) {
-//            createNew = true;
-//            chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
-//                    reason, true, false, false);
-//            // In case the protocol failed to create a chat room (null), then return without open the chat room.
-//            if (chatRoomWrapper == null) {
-//                aTalkApp.showToastMessage(R.string.service_gui_CREATE_CHAT_ROOM_ERROR, chatRoomID);
-//                return null;
-//            }
-//
-//            ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
-//
-//            // Allow to remove new chatRoom if join failed
-//            if (AndroidGUIActivator.getConfigurationService()
-//                    .getBoolean(MUCService.REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
-//                final ChatRoomWrapper crWrapper = chatRoomWrapper;
-//
-//                chatRoomWrapper.addPropertyChangeListener(evt -> {
-//                    if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP)) {
-//                        return;
-//                    }
-//
-//                    // if we failed for some reason, then close and remove the room
-//                    AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
-//                    AndroidGUIActivator.getMUCService().removeChatRoom(crWrapper);
-//                });
-//            }
-//        }
-//        if (!createNew) {
-//            // Set chatRoom openAutomatically on_activity
-//            // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
-//            mucService.joinChatRoom(chatRoomWrapper, nickName, password.getBytes());
-//            Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-//            mParent.startActivity(chatIntent);
-//        }
-//        return chatRoomWrapper;
-//    }
 }

@@ -154,7 +154,7 @@ public class InfoRetriever
             return result;
         }
 
-        String msg = "Unable to load details for contact " + bareJid + " exception: ";
+        String errMessage = "Unable to load details for contact " + bareJid + "; Exception: ";
         String tmp;
         tmp = checkForFullName(card);
         if (tmp != null)
@@ -189,7 +189,7 @@ public class InfoRetriever
                     DateFormat dateFormatShort = new SimpleDateFormat(BDAY_FORMAT_SHORT, Locale.US);
                     birthDate = dateFormatShort.parse(tmp);
                 } catch (ParseException e) {
-                    Timber.w("%s %s",msg, ex.getMessage());
+                    Timber.w("%s %s",errMessage, ex.getMessage());
                 }
             }
 
@@ -337,7 +337,7 @@ public class InfoRetriever
                 result.add(new URLDetail("URL", new URL(tmp)));
         } catch (MalformedURLException ex) {
             result.add(new URLDetail("URL", tmp));
-            Timber.w("%s %s", msg, ex.getMessage());
+            Timber.w("%s %s", errMessage, ex.getMessage());
         }
 
         retrievedDetails.put(bareJid, result);

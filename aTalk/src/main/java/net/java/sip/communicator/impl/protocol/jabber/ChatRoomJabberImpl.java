@@ -5,7 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import android.os.*;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.TextUtils;
 
@@ -21,6 +22,7 @@ import org.atalk.android.gui.chat.CaptchaDialog;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.util.StringUtils;
@@ -29,7 +31,6 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
@@ -52,7 +53,6 @@ import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
-import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -888,10 +888,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         Message sendMessage = new Message();
 
         if (IMessage.ENCODE_HTML == message.getMimeType()) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-                sendMessage.setBody(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
-            else
-                sendMessage.setBody(Html.fromHtml(content));
+            sendMessage.setBody(Html.fromHtml(content));
 
             // Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
             // Also carbon messages may send to buddy on difference clients with different capabilities
@@ -945,28 +942,33 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     public void sendMessage(IMessage message, OmemoManager omemoManager)
     {
+        EntityBareJid entityBareJid = mMultiUserChat.getRoom();
         String msgContent = message.getContent();
-        OmemoMessage.Sent encryptedMessage;
         String errMessage = null;
 
-        /*
-         * Temporary comment out to support lightweight text markup chat message for OMEMO
-         * Send html tags in OMEMO encrypted body
-         */
-        // OMEMO message content will strip off any html tags info => XHTML not supported
-//        if (IMessage.ENCODE_HTML == message.getMimeType()) {
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-//                msgContent = Html.fromHtml(msgContent, Html.FROM_HTML_MODE_LEGACY).toString();
-//            else
-//                msgContent = Html.fromHtml(msgContent).toString();
-//        }
-
         try {
-            encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-            Message sendMessage = encryptedMessage.asMessage(this.getIdentifier());
+            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
+            Message sendMessage = encryptedMessage.asMessage(entityBareJid);
+
+            if (IMessage.ENCODE_HTML == message.getMimeType()) {
+                String xhtmlBody = encryptedMessage.getElement().toXML().toString();
+                XHTMLText htmlBody = new XHTMLText("", "us").append(xhtmlBody).appendCloseBodyTag();
+
+                // OMEMO normal body message content will strip off any html tags info
+                msgContent = Html.fromHtml(msgContent).toString();
+
+                encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
+                sendMessage = encryptedMessage.asMessage(entityBareJid);
+
+                // Add the XHTML text to the message
+                XHTMLManager.addBody(sendMessage, htmlBody);
+            }
+
+            // proceed to send message if no exceptions.
+            // sendMessage.setStanzaId(message.getMessageUID());
             mMultiUserChat.sendMessage(sendMessage);
 
-            // message delivered for own outgoing message view display
+            // Delivered message for own outgoing message view display
             message.setServerMsgId(sendMessage.getStanzaId());
             message.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
             ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
@@ -1958,30 +1960,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             IMessage newMessage = createMessage(msgBody, encType, null);
 
             // check if the message is available in xhtml
-            if (XHTMLManager.isXHTMLMessage(message)) {
-                XHTMLExtension xhtmlExt = (XHTMLExtension) message.getExtension(XHTMLExtension.NAMESPACE);
-
-                // parse all bodies
-                List<CharSequence> bodies = xhtmlExt.getBodies();
-                StringBuilder messageBuff = new StringBuilder();
-                for (CharSequence body : bodies) {
-                    messageBuff.append(body);
-                }
-
-                if (messageBuff.length() > 0) {
-                    // we remove body tags around message cause their end body tag is breaking the
-                    // visualization as html in the UI
-                    String receivedMessage = messageBuff.toString()
-                            // removes <body> start tag
-                            .replaceAll("<[bB][oO][dD][yY].*?>", "")
-                            // removes </body> end tag
-                            .replaceAll("</[bB][oO][dD][yY].*?>", "");
-
-                    // for some reason &apos; is not rendered correctly from our ui, lets use its
-                    // equivalent. Other similar chars(< > & ") seem ok.
-                    receivedMessage = receivedMessage.replaceAll("&apos;", "&#39;");
-                    newMessage = createMessage(receivedMessage, IMessage.ENCODE_HTML, null);
-                }
+            String xhtmString = XhtmlUtil.getXhtmlExtension(message);
+            if (xhtmString != null) {
+                newMessage = createMessage(xhtmString, IMessage.ENCODE_HTML, null);
             }
             newMessage.setRemoteMsgId(message.getStanzaId());
 

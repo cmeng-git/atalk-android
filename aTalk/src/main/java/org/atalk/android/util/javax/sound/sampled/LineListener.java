@@ -1,32 +1,9 @@
 /*
  * Copyright (c) 1999, 2002, Oracle and/or its affiliates. All rights reserved.
  * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 package org.atalk.android.util.javax.sound.sampled;
-
-
-
 /**
  * Instances of classes that implement the <code>LineListener</code> interface can register to
  * receive events when a line's status changes.
@@ -65,4 +42,4 @@ public interface LineListener extends java.util.EventListener {
      */
     public void update(LineEvent event);
 
-} // interface LineListener
+}

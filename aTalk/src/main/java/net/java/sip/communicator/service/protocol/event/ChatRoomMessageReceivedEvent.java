@@ -13,14 +13,13 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import android.net.Uri;
-
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.persistance.FileBackend;
 
 import java.util.Date;
 import java.util.EventObject;
@@ -87,9 +86,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     {
         super(source);
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
-        if (message.getContent().matches("(?s)^aesgcm:.*|^http[s]:.*")) {
-            Uri uri = Uri.parse(message.getContent());
-            if (uri.getLastPathSegment() != null)
+        if (FileBackend.isHttpFileDnLink(message.getContent())) {
                 eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
         }
 

@@ -12,6 +12,6 @@
         android:cacheColorHint="@color/white"
         android:choiceMode="singleChoice"
         android:divider="@null"
-        android:dividerHeight="0dip"
+        android:dividerHeight="0dp"
         android:groupIndicator="@null" />
 </LinearLayout>

@@ -24,12 +24,9 @@ import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.*;
 
-import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
@@ -38,6 +35,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.model.*;
+import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
@@ -139,6 +137,9 @@ public class ChatRoomListFragment extends OSGiFragment
     public void onResume()
     {
         super.onResume();
+        if (chatRoomListView == null)
+            return;
+
         chatRoomListView.setAdapter(getChatRoomListAdapter());
 
         // Attach ChatRoomProvider  expand memory
@@ -211,7 +212,6 @@ public class ChatRoomListFragment extends OSGiFragment
         SearchManager searchManager = (SearchManager) aTalkApp.getGlobalContext().getSystemService(Context.SEARCH_SERVICE);
         mSearchItem = menu.findItem(R.id.search);
 
-        // OnActionExpandListener not supported prior API 14
         mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
         {
             @Override
@@ -393,7 +393,8 @@ public class ChatRoomListFragment extends OSGiFragment
     public void onCloseChat(ChatPanel closedChat)
     {
         ChatSessionManager.removeActiveChat(closedChat);
-        chatRoomListAdapter.notifyDataSetChanged();
+        if (chatRoomListAdapter != null)
+            chatRoomListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -402,7 +403,8 @@ public class ChatRoomListFragment extends OSGiFragment
     public void onCloseAllChats()
     {
         ChatSessionManager.removeAllActiveChats();
-        chatRoomListAdapter.notifyDataSetChanged();
+        if (chatRoomListAdapter != null)
+            chatRoomListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -456,7 +458,16 @@ public class ChatRoomListFragment extends OSGiFragment
             AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, null);
 
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-            startActivity(chatIntent);
+            if (chatIntent != null) {
+                Intent shareIntent = ShareActivity.getShareIntent(chatIntent);
+                if (shareIntent != null) {
+                    chatIntent = shareIntent;
+                }
+                startActivity(chatIntent);
+            }
+            else {
+                Timber.w("Failed to start chat with %s", chatRoomWrapper);
+            }
         }
     }
 

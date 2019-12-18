@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * A listener that will be notified of changes in the presence of a participant in a particular
@@ -28,7 +28,7 @@ public interface AdHocChatRoomParticipantPresenceListener extends EventListener
 	 * particular ad-hoc chat room has occurred. Changes may include participant being join, left.
 	 *
 	 * @param evt
-	 *        the <tt>AdHocChatRoomParticipantPresenceChangeEvent</tt> instance containing the
+     *        the <tt>AdHocChatRoomParticipantPresenceChangeEvent</tt> instance containing the
 	 *        source chat room and type, and reason of the presence change
 	 */
 	void participantPresenceChanged(AdHocChatRoomParticipantPresenceChangeEvent evt);

@@ -15,13 +15,14 @@
  */
 package net.java.sip.communicator.service.provdisc.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * Listener that will be notified when a provisioning URL is retrieved by the
  * <tt>ProvisioningDiscoveryService</tt>.
  *
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public interface DiscoveryListener extends EventListener
 {
@@ -30,5 +31,5 @@ public interface DiscoveryListener extends EventListener
      *
      * @param event provisioning event
      */
-    public void notifyProvisioningURL(DiscoveryEvent event);
+    void notifyProvisioningURL(DiscoveryEvent event);
 }

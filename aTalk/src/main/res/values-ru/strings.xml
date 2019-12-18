@@ -49,6 +49,7 @@
     <string name="in_call_with">При вызове</string>
     <string name="network">Сеть</string>
     <string name="notification_setting">Настройки уведомлений&#8230;</string>
+    <string name="no_application_found_to_open_file">Не найдено приложения для открытия файла</string>
     <string name="password">пароль</string>
     <string name="service_gui_PASSWORD">Пароль:</string>
     <string name="reason_label">Причина:</string>
@@ -67,9 +68,13 @@
     <string name="attachOptionDialog_videoRecord">Захват видео</string>
     <string name="attachOptionDialog_shareFile">Поделиться файлом</string>
     <string name="chat_fileTransferButton">Открыть</string>
-    <string name="chat_message_del">Удалить сообщение</string>
+    <string name="chat_message_copy">копировать</string>
+    <string name="chat_message_delete">Удалить</string>
     <string name="chat_message_edit">Изменить</string>
-    <string name="chat_message_long_press_hint">Избегайте нажатия в области сообщений для операции выбора нескольких элементов</string>
+    <string name="chat_message_forward">Вперед…</string>
+    <string name="chat_message_long_press_hint">Не нажимайте в области сообщений для операции выбора нескольких элементов</string>
+    <string name="chat_message_quote">цитировать</string>
+    <string name="chat_message_reply">отвечать</string>
     <string name="chat_message_select_all">Выбрать все</string>
     <string name="chatRoom_Subject">Тема</string>
     <string name="choose_file_activity_title">Выберите файл</string>
@@ -134,6 +139,9 @@
     <string name="service_gui_CONTACT_INVALID">Выбранный контакт недействителен: %1$s</string>
     <string name="service_gui_Contacts">Контакты</string>
     <string name="service_gui_DONE">Готово</string>
+    <string name="service_gui_SHARE">Поделиться…</string>
+    <string name="service_gui_SHARE_TEXT">Поделиться текстом&#8230;</string>
+    <string name="service_gui_SHARE_FILE">Поделиться файлом&#8230;</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Автосоединение</string>
@@ -1516,7 +1524,7 @@
     <string name="phone_permission_denied_feedback">Функции телефона не будут доступны, пока вы не предоставите запрос на разрешение</string>
 
     <string name="storage_permission_denied_dialog_title">Запрос разрешения на хранение</string>
-    <string name="storage_permission_denied_feedback">Сохранение полученного содержимого во внешнем хранилище не будет разрешено, пока вы не предоставите запрос на разрешение</string>
+    <string name="storage_permission_denied_feedback">Сохранение отправленного и полученного содержимого в хранилище не будет разрешено, пока вы не предоставите запрос на разрешение</string>
 
     <string name="all_permission_denied_dialog_title">Запрос всех разрешений</string>
     <string name="all_permissions_denied_feedback">aTalk может работать некорректно или может иметь неожиданное поведение, поскольку некоторые службы были отклонены!\nЕсли вы выбрали опцию «Не разрешаете повторно», вам нужно перейти в Настройки Android -> APP INFO для aTalk, чтобы разрешить доступ к ресурсу</string>

@@ -13,6 +13,14 @@ import java.io.File;
 @GlideModule
 public class MyGlideApp extends AppGlideModule
 {
+    /**
+     * Display file as thumbnail preview if it is a media file
+     *
+     * @param viewHolder image preview holder
+     * @param file the image file
+     * @param isHistory History file image view is only a small preview
+     * @param isTypeMedia True if pre-determined mimeType from caller is a media file
+     */
     public static void loadImage(ImageView viewHolder, File file, Boolean isHistory)
     {
         if (!file.exists()) {

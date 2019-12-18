@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:paddingStart="6dip"
+            android:paddingStart="6dp"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
             tools:text="Mr. Firstname Lastname" />
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:paddingStart="12dip"
+            android:paddingStart="12dp"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:text="address@example.com" />

@@ -308,11 +308,11 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         String downloadPath = FileBackend.MEDIA_DOCUMENT;
         if (fileName.contains("voice-"))
             downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
-        else if (!StringUtils.isNullOrEmpty(mimeType)) {
+        else if (!StringUtils.isNullOrEmpty(mimeType) && !mimeType.startsWith("*")) {
             downloadPath = FileBackend.MEDIA + File.separator + mimeType.split("/")[0];
         }
 
-        File downloadDir = FileBackend.getaTalkStore(downloadPath);
+        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
         if (!downloadDir.exists() && !downloadDir.mkdirs()) {
             Timber.e("Could not create the download directory: %s", downloadDir.getAbsolutePath());
         }

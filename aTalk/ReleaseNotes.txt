@@ -1,5 +1,23 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.4 (1114)
+Author:         cmeng
+Upload Date:	12/18/2019
+- Add support for Share, Quote and Forward for both message and media contents
+- Preview media contents of attachments for user confirmation before sending
+- Extend check for proper file extension on media file sharing; rename media file with best guess extension if possible
+- Full XEP-0071: XHTML-IM implementation for Omemo messages in send and receive
+- Fix ChatRoomBookmarksDialog crashes due to null value in either old or newly edited string
+- All Links entered are sent in XHTML extension to avoid treated incorrectly as HTTP File Download by receiver;
+  Apply more checks on links sent from other clients, see FileBackEnd#isHttpFileDnLink.
+- Include all received media and outgoing tmp files for user optional deletion
+- Return chat view to the top of last deleted message group after message deletion
+- Enhance file handler and consolidate all user aTalk files into aTalk new directory structure
+- Must remove '/n' when the sent/received message contains markup text
+- OperationSetMultiUserChatJabberImpl/OperationSetBasicInstantMessagingJabberImpl#onOmemoMessageReceived
+  : Do not proceed to process omemo message (i.e. body is empty) if decryptedMessage.isKeyTransportMessage() is true
+
+=========================================================================
 Version:		2.1.3 (1113)
 Author:         cmeng
 Upload Date:	11/28/2019

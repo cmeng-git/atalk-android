@@ -30,6 +30,7 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.model.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
@@ -52,7 +53,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
     /**
      * Search options menu items.
      */
-    private MenuItem searchItem;
+    private MenuItem mSearchItem;
 
     /**
      * Contact list data model.
@@ -77,12 +78,12 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
     /**
      * Stores last clicked <tt>MetaContact</tt>; take care activity destroyed by OS.
      */
-    protected static MetaContact clickedContact;
+    protected static MetaContact mClickedContact;
 
     /**
      * Stores recently clicked contact group.
      */
-    private MetaContactGroup clickedGroup;
+    private MetaContactGroup mClickedGroup;
 
     /**
      * Contact list item scroll position.
@@ -132,6 +133,9 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
     public void onResume()
     {
         super.onResume();
+        if (contactListView == null)
+            return;
+
         contactListView.setAdapter(getContactListAdapter());
 
         // Attach contact groups expand memory
@@ -143,9 +147,10 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         contactListAdapter.filterData("");
 
         // Restore search state based on entered text
-        if (searchItem != null) {
-            SearchView searchView = (SearchView) searchItem.getActionView();
-            int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        if (mSearchItem != null) {
+            SearchView searchView = (SearchView) mSearchItem.getActionView();
+            int id = searchView.getContext().getResources()
+                    .getIdentifier("android:id/search_src_text", null, null);
             TextView textView = searchView.findViewById(id);
 
             filterContactList(textView.getText().toString());
@@ -164,8 +169,8 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         super.onPause();
 
         // Unbind search listener
-        if (searchItem != null) {
-            SearchView searchView = (SearchView) searchItem.getActionView();
+        if (mSearchItem != null) {
+            SearchView searchView = (SearchView) mSearchItem.getActionView();
             searchView.setOnQueryTextListener(null);
             searchView.setOnCloseListener(null);
         }
@@ -201,9 +206,9 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
 
         // Get the SearchView and set the search configuration
         SearchManager searchManager = (SearchManager) aTalkApp.getGlobalContext().getSystemService(Context.SEARCH_SERVICE);
-        this.searchItem = menu.findItem(R.id.search);
+        mSearchItem = menu.findItem(R.id.search);
 
-        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
+        mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
         {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item)
@@ -218,10 +223,11 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
             }
         });
 
-        SearchView searchView = (SearchView) searchItem.getActionView();
+        SearchView searchView = (SearchView) mSearchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 
-        int id = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        int id = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
         TextView textView = searchView.findViewById(id);
         textView.setTextColor(getResources().getColor(R.color.white));
         textView.setHintTextColor(getResources().getColor(R.color.white));
@@ -230,8 +236,8 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
 
     private void bindSearchListener()
     {
-        if (searchItem != null) {
-            SearchView searchView = (SearchView) searchItem.getActionView();
+        if (mSearchItem != null) {
+            SearchView searchView = (SearchView) mSearchItem.getActionView();
             SearchViewListener listener = new SearchViewListener();
             searchView.setOnQueryTextListener(listener);
             searchView.setOnCloseListener(listener);
@@ -312,11 +318,11 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         inflater.inflate(R.menu.contact_ctx_menu, menu);
 
         // Remembers clicked contact
-        clickedContact = ((MetaContact) contactListAdapter.getChild(group, child));
-        menu.setHeaderTitle(clickedContact.getDisplayName());
+        mClickedContact = ((MetaContact) contactListAdapter.getChild(group, child));
+        menu.setHeaderTitle(mClickedContact.getDisplayName());
 
         // Checks if close chat option should be visible for this contact
-        boolean closeChatVisible = ChatSessionManager.getActiveChat(clickedContact) != null;
+        boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedContact) != null;
         menu.findItem(R.id.close_chat).setVisible(closeChatVisible);
 
         // Close all chats option should be visible if chatList is not empty
@@ -328,9 +334,9 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         menu.findItem(R.id.erase_all_contact_chat_history).setVisible(false);
 
         // Checks if the re-request authorization item should be visible
-        Contact contact = clickedContact.getDefaultContact();
+        Contact contact = mClickedContact.getDefaultContact();
         if (contact == null) {
-            Timber.w("No default contact for: %s", clickedContact);
+            Timber.w("No default contact for: %s", mClickedContact);
             return;
         }
 
@@ -365,11 +371,11 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
      */
     private void createGroupCtxMenu(ContextMenu menu, MenuInflater inflater, int group)
     {
-        this.clickedGroup = (MetaContactGroup) contactListAdapter.getGroup(group);
-        menu.setHeaderTitle(clickedGroup.getGroupName());
+        mClickedGroup = (MetaContactGroup) contactListAdapter.getGroup(group);
 
         // Inflate contact list context menu
         inflater.inflate(R.menu.group_menu, menu);
+        menu.setHeaderTitle(mClickedGroup.getGroupName());
     }
 
     /**
@@ -379,7 +385,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
     public boolean onContextItemSelected(MenuItem item)
     {
         FragmentTransaction ft;
-        ChatPanel chatPanel = ChatSessionManager.getActiveChat(clickedContact);
+        ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedContact);
         switch (item.getItemId()) {
             case R.id.close_chat:
                 if (chatPanel != null)
@@ -389,7 +395,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
                 onCloseAllChats();
                 return true;
             case R.id.erase_contact_chat_history:
-                EntityListHelper.eraseEntityChatHistory(getContext(), clickedContact, null, null);
+                EntityListHelper.eraseEntityChatHistory(getContext(), mClickedContact, null, null);
                 return true;
             case R.id.erase_all_contact_chat_history:
                 EntityListHelper.eraseAllContactHistory(getContext());
@@ -398,22 +404,22 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
                 // Show rename contact dialog
                 ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
-                DialogFragment renameFragment = ContactRenameDialog.getInstance(clickedContact);
+                DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
                 renameFragment.show(ft, "renameDialog");
                 return true;
             case R.id.remove_contact:
-                EntityListHelper.removeEntity(clickedContact, chatPanel);
+                EntityListHelper.removeEntity(mClickedContact, chatPanel);
                 return true;
             case R.id.move_contact:
                 // Show move contact dialog
                 ft = getFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
-                DialogFragment newFragment = MoveToGroupDialog.getInstance(clickedContact);
+                DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
                 newFragment.show(ft, "moveDialog");
                 return true;
             case R.id.re_request_auth:
-                if (clickedContact != null)
-                    requestAuthorization(clickedContact.getDefaultContact());
+                if (mClickedContact != null)
+                    requestAuthorization(mClickedContact.getDefaultContact());
                 return true;
             case R.id.send_contact_file:
                 // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
@@ -423,10 +429,10 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
                 // attachOptionDialog.show();
                 return true;
             case R.id.remove_group:
-                EntityListHelper.removeMetaContactGroup(clickedGroup);
+                EntityListHelper.removeMetaContactGroup(mClickedGroup);
                 return true;
             case R.id.contact_info:
-                startContactInfoActivity(clickedContact);
+                startContactInfoActivity(mClickedContact);
                 return true;
             case R.id.contact_ctx_menu_exit:
                 return true;
@@ -572,7 +578,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
 
     public MetaContact getClickedContact()
     {
-        return clickedContact;
+        return mClickedContact;
     }
 
     /**
@@ -583,7 +589,12 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
     private void startChatActivity(Object descriptor)
     {
         Intent chatIntent = ChatSessionManager.getChatIntent(descriptor);
+
         if (chatIntent != null) {
+            Intent shareIntent = ShareActivity.getShareIntent(chatIntent);
+            if (shareIntent != null) {
+                chatIntent = shareIntent;
+            }
             startActivity(chatIntent);
         }
         else {

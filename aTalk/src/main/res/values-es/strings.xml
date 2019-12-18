@@ -53,6 +53,7 @@
     <string name="in_call_with">Llamando a </string>
     <string name="network">Red</string>
     <string name="notification_setting">Configuración de las notificaciones&#8230;</string>
+    <string name="no_application_found_to_open_file">No se ha encontrado ninguna aplicación para abrir el archivo</string>
     <string name="password">contraseña</string>
     <string name="service_gui_PASSWORD">Contraseña:</string>
     <string name="reason_label">Motivo:</string>
@@ -71,9 +72,13 @@
     <string name="attachOptionDialog_videoRecord">Grabar un vídeo</string>
     <string name="attachOptionDialog_shareFile">Compartir archivo</string>
     <string name="chat_fileTransferButton">Abrir</string>
-    <string name="chat_message_del">Borrar mensaje</string>
+    <string name="chat_message_copy">Dupdo</string>
+    <string name="chat_message_delete">Borrar</string>
     <string name="chat_message_edit">Editar</string>
+    <string name="chat_message_forward">Reenviar…</string>
     <string name="chat_message_long_press_hint">Evitar hacer clic dentro del área de mensajes para la operación de selección de varios items.</string>
+    <string name="chat_message_quote">Citar</string>
+    <string name="chat_message_reply">Responder</string>
     <string name="chat_message_select_all">Seleccionar todo</string>
     <string name="chatRoom_Subject">Tema</string>
     <string name="choose_file_activity_title">Elije un archivo</string>
@@ -138,6 +143,9 @@
     <string name="service_gui_CONTACT_INVALID">El contacto seleccionado no es válido: %1$s</string>
     <string name="service_gui_Contacts">Contactos</string>
     <string name="service_gui_DONE">¡Hecho!</string>
+    <string name="service_gui_SHARE">compartir…</string>
+    <string name="service_gui_SHARE_TEXT">Compartir texto&#8230;</string>
+    <string name="service_gui_SHARE_FILE">Recurso compartido de archivos&#8230;</string>
 
     <!-- Conference Chat -->
 	<string name="service_gui_AUTOJOIN">Unirse automáticamente</string>
@@ -1521,7 +1529,7 @@
     <string name="phone_permission_denied_feedback">Las funciones del teléfono no estarán disponibles hasta que otorgues la solicitud de permiso</string>
 
     <string name="storage_permission_denied_dialog_title">Solicitud de permiso de almacenamiento</string>
-    <string name="storage_permission_denied_feedback">No se permitirá guardar el contenido recibido en un almacenamiento externo hasta que concedas la solicitud de permiso.</string>
+    <string name="storage_permission_denied_feedback">No se permitirá guardar el contenido enviado y recibido en un almacenamiento hasta que concedas la solicitud de permiso.</string>
 
     <string name="all_permission_denied_dialog_title">Solicitar todos los permisos</string>
     <string name="all_permissions_denied_feedback">aTalk puede no funcionar correctamente o puede tener un comportamiento inesperado ya que algunos servicios han sido denegados! Si has seleccionado la opción "Don't ask again" (No preguntar de nuevo), debes ir a android Ajustes -> APP INFO para aTalk para habilitar el permiso de acceso a los recursos.</string>

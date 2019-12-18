@@ -277,7 +277,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     private static File createMediaVoiceFile()
     {
         File voiceFile = null;
-        File mediaDir = FileBackend.getaTalkStore(FileBackend.MEDIA_VOICE_SEND);
+        File mediaDir = FileBackend.getaTalkStore(FileBackend.MEDIA_VOICE_SEND, true);
         if (!mediaDir.exists() && !mediaDir.mkdirs()) {
             Timber.d("Fail to create Media voice directory!");
             return null;

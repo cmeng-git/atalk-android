@@ -28,7 +28,6 @@ import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.util.CollectionAdapter;
-import org.atalk.android.gui.util.event.EventListener;
 
 import java.util.*;
 

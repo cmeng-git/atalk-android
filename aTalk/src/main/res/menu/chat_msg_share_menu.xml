@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/chat_message_edit"
+        android:icon="@drawable/ic_action_edit_dark"
+        android:title="@string/chat_message_edit"
+        android:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/chat_message_quote"
+        android:icon="@drawable/ic_action_quote_dark"
+        android:title="@string/chat_message_quote"
+        android:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/chat_message_del"
+        android:icon="@drawable/ic_action_delete_dark"
+        android:title="@string/chat_message_delete"
+        android:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/chat_message_share"
+        android:icon="@drawable/ic_action_share_dark"
+        android:title="@string/service_gui_SHARE"
+        android:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/chat_message_forward"
+        android:icon="@drawable/ic_action_forward_dark"
+        android:title="@string/chat_message_forward"
+        android:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/chat_message_copy"
+        android:icon="@drawable/ic_action_copy_dark"
+        android:title="@string/chat_message_copy"
+        android:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/select_all"
+        android:icon="@drawable/ic_action_select_all_dark"
+        android:title="@string/chat_message_select_all"
+        android:showAsAction="ifRoom">
+    </item>
+
+</menu>

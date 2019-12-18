@@ -8,10 +8,10 @@
     <dimen name="between_padding">8dp</dimen>
     <dimen name="button_height">44dp</dimen>
     <dimen name="call_field_width">300dp</dimen>
-    <dimen name="chat_arrow_height">20dip</dimen>
-    <dimen name="chat_arrow_top">10dip</dimen>
+    <dimen name="chat_arrow_height">20dp</dimen>
+    <dimen name="chat_arrow_top">10dp</dimen>
     <dimen name="chat_avatar">40dp</dimen>
-    <dimen name="chat_text_margin">3dip</dimen>
+    <dimen name="chat_text_margin">3dp</dimen>
     <dimen name="contact_list_row_height">64dp</dimen>
     <dimen name="contact_list_group_row_height">30dp</dimen>
     <dimen name="contact_list_avatar_width">64dp</dimen>
@@ -25,6 +25,7 @@
     <dimen name="list_padding">10dp</dimen>
     <dimen name="login_field_width">400dp</dimen>
     <dimen name="margin_dialog">20dp</dimen>
+    <dimen name="media_preview_size">64dp</dimen>
     <dimen name="min_button_height">32dp</dimen>
     <dimen name="min_button_width">32dp</dimen>
     <dimen name="radian_gradient">300dp</dimen>

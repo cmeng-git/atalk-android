@@ -321,7 +321,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         File appOmemoDir = new File(appFilesDir, OMEMO_Store);
         File appXmlFP = new File(appRootDir, clFileName);
 
-        File atalkExportDir = FileBackend.getaTalkStore(FileBackend.EXPROT_DB);
+        File atalkExportDir = FileBackend.getaTalkStore(FileBackend.EXPROT_DB, true);
         try {
             // Clean up old contents before create new
             FileBackend.deleteRecursive(atalkExportDir);
