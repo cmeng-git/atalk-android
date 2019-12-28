@@ -69,6 +69,13 @@ public class JibriIq extends IQ
     static final String FAILURE_REASON_ATTR_NAME = "failure_reason";
 
     /**
+     * The name of the XML attribute which stores whether or not
+     * Jicofo should retry this request.  Used when the response
+     * indicates an error.
+     */
+    static final String SHOULD_RETRY_ATTR_NAME = "should_retry";
+
+    /**
      * The name of XML attribute which stores the stream id.
      */
     static final String STREAM_ID_ATTR_NAME = "streamid";
@@ -138,6 +145,13 @@ public class JibriIq extends IQ
      * to describe an 'unclean' to transition to off (e.g. 'error')
      */
     private FailureReason failureReason = null;
+
+    /**
+     * In the event of an error, this field denotes whether or not
+     * Jicofo should retry the request (for which this error response
+     * corresponds) with another Jibri.
+     */
+    private Boolean shouldRetry = null;
 
     /**
      * The ID of the stream which will be used to record the conference. The
@@ -273,7 +287,8 @@ public class JibriIq extends IQ
      *
      * @return the JSON-encoded application data
      */
-    public String getAppData() {
+    public String getAppData()
+    {
         return appData;
     }
 
@@ -292,7 +307,8 @@ public class JibriIq extends IQ
      *
      * @param appData a JSON-encoded string containing arbitrary application data
      */
-    public void setAppData(String appData) {
+    public void setAppData(String appData)
+    {
         this.appData = appData;
     }
 
@@ -316,6 +332,16 @@ public class JibriIq extends IQ
     public void setRoom(EntityBareJid room)
     {
         this.room = room;
+    }
+
+    /**
+     * Whether or not this IQ represents a failure from Jibri
+     *
+     * @return true if it represents failure, false otherwise
+     */
+    public boolean isFailure()
+    {
+        return this.failureReason != null;
     }
 
     /**
@@ -343,6 +369,13 @@ public class JibriIq extends IQ
         xml.optAttribute(SIP_ADDRESS_ATTR_NAME, sipAddress);
         xml.optAttribute(SESSION_ID_ATTR_NAME, sessionId);
         xml.optAttribute(FAILURE_REASON_ATTR_NAME, failureReason);
+
+        if (failureReason != null && failureReason != FailureReason.UNDEFINED) {
+            if (shouldRetry == null) {
+                throw new RuntimeException("shouldRetry field must be filled out when a failure reason is set");
+            }
+            xml.attribute(SHOULD_RETRY_ATTR_NAME, shouldRetry);
+        }
         xml.optAttribute(APP_DATA_ATTR_NAME, appData);
 
         xml.setEmptyElement();
@@ -412,6 +445,16 @@ public class JibriIq extends IQ
     public FailureReason getFailureReason()
     {
         return this.failureReason;
+    }
+
+    public void setShouldRetry(Boolean shouldRetry)
+    {
+        this.shouldRetry = shouldRetry;
+    }
+
+    public Boolean getShouldRetry()
+    {
+        return this.shouldRetry;
     }
 
     public static JibriIq createResult(JibriIq request, String sessionId)

@@ -222,7 +222,8 @@ public class MUCServiceImpl extends MUCService
     public void joinChatRoom(ChatRoom chatRoom, String nickname, byte[] password)
     {
         ChatRoomWrapper chatRoomWrapper = getChatRoomWrapperByChatRoom(chatRoom, true);
-        this.joinChatRoom(chatRoomWrapper, nickname, password);
+        if (chatRoomWrapper != null)
+            this.joinChatRoom(chatRoomWrapper, nickname, password);
     }
 
     /**
@@ -521,15 +522,21 @@ public class MUCServiceImpl extends MUCService
                 }
                 else {
                     startChatActivity(chatRoomWrapper);
-                    if (password != null && password.length > 0)
-                        chatRoom.joinAs(nickName, password);
-                    else if (nickName != null)
-                        chatRoom.joinAs(nickName);
-                    else
-                        chatRoom.join();
+                    /*
+                     * Retry until Exception or cancelled by user; join chatRoom captcha challenge from server
+                     * @see ChatRoomJabberImpl#joinAs(),
+                     */
+                    boolean retry = true;
+                    while (retry) {
+                        if (password != null && password.length > 0)
+                            retry = chatRoom.joinAs(nickName, password);
+                        else if (nickName != null)
+                            retry = chatRoom.joinAs(nickName);
+                        else
+                            retry = chatRoom.join();
+                    }
                     done(JOIN_SUCCESS_PROP, "");
                 }
-
             } catch (OperationFailedException e) {
                 Timber.log(TimberLog.FINER, e, "Failed to join: %s or change chatRoom attributes: %s; %s",
                         chatRoom.getName(), nickName, subject);
@@ -694,8 +701,10 @@ public class MUCServiceImpl extends MUCService
         ChatRoomWrapper chatRoomWrapper = chatRoomList.findChatRoomWrapperFromChatRoom(chatRoom);
         if ((chatRoomWrapper == null) && create) {
             ChatRoomProviderWrapper parentProvider = chatRoomList.findServerWrapperFromProvider(chatRoom.getParentProvider());
-            chatRoomWrapper = new ChatRoomWrapperImpl(parentProvider, chatRoom);
-            chatRoomList.addChatRoom(chatRoomWrapper);
+            if (parentProvider != null) {
+                chatRoomWrapper = new ChatRoomWrapperImpl(parentProvider, chatRoom);
+                chatRoomList.addChatRoom(chatRoomWrapper);
+            }
         }
         return chatRoomWrapper;
     }

@@ -26,8 +26,6 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
-import org.atalk.persistance.FileBackend;
-import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -58,7 +56,7 @@ public class FileReceiveConversation extends FileTransferConversation
      * @param cPanel the chat panel
      * @param opSet the <tt>OperationSetFileTransfer</tt>
      * @param request the <tt>IncomingFileTransferRequest</tt> associated with this component
-     * @param date the date
+     * @param date the received file date
      */
     // Constructor used by ChatFragment to start handle ReceiveFileTransferRequest
     public static FileReceiveConversation newInstance(ChatFragment cPanel, String sendTo,
@@ -100,7 +98,7 @@ public class FileReceiveConversation extends FileTransferConversation
                 showThumbnail(thumbnail);
             }
 
-            mXferFile = createFile(fileTransferRequest);
+            mXferFile = createOutFile(fileTransferRequest);
             messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
             messageViewHolder.acceptButton.setOnClickListener(v -> {
                 messageViewHolder.titleLabel.setText(
@@ -244,40 +242,16 @@ public class FileReceiveConversation extends FileTransferConversation
      *
      * @return the local created file to download.
      */
-    private File createFile(IncomingFileTransferRequest fileTransferRequest)
+    private File createOutFile(IncomingFileTransferRequest fileTransferRequest)
     {
-        String incomingFileName = fileTransferRequest.getFileName();
+        String fileName = fileTransferRequest.getFileName();
         String mimeType = fileTransferRequest.getMimeType();
-
-        String downloadPath = FileBackend.MEDIA_DOCUMENT;
-        if (incomingFileName.contains("voice-"))
-            downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
-        else if (!StringUtils.isNullOrEmpty(mimeType) && !mimeType.startsWith("*")) {
-            downloadPath = FileBackend.MEDIA + File.separator + mimeType.split("/")[0];
-        }
-
-        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
-        if (!downloadDir.exists() && !downloadDir.mkdirs()) {
-            Timber.e("Could not create the download directory: %s", downloadDir.getAbsolutePath());
-        }
-
-        mXferFile = new File(downloadDir, incomingFileName);
-        // If a file with the given name already exists, add an index to the file name.
-        int index = 0;
-        int filenameLength = incomingFileName.lastIndexOf(".");
-        if (filenameLength == -1) {
-            filenameLength = incomingFileName.length();
-        }
-        while (mXferFile.exists()) {
-            String newFileName = incomingFileName.substring(0, filenameLength) + "-"
-                    + ++index + incomingFileName.substring(filenameLength);
-            mXferFile = new File(downloadDir, newFileName);
-        }
+        setTransferFilePath(fileName, mimeType);
 
         // Change the file name to the name we would use on the local file system.
-        if (!mXferFile.getName().equals(incomingFileName)) {
-            String fileName = getFileLabel(mXferFile.getName(), fileTransferRequest.getFileSize());
-            messageViewHolder.fileLabel.setText(fileName);
+        if (!mXferFile.getName().equals(fileName)) {
+            String label = getFileLabel(mXferFile.getName(), fileTransferRequest.getFileSize());
+            messageViewHolder.fileLabel.setText(label);
         }
         return mXferFile;
     }

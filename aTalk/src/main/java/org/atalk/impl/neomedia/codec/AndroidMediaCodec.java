@@ -45,11 +45,6 @@ public class AndroidMediaCodec extends AbstractCodec2
     private static final String[] FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES;
 
     /**
-     * The mime type of H.263-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
-     */
-    private static final String H263_MEDIA_CODEC_TYPE = "video/3gpp";
-
-    /**
      * The mime type of H.264-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
      */
     private static final String H264_MEDIA_CODEC_TYPE = "video/avc";
@@ -88,7 +83,7 @@ public class AndroidMediaCodec extends AbstractCodec2
          * (data) in FMJ's terms. MediaCodec is defined in its own (Android) terms. Make it possible
          * to translate between the two domains of terms.
          */
-        FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES = new String[]{Constants.H263P, H263_MEDIA_CODEC_TYPE,
+        FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES = new String[]{
                 Constants.H264, H264_MEDIA_CODEC_TYPE, Constants.VP8, VP8_MEDIA_CODEC_TYPE};
         PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS = new int[]{FFmpeg.PIX_FMT_NV12,
                 MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar};

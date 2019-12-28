@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.text.Html;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
@@ -37,8 +38,6 @@ import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.muc.*;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
@@ -85,8 +84,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * The multi user chat smack object that we encapsulate in this room.
      */
     private MultiUserChat mMultiUserChat;
-
-    private ChatStateManager chatStateManager;
 
     /**
      * Listeners that will be notified of changes in member status in the room such as member
@@ -142,9 +139,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private final Hashtable<Resourcepart, ChatRoomMember> banList = new Hashtable<>();
 
     /**
-     * The ResoucePart of this chat room local user participant i.e.NickName.
+     * The Resouce Part of this chat room local user participant i.e.NickName.
      */
     private Resourcepart mNickName;
+
+    /**
+     * The password use during join room
+     */
+    private byte[] mPassword;
 
     /**
      * The subject of this chat room. Keeps track of the subject changes.
@@ -224,7 +226,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         mMultiUserChat = multiUserChat;
         mProvider = provider;
         isChatStateSupported = (mProvider.getOperationSet(OperationSetChatStateNotifications.class) != null);
-        chatStateManager = ChatStateManager.getInstance(mProvider.getConnection());
+        ChatStateManager chatStateManager = ChatStateManager.getInstance(mProvider.getConnection());
 
         this.opSetMuc = (OperationSetMultiUserChatJabberImpl) provider.getOperationSet(OperationSetMultiUserChat.class);
         this.oldSubject = multiUserChat.getSubject();
@@ -285,9 +287,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void onResult(int state)
     {
         mCaptchaState = state;
-        // Give user a second chance to reply to captcha challenge via webLink
-        if (state == CaptchaDialog.cancel)
+        if (state == CaptchaDialog.cancel) {
+            String errMsg = aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED, getName(), mNickName);
+            MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR), errMsg);
+        }
+        else {
+            // Give user a second chance to reply to captcha challenge via webLink
             messageListener.processMessage(sMessage);
+        }
     }
 
     /**
@@ -574,10 +581,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    public void join()
+    public boolean join()
             throws OperationFailedException
     {
-        joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mProvider));
+        return joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mProvider));
     }
 
     /**
@@ -586,10 +593,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param password the password to use when authenticating on the chatRoom.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    public void join(byte[] password)
+    public boolean join(byte[] password)
             throws OperationFailedException
     {
-        joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mProvider), password);
+        return joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mProvider), password);
     }
 
     /**
@@ -599,10 +606,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param nickname the nickname can be jid or just nick.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    public void joinAs(String nickname)
+    public boolean joinAs(String nickname)
             throws OperationFailedException
     {
-        this.joinAs(nickname, null);
+        return joinAs(nickname, null);
     }
 
     /**
@@ -613,10 +620,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param password a password necessary to authenticate when joining the room.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    public void joinAs(String nickname, byte[] password)
+    public boolean joinAs(final String nickname, final byte[] password)
             throws OperationFailedException
     {
         assertConnected();
+        boolean retry = true;
         String errorMessage = aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED, getName(), nickname);
 
         // parseLocalPart or take nickname as it to join chatRoom
@@ -645,32 +653,40 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // unblock all conference event UI display on received own <presence/> stanza e.g. participants' <presence/> etc
             mucOwnPresenceReceived = true;
             opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
+            retry = false;
         } catch (XMPPErrorException ex) {
             StanzaError xmppError = ex.getStanzaError();
-            errorMessage += "\n" + ex.getMessage() + "\n";
+            errorMessage += "\n" + ex.getMessage();
             if (xmppError == null) {
                 Timber.e(ex, "%s", errorMessage);
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
             else if (xmppError.getCondition().equals(Condition.not_authorized)) {
-                Timber.e(ex, "%s", errorMessage);
+                Timber.e("Join room exception:\n%s", errorMessage);
                 if (mCaptchaState == CaptchaDialog.unknown) {
-                    errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD);
+                    errorMessage += "\n" + aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD);
                     throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
                 }
-                else {
-                    errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED);
-                    throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
+                else if (mCaptchaState == CaptchaDialog.failed) {
+                    // Allow user retry, do not throw Exception back to caller.
+                    // errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED);
+                    // throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
+                    aTalkApp.showToastMessage(errorMessage);
+                    retry = true;
+                }
+                else if (mCaptchaState == CaptchaDialog.cancel) {
+                    // To abort retry by caller on user cancel captcha challenge request
+                    retry = false;
                 }
             }
             else if (xmppError.getCondition().equals(Condition.registration_required)) {
                 String errText = xmppError.getDescriptiveText();
                 if (TextUtils.isEmpty(errText))
-                    errorMessage += aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
+                    errorMessage += "\n" + aTalkApp.getResString(R.string.service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION);
                 else
-                    errorMessage += errText;
+                    errorMessage += "\n" + errText;
+
                 Timber.e(ex, "%s", errorMessage);
-                // initRegistrationRequest();
                 throw new OperationFailedException(errorMessage, OperationFailedException.REGISTRATION_REQUIRED, ex);
             }
             else {
@@ -678,8 +694,15 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
         } catch (Throwable ex) {
-            Timber.e(ex, "%s", errorMessage);
-            if (mCaptchaState == CaptchaDialog.unknown) {
+            Timber.e("%s: %s", errorMessage, ex.getMessage());
+            if ((ex instanceof SmackException.NoResponseException) && (mCaptchaState == CaptchaDialog.cancel)) {
+                // Ignore server response timeout if user has canceled captcha challenge request
+                // - likely not get call as user cancel is implemented by sending empty reply to cancel smack delay
+                Timber.d("Join room - User canceled (Ignore NoResponseException)");
+                // To abort retry by caller
+                retry = false;
+            }
+            else if (mCaptchaState == CaptchaDialog.unknown) {
                 errorMessage = ex.getMessage();
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
@@ -694,6 +717,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         } finally {
             mProvider.getConnection().setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
         }
+        return retry;
     }
 
     //    /**
@@ -2303,8 +2327,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         Form smackConfigForm;
         try {
             smackConfigForm = mMultiUserChat.getConfigurationForm();
-            this.configForm = new ChatRoomConfigurationFormJabberImpl(mMultiUserChat,
-                    smackConfigForm);
+            this.configForm = new ChatRoomConfigurationFormJabberImpl(mMultiUserChat, smackConfigForm);
         } catch (XMPPErrorException e) {
             if (e.getStanzaError().getCondition().equals(Condition.forbidden))
                 throw new OperationFailedException(
@@ -2333,21 +2356,25 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Determines whether this chat room should be stored in the configuration file or not. If the
      * chat room is persistent it still will be shown after a restart in the chat room list. A
-     * non-persistent chat room will be only in the chat room list until the the program is running.
+     * non-persistent chat room will only be in the chat room list until the the program is running.
      *
      * @return true if this chat room is persistent, false otherwise
      */
     public boolean isPersistent()
     {
         boolean persistent = false;
-        EntityBareJid roomName = mMultiUserChat.getRoom();
+        EntityBareJid room = mMultiUserChat.getRoom();
         try {
             // Do not use getRoomInfo, as it has bug and throws NPE
-            DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(mProvider.getConnection()).discoverInfo(roomName);
-            if (info != null)
-                persistent = info.containsFeature("muc_persistent");
+//            DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(mProvider.getConnection()).discoverInfo(room);
+//            if (info != null)
+//                persistent = info.containsFeature("muc_persistent");
+
+            RoomInfo roomInfo = MultiUserChatManager.getInstanceFor(mProvider.getConnection()).getRoomInfo(room);
+            persistent = roomInfo.isPersistent();
+
         } catch (Exception ex) {
-            Timber.w("could not get persistent state for room '%s':%s", roomName, ex.getMessage());
+            Timber.w("could not get persistent state for room '%s':%s", room, ex.getMessage());
         }
         return persistent;
     }

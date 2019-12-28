@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.plugin.errorhandler.ExceptionHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

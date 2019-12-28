@@ -1,5 +1,26 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.5 (1115)
+Author:         cmeng
+Upload Date:	12/28/2019
+- Rename share intent to aTalk and setCustomView() for ShareActivity actionBar; android uses activity label name for share intend.
+- Improve join chatRoom captcha challenge request handling and allow user retry on incorrect entry
+- Improve AEC effectiveness: see AudioTrackRenderer and DataSource#configureEffects()
+  must set audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION)
+- Cleanup ZrtpInfoDialog Cipher info has multiple string formats specified - incorrect display.
+- Must invalidate views in ChatRoomListAdapter after roomList has been updated, otherwise problem in Note-10 with zero item in list at time
+- Fix empty password in AndroidSecurityAuthority crashes system
+- Use small font for actionBar sub-title to allow more text characters display
+- Keep a reference copy of the last fetched activity in Contact to minimize network access
+- Cleanup FileHttpDownloadConversation in tmp and output files handling; use common setTransferFilePath() routine
+- Remove duplicate 'Audio codecs' settings in 'Expert settings'
+- Disable videoBridge feature init until actual implementation
+- update jitsi xmpp extensions jibri and colibri class
+- Update libjitsi to source dated 20191220
+  - Remove h263 codec support and clean up the source
+  - reverseTransformPacket - skip packet decryption to save resources when it is not needed
+
+=========================================================================
 Version:		2.1.4 (1114)
 Author:         cmeng
 Upload Date:	12/18/2019
@@ -683,6 +704,7 @@ Upload Date:	07/31/2018
 - Disable media services when android OS aborts ffmpeg lib loading (Text-Relocation-Enforced-for-API-level-23)
 - see (https://android.googlesource.com/platform/bionic/+/master/android-changes-for-ndk-developers.md#Text-Relocations-Enforced-for-API-level-23)
 - Update Jitsi sources to jitsi-smack-4.2 (dated 20180720)
+- Improve chatroom join captcha challege and allow retry on entry error.
 
 =========================================================================
 Version:		1.4.3 (1043)

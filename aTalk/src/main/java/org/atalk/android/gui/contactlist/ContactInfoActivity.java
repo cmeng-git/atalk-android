@@ -16,7 +16,7 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;

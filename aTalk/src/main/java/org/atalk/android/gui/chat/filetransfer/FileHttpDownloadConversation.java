@@ -20,7 +20,6 @@ import android.app.DownloadManager;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.view.*;
 
@@ -297,42 +296,15 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      *
      * @return the local created file to save to.
      */
-    private File createOutFile(File file)
+    private File createOutFile(File infile)
     {
-        String fileName = file.getName();
-        long fileSize = file.length();
-
-        Uri uri = Uri.parse(file.getName());
-        String mimeType = FileBackend.getMimeType(getActivity(), uri);
-
-        String downloadPath = FileBackend.MEDIA_DOCUMENT;
-        if (fileName.contains("voice-"))
-            downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
-        else if (!StringUtils.isNullOrEmpty(mimeType) && !mimeType.startsWith("*")) {
-            downloadPath = FileBackend.MEDIA + File.separator + mimeType.split("/")[0];
-        }
-
-        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
-        if (!downloadDir.exists() && !downloadDir.mkdirs()) {
-            Timber.e("Could not create the download directory: %s", downloadDir.getAbsolutePath());
-        }
-
-        mXferFile = new File(downloadDir, fileName);
-        // If a file with the given name already exists, add an index to the file name.
-        int index = 0;
-        int filenameLength = fileName.lastIndexOf(".");
-        if (filenameLength == -1) {
-            filenameLength = fileName.length();
-        }
-        while (mXferFile.exists()) {
-            String newFileName = fileName.substring(0, filenameLength) + "-"
-                    + ++index + fileName.substring(filenameLength);
-            mXferFile = new File(downloadDir, newFileName);
-        }
+        String fileName = infile.getName();
+        String mimeType = FileBackend.getMimeType(getActivity(), Uri.fromFile(infile));
+        setTransferFilePath(fileName, mimeType);
 
         // Change the file name to the name we would use on the local file system.
         if (!mXferFile.getName().equals(fileName)) {
-            String label = getFileLabel(mXferFile.getName(), fileSize);
+            String label = getFileLabel(mXferFile.getName(), infile.length());
             messageViewHolder.fileLabel.setText(label);
         }
         return mXferFile;
@@ -360,8 +332,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     private void initHttpFileDownload()
     {
         String url;
-        AesgcmUrl aesgcmUrl = null;
-
         if (previousDownloads.contains(dnLink))
             return;
 
@@ -376,7 +346,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         }
 
         if (dnLink.matches("^aesgcm:.*")) {
-            aesgcmUrl = new AesgcmUrl(dnLink);
+            AesgcmUrl aesgcmUrl = new AesgcmUrl(dnLink);
             url = aesgcmUrl.getDownloadUrl().toString();
         }
         else {
@@ -401,7 +371,9 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     {
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+        File tmpFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), fileName);
+        request.setDestinationUri(Uri.fromFile(tmpFile));
         // request.addRequestHeader("User-Agent", getUserAgent());
 
         try {
@@ -463,7 +435,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                         File outFile = createOutFile(inFile);
 
                         // OMEMO media file sharing - need to decrypt file content
-                        if (dnLink.matches("^aesgcm:.*")) {
+                        if ((dnLink != null) && dnLink.matches("^aesgcm:.*")) {
                             try {
                                 AesgcmUrl aesgcmUrl = new AesgcmUrl(dnLink);
                                 Cipher decryptCipher = aesgcmUrl.getDecryptionCipher();
@@ -487,10 +459,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                                 updateView(FileTransferStatusChangeEvent.FAILED, "Failed to decrypt OMEMO media file: " + inFile);
                             }
                         }
-                        // Plain media file sharing; just do a direct copy
                         else {
-                            inFile.renameTo(outFile);
-                            updateView(FileTransferStatusChangeEvent.COMPLETED, "");
+                            // Plain media file sharing; rename will move the infile to outfile dir.
+                            if (inFile.renameTo(outFile))
+                                updateView(FileTransferStatusChangeEvent.COMPLETED, "");
                         }
 
                         // Timber.d("Downloaded fileSize: %s (%s)", outFile.length(), fileSize);
@@ -548,7 +520,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
         // Terminate downloading task if failed or idleTime timeout
         if (lastJobStatus == DownloadManager.STATUS_FAILED || waitTime < 0) {
-            File tmpFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName);
+            File tmpFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), fileName);
             Timber.d("Downloaded fileSize (failed): %s (%s)", tmpFile.length(), fileSize);
 
             updateView(FileTransferStatusChangeEvent.FAILED, "Download unsuccessful!");

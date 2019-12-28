@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
@@ -95,8 +96,16 @@ public class ShareActivity extends ExitMenuActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sharewith_view);
         ActionBar actionBar = getActionBar();
-        if (actionBar != null)
+        if (actionBar != null) {
+            actionBar.setCustomView(R.layout.action_bar);
+
+            TextView tv = findViewById(R.id.actionBarTitle);
+            tv.setText(R.string.APPLICATION_NAME);
+
+            tv = findViewById(R.id.actionBarStatus);
+            tv.setText(R.string.service_gui_SHARE);
             actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_bg_share)));
+        }
 
         /*
          * The pager widget, which handles animation and allows swiping horizontally to access previous

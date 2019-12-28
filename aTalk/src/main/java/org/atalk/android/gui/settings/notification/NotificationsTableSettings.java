@@ -273,7 +273,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      */
     private void rebuildTable()
     {
-        runOnUiThread(() -> buildTable());
+        runOnUiThread(this::buildTable);
     }
 
     /**

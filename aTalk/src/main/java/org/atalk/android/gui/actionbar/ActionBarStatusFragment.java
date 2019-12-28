@@ -3,11 +3,13 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.atalk.android.gui.fragment;
+package org.atalk.android.gui.actionbar;
 
 import android.app.ActionBar;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,7 +28,6 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.menu.GlobalStatusMenu;
 import org.atalk.android.gui.menu.MainMenuActivity;
-import org.atalk.android.gui.util.ActionBarUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.widgets.ActionMenuItem;
 import org.atalk.service.osgi.OSGiFragment;
@@ -101,8 +102,11 @@ public class ActionBarStatusFragment extends OSGiFragment
             actionBar.setCustomView(R.layout.action_bar);
             actionBar.setDisplayUseLogoEnabled(true);
         }
+
         this.globalStatusMenu = createGlobalStatusMenu();
-        TextView tv = fragmentActivity.findViewById(R.id.actionBarStatusText);
+        TextView tv = fragmentActivity.findViewById(R.id.actionBarStatus);
+        tv.setTypeface(null, Typeface.BOLD);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         tv.setSelected(true);
 
         loginRenderer = AndroidGUIActivator.getLoginRenderer();

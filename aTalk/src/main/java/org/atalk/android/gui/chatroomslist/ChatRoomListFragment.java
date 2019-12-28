@@ -39,6 +39,7 @@ import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class ChatRoomListFragment extends OSGiFragment
     /**
      * ChatRoom list data model.
      */
-    protected ChatRoomListAdapter chatRoomListAdapter;
+    private ChatRoomListAdapter chatRoomListAdapter;
 
     /**
      * ChatRoom groups expand memory.
@@ -77,12 +78,12 @@ public class ChatRoomListFragment extends OSGiFragment
     /**
      * The chatRoom list view.
      */
-    protected ExpandableListView chatRoomListView;
+    private ExpandableListView chatRoomListView;
 
     /**
      * Stores last clicked <tt>chatRoom</tt>.
      */
-    protected ChatRoomWrapper mClickedChatRoom;
+    private ChatRoomWrapper mClickedChatRoom;
 
     /**
      * Stores recently clicked chatRoom group.
@@ -113,7 +114,7 @@ public class ChatRoomListFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (AndroidGUIActivator.bundleContext == null) {
             return null;
@@ -146,8 +147,6 @@ public class ChatRoomListFragment extends OSGiFragment
         listExpandHandler = new ChatRoomGroupExpandHandler(chatRoomListAdapter, chatRoomListView);
         listExpandHandler.bindAndRestore();
 
-        // Invalidate view to update
-        chatRoomListAdapter.invalidateViews();
         chatRoomListAdapter.filterData("");
 
         // Restore search state based on entered text
@@ -162,6 +161,9 @@ public class ChatRoomListFragment extends OSGiFragment
         }
         // Restore scroll position
         chatRoomListView.setSelectionFromTop(scrollPosition, scrollTopPosition);
+
+        // Must only perform in BaseChatRoomListAdapter as data update is async in new thread
+        // chatRoomListAdapter.invalidateViews();
     }
 
     /**
@@ -204,7 +206,7 @@ public class ChatRoomListFragment extends OSGiFragment
      * @param menu the options menu
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater)
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater menuInflater)
     {
         super.onCreateOptionsMenu(menu, menuInflater);
 
@@ -278,7 +280,7 @@ public class ChatRoomListFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    public void onCreateContextMenu(@NotNull ContextMenu menu, @NotNull View v, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, v, menuInfo);
 
@@ -390,7 +392,7 @@ public class ChatRoomListFragment extends OSGiFragment
      *
      * @param closedChat closed <tt>ChatPanel</tt>.
      */
-    public void onCloseChat(ChatPanel closedChat)
+    private void onCloseChat(ChatPanel closedChat)
     {
         ChatSessionManager.removeActiveChat(closedChat);
         if (chatRoomListAdapter != null)
@@ -400,7 +402,7 @@ public class ChatRoomListFragment extends OSGiFragment
     /**
      * Method fired when all chats are being closed.
      */
-    public void onCloseAllChats()
+    private void onCloseAllChats()
     {
         ChatSessionManager.removeAllActiveChats();
         if (chatRoomListAdapter != null)
@@ -434,7 +436,7 @@ public class ChatRoomListFragment extends OSGiFragment
         int position = adapter.getListIndex(groupPosition, childPosition);
 
         chatRoomListView.setSelection(position);
-        adapter.invalidateViews();
+        // adapter.invalidateViews(); not necessary
 
         Object clicked = adapter.getChild(groupPosition, childPosition);
         if (clicked instanceof ChatRoomWrapper) {
@@ -565,9 +567,7 @@ public class ChatRoomListFragment extends OSGiFragment
         if (crWrapper != null) {
             int unreadCount = crWrapper.getUnreadCount();
             if (chatRoomListAdapter != null) {
-                runOnUiThread(() -> {
-                    chatRoomListAdapter.updateUnreadCount(crWrapper, unreadCount);
-                });
+                runOnUiThread(() -> chatRoomListAdapter.updateUnreadCount(crWrapper, unreadCount));
             }
         }
     }

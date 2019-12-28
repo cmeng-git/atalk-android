@@ -141,9 +141,6 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         // Attach contact groups expand memory
         listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
         listExpandHandler.bindAndRestore();
-
-        // Invalidate view to update
-        contactListAdapter.invalidateViews();
         contactListAdapter.filterData("");
 
         // Restore search state based on entered text
@@ -158,6 +155,9 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         }
         // Restore scroll position
         contactListView.setSelectionFromTop(scrollPosition, scrollTopPosition);
+
+        // Invalidate view to update
+        contactListAdapter.invalidateViews();
     }
 
     /**
@@ -677,9 +677,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         if (metaContact != null) {
             int unreadCount = metaContact.getUnreadCount();
             if (contactListAdapter != null) {
-                runOnUiThread(() -> {
-                    contactListAdapter.updateUnreadCount(metaContact, unreadCount);
-                });
+                runOnUiThread(() -> contactListAdapter.updateUnreadCount(metaContact, unreadCount));
             }
         }
     }

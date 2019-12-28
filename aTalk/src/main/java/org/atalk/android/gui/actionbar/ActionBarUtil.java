@@ -3,21 +3,20 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.atalk.android.gui.util;
+package org.atalk.android.gui.actionbar;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.*;
-import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.util.AndroidImageUtil;
 
+import androidx.annotation.DrawableRes;
 import timber.log.Timber;
 
 /**
@@ -46,7 +45,7 @@ public class ActionBarUtil
         ActionBar actionBar = activity.getActionBar();
         // Some activities don't have ActionBar
         if (actionBar != null) {
-            TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarText);
+            TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarTitle);
             actionBarText.setText(title);
         }
     }
@@ -61,15 +60,7 @@ public class ActionBarUtil
     {
         ActionBar actionBar = activity.getActionBar();
         if (actionBar != null) {
-            TextView statusText = actionBar.getCustomView().findViewById(R.id.actionBarStatusText);
-            if (!TextUtils.isEmpty(subtitle) && (subtitle.contains(LAST_SEEN))) {
-                statusText.setTypeface(null, Typeface.NORMAL);
-                statusText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-            }
-            else {
-                statusText.setTypeface(null, Typeface.BOLD);
-                statusText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-            }
+            TextView statusText = actionBar.getCustomView().findViewById(R.id.actionBarStatus);
             statusText.setText(subtitle);
             statusText.setMovementMethod(new ScrollingMovementMethod());
         }
@@ -107,7 +98,7 @@ public class ActionBarUtil
             if (actionBar == null)
                 return null;
 
-            TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarStatusText);
+            TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarStatus);
             return (actionBarText.getText().toString());
         }
         return null;
@@ -146,6 +137,13 @@ public class ActionBarUtil
         ActionBar actionBar = activity.getActionBar();
         if (actionBar != null) {
             actionBar.setLogo(avatarDrawable);
+        }
+    }
+
+    public static void setAvatar(Activity activity, @DrawableRes int resId) {
+        ActionBar actionBar = activity.getActionBar();
+        if (actionBar != null) {
+            actionBar.setLogo(resId);
         }
     }
 

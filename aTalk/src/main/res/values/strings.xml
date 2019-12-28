@@ -460,7 +460,7 @@
     <string name="service_gui_JOIN_VIDEO">Join video</string>
     <string name="service_gui_JOB_TITLE">Job title</string>
     <string name="service_gui_JOIN_CHAT_ROOM">Join chat room&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Failed to join room %1$s with nickname: %2$s.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Failed to join room:\n%1$s with nickname: %2$s.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD"> The chat room requests a password.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION"> The chat room requires registration.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Join chat room</string>
@@ -810,7 +810,7 @@
     <string name="service_gui_security_SECURE_AUDIO">Secure audio</string>
     <string name="service_gui_security_SECURE_VIDEO">Secure video</string>
     <string name="service_gui_security_SECURITY_ALERT">Trying to secure call. Will disconnect in</string>
-    <string name="service_gui_security_STRING_COMPARED">String compared!</string>
+    <string name="service_gui_security_STRING_COMPARED">String compared:</string>
     <string name="service_gui_security_VERIFY_TOAST">Call security enabled! Tap to compare security string now or use the menu later.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Video not secure</string>
     <string name="service_gui_avatar_CHOOSE_ICON">Choose picture</string>

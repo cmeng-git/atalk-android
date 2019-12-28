@@ -80,10 +80,8 @@ public class AndroidDecoder extends AndroidCodec
 	 */
 	private static final VideoFormat[] INPUT_FORMATS = new VideoFormat[]{
 			new VideoFormat(Constants.VP8),
-			new VideoFormat(Constants.H263P),
 			new VideoFormat(Constants.H264),
-			new ParameterizedVideoFormat(Constants.H264,
-					VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0")};
+			new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0")};
 
 	static Format[] getOutputFormats()
 	{

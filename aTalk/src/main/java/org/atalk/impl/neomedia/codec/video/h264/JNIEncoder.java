@@ -516,7 +516,6 @@ public class JNIEncoder extends AbstractCodec
         // avctx.chromaoffset = -2;
 
         FFmpeg.avcodeccontext_set_mb_decision(avctx, FFmpeg.FF_MB_DECISION_SIMPLE);
-        FFmpeg.avcodeccontext_set_rc_eq(avctx, "blurCplx^(1-qComp)");
         FFmpeg.avcodeccontext_add_flags(avctx, FFmpeg.CODEC_FLAG_LOOP_FILTER);
         if (intraRefresh) {
             /*

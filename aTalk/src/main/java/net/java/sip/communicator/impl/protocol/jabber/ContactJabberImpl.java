@@ -548,6 +548,16 @@ public class ContactJabberImpl extends AbstractContact
             resources = new ConcurrentHashMap<>();
     }
 
+    public void setLastResource(String resource)
+    {
+        this.mLastPresence = resource;
+    }
+
+    public String getLastResource()
+    {
+        return this.mLastPresence;
+    }
+
     /**
      * Whether contact is mobile one. Logged in from mobile device.
      *
@@ -706,26 +716,6 @@ public class ContactJabberImpl extends AbstractContact
         }
     }
 
-    public void setLastseen(long timestamp)
-    {
-        this.mLastseen = Math.max(timestamp, mLastseen);
-    }
-
-    public long getLastseen()
-    {
-        return this.mLastseen;
-    }
-
-    public void setLastResource(String resource)
-    {
-        this.mLastPresence = resource;
-    }
-
-    public String getLastResource()
-    {
-        return this.mLastPresence;
-    }
-
     public final class Options
     {
         public static final int TO = 0;
@@ -737,5 +727,4 @@ public class ContactJabberImpl extends AbstractContact
         public static final int DIRTY_PUSH = 6;
         public static final int DIRTY_DELETE = 7;
     }
-
 }

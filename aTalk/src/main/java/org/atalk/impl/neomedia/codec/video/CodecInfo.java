@@ -35,11 +35,6 @@ public abstract class CodecInfo
     public static final String MEDIA_CODEC_TYPE_VP8 = "video/x-vnd.on2.vp8";
 
     /**
-     * The mime type of H.263-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
-     */
-    public static final String MEDIA_CODEC_TYPE_H263 = "video/3gpp";
-
-    /**
      * List of crashing codecs
      */
     private static final List<String> bannedYuvCodecs;
@@ -56,7 +51,6 @@ public abstract class CodecInfo
         // Banned H264 encoders/decoders
         // Crashes
         bannedYuvCodecs.add("OMX.SEC.avc.enc");
-        bannedYuvCodecs.add("OMX.SEC.h263.enc");
         // Don't support 3.1 profile used by Jitsi
         bannedYuvCodecs.add("OMX.Nvidia.h264.decode");
         //bannedYuvCodecs.add("OMX.SEC.avc.dec");
@@ -77,8 +71,6 @@ public abstract class CodecInfo
         }
         Timber.i("Selected H264 encoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, true));
         Timber.i("Selected H264 decoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, false));
-        Timber.i("Selected H263 encoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H263, true));
-        Timber.i("Selected H263 decoder: %s", getCodecForType(MEDIA_CODEC_TYPE_H263, false));
         Timber.i("Selected VP8 encoder: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, true));
         Timber.i("Selected VP8 decoder: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, false));
     }
@@ -247,9 +239,7 @@ public abstract class CodecInfo
         String[] types = codecInfo.getSupportedTypes();
         for (String type : types) {
             try {
-                if (type.equals(MEDIA_CODEC_TYPE_H263))
-                    return new H263CodecInfo(codecInfo);
-                else if (type.equals(MEDIA_CODEC_TYPE_H264))
+                if (type.equals(MEDIA_CODEC_TYPE_H264))
                     return new H264CodecInfo(codecInfo);
                 else if (type.equals(MEDIA_CODEC_TYPE_VP8))
                     return new VP8CodecInfo(codecInfo);
@@ -282,10 +272,7 @@ public abstract class CodecInfo
 
     public String getLibjitsiEncoding()
     {
-        if (mediaType.equals(MEDIA_CODEC_TYPE_H263)) {
-            return Constants.H263P;
-        }
-        else if (mediaType.equals(MEDIA_CODEC_TYPE_H264)) {
+        if (mediaType.equals(MEDIA_CODEC_TYPE_H264)) {
             return Constants.H264;
         }
         else if (mediaType.equals(MEDIA_CODEC_TYPE_VP8)) {
@@ -390,53 +377,6 @@ public abstract class CodecInfo
         public H264CodecInfo(MediaCodecInfo codecInfo)
         {
             super(codecInfo, MEDIA_CODEC_TYPE_H264);
-        }
-
-        @Override
-        protected Profile[] getProfileSet()
-        {
-            return PROFILES;
-        }
-
-        @Override
-        protected Level[] getLevelSet()
-        {
-            return LEVELS;
-        }
-    }
-
-    static class H263CodecInfo extends CodecInfo
-    {
-        private final CodecInfo.Profile[] PROFILES = new CodecInfo.Profile[]
-                {
-                        // from OMX_VIDEO_H263PROFILETYPE
-                        new Profile("Baseline", 0x01),
-                        new Profile("H320Coding", 0x02),
-                        new Profile("BackwardCompatible", 0x04),
-                        new Profile("ISWV2", 0x08),
-                        new Profile("ISWV3", 0x10),
-                        new Profile("HighCompression", 0x20),
-                        new Profile("Internet", 0x40),
-                        new Profile("Interlace", 0x80),
-                        new Profile("HighLatency", 0x100)
-                };
-
-        private final CodecInfo.Level[] LEVELS = new CodecInfo.Level[]
-                {
-                        // from OMX_VIDEO_H263LEVELTYPE
-                        new Level("Level10", 0x01),
-                        new Level("Level20", 0x02),
-                        new Level("Level30", 0x04),
-                        new Level("Level40", 0x08),
-                        new Level("Level45", 0x10),
-                        new Level("Level50", 0x20),
-                        new Level("Level60", 0x40),
-                        new Level("Level70", 0x80)
-                };
-
-        public H263CodecInfo(MediaCodecInfo codecInfo)
-        {
-            super(codecInfo, MEDIA_CODEC_TYPE_H263);
         }
 
         @Override

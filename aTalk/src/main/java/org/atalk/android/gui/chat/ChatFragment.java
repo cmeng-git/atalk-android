@@ -418,8 +418,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     @Override
     public void onStop()
     {
-        super.onStop();
         mChatController.onChatCloseAction();
+        super.onStop();
     }
 
     @Override
@@ -725,16 +725,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         // close current chat and show contact/chatRoom list view for content forward
                         mChatActivity.onBackPressed();
                         return true;
-
-//                        List<Object> msgFilesShare = new ArrayList<>();
-//                        msgFilesShare.add(sBuilder.toString());
-//                        msgFilesShare.add(imageUris);
-//
-//                        mChatActivity.addForwardContent(msgFilesShare);
-//                        mode.finish();
-//                        // close current chat and show contact/chatRoom list view for content forward
-//                        mChatActivity.onBackPressed();
-//                        return true;
                     }
                     else {
                         ShareUtil.share(mChatActivity, sBuilder.toString(), imageUris);

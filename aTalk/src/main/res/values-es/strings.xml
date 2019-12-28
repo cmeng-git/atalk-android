@@ -430,7 +430,7 @@
 	<string name="service_gui_JOIN_VIDEO">Unirse al video</string>
 	<string name="service_gui_JOB_TITLE">Cargo</string>
 	<string name="service_gui_JOIN_CHAT_ROOM">Unirse a una sala de charla&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Error al unirse a la sala %1$s con apodo: %2$s.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Error al unirse a la sala:\n%1$s con apodo: %2$s.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD"> La sala de chat solicita una contraseña.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION"> La sala de chat requiere registro.</string>
 	<string name="service_gui_JOIN_CHAT_ROOM_TITLE">Unirse a una sala de charla</string>
@@ -758,7 +758,7 @@
     <string name="service_gui_security_SECURE_AUDIO">Audio seguro</string>
     <string name="service_gui_security_SECURE_VIDEO">Vídeo seguro</string>
     <string name="service_gui_security_SECURITY_ALERT">Intento de asegurar la llamada. Se desconectará en</string>
-    <string name="service_gui_security_STRING_COMPARED">¡Cadenas comparadas!</string>
+    <string name="service_gui_security_STRING_COMPARED">¡Cadenas comparadas:</string>
     <string name="service_gui_security_VERIFY_TOAST">¡Llamada segura! Presionar para comparar la cadena de seguridad ahora o utilizar el menú más tarde.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Video no seguro</string>
     <string name="service_gui_avatar_CHOOSE_ICON">Escoger imagen</string>

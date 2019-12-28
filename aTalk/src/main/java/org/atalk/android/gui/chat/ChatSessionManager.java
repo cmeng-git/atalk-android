@@ -532,9 +532,9 @@ public class ChatSessionManager
     private static ChatPanel getMultiChatInternal(ChatRoom chatRoom, boolean create, String escapedMessageID)
     {
         synchronized (chatSyncRoot) {
+            ChatPanel chatPanel = null;
             ChatRoomWrapper chatRoomWrapper
                     = AndroidGUIActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, create);
-            ChatPanel chatPanel = null;
 
             if (chatRoomWrapper != null) {
                 chatPanel = findChatPanelForDescriptor(chatRoomWrapper);

@@ -105,7 +105,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
             packetQueueCapacity = ConfigUtils.getInt(cfg, oldPropertyName, -1);
         }
 
-        PACKET_QUEUE_CAPACITY = packetQueueCapacity >= 0 ? packetQueueCapacity : 256;
+        PACKET_QUEUE_CAPACITY = packetQueueCapacity >= 0 ? packetQueueCapacity : 1024;
         Timber.log(TimberLog.FINER, "Initialized configuration. Send thread: %s. Pool capacity: %s. Queue capacity: %s. Avg bitrate window: %s",
                 USE_SEND_THREAD, POOL_CAPACITY, PACKET_QUEUE_CAPACITY, AVERAGE_BITRATE_WINDOW_MS);
     }

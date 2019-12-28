@@ -69,6 +69,11 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     private LinkedList<TreeSet<ChatRoomWrapper>> mCrWrapperList;
 
     /**
+     * A local reference of the last fetched bookmarks list
+     */
+    List<BookmarkedConference> bookmarksList = null;
+
+    /**
      * The <tt>MUCService</tt>, which is the back end of this chatRoom list adapter.
      */
     private MUCServiceImpl mucService;
@@ -257,6 +262,8 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
                 }
             }
         }
+        // refresh list view after new room list fetching
+        invalidateViews();
     }
 
     /**
@@ -267,16 +274,23 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     private List<ChatRoomWrapper> initBookmarkChatRooms(ChatRoomProviderWrapper crpWrapper)
     {
         if (crpWrapper != null) {
-            // List<ChatRoomWrapper> crWrappers = crpWrapper.getChatRooms();
 
             XMPPConnection connection;
             ProtocolProviderService pps = crpWrapper.getProtocolProvider();
-            if ((pps == null) || ((connection = pps.getConnection()) == null) || !connection.isAuthenticated())
+            if ((pps == null) || ((connection = pps.getConnection()) == null) || !connection.isAuthenticated()) {
+                // reset bookmarks when user log off is detected.
+                bookmarksList = null;
                 return null;
+            }
 
+            // Just return room lists if bookmark has been fetched and updated earlier
+            if (bookmarksList != null)
+                return crpWrapper.getChatRooms();
+
+            Timber.d("Update conference bookmarks started.");
             BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(connection);
             try {
-                List<BookmarkedConference> bookmarksList = bookmarkManager.getBookmarkedConferences();
+                bookmarksList = bookmarkManager.getBookmarkedConferences();
                 for (BookmarkedConference bookmarkedConference : bookmarksList) {
                     String chatRoomId = bookmarkedConference.getJid().toString();
                     ChatRoomWrapper chatRoomWrapper = crpWrapper.findChatRoomWrapperForChatRoomID(chatRoomId);
@@ -296,14 +310,12 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
                     if (!StringUtils.isNullOrEmpty(password))
                         chatRoomWrapper.savePassword(password);
                 }
-                // for (ChatRoomWrapper crWrapper : crWrappers) {
-                //     crWrapper.setBookmark(false);
-                // }
             } catch (SmackException.NoResponseException | SmackException.NotConnectedException
                     | XMPPException.XMPPErrorException | InterruptedException e) {
                 Timber.w("Failed to fetch Bookmarks for %s: %s",
                         crpWrapper.getProtocolProvider().getAccountID(), e.getMessage());
             }
+            Timber.d("Update conference bookmarks completed");
 
             // Auto join chatRoom if any - not need
             // crpWrapper.synchronizeProvider();

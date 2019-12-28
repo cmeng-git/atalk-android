@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.atalk.android.gui.fragment;
+package org.atalk.android.gui.actionbar;
 
 import android.app.Activity;
 import android.os.Bundle;

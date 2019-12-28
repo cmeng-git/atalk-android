@@ -24,7 +24,7 @@
 package org.atalk.impl.neomedia.transform.srtp;
 
 import org.atalk.bccontrib.macs.SkeinMac;
-import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.bouncycastle.crypto.Mac;
 import org.bouncycastle.crypto.engines.TwofishEngine;
 
@@ -51,7 +51,7 @@ import java.util.Arrays;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-class BaseSRTPCryptoContext
+public class BaseSRTPCryptoContext
 {
 	/**
 	 * The replay check windows size.
@@ -249,7 +249,7 @@ class BaseSRTPCryptoContext
 	 * @param rocIn
 	 *        Roll-Over-Counter
 	 */
-	synchronized protected void authenticatePacketHMAC(RawPacket pkt, int rocIn)
+	synchronized protected void authenticatePacketHMAC(ByteArrayBuffer pkt, int rocIn)
 	{
 		mac.update(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
 		rbStore[0] = (byte) (rocIn >> 24);

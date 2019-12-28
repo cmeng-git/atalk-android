@@ -6,7 +6,7 @@
     <color name="color_accent">#2DA4F2</color>
     <color name="color_bg_share">#5D7E95</color>
 
-    <color name="color_text_dark">@color/white85</color>
+    <color name="color_text_white_std">@color/white85</color>
 
     <color name="theme_background">#2E5368</color>
     <color name="call_background">#2E5368</color>

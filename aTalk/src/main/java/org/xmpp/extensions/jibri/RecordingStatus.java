@@ -15,10 +15,10 @@
  */
 package org.xmpp.extensions.jibri;
 
-import org.xmpp.extensions.AbstractExtensionElement;
-
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.AbstractExtensionElement;
 
 import java.util.List;
 
@@ -48,6 +48,16 @@ public class RecordingStatus extends AbstractExtensionElement
      * The name of XML attribute which holds the recording status.
      */
     private static final String STATUS_ATTRIBUTE = "status";
+
+    /**
+     * The name of the argument that contains the "initiator" jid.
+     */
+    public static final String INITIATOR_ATTR_NAME = "initiator";
+
+    /**
+     * The full JID of the entity that has initiated the recording flow.
+     */
+    private Jid initiator;
 
     public RecordingStatus()
     {
@@ -148,7 +158,6 @@ public class RecordingStatus extends AbstractExtensionElement
     private XMPPErrorPE getErrorPE()
     {
         List<? extends ExtensionElement> errorPe = getChildExtensionsOfType(XMPPErrorPE.class);
-
         return (XMPPErrorPE) (!errorPe.isEmpty() ? errorPe.get(0) : null);
     }
 
@@ -173,5 +182,26 @@ public class RecordingStatus extends AbstractExtensionElement
             // Remove error PE
             getChildExtensions().remove(getErrorPE());
         }
+    }
+
+    /**
+     * Sets the full JID of the entity that has initiated the recording flow.
+     *
+     * @param initiator the full JID of the initiator.
+     */
+    public void setInitiator(Jid initiator)
+    {
+        setAttribute(INITIATOR_ATTR_NAME, initiator);
+        this.initiator = initiator;
+    }
+
+    /**
+     * Returns the full JID of the entity that has initiated the recording flow.
+     *
+     * @return the full JID of the initiator.
+     */
+    public Jid getInitiator()
+    {
+        return initiator;
     }
 }

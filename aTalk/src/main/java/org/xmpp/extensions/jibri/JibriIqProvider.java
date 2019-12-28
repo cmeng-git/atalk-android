@@ -78,6 +78,14 @@ public class JibriIqProvider extends IQProvider<JibriIq>
             if (!StringUtils.isNullOrEmpty(failureStr)) {
                 iq.setFailureReason(JibriIq.FailureReason.parse(failureStr));
             }
+            String shouldRetryStr = parser.getAttributeValue("", JibriIq.SHOULD_RETRY_ATTR_NAME);
+            if (StringUtils.isNullOrEmpty(shouldRetryStr)) {
+                iq.setShouldRetry(Boolean.valueOf(shouldRetryStr));
+            }
+            else if (iq.getFailureReason() != null
+                    && iq.getFailureReason() != JibriIq.FailureReason.UNDEFINED) {
+                throw new RuntimeException("shouldRetry must be set if a failure reason is given");
+            }
 
             String displayName = parser.getAttributeValue("", JibriIq.DISPLAY_NAME_ATTR_NAME);
             if (!StringUtils.isNullOrEmpty(displayName))

@@ -23,8 +23,8 @@ import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.fragment.ActionBarToggleFragment;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarToggleFragment;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.impl.androidresources.AndroidResourceServiceImpl;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;

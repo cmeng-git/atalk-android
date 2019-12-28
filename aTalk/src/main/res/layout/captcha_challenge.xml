@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/theme_background"
-    android:padding="@dimen/screen_padding"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
 
     <TextView
         android:id="@+id/reason_label"
@@ -57,7 +57,8 @@
         <Button
             android:id="@+id/button_ok"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/service_gui_OK"
+            android:visibility="gone" />
 
     </LinearLayout>
 </LinearLayout>

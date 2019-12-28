@@ -239,7 +239,7 @@ public class FileBackend
     }
 
     /**
-     * Create a new File for saving image or video captured by camera
+     * Create a new File for saving image or video captured with camera
      */
     public static File getOutputMediaFile(int type)
     {

@@ -9,7 +9,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -28,6 +27,7 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
@@ -100,8 +100,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      * The media preview adapter, which provides views of all attachments.
      */
     private MediaPreviewAdapter mediaPreviewAdapter;
-
-    // private static List<Object> msgFilesShare = new ArrayList<>();
 
     /**
      * Set the number of pages that should be retained to either side of the current page in the
@@ -240,9 +238,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 onActivityResult(REQUEST_CODE_SHARE_WITH, RESULT_OK, intent);
 
         }
-//        else if (!msgFilesShare.isEmpty()) {
-//            onActivityResult(REQUEST_CODE_FORWARD, RESULT_OK, null);
-//        }
     }
 
     /**
@@ -644,6 +639,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 return;
             }
 
+            // Update the actionBar Title with the entity name
             ActionBarUtil.setTitle(this, chatSession.getCurrentChatTransport().getDisplayName());
 
             if (chatSession instanceof MetaContactChatSession) {
@@ -662,6 +658,10 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         if (lastSeen != null)
                             presenceStatus = lastSeen;
                     }
+                    else {
+                        // Reset elapse time to fetch new again when contact goes offline again
+                        mRecipient.setLastActiveTime(-1);
+                    }
                     ActionBarUtil.setSubtitle(this, presenceStatus);
                 }
             }
@@ -670,8 +670,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 ((ChatRoomWrapper) chatSession.getDescriptor()).setUnreadCount(0);
 
                 ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
-                ActionBarUtil.setAvatar(this, AndroidImageUtil.convertToBytes(BitmapFactory
-                        .decodeResource(getResources(), R.drawable.ic_chatroom), 100));
+//                ActionBarUtil.setAvatar(this, AndroidImageUtil.convertToBytes(BitmapFactory
+//                        .decodeResource(getResources(), R.drawable.ic_chatroom), 100));
+                ActionBarUtil.setAvatar(this, R.drawable.ic_chatroom);
                 ActionBarUtil.setStatus(this, ccSession.getChatStatusIcon());
                 ActionBarUtil.setSubtitle(this, ccSession.getChatSubject());
             }
@@ -686,38 +687,40 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     public String getLastSeen()
     {
         // cmeng: this happen if the contact remove presence subscription while still in chat session
-        if (mRecipient == null)
+        if (mRecipient == null) {
             return null;
+        }
 
         XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
         if ((connection == null) || !connection.isAuthenticated())
             return null;
 
-        Jid jid = mRecipient.getJid();
-        LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);
+        long lastActiveTime = mRecipient.getLastActiveTime();
+        if (lastActiveTime == -1) {
+            Jid jid = mRecipient.getJid();
+            LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);
 
-        long timeNow = System.currentTimeMillis();
-        long elapseTime = -1;
-        try {
-            elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
-        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException ignore) {
+            try {
+                long elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
+                lastActiveTime = (System.currentTimeMillis() - elapseTime * 1000L);
+                mRecipient.setLastActiveTime(lastActiveTime);
+            } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
+                    | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException ignore) {
+            }
         }
 
-        if (elapseTime == -1) {
+        if (lastActiveTime == -1) {
             return null;
         }
         else {
-            long dateTime = (timeNow - elapseTime * 1000L);
-
-            if (DateUtils.isToday(dateTime)) {
+            if (DateUtils.isToday(lastActiveTime)) {
                 DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-                return getString(R.string.service_gui_LAST_SEEN, df.format(new Date(dateTime)));
+                return getString(R.string.service_gui_LAST_SEEN, df.format(new Date(lastActiveTime)));
             }
             else {
                 // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
                 DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-                return df.format(new Date(dateTime));
+                return df.format(new Date(lastActiveTime));
             }
         }
     }
@@ -891,36 +894,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     chatPagerAdapter.notifyDataSetChanged();
                     toggleInputMethod();
                     break;
-
-                    // Alternate method must can only forward to single contact
-//                    selectedChatPanel.setEditedText(null);
-//                    for (Object obj : msgFilesShare) {
-//                        if (obj instanceof String) {
-//                            selectedChatPanel.setEditedText((String) obj);
-//                        }
-//                        else if ((obj instanceof ArrayList<?>) && !((ArrayList) obj).isEmpty()) {
-//                            if (((ArrayList) obj).get(0) instanceof Uri) {
-//                                List<Uri> imageUris = (ArrayList<Uri>) obj;
-//                                attachments = Attachment.of(this, imageUris);
-//                                mediaPreviewAdapter.addMediaPreviews(attachments);
-//                            }
-//                        }
-//                    }
-//                    msgFilesShare.clear();
-//                    break;
             }
         }
     }
-
-    /**
-     * Update content for forward to another user (only once) using msgFileShare method
-     *
-     * @param filesShare Array object of String & List<Uri>
-     */
-//    public void addForwardContent(List<Object> filesShare)
-//    {
-//        msgFilesShare = filesShare;
-//    }
 
     /**
      * Opens the given file through the <tt>DesktopService</tt>.

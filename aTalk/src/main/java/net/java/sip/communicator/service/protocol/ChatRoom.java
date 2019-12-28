@@ -64,7 +64,7 @@ public interface ChatRoom
      *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void join()
+    boolean join()
             throws OperationFailedException;
 
     /**
@@ -75,7 +75,7 @@ public interface ChatRoom
      * @param password the password to use when authenticating on the chatRoom.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void join(byte[] password)
+    boolean join(byte[] password)
             throws OperationFailedException;
 
     /**
@@ -86,7 +86,7 @@ public interface ChatRoom
      * @param nickname the nickname to use.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void joinAs(String nickname)
+    boolean joinAs(String nickname)
             throws OperationFailedException;
 
     /**
@@ -99,7 +99,7 @@ public interface ChatRoom
      * @param password a password necessary to authenticate when joining the room.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void joinAs(String nickname, byte[] password)
+    boolean joinAs(String nickname, byte[] password)
             throws OperationFailedException;
 
     /**

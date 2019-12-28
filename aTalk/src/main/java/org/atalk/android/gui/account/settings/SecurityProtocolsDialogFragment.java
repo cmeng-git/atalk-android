@@ -240,7 +240,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
             encryptions[to] = encryptions[from];
             encryptions[from] = swap;
 
-            getActivity().runOnUiThread(() -> notifyDataSetChanged());
+            getActivity().runOnUiThread(this::notifyDataSetChanged);
         }
     }
 }

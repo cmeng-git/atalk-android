@@ -426,7 +426,7 @@
 	<string name="service_gui_JOIN_VIDEO">Bergabung dengan video</string>
 	<string name="service_gui_JOB_TITLE">Judul pekerjaan</string>
 	<string name="service_gui_JOIN_CHAT_ROOM">Bergabung dengan ruang obrolan&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Gagal bergabung ke kamar %1$s dengan nama panggilan: %2$s.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Gagal bergabung ke kamar:\n%1$s dengan nama panggilan: %2$s.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD">Ruang obrolan meminta kata sandi.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION">Ruang obrolan membutuhkan registrasi.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Bergabung dengan ruang obrolan</string>
@@ -744,7 +744,7 @@
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Panggilan tidak aman.</string>
     <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Tekan di sini untuk membandingkan rahasia keamanan dengan pasangan Anda.</string>
     <string name="service_gui_security_CALL_SECURED_TOOLTIP">Panggil aman. Untuk informasi lebih lanjut, tekan di sini.</string>
-    <string name="service_gui_security_CIPHER">Cipher: {0}</string>
+    <string name="service_gui_security_CIPHER">Cipher: %1$s</string>
     <string name="service_gui_security_CLEAR">Bersihkan</string>
     <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Bandingkan dengan mitra:</string>
     <string name="service_gui_security_CONFIRM">Konfirmasikan</string>
@@ -753,7 +753,7 @@
     <string name="service_gui_security_SECURE_AUDIO">Audio aman</string>
     <string name="service_gui_security_SECURE_VIDEO">Video aman</string>
     <string name="service_gui_security_SECURITY_ALERT">Mencoba untuk mengamankan panggilan. Akan terputus di</string>
-    <string name="service_gui_security_STRING_COMPARED">String dibandingkan!</string>
+    <string name="service_gui_security_STRING_COMPARED">String dibandingkan:</string>
     <string name="service_gui_security_VERIFY_TOAST">Keamanan panggilan diaktifkan! Ketuk untuk membandingkan string keamanan sekarang atau gunakan menu nanti.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Video tidak aman</string>
     <string name="service_gui_avatar_CHOOSE_ICON">Pilih gambar</string>

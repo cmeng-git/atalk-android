@@ -108,7 +108,7 @@ public class NeomediaActivator implements BundleActivator
      */
     private AudioDeviceConfigurationListener deviceConfigurationPropertyChangeListener;
 
-    /**
+    /*
      * A {@link MediaConfigurationService} instance.
      */
     // private static MediaConfigurationImpl mediaConfiguration;
@@ -349,8 +349,8 @@ public class NeomediaActivator implements BundleActivator
          */
         public void managePopupMessageListenerRegistration(boolean enable)
         {
-            Iterator<NotificationHandler> notificationHandlers = notificationService.getActionHandlers(
-                    net.java.sip.communicator.service.notification.NotificationAction.ACTION_POPUP_MESSAGE).iterator();
+            Iterator<NotificationHandler> notificationHandlers
+                    = notificationService.getActionHandlers(NotificationAction.ACTION_POPUP_MESSAGE).iterator();
             NotificationHandler notificationHandler;
             while (notificationHandlers.hasNext()) {
                 notificationHandler = notificationHandlers.next();
@@ -396,7 +396,7 @@ public class NeomediaActivator implements BundleActivator
             }
         }
 
-        /**
+        /*
          * Indicates that user has clicked on the systray popup message.
          *
          * @param evt the event triggered when user clicks on the systray popup message

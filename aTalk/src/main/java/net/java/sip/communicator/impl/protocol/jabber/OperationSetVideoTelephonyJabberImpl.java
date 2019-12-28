@@ -92,7 +92,7 @@ public class OperationSetVideoTelephonyJabberImpl
     protected Call createOutgoingVideoCall(String calleeAddress)
             throws OperationFailedException
     {
-        Timber.i("creating outgoing video call...");
+        Timber.d("creating outgoing video call...");
         if (parentProvider.getConnection() == null) {
             throw new OperationFailedException("Failed to create OutgoingJingleSession.\n"
                     + "we don't have a valid XMPPConnection.", OperationFailedException.INTERNAL_ERROR);

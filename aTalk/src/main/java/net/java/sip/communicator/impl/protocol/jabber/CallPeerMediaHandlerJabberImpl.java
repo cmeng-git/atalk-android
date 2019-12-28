@@ -1119,7 +1119,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (Senders.responder == sender) {
             VideoCallActivity.setBackToChat(true);
         }
-        Timber.w("### Process media content for: sender = %s: %s => %s", sender, mediaType, target);
+        Timber.d("### Process media content for: sender = %s: %s => %s", sender, mediaType, target);
         //  if (sender != null)
         //      new Exception().printStackTrace();
 

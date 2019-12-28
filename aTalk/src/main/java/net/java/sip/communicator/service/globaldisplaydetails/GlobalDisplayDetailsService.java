@@ -22,38 +22,33 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
  */
 public interface GlobalDisplayDetailsService
 {
-	/**
-	 * Returns default display name for the given provider or the global display name.
-	 *
-	 * @param pps
-	 * 		the given protocol provider service
-	 * @return default display name.
-	 */
-	public String getDisplayName(ProtocolProviderService pps);
+    /**
+     * Returns default display name for the given provider or the global display name.
+     *
+     * @param pps the given protocol provider service
+     * @return default display name.
+     */
+    String getDisplayName(ProtocolProviderService pps);
 
-	/**
-	 * @param provider
-	 * 		get avatar of the specified ProtocolProviderService
-	 * @return the global avatar for the local user.
-	 * the byte array representing the avatar to set
-	 */
-	public byte[] getDisplayAvatar(ProtocolProviderService provider);
+    /**
+     * @param provider get avatar of the specified ProtocolProviderService
+     * @return the global avatar for the local user. the byte array representing the avatar to set
+     */
+    byte[] getDisplayAvatar(ProtocolProviderService provider);
 
-	/**
-	 * Adds the given <tt>GlobalDisplayDetailsListener</tt> to listen for change events concerning
-	 * the global display details.
-	 *
-	 * @param l
-	 * 		the <tt>GlobalDisplayDetailsListener</tt> to add
-	 */
-	public void addGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l);
+    /**
+     * Adds the given <tt>GlobalDisplayDetailsListener</tt> to listen for change events concerning
+     * the global display details.
+     *
+     * @param l the <tt>GlobalDisplayDetailsListener</tt> to add
+     */
+    void addGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l);
 
-	/**
-	 * Removes the given <tt>GlobalDisplayDetailsListener</tt> listening for change events
-	 * concerning the global display details.
-	 *
-	 * @param l
-	 * 		the <tt>GlobalDisplayDetailsListener</tt> to remove
-	 */
-	public void removeGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l);
+    /**
+     * Removes the given <tt>GlobalDisplayDetailsListener</tt> listening for change events
+     * concerning the global display details.
+     *
+     * @param l the <tt>GlobalDisplayDetailsListener</tt> to remove
+     */
+    void removeGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l);
 }

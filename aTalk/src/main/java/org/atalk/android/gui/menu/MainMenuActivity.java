@@ -38,15 +38,15 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountsListActivity;
-import org.atalk.android.gui.chat.conference.ConferenceInviteDialog;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
+import org.atalk.android.gui.chat.conference.ConferenceCallInviteDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
@@ -146,10 +146,11 @@ public class MainMenuActivity extends ExitMenuActivity
             menu.removeItem(R.id.show_location);
         }
 
-        this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
+        // cmeng: 20191220 <= disable videoBridge until implementation
+        // this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
         /* Need this on first start up */
-        initVideoBridge();
-        videoBridgeMenuItem.setEnabled(true);
+        // initVideoBridge();
+        // videoBridgeMenuItem.setEnabled(true);
 
         mShowHideOffline = menu.findItem(R.id.show_hide_offline);
         int itemId = ConfigurationUtils.isShowOffline()
@@ -386,11 +387,11 @@ public class MainMenuActivity extends ExitMenuActivity
          */
         public void actionPerformed()
         {
-            ConferenceInviteDialog inviteDialog = null;
+            ConferenceCallInviteDialog inviteDialog = null;
             if (preselectedProvider != null)
-                inviteDialog = new ConferenceInviteDialog(mContext, preselectedProvider, true);
+                inviteDialog = new ConferenceCallInviteDialog(mContext, preselectedProvider, true);
             else if (videoBridgeProviders != null)
-                inviteDialog = new ConferenceInviteDialog(mContext, videoBridgeProviders, true);
+                inviteDialog = new ConferenceCallInviteDialog(mContext, videoBridgeProviders, true);
 
             if (inviteDialog != null)
                 inviteDialog.show();
