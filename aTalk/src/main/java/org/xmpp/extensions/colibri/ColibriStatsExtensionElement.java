@@ -36,6 +36,289 @@ public class ColibriStatsExtensionElement extends AbstractExtensionElement
     public static final String NAMESPACE = "http://jitsi.org/protocol/colibri";
 
     /**
+     * The name of the bit rate statistic for download.
+     */
+    public static final String BITRATE_DOWNLOAD = "bit_rate_download";
+
+    /**
+     * The name of the bit rate statistic for upload.
+     */
+    public static final String BITRATE_UPLOAD = "bit_rate_upload";
+
+    /**
+     * The name of the number of conferences statistic. Its runtime type is {@code Integer}.
+     */
+    public static final String CONFERENCES = "conferences";
+
+    /**
+     * The name of the conference sizes statistic.
+     */
+    public static final String CONFERENCE_SIZES = "conference_sizes";
+
+    /**
+     * The name of the CPU usage statistic.
+     */
+    public static final String CPU_USAGE = "cpu_usage";
+
+    /**
+     * The name of the aggregate jitter statistic.
+     */
+    public static final String JITTER_AGGREGATE = "jitter_aggregate";
+
+    /**
+     * The name of the "largest conference" statistic.
+     */
+    public static final String LARGEST_CONFERENCE = "largest_conference";
+
+    /**
+     * The name of the loss rate statistic.
+     */
+    public static final String LOSS_RATE_DOWNLOAD = "loss_rate_download";
+
+    /**
+     * The name of the loss rate statistic.
+     */
+    public static final String LOSS_RATE_UPLOAD = "loss_rate_upload";
+
+    /**
+     * The name of the stat for the Octo receive bitrate in Kbps.
+     */
+    public static final String OCTO_RECEIVE_BITRATE = "octo_receive_bitrate";
+
+    /**
+     * The name of the stat for the Octo send bitrate in Kbps.
+     */
+    public static final String OCTO_SEND_BITRATE = "octo_send_bitrate";
+
+    /**
+     * The name of the packet rate statistic for download.
+     */
+    public static final String PACKET_RATE_DOWNLOAD = "packet_rate_download";
+
+    /**
+     * The name of the packet rate statistic for upload.
+     */
+    public static final String PACKET_RATE_UPLOAD = "packet_rate_upload";
+
+    /**
+     * The name of the stat used to indicate the number of participants.
+     */
+    public static final String PARTICIPANTS = "participants";
+
+    /**
+     * The name of the "region" statistic.
+     */
+    public static final String REGION = "region";
+
+    /**
+     * The name of the "relay_id" statistic.
+     */
+    public static final String RELAY_ID = "relay_id";
+
+    /**
+     * The name of the RTP loss statistic.
+     * @deprecated
+     */
+    public static final String RTP_LOSS = "rtp_loss";
+
+    /**
+     * The name of the aggregate RTT statistic.
+     */
+    public static final String RTT_AGGREGATE = "rtt_aggregate";
+
+    /**
+     * The name of the stat that indicates entering graceful shutdown mode.
+     */
+    public static final String SHUTDOWN_IN_PROGRESS = "graceful_shutdown";
+
+    /**
+     * The name of the stat that indicates support of sip gateway capabilities.
+     */
+    public static final String SUPPORTS_SIP = "supports_sip";
+
+    /**
+     * The name of the stat that indicates support of transcription.
+     */
+    public static final String SUPPORTS_TRANSCRIPTION = "supports_transcription";
+
+    /**
+     * The name of the number of threads statistic. Its runtime type is
+     * {@code Integer}.
+     */
+    public static final String THREADS = "threads";
+
+    /**
+     * The name of the piece of statistic which specifies the date and time at
+     * which the associated set of statistics was generated. Its runtime type is
+     * {@code String} and the value represents a {@code Date} value.
+     */
+    public static final String TIMESTAMP = "current_timestamp";
+
+    /**
+     * The name of the stat indicating the total number of bytes received in RTP packets.
+     */
+    public static final String TOTAL_BYTES_RECEIVED = "total_bytes_received";
+
+    /**
+     * The name of the stat indicating the total number of bytes received in
+     * Octo packets.
+     */
+    public static final String TOTAL_BYTES_RECEIVED_OCTO = "total_bytes_received_octo";
+
+    /**
+     * The name of the stat indicating the total number of bytes sent in RTP packets.
+     */
+    public static final String TOTAL_BYTES_SENT = "total_bytes_sent";
+
+    /**
+     * The name of the stat indicating the total number of bytes sent in octo packets.
+     */
+    public static final String TOTAL_BYTES_SENT_OCTO = "total_bytes_sent_octo";
+
+    /**
+     * The name of the stat indicating the total number of messages received
+     * from data channels.
+     */
+    public static final String TOTAL_COLIBRI_WEB_SOCKET_MESSAGES_RECEIVED
+        = "total_colibri_web_socket_messages_received";
+
+    /**
+     * The name of the stat indicating the total number of messages sent over data channels.
+     */
+    public static final String TOTAL_COLIBRI_WEB_SOCKET_MESSAGES_SENT = "total_colibri_web_socket_messages_sent";
+
+    /**
+     * The name of the number of conferences which do not receive media from the gateway side.
+     * {@code Integer}.
+     */
+    public static final String TOTAL_CALLS_WITH_DROPPED_MEDIA = "total_calls_with_dropped_media";
+
+    /**
+     * The name of the total number of completed/expired conferences
+     * (failed + succeeded).
+     */
+    public static final String TOTAL_CONFERENCES_COMPLETED = "total_conferences_completed";
+
+    /**
+     * The name of the stat indicating the total number of conferences created.
+     */
+    public static final String TOTAL_CONFERENCES_CREATED = "total_conferences_created";
+
+    /**
+     * The name of the stat indicating the total number of conference-seconds
+     * (i.e. the sum of the lengths is seconds).
+     */
+    public static final String TOTAL_CONFERENCE_SECONDS = "total_conference_seconds";
+
+    /**
+     * The name of the stat indicating the total number of messages received from data channels.
+     */
+    public static final String TOTAL_DATA_CHANNEL_MESSAGES_RECEIVED = "total_data_channel_messages_received";
+
+    /**
+     * The name of the stat indicating the total number of messages sent over data channels.
+     */
+    public static final String TOTAL_DATA_CHANNEL_MESSAGES_SENT = "total_data_channel_messages_sent";
+
+    /**
+     * The name of the total number of conferences where all channels failed due to no payload traffic.
+     */
+    public static final String TOTAL_FAILED_CONFERENCES = "total_failed_conferences";
+
+    /**
+     * The name of the stat indicating the total number of times ICE failed.
+     */
+    public static final String TOTAL_ICE_FAILED = "total_ice_failed";
+
+    /**
+     * The name of the stat indicating the total number of times ICE succeeded.
+     */
+    public static final String TOTAL_ICE_SUCCEEDED = "total_ice_succeeded";
+
+    /**
+     * The name of the stat indicating the total number of times ICE succeeded over TCP.
+     */
+    public static final String TOTAL_ICE_SUCCEEDED_TCP = "total_ice_succeeded_tcp";
+
+    /**
+     * The name of the stat indicating the total number of participant-seconds
+     * that are loss-controlled (i.e. the sum of the lengths is seconds).
+     */
+    public static final String TOTAL_LOSS_CONTROLLED_PARTICIPANT_SECONDS = "total_loss_controlled_participant_seconds";
+
+    /**
+     * The name of the stat indicating the total number of participant-seconds that are loss-limited.
+     */
+    public static final String TOTAL_LOSS_LIMITED_PARTICIPANT_SECONDS = "total_loss_limited_participant_seconds";
+
+    /**
+     * The name of the stat indicating the total number of participant-seconds that are loss-degraded.
+     */
+    public static final String TOTAL_LOSS_DEGRADED_PARTICIPANT_SECONDS = "total_loss_degraded_participant_seconds";
+
+    /**
+     * The name of total memory statistic. Its runtime type is {@code Integer}.
+     */
+    public static final String TOTAL_MEMORY = "total_memory";
+
+    /**
+     * The total number of participants/endpoints created on this bridge.
+     */
+    public static final String TOTAL_PARTICIPANTS = "total_participants";
+
+    /**
+     * The name of the total number of conferences with some failed channels.
+     */
+    public static final String TOTAL_PARTIALLY_FAILED_CONFERENCES = "total_partially_failed_conferences";
+
+    /**
+     * The name of the stat indicating the total number of Octo packets which
+     * were dropped (due to a failure to parse, or an unknown conference ID).
+     */
+    public static final String TOTAL_PACKETS_DROPPED_OCTO = "total_packets_dropped_octo";
+
+    /**
+     * The name of the stat indicating the total number of RTP packets received.
+     */
+    public static final String TOTAL_PACKETS_RECEIVED = "total_packets_received";
+
+    /**
+     * The name of the stat indicating the total number of Octo packets received.
+     */
+    public static final String TOTAL_PACKETS_RECEIVED_OCTO = "total_packets_received_octo";
+
+    /**
+     * The name of the stat indicating the total number of RTP packets sent.
+     */
+    public static final String TOTAL_PACKETS_SENT = "total_packets_sent";
+
+    /**
+     * The name of the stat indicating the total number of Octo packets sent.
+     */
+    public static final String TOTAL_PACKETS_SENT_OCTO = "total_packets_sent_octo";
+
+    /**
+     * The name of used memory statistic. Its runtime type is {@code Integer}.
+     */
+    public static final String USED_MEMORY = "used_memory";
+
+    /**
+     * The name of the "version" statistic.
+     */
+    public static final String VERSION = "version";
+
+    /**
+     * The name of the number of video channels statistic. Its runtime type is
+     * {@code Integer}. We only use this for callstats.
+     */
+    public static final String VIDEO_CHANNELS = "videochannels";
+
+    /**
+     * The name of the number of video streams statistic. Its runtime type is {@code Integer}.
+     */
+    public static final String VIDEO_STREAMS = "videostreams";
+
+    /**
      * Tries to parse an object as an integer, returns null on failure.
      *
      * @param obj the object to parse.

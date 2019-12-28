@@ -70,8 +70,8 @@ public class RTCPFBPacket extends RTCPPacket
 
     /**
      * Gets a boolean that indicates whether or not the packet specified in the
-     * {@link ByteArrayBuffer} that is passed in the first argument is an RTCP RTPFB or PSFB
-     * packet.
+     * {@link ByteArrayBuffer} that is passed in the first argument is an RTCP
+     * RTPFB or PSFB packet.
      *
      * @param baf the {@link ByteArrayBuffer} that holds the RTCP packet.
      * @return true if the packet specified in the {@link ByteArrayBuffer} that is passed in the

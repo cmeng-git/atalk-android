@@ -460,7 +460,6 @@ public class DePacketizer extends AbstractCodec2
             if (baf == null) {
                 return -1;
             }
-
             return getSize(baf.getBuffer(), baf.getOffset(), baf.getLength());
         }
 
@@ -602,9 +601,9 @@ public class DePacketizer extends AbstractCodec2
         /**
          * Checks whether the arguments specify a valid buffer.
          *
-         * @param buf
-         * @param off
-         * @param len
+         * @param buf the byte buffer that contains the VP8 payload.
+         * @param off the offset in the byte buffer where the VP8 payload starts.
+         * @param len the length of the VP8 payload in the byte buffer.
          * @return true if the arguments specify a valid buffer, false
          * otherwise.
          */
@@ -632,8 +631,8 @@ public class DePacketizer extends AbstractCodec2
          * is set and the <tt>PID</tt> fields has value 0 in the VP8 Payload
          * Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
          *
-         * @param input
-         * @param offset
+         * @param input input
+         * @param offset offset
          * @return <tt>true</tt> if both the '<tt>start of partition</tt>' bit
          * is set and the <tt>PID</tt> fields has value 0 in the VP8 Payload
          * Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
@@ -648,8 +647,8 @@ public class DePacketizer extends AbstractCodec2
          * Returns the value of the <tt>PID</tt> (partition ID) field of the
          * VP8 Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
          *
-         * @param input
-         * @param offset
+         * @param input input
+         * @param offset offset
          * @return the value of the <tt>PID</tt> (partition ID) field of the
          * VP8 Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
          */
@@ -664,7 +663,6 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
          * @param len the length of the payload descriptor in the byte buffer.
-         *
          * @return true if the non-reference bit is NOT set, false otherwise.
          */
         public static boolean isReference(byte[] buf, int off, int len)
@@ -678,18 +676,37 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
          * @param len the length of the payload descriptor in the byte buffer.
-         *
          * @return the TL0PICIDX from the payload descriptor.
          */
         public static int getTL0PICIDX(byte[] buf, int off, int len)
         {
             int sz = getSize(buf, off, len);
-            if (sz < 1)
-            {
+            if (sz < 1) {
                 return -1;
             }
 
             return buf[off + sz - 2] & 0xff;
+        }
+
+        /**
+         * Provides a string description of the VP8 descriptor that can be used
+         * for debugging purposes.
+         *
+         * @param buf the byte buffer that holds the VP8 payload descriptor.
+         * @param off the offset in the byte buffer where the payload descriptor starts.
+         * @param len the length of the payload descriptor in the byte buffer.
+         * @return Descriptive string of the vp8 info
+         */
+        public static String toString(byte[] buf, int off, int len)
+        {
+            return "VP8PayloadDescriptor" +
+                    "[size=" + getSize(buf, off, len) +
+                    ", tid=" + getTemporalLayerIndex(buf, off, len) +
+                    ", tl0picidx=" + getTL0PICIDX(buf, off, len) +
+                    ", pid=" + getPictureId(buf, off) +
+                    ", isExtended=" + hasExtendedPictureId(buf, off, len) +
+                    ", hex=" + RTPUtils.toHexString(buf, off, Math.min(len, MAX_LENGTH), false) +
+                    "]";
         }
     }
 
@@ -719,7 +736,6 @@ public class DePacketizer extends AbstractCodec2
             return (input[offset] & S_BIT) == 0;
         }
     }
-
 
     /**
      * A class that represents a keyframe header structure (see RFC 6386, paragraph 9.1).

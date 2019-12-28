@@ -18,6 +18,7 @@ package org.atalk.android.gui.chat.filetransfer;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.*;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
@@ -34,7 +35,9 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.persistance.FileBackend;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 
 import java.io.File;
@@ -63,7 +66,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     private ChatActivity chatActivity;
 
     /**
-     * The xfer file and directory.
+     * The xfer file full path for saving the received file.
      */
     protected File mXferFile;
 
@@ -395,9 +398,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
         setXferStatus(status);
         // Must execute in UiThread to Update UI information
-        runOnUiThread(() -> {
-            updateView(status);
-        });
+        runOnUiThread(() -> updateView(status));
     }
 
     /**
@@ -455,6 +456,37 @@ public abstract class FileTransferConversation extends OSGiFragment
     public File getFileName()
     {
         return mXferFile;
+    }
+
+    /**
+     * Generate the mXferFile full filePath based on the given fileName and mimeType
+     *
+     * @param fileName the incoming xfer fileName
+     * @param mimeType the incoming file mimeType
+     */
+    protected void setTransferFilePath(String  fileName, String mimeType)
+    {
+        String downloadPath = FileBackend.MEDIA_DOCUMENT;
+        if (fileName.contains("voice-"))
+            downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
+        else if (!StringUtils.isNullOrEmpty(mimeType) && !mimeType.startsWith("*")) {
+            downloadPath = FileBackend.MEDIA + File.separator + mimeType.split("/")[0];
+        }
+
+        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
+        mXferFile = new File(downloadDir, fileName);
+
+        // If a file with the given name already exists, add an index to the file name.
+        int index = 0;
+        int filenameLength = fileName.lastIndexOf(".");
+        if (filenameLength == -1) {
+            filenameLength = fileName.length();
+        }
+        while (mXferFile.exists()) {
+            String newFileName = fileName.substring(0, filenameLength) + "-"
+                    + ++index + fileName.substring(filenameLength);
+            mXferFile = new File(downloadDir, newFileName);
+        }
     }
 
     /**

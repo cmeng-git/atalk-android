@@ -64,8 +64,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
     private int numDroppedPackets = 0;
 
     /**
-     * The pool of <tt>SourcePacket</tt> instances to reduce their allocations and garbage
-     * collection.
+     * The pool of <tt>SourcePacket</tt> instances to reduce their allocations and garbage collection.
      */
     private final Queue<SourcePacket> sourcePacketPool
             = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
@@ -196,8 +195,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
 
             pktLength = pkt.getLength();
             if (length < pktLength) {
-                throw new IOException("Length " + length + " is insufficient. Must be at least "
-                        + pktLength + ".");
+                throw new IOException("Length " + length + " is insufficient. Must be at least " + pktLength + ".");
             }
 
             readQ.remove();

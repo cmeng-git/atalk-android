@@ -39,7 +39,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * <tt>AbstractSCAudioClip</tt> monitors its <tt>mute</tt> property/state in order to silence
      * the played audio as appropriate/necessary.
      */
-    protected final AudioNotifierService audioNotifier;
+    private final AudioNotifierService audioNotifier;
 
     private Runnable command;
 
@@ -122,7 +122,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * Allows extenders/implementers to perform per-loop iteration initialization. The
      * <tt>AbstractSCAudioClip</tt> implementation does nothing.
      */
-    protected void enterRunOnceInPlayThread()
+    private void enterRunOnceInPlayThread()
     {
     }
 
@@ -508,7 +508,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     {
         if (!uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
             if (ringtone != null) {
-                Timber.d(new Exception(), "RingTone stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
+                Timber.d("RingTone stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
                 try {
                     ringtone.stop();
                     ringtone = null;
@@ -581,7 +581,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * @return the interval of time in milliseconds between consecutive plays of this audio. If
      * negative, this audio will not be played in a loop and will be played once only.
      */
-    public int getLoopInterval()
+    private int getLoopInterval()
     {
         return loopInterval;
     }
@@ -595,7 +595,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * @param loopInterval the interval of time in milliseconds between consecutive plays of this audio in a loop
      * to be set on this instance
      */
-    public void setLoopInterval(int loopInterval)
+    private void setLoopInterval(int loopInterval)
     {
         synchronized (sync) {
             if (this.loopInterval != loopInterval) {

@@ -232,7 +232,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
         @Override
         public void run()
         {
-            runOnUiThread(() -> hide());
+            runOnUiThread(AutoHideController.this::hide);
         }
     }
 

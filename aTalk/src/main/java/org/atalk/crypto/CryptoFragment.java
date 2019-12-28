@@ -737,9 +737,7 @@ public class CryptoFragment extends OSGiFragment
         @Override
         public void multipleInstancesDetected(OtrContact otrContact)
         {
-            runOnUiThread(() -> {
-                mOtr_Session.setVisible(true);
-            });
+            runOnUiThread(() -> mOtr_Session.setVisible(true));
         }
 
         @Override

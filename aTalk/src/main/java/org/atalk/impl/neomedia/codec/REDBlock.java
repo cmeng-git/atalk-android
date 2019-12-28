@@ -13,30 +13,15 @@
  */
 package org.atalk.impl.neomedia.codec;
 
-import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.service.neomedia.ByteArrayBufferImpl;
 
 /**
  * Represents a RED block.
  *
  * @author George Politis
  */
-public class REDBlock implements ByteArrayBuffer
+public class REDBlock extends ByteArrayBufferImpl
 {
-    /**
-     * The byte buffer that holds the RED block.
-     */
-    private final byte[] buf;
-
-    /**
-     * The length in the buffer of this RED block.
-     */
-    private int len;
-
-    /**
-     * The offset in the buffer where this RED block starts.
-     */
-    private int off;
-
     /**
      * The payload type of this RED block.
      */
@@ -51,46 +36,8 @@ public class REDBlock implements ByteArrayBuffer
      */
     public REDBlock(byte[] buf, int off, int len, byte pt)
     {
-        this.buf = buf;
+        super(buf, off, len);
         this.pt = pt;
-        this.off = off;
-        this.len = len;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public byte[] getBuffer()
-    {
-        return buf;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getLength()
-    {
-        return len;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setLength(int len)
-    {
-        this.len = len;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setOffset(int off)
-    {
-        this.off = off;
     }
 
     /**
@@ -99,16 +46,7 @@ public class REDBlock implements ByteArrayBuffer
     @Override
     public boolean isInvalid()
     {
-        return buf == null || buf.length < off + len;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getOffset()
-    {
-        return off;
+        return getBuffer() == null || buffer.length < getOffset() + getLength();
     }
 
     /**

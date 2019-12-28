@@ -17,7 +17,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.plugin.errorhandler.ExceptionHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

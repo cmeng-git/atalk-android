@@ -357,7 +357,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     public ChatRoomProviderWrapper findServerWrapperFromProvider(ProtocolProviderService protocolProvider)
     {
         for (ChatRoomProviderWrapper chatRoomProvider : providersList) {
-            if (chatRoomProvider.getProtocolProvider().equals(protocolProvider)) {
+            if ((chatRoomProvider != null) && chatRoomProvider.getProtocolProvider().equals(protocolProvider)) {
                 return chatRoomProvider;
             }
         }

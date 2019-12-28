@@ -156,7 +156,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                         }
 
                         credentials.setUserName(userNameEntered);
-                        credentials.setPassword(password.toCharArray());
+                        credentials.setPassword((password != null) ? password.toCharArray() : null);
                         credentials.setPasswordPersistent(storePassword);
                         credentials.setIbRegistration(ibRegistration);
 

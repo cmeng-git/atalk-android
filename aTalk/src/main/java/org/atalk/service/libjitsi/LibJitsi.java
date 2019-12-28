@@ -45,8 +45,7 @@ import timber.log.Timber;
 public abstract class LibJitsi
 {
     /**
-     * The <tt>LibJitsi</tt> instance which is provides the implementation of
-     * the <tt>getXXXService</tt> methods.
+     * The <tt>LibJitsi</tt> instance which is provides the implementation of the <tt>getXXXService</tt> methods.
      */
     private static LibJitsi impl;
 

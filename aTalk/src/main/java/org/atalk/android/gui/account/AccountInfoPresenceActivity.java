@@ -30,6 +30,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.contactlist.ContactInfoActivity;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.*;

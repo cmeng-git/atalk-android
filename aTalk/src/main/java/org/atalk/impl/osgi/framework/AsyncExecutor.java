@@ -6,28 +6,20 @@
  */
 package org.atalk.impl.osgi.framework;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import net.java.sip.communicator.util.Logger;
 
+import java.util.*;
+import java.util.concurrent.*;
+
 /**
- *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class AsyncExecutor<T extends Runnable>
 {
     private long keepAliveTime;
 
-    private final List<CommandFuture<T>> queue
-        = new LinkedList<CommandFuture<T>>();
+    private final List<CommandFuture<T>> queue = new LinkedList<> ();
 
     private boolean shutdown;
 
@@ -65,16 +57,13 @@ public class AsyncExecutor<T extends Runnable>
     {
         long idleTime = -1;
 
-        while (true)
-        {
+        while (true) {
             CommandFuture<T> commandFuture;
 
-            synchronized (this)
-            {
+            synchronized (this) {
                 if (shutdownNow)
                     return;
-                else if (queue.isEmpty())
-                {
+                else if (queue.isEmpty()) {
                     /*
                      * Technically, we may keep this Thread alive much longer
                      * than keepAliveTime since idleTime because we always try
@@ -85,27 +74,20 @@ public class AsyncExecutor<T extends Runnable>
                      */
                     if (idleTime == -1)
                         idleTime = System.currentTimeMillis();
-                    else if ((System.currentTimeMillis() - idleTime)
-                            > keepAliveTime)
+                    else if ((System.currentTimeMillis() - idleTime) > keepAliveTime)
                         return;
 
                     boolean interrupted = false;
-
-                    try
-                    {
+                    try {
                         wait(keepAliveTime);
-                    }
-                    catch (InterruptedException ie)
-                    {
+                    } catch (InterruptedException ie) {
                         interrupted = true;
                     }
                     if (interrupted)
                         Thread.currentThread().interrupt();
-
                     continue;
                 }
-                else
-                {
+                else {
                     idleTime = -1;
                     commandFuture = queue.remove(0);
                 }
@@ -114,21 +96,16 @@ public class AsyncExecutor<T extends Runnable>
             T command = commandFuture.command;
             Throwable exception = null;
 
-            try
-            {
+            try {
                 command.run();
-            }
-            catch (Throwable t)
-            {
+            } catch (Throwable t) {
                 exception = t;
 
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
                 else
                     uncaughtException(command, t);
-            }
-            finally
-            {
+            } finally {
                 commandFuture.setDone(
                         (exception == null) ? Boolean.TRUE : exception);
             }
@@ -140,8 +117,7 @@ public class AsyncExecutor<T extends Runnable>
         if (keepAliveTime < 0)
             throw new IllegalArgumentException("keepAliveTime");
 
-        synchronized (this)
-        {
+        synchronized (this) {
             this.keepAliveTime = unit.toMillis(keepAliveTime);
             notifyAll();
         }
@@ -157,40 +133,33 @@ public class AsyncExecutor<T extends Runnable>
     {
         List<CommandFuture<T>> awaiting;
 
-        synchronized (this)
-        {
+        synchronized (this) {
             shutdown = true;
             shutdownNow = true;
             notifyAll();
 
             boolean interrupted = false;
 
-            while (thread != null)
-            {
-                try
-                {
+            while (thread != null) {
+                try {
                     wait(keepAliveTime);
-                }
-                catch (InterruptedException ie)
-                {
+                } catch (InterruptedException ie) {
                     interrupted = true;
                 }
             }
             if (interrupted)
                 Thread.currentThread().interrupt();
 
-            awaiting = new ArrayList<CommandFuture<T>>(queue.size());
+            awaiting = new ArrayList<>(queue.size());
             awaiting.addAll(queue);
         }
 
         List<T> awaitingCommands = new ArrayList<T>(awaiting.size());
 
-        for (CommandFuture<T> commandFuture : awaiting)
-        {
+        for (CommandFuture<T> commandFuture : awaiting) {
             awaitingCommands.add(commandFuture.command);
             commandFuture.setDone(Boolean.FALSE);
         }
-
         return awaitingCommands;
     }
 
@@ -215,31 +184,25 @@ public class AsyncExecutor<T extends Runnable>
     {
         if ((thread == null)
                 && (!shutdown && !shutdownNow)
-                && !queue.isEmpty())
-        {
+                && !queue.isEmpty()) {
             thread
-                = new Thread(getClass().getName())
+                    = new Thread(getClass().getName())
+            {
+                @Override
+                public void run()
                 {
-                    @Override
-                    public void run()
-                    {
-                        try
-                        {
-                            runInThread();
-                        }
-                        finally
-                        {
-                            synchronized (AsyncExecutor.this)
-                            {
-                                if (Thread.currentThread().equals(thread))
-                                {
-                                    thread = null;
-                                    startThreadOrNotifyAll();
-                                }
+                    try {
+                        runInThread();
+                    } finally {
+                        synchronized (AsyncExecutor.this) {
+                            if (Thread.currentThread().equals(thread)) {
+                                thread = null;
+                                startThreadOrNotifyAll();
                             }
                         }
                     }
-                };
+                }
+            };
             thread.setDaemon(true);
             thread.start();
         }
@@ -249,11 +212,10 @@ public class AsyncExecutor<T extends Runnable>
 
     protected void uncaughtException(T command, Throwable exception)
     {
-        Logger.getLogger(AsyncExecutor.class).error("Error executing command "+command, exception);
+        Logger.getLogger(AsyncExecutor.class).error("Error executing command " + command, exception);
     }
 
-    private static class CommandFuture<T extends Runnable>
-        implements Future<Object>
+    private static class CommandFuture<T extends Runnable> implements Future<Object>
     {
         public final T command;
 
@@ -273,36 +235,27 @@ public class AsyncExecutor<T extends Runnable>
         }
 
         public Object get()
-            throws ExecutionException,
-                   InterruptedException
+                throws ExecutionException,
+                InterruptedException
         {
-            try
-            {
+            try {
                 return get(0, TimeUnit.MILLISECONDS);
-            }
-            catch (TimeoutException te)
-            {
+            } catch (TimeoutException te) {
                 /*
-                 * Since the timeout is infinite, a TimeoutException is
-                 * not expected.
+                 * Since the timeout is infinite, a TimeoutException is not expected.
                  */
                 throw new RuntimeException(te);
             }
         }
 
         public synchronized Object get(long timeout, TimeUnit unit)
-            throws ExecutionException,
-                   InterruptedException,
-                   TimeoutException
+                throws ExecutionException, InterruptedException, TimeoutException
         {
             timeout = unit.toMillis(timeout);
-
             boolean timeoutException = false;
 
-            while (true)
-            {
-                if (done != null)
-                {
+            while (true) {
+                if (done != null) {
                     if (done)
                         break;
                     else
@@ -312,8 +265,7 @@ public class AsyncExecutor<T extends Runnable>
                     throw new ExecutionException(exception);
                 else if (timeoutException)
                     throw new TimeoutException();
-                else
-                {
+                else {
                     wait(timeout);
                     timeoutException = (timeout != 0);
                 }

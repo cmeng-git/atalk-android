@@ -32,7 +32,6 @@ public class AndroidEncoder extends AndroidCodec
 	 */
 	private static final VideoFormat[] SUPPORTED_OUTPUT_FORMATS = new VideoFormat[]{
 			new VideoFormat(Constants.VP8),
-			new VideoFormat(Constants.H263P),
 			new ParameterizedVideoFormat(Constants.H264,
 					VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0"),
 			new ParameterizedVideoFormat(Constants.H264,
@@ -131,10 +130,8 @@ public class AndroidEncoder extends AndroidCodec
 		float frameRate = inputVideoFormat.getFrameRate();
 
 		return new VideoFormat[]{
-				new VideoFormat(Constants.VP8, size,
-			/* maxDataLength */Format.NOT_SPECIFIED, Format.byteArray, frameRate),
-				new VideoFormat(Constants.H263P, size, Format.NOT_SPECIFIED, Format.byteArray,
-						frameRate),
+				new VideoFormat(Constants.VP8, size, /* maxDataLength */
+                        Format.NOT_SPECIFIED, Format.byteArray, frameRate),
 				new ParameterizedVideoFormat(Constants.H264, size, Format.NOT_SPECIFIED,
 						Format.byteArray, frameRate, ParameterizedVideoFormat.toMap(
 						VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0")),

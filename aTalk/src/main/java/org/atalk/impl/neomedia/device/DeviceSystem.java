@@ -82,8 +82,8 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      *
      * @param deviceList the <tt>List</tt> of <tt>CaptureDeviceInfo</tt> which are to be filtered based on the
      * specified <tt>MediaLocator</tt> protocol
-     * @param locatorProtocol the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s which
-     * are to be returned
+     * @param locatorProtocol the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s
+     * which are to be returned
      * @return a <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s which are elements of the specified
      * <tt>deviceList</tt> and have the specified <tt>locatorProtocol</tt>
      */
@@ -158,11 +158,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
         /*
          * The list of supported DeviceSystem implementations if hard-coded. The order of the
          * classes is significant and represents a decreasing preference with respect to which
-         * DeviceSystem is to be picked up as the default one (for the specified mediaType, of
-         * course).
+         * DeviceSystem is to be picked up as the default one (for the specified mediaType, of course).
          */
         final String[] classNames;
-
 
         switch (mediaType) {
             case AUDIO:
@@ -305,12 +303,11 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      *
      * @param deviceSystem the <tt>DeviceSystem</tt> to invoke <tt>initialize()</tt> on
      * @param asynchronous <tt>true</tt> if the invocation is to be performed in a separate thread and the method
-     * is to return immediately without waiting for the invocation to return; otherwise,
-     * <tt>false</tt>
+     * is to return immediately without waiting for the invocation to return; otherwise, <tt>false</tt>
      * @throws Exception if an error occurs during the initialization of <tt>initialize()</tt> on the
      * specified <tt>deviceSystem</tt>
      */
-    static void invokeDeviceSystemInitialize(final DeviceSystem deviceSystem, boolean asynchronous)
+    private static void invokeDeviceSystemInitialize(final DeviceSystem deviceSystem, boolean asynchronous)
             throws Exception
     {
         if (OSUtils.IS_WINDOWS || asynchronous) {
@@ -347,11 +344,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                 return;
 
             /*
-             * Wait for the initialize() invocation on deviceSystem to return i.e. the thread to
-             * die.
+             * Wait for the initialize() invocation on deviceSystem to return i.e. the thread to die.
              */
             boolean interrupted = false;
-
             while (thread.isAlive()) {
                 try {
                     thread.join();
@@ -434,7 +429,6 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     public Renderer createRenderer()
     {
         String className = getRendererClassName();
-
         if (className != null) {
             try {
                 return (Renderer) Class.forName(className).newInstance();

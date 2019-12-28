@@ -132,7 +132,6 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
 
             // Add. Copy on write.
             List<OutputDataStreamDesc> newStreams = new ArrayList<>(_streams.size() * 3 / 2 + 1);
-
             newStreams.addAll(_streams);
             newStreams.add(new OutputDataStreamDesc(connectorDesc, stream));
             _streams = newStreams;
@@ -233,8 +232,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
      *
      * @param buf the <tt>byte</tt>s of a datagram packet which may contain an RTP packet
      * @param off the offset in <tt>buf</tt> at which the actual data in <tt>buf</tt> starts
-     * @param len the number of <tt>byte</tt>s in <tt>buf</tt> starting at <tt>off</tt> comprising the
-     * actual data
+     * @param len the number of <tt>byte</tt>s in <tt>buf</tt> starting at <tt>off</tt> comprising the actual data
      * @return the number of <tt>byte</tt>s in <tt>buf</tt> starting at <tt>off</tt> comprising the
      * actual data after the possible removal of the RTP header extension(s)
      */
@@ -329,7 +327,6 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                     }
 
                     writeIndex = writeQHead;
-
                     RTPTranslatorBuffer write = writeQ[writeIndex];
 
                     buffer = write.data;
@@ -381,16 +378,14 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
      *
      * @param destination the <tt>StreamRTPManagerDesc</tt> which is the destination of the write
      * @param buffer the data to be written into <tt>destination</tt>
-     * @param offset the offset in <tt>buffer</tt> at which the data to be written into
-     * <tt>destination</tt> starts
+     * @param offset the offset in <tt>buffer</tt> at which the data to be written into <tt>destination</tt> starts
      * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> beginning at <tt>offset</tt> which
      * constitute the data to the written into <tt>destination</tt>
      * @param format the FMJ <tt>Format</tt> of the data to be written into <tt>destination</tt>
      * @param exclusion the <tt>StreamRTPManagerDesc</tt> which is exclude from the write batch, possibly
      * because it is the cause of the write batch in the first place
      * @return <tt>true</tt> to write the specified data into the specified <tt>destination</tt> or
-     * <tt>false</tt> to not write the specified data into the specified
-     * <tt>destination</tt>
+     * <tt>false</tt> to not write the specified data into the specified <tt>destination</tt>
      */
     private boolean willWriteControl(StreamRTPManagerDesc destination, byte[] buffer, int offset,
             int length, Format format, StreamRTPManagerDesc exclusion)
@@ -409,8 +404,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
 
                 if ((pt == 205 /* RTPFB */) || (pt == 206 /* PSFB */)) {
                     // Verify the length field.
-                    int rtcpLength = (RTPUtils.readUint16AsInt(buffer,
-                            offset + 2) + 1) * 4;
+                    int rtcpLength = (RTPUtils.readUint16AsInt(buffer, offset + 2) + 1) * 4;
 
                     if (rtcpLength <= length) {
                         int ssrcOfMediaSource = 0;
@@ -435,9 +429,9 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                                 int ssrcOfPacketSender = RTPUtils.readInt(buffer, offset + 4);
                                 String message = getClass().getName() + ".willWriteControl: FMT "
                                         + fmt + ", PT " + pt + ", SSRC of packet sender "
-                                        + Long.toString(ssrcOfPacketSender & 0xffffffffL)
+                                        + (ssrcOfPacketSender & 0xffffffffL)
                                         + ", SSRC of media source "
-                                        + Long.toString(ssrcOfMediaSource & 0xffffffffL);
+                                        + (ssrcOfMediaSource & 0xffffffffL);
 
                                 Timber.log(TimberLog.FINER, "%s", message);
                             }
@@ -461,8 +455,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
      *
      * @param destination the <tt>StreamRTPManagerDesc</tt> which is the destination of the write
      * @param buf the data to be written into <tt>destination</tt>
-     * @param off the offset in <tt>buf</tt> at which the data to be written into <tt>destination</tt>
-     * starts
+     * @param off the offset in <tt>buf</tt> at which the data to be written into <tt>destination</tt> starts
      * @param len the number of <tt>byte</tt>s in <tt>buf</tt> beginning at <tt>off</tt> which
      * constitute the data to the written into <tt>destination</tt>
      * @param format the FMJ <tt>Format</tt> of the data to be written into <tt>destination</tt>
@@ -474,8 +467,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
     private boolean willWriteData(StreamRTPManagerDesc destination, byte[] buf, int off, int len,
             Format format, StreamRTPManagerDesc exclusion)
     {
-        // Only write data packets to OutputDataStreams for which the
-        // associated MediaStream allows sending.
+        // Only write data packets to OutputDataStreams for which the associated MediaStream allows sending.
         if (!destination.streamRTPManager.getMediaStream().getDirection().allowsSending()) {
             return false;
         }
@@ -531,7 +523,6 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
         }
 
         RTPTranslatorBuffer write = writeQ[writeIndex];
-
         if (write == null)
             writeQ[writeIndex] = write = new RTPTranslatorBuffer();
 
@@ -557,8 +548,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
     }
 
     /**
-     * Writes an <tt>RTCPFeedbackMessage</tt> into a destination identified by
-     * a specific <tt>MediaStream</tt>.
+     * Writes an <tt>RTCPFeedbackMessage</tt> into a destination identified by specific <tt>MediaStream</tt>.
      *
      * @param controlPayload
      * @param destination

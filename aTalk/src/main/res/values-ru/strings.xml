@@ -428,7 +428,7 @@
 	<string name="service_gui_JOIN_VIDEO">Присоединить видео</string>
 	<string name="service_gui_JOB_TITLE">Название работы</string>
 	<string name="service_gui_JOIN_CHAT_ROOM">Вступить в чат&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Не удалось присоединиться к комнате %1$s с псевдонимом: %2$s.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Не удалось присоединиться к комнате:\n%1$s с псевдонимом: %2$s.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD">Комната чата запрашивает пароль.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION">Требуется регистрация в чате.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Вступить в чат</string>
@@ -744,7 +744,7 @@
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Вызов не защищен.</string>
     <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Нажмите здесь, чтобы сравнить секрет секретности с вашим партнером.</string>
     <string name="service_gui_security_CALL_SECURED_TOOLTIP">Звонок защищен. Для получения дополнительной информации нажмите здесь.</string>
-    <string name="service_gui_security_CIPHER">Cipher: {0}</string>
+    <string name="service_gui_security_CIPHER">Cipher: %1$s</string>
     <string name="service_gui_security_CLEAR">Очистить</string>
     <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Сравнить с партнером:</string>
     <string name="service_gui_security_CONFIRM">Подтвердить</string>
@@ -753,7 +753,7 @@
     <string name="service_gui_security_SECURE_AUDIO">Защищенный звук</string>
     <string name="service_gui_security_SECURE_VIDEO">Защищенное видео</string>
     <string name="service_gui_security_SECURITY_ALERT">Попытка обеспечить безопасный вызов. Отключится в</string>
-    <string name="service_gui_security_STRING_COMPARED">String сравнивается!</string>
+    <string name="service_gui_security_STRING_COMPARED">String сравнивается:</string>
     <string name="service_gui_security_VERIFY_TOAST">Включена защита звонков! Нажмите, чтобы сравнить строку безопасности сейчас или используйте меню позже.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Видео не защищено</string>
 

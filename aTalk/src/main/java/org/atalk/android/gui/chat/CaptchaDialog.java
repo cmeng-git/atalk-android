@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.*;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.*;
@@ -96,17 +95,16 @@ public class CaptchaDialog extends Dialog
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.captcha_challenge);
         setContentView(R.layout.captcha_challenge);
+        setTitle(R.string.captcha_challenge);
 
         mImageView = findViewById(R.id.captcha);
         mCaptchaText = findViewById(R.id.input);
         mReason = findViewById(R.id.reason_field);
 
+        // initial visibility states in xml
         mAcceptButton = findViewById(R.id.button_accept);
-        mAcceptButton.setVisibility(View.VISIBLE);
         mOKButton = findViewById(R.id.button_ok);
-        mOKButton.setVisibility(View.GONE);
         mCancelButton = findViewById(R.id.button_cancel);
 
         if (initCaptchaData()) {
@@ -148,20 +146,18 @@ public class CaptchaDialog extends Dialog
      */
     private void initializeViewListeners()
     {
-        mImageView.setOnClickListener(v -> mCaptchaText.requestFocus()
-        );
+        mImageView.setOnClickListener(v -> mCaptchaText.requestFocus());
 
         mAcceptButton.setOnClickListener(v -> {
-            onAcceptClicked();
-            showResult();
+            showResult(onAcceptClicked(false));
+        });
+
+        mCancelButton.setOnClickListener(v -> {
+            // force to terminate smack wait loop early by sending empty reply
+            showResult(onAcceptClicked(true));
         });
 
         mOKButton.setOnClickListener(v -> closeDialog());
-
-        mCancelButton.setOnClickListener(v -> {
-            callBack.onResult(cancel);
-            closeDialog();
-        });
     }
 
     /**
@@ -178,8 +174,11 @@ public class CaptchaDialog extends Dialog
      * </x>
      * </captcha>
      * </iq>
+     *
+     * @param isCancel true is user cancel; send empty reply and callback with cancel
+     * @return the captcha reply result success or failure
      */
-    private void onAcceptClicked()
+    private boolean onAcceptClicked(boolean isCancel)
     {
         formSubmit = new DataForm(DataForm.Type.submit);
         addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
@@ -209,19 +208,22 @@ public class CaptchaDialog extends Dialog
             createStanzaCollectorAndSend(iqCaptcha).nextResultOrThrow();
             mReasonText = mContext.getString(R.string.service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID);
             callBack.onResult(validated);
+            return true;
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
                 | SmackException.NotConnectedException | InterruptedException ex) {
             String errMsg = ex.getMessage();
             if (ex instanceof XMPPException.XMPPErrorException) {
                 StanzaError xmppError = ((XMPPException.XMPPErrorException) ex).getStanzaError();
-                errMsg += "\n" + xmppError.getDescriptiveText();
+                errMsg += "\n: " + xmppError.getDescriptiveText();
             }
-            Timber.e("Exception: %s", errMsg);
+            Timber.e("Captcha Reply Exception: %s", errMsg);
             mReasonText = errMsg;
-            callBack.onResult(failed);
+            if (isCancel)
+                callBack.onResult(cancel);
+            else
+                callBack.onResult(failed);
         }
-        mCaptchaText.setEnabled(false);
-        mCancelButton.setVisibility(View.GONE);
+        return false;
     }
 
     /**
@@ -305,18 +307,28 @@ public class CaptchaDialog extends Dialog
         } catch (IOException e) {
             mReasonText = e.getMessage();
             callBack.onResult(failed);
-            showResult();
+            showResult(false);
         }
         return false;
     }
 
     /**
      * Shows IBR registration result.
+     *
+     * @param success Captcha reply return result
      */
-    private void showResult()
+    private void showResult(boolean success)
     {
-        mReason.setText(mReasonText);
-        mAcceptButton.setVisibility(View.GONE);
-        mOKButton.setVisibility(View.VISIBLE);
+        if (success) {
+            mReason.setText(mReasonText);
+            mCaptchaText.setEnabled(false);
+
+            mAcceptButton.setVisibility(View.GONE);
+            mCancelButton.setVisibility(View.GONE);
+            mOKButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            closeDialog();
+        }
     }
 }

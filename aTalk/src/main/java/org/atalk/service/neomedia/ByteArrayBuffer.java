@@ -66,4 +66,9 @@ public interface ByteArrayBuffer
      * instance is found to be invalid, <tt>false</tt> otherwise.
      */
     boolean isInvalid();
+
+    void readRegionToBuff(int off, int len, byte[] outBuff);
+    void grow(int howMuch);
+    void append(byte[] data, int len);
+    void shrink(int len);
 }

@@ -145,6 +145,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     {
         if (chatRoomListView != null) {
             chatRoomListFragment.runOnUiThread(chatRoomListView::invalidateViews);
+            expandAllGroups();
         }
     }
 
@@ -187,7 +188,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
     /**
      * Updates the chatRoomWrapper unread message count.
-     * Hide widge if (count == 0)
+     * Hide widget if (count == 0)
      *
      * @param groupIndex the index of the group to update
      * @param chatRoomIndex the index of the chatRoomWrapper to update

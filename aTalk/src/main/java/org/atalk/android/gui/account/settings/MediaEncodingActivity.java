@@ -13,7 +13,7 @@ import android.view.*;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.fragment.ActionBarToggleFragment;
+import org.atalk.android.gui.actionbar.ActionBarToggleFragment;
 import org.atalk.impl.neomedia.*;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;

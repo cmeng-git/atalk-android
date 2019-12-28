@@ -25,10 +25,12 @@ import net.java.sip.communicator.util.call.CallPeerAdapter;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.notification.CallControl;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.controller.AutoHideController;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
 import org.atalk.android.util.java.awt.Dimension;
@@ -45,8 +47,6 @@ import java.util.Iterator;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.*;
 import timber.log.Timber;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /**
  * The <tt>VideoCallActivity</tt> corresponds the call screen.
@@ -300,6 +300,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             }
             return;
         }
+
         doUpdateHoldStatus();
         doUpdateMuteStatus();
         updateSpeakerphoneStatus();
@@ -801,8 +802,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void showZrtpInfoDialog()
     {
-        ZrtpInfoDialog zrtpInfo = ZrtpInfoDialog.newInstance(
-                getIntent().getStringExtra(CallManager.CALL_IDENTIFIER));
+        ZrtpInfoDialog zrtpInfo = ZrtpInfoDialog.newInstance(getIntent().getStringExtra(CallManager.CALL_IDENTIFIER));
         zrtpInfo.show(getSupportFragmentManager(), "zrtpinfo");
     }
 

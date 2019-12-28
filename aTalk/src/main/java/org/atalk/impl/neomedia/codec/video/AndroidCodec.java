@@ -125,9 +125,6 @@ abstract class AndroidCodec extends AbstractCodec2
         if (encoding.equals(Constants.VP8)) {
             codecType = CodecInfo.MEDIA_CODEC_TYPE_VP8;
         }
-        else if (encoding.equals(Constants.H263P)) {
-            codecType = CodecInfo.MEDIA_CODEC_TYPE_H263;
-        }
         else if (encoding.equals(Constants.H264)) {
             codecType = CodecInfo.MEDIA_CODEC_TYPE_H264;
         }

@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.service.osgi.OSGiService;
 
 /**

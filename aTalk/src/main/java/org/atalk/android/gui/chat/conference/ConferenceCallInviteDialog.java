@@ -28,7 +28,6 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.*;
@@ -40,7 +39,7 @@ import java.util.*;
  *
  * @author Eng Chong Meng
  */
-public class ConferenceInviteDialog extends Dialog implements OnChildClickListener, DialogInterface.OnShowListener
+public class ConferenceCallInviteDialog extends Dialog implements OnChildClickListener, DialogInterface.OnShowListener
 {
     private static boolean MUC_OFFLINE_ALLOW = true;
 
@@ -98,7 +97,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
     private final boolean isJitsiVideobridge;
 
     /**
-     * Initializes a new <tt>ConferenceInviteDialog</tt> instance which is to invite
+     * Initializes a new <tt>ConferenceCallInviteDialog</tt> instance which is to invite
      * contacts/participants in a specific telephony conference.
      *
      * @param conference the telephony conference in which the new instance is to invite contacts/participants
@@ -107,7 +106,7 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
      * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
      * otherwise, <tt>false</tt>
      */
-    public ConferenceInviteDialog(Context mContext, CallConference conference, ProtocolProviderService preselectedProvider,
+    public ConferenceCallInviteDialog(Context mContext, CallConference conference, ProtocolProviderService preselectedProvider,
             List<ProtocolProviderService> protocolProviders, final boolean isJitsiVideobridge)
     {
         super(mContext);
@@ -122,59 +121,59 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
     }
 
     /**
-     * Constructs the <tt>ConferenceInviteDialog</tt>.
+     * Constructs the <tt>ConferenceCallInviteDialog</tt>.
      */
-    public ConferenceInviteDialog(Context mContext)
+    public ConferenceCallInviteDialog(Context mContext)
     {
         this(mContext, null, null, null, false);
     }
 
     /**
-     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying an already created
+     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying an already created
      * conference. To use when inviting contacts to an existing conference is needed.
      *
      * @param conference the existing <tt>CallConference</tt>
      */
-    public ConferenceInviteDialog(Context mContext, CallConference conference)
+    public ConferenceCallInviteDialog(Context mContext, CallConference conference)
     {
         this(mContext, conference, null, null, false);
     }
 
     /**
-     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying an already created
+     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying an already created
      * conference. To use when inviting contacts to an existing conference is needed.
      *
      * @param conference the existing <tt>CallConference</tt>
      */
-    public ConferenceInviteDialog(Context mContext, CallConference conference,
+    public ConferenceCallInviteDialog(Context mContext, CallConference conference,
             ProtocolProviderService preselectedProtocolProvider, boolean isJitsiVideobridge)
     {
         this(mContext, conference, preselectedProtocolProvider, null, isJitsiVideobridge);
     }
 
     /**
-     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying a preselected protocol
+     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying a preselected protocol
      * provider to be used and if this is an invite for a video bridge conference.
      *
      * @param protocolProviders the protocol providers list
      * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
      * otherwise, <tt>false</tt>
      */
-    public ConferenceInviteDialog(Context mContext,
+    public ConferenceCallInviteDialog(Context mContext,
             List<ProtocolProviderService> protocolProviders, boolean isJitsiVideobridge)
     {
         this(mContext, null, null, protocolProviders, isJitsiVideobridge);
     }
 
     /**
-     * Creates an instance of <tt>ConferenceInviteDialog</tt> by specifying a preselected protocol
+     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying a preselected protocol
      * provider to be used and if this is an invite for a video bridge conference.
      *
      * @param selectedConfProvider the preselected protocol provider
      * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
      * otherwise, <tt>false</tt>
      */
-    public ConferenceInviteDialog(Context mContext, ProtocolProviderService selectedConfProvider,
+    public ConferenceCallInviteDialog(Context mContext, ProtocolProviderService selectedConfProvider,
             boolean isJitsiVideobridge)
     {
         this(mContext, null, selectedConfProvider, null, isJitsiVideobridge);
@@ -264,8 +263,8 @@ public class ConferenceInviteDialog extends Dialog implements OnChildClickListen
 
     private MetaContactListAdapter getContactListAdapter()
     {
-        ContactListFragment clf = (ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
         if (contactListAdapter == null) {
+            ContactListFragment clf = new ContactListFragment(); //(ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
             // Disable call button options
             contactListAdapter = new MetaContactListAdapter(clf, false);
             contactListAdapter.initModelData();

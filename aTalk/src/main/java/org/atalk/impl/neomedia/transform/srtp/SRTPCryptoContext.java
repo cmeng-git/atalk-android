@@ -37,12 +37,11 @@ package org.atalk.impl.neomedia.transform.srtp;
 import org.atalk.bccontrib.params.ParametersForSkein;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
+import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.RawPacket;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 import java.util.Arrays;
-
-import javax.media.Buffer;
 
 import timber.log.Timber;
 
@@ -196,7 +195,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      * that authentication is to not be performed or <tt>pkt</tt> was successfully
      * authenticated; otherwise, <tt>false</tt>
      */
-    private boolean authenticatePacket(RawPacket pkt)
+    private boolean authenticatePacket(ByteArrayBuffer pkt)
     {
         if (policy.getAuthType() != SRTPPolicy.NULL_AUTHENTICATION) {
             int tagLength = policy.getAuthTagLength();
@@ -213,7 +212,8 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
             for (int i = 0; i < tagLength; i++) {
                 nonEqual |= (tempStore[i] ^ tagStore[i]);
             }
-            return (nonEqual == 0);
+            if (nonEqual != 0)
+                return false;
         }
         return true;
     }
@@ -228,25 +228,14 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      * @return <tt>true</tt> if the specified sequence number indicates that the packet is not a
      * replayed one; <tt>false</tt>, otherwise
      */
-    boolean checkReplay(int seqNo, long guessedIndex, boolean isAuthPacket)
+    boolean checkReplay(int seqNo, long guessedIndex)
     {
         // If it is just resume backToCall from chat, then ignore the first checkReply result
         if (!checkReplay) {
             return true;
         }
 
-        // if video call is just resume from pause, then igore the first result if failed
-        //        if (((seqNo - s_l) > 10 || (seqNo < s_l)) && VideoCallActivity.isBackToChat()) {
-        //            Timber.e("CheckReplay state: " + Long.toString(0xFFFFFFFFL & ssrc) + ": seqNo: "
-        //                    + seqNo + ", s_l: " + s_l + ", state: " + isAuthPacket);
-        //            VideoCallActivity.setBackToChat(false);
-        //            if (!isAuthPacket)
-        //                reSync(seqNo, guessedIndex);
-        //            return true;
-        //        }
-
-        // Compute the index of the previously received packet and its delta to
-        // the newly received packet.
+        // Compute the index of the previously received packet and its delta to the newly received packet.
         long localIndex = (((long) roc) << 16) | s_l;
         long delta = guessedIndex - localIndex;
 
@@ -389,10 +378,10 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      *
      * @param pkt the RTP packet to be encrypted/decrypted
      */
-    public void processPacketAESCM(RawPacket pkt)
+    public void processPacketAESCM(ByteArrayBuffer pkt)
     {
-        int ssrc = pkt.getSSRC();
-        int seqNo = pkt.getSequenceNumber();
+        int ssrc = RawPacket.getSSRC(pkt);
+        int seqNo = RawPacket.getSequenceNumber(pkt);
         long index = (((long) guessedROC) << 16) | seqNo;
 
         // byte[] iv = new byte[16];
@@ -405,16 +394,17 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         for (i = 4; i < 8; i++) {
             ivStore[i] = (byte) ((0xFF & (ssrc >> ((7 - i) * 8))) ^ saltKey[i]);
         }
-
         for (i = 8; i < 14; i++) {
             ivStore[i] = (byte) ((0xFF & (byte) (index >> ((13 - i) * 8))) ^ saltKey[i]);
         }
         ivStore[14] = ivStore[15] = 0;
 
-        int payloadOffset = pkt.getHeaderLength();
-        int payloadLength = pkt.getPayloadLength();
-
-        cipherCtr.process(pkt.getBuffer(), pkt.getOffset() + payloadOffset, payloadLength, ivStore);
+        int rtpHeaderLength = RawPacket.getHeaderLength(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
+        cipherCtr.process(
+                pkt.getBuffer(),
+                pkt.getOffset() + rtpHeaderLength,
+                pkt.getLength() - rtpHeaderLength,
+                ivStore);
     }
 
     /**
@@ -422,7 +412,7 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      *
      * @param pkt the RTP packet to be encrypted/decrypted
      */
-    public void processPacketAESF8(RawPacket pkt)
+    public void processPacketAESF8(ByteArrayBuffer pkt)
     {
         // 11 bytes of the RTP header are the 11 bytes of the iv
         // the first byte of the RTP header is not used.
@@ -437,31 +427,37 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         ivStore[14] = (byte) (roc >> 8);
         ivStore[15] = (byte) roc;
 
-        int payloadOffset = pkt.getHeaderLength();
-        int payloadLength = pkt.getPayloadLength();
-
-        cipherF8.process(pkt.getBuffer(), pkt.getOffset() + payloadOffset, payloadLength, ivStore);
+        int rtpHeaderLength = RawPacket.getHeaderLength(pkt.getBuffer(), pkt.getOffset(), pkt.getLength());
+        cipherF8.process(
+                pkt.getBuffer(),
+                pkt.getOffset() + rtpHeaderLength,
+                pkt.getLength() - rtpHeaderLength,
+                ivStore);
     }
 
     /**
-     * Transforms an SRTP packet into an RTP packet. The method is called when an SRTP packet is
-     * received. Operations done by the this operation include: authentication check, packet replay
-     * check and decryption. Both encryption and authentication functionality can be turned off as
-     * long as the SRTPPolicy used in this SRTPCryptoContext is requires no encryption and no
-     * authentication. Then the packet will be sent out untouched. However, this is not encouraged.
-     * If no SRTP feature is enabled, then we shall not use SRTP TransformConnector. We should use
-     * the original method (RTPManager managed transportation) instead.
+     * Transforms an SRTP packet into an RTP packet. The method is called when
+     * an SRTP packet is received. Operations done by the this operation
+     * include: authentication check, packet replay check and decryption. Both
+     * encryption and authentication functionality can be turned off as long as
+     * the SRTPPolicy used in this SRTPCryptoContext is requires no encryption
+     * and no authentication. Then the packet will be sent out untouched.
+     * However, this is not encouraged. If no SRTP feature is enabled, then we
+     * shall not use SRTP TransformConnector. We should use the original method
+     * (RTPManager managed transportation) instead.
      *
      * @param pkt the RTP packet that is just received
-     * @return <tt>true</tt> if the packet can be accepted; <tt>false</tt> if the packet failed
-     * authentication or failed replay check
+     * @param skipDecryption if {@code true}, the decryption of the packet will not be performed (so as not to waste
+     * resources when it is not needed). The packet will still be authenticated and the ROC updated.
+     * @return <tt>true</tt> if the packet can be accepted; <tt>false</tt> if
+     * the packet failed authentication or failed replay check
      */
-    synchronized public boolean reverseTransformPacket(RawPacket pkt)
+    synchronized public boolean reverseTransformPacket(ByteArrayBuffer pkt, boolean skipDecryption)
     {
-//        Timber.d("Reverse transform for SSRC %s SeqNo = %s s_l = %s seqNumSet = %s roc = %s guessedROC = %s",
-//                this.ssrc, pkt.getSequenceNumber(), s_l, seqNumSet,  guessedROC, roc);
+        int seqNo = RawPacket.getSequenceNumber(pkt);
 
-        int seqNo = pkt.getSequenceNumber();
+        // Timber.d("Reverse transform for SSRC %s SeqNo = %s s_l = %s seqNumSet = %s roc = %s guessedROC = %s",
+        // this.ssrc, pkt.getSequenceNumber(), s_l, seqNumSet,  guessedROC, roc);
 
         // Whether s_l was initialized while processing this packet.
         boolean seqNumWasJustSet = false;
@@ -475,18 +471,12 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         // Stores the guessed rollover counter (ROC) in this.guessedROC.
         long guessedIndex = guessIndex(seqNo);
         boolean b = false;
-        boolean isAuthPacket = authenticatePacket(pkt);
 
         // Replay control
-        if (checkReplay(seqNo, guessedIndex, isAuthPacket)) {
+        if (checkReplay(seqNo, guessedIndex)) {
             // Authenticate the packet.
-            if (isAuthPacket) {
-                // If a RawPacket is flagged with Buffer.FLAG_DISCARD, then it
-                // should have been discarded earlier. Anyway, at least skip its
-                // decrypting. We flag a RawPacket with Buffer.FLAG_SILENCE when
-                // we want to ignore its payload. In the context of SRTP, we
-                // want to skip its decrypting.
-                if ((pkt.getFlags() & (Buffer.FLAG_DISCARD | Buffer.FLAG_SILENCE)) == 0) {
+            if (authenticatePacket(pkt)) {
+                if (!skipDecryption) {
                     switch (policy.getEncType()) {
                         // Decrypt the packet using Counter Mode encryption.
                         case SRTPPolicy.AESCM_ENCRYPTION:
@@ -532,9 +522,9 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
      *
      * @param pkt the RTP packet that is going to be sent out
      */
-    synchronized public boolean transformPacket(RawPacket pkt)
+    synchronized public boolean transformPacket(ByteArrayBuffer pkt)
     {
-        int seqNo = pkt.getSequenceNumber();
+        int seqNo = RawPacket.getSequenceNumber(pkt);
         if (!seqNumSet) {
             seqNumSet = true;
             s_l = seqNo;
@@ -548,9 +538,9 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
          * XXX The invocation of the checkReplay method here is not meant as replay protection but
          * as a consistency check of our implementation.
          */
-        if (!checkReplay(seqNo, guessedIndex, false)) {
+        if (!checkReplay(seqNo, guessedIndex))
             return false;
-        }
+
         // if (seqNo % 500 == 0)
         //    Timber.e("transform checkReply #" + seqNo + ": " + Long.toString(0xFFFFFFFFL & ssrc));
         //    new Exception("transform checkReply #" + seqNo + ": " + Long.toString(0xFFFFFFFFL & ssrc)).printStackTrace();
@@ -609,25 +599,6 @@ public class SRTPCryptoContext extends BaseSRTPCryptoContext
         else if (guessedROC == (roc + 1)) {
             s_l = seqNo & 0xffff;
             roc = guessedROC;
-        }
-    }
-
-    // cmeng: attempt to resync - #TODO
-    private void reSync(int seqNo, long guessedIndex)
-    {
-        if (seqNo < s_l)
-            guessedROC++;
-        s_l = seqNo & 0xffff;
-        roc = guessedROC;
-
-        long delta = guessedIndex - ((((long) roc) << 16) | s_l);
-        /* Update the replay bit mask. */
-        if (delta > 0) {
-            replayWindow <<= delta;
-            replayWindow |= 1;
-        }
-        else {
-            replayWindow |= (1 << -delta);
         }
     }
 }

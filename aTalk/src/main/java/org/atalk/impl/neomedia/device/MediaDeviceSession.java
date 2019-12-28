@@ -240,7 +240,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * For JPEG and H263, we know that they only work for particular sizes. So we'll perform extra
+     * For JPEG, we know that they only work for particular sizes. So we'll perform extra
      * checking here to make sure they are of the right sizes.
      *
      * @param sourceFormat the original format to check the size of
@@ -257,25 +257,6 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             // For JPEG, make sure width and height are divisible by 8.
             width = (size.width % 8 == 0) ? size.width : ((size.width / 8) * 8);
             height = (size.height % 8 == 0) ? size.height : ((size.height / 8) * 8);
-        }
-        // H.263
-        else if (sourceFormat.matches(new Format(VideoFormat.H263_RTP))) {
-            // For H.263, we only support some specific sizes.
-            //            if (size.width < 128)
-            //            {
-            //                width = 128;
-            //                height = 96;
-            //            }
-            //            else if (size.width < 176)
-            //            {
-            //                width = 176;
-            //                height = 144;
-            //            }
-            //            else
-            //            {
-            width = 352;
-            height = 288;
-            //            }
         }
         else {
             // For other video format, we'll just leave it alone then.

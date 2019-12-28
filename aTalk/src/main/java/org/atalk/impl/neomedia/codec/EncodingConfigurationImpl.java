@@ -20,12 +20,13 @@ import java.util.Map;
  * @author Damian Minkov
  * @author Lyubomir Marinov
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class EncodingConfigurationImpl extends EncodingConfiguration
 {
     /**
      * The indicator which determines whether the G.729 codec is enabled.
-     * <p>
+     *
      * WARNING: The use of G.729 may require a license fee and/or royalty fee in some countries and
      * is licensed by <a href="http://www.sipro.com">SIPRO Lab Telecom</a>.
      */
@@ -51,17 +52,9 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
                 1100);
 
         setEncodingPreference(
-                "H263-1998",
-                VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
-                0);
-
-        setEncodingPreference(
                 "VP8",
                 VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
                 1200);
-        /*
-         * setEncodingPreference( "H263", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1000);
-         */
         setEncodingPreference(
                 "JPEG",
                 VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,

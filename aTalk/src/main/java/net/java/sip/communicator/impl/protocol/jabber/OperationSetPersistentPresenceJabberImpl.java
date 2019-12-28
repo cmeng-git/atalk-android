@@ -1189,15 +1189,19 @@ public class OperationSetPersistentPresenceJabberImpl
          */
         void processStoredEvents()
         {
-            // ConcurrentModificationException from field
-            storeEvents = false;
-            synchronized (storedPresences) {
-                for (Presence p : storedPresences) {
-                    firePresenceStatusChanged(p);
+            // Must not proceed if false as storedPresences has already cleared or not yet init?
+            // FFR: NPE on synchronized (storedPresences)
+            if (storeEvents) {
+                storeEvents = false;
+                // ConcurrentModificationException from field
+                synchronized (storedPresences) {
+                    for (Presence p : storedPresences) {
+                        firePresenceStatusChanged(p);
+                    }
                 }
+                storedPresences.clear();
+                storedPresences = null;
             }
-            storedPresences.clear();
-            storedPresences = null;
         }
 
         /**

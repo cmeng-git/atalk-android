@@ -96,11 +96,6 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.video.h264.Packetizer",
             "org.atalk.impl.neomedia.codec.video.SwScale",
 
-            //"org.atalk.impl.neomedia.codec.video.h263p.DePacketizer",
-            //"org.atalk.impl.neomedia.codec.video.h263p.JNIDecoder",
-            //"org.atalk.impl.neomedia.codec.video.h263p.JNIEncoder",
-            //"org.atalk.impl.neomedia.codec.video.h263p.Packetizer",
-
             // Adaptive Multi-Rate Wideband (AMR-WB)
             // "org.atalk.impl.neomedia.codec.audio.amrwb.DePacketizer",
             // "org.atalk.impl.neomedia.codec.audio.amrwb.JNIDecoder",
@@ -147,22 +142,11 @@ public class FMJPlugInConfiguration
 
         // Remove JavaRGBToYUV.
         PlugInManager.removePlugIn(
-                "com.sun.media.codec.video.colorspace.JavaRGBToYUV",
-                PlugInManager.CODEC);
+                "com.sun.media.codec.video.colorspace.JavaRGBToYUV", PlugInManager.CODEC);
         PlugInManager.removePlugIn(
-                "com.sun.media.codec.video.colorspace.JavaRGBConverter",
-                PlugInManager.CODEC);
+                "com.sun.media.codec.video.colorspace.JavaRGBConverter", PlugInManager.CODEC);
         PlugInManager.removePlugIn(
-                "com.sun.media.codec.video.colorspace.RGBScaler",
-                PlugInManager.CODEC);
-
-        // Remove JMF's H263 codec.
-        PlugInManager.removePlugIn(
-                "com.sun.media.codec.video.vh263.NativeDecoder",
-                PlugInManager.CODEC);
-        PlugInManager.removePlugIn(
-                "com.ibm.media.codec.video.h263.NativeEncoder",
-                PlugInManager.CODEC);
+                "com.sun.media.codec.video.colorspace.RGBScaler", PlugInManager.CODEC);
 
         // Remove JMF's GSM codec. As working only on some OS.
         String gsmCodecPackage = "com.ibm.media.codec.audio.gsm.";
@@ -188,19 +172,16 @@ public class FMJPlugInConfiguration
          * building of the filter graph and we do not currently seem to need it.
          */
         PlugInManager.removePlugIn(
-                "net.sf.fmj.media.codec.JavaSoundCodec",
-                PlugInManager.CODEC);
+                "net.sf.fmj.media.codec.JavaSoundCodec", PlugInManager.CODEC);
 
-        List<String> customCodecs = new LinkedList<>();
-        customCodecs.addAll(Arrays.asList(CUSTOM_CODECS));
+        List<String> customCodecs = new LinkedList<>(Arrays.asList(CUSTOM_CODECS));
         if (enableFfmpeg) {
             customCodecs.addAll(Arrays.asList(CUSTOM_CODECS_FFMPEG));
         }
 
         for (String className : customCodecs) {
             /*
-             * A codec with a className of null is configured at compile time to
-             * not be registered.
+             * A codec with a className of null is configured at compile time to not be registered.
              */
             if (className == null)
                 continue;
@@ -210,25 +191,17 @@ public class FMJPlugInConfiguration
             }
             else {
                 commit = true;
-                boolean registered;
-                Throwable exception = null;
-
                 try {
                     Codec codec = (Codec) Class.forName(className).newInstance();
-                    registered = PlugInManager.addPlugIn(
+                    PlugInManager.addPlugIn(
                             className,
                             codec.getSupportedInputFormats(),
                             codec.getSupportedOutputFormats(null),
                             PlugInManager.CODEC);
-                } catch (Throwable ex) {
-                    registered = false;
-                    exception = ex;
-                }
-                if (registered) {
+
                     Timber.log(TimberLog.FINER, "Codec %s is successfully registered", className);
-                }
-                else {
-                    Timber.w("Codec %s is NOT successfully registered: %s", className, exception.getMessage());
+                } catch (Throwable ex) {
+                    Timber.w("Codec %s is NOT successfully registered: %s", className, ex.getMessage());
                 }
             }
         }
@@ -322,15 +295,12 @@ public class FMJPlugInConfiguration
 
         boolean commit = false;
         for (String className : CUSTOM_MULTIPLEXERS) {
-            if (className == null)
-                continue;
             if (registeredMuxers.contains(className)) {
                 Timber.d("Multiplexer %s is already registered", className);
                 continue;
             }
 
             boolean registered;
-            Throwable exception = null;
             try {
                 Multiplexer multiplexer = (Multiplexer) Class.forName(className).newInstance();
                 registered = PlugInManager.addPlugIn(
@@ -338,16 +308,11 @@ public class FMJPlugInConfiguration
                         multiplexer.getSupportedInputFormats(),
                         multiplexer.getSupportedOutputContentDescriptors(null),
                         PlugInManager.MULTIPLEXER);
-            } catch (Throwable ex) {
-                registered = false;
-                exception = ex;
-            }
-
-            if (registered) {
                 Timber.log(TimberLog.FINER, "Codec %s is successfully registered", className);
-            }
-            else {
-                Timber.w(exception, "Codec %s is NOT successfully registered", className);
+
+            } catch (Throwable ex) {
+                Timber.w("Codec %s is NOT successfully registered: %s", className, ex.getMessage());
+                registered = false;
             }
             commit |= registered;
         }

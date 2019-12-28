@@ -32,7 +32,7 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.fragment.ActionBarStatusFragment;
+import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;

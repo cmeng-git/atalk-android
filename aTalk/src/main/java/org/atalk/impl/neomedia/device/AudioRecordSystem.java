@@ -41,7 +41,7 @@ public class AudioRecordSystem extends AudioSystem
     }
 
     /**
-     * Returns feature set for current device;
+     * Returns feature set for current android device;
      * a. capture
      * b. playback
      *

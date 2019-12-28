@@ -40,8 +40,7 @@ public class MediaDeviceImpl extends AbstractMediaDevice
      * for debugging purposes.
      *
      * @param captureDevice the <tt>CaptureDevice</tt> which is to have its calls traced for debugging output
-     * @return a new <tt>CaptureDevice</tt> which traces the calls to the specified
-     * <tt>captureDevice</tt>
+     * @return a new <tt>CaptureDevice</tt> which traces the calls to the specified <tt>captureDevice</tt>
      */
     public static CaptureDevice createTracingCaptureDevice(CaptureDevice captureDevice)
     {
@@ -191,8 +190,7 @@ public class MediaDeviceImpl extends AbstractMediaDevice
      * Creates a <tt>DataSource</tt> instance for this <tt>MediaDevice</tt> which gives access to
      * the captured media.
      *
-     * @return a <tt>DataSource</tt> instance which gives access to the media captured by this
-     * <tt>MediaDevice</tt>
+     * @return a <tt>DataSource</tt> instance which gives access to the media captured by this <tt>MediaDevice</tt>
      * @see AbstractMediaDevice#createOutputDataSource()
      */
     @Override
@@ -202,11 +200,9 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the <tt>CaptureDeviceInfo</tt> of the JMF <tt>CaptureDevice</tt> represented by this
-     * instance.
+     * Gets the <tt>CaptureDeviceInfo</tt> of the JMF <tt>CaptureDevice</tt> represented by this instance.
      *
-     * @return the <tt>CaptureDeviceInfo</tt> of the <tt>CaptureDevice</tt> represented by this
-     * instance
+     * @return the <tt>CaptureDeviceInfo</tt> of the <tt>CaptureDevice</tt> represented by this instance
      */
     public CaptureDeviceInfo getCaptureDeviceInfo()
     {
@@ -217,8 +213,7 @@ public class MediaDeviceImpl extends AbstractMediaDevice
      * Gets the protocol of the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo</tt> represented
      * by this instance.
      *
-     * @return the protocol of the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo</tt>
-     * represented by this instance
+     * @return the protocol of the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo</tt> represented by this instance
      */
     public String getCaptureDeviceInfoLocatorProtocol()
     {
@@ -246,8 +241,7 @@ public class MediaDeviceImpl extends AbstractMediaDevice
         if (getCaptureDeviceInfo() != null)
             return MediaDirection.SENDRECV;
         else
-            return MediaType.AUDIO.equals(getMediaType()) ? MediaDirection.INACTIVE
-                    : MediaDirection.RECVONLY;
+            return MediaType.AUDIO.equals(getMediaType()) ? MediaDirection.INACTIVE : MediaDirection.RECVONLY;
     }
 
     /**
@@ -289,8 +283,7 @@ public class MediaDeviceImpl extends AbstractMediaDevice
      * <tt>encodingConfiguration</tt>.
      *
      * @param encodingConfiguration the <tt>EncodingConfiguration</tt> instance to use
-     * @return the list of <tt>MediaFormat</tt>s supported by this device and enabled in
-     * <tt>encodingConfiguration</tt>.
+     * @return the list of <tt>MediaFormat</tt>s supported by this device and enabled in <tt>encodingConfiguration</tt>.
      * @see MediaDevice#getSupportedFormats()
      */
     public List<MediaFormat> getSupportedFormats(EncodingConfiguration encodingConfiguration)
@@ -300,16 +293,14 @@ public class MediaDeviceImpl extends AbstractMediaDevice
 
     /**
      * Gets the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt>. Uses the
-     * current <tt>EncodingConfiguration</tt> from the media service (i.e. the global
-     * configuration).
+     * current <tt>EncodingConfiguration</tt> from the media service (i.e. the global configuration).
      *
      * @param sendPreset the preset used to set some of the format parameters, used for video and settings.
      * @param receivePreset the preset used to set the receive format parameters, used for video and settings.
      * @return the list of <tt>MediaFormat</tt>s supported by this device
      * @see MediaDevice#getSupportedFormats()
      */
-    public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset,
-            QualityPreset receivePreset)
+    public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset, QualityPreset receivePreset)
     {
         return getSupportedFormats(sendPreset, receivePreset,
                 NeomediaServiceUtils.getMediaServiceImpl().getCurrentEncodingConfiguration());

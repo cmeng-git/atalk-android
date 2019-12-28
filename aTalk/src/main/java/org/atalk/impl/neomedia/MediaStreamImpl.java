@@ -492,7 +492,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (added) {
             try {
                 MediaDeviceSession deviceSession = getDeviceSession();
-                if (deviceSession == null || rtpTranslator != null) {
+                if (deviceSession == null || deviceSession.useTranslator) {
                     // Since there is no output MediaDevice to render the receiveStream on, the
                     // JitterBuffer of the receiveStream will needlessly buffer and, possibly,
                     // eventually try to adapt to the lack of free buffer space.

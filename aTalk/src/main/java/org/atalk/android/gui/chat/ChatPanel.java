@@ -24,7 +24,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.conference.*;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;

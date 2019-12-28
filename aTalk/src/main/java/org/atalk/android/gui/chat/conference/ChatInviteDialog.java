@@ -20,7 +20,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 
@@ -33,7 +34,6 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.*;
@@ -42,7 +42,6 @@ import org.atalk.android.gui.util.ViewUtil;
 import java.util.*;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import timber.log.Timber;
 
 /**
@@ -165,9 +164,10 @@ public class ChatInviteDialog extends Dialog
 
     private MetaContactListAdapter getContactListAdapter()
     {
-        ContactListFragment clf = (ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
         if (contactListAdapter == null) {
-            contactListAdapter = new MetaContactListAdapter(clf, false);
+            // FFR: may be null so use new instance instead
+            // ContactListFragment clf = (ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
+            contactListAdapter = new MetaContactListAdapter(new ContactListFragment(), false);
             contactListAdapter.initModelData();
         }
         // Do not include groups with zero member in main contact list

@@ -426,7 +426,7 @@
 	<string name="service_gui_JOIN_VIDEO">Video beitreten</string>
 	<string name="service_gui_JOB_TITLE">Beruf</string>
 	<string name="service_gui_JOIN_CHAT_ROOM">Chatraum beitreten&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Kann Chatraum %1$s mit Benutzernamen %2$s nicht beitreten.</string>
+    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Kann Chatraum:\n%1$s mit Benutzernamen %2$s nicht beitreten.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD">Dieser Chatraum verlangt ein Passwort.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION">Dieser Chatraum benötigt eine Registrierung.</string>
     <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Chatraum beitreten</string>
@@ -747,7 +747,7 @@
     <string name="service_gui_security_SECURE_AUDIO">Sicheres Audio</string>
     <string name="service_gui_security_SECURE_VIDEO">Sicheres Video</string>
     <string name="service_gui_security_SECURITY_ALERT">Versuch, den Anruf zu sichern. Wird getrennt in</string>
-    <string name="service_gui_security_STRING_COMPARED">string verglichen!</string>
+    <string name="service_gui_security_STRING_COMPARED">string verglichen:</string>
     <string name="service_gui_security_VERIFY_TOAST">Anrufsicherheit aktiviert! Tippe hier, um die Sicherheitsstring jetzt zu vergleichen, oder verwende das Menü später.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Video nicht sicher</string>
     <string name="service_gui_avatar_CHOOSE_ICON">Wähle ein Bild</string>

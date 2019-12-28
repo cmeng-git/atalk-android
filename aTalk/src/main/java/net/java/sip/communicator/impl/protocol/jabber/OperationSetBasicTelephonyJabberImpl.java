@@ -764,7 +764,7 @@ public class OperationSetBasicTelephonyJabberImpl
         // let's first see whether we have a peer that's concerned by this IQ
         CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingle.getSid());
         JingleAction action = jingle.getAction();
-        Timber.w("### Processing Jingle IQ id: %s. Action: %s", jingle.getStanzaId(), action);
+        Timber.d("### Processing Jingle IQ id: %s. Action: %s", jingle.getStanzaId(), action);
 
         if (action == JingleAction.SESSION_INITIATE) {
             TransferExtensionElement transfer = jingle.getExtension(

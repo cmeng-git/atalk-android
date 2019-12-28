@@ -309,16 +309,6 @@
                     android:title="@string/service_gui_settings_DENOISE" />
 
                 <PreferenceScreen
-                    android:summary="@string/service_gui_settings_AUDIO_CODECS_SUMMARY"
-                    android:title="@string/service_gui_settings_AUDIO_CODECS_TITLE">
-                    <intent android:action=".android.gui.settings.EncodingSettings">
-                        <extra
-                            android:name="media_type"
-                            android:value="media_type.AUDIO" />
-                    </intent>
-                </PreferenceScreen>
-
-                <PreferenceScreen
                     android:summary="@string/service_gui_settings_OPUS_SUMMARY"
                     android:title="@string/service_gui_settings_OPUS">
                     <intent android:action=".android.gui.settings.OpusSettings" />

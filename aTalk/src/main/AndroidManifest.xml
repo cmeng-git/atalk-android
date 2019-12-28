@@ -431,7 +431,7 @@
 
         <activity
             android:name="org.atalk.android.gui.share.ShareActivity"
-            android:label="@string/service_gui_SHARE"
+            android:label="@string/APPLICATION_NAME"
             android:launchMode="singleTask">
 
             <intent-filter>
