@@ -11,6 +11,7 @@ import android.preference.PreferenceScreen;
 
 import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -81,7 +82,7 @@ public class ChatSecuritySettings extends OSGiActivity
         {
             super.onStart();
 
-            mConfig = AndroidGUIActivator.getConfigurationService();
+            mConfig = UtilActivator.getConfigurationService();
             OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
             PreferenceScreen screen = getPreferenceScreen();
             PreferenceUtil.setCheckboxVal(screen, P_KEY_CRYPTO_ENABLE, otrPolicy.getEnableManual());

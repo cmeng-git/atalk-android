@@ -26,6 +26,8 @@ import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 
 import java.io.File;
 
+import timber.log.Timber;
+
 /**
  * The Jabber protocol HttpFileDownloadJabberImpl extension of the <tt>AbstractFileTransfer</tt>.
  *
@@ -95,7 +97,11 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
     public void cancel()
     {
         if (downloadReceiver != null) {
-            aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+            try {
+                aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+            } catch (IllegalArgumentException e) {
+                Timber.e("Error unRegister download receiver: %s", e.getMessage());
+            }
             downloadReceiver = null;
         }
     }

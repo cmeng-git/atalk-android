@@ -166,7 +166,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         if (!isAttached) {
             this.isAttached = true;
 
-            Timber.d("ChatController attached to %s", chatFragment.hashCode());
+            // Timber.d("ChatController attached to %s", chatFragment.hashCode());
             chatPanel = chatFragment.getChatPanel();
 
             // Gets message edit view
@@ -440,13 +440,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                         if (mpAdapter != null) {
                             List<Attachment> mediaPreviews = mpAdapter.getAttachments();
                             if (!mediaPreviews.isEmpty()) {
-                                Date date = Calendar.getInstance().getTime();
-                                String sendTo = chatPanel.getChatSession().getCurrentChatTransport().getName();
                                 for (Attachment attachment : mediaPreviews) {
                                     String filePath = FilePathHelper.getPath(parent, attachment);
                                     if (!StringUtils.isNullOrEmpty(filePath))
-                                        chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND,
-                                                IMessage.ENCODE_PLAIN, filePath);
+                                        chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                                 }
                                 mpAdapter.clearPreviews();
                             }
@@ -646,9 +643,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 Timber.i("Sending audio recorded file!!!");
                 LocalBroadcastManager.getInstance(parent).unregisterReceiver(mReceiver);
                 String filePath = intent.getStringExtra(AudioBgService.URI);
-                // String filePath = intent.getData().getPath();
                 if (!StringUtils.isNullOrEmpty(filePath)) {
-                    ((ChatActivity) parent).sendFile(filePath);
+                    chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                 }
                 parent.stopService(new Intent(parent, AudioBgService.class));
             }
@@ -815,20 +811,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     private void sendSticker(String filePath)
     {
-        Date date = Calendar.getInstance().getTime();
         UIService uiService = AndroidGUIActivator.getUIService();
         if (uiService != null) {
-            String sendTo;
-            Object sender = mChatTransport.getDescriptor();
-            if (sender instanceof Contact) {
-                sendTo = ((Contact) sender).getAddress();
-                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, IMessage.ENCODE_PLAIN, filePath);
-            }
-            // chatRoom always use Http File Upload service
-            else {
-                sendTo = ((ChatRoom) sender).getName();
-                chatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_STICKER_SEND, IMessage.ENCODE_PLAIN, filePath);
-            }
+            chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_STICKER_SEND);
         }
     }
 

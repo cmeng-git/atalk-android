@@ -111,7 +111,15 @@ public class FilePathHelper
     {
         String fileName = getFileName(contentUri);
         if (!TextUtils.isEmpty(fileName)) {
-            if (TextUtils.isEmpty(MimeTypeMap.getFileExtensionFromUrl(fileName))) {
+            String extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
+            // android sdk returns "" for filename contains unicode characters
+            if (TextUtils.isEmpty(extension)) {
+                int dotPos = fileName.lastIndexOf('.');
+                if (0 < dotPos) {
+                    extension = fileName.substring(dotPos + 1);
+                }
+            }
+            if (TextUtils.isEmpty(extension)) {
                 String guess = FileBackend.getMimeType(ctx, contentUri, mimeType);
                 if (!TextUtils.isEmpty(guess)) {
                     String[] mime = guess.split("/");

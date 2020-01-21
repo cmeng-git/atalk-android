@@ -1,5 +1,33 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.6 (1116)
+Author:         cmeng
+Upload Date:	01/21/2020
+- Implement embedded audio media player in chat view with functions: Play, Pause, Resume, Stop(long press) and Seek
+- Standardize dateTime format and layout in chat message and file transfer views
+- Toggle front/back camera: Must include Camera.getCameraInfo(cameraId, cameraInfo) to fetch camera facing for each camera in AndroidCameraSystem and MediaRecordSystem
+- Block user toggle camera via long press on camera icon in video call, if no alternate camera is available on the device.
+- ChatInviteDialog clean up: allow user group expansion, fixed incorrect highlight of selected contact onShow dialog.
+  use of new instance of ContactListFragment crashes aTalk on contact select. Revert to use aTalk clf
+- Fix partial deletion of last file sent and file received messages due to null message Uuid
+- Consolidate sendFile requests and add msgUuid for DB record identification and deletion - resolve partial deletion
+- Fix chat view scroll incorrectly to top when the last sent/received message is deleted
+- Catch Http File Download NPE when an invalid filename is specified
+- Patch android-28 sdk MimeTypeMap.getFileExtensionFromUri() returns empty ext for filename with unicode characters
+- Upgrade openssl jni libraries to version 1.0.2u: See https://www.openssl.org/news/vulnerabilities.html
+- Update shell built script for openSSL v1.0.2u: https://www.openssl.org/news/vulnerabilities.html
+- clean up string values for all file transferring states
+- Fix Field Failure Report from v2.1.5
+  FFR: ConcurrentModificationException at ChatRoomListAdapter.addChatRooms (ChatRoomListAdapter.java:256)
+  FFR: NPE at OmemoAuthenticateDialog.onCreate (OmemoAuthenticateDialog.java:97)
+  FFR: NPE at ChatFragment$ChatListAdapter.updateStatusAndAvatarView (ChatFragment.java:1519)
+  FFR: NPE at ContactListFragment.lambda$updateUnreadCount$0$ContactListFragment (ContactListFragment.java:680)
+  FFR: NPF at BaseChatRoomListAdapter.lambda$expandAllGroups$0$BaseChatRoomListAdapter (BaseChatRoomListAdapter.java:137)
+  FFR: NPE at SettingsActivity$SettingsFragment.initNotificationPreferences
+  FFR: NPE at ChatSecuritySettings$SettingsFragment.onStart (ChatSecuritySettings.java:85)
+  FFR: NPE at ChatSessionManager.removeActiveChat (ChatSessionManager.java:105)
+
+=========================================================================
 Version:		2.1.5 (1115)
 Author:         cmeng
 Upload Date:	12/28/2019

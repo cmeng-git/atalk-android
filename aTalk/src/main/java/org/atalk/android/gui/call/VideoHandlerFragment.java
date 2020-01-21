@@ -31,6 +31,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream
 import org.atalk.service.neomedia.ViewAccessor;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.event.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -81,9 +82,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Stores the current local video state in case this <tt>Activity</tt> is hidden during call.
      * Also use during screen rotation to re-init local video
      */
-    static boolean wasVideoEnabled = false;
+    public static boolean wasVideoEnabled = false;
 
-    static boolean isCameraEnable = false;
+    private static boolean isCameraEnable = false;
 
     /**
      * Indicate phone orientation change and need to init RemoteVideoContainer
@@ -118,12 +119,12 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * For long press to toggle between front and back (full screen display - not shown option in Android 8.0)
      */
-    protected MenuItem mCameraToggle;
+    private MenuItem mCameraToggle;
 
     /**
      * VideoHandlerFragment parent activity for callback i.e. VideoCallActivity
      */
-    VideoCallActivity mCallback;
+    private VideoCallActivity mCallback;
 
     /**
      * Creates new instance of <tt>VideoHandlerFragment</tt>.
@@ -309,23 +310,20 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        AndroidCamera currentCamera = AndroidCamera.getSelectedCameraDevInfo();
-        if (!isCameraEnable || currentCamera == null) {
+        AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();
+        if (!isCameraEnable || selectedCamera == null) {
             return;
         }
 
         // Check and set camera option with other facing from current system if available
-        boolean isFrontCamera = (currentCamera.getCameraFacing() == AndroidCamera.FACING_FRONT);
+        boolean isFrontCamera = (selectedCamera.getCameraFacing() == AndroidCamera.FACING_FRONT);
         int otherFacing = isFrontCamera ? AndroidCamera.FACING_BACK : AndroidCamera.FACING_FRONT;
-        if (AndroidCamera.getCameraFromCurrentDeviceSystem(otherFacing) == null) {
-            return;
-        }
 
-        if (menu != null) {
+        if (AndroidCamera.getCameraFromCurrentDeviceSystem(otherFacing) != null) {
             inflater.inflate(R.menu.camera_menu, menu);
             String displayName = isFrontCamera
                     ? getString(R.string.service_gui_settings_USE_BACK_CAMERA)
@@ -334,26 +332,51 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
         }
     }
 
+    /**
+     * Switch to alternate camera on device when user toggle the camera
+     *
+     * @param item the user clicked menu item
+     * @return return true is activation is from menu item R.id.switch_camera
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         if (item.getItemId() == R.id.switch_camera) {
-            return startCameraSwitchThread(item);
+            startCameraSwitchThread(item);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Toggle the camera device in seperate thread and update the menu title text
+     * Long press camera icon change to alternate camera availab on the device.
+     * @param v the clicked view
+     * @return return true is activation is from R.id.button_call_video
+     */
+    @Override
+    public boolean onLongClick(View v)
+    {
+        if (v.getId() == R.id.button_call_video) {
+            // Do not proceed if no alternate camera (i.e. mCameraToggle == null) is available on the device
+            if (mCameraToggle != null) {
+                aTalkApp.showToastMessage(mCameraToggle.getTitle().toString());
+                startCameraSwitchThread(mCameraToggle);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Toggle the camera device in separate thread and update the menu title text
      *
      * @param item Menu Item
-     * @return status
      */
-    protected boolean startCameraSwitchThread(MenuItem item)
+    private void startCameraSwitchThread(MenuItem item)
     {
         // Ignore action if camera switching is in progress
         if (cameraSwitchThread != null)
-            return true;
+            return;
 
         String back = getString(R.string.service_gui_settings_USE_BACK_CAMERA);
         String front = getString(R.string.service_gui_settings_USE_FRONT_CAMERA);
@@ -386,17 +409,6 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             }
         };
         cameraSwitchThread.start();
-        return true;
-    }
-
-    @Override
-    public boolean onLongClick(View v)
-    {
-        if (v.getId() == R.id.button_call_video) {
-            aTalkApp.showToastMessage(mCameraToggle.getTitle().toString());
-            return startCameraSwitchThread(mCameraToggle);
-        }
-        return false;
     }
 
     /**
@@ -414,7 +426,6 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      */
     private void initLocalVideoState(boolean isVideoEnable)
     {
-
         setLocalVideoEnabled(isVideoEnable);
 
         if (!isCameraEnable) {

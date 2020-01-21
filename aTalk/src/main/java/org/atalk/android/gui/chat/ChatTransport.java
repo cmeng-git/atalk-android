@@ -10,6 +10,7 @@ import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jxmpp.jid.EntityBareJid;
@@ -192,19 +193,26 @@ public interface ChatTransport
      * leaving the transport to choose the destination.
      *
      * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+     *
+     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if the send doesn't succeed
      */
-    Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
+    Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception;
 
     /**
      * Sends the given file through this chat transport.
      *
      * @param file the file to send
-     * @return the <tt>FileTransfer</tt> charged to transfer the given <tt>file</tt>.
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+     *
+     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if the send doesn't succeed
      */
-    Object sendFile(File file, int chatType, FileTransferConversation xferCon)
+    Object sendFile(File file, int chatType, FileSendConversation xferCon)
             throws Exception;
 
     /**

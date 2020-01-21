@@ -41,24 +41,24 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         implements MetaContactListListener, ContactPresenceStatusListener, UIGroupRenderer
 {
     /**
-     * The list of contact list groups for view display
-     */
-    private LinkedList<MetaContactGroup> groups;
-
-    /**
      * The list of contact list in original groups before filtered
      */
     private LinkedList<MetaContactGroup> originalGroups;
 
     /**
-     * The list of contacts for view display.
+     * The list of contact list groups for view display
      */
-    private LinkedList<TreeSet<MetaContact>> contacts;
+    private LinkedList<MetaContactGroup> groups;
 
     /**
      * The list of original contacts before filtered.
      */
     private LinkedList<TreeSet<MetaContact>> originalContacts;
+
+    /**
+     * The list of contacts for view display.
+     */
+    private LinkedList<TreeSet<MetaContact>> contacts;
 
     /**
      * The <tt>MetaContactListService</tt>, which is the back end of this contact list adapter.
@@ -254,6 +254,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     {
         if (group.countChildContacts() > 0) {
             addGroup(group);
+
+            // Use Iterator to avoid ConcurrentModificationException on addContact()
             Iterator<MetaContact> childContacts = group.getChildContacts();
             while (childContacts.hasNext()) {
                 addContact(group, childContacts.next());
@@ -274,14 +276,14 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     private void addGroup(MetaContactGroup metaGroup)
     {
-        if (originalGroups.indexOf(metaGroup) < 0) {
+        if (!originalGroups.contains(metaGroup)) {
             originalGroups.add(metaGroup);
-            originalContacts.add(new TreeSet<MetaContact>());
+            originalContacts.add(new TreeSet<>());
         }
 
-        if (isMatching(metaGroup, currentFilterQuery) && groups.indexOf(metaGroup) < 0) {
+        if (isMatching(metaGroup, currentFilterQuery) && !groups.contains(metaGroup)) {
             groups.add(metaGroup);
-            contacts.add(new TreeSet<MetaContact>());
+            contacts.add(new TreeSet<>());
         }
     }
 
@@ -293,13 +295,13 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     private void removeGroup(MetaContactGroup metaGroup)
     {
         int origGroupIndex = originalGroups.indexOf(metaGroup);
-        if (origGroupIndex >= 0) {
+        if (origGroupIndex != -1) {
             originalContacts.remove(origGroupIndex);
             originalGroups.remove(metaGroup);
         }
 
         int groupIndex = groups.indexOf(metaGroup);
-        if (groupIndex >= 0) {
+        if (groupIndex != -1) {
             contacts.remove(groupIndex);
             groups.remove(metaGroup);
         }
@@ -334,8 +336,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         if (isMatchingQuery) {
             TreeSet<MetaContact> contactList = getContactList(groupIndex);
             if ((contactList != null) && (getChildIndex(contactList, metaContact) < 0)) {
-                //				// do no allow duplication with multiple accounts registration on same server
-                //				if (!contactList.contains(metaContact)) ??? not correct test
+                // // do no allow duplication with multiple accounts registration on same server
+                //	if (!contactList.contains(metaContact)) ??? not correct test
                 contactList.add(metaContact);
             }
         }
@@ -372,7 +374,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 
         // Remove the contact from the original list and its group if empty.
         int origGroupIndex = originalGroups.indexOf(metaGroup);
-        if (origGroupIndex >= 0) {
+        if (origGroupIndex != -1) {
             TreeSet<MetaContact> origContactList = getOriginalCList(origGroupIndex);
             if (origContactList != null) {
                 origContactList.remove(metaContact);
@@ -384,7 +386,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 
         // Remove the contact from the filtered list and its group if empty
         int groupIndex = groups.indexOf(metaGroup);
-        if (groupIndex >= 0) {
+        if (groupIndex != -1) {
             TreeSet<MetaContact> contactList = getContactList(groupIndex);
             if (contactList != null) {
                 contactList.remove(metaContact);
@@ -461,7 +463,6 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactModified(MetaContactModifiedEvent evt)
     {
         Timber.d("META CONTACT MODIFIED: %s", evt.getSourceMetaContact());
-
         invalidateViews();
     }
 

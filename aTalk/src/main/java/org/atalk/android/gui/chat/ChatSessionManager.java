@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
@@ -102,9 +103,11 @@ public class ChatSessionManager
      */
     public synchronized static void removeActiveChat(ChatPanel chatPanel)
     {
-        chatPanel.dispose();
-        activeChats.remove(chatPanel.getChatSession().getChatId());
-        fireChatClosed(chatPanel);
+        if (chatPanel != null) {
+            chatPanel.dispose();
+            activeChats.remove(chatPanel.getChatSession().getChatId());
+            fireChatClosed(chatPanel);
+        }
     }
 
     /**
@@ -428,14 +431,14 @@ public class ChatSessionManager
         }
         else if (chatMode == MUC_CC) {
             ChatRoomWrapper chatRoomWrapper
-                    = AndroidGUIActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
+                    = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
             if (chatRoomWrapper != null) {
                 chatPanel = createChat(chatRoomWrapper);
             }
         }
         else if (chatMode == MUC_ADHOC) {
             ChatRoomWrapper chatRoomWrapper
-                    = AndroidGUIActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
+                    = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoomID(chatId, null);
             if (chatRoomWrapper != null) {
                 chatPanel = createChat((AdHocChatRoomWrapper) chatRoomWrapper);
             }
@@ -533,8 +536,7 @@ public class ChatSessionManager
     {
         synchronized (chatSyncRoot) {
             ChatPanel chatPanel = null;
-            ChatRoomWrapper chatRoomWrapper
-                    = AndroidGUIActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, create);
+            ChatRoomWrapper chatRoomWrapper = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, create);
 
             if (chatRoomWrapper != null) {
                 chatPanel = findChatPanelForDescriptor(chatRoomWrapper);

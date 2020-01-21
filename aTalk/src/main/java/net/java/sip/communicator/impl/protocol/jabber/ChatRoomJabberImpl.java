@@ -751,8 +751,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param mucRole the smack mRole as returned by <tt>Occupant.getRole()</tt>.
      * @return ChatRoomMemberRole
      */
-    public static ChatRoomMemberRole smackRoleToScRole(MUCRole mucRole,
-            MUCAffiliation affiliation)
+    public static ChatRoomMemberRole smackRoleToScRole(MUCRole mucRole, MUCAffiliation affiliation)
     {
         if (affiliation != null) {
             if (affiliation == MUCAffiliation.admin) {
@@ -867,11 +866,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         clearCachedConferenceDescriptionList();
         XMPPConnection connection = mProvider.getConnection();
         try {
-            // if we are already disconnected leave may be called from gui when closing chat window
-            if ((connection != null) && mMultiUserChat.isJoined())
+            // if we are already disconnected; leave may be called from gui when closing chat window
+            // smack mMultiUserChat.isJoined() should be false (smack) when room is destroyed - patched
+            if ((connection != null) && mMultiUserChat.isJoined() && reason.contains("Closing ChatRoom")) {
+                // Timber.d("Leaving chat room: %s", reason);
                 mMultiUserChat.leave();
+            }
         } catch (Throwable e) {
-            Timber.w(e, "Error occurred while leaving, maybe just disconnected before leaving");
+            Timber.w(e, "Error leaving room (destroyed or left): %s", e.getMessage());
             return;
         }
 
@@ -2654,15 +2656,15 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 else {
                     // this is the presence for our member initial mRole and affiliation, as
                     // smack do not fire any initial events lets check it and fire events
-                    ChatRoomMemberRole jitsiRole = ChatRoomJabberImpl.smackRoleToScRole(role, affiliation);
-                    if (jitsiRole == ChatRoomMemberRole.MODERATOR
-                            || jitsiRole == ChatRoomMemberRole.OWNER
-                            || jitsiRole == ChatRoomMemberRole.ADMINISTRATOR) {
-                        setLocalUserRole(jitsiRole, true);
+                    if (role == MUCRole.moderator
+                            || affiliation == MUCAffiliation.owner
+                            || affiliation == MUCAffiliation.admin) {
+                        ChatRoomMemberRole scRole = ChatRoomJabberImpl.smackRoleToScRole(role, affiliation);
+                        setLocalUserRole(scRole, true);
                     }
-                    if (!presence.isAvailable()
-                            && (affiliation.toString().equals("none")
-                            && role.toString().equals("none"))) {
+
+                    if (!presence.isAvailable() && role == MUCRole.none
+                            && affiliation == MUCAffiliation.none) {
                         Destroy destroy = mucUser.getDestroy();
                         if (destroy == null) {
                             // the room is unavailable to us, there is no message we will just leave

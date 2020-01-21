@@ -16,6 +16,7 @@ import net.java.sip.communicator.service.notification.NotificationService;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
 import net.java.sip.communicator.util.ServiceUtils;
+import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -103,7 +104,7 @@ public class NotificationSettings extends OSGiActivity
          */
         NotificationsAdapter()
         {
-            ResourceManagementService rms = AndroidGUIActivator.getResources();
+            ResourceManagementService rms = UtilActivator.getResources();
             Map<String, String> unSortedMap = new HashMap<>();
             for (String event : notificationService.getRegisteredEvents()) {
                 unSortedMap.put(rms.getI18NString(NOTICE_PREFIX + event), event);

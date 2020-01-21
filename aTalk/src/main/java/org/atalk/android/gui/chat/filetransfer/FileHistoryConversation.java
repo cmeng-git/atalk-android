@@ -19,15 +19,16 @@ package org.atalk.android.gui.chat.filetransfer;
 import android.view.*;
 
 import net.java.sip.communicator.service.filehistory.FileRecord;
+import net.java.sip.communicator.util.GuiUtils;
+import net.java.sip.communicator.util.UtilActivator;
 
-import org.atalk.android.*;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatFragment.MessageViewHolder;
 import org.atalk.android.gui.chat.ChatMessage;
 
 import java.io.File;
-import java.util.Date;
 
 /**
  * The component used to show a file transfer history record in the chat window.
@@ -39,17 +40,16 @@ public class FileHistoryConversation extends FileTransferConversation
     private FileRecord fileRecord;
     private ChatMessage chatMessage;
 
-    public FileHistoryConversation()
+    private FileHistoryConversation(ChatFragment cPanel)
     {
+        super(cPanel);
     }
 
     public static FileHistoryConversation newInstance(ChatFragment cPanel, FileRecord fileRecord, ChatMessage msg)
     {
-        FileHistoryConversation fragmentFHC = new FileHistoryConversation();
-        fragmentFHC.mChatFragment = cPanel;
+        FileHistoryConversation fragmentFHC = new FileHistoryConversation(cPanel);
         fragmentFHC.fileRecord = fileRecord;
         fragmentFHC.chatMessage = msg;
-
         return fragmentFHC;
     }
 
@@ -57,14 +57,11 @@ public class FileHistoryConversation extends FileTransferConversation
             ViewGroup container, boolean init)
     {
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
-        String titleString;
-
         if (fileRecord == null) {
             if (chatMessage != null) {
-                // String contact = chatMessage.getContactName();
-                Date date = chatMessage.getDate();
-                titleString = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED, date);
-                messageViewHolder.titleLabel.setText(titleString);
+                String date = GuiUtils.formatDateTime(chatMessage.getDate());
+                messageViewHolder.timeView.setText(date);
+                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_CANCELED);
             }
             return convertView;
         }
@@ -79,33 +76,25 @@ public class FileHistoryConversation extends FileTransferConversation
 
         File filePath = fileRecord.getFile();
         int status = fileRecord.getStatus();
-
         boolean bgAlert = (FileRecord.STATUS_COMPLETED != status);
-        if (filePath.exists()) {
-            MyGlideApp.loadImage(messageViewHolder.stickerView, filePath, true);
-        } else {
+        if (!filePath.exists()) {
             if (FileRecord.STATUS_ACTIVE != status) {
                 bgAlert = true;
                 status = FileRecord.FILE_NOT_FOUND;
             }
         }
 
+        updateFileViewInfo(filePath, true);
         mEncryption = fileRecord.getEncType();
         setEncState(mEncryption);
 
-        titleString = getStatusMessage(entityJid, dir, status);
-
-        this.setCompletedDownloadFile(mChatFragment, filePath);
-        Date date = fileRecord.getDate();
-        StringBuilder tileLabel = new StringBuilder();
-        tileLabel.append(date.toString())
-                .append(":\n")
-                .append(titleString);
-        messageViewHolder.titleLabel.setText(tileLabel);
-        messageViewHolder.fileLabel.setText(getFileLabel(filePath));
+        String date = GuiUtils.formatDateTime(fileRecord.getDate());
+        messageViewHolder.timeView.setText(date);
+        String titleString = getStatusMessage(entityJid, dir, status);
+        messageViewHolder.fileStatus.setText(titleString);
 
         if (bgAlert) {
-            messageViewHolder.titleLabel.setTextColor(AndroidGUIActivator.getResources().getColor("red"));
+            messageViewHolder.fileStatus.setTextColor(UtilActivator.getResources().getColor("red"));
         }
         return convertView;
     }
@@ -126,16 +115,16 @@ public class FileHistoryConversation extends FileTransferConversation
         if (dir.equals(FileRecord.IN)) {
             switch (status) {
                 case FileRecord.STATUS_COMPLETED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVE_COMPLETED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, entityJid);
                     break;
                 case FileRecord.STATUS_CANCELED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_CANCELED);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                     break;
                 case FileRecord.STATUS_FAILED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVE_FAILED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, entityJid);
                     break;
                 case FileRecord.STATUS_REFUSED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_REFUSED);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED);
                     break;
                 case FileRecord.STATUS_ACTIVE:
                 case FileRecord.STATUS_PREPARING:
@@ -152,21 +141,24 @@ public class FileHistoryConversation extends FileTransferConversation
         else {
             switch (status) {
                 case FileRecord.STATUS_COMPLETED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_SEND_COMPLETED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, entityJid);
                     break;
                 case FileRecord.STATUS_CANCELED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_CANCELED);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                     break;
                 case FileRecord.STATUS_FAILED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_UNABLE_TO_SEND, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, entityJid);
                     break;
                 case FileRecord.STATUS_REFUSED:
-                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_SEND_REFUSED, entityJid);
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_REFUSED, entityJid);
                     break;
                 case FileRecord.STATUS_ACTIVE:
                 case FileRecord.STATUS_PREPARING:
                 case FileRecord.STATUS_IN_PROGRESS:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
+                    break;
+                case FileRecord.FILE_NOT_FOUND:
+                    statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_DOES_NOT_EXIST);
                     break;
             }
         }

@@ -98,25 +98,24 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      *
      * @param toContact the contact that should receive the file
      * @param file file to send
+     * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
      * @return the transfer object
      */
-    public FileTransfer sendFile(Contact toContact, File file)
+    public FileTransfer sendFile(Contact toContact, File file, String msgUuid)
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException
     {
         assertConnected();
         if (file.length() > getMaximumFileLength())
             throw new IllegalArgumentException("File length exceeds the allowed one for this protocol");
 
-        Jid fullJid = null;
+        Jid contactJid = toContact.getJid();
+
         // Find the jid of the contact which support file transfer and is with highest priority if
         // more than one found if we have equals priorities choose the one that is more available
         OperationSetMultiUserChat mucOpSet = jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
-        if (mucOpSet != null && mucOpSet.isPrivateMessagingContact(toContact.getAddress())) {
-            fullJid = toContact.getJid();
-        }
-        else {
+        if ((mucOpSet == null) || !mucOpSet.isPrivateMessagingContact(toContact.getAddress())) {
             List<Presence> presences
-                    = Roster.getInstanceFor(jabberProvider.getConnection()).getPresences(toContact.getJid().asBareJid());
+                    = Roster.getInstanceFor(jabberProvider.getConnection()).getPresences(contactJid.asBareJid());
             int bestPriority = -1;
             PresenceStatus jabberStatus = null;
 
@@ -127,15 +126,15 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                     int priority = (presence.getPriority() == Integer.MIN_VALUE) ? 0 : presence.getPriority();
                     if (priority > bestPriority) {
                         bestPriority = priority;
-                        fullJid = presence.getFrom();
+                        contactJid = presence.getFrom();
                         jabberStatus = OperationSetPersistentPresenceJabberImpl
                                 .jabberStatusToPresenceStatus(presence, jabberProvider);
                     }
-                    else if (priority == bestPriority && jabberStatus != null) {
+                    else if ((priority == bestPriority) && (jabberStatus != null)) {
                         PresenceStatus tempStatus = OperationSetPersistentPresenceJabberImpl
                                 .jabberStatusToPresenceStatus(presence, jabberProvider);
                         if (tempStatus.compareTo(jabberStatus) > 0) {
-                            fullJid = presence.getFrom();
+                            contactJid = presence.getFrom();
                             jabberStatus = tempStatus;
                         }
                     }
@@ -144,17 +143,18 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         }
 
         // FullJid is null if file transfer is not supported for this contact; or if contact is offline.
-        if (fullJid == null) {
+        if (contactJid == null) {
             throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
         }
 
         /* Must init to the correct ftManager at time of sending file with current jabberProvider; Otherwise
-         * the ftManager is the last registered jabberProvide and may not be correct in multiple users env.
+         * the ftManager is the last registered jabberProvide and may not be correct in multiple user accounts env.
          */
         FileTransferManager ftManager = FileTransferManager.getInstanceFor(jabberProvider.getConnection());
-        OutgoingFileTransfer transfer = ftManager.createOutgoingFileTransfer((EntityFullJid) fullJid);
+        OutgoingFileTransfer transfer = ftManager.createOutgoingFileTransfer((EntityFullJid) contactJid);
+
         OutgoingFileTransferJabberImpl outgoingTransfer
-                = new OutgoingFileTransferJabberImpl(toContact, file, transfer, jabberProvider);
+                = new OutgoingFileTransferJabberImpl(toContact, file, transfer, jabberProvider, msgUuid);
 
         // Notify all interested listeners that a file transfer has been created.
         FileTransferCreatedEvent event = new FileTransferCreatedEvent(outgoingTransfer, new Date());
@@ -169,7 +169,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         } catch (SmackException e) {
             Timber.e(e, "Failed to send file.");
             throw new OperationNotSupportedException(
-                    aTalkApp.getResString(R.string.service_gui_FILE_UNABLE_TO_SEND, fullJid));
+                    aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, contactJid));
         }
         return outgoingTransfer;
     }
@@ -182,12 +182,14 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      * @param fromContact the contact sending the file
      * @param remotePath the remote file path
      * @param localPath the local file path
+     * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
+     *
      * @return the transfer object
      */
-    public FileTransfer sendFile(Contact toContact, Contact fromContact, String remotePath, String localPath)
+    public FileTransfer sendFile(Contact toContact, Contact fromContact, String remotePath, String localPath, String uuid)
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException
     {
-        return this.sendFile(toContact, new File(localPath));
+        return this.sendFile(toContact, new File(localPath), uuid);
     }
 
     /**
@@ -305,7 +307,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 gsi.setAccessible(true);
                 return (StreamInitiation) gsi.invoke(request);
             } catch (Exception e) {
-                Timber.e(e, "Cannot invoke getStreamInitiation");
+                Timber.e("Cannot invoke getStreamInitiation: %s", e.getMessage());
                 return null;
             }
         }

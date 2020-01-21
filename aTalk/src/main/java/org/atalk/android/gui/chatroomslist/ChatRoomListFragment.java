@@ -16,6 +16,7 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.*;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -100,6 +102,8 @@ public class ChatRoomListFragment extends OSGiFragment
      */
     private static int scrollTopPosition;
 
+    private Activity mActivity = null;
+
     /**
      * Creates new instance of <tt>ContactListFragment</tt>.
      */
@@ -108,6 +112,16 @@ public class ChatRoomListFragment extends OSGiFragment
         super();
         // This fragment will create options menu.
         setHasOptionsMenu(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        mActivity = activity;
     }
 
     /**
@@ -230,7 +244,7 @@ public class ChatRoomListFragment extends OSGiFragment
         });
 
         SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(mActivity.getComponentName()));
 
         int id = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
@@ -294,7 +308,7 @@ public class ChatRoomListFragment extends OSGiFragment
         int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
 
         // Only create a context menu for child items
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = mActivity.getMenuInflater();
         if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
             createGroupCtxMenu(menu, inflater, group);
         }
@@ -365,11 +379,11 @@ public class ChatRoomListFragment extends OSGiFragment
                 onCloseAllChats();
                 return true;
             case R.id.erase_chatroom_history:
-                EntityListHelper.eraseEntityChatHistory(getActivity(),
+                EntityListHelper.eraseEntityChatHistory(mActivity,
                         mClickedChatRoom, null, null);
                 return true;
             case R.id.erase_all_chatroom_history:
-                EntityListHelper.eraseAllContactHistory(getActivity());
+                EntityListHelper.eraseAllContactHistory(mActivity);
                 return true;
             case R.id.destroy_chatroom:
                 EntityListHelper.removeEntity(mClickedChatRoom, chatPanel);
@@ -457,7 +471,7 @@ public class ChatRoomListFragment extends OSGiFragment
         if (chatRoomWrapper != null) {
             ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
             String nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
-            AndroidGUIActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, null);
+            MUCActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, null);
 
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
             if (chatIntent != null) {
@@ -562,13 +576,13 @@ public class ChatRoomListFragment extends OSGiFragment
      *
      * @param crWrapper The ChatRoomWrapper to be updated
      */
-    public void updateUnreadCount(ChatRoomWrapper crWrapper)
+    public void updateUnreadCount(final ChatRoomWrapper crWrapper)
     {
-        if (crWrapper != null) {
-            int unreadCount = crWrapper.getUnreadCount();
-            if (chatRoomListAdapter != null) {
-                runOnUiThread(() -> chatRoomListAdapter.updateUnreadCount(crWrapper, unreadCount));
+        runOnUiThread(() -> {
+            if ((crWrapper != null) && (chatRoomListAdapter != null)) {
+                int unreadCount = crWrapper.getUnreadCount();
+                chatRoomListAdapter.updateUnreadCount(crWrapper, unreadCount);
             }
-        }
+        });
     }
 }

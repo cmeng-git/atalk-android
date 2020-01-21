@@ -120,6 +120,7 @@
     <string name="service_gui_AVATAR_HINT">Ikon direkomendasikan: 64 * 64 (96 * 96 px maks persegi)</string>
     <string name="service_gui_AWAY_STATUS">Meninggal</string>
     <string name="service_gui_AVATAR_SET_ERROR">Gagal mengatur avatar untuk %1$s</string>
+    <string name="service_gui_AVATAR_RETRIEVING">Mengambil avatar untuk %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Sibuk</string>
     <string name="service_gui_CALL">Panggilan audio</string>
@@ -313,18 +314,18 @@
 
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s dikirim</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFail telah diterima dari %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\n Terjadi kesalahan saat mentransfer fail dari %2$s\n%3$s</string>
-    <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nMenerima fail dari %2$s</string>
-    <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFail telah berhasil dikirim ke %2$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s:\n %2$s telah menolak fail ini</string>
-    <string name="xFile_FILE_SENDING_TO">%1$s:\nMengirim fail ke %2$s</string>
-    <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nFail transfer telah dibatalkan</string>
-    <string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nMempersiapkan transfer fail dengan %2$s. Harap tunggu&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nFail transfer telah ditolak</string>
-    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n %2$s berbagi fail dengan Anda</string>
-    <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\n Terjadi kesalahan saat mengirim fail ke %2$s</string>
-    <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nMenunggu untuk %2$s untuk menerima fail Anda</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">Fail telah diterima dari %1$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">Terjadi kesalahan saat mentransfer fail dari %1$s</string>
+    <string name="xFile_FILE_RECEIVING_FROM">Menerima fail dari %1$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">Fail telah berhasil dikirim ke %1$s</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s telah menolak fail ini</string>
+    <string name="xFile_FILE_SENDING_TO">Mengirim fail ke %1$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">Fail transfer telah dibatalkan</string>
+    <string name="xFile_FILE_TRANSFER_PREPARING">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">Fail transfer telah ditolak</string>
+    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s berbagi fail dengan Anda</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">Terjadi kesalahan saat mengirim fail ke %1$s</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">Menunggu untuk %1$s untuk menerima fail Anda</string>
 
     <string name="service_gui_PURGE">Bersihkan</string>
     <string name="service_gui_ESTIMATED_TIME">Perkiraan waktu: %1$s</string>
@@ -335,24 +336,12 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Kami tidak dapat menemukan aplikasi yang terkait dengan jenis fail ini</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Anda tidak memiliki izin yang cukup untuk membuka fail ini. Silakan periksa izin baca Anda dan coba lagi</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Operasi fail terbuka tidak didukung oleh platform perangkat Anda saat ini</string>
-    <string name="service_gui_FILE_RECEIVE_COMPLETED">Fail telah diterima dari %1$s</string>
-    <string name="service_gui_FILE_RECEIVE_FAILED">Terjadi kesalahan saat mentransfer fail dari %1$s</string>
-    <string name="service_gui_FILE_RECEIVING_FROM">Menerima fail dari %1$s</string>
-    <string name="service_gui_FILE_SEND_COMPLETED">Fail telah berhasil dikirim ke %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Gagal mengirim file: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Tidak dapat mengirim file selama panggilan konferensi!</string>
-    <string name="service_gui_FILE_SEND_REFUSED">%1$s telah menolak fail ini</string>
     <string name="service_gui_FILE_SEND_TO">Kirim Lampiran</string>
-    <string name="service_gui_FILE_SENDING_TO">Mengirim fail ke %1$s</string>
     <string name="service_gui_FILE_TOO_BIG">Ukuran fail melebihi batas maksimum yang diizinkan untuk protokol ini: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Transfer fail sedang diproses sedang terganggu. Pelacakan status @ %1$s hilang!</string>
-    <string name="service_gui_FILE_TRANSFER_CANCELED">Transfer fail telah dibatalkan</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Hubungi klien atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
-    <string name="service_gui_FILE_TRANSFER_PREPARING">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
-    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s berbagi fail dengan Anda</string>
-    <string name="service_gui_FILE_TRANSFER_REFUSED">Transfer fail telah ditolak</string>
-    <string name="service_gui_FILE_UNABLE_TO_SEND">Terjadi kesalahan saat mengirim fail ke %1$s</string>
-    <string name="service_gui_FILE_WAITING_TO_ACCEPT">Menunggu %1$s untuk menerima fail Anda</string>
 
     <string name="service_gui_FINISH">Selesai</string>
     <string name="service_gui_FOLDER_DOES_NOT_EXIST">Folder yang berisi fail ini tidak dapat ditemukan. Itu dihapus atau dipindahkan</string>
@@ -373,12 +362,12 @@
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
 
-     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Bookmark ChatRoom</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Bookmark ChatRoom</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
     <string name="service_gui_CHATROOM_AUTOJOIN">Hubung Oto</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Gagal memperbarui Bookmark untuk %1$s: %2$s</string>
 
-       <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
+    <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Hapus obrolan iniRiwayat riwayat</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Hapus semua riwayat chatRooms</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Matikan histori untuk chatRoom ini</string>
@@ -386,8 +375,8 @@
 
     <string name="service_gui_DESTROY_CHATROOM">Hancurkan chatRoom ini</string>
     <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Terjadi kesalahan saat menghancurkan ruang obrolan:\n%1$s</string>
-     <string name="service_gui_DESTROY_CHATROOM_ERROR">Gagal menghapus chatRoom di server:\n\'%1$s\'\n%2$s\n\nLanjutkan untuk menghapus chatRoom lokal\nAnda masih dapat membuat/bergabung kembali dengan chatRoom nanti.</string>
-       <string name="service_gui_DESTROY_CHATROOM_TEXT">Pemilik akun: %1$s.\nApakah Anda yakin ingin menghancurkan\n\'%2$s\'\ndan semua riwayat obrolannya?</string>
+    <string name="service_gui_DESTROY_CHATROOM_ERROR">Gagal menghapus chatRoom di server:\n\'%1$s\'\n%2$s\n\nLanjutkan untuk menghapus chatRoom lokal\nAnda masih dapat membuat/bergabung kembali dengan chatRoom nanti.</string>
+    <string name="service_gui_DESTROY_CHATROOM_TEXT">Pemilik akun: %1$s.\nApakah Anda yakin ingin menghancurkan\n\'%2$s\'\ndan semua riwayat obrolannya?</string>
     <string name="service_gui_DESTROY_CHATROOM_TITLE">Hancurkan chatRoom</string>
     <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\'telah dihapus Berhasil!</string>
 

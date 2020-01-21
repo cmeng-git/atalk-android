@@ -13,7 +13,7 @@ import net.java.sip.communicator.service.protocol.event.MessageListener;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.*;
-import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -258,9 +258,16 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sending sticker messages is not supported by this chat transport implementation.
+     * Sends the given sticker through this chat transport file will always use http file upload
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon and instance of #FileSendConversation
+
+     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @throws Exception if anything goes wrong
      */
-    public Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         return sendFile(file, chatType, xferCon);
@@ -296,8 +303,15 @@ public class ConferenceChatTransport implements ChatTransport
 
     /**
      * Sending files through a chat room will always use http file upload
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon and instance of #FileSendConversation
+
+     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @throws Exception if anything goes wrong
      */
-    public Object sendFile(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendFile(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // If this chat transport does not support file transfer we do nothing and just return.
@@ -310,7 +324,7 @@ public class ConferenceChatTransport implements ChatTransport
     /**
      * Http file upload if supported by the server
      */
-    private Object httpFileUpload(File file, int chatType, FileTransferConversation xferCon)
+    private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed

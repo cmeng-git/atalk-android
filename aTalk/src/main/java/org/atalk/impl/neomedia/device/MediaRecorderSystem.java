@@ -80,7 +80,11 @@ public class MediaRecorderSystem extends DeviceSystem
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 
         for (int cameraId = 0; cameraId < cameraCount; cameraId++) {
-            // Locator contains camera id and its facing direction
+            // to remove obsolete properties for locator facing back if exist
+            MediaLocator locator0 = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_MEDIARECORDER, cameraId, cameraInfo);
+
+            // create locator with camera id and its facing direction (cameraInfo)
+            Camera.getCameraInfo(cameraId, cameraInfo);
             MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_MEDIARECORDER, cameraId, cameraInfo);
 
             // Pick up the preferred sizes which is supported by the Camera.
@@ -88,6 +92,9 @@ public class MediaRecorderSystem extends DeviceSystem
 
             String vs = mConfig.getString(locator + VIDEO_SIZE, null);
             if (!CameraUtils.getSupportedSizes(vs, sizes)) {
+                // Added in v2.1.6: remove obsolete/incorrect property; to be removed in future release
+                mConfig.setProperty(locator0 + VIDEO_SIZE, null);
+
                 Camera camera = null;
                 try {
                     camera = Camera.open(cameraId);
@@ -126,7 +133,7 @@ public class MediaRecorderSystem extends DeviceSystem
                         camera.release();
                 }
             }
-            Timber.i("Video sizes preferred for %s: %s", locator, CameraUtils.dimensionsToString(sizes));
+            Timber.i("Video preferred: %s: %s", locator, CameraUtils.dimensionsToString(sizes));
 
             int count = sizes.size();
             if (count == 0)

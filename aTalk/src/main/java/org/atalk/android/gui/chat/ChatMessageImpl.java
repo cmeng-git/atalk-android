@@ -110,10 +110,11 @@ public class ChatMessageImpl implements ChatMessage
      */
     private FileRecord fileRecord;
 
-    public ChatMessageImpl(String contactName, String displayName, Date date, int messageType, int mimeType, String content)
+    public ChatMessageImpl(String contactName, String displayName, Date date, int messageType, int mimeType,
+            String content, String messageUID)
     {
         this(contactName, displayName, date, messageType, mimeType, content,
-                IMessage.ENCRYPTION_NONE, null, null,
+                IMessage.ENCRYPTION_NONE, messageUID, null,
                 ChatMessage.MESSAGE_DELIVERY_NONE, "", "",
                 null, null, null);
     }

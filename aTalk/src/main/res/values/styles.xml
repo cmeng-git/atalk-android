@@ -446,7 +446,7 @@
     -->
 
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/custom_progressbar_horizontal</item>
+        <item name="android:progressDrawable">@drawable/progressbar_blue</item>
         <item name="android:minHeight">10dip</item>
         <item name="android:maxHeight">20dip</item>
     </style>

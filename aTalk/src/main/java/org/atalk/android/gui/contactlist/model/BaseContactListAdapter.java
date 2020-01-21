@@ -43,7 +43,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the single thread.
+     * it's accessed from the main thread.
      */
     protected final Handler uiHandler = OSGiActivity.uiHandler;
 
@@ -74,7 +74,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     public BaseContactListAdapter(ContactListFragment clFragment, boolean isShowButton)
     {
-        // cmeng - must use this as clFragment may not always attached to FragmentManager e.g. muc invite dialog
+        // cmeng - must use this mInflater as clFragment may not always attached to FragmentManager e.g. muc invite dialog
         mInflater = LayoutInflater.from(aTalkApp.getGlobalContext());
 
         contactListFragment = clFragment;
@@ -527,12 +527,13 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
         if (clicked instanceof MetaContact) {
             Contact contact = ((MetaContact) clicked).getDefaultContact();
-            if (!(contact.getJid() instanceof DomainBareJid)) {
+            Jid contactJid = contact.getJid();
+            if (!(contactJid instanceof DomainBareJid)) {
                 ((ContactJabberImpl) contact).getAvatar(true);
-                aTalkApp.showToastMessage("Retrieving avatar for: " + contact.getAddress());
+                aTalkApp.showToastMessage(R.string.service_gui_AVATAR_RETRIEVING, contactJid);
             }
             else {
-                aTalkApp.showToastMessage("No a valid contact");
+                aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
             }
             return true;
         }

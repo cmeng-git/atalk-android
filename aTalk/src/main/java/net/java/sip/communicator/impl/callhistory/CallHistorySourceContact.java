@@ -336,15 +336,9 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     {
         String time = GuiUtils.formatTime(date);
 
-        // If the current date we don't go in there and we'll return just the
-        // time.
+        // If the current date we don't go in there and we'll return just the time.
         if (GuiUtils.compareDatesOnly(date, System.currentTimeMillis()) < 0) {
-            StringBuffer dateStrBuf = new StringBuffer();
-
-            GuiUtils.formatDate(date, dateStrBuf);
-            dateStrBuf.append(" ");
-            dateStrBuf.append(time);
-            return dateStrBuf.toString();
+            return GuiUtils.formatDateTime(new Date(date));
         }
 
         return time;

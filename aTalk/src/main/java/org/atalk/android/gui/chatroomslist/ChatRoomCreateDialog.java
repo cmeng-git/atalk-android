@@ -31,7 +31,6 @@ import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -335,7 +334,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
                         // if we failed for some , then close and remove the room
                         AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
-                        AndroidGUIActivator.getMUCService().removeChatRoom(crWrapper);
+                        MUCActivator.getMUCService().removeChatRoom(crWrapper);
                     });
                 }
             }

@@ -21,10 +21,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.CheckBox;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -32,11 +34,15 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 import static org.atalk.android.R.id.cb_media_delete;
 
@@ -67,14 +73,16 @@ public class EntityListHelper
 
         if (descriptor instanceof MetaContact) {
             title = ctx.getString(R.string.service_gui_REMOVE_CONTACT);
-            MetaContact contact = (MetaContact) descriptor;
-            if (contact.getDefaultContact() == null) {
-                aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contact.getDisplayName());
+            Contact contact = ((MetaContact) descriptor).getDefaultContact();
+            Jid contactJid = contact.getJid();
+            if (!(contactJid instanceof DomainBareJid)) {
+                message = ctx.getString(R.string.service_gui_REMOVE_CONTACT_TEXT,
+                        contact.getProtocolProvider().getAccountID().getUserID(), contactJid);
+            }
+            else {
+                aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
                 return;
             }
-            message = ctx.getString(R.string.service_gui_REMOVE_CONTACT_TEXT,
-                    contact.getDefaultContact().getProtocolProvider().getAccountID().getUserID(),
-                    contact.getDisplayName());
         }
         else if (descriptor instanceof ChatRoomWrapper) {
             ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
@@ -98,8 +106,8 @@ public class EntityListHelper
                         else {
                             ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
                             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
-                            AndroidGUIActivator.getMUCService().destroyChatRoom(chatRoomWrapper,
-                                    "User requested", chatRoom.getIdentifier());
+                            MUCActivator.getMUCService().destroyChatRoom(chatRoomWrapper,
+                                    "User destroy chatRoom!", chatRoom.getIdentifier());
                         }
                         if (chatPanel != null) {
                             ChatSessionManager.removeActiveChat(chatPanel);
@@ -141,8 +149,7 @@ public class EntityListHelper
     public static void removeMetaContactGroup(final MetaContactGroup group)
     {
         Context ctx = aTalkApp.getGlobalContext();
-        String message = ctx.getString(R.string.service_gui_REMOVE_GROUP_TEXT,
-                group.getGroupName());
+        String message = ctx.getString(R.string.service_gui_REMOVE_GROUP_TEXT, group.getGroupName());
 
         DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.service_gui_REMOVE), message, ctx.getString(R.string.service_gui_REMOVE_GROUP),
                 new DialogActivity.DialogListener()
@@ -273,8 +280,8 @@ public class EntityListHelper
 
                     // purge all the files of the deleted messages
                     for (File file : msgFiles) {
-                        if (file.exists())
-                            file.delete();
+                        if ((file.exists() && !file.delete()))
+                            Timber.e("Failed to delete file: %s", file.getName());
                     }
                 }
 
@@ -364,8 +371,8 @@ public class EntityListHelper
                 List<String> msgFiles = mhs.getLocallyStoredFilePath();
                 for (String msgFile : msgFiles) {
                     File file = new File(msgFile);
-                    if (file.exists())
-                        file.delete();
+                    if (file.exists() && !file.delete())
+                        Timber.w("Failed to delete file: %s", msgFile);
                 }
             }
             mhs.eraseLocallyStoredHistory();

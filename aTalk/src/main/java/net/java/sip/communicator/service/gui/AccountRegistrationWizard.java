@@ -19,8 +19,8 @@ import android.content.Context;
 
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.util.UtilActivator;
 
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.util.StringUtils;
 import org.jxmpp.jid.Jid;
 
@@ -287,7 +287,7 @@ public abstract class AccountRegistrationWizard
     public boolean isPreferredProtocol()
     {
         // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
-        String prefWName = AndroidGUIActivator.getResources().getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
+        String prefWName = UtilActivator.getResources().getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
         return (!StringUtils.isNullOrEmpty(prefWName) && prefWName.equals(this.getClass().getName()));
     }
 

@@ -49,29 +49,24 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         implements ChatRoomProviderWrapperListener, ChatRoomListChangeListener, UIGroupRenderer
 {
     /**
-     * The group of original chatRoomProviderWrapper
+     * The group of original chatRoomProviderWrapper before filtered
      */
     private LinkedList<ChatRoomProviderWrapper> originalCrpWrapperGroup;
 
     /**
-     * The group of chatRoomProviderWrapper
+     * The group of chatRoomProviderWrapper for view display
      */
     private LinkedList<ChatRoomProviderWrapper> mCrpWrapperGroup;
 
     /**
-     * The original list of chatRoomWrapper.
+     * The original list of chatRoomWrapper before filtered.
      */
     private LinkedList<TreeSet<ChatRoomWrapper>> originalCrWrapperList;
 
     /**
-     * The list of chatRoomWrapper.
+     * The list of chatRoomWrapper for view display.
      */
     private LinkedList<TreeSet<ChatRoomWrapper>> mCrWrapperList;
-
-    /**
-     * A local reference of the last fetched bookmarks list
-     */
-    List<BookmarkedConference> bookmarksList = null;
 
     /**
      * The <tt>MUCService</tt>, which is the back end of this chatRoom list adapter.
@@ -79,7 +74,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     private MUCServiceImpl mucService;
 
     /**
-     * <tt>MetaContactRenderer</tt> instance used by this adapter.
+     * <tt>ChatRoomRenderer</tt> instance used by this adapter.
      */
     private ChatRoomRenderer chatRoomRenderer;
 
@@ -87,6 +82,11 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      * The currently used filter query.
      */
     private String currentFilterQuery;
+
+    /**
+     * A local reference of the last fetched bookmarks list
+     */
+    private List<BookmarkedConference> bookmarksList = null;
 
     public ChatRoomListAdapter(ChatRoomListFragment chatRoomListFragment)
     {
@@ -104,6 +104,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     {
         mucService = MUCActivator.getMUCService();
         if (mucService != null) {
+            // Timber.d("ChatRoom list change listener is added %s", this);
             mucService.addChatRoomProviderWrapperListener(this);
             mucService.addChatRoomListChangeListener(this);
 
@@ -124,6 +125,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     public void dispose()
     {
         if (mucService != null) {
+            // Timber.d("ChatRoom list change listener is removed %s", this);
             mucService.removeChatRoomProviderWrapperListener(this);
             mucService.removeChatRoomListChangeListener(this);
             removeChatRooms(mucService.getChatRoomProviders());
@@ -257,12 +259,19 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
             List<ChatRoomWrapper> chatRoomWrappers = initBookmarkChatRooms(provider);
             if ((chatRoomWrappers != null) && (chatRoomWrappers.size() > 0)) {
                 addGroup(provider);
-                for (ChatRoomWrapper crWrapper : chatRoomWrappers) {
-                    addChatRoom(provider, crWrapper);
+
+                // Use Iterator to avoid ConcurrentModificationException on addChatRoom(); do not user foreach
+                Iterator<ChatRoomWrapper> iteratorCRW = chatRoomWrappers.iterator();
+                while (iteratorCRW.hasNext()) {
+                    addChatRoom(provider, iteratorCRW.next());
                 }
+                // for (ChatRoomWrapper crWrapper : chatRoomWrappers) {
+                //     addChatRoom(provider, crWrapper); // ConcurrentModificationException
+                // }
             }
         }
-        // refresh list view after new room list fetching
+
+        // must refresh list view only after chatRoomWrappers fetch with bookmark info updated
         invalidateViews();
     }
 
@@ -274,7 +283,6 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     private List<ChatRoomWrapper> initBookmarkChatRooms(ChatRoomProviderWrapper crpWrapper)
     {
         if (crpWrapper != null) {
-
             XMPPConnection connection;
             ProtocolProviderService pps = crpWrapper.getProtocolProvider();
             if ((pps == null) || ((connection = pps.getConnection()) == null) || !connection.isAuthenticated()) {
@@ -283,7 +291,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
                 return null;
             }
 
-            // Just return room lists if bookmark has been fetched and updated earlier
+            // Just return room lists if bookmarks have been fetched and updated earlier
             if (bookmarksList != null)
                 return crpWrapper.getChatRooms();
 
@@ -328,16 +336,16 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
      * Adds the given <tt>crpWrapper</tt> to both the originalCrpWrapperGroup and
      * mCrpWrapperGroup only if no existing crpWrapper is found in current lists
      *
-     * @param crpWrapper the <tt>userJid</tt> to add
+     * @param crpWrapper the <tt>ChatRoomProviderWrapper</tt> to add
      */
     private void addGroup(ChatRoomProviderWrapper crpWrapper)
     {
-        if (originalCrpWrapperGroup.indexOf(crpWrapper) < 0) {
+        if (!originalCrpWrapperGroup.contains(crpWrapper)) {
             originalCrpWrapperGroup.add(crpWrapper);
             originalCrWrapperList.add(new TreeSet<>());
         }
 
-        if (mCrpWrapperGroup.indexOf(crpWrapper) < 0) {
+        if (!mCrpWrapperGroup.contains(crpWrapper)) {
             mCrpWrapperGroup.add(crpWrapper);
             mCrWrapperList.add(new TreeSet<>());
         }
@@ -351,13 +359,13 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     private void removeGroup(ChatRoomProviderWrapper crpWrapper)
     {
         int origGroupIndex = originalCrpWrapperGroup.indexOf(crpWrapper);
-        if (origGroupIndex >= 0) {
+        if (origGroupIndex != -1) {
             originalCrWrapperList.remove(origGroupIndex);
             originalCrpWrapperGroup.remove(crpWrapper);
         }
 
         int groupIndex = mCrpWrapperGroup.indexOf(crpWrapper);
-        if (groupIndex >= 0) {
+        if (groupIndex != -1) {
             mCrWrapperList.remove(groupIndex);
             mCrpWrapperGroup.remove(crpWrapper);
         }
@@ -376,8 +384,8 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
 
         boolean isMatchingQuery = isMatching(crWrapper, currentFilterQuery);
 
-        // Add new crpWrapperGroup element (original and filtered) and update both with the new
-        // Indexes (may be difference)
+        // Add new crpWrapperGroup element (original and filtered) and
+        // update both with the new Indexes (may be difference)
         if ((origGroupIndex < 0) || (isMatchingQuery && (groupIndex < 0))) {
             addGroup(crpWrapperGroup);
             origGroupIndex = originalCrpWrapperGroup.indexOf(crpWrapperGroup);
@@ -399,19 +407,21 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Removes all the ChatRoomProviderWrappers and ChatRoomWrappers contained in the given providers.
+     * Removes all the ChatRoomProviderWrappers and ChatRoomWrappers for the given providers.
      *
      * @param providers the <tt>ChatRoomProviderWrapper</tt>, which content we'd like to remove
      */
     private void removeChatRooms(List<ChatRoomProviderWrapper> providers)
     {
         for (ChatRoomProviderWrapper provider : providers) {
-            removeGroup(provider);
-
             List<ChatRoomWrapper> crWrapperList = provider.getChatRooms();
             for (ChatRoomWrapper crWrapper : crWrapperList) {
                 removeChatRoom(provider, crWrapper);
             }
+
+            // May not be necessary as remove all children will also remove the provider with zero child
+            // must do this last as the provider is used in removeChatRoom();
+            removeGroup(provider);
         }
     }
 
@@ -426,7 +436,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     {
         // Remove the chatRoomWrapper from the original list and its crpWrapperGroup if empty.
         int origGroupIndex = originalCrpWrapperGroup.indexOf(crpWrapper);
-        if (origGroupIndex >= 0) {
+        if (origGroupIndex != -1) {
             TreeSet<ChatRoomWrapper> origChatRoomList = getOriginalCrWrapperList(origGroupIndex);
             if (origChatRoomList != null) {
                 origChatRoomList.remove(crWrapper);
@@ -438,7 +448,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
 
         // Remove the chatRoomWrapper from the filtered list and its crpWrapperGroup if empty
         int groupIndex = mCrpWrapperGroup.indexOf(crpWrapper);
-        if (groupIndex >= 0) {
+        if (groupIndex != -1) {
             TreeSet<ChatRoomWrapper> crWrapperList = getCrWrapperList(groupIndex);
             if (crWrapperList != null) {
                 crWrapperList.remove(crWrapper);
@@ -534,10 +544,12 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
         // hide mCrpWrapperGroup contains zero chatRoomWrapper
         for (ChatRoomProviderWrapper crpWrapper : originalCrpWrapperGroup) {
             int groupIndex = originalCrpWrapperGroup.indexOf(crpWrapper);
-            TreeSet<ChatRoomWrapper> orgCrwList = getOriginalCrWrapperList(groupIndex);
-            if ((orgCrwList != null) && (orgCrwList.size() > 0)) {
-                mCrpWrapperGroup.add(crpWrapper);
-                mCrWrapperList.add(orgCrwList);
+            if (groupIndex != -1) {
+                TreeSet<ChatRoomWrapper> orgCrwList = getOriginalCrWrapperList(groupIndex);
+                if ((orgCrwList != null) && (orgCrwList.size() > 0)) {
+                    mCrpWrapperGroup.add(crpWrapper);
+                    mCrWrapperList.add(orgCrwList);
+                }
             }
         }
     }

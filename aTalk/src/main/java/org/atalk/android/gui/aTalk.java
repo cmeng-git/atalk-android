@@ -128,7 +128,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         handleIntent(getIntent(), savedInstanceState);
         
-        // Migrate aTalk to new directory structure
+        // Migrate aTalk to new directory structure 2.1.4 (12/18/2019) - may be removed in future release
         MigrateDir.aTalkDirMigrate();
 
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active

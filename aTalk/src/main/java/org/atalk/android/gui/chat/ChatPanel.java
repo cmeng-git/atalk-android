@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -314,17 +315,6 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void addChatStateListener(ChatStateNotificationsListener l)
     {
-//        Iterator<Contact> protoContacts = mMetaContact.getContacts();
-//        while (protoContacts.hasNext()) {
-//            Contact protoContact = protoContacts.next();
-//            OperationSetChatStateNotifications chatStateOpSet
-//                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
-//
-//            if (chatStateOpSet != null) {
-//                chatStateOpSet.addChatStateNotificationsListener(l);
-//            }
-//        }
-
         OperationSetChatStateNotifications chatStateOpSet
                 = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
@@ -340,17 +330,6 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void removeChatStateListener(ChatStateNotificationsListener l)
     {
-//        Iterator<Contact> protoContacts = mMetaContact.getContacts();
-//        while (protoContacts.hasNext()) {
-//            Contact protoContact = protoContacts.next();
-//            OperationSetChatStateNotifications chatStateOpSet
-//                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
-//
-//            if (chatStateOpSet != null) {
-//                chatStateOpSet.removeChatStateNotificationsListener(l);
-//            }
-//        }
-
         OperationSetChatStateNotifications chatStateOpSet
                 = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
@@ -599,7 +578,7 @@ public class ChatPanel implements Chat, MessageListener
     @Override
     public void addMessage(String contactName, Date date, int messageType, int encType, String content)
     {
-        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content));
+        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content, null));
     }
 
     /**
@@ -635,16 +614,39 @@ public class ChatPanel implements Chat, MessageListener
         }
     }
 
+    /**
+     * Send an outgoing file message to chatFragment for it to start the file send process
+     * The recipient can be contact or chatRoom
+     *
+     * @param filePath of the file to be sent
+     * @param messageType indicate which File transfer message is for
+     */
+    public void addFTRequest(String filePath, int messageType)
+    {
+        String sendTo;
+        Date date = Calendar.getInstance().getTime();
+
+        // Create the new msg Uuid for record saved in dB
+        String msgUuid = String.valueOf(System.currentTimeMillis()) + hashCode();
+
+        Object sender = mCurrentChatTransport.getDescriptor();
+        if (sender instanceof Contact) {
+            sendTo = ((Contact) sender).getAddress();
+        }
+        else {
+            sendTo = ((ChatRoom) sender).getName();
+        }
+        addMessage(new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid));
+    }
+
     /*
      * ChatMessage for IncomingFileTransferRequest
      *
      * Adds the given <tt>IncomingFileTransferRequest</tt> to the conversation panel in order to
-     * notify the user of the incoming file.
+     * notify the user of an incoming file transfer request.
      *
      * @param fileTransferOpSet the file transfer operation set
-     *
      * @param request the request to display in the conversation panel
-     *
      * @param date the date on which the request has been received
      */
     public void addFTRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date)
@@ -657,7 +659,7 @@ public class ChatPanel implements Chat, MessageListener
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
         int encType = IMessage.ENCODE_PLAIN;
         ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, encType,
-                msgContent, null, opSet, request, null);
+                msgContent, request.getID(), opSet, request, null);
 
         synchronized (cacheLock) {
             // Must cache chatMsg as chatFragment has not registered to handle incoming message on
@@ -673,7 +675,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Adds a new ChatLinkClickedListener. The callback is called for every link whose scheme is
      * <tt>jitsi</tt>. It is the callback's responsibility to filter the action based on the URI.
-     * <p>
+     *
      * Example:<br>
      * <tt>jitsi://classname/action?query</tt><br>
      * Use the name of the registering class as the host, the action to execute as the path and
@@ -686,25 +688,6 @@ public class ChatPanel implements Chat, MessageListener
     {
         ChatSessionManager.addChatLinkListener(chatLinkClickedListener);
     }
-
-//    /**
-//     * Returns the shortened display name of this chat.
-//     *
-//     * @return the shortened display name of this chat
-//     */
-//    public String getShortDisplayName()
-//    {
-//        String sender = mCurrentChatTransport.getDisplayName().trim();
-//        int atIndex = sender.indexOf("@");
-//        if (atIndex > -1)
-//            sender = sender.substring(0, atIndex);
-//
-//        int spaceIndex = sender.indexOf(" ");
-//        if (spaceIndex > -1)
-//            sender = sender.substring(0, spaceIndex);
-//
-//        return sender;
-//    }
 
     @Override
     public void messageReceived(MessageReceivedEvent messageReceivedEvent)
@@ -968,7 +951,7 @@ public class ChatPanel implements Chat, MessageListener
             // the chat session is set regarding to which OpSet is used for MUC
             if (pps.getOperationSet(OperationSetMultiUserChat.class) != null) {
                 ChatRoomWrapper chatRoomWrapper
-                        = AndroidGUIActivator.getMUCService().createPrivateChatRoom(pps, chatContacts, reason, false);
+                        = MUCActivator.getMUCService().createPrivateChatRoom(pps, chatContacts, reason, false);
                 if (chatRoomWrapper != null) {
                     // conferenceChatSession = new ConferenceChatSession(this, chatRoomWrapper);
                     Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);

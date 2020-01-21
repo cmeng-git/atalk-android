@@ -120,6 +120,7 @@
     <string name="service_gui_AVATAR_HINT">Значок рекомендуется: 64 * 64 (96 * 96 пикселей квадратный максимум)</string>
     <string name="service_gui_AWAY_STATUS">Отошёл</string>
     <string name="service_gui_AVATAR_SET_ERROR">Не удалось установить аватар для %1$s</string>
+    <string name="service_gui_AVATAR_RETRIEVING">Получение аватара для %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Занято</string>
     <string name="service_gui_CALL">Аудиозвонок</string>
@@ -316,18 +317,18 @@
 
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">отправлено %1$s</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFile получен из %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nПроизошла ошибка при передаче файла из %2$s\n%3$s</string>
-    <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nПолучить файл из %2$s</string>
-    <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFile успешно отправлен в %2$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s отклонил этот файл</string>
-    <string name="xFile_FILE_SENDING_TO">%1$s:\nОтправка файла %2$s</string>
-    <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nFile передача отменена</string>
-    <string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nПреобразование передачи файлов с %2$s. Подождите&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nПерегрузка передачи отклонено</string>
-    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n%2$s делится файлом с вами</string>
-    <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\nПроизошла ошибка при отправке файла в %2$s</string>
-    <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nВыйти для %2$s, чтобы принять ваш файл</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">Файл получен из %1$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">Произошла ошибка при передаче файла из %1$s</string>
+    <string name="xFile_FILE_RECEIVING_FROM">Получить файл из %1$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">Файл успешно отправлен в %1$s</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s отклонил этот файл</string>
+    <string name="xFile_FILE_SENDING_TO">Отправка файла в %1$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">File передача отменена</string>
+    <string name="xFile_FILE_TRANSFER_PREPARING">Преобразование передачи файлов с %1$s. Подождите&#8230;</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">Отказано в передаче файлов</string>
+    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s делится файлом с вами</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">Произошла ошибка при отправке файла в %1$s</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">Выйти для %1$s, чтобы принять ваш файл</string>
 
 	<string name="service_gui_PURGE">Очистить</string>
 	<string name="service_gui_ESTIMATED_TIME">Предполагаемое время: %1$s</string>
@@ -338,24 +339,12 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Мы не смогли найти приложение, связанное с этим типом файла</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">У вас недостаточно прав для открытия этого файла. Проверьте разрешения на чтение и повторите попытку</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Операция открытого файла не поддерживается текущей платформой вашего устройства</string>
-    <string name="service_gui_FILE_RECEIVE_COMPLETED">Файл получен из %1$s</string>
-    <string name="service_gui_FILE_RECEIVE_FAILED">Произошла ошибка при передаче файла из %1$s</string>
-    <string name="service_gui_FILE_RECEIVING_FROM">Получение файла из %1$s</string>
-    <string name="service_gui_FILE_SEND_COMPLETED">Файл успешно отправлен в %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Не удалось отправить файл: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Не удается отправить файл во время телефонной конференции!</string>
-    <string name="service_gui_FILE_SEND_REFUSED">%1$s отклонил этот файл</string>
     <string name="service_gui_FILE_SEND_TO">Отправить вложение</string>
-    <string name="service_gui_FILE_SENDING_TO">Отправка файла в %1$s</string>
     <string name="service_gui_FILE_TOO_BIG">Размер файла превышает максимально допустимый для этого протокола: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Прерывание передачи файлов прерывается. Отслеживание состояния @ %1$s потеряно!</string>
-    <string name="service_gui_FILE_TRANSFER_CANCELED">Передача файлов отменена</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Контактный клиент или сервер не поддерживает передачу файлов или требуемые протоколы</string>
-    <string name="service_gui_FILE_TRANSFER_PREPARING">Подготовка передачи файлов с %1$s. Подождите&#8230;</string>
-    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s делится файлом с вами</string>
-    <string name="service_gui_FILE_TRANSFER_REFUSED">Отказано в передаче файлов</string>
-	<string name="service_gui_FILE_UNABLE_TO_SEND">Произошла ошибка при отправке файла в %1$s</string>
-    <string name="service_gui_FILE_WAITING_TO_ACCEPT">Ожидание %1$s, чтобы принять ваш файл</string>
 
 	<string name="service_gui_FINISH">Закончить</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">Не удалось найти папку, содержащую этот файл. Он был удален или перемещен</string>

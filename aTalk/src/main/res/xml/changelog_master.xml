@@ -6,6 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.1.6 (01/21/2020)" versioncode="1116">
+        <change>Implement embedded audio media player in chat view with functions: Play, Pause, Resume, Stop(long press) and Seek</change>
+        <change>Standardize dateTime format and layout in chat message and file transfer views</change>
+        <change>Chat Invite Dialog: allow user group expansion, fix incorrect highlight of selected contact onShow dialog and system crash</change>
+        <change>Fix camera setup error for front and back camera toggling - aTalk may abort on long press camera tool icon</change>
+        <change>Fix partial deletion of last file sent and file received messages due to null message Uuid</change>
+        <change>Fix chat view scroll incorrectly to top when the last sent/received message is deleted</change>
+        <change>Fix incorrect mimeType detection for file with unicode characters (patch android-28 sdk library)</change>
+        <change>Fix NPE in HTTP File Download when an invalid filename is specified</change>
+        <change>Fix exceptions from Field Failure Report for aTalk v2.1.5</change>
+        <change>Upgrade openSSL to version 1.0.2u: https://www.openssl.org/news/vulnerabilities.html</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.1.5 (12/28/2019)" versioncode="1115">
         <change>Rename share intent to aTalk and use CustomView for ShareActivity actionBar</change>
         <change>Improve join chatRoom captcha challenge request handling and allow user retry on incorrect entry</change>
