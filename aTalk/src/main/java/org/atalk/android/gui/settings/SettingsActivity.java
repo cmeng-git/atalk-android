@@ -13,8 +13,7 @@ import android.text.TextUtils;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
 import net.java.sip.communicator.service.systray.SystrayService;
-import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.ServiceUtils;
+import net.java.sip.communicator.util.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -373,7 +372,7 @@ public class SettingsActivity extends OSGiActivity
          */
         private void initNotificationPreferences()
         {
-            ConfigurationService cfg = AndroidGUIActivator.getConfigurationService();
+            ConfigurationService cfg = UtilActivator.getConfigurationService();
 
             // Remove for android play store release
             // PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_UPDATE_CHECK_ENABLE,

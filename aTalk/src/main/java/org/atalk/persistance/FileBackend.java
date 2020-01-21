@@ -320,7 +320,7 @@ public class FileBackend
      */
     public static String getMimeType(final Context ctx, final Uri uri, final String mime)
     {
-        Timber.d("guessMimeTypeFromUriAndMime %s and mime = %s", uri, mime);
+        Timber.d("guessMimeTypeFromUriAndMime %s and mimeType = %s", uri, mime);
         if (mime == null || mime.equals("application/octet-stream")) {
             final String guess = getMimeType(ctx, uri);
             if (guess != null) {

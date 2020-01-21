@@ -16,25 +16,29 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
+import android.content.*;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.view.*;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.ImageView.ScaleType;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.ByteFormat;
-import net.java.sip.communicator.util.GuiUtils;
+import net.java.sip.communicator.util.*;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.*;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.persistance.FileBackend;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.util.StringUtils;
@@ -43,6 +47,11 @@ import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 import java.io.File;
 import java.util.*;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import timber.log.Timber;
+
+import static org.atalk.persistance.FileBackend.getMimeType;
+
 /**
  * The <tt>FileTransferConversationComponent</tt> is the parent of all file conversation
  * components - for incoming, outgoing and history file transfers.
@@ -50,7 +59,8 @@ import java.util.*;
  * @author Eng Chong Meng
  */
 public abstract class FileTransferConversation extends OSGiFragment
-        implements FileTransferProgressListener, UploadProgressListener
+        implements OnClickListener, OnLongClickListener, FileTransferProgressListener, UploadProgressListener,
+        SeekBar.OnSeekBarChangeListener
 {
     /**
      * XEP-0264: File Transfer Thumbnails option
@@ -63,12 +73,12 @@ public abstract class FileTransferConversation extends OSGiFragment
     private static final int IMAGE_WIDTH = 64;
     private static final int IMAGE_HEIGHT = 64;
 
-    private ChatActivity chatActivity;
-
     /**
      * The xfer file full path for saving the received file.
      */
     protected File mXferFile;
+
+    protected Uri mUri;
 
     /**
      * The file transfer.
@@ -101,9 +111,38 @@ public abstract class FileTransferConversation extends OSGiFragment
     private long mEstimatedTimeLeft = 0;
 
     /**
+     * The state of a player where playback is stopped
+     */
+    private static final int STATE_STOP = 0;
+    /**
+     * The state of a player when it's created
+     */
+    private static final int STATE_IDLE = 1;
+    /**
+     * The state of a player where playback is paused
+     */
+    private static final int STATE_PAUSE = 2;
+    /**
+     * The state of a player that is actively playing
+     */
+    private static final int STATE_PLAY = 3;
+
+    private static Map<Uri, BroadcastReceiver> bcRegisters = new HashMap<>();
+
+    private int playerState = STATE_STOP;
+
+    private AnimationDrawable mPlayerAnimate;
+
+    private boolean isMediaAudio = false;
+    private String mimeType = null;
+
+    private boolean isSeeking = false;
+    private int positionSeek;
+
+    /**
      * The file transfer index/position of the message in chatListAdapter
      */
-    protected int msgId = 0;
+    protected int msgViewId = 0;
 
     /**
      * The message Uuid  uniquely identify the record in the message database
@@ -125,11 +164,18 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected boolean mUpdateDB = false;
 
-
     protected ChatFragment mChatFragment;
+    protected ChatActivity mChatActivity;
+
     protected ChatFragment.MessageViewHolder messageViewHolder;
 
     private final Vector<UploadProgressListener> uploadProgressListeners = new Vector<>();
+
+    protected FileTransferConversation(ChatFragment cPanel)
+    {
+        mChatFragment = cPanel;
+        mChatActivity = (ChatActivity) cPanel.getActivity();
+    }
 
     protected View inflateViewForFileTransfer(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
             ViewGroup container, boolean init)
@@ -140,23 +186,31 @@ public abstract class FileTransferConversation extends OSGiFragment
         if (init) {
             convertView = inflater.inflate(R.layout.chat_file_transfer_row, container, false);
 
-            messageViewHolder.imageLabel = convertView.findViewById(R.id.button_file);
+            messageViewHolder.fileIcon = convertView.findViewById(R.id.button_file);
+            messageViewHolder.arrowDir = convertView.findViewById(R.id.filexferArrowView);
+            messageViewHolder.stickerView = convertView.findViewById(R.id.sticker);
+
+            messageViewHolder.playerView = convertView.findViewById(R.id.playerView);
+            messageViewHolder.fileAudio = convertView.findViewById(R.id.filename_audio);
+            messageViewHolder.playbackPlay = convertView.findViewById(R.id.playback_play);
+            messageViewHolder.playbackPosition = convertView.findViewById(R.id.playback_position);
+            messageViewHolder.playbackDuration = convertView.findViewById(R.id.playback_duration);
+            messageViewHolder.playbackSeekBar = convertView.findViewById(R.id.playback_seekbar);
+
+            messageViewHolder.fileLabel = convertView.findViewById(R.id.filexferFileNameView);
+            messageViewHolder.fileStatus = convertView.findViewById(R.id.filexferStatusView);
+            messageViewHolder.fileXferError = convertView.findViewById(R.id.errorView);
+            messageViewHolder.encStateView = convertView.findViewById(R.id.encFileStateView);
+
+            messageViewHolder.timeView = convertView.findViewById(R.id.xferTimeView);
+            messageViewHolder.fileXferSpeed = convertView.findViewById(R.id.file_progressSpeed);
+            messageViewHolder.estTimeRemain = convertView.findViewById(R.id.file_estTime);
+            messageViewHolder.mProgressBar = convertView.findViewById(R.id.file_progressbar);
+
             messageViewHolder.cancelButton = convertView.findViewById(R.id.buttonCancel);
             messageViewHolder.retryButton = convertView.findViewById(R.id.button_retry);
             messageViewHolder.acceptButton = convertView.findViewById(R.id.button_accept);
             messageViewHolder.rejectButton = convertView.findViewById(R.id.button_reject);
-            messageViewHolder.arrowDir = convertView.findViewById(R.id.filexferArrowView);
-            messageViewHolder.stickerView = convertView.findViewById(R.id.sticker);
-
-            messageViewHolder.titleLabel = convertView.findViewById(R.id.filexferTitleView);
-            messageViewHolder.encStateView = convertView.findViewById(R.id.encFileStateView);
-            messageViewHolder.fileLabel = convertView.findViewById(R.id.filexferFileNameView);
-            messageViewHolder.viewFileXferError = convertView.findViewById(R.id.errorView);
-
-            messageViewHolder.timeView = convertView.findViewById(R.id.xferTimeView);
-            messageViewHolder.progressSpeedLabel = convertView.findViewById(R.id.file_progressSpeed);
-            messageViewHolder.estimatedTimeLabel = convertView.findViewById(R.id.file_estTime);
-            messageViewHolder.mProgressBar = convertView.findViewById(R.id.file_progressbar);
         }
         else {
             messageViewHolder.cancelButton.setVisibility(View.GONE);
@@ -166,11 +220,31 @@ public abstract class FileTransferConversation extends OSGiFragment
             hideProgressRelatedComponents();
         }
 
-        View.OnClickListener onAction = getOnSetListener();
-        messageViewHolder.cancelButton.setOnClickListener(onAction);
+        // Note-5: seek progressBar is not visible and thumb partially clipped with xml default settings.
+        // So increase the seekBar height to 16dp i.e. progressBar = 6dp
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            final float scale = mChatActivity.getResources().getDisplayMetrics().density;
+            int dp_padding = (int) (16 * scale + 0.5f);
 
-        messageViewHolder.stickerView.setOnClickListener(onAction);
-        messageViewHolder.titleLabel.setTextColor(AndroidGUIActivator.getResources().getColor("black"));
+            messageViewHolder.playbackSeekBar.requestLayout();
+            messageViewHolder.playbackSeekBar.getLayoutParams().height = dp_padding;
+        }
+
+        // set to viewHolder default state
+        messageViewHolder.playerView.setVisibility(View.GONE);
+        messageViewHolder.stickerView.setVisibility(View.GONE);
+        messageViewHolder.fileLabel.setVisibility(View.VISIBLE);
+
+        messageViewHolder.playbackSeekBar.setOnSeekBarChangeListener(this);
+        messageViewHolder.cancelButton.setOnClickListener(this);
+        messageViewHolder.stickerView.setOnClickListener(this);
+
+        messageViewHolder.playbackPlay.setOnClickListener(this);
+        messageViewHolder.playbackPlay.setOnLongClickListener(this);
+
+        mPlayerAnimate = (AnimationDrawable) messageViewHolder.playbackPlay.getBackground();
+
+        messageViewHolder.fileStatus.setTextColor(UtilActivator.getResources().getColor("black"));
         return convertView;
     }
 
@@ -182,8 +256,8 @@ public abstract class FileTransferConversation extends OSGiFragment
     protected void showErrorMessage(int resId)
     {
         String message = getResources().getString(resId);
-        messageViewHolder.viewFileXferError.setText(message);
-        messageViewHolder.viewFileXferError.setVisibility(TextView.VISIBLE);
+        messageViewHolder.fileXferError.setText(message);
+        messageViewHolder.fileXferError.setVisibility(TextView.VISIBLE);
     }
 
     /**
@@ -212,32 +286,52 @@ public abstract class FileTransferConversation extends OSGiFragment
             int mHeight = thumbnailIcon.getHeight();
 
             if (mWidth > IMAGE_WIDTH || mHeight > IMAGE_HEIGHT) {
-                messageViewHolder.imageLabel.setScaleType(ScaleType.FIT_CENTER);
+                messageViewHolder.fileIcon.setScaleType(ScaleType.FIT_CENTER);
             }
             else {
-                messageViewHolder.imageLabel.setScaleType(ScaleType.CENTER);
+                messageViewHolder.fileIcon.setScaleType(ScaleType.CENTER);
             }
-            messageViewHolder.imageLabel.setImageBitmap(thumbnailIcon);
+            messageViewHolder.fileIcon.setImageBitmap(thumbnailIcon);
             // messageViewHolder.stickerView.setImageBitmap(thumbnailIcon);
         }
     }
 
     /**
-     * Sets the download file.
+     * Initialize all the local parameters i.e. mXferFile, mUri, mimeType and isMediaAudio
+     * Update the file transfer view display info in thumbnail or audio player UI accordingly.
      *
-     * @param file the file that has been downloaded or sent
+     * @param file the file that has been downloaded/received or sent
+     * @param isHistory true if the view file is history, so show small image size
      */
-    protected void setCompletedDownloadFile(ChatFragment chatFragment, File file)
+    protected void updateFileViewInfo(File file, boolean isHistory)
     {
-        this.chatActivity = (ChatActivity) chatFragment.getActivity();
+        if ((file == null) || !file.exists())
+            return;
+
         mXferFile = file;
+        mUri = FileBackend.getUriForFile(mChatActivity, file);
+        mimeType = checkMimeType(file);
+        isMediaAudio = ((mimeType != null) && (mimeType.contains("audio") || mimeType.contains("3gp")));
+
+        messageViewHolder.fileLabel.setText(getFileLabel(file));
+        if (isMediaAudio && playerInit()) {
+            messageViewHolder.playerView.setVisibility(View.VISIBLE);
+            messageViewHolder.stickerView.setVisibility(View.GONE);
+            messageViewHolder.fileLabel.setVisibility(View.GONE);
+            messageViewHolder.fileAudio.setText(getFileLabel(file));
+        }
+        else {
+            messageViewHolder.playerView.setVisibility(View.GONE);
+            messageViewHolder.stickerView.setVisibility(View.VISIBLE);
+            messageViewHolder.fileLabel.setVisibility(View.VISIBLE);
+            MyGlideApp.loadImage(messageViewHolder.stickerView, file, isHistory);
+        }
 
         final String toolTip = aTalkApp.getResString(R.string.service_gui_OPEN_FILE_FROM_IMAGE);
-        messageViewHolder.imageLabel.setContentDescription(toolTip);
-        View.OnClickListener onAction = getOnSetListener();
-        messageViewHolder.imageLabel.setOnClickListener(onAction);
+        messageViewHolder.fileIcon.setContentDescription(toolTip);
+        messageViewHolder.fileIcon.setOnClickListener(this);
 
-        messageViewHolder.imageLabel.setOnLongClickListener(v -> {
+        messageViewHolder.fileIcon.setOnLongClickListener(v -> {
             Toast.makeText(v.getContext(), toolTip, Toast.LENGTH_SHORT).show();
             return true;
         });
@@ -262,8 +356,8 @@ public abstract class FileTransferConversation extends OSGiFragment
     protected void hideProgressRelatedComponents()
     {
         messageViewHolder.mProgressBar.setVisibility(View.GONE);
-        messageViewHolder.progressSpeedLabel.setVisibility(View.GONE);
-        messageViewHolder.estimatedTimeLabel.setVisibility(View.GONE);
+        messageViewHolder.fileXferSpeed.setVisibility(View.GONE);
+        messageViewHolder.estTimeRemain.setVisibility(View.GONE);
     }
 
     /**
@@ -331,33 +425,36 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.mProgressBar.setProgress((int) transferredBytes);
 
             if (mTransferSpeed > 0) {
-                messageViewHolder.progressSpeedLabel.setVisibility(View.VISIBLE);
-                messageViewHolder.progressSpeedLabel.setText(
+                messageViewHolder.fileXferSpeed.setVisibility(View.VISIBLE);
+                messageViewHolder.fileXferSpeed.setText(
                         aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(mTransferSpeed), bytesString));
             }
 
             if (transferredBytes >= mTransferFileSize) {
-                messageViewHolder.estimatedTimeLabel.setVisibility(View.GONE);
+                messageViewHolder.estTimeRemain.setVisibility(View.GONE);
             }
             else if (mEstimatedTimeLeft > 0) {
-                messageViewHolder.estimatedTimeLabel.setVisibility(View.VISIBLE);
-                messageViewHolder.estimatedTimeLabel.setText(aTalkApp.getResString(R.string.service_gui_ESTIMATED_TIME,
+                messageViewHolder.estTimeRemain.setVisibility(View.VISIBLE);
+                messageViewHolder.estTimeRemain.setText(aTalkApp.getResString(R.string.service_gui_ESTIMATED_TIME,
                         GuiUtils.formatSeconds(mEstimatedTimeLeft * 1000)));
             }
         });
     }
 
     /**
-     * Returns the string, showing information for the given file.
+     * Returns a string showing information for the given file.
      *
      * @param file the file
-     * @return the name of the given file
+     * @return the name and size of the given file
      */
     protected String getFileLabel(File file)
     {
-        String fileName = file.getName();
-        long fileSize = file.length();
-        return getFileLabel(fileName, fileSize);
+        if ((file != null) && file.exists()) {
+            String fileName = file.getName();
+            long fileSize = file.length();
+            return getFileLabel(fileName, fileSize);
+        }
+        return (file == null) ? "" : file.getName();
     }
 
     /**
@@ -388,7 +485,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
     /**
      * @param status File transfer send status
-     * @param jid Conact or ChatRoom for Http file upload service
+     * @param jid Contact or ChatRoom for Http file upload service
      */
     public void setStatus(final int status, Object jid, int encType)
     {
@@ -410,7 +507,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     public void setXferStatus(int status)
     {
         if (mChatFragment.getChatListAdapter() != null)
-            mChatFragment.getChatListAdapter().setXferStatus(msgId, status);
+            mChatFragment.getChatListAdapter().setXferStatus(msgViewId, status);
     }
 
     /**
@@ -420,42 +517,348 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected int getXferStatus()
     {
-        return mChatFragment.getChatListAdapter().getXferStatus(msgId);
-    }
-
-    /**
-     * Handles buttons action events.
-     * <p>
-     * // @param evt
-     * the <tt>ActionEvent</tt> that notified us
-     */
-    protected View.OnClickListener getOnSetListener()
-    {
-        return v -> {
-            switch (v.getId()) {
-                case R.id.button_file:
-                case R.id.sticker:
-                    if (chatActivity != null)
-                        chatActivity.openDownloadable(mXferFile);
-                    break;
-
-                case R.id.buttonCancel:
-                    messageViewHolder.retryButton.setVisibility(View.GONE);
-                    messageViewHolder.cancelButton.setVisibility(View.GONE);
-                    setXferStatus(FileTransferStatusChangeEvent.CANCELED);
-                    if (fileTransfer != null)
-                        fileTransfer.cancel();
-                    break;
-            }
-        };
+        return mChatFragment.getChatListAdapter().getXferStatus(msgViewId);
     }
 
     /**
      * @return the fileTransfer file
      */
-    public File getFileName()
+    public File getXferFile()
     {
         return mXferFile;
+    }
+
+    /**
+     * The message Uuid uniquely identify the record in the message database
+     *
+     * @return the uid for the requested message to send file
+     */
+    public String getMessageUuid()
+    {
+        return msgUuid;
+    }
+
+    /**
+     * Handles buttons click action events.
+     */
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId()) {
+            case R.id.button_file:
+            case R.id.sticker:
+                if (mChatActivity != null)
+                    mChatActivity.openDownloadable(mXferFile);
+                break;
+
+            case R.id.playback_play:
+                playStart();
+                break;
+
+            case R.id.buttonCancel:
+                messageViewHolder.retryButton.setVisibility(View.GONE);
+                messageViewHolder.cancelButton.setVisibility(View.GONE);
+                setXferStatus(FileTransferStatusChangeEvent.CANCELED);
+                if (fileTransfer != null)
+                    fileTransfer.cancel();
+                break;
+        }
+    }
+
+    /**
+     * Handles buttons long press action events
+     * mainly use to stop and release player
+     */
+    @Override
+    public boolean onLongClick(View v)
+    {
+        if (v.getId() == R.id.playback_play) {
+            playerStop();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Initialize the broadcast receiver for the media player (uri).
+     * Keep the active bc receiver instance in bcRegisters list to ensure only one bc is registered
+     *
+     * @param file the media file
+     * @return true if init is successful
+     */
+    private boolean bcReceiverInit(File file)
+    {
+        String mimeType = checkMimeType(file);
+        if ((mimeType != null) && (mimeType.contains("audio") || mimeType.contains("3gp"))) {
+            if (playerState == STATE_STOP) {
+                BroadcastReceiver bcReceiver;
+                if ((bcReceiver = bcRegisters.get(mUri)) != null) {
+                    LocalBroadcastManager.getInstance(mChatActivity).unregisterReceiver(bcReceiver);
+                }
+
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(AudioBgService.PLAYBACK_STATE);
+                filter.addAction(AudioBgService.PLAYBACK_STATUS);
+                LocalBroadcastManager.getInstance(mChatActivity).registerReceiver(mReceiver, filter);
+                bcRegisters.put(mUri, mReceiver);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get the active media player status or just media info for the view display;
+     * update the view holder content via Broadcast receiver
+     */
+    private boolean playerInit()
+    {
+        if (isMediaAudio) {
+            if (playerState == STATE_STOP) {
+
+                if (!bcReceiverInit(mXferFile))
+                    return false;
+
+                Intent intent = new Intent(mChatActivity, AudioBgService.class);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(mUri, mimeType);
+                intent.setAction(AudioBgService.ACTION_PLAYER_INIT);
+                mChatActivity.startService(intent);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Stop the current active media player playback
+     */
+    private void playerStop()
+    {
+        if (isMediaAudio) {
+            if ((playerState == STATE_PAUSE) || (playerState == STATE_PLAY)) {
+
+                Intent intent = new Intent(mChatActivity, AudioBgService.class);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(mUri, mimeType);
+                intent.setAction(AudioBgService.ACTION_PLAYER_STOP);
+                mChatActivity.startService(intent);
+            }
+        }
+    }
+
+    /**
+     * Toggle audio file playback states:
+     * STOP -> PLAY -> PAUSE -> PLAY;
+     * long press play button to STOP
+     *
+     * Proceed to open the file for VIEW if this is not an audio file
+     */
+    private void playStart()
+    {
+        Intent intent = new Intent(mChatActivity, AudioBgService.class);
+        if (isMediaAudio) {
+            if (playerState == STATE_PLAY) {
+                intent.setData(mUri);
+                intent.setAction(AudioBgService.ACTION_PLAYER_PAUSE);
+                mChatActivity.startService(intent);
+                return;
+            }
+            else if (playerState == STATE_STOP) {
+                if (!bcReceiverInit(mXferFile))
+                    return;
+            }
+
+            intent.setAction(AudioBgService.ACTION_PLAYER_START);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(mUri, mimeType);
+            mChatActivity.startService(intent);
+            return;
+        }
+
+        intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setDataAndType(mUri, mimeType);
+
+        PackageManager manager = mChatActivity.getPackageManager();
+        List<ResolveInfo> info = manager.queryIntentActivities(intent, 0);
+        if (info.size() == 0) {
+            intent.setDataAndType(mUri, "*/*");
+        }
+        try {
+            mChatActivity.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            aTalkApp.showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+        }
+    }
+
+    /**
+     * SeekTo player new start play position
+     *
+     * @param file media file for playback
+     * @param position seek time position
+     */
+    private void playerSeek(int position)
+    {
+        if (isMediaAudio) {
+            if (!bcReceiverInit(mXferFile))
+                return;
+
+            Intent intent = new Intent(mChatActivity, AudioBgService.class);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(mUri, mimeType);
+            intent.putExtra(AudioBgService.PLAYBACK_POSITION, position);
+            intent.setAction(AudioBgService.ACTION_PLAYER_SEEK);
+            mChatActivity.startService(intent);
+        }
+    }
+
+    /**
+     * Media player BroadcastReceiver to animate and update player view holder info
+     */
+    private BroadcastReceiver mReceiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            // proceed only if it is the playback of the current mUri
+            if (!mUri.equals(intent.getParcelableExtra(AudioBgService.PLAYBACK_URI)))
+                return;
+
+            int position = intent.getIntExtra(AudioBgService.PLAYBACK_POSITION, 0);
+            int audioDuration = intent.getIntExtra(AudioBgService.PLAYBACK_DURATION, 0);
+
+            if ((playerState == STATE_PLAY) && AudioBgService.PLAYBACK_STATUS.equals(intent.getAction())) {
+                if (!isSeeking)
+                    messageViewHolder.playbackPosition.setText(formatTime(position));
+                messageViewHolder.playbackDuration.setText(formatTime(audioDuration - position));
+                messageViewHolder.playbackSeekBar.setMax(audioDuration);
+                messageViewHolder.playbackSeekBar.setProgress(position);
+
+            }
+            else if (AudioBgService.PLAYBACK_STATE.equals(intent.getAction())) {
+                AudioBgService.PlaybackState playbackState
+                        = (AudioBgService.PlaybackState) intent.getSerializableExtra(AudioBgService.PLAYBACK_STATE);
+
+                Timber.d("Audio playback state: %s (%s/%s): %s", playbackState, position, audioDuration, mUri.getPath());
+                switch (playbackState) {
+                    case init:
+                        playerState = STATE_IDLE;
+                        messageViewHolder.playbackDuration.setText(formatTime(audioDuration));
+                        messageViewHolder.playbackPosition.setText(formatTime(0));
+                        messageViewHolder.playbackSeekBar.setMax(audioDuration);
+                        messageViewHolder.playbackSeekBar.setProgress(0);
+
+                        messageViewHolder.playbackPlay.setImageResource(R.drawable.player_start);
+                        mPlayerAnimate.stop();
+                        break;
+
+                    case play:
+                        playerState = STATE_PLAY;
+                        messageViewHolder.playbackSeekBar.setMax(audioDuration);
+                        messageViewHolder.playerView.clearAnimation();
+
+                        messageViewHolder.playbackPlay.setImageDrawable(null);
+                        mPlayerAnimate.start();
+                        break;
+
+                    case stop:
+                        playerState = STATE_STOP;
+                        bcRegisters.remove(mUri);
+                        LocalBroadcastManager.getInstance(mChatActivity).unregisterReceiver(mReceiver);
+                    case pause:
+                        if (playerState != STATE_STOP) {
+                            playerState = STATE_PAUSE;
+                        }
+                        messageViewHolder.playbackPosition.setText(formatTime(position));
+                        messageViewHolder.playbackDuration.setText(formatTime(audioDuration - position));
+                        messageViewHolder.playbackSeekBar.setMax(audioDuration);
+                        messageViewHolder.playbackSeekBar.setProgress(position);
+
+                        messageViewHolder.playbackPlay.setImageResource(R.drawable.player_start);
+                        mPlayerAnimate.stop();
+                        break;
+                }
+            }
+        }
+    };
+
+    /**
+     * OnSeekBarChangeListener callback interface
+     *
+     * A SeekBar callback that notifies clients when the progress level has been
+     * changed. This includes changes that were initiated by the user through a
+     * touch gesture or arrow key/trackball as well as changes that were initiated
+     * programmatically.
+     */
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+    {
+        if (fromUser && (messageViewHolder.playbackSeekBar == seekBar)) {
+            positionSeek = progress;
+            messageViewHolder.playbackPosition.setText(formatTime(progress));
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar)
+    {
+        if (messageViewHolder.playbackSeekBar == seekBar) {
+            isSeeking = true;
+        }
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar)
+    {
+        if (messageViewHolder.playbackSeekBar == seekBar) {
+            playerSeek(positionSeek);
+            isSeeking = false;
+        }
+    }
+
+    /**
+     * Format the given time to mm:ss
+     *
+     * @param time time is ms
+     * @return the formatted time string in mm:ss
+     */
+    private String formatTime(int time)
+    {
+        // int ms = (time % 1000) / 10;
+        int seconds = time / 1000;
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+        return String.format(Locale.US, "%02d:%02d", minutes, seconds);
+    }
+
+    /**
+     * Determine the mimeType of the given file
+     *
+     * @param file the media file to check
+     * @return mimeType or null if undetermined
+     */
+    private String checkMimeType(File file)
+    {
+        if (!file.exists()) {
+            // aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+            return null;
+        }
+
+        try {
+            Uri uri = FileBackend.getUriForFile(mChatActivity, file);
+            String mimeType = getMimeType(mChatActivity, uri);
+            if ((mimeType == null) || mimeType.contains("application")) {
+                mimeType = "*/*";
+            }
+            return mimeType;
+
+        } catch (SecurityException e) {
+            Timber.i("No permission to access %s: %s", file.getAbsolutePath(), e.getMessage());
+            aTalkApp.showToastMessage(R.string.service_gui_FILE_OPEN_NO_PERMISSION);
+            return null;
+        }
     }
 
     /**
@@ -464,7 +867,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * @param fileName the incoming xfer fileName
      * @param mimeType the incoming file mimeType
      */
-    protected void setTransferFilePath(String  fileName, String mimeType)
+    protected void setTransferFilePath(String fileName, String mimeType)
     {
         String downloadPath = FileBackend.MEDIA_DOCUMENT;
         if (fileName.contains("voice-"))

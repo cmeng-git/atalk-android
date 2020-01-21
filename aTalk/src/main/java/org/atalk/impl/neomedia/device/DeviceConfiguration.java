@@ -426,9 +426,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                     }
                 }
             }
-
             if (videoCaptureDevice != null) {
-                Timber.i("Found %s as a %s video capture device.", videoCaptureDevice.getName(), format);
+                Timber.i("Found %s; format: %s video capture device.", videoCaptureDevice.getName(), format);
             }
         }
         return videoCaptureDevice;
@@ -671,14 +670,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                 break;
             case DESKTOP:
                 List<CaptureDeviceInfo> devs = getAvailableVideoCaptureDevices(MediaUseCase.DESKTOP);
-
                 if (devs.size() > 0)
                     dev = devs.get(0);
                 break;
             default:
                 break;
         }
-
         return dev;
     }
 

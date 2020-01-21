@@ -124,6 +124,7 @@
     <string name="service_gui_AVATAR_HINT">Icono recomendado: 64*64 (96*96 px cuadrado max)</string>
     <string name="service_gui_AWAY_STATUS">Ausente</string>
     <string name="service_gui_AVATAR_SET_ERROR">Fallo al configurar el avatar para %s</string>
+    <string name="service_gui_AVATAR_RETRIEVING">Recuperando avatar para %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
     <string name="service_gui_CALL">Llamada de audio</string>
@@ -317,18 +318,18 @@
 
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s enviado</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nEl archivo ha sido recibido de %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nSe ha producido un error al transferir el archivo desde %2$s\n%3$s</string>
-    <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nRecibiendo un archivo de %2$s</string>
-    <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nEl fichero se ha enviado correctamente a %2$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s ha rechazado este archivo</string>
-	<string name="xFile_FILE_SENDING_TO">%1$s:\nEnviando el archivo a %2$s</string>
-    <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nSe ha cancelado la transferencia de archivos</string>
-	<string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nPreparando la transferencia de archivos con %2$s. Por favor, espere&#8230;</string>
-	<string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nSe ha rechazado la transferencia de archivos</string>
-	<string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n%2$s comparte un archivo contigo</string>
-    <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\nSe ha producido un error al enviar el archivo a %2$s</string>
-    <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nEsperando %2$s para aceptar tu archivo</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">Se ha recibido el archivo de %1$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">Se ha producido un error al transferir el archivo desde %1$s</string>
+    <string name="xFile_FILE_RECEIVING_FROM">Recibiendo un archivo de %1$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">El fichero se ha enviado correctamente a %1$s</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s ha rechazado este archivo</string>
+	<string name="xFile_FILE_SENDING_TO">Enviando el archivo a %1$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">Se ha cancelado la transferencia de archivos</string>
+	<string name="xFile_FILE_TRANSFER_PREPARING">Preparando la transferencia de archivos con %1$s. Por favor, espere&#8230;</string>
+	<string name="xFile_FILE_TRANSFER_REFUSED">Se ha rechazado la transferencia de archivos</string>
+	<string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s comparte un archivo contigo</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">Se ha producido un error al enviar el archivo a %1$s</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">Esperando %1$s para aceptar tu archivo</string>
 
     <string name="service_gui_PURGE">Purgar</string>
 	<string name="service_gui_ESTIMATED_TIME">Tiempo estimado: %1$s</string>
@@ -339,24 +340,12 @@
 	<string name="service_gui_FILE_OPEN_NO_APPLICATION">No se encontró ninguna aplicación asociada a este tipo de archivo</string>
 	<string name="service_gui_FILE_OPEN_NO_PERMISSION">No tienes suficientes permisos para abrir este archivo. Por favor, compruebe sus permisos de lectura e inténtelo de nuevo</string>
 	<string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Lo sentimos, la operación para abrir el archivo no es compatible con la plataforma actual</string>
-	<string name="service_gui_FILE_RECEIVE_COMPLETED">Se ha recibido el archivo de %1$s</string>
-	<string name="service_gui_FILE_RECEIVE_FAILED">Se ha producido un error al transferir el archivo desde %1$s</string>
-    <string name="service_gui_FILE_RECEIVING_FROM">Recibiendo un archivo de %1$s</string>
-	<string name="service_gui_FILE_SEND_COMPLETED">El fichero se ha enviado correctamente a %1$s</string>
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
-	<string name="service_gui_FILE_SEND_REFUSED">%1$s ha rechazado este archivo</string>
 	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
-	<string name="service_gui_FILE_SENDING_TO">Enviando el archivo a %1$s</string>
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
 	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado @ %1$s perdido!</string>
-	<string name="service_gui_FILE_TRANSFER_CANCELED">Se ha cancelado la transferencia de archivos</string>
 	<string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">El cliente o servidor de contacto no admite la transferencia de archivos ni los protocolos necesarios</string>
-	<string name="service_gui_FILE_TRANSFER_PREPARING">Preparando la transferencia de archivos con %1$s. Por favor, espere&#8230;</string>
-	<string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s comparte un archivo contigo</string>
-	<string name="service_gui_FILE_TRANSFER_REFUSED">Se ha rechazado la transferencia de archivos</string>
-	<string name="service_gui_FILE_UNABLE_TO_SEND">Se ha producido un error al enviar el archivo a %1$s</string>
-    <string name="service_gui_FILE_WAITING_TO_ACCEPT">Esperando %1$s para aceptar tu archivo</string>
 
 	<string name="service_gui_FINISH">Finalizar</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">No se ha podido encontrar la carpeta que contiene este archivo. Se ha borrado o movido</string>

@@ -17,7 +17,6 @@ import net.java.sip.communicator.service.gui.AlertUIService;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.muc.MUCService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.service.systray.SystrayService;
@@ -33,7 +32,6 @@ import org.atalk.android.gui.util.AlertUIServiceImpl;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.*;
 
 import java.util.*;
@@ -81,7 +79,6 @@ public class AndroidGUIActivator implements BundleActivator
      */
     private static MetaContactListService metaCListService;
     private static SystrayService systrayService;
-    private static ResourceManagementService resourcesService;
     private static MediaService mediaService;
     private static GlobalStatusService globalStatusService;
 
@@ -93,7 +90,6 @@ public class AndroidGUIActivator implements BundleActivator
     private static AlertUIService alertUIService;
     private static CredentialsStorageService credentialsService;
 
-    private static MUCService mucService;
     private static MessageHistoryService messageHistoryService;
     private static FileHistoryService fileHistoryService;
 
@@ -256,19 +252,6 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
-     *
-     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
-     */
-    public static ResourceManagementService getResources()
-    {
-        if (resourcesService == null) {
-            resourcesService = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
-        }
-        return resourcesService;
-    }
-
-    /**
      * Returns the <tt>LoginManager</tt> for Android application.
      *
      * @return the <tt>LoginManager</tt> for Android application.
@@ -346,11 +329,6 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>CredentialsStorageService</tt>.
-     *
-     * @return the <tt>CredentialsStorageService</tt>.
-     */
-    /**
      * Returns a reference to a CredentialsStorageService implementation currently registered in
      * the bundle context or null if no such implementation was found.
      *
@@ -375,20 +353,6 @@ public class AndroidGUIActivator implements BundleActivator
         if (fileHistoryService == null)
             fileHistoryService = ServiceUtils.getService(bundleContext, FileHistoryService.class);
         return fileHistoryService;
-    }
-
-    /**
-     * Returns a reference to a MUCService implementation currently registered in the bundle
-     * context or null if no such implementation was found.
-     *
-     * @return a currently valid implementation of the MUCService.
-     */
-    public static MUCService getMUCService()
-    {
-        if (mucService == null) {
-            mucService = ServiceUtils.getService(bundleContext, MUCService.class);
-        }
-        return mucService;
     }
 
     /**

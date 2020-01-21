@@ -17,12 +17,12 @@ package org.atalk.android.gui.call;
 
 import net.java.sip.communicator.service.contactsource.ContactDetail;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 import net.java.sip.communicator.util.skin.Skinnable;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.contactlist.UIContactDetailImpl;
 import org.atalk.android.gui.contactlist.UIContactImpl;
@@ -115,7 +115,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
             Class<? extends OperationSet> opSetClass)
     {
         this.invoker = invoker;
-        this.init(AndroidGUIActivator.getResources().getI18NString(getI18NKeyCallVia()));
+        this.init(UtilActivator.getResources().getI18NString(getI18NKeyCallVia()));
 
         for (ProtocolProviderService provider : telephonyProviders) {
             this.addTelephonyProviderItem(provider, contactToCall, opSetClass);
@@ -146,7 +146,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     public ChooseCallAccountPopupMenu(JComponent invoker, List<?> telephonyObjects, Class<? extends OperationSet> opSetClass)
     {
         this.invoker = invoker;
-        this.init(AndroidGUIActivator.getResources().getI18NString(getI18NKeyChooseContact()));
+        this.init(UtilActivator.getResources().getI18NString(getI18NKeyChooseContact()));
 
         for (Object o : telephonyObjects) {
             if (o instanceof UIContactDetailImpl)

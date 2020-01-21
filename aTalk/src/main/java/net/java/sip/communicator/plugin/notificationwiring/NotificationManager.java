@@ -550,7 +550,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             Contact sourceContact = request.getSender();
 
             // Fire notification
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM,
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM,
                     sourceContact.getDisplayName());
             fireChatNotification(sourceContact, INCOMING_FILE, title, message, request.getID());
         } catch (Throwable t) {
@@ -937,7 +937,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             String filePath = msgBody.split("#")[0];
             String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
 
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, sourceParticipant);
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, sourceParticipant);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
         }
         else {
@@ -974,7 +974,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             String filePath = msgBody.split("#")[0];
             String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
 
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, nickName);
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, nickName);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
         }
         else {
@@ -1035,7 +1035,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             String filePath = msgBody.split("#")[0];
             String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
 
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, contact.getAddress());
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, contact.getAddress());
             fireChatNotification(contact, INCOMING_FILE, title, fileName, msgUid);
         }
         else {

@@ -7,6 +7,7 @@ package org.atalk.android.gui.account;
 
 import android.graphics.drawable.Drawable;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.muc.MUCService;
 import net.java.sip.communicator.service.protocol.*;
@@ -30,8 +31,6 @@ import org.atalk.android.gui.util.event.EventListenerList;
 import org.atalk.service.osgi.OSGiService;
 
 import java.beans.PropertyChangeEvent;
-
-import timber.log.Timber;
 
 /**
  * The <tt>AndroidLoginRenderer</tt> is the Android renderer for login events.
@@ -179,7 +178,7 @@ public class AndroidLoginRenderer implements LoginRenderer
         OperationSetMultiUserChat multiUserChat = MUCService.getMultiUserChatOpSet(protocolProvider);
         MUCService mucService;
         if ((multiUserChat != null)
-                && (mucService = AndroidGUIActivator.getMUCService()) != null) {
+                && (mucService = MUCActivator.getMUCService()) != null) {
             mucService.synchronizeOpSetWithLocalContactList(protocolProvider, multiUserChat);
         }
         updateGlobalStatus();

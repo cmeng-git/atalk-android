@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 
@@ -13,7 +15,6 @@ import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smackx.bob.*;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
@@ -55,9 +56,10 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * @param file the file to send
      * @param jabberTransfer the Jabber transfer object, containing all transfer information
      * @param protocolProvider the parent protocol provider
+     * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
      */
     public OutgoingFileTransferJabberImpl(Contact receiver, File file, OutgoingFileTransfer jabberTransfer,
-            ProtocolProviderServiceJabberImpl protocolProvider)
+            ProtocolProviderServiceJabberImpl protocolProvider, String msgUuid)
     {
         this.receiver = receiver;
         this.file = file;
@@ -65,8 +67,8 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         this.protocolProvider = protocolProvider;
 
         // Create the identifier of this file transfer that is used from the history and the user
-        // interface to track this transfer.
-        this.id = String.valueOf(System.currentTimeMillis()) + hashCode();
+        // interface to track this transfer. Use pass in value if available
+        this.id = (TextUtils.isEmpty(msgUuid)) ? String.valueOf(System.currentTimeMillis()) + hashCode() : msgUuid;
 
         // jabberTransfer is null for http file upload
         if (jabberTransfer == null)
@@ -135,7 +137,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     }
 
     /**
-     * The unique id.
+     * The unique id that uniquely identity the record and in DB.
      *
      * @return the id.
      */
@@ -174,8 +176,6 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         if (!(file instanceof ThumbnailedFile))
             return;
 
-        Timber.d("File transfer packet intercepted to add thumbnail element.");
-
         XMPPConnection connection = protocolProvider.getConnection();
         StreamInitiation fileTransferPacket = (StreamInitiation) stanza;
         ThumbnailedFile thumbnailedFile = (ThumbnailedFile) file;
@@ -197,7 +197,8 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             ThumbnailFile fileElement = new ThumbnailFile(file, thumbnail);
             fileTransferPacket.setFile(fileElement);
 
-            Timber.d("The file transfer packet with thumbnail: %s", fileTransferPacket.toXML(XmlEnvironment.EMPTY));
+            Timber.d("File transfer packet intercepted to add thumbnail element.");
+            // Timber.d("The file transfer packet with thumbnail: %s", fileTransferPacket.toXML(XmlEnvironment.EMPTY));
         }
 
         // Remove this packet interceptor after we're done.

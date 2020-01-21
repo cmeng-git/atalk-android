@@ -28,14 +28,14 @@ import timber.log.Timber;
 public class AndroidCamera extends CaptureDeviceInfo
 {
     /**
-     * The constant value for camera facing front.
-     */
-    public static final int FACING_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
-
-    /**
-     * The constant value for camera facing back.
+     * The facing of the camera is opposite to that of the screen.
      */
     public static final int FACING_BACK = Camera.CameraInfo.CAMERA_FACING_BACK;
+
+    /**
+     * The facing of the camera is the same as that of the screen.
+     */
+    public static final int FACING_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
 
     /**
      * Creates new instance of <tt>AndroidCamera</tt>
@@ -103,7 +103,7 @@ public class AndroidCamera extends CaptureDeviceInfo
     public static int getCameraFacing(MediaLocator locator)
     {
         String remainder = locator.getRemainder();
-        return Integer.parseInt(remainder.substring(remainder.indexOf("/") + 1, remainder.length()));
+        return Integer.parseInt(remainder.substring(remainder.indexOf("/") + 1));
     }
 
     /**

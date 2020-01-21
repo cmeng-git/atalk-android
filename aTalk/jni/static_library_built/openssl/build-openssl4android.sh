@@ -20,17 +20,17 @@ set -u
 
 # support openssl-1.0.2
 LIB_OPENSSL="openssl"
-LIB_OPENSSL_GIT="openssl-1.0.2r"
+LIB_OPENSSL_GIT="openssl-1.0.2u"
+
+# Auto fetch and unarchive libopenssl from online repository with the given version i.e. LIB_OPENSSL_GIT
+[[ -d ${LIB_OPENSSL} ]] || ./init_libopenssl.sh ${LIB_OPENSSL_GIT}
 
 if [[ -f "${LIB_OPENSSL}/Makefile" ]]; then
   version="$(grep '^VERSION=' < ${LIB_OPENSSL}/Makefile | sed 's/^.*=\([1-9]\.[0-9]\.[0-9][a-z]\).*$/v\1/')"
 else
-  # version='v1.0.2r'
+  # extract the version from LIB_OPENSSL_GIT e.g. 'v1.0.2u'
   version="$(${LIB_OPENSSL_GIT} | sed 's/^.*-\([1-9]\.[0-9]\.[0-9][a-z]\).*$/v\1/')"
 fi
-
-# Auto fetch and unarchive libopenssl from online repository
-[[ -d ${LIB_OPENSSL} ]] || ./init_libopenssl.sh ${LIB_OPENSSL_GIT}
 
 # Applying required patches to openssl-1.0.2
 ./libopenssl_patch.sh ${LIB_OPENSSL}
@@ -53,7 +53,7 @@ configure_make() {
       TARGET="android-armv7"
     ;;
     arm64-v8a)
-      TARGET="android no-ssl2 no-ssl3 no-hw "
+      TARGET="android64-aarch64 no-ssl2 no-ssl3 no-hw "
     ;;
     x86)
       TARGET="android-x86"

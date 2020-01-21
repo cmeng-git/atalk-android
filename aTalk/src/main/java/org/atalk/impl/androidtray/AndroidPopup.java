@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -325,7 +326,7 @@ public class AndroidPopup
             else if (tag instanceof ChatRoomJabberImpl) {
                 ChatRoomJabberImpl chatRoom = (ChatRoomJabberImpl) tag;
                 ChatRoomWrapper chatRoomWrapper
-                        = AndroidGUIActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, true);
+                        = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, true);
                 if (chatRoomWrapper == null) {
                     Timber.e("ChatRoomWrapper not found for %s", chatRoom.getIdentifier());
                 }
@@ -375,7 +376,7 @@ public class AndroidPopup
         // Remove timeout handler
         if (timeoutHandler != null) {
             Timber.d("Removing timeout from notification: %s", id);
-
+            // FFR: NPE: 2.1.5 AndroidPopup.cancelTimeout (AndroidPopup.java:379) ?
             timeoutHandler.cancel();
             timeoutHandler = null;
         }

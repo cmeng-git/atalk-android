@@ -246,6 +246,6 @@ public class AndroidCallListener implements CallListener, CallChangeListener
 
         notificationService.fireNotification(NotificationManager.MISSED_CALL,
                 aTalkApp.getResString(R.string.service_gui_MISSED_CALLS_TOOL_TIP), contact.getDisplayName() + " "
-                        + GuiUtils.formatTime(when) + " " + GuiUtils.formatDate(when), contactIcon, extras);
+                        + GuiUtils.formatDateTime(when), contactIcon, extras);
     }
 }

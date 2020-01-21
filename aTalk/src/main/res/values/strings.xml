@@ -127,6 +127,7 @@
     <string name="service_gui_AVATAR_HINT">Icon recommended: 64*64 (96*96 px square max)</string>
     <string name="service_gui_AWAY_STATUS">Away</string>
     <string name="service_gui_AVATAR_SET_ERROR">Failed to set avatar for %1$s</string>
+    <string name="service_gui_AVATAR_RETRIEVING">Retrieving avatar for %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Busy</string>
     <string name="service_gui_CALL">Audio call</string>
@@ -330,18 +331,18 @@
 
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s sent</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFile has been received from %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nAn error occurred while transferring file from %2$s\n%3$s</string>
-    <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nReceiving file from %2$s</string>
-    <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFile has been successfully sent to %2$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s has rejected this file</string>
-    <string name="xFile_FILE_SENDING_TO">%1$s:\nSending file to %2$s</string>
-    <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nFile transfer has been canceled</string>
-    <string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nPreparing file transfer with %2$s. Please wait&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nFile transfer has been rejected</string>
-    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n%2$s is sharing a file with you</string>
-    <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\nAn error occurred while sending file to %2$s</string>
-    <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nWaiting for %2$s to accept your file</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">File has been received from %1$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">An error occurred while transferring file from %1$s</string>
+    <string name="xFile_FILE_RECEIVING_FROM">Receiving file from %1$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">File has been successfully sent to %1$s</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s has rejected this file</string>
+    <string name="xFile_FILE_SENDING_TO">Sending file to %1$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">File transfer has been canceled</string>
+    <string name="xFile_FILE_TRANSFER_PREPARING">Preparing file transfer with %1$s. Please wait&#8230;</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">File transfer has been rejected</string>
+    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s is sharing a file with you</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">An error occurred while sending file to %1$s</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">Waiting for %1$s to accept your file</string>
 
     <string name="service_gui_PURGE">Purge</string>
     <string name="service_gui_ESTIMATED_TIME">Estimated time: %1$s</string>
@@ -352,24 +353,12 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">We couldn\'t find the application associated with this type of file</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">You don\'t have enough permissions to open this file. Please check your read permissions and try again</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">The open file operation is not supported by your device current platform</string>
-    <string name="service_gui_FILE_RECEIVE_COMPLETED">File has been received from %1$s</string>
-    <string name="service_gui_FILE_RECEIVE_FAILED">An error occurred while transferring file from %1$s</string>
-    <string name="service_gui_FILE_RECEIVING_FROM">Receiving file from %1$s</string>
-    <string name="service_gui_FILE_SEND_COMPLETED">File has been successfully sent to %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Failed to send file: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Cannot send file during conference call!</string>
-    <string name="service_gui_FILE_SEND_REFUSED">%1$s has rejected this file</string>
     <string name="service_gui_FILE_SEND_TO">Send Attachment</string>
-    <string name="service_gui_FILE_SENDING_TO">Sending file to %1$s</string>
     <string name="service_gui_FILE_TOO_BIG">File size exceeds the maximum allowed for this protocol: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">File transfer in progress was being interrupted. Status tracking @ %1$s lost!</string>
-    <string name="service_gui_FILE_TRANSFER_CANCELED">File transfer has been canceled</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Contact client or server does not support file transfer or required protocols</string>
-    <string name="service_gui_FILE_TRANSFER_PREPARING">Preparing file transfer with %1$s. Please wait&#8230;</string>
-    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s is sharing a file with you</string>
-    <string name="service_gui_FILE_TRANSFER_REFUSED">File transfer has been rejected</string>
-    <string name="service_gui_FILE_UNABLE_TO_SEND">An error occurred while sending file to %1$s</string>
-    <string name="service_gui_FILE_WAITING_TO_ACCEPT">Waiting for %1$s to accept your file</string>
 
     <string name="service_gui_FINISH">Finish</string>
     <string name="service_gui_FOLDER_DOES_NOT_EXIST">The folder containing this file could not be found. It was either deleted or moved</string>

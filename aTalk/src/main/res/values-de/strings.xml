@@ -120,6 +120,7 @@
     <string name="service_gui_AVATAR_HINT">Empfohlene Bildgröße: 64*64 (96*96 px maximum)</string>
     <string name="service_gui_AWAY_STATUS">Abwesend</string>
     <string name="service_gui_AVATAR_SET_ERROR">Kann den Avatar für %1$s nicht speichern.</string>
+    <string name="service_gui_AVATAR_RETRIEVING">Avatar wird abgerufen für %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Beschäftigt</string>
     <string name="service_gui_CALL">Audioanruf</string>
@@ -313,18 +314,18 @@
 
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s gesendet</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nDatei wurde von %2$s empfangen</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\nFehler beim Transfer einer Datei von %2$s\n%3$s</string>
-    <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nEmpfange Datei von %2$s</string>
-    <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nDatei erfolgreich an %2$s übertragen</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s:\n%2$s hat die Datei abgelehnt.</string>
-    <string name="xFile_FILE_SENDING_TO">%1$s:\nSende Datei an %2$s</string>
-    <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nDer Dateitransfer wurde abgebrochen.</string>
-    <string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nBereite Dateitransfer mit %2$s vor. Bitte warten&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nDateitransfer wurde abgelehnt.</string>
-    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n%2$s möchte Dir eine Datei senden.</string>
-    <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\nBeim Transfer einer Datei an %2$s ist ein Fehler aufgetaucht.</string>
-    <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nWarte auf Bestätigung von %2$s</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">Datei wurde von %1$s empfangen</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">Fehler beim Transfer einer Datei von %1$s</string>
+    <string name="xFile_FILE_RECEIVING_FROM">Empfange Datei von %1$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">Datei wurde erfolgreich an %1$s übertragen</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s hat die Datei abgelehnt.</string>
+    <string name="xFile_FILE_SENDING_TO">Sende Datei an %1$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">Dateitransfer wurde abgebrochen</string>
+    <string name="xFile_FILE_TRANSFER_PREPARING">Bereite Dateitransfer mit %1$s vor. Bitte warten&#8230;</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">Dateitransfer wurde abgelehnt.</string>
+    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s möchte Dir eine Datei senden</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">Es gab ein Problem beim Sender einer Datei an %1$s</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">Warte auf %1$s zur Bestätigung des Transfers.</string>
 
     <string name="service_gui_PURGE">Purge</string>
 	<string name="service_gui_ESTIMATED_TIME">Geschätzte Zeit: %1$s</string>
@@ -335,24 +336,12 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Kann kein Programm finden welches diesem Dateityp zugehörig ist.</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Du hast keine Berechtigung zum Öffnen dieser Datei. Bitte überprüfe die Zugriffsrechte.</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Dein Mobiltelefon unterstützt das Öffnen von Dateien nicht.</string>
-    <string name="service_gui_FILE_RECEIVE_COMPLETED">Datei wurde von %1$s empfangen.</string>
-    <string name="service_gui_FILE_RECEIVE_FAILED">Beim Dateitransfer von %1$s ist ein Fehler aufgetreten.</string>
-    <string name="service_gui_FILE_RECEIVING_FROM">Empfange Datei von %1$s</string>
-    <string name="service_gui_FILE_SEND_COMPLETED">Datei wurde erfolgreich an %1$s übertragen</string>
     <string name="service_gui_FILE_SEND_FAILED">Konnte Datei nicht senden: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Datei kann während einer Telefonkonferenz nicht gesendet werden!</string>
-    <string name="service_gui_FILE_SEND_REFUSED">%1$s hat die Datei abgelehnt.</string>
     <string name="service_gui_FILE_SEND_TO">Anlagen senden</string>
-    <string name="service_gui_FILE_SENDING_TO">Sende Datei an %1$s</string>
     <string name="service_gui_FILE_TOO_BIG">Die maximale Dateigrösse wurde überschritten: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Der laufende Dateitransfer wurde unterbrochen @ %1$s.</string>
-    <string name="service_gui_FILE_TRANSFER_CANCELED">Dateitransfer wurde abgebrochen</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Contact Client oder Server unterstützt keine Dateiübertragung oder erforderliche Protokolle</string>
-    <string name="service_gui_FILE_TRANSFER_PREPARING">Bereite Dateitransfer mit %1$s vor. Bitte warten&#8230;</string>
-    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s möchte Dir eine Datei senden.</string>
-    <string name="service_gui_FILE_TRANSFER_REFUSED">Dateitransfer wurde abgelehnt</string>
-	<string name="service_gui_FILE_UNABLE_TO_SEND">Es gab ein Problem beim Sender einer Datei an %1$s</string>
-    <string name="service_gui_FILE_WAITING_TO_ACCEPT">Warte auf %1$s zur Bestätigung des Transfers.</string>
 
 	<string name="service_gui_FINISH">Beenden</string>
 	<string name="service_gui_FOLDER_DOES_NOT_EXIST">Das Verzeichnis zu dieser Datei wurde nicht gefunden. Es wurde anscheinend gelöscht.</string>

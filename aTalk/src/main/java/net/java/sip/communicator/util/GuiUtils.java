@@ -6,6 +6,7 @@
  */
 package net.java.sip.communicator.util;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -225,6 +226,33 @@ public class GuiUtils
     public static int compareDatesOnly(Date date1, Date date2)
     {
         return compareDatesOnly(date1.getTime(), date2.getTime());
+    }
+
+    /**
+     * Formats the given date. The result format is the following:
+     * For example: Tue 29 Oct 2019 04:37:55 FMT+08:00
+     *
+     * @param date the date to format
+     * @return the formatted date string
+     */
+    public static String formatDateTime(Date date)
+    {
+        if (date == null)
+            date = new Date();
+
+        String pattern = "E, dd MMM yyyy HH:mm:ss z";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(date);
+
+        /*
+         * [Month] [Day], [Year] [Hour]:[Minute]:[Second].
+         * Dec 24, 2000 12:25:30.
+         */
+        // long dateTime = date.getTime()
+        // StringBuffer strBuf = new StringBuffer();
+        // formatDate(dateTime, strBuf);
+        // formatTime(dateTime);
+        // return strBuf.append(" ").append(formatTime(dateTime)).toString();
     }
 
     /**

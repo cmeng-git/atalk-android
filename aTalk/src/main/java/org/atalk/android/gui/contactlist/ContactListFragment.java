@@ -6,6 +6,7 @@
 package org.atalk.android.gui.contactlist;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -26,14 +27,14 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountInfoPresenceActivity;
-import org.atalk.android.gui.chat.ChatPanel;
-import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.contactlist.model.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.DomainJid;
 
 import java.util.List;
@@ -95,6 +96,8 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
      */
     private static int scrollTopPosition;
 
+    private Activity mActivity = null;
+
     /**
      * Creates new instance of <tt>ContactListFragment</tt>.
      */
@@ -109,7 +112,17 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        mActivity = activity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (AndroidGUIActivator.bundleContext == null) {
             return null;
@@ -200,7 +213,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
      * @param menu the options menu
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater)
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater menuInflater)
     {
         super.onCreateOptionsMenu(menu, menuInflater);
 
@@ -224,7 +237,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         });
 
         SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(mActivity.getComponentName()));
 
         int id = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
@@ -255,8 +268,9 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
             contactListAdapter = new MetaContactListAdapter(this, true);
             contactListAdapter.initModelData();
         }
-        // allow to show groups with zero member in main contact list
+        // Do not include groups with zero member in main contact list
         // contactListAdapter.nonZeroContactGroupList();
+
         return contactListAdapter;
     }
 
@@ -281,7 +295,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
      * {@inheritDoc}
      */
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    public void onCreateContextMenu(@NotNull ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (contactListView.getExpandableListAdapter() != getContactListAdapter()) {
@@ -295,7 +309,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
 
         // Create different context menu for both group and child items
-        MenuInflater inflater = getActivity().getMenuInflater();
+        MenuInflater inflater = mActivity.getMenuInflater();
         if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
             createGroupCtxMenu(menu, inflater, group);
         }
@@ -423,8 +437,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
                 return true;
             case R.id.send_contact_file:
                 // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
-                // FragmentActivity parent = getActivity();
-                // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(parent,
+                // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(mActivity,
                 // clickedContact);
                 // attachOptionDialog.show();
                 return true;
@@ -503,7 +516,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
      */
     private void startContactInfoActivity(MetaContact metaContact)
     {
-        Intent statusIntent = new Intent(getActivity(), ContactInfoActivity.class);
+        Intent statusIntent = new Intent(mActivity, ContactInfoActivity.class);
         statusIntent.putExtra(ContactInfoActivity.INTENT_CONTACT_ID, metaContact.getDisplayName());
         startActivity(statusIntent);
     }
@@ -672,13 +685,13 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
      *
      * @param metaContact The MetaContact to be updated
      */
-    public void updateUnreadCount(MetaContact metaContact)
+    public void updateUnreadCount(final MetaContact metaContact)
     {
-        if (metaContact != null) {
-            int unreadCount = metaContact.getUnreadCount();
-            if (contactListAdapter != null) {
-                runOnUiThread(() -> contactListAdapter.updateUnreadCount(metaContact, unreadCount));
+        runOnUiThread(() -> {
+            if ((metaContact != null) && (contactListAdapter != null)) {
+                int unreadCount = metaContact.getUnreadCount();
+                contactListAdapter.updateUnreadCount(metaContact, unreadCount);
             }
-        }
+        });
     }
 }

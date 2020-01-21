@@ -17,7 +17,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.persistance.FileBackend;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.Presence;
@@ -535,10 +535,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Sends the given sticker through this chat transport file transfer operation set.
      *
      * @param file the file to send
-     * @return the <tt>FileTransfer</tt> object charged to transfer the file
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+
+     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
-    public Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // If this chat transport does not support file transfer we do nothing and just return.
@@ -552,7 +555,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 if (ChatFragment.MSGTYPE_OMEMO == chatType)
                     return httpFileUpload(file, chatType, xferCon);
                 else
-                    return ftOpSet.sendFile(contact, file);
+                    return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
             } catch (OperationNotSupportedException ex) {
                 return httpFileUpload(file, chatType, xferCon);
             }
@@ -578,10 +581,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Sends the given file through this chat transport file transfer operation set.
      *
      * @param file the file to send
-     * @return the <tt>FileTransfer</tt> object charged to transfer the file
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+
+     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
-    public Object sendFile(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendFile(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         return sendFile(file, false, chatType, xferCon);
@@ -591,10 +597,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Sends the given file through this chat transport file transfer operation set.
      *
      * @param file the file to send
-     * @return the <tt>FileTransfer</tt> object charged to transfer the file
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+
+     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
-    private Object sendFile(File file, boolean isMultimediaMessage, int chatType, FileTransferConversation xferCon)
+    private Object sendFile(File file, boolean isMultimediaMessage, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // If this chat transport does not support file transfer we do nothing and just return. HttpFileUpload?
@@ -627,7 +636,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     if (ChatFragment.MSGTYPE_OMEMO == chatType)
                         return httpFileUpload(file, chatType, xferCon);
                     else
-                        return ftOpSet.sendFile(contact, file);
+                        return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
                 } catch (OperationNotSupportedException ex) {
                     // Fallback to use Http file upload if client does not support legacy SOCKS5 and IBS
                     return httpFileUpload(file, chatType, xferCon);
@@ -640,8 +649,15 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
 
     /**
      * Http file upload if supported by the server
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+     *
+     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @throws Exception if anything goes wrong
      */
-    private Object httpFileUpload(File file, int chatType, FileTransferConversation xferCon)
+    private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed

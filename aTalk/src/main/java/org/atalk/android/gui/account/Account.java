@@ -11,9 +11,9 @@ import android.graphics.drawable.Drawable;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
+import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.AccountUtil;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.event.EventListener;
@@ -139,7 +139,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      */
     public static byte[] loadIcon(String imagePath)
     {
-        ResourceManagementService resources = AndroidGUIActivator.getResources();
+        ResourceManagementService resources = UtilActivator.getResources();
         byte[] icon = null;
 
         if (resources != null) {

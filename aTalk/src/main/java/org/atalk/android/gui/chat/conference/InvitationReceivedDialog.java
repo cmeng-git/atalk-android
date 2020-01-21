@@ -17,19 +17,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
-import net.java.sip.communicator.service.protocol.AdHocChatRoomInvitation;
-import net.java.sip.communicator.service.protocol.ChatRoomInvitation;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.EntityJid;
@@ -165,7 +159,7 @@ public class InvitationReceivedDialog extends Dialog
     private boolean onAcceptClicked()
     {
         if (mInvitationAdHoc == null) {
-            AndroidGUIActivator.getMUCService().acceptInvitation(mInvitation);
+            MUCActivator.getMUCService().acceptInvitation(mInvitation);
         }
         else {
             try {
@@ -182,7 +176,7 @@ public class InvitationReceivedDialog extends Dialog
         String reasonField = ViewUtil.toString(reasonTextArea);
         if (mMultiUserChatAdHocOpSet == null && mInvitationAdHoc == null) {
             try {
-                AndroidGUIActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
+                MUCActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
             } catch (OperationFailedException e) {
                 e.printStackTrace();
             }

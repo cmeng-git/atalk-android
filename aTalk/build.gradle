@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
+        classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -71,8 +71,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1115
-        versionName "2.1.5"
+        versionCode 1116
+        versionName "2.1.6"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion

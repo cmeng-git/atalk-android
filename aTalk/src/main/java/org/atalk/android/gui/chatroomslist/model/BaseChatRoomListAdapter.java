@@ -55,7 +55,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the single thread.
+     * it's accessed from the main thread.
      */
     protected final Handler uiHandler = OSGiActivity.uiHandler;
 
@@ -76,6 +76,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      */
     private Map<ChatRoomWrapper, ChatRoomViewHolder> crwViewHolder = new HashMap<>();
 
+    private LayoutInflater mInflater;
+
     /**
      * Creates the chatRoom list adapter.
      *
@@ -83,6 +85,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      */
     public BaseChatRoomListAdapter(ChatRoomListFragment crlFragment)
     {
+        // cmeng - must use this mInflater as crlFragment may not always attached to FragmentManager
+        mInflater = LayoutInflater.from(aTalkApp.getGlobalContext());
         chatRoomListFragment = crlFragment;
         chatRoomListView = chatRoomListFragment.getChatRoomListView();
     }
@@ -128,13 +132,21 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      */
     public void expandAllGroups()
     {
-        // Expand group view only when chatRoomListView is in focus (UI mode)
+        // Expand group view only when chatRoomListView is in focus (UI mode) - not null
         // cmeng - do not use isFocused() - may not in sync with actual
         uiHandler.post(() -> {
-            int count = getGroupCount();
-            for (int position = 0; position < count; position++)
-                if (chatRoomListView != null)
-                    chatRoomListView.expandGroup(position);
+            // FFR:  v2.1.5 NPE even with pre-check for non-null, so add catch exception
+            if (chatRoomListView != null) {
+                int count = getGroupCount();
+                for (int position = 0; position < count; position++) {
+                    try {
+                        chatRoomListView.expandGroup(position);
+                    } catch (Exception e) {
+                        Timber.e(e,"Expand group Exception %s; %s", position, chatRoomListFragment);
+                    }
+
+                }
+            }
         });
     }
 
@@ -180,7 +192,6 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
         if (chatRoomView != null) {
             ImageView avatarView = chatRoomView.findViewById(R.id.room_icon);
-
             if (avatarView != null)
                 setRoomIcon(avatarView, getChatRoomRenderer(groupIndex).getChatRoomIcon(chatRoomWrapper));
         }
@@ -339,15 +350,13 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * @param parent the parent view group
      */
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
-            ViewGroup parent)
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
     {
         // Keeps reference to avoid future findViewById()
         GroupViewHolder groupViewHolder;
 
         if (convertView == null) {
-            LayoutInflater inflater = chatRoomListFragment.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.chatroom_list_group_row, parent, false);
+            convertView = mInflater.inflate(R.layout.chatroom_list_group_row, parent, false);
 
             groupViewHolder = new GroupViewHolder();
             groupViewHolder.ppsUserId = convertView.findViewById(R.id.displayName);

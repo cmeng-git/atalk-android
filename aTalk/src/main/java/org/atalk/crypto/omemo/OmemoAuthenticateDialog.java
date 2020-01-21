@@ -18,15 +18,12 @@ package org.atalk.crypto.omemo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.ArraySet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.ChatFragment;
-import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
@@ -38,6 +35,7 @@ import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
+import org.jxmpp.jid.BareJid;
 
 import java.io.IOException;
 import java.util.*;
@@ -94,7 +92,8 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         ListView fingerprintsList = findViewById(R.id.fp_list);
         fingerprintsList.setAdapter(fpListAdapter);
 
-        String account = mOmemoManager.getOwnJid().toString();
+        // userJid may be null
+        BareJid userJid = mOmemoManager.getOwnJid();
         String localFingerprint = null;
         try {
             localFingerprint = mOmemoManager.getOwnFingerprint().toString();
@@ -104,7 +103,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
 
         View content = findViewById(android.R.id.content);
         ViewUtil.setTextViewValue(content, R.id.localFingerprintLbl,
-                getString(R.string.omemo_authbuddydialog_LOCAL_FINGERPRINT, account,
+                getString(R.string.omemo_authbuddydialog_LOCAL_FINGERPRINT, userJid,
                         CryptoHelper.prettifyFingerprint(localFingerprint)));
     }
 

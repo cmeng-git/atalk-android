@@ -58,12 +58,10 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
 
     private static BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
-    private ConfigurationService mConfig = null;
-
     /**
      * Creates new instance of <tt>AndroidCameraSystem</tt>.
      *
-     * @throws Exception
+     * @throws Exception from super
      */
     public AndroidCameraSystem()
             throws Exception
@@ -87,20 +85,24 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
             }
             return;
         }
-        mConfig = UtilActivator.getConfigurationService();
+        ConfigurationService mConfig = UtilActivator.getConfigurationService();
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 
         for (int cameraId = 0; cameraId < cameraCount; cameraId++) {
-            // Locator contains camera id and its facing direction
+            // to remove obsolete properties for locator facing back if exist
+            MediaLocator locator0 = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
+
+            // create locator with camera id and its facing direction (cameraInfo)
+            Camera.getCameraInfo(cameraId, cameraInfo);
             MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
 
             // Pick up the preferred sizes which is supported by the Camera.
             List<Dimension> sizes = new ArrayList<>();
             List<Integer> camFormats = new ArrayList<>();
 
-            String pf = mConfig.getString(locator + PREVIEW_FORMAT, null);
-            if (!TextUtils.isEmpty(pf)) {
-                String[] pfs = pf.split(", ");
+            String pFormat = mConfig.getString(locator + PREVIEW_FORMAT, null);
+            if (!TextUtils.isEmpty(pFormat)) {
+                String[] pfs = pFormat.split(", ");
                 for (String pfx : pfs) {
                     if ("YV12".equals(pfx))
                         camFormats.add(ImageFormat.YV12);
@@ -109,8 +111,12 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
                 }
             }
 
-            String vs = mConfig.getString(locator + VIDEO_SIZE, null);
-            if (TextUtils.isEmpty(pf) || !CameraUtils.getSupportedSizes(vs, sizes)) {
+            String vSize = mConfig.getString(locator + VIDEO_SIZE, null);
+            if (TextUtils.isEmpty(pFormat) || !CameraUtils.getSupportedSizes(vSize, sizes)) {
+                // Added in v2.1.6: remove obsolete/incorrect properties; to be removed in future release
+                mConfig.setProperty(locator0 + PREVIEW_FORMAT, null);
+                mConfig.setProperty(locator0 + VIDEO_SIZE, null);
+
                 Camera camera = null;
                 try {
                     // Pick up the preferred sizes which are supported by the Camera.
@@ -127,9 +133,9 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
                         Timber.w("getSupportedVideoSizes returned null for camera: %s", cameraId);
                         previewSizes = params.getSupportedPreviewSizes();
                     }
-                    Timber.i("Video sizes supported by %s: %s",
-                            locator, CameraUtils.cameraSizesToString(previewSizes));
-                    mConfig.setProperty(locator + VIDEO_SIZE, CameraUtils.cameraSizesToString(previewSizes));
+
+                    vSize = CameraUtils.cameraSizesToString(previewSizes);
+                    mConfig.setProperty(locator + VIDEO_SIZE, vSize);
 
                     // Selects only compatible dimensions
                     for (Camera.Size s : previewSizes) {
@@ -139,20 +145,20 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
                         }
                     }
                     camFormats = params.getSupportedPreviewFormats();
-                    mConfig.setProperty(locator + PREVIEW_FORMAT, CameraUtils.cameraImgFormatsToString(camFormats));
+                    pFormat = CameraUtils.cameraImgFormatsToString(camFormats);
+                    mConfig.setProperty(locator + PREVIEW_FORMAT, pFormat);
                 } finally {
                     if (camera != null)
                         camera.release();
                 }
             }
-            Timber.i("Video sizes preferred for %s: %s", locator, CameraUtils.dimensionsToString(sizes));
-            Timber.i("Image formats supported by %s: %s", locator, CameraUtils.cameraImgFormatsToString(camFormats));
+            Timber.i("#Video supported: %s (%s)\nsupported: %s\npreferred: %s", locator, pFormat, vSize,
+                    CameraUtils.dimensionsToString(sizes));
 
             // Surface format
             List<Format> formats = new ArrayList<>();
             if (AndroidEncoder.isDirectSurfaceEnabled()) {
                 // TODO: camera will not be detected if only surface format is reported
-
                 for (Dimension size : sizes) {
                     formats.add(new VideoFormat(Constants.ANDROID_SURFACE, size,
                             Format.NOT_SPECIFIED, Surface.class, Format.NOT_SPECIFIED));
@@ -190,7 +196,7 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
             // Construct display name
             Resources res = aTalkApp.getAppResources();
             Camera.getCameraInfo(cameraId, cameraInfo);
-            String name = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT
+            String name = (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT)
                     ? res.getString(R.string.service_gui_settings_FRONT_CAMERA)
                     : res.getString(R.string.service_gui_settings_BACK_CAMERA);
             name += " (AndroidCamera#" + cameraId + ")";

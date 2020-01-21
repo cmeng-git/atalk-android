@@ -31,11 +31,11 @@ public class OpenSSLWrapperLoader
         try {
             System.loadLibrary("jnopenssl");
             if (OpenSSL_Init()) {
-                Timber.i("jnopenssl successfully loaded");
+                Timber.i("OpenSSL successfully loaded");
                 libraryLoaded = true;
             }
             else {
-                Timber.w("OpenSSL_Init failed");
+                Timber.w("OpenSSL init failed");
             }
         } catch (Throwable t) {
             Timber.w("Unable to load jnopenssl: %s", t.getMessage());

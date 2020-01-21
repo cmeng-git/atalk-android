@@ -478,7 +478,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 AndroidGUIActivator.getLoginRenderer().removeGlobalStatusListener(globalStatusListener);
             }
             else if (chatListView != null) {
-                Timber.d("Init controller: %s", hashCode());
+                // Timber.d("Init controller: %s", hashCode());
                 mChatController.onShow();
                 // Also register global status listener
                 AndroidGUIActivator.getLoginRenderer().addGlobalStatusListener(globalStatusListener);
@@ -547,7 +547,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 int deletedTop = chatListAdapter.getMessagePosFromDate(lastDeletedMessageDate);
                 Timber.d("Last deleted message position: %s; %s", deletedTop, lastDeletedMessageDate);
                 lastDeletedMessageDate = null;
-                chatListView.setSelection(deletedTop);
+                if (deletedTop >= 0)
+                    chatListView.setSelection(deletedTop);
             }, 300);
         }
     }
@@ -746,10 +747,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                 chatMsg = chatListAdapter.getMessage(cPos);
                                 if (chatMsg != null) {
                                     if (i == 0) {
-                                        // keep a reference to return to the last deleted message's position
+                                        // keep a reference for return to the top of last deleted messages group
                                         lastDeletedMessageDate = chatMsg.getDate();
                                     }
 
+                                        // merged messages do not have file contents
                                     if (chatMsg instanceof MergedMessage) {
                                         msgUidDel.addAll(((MergedMessage) chatMsg).getMessageUIDs());
                                     }
@@ -757,7 +759,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                         msgUidDel.add(chatMsg.getMessageUID());
 
                                         /*
-                                         * Include only the incoming received media and created outgoing tmp files
+                                         * Include only the incoming received media or aTalk created outgoing tmp files
                                          * OR all voice file for deletion
                                          */
                                         if (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW) {
@@ -770,9 +772,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                                 isSafeDel = (file.getPath().contains("/tmp/")
                                                         || FileRecord.IN.equals(chatMsg.getFileRecord().getDirection()));
                                             }
-                                            // OR in chatMsg if yet to be converted
+                                            // OR in chatMsg if yet to be received
                                             else if ((file = chatListAdapter.getFileName(cPos)) == null) {
-                                                // always get any in/out "voice-" file to be deleted
+                                                // always include any in/out "voice-" file to be deleted
                                                 file = new File(chatMsg.getMessage());
                                             }
 
@@ -785,6 +787,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             }
                         }
                     }
+                    Timber.d("Transfer file message delete msgUid: %s", msgUidDel);
                     EntityListHelper.eraseEntityChatHistory(mChatActivity,
                             chatPanel.getChatSession().getDescriptor(), msgUidDel, msgFilesDel);
                     mode.finish();
@@ -1098,7 +1101,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         public int getMessagePosFromDate(Date mDate)
         {
-            int pos = 0;
+            int pos = -1;
             if (mDate != null) {
                 for (int i = 0; i < messages.size(); i++) {
                     ChatMessage chatMessage = getMessage(i);
@@ -1281,16 +1284,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             MessageViewHolder messageViewHolder;
             MessageDisplay msgDisplay = getMessageDisplay(position);
             ChatMessage chatMessage = msgDisplay.getChatMessage();
+            String msgUuid = chatMessage.getMessageUID();
 
             // File Transfer convertView creation
             if (viewType == FILE_TRANSFER_MESSAGE_VIEW) {
-                LayoutInflater inflater = mChatActivity.getLayoutInflater();
-                String msgUuid = chatMessage.getMessageUID();
-                int msgType = chatMessage.getMessageType();
+                // Reuse convert view if available and valid
                 boolean init = false;
-                View viewTemp = null;
-
-                // Reuse convertView if available and valid
                 if (convertView == null) {
                     messageViewHolder = new MessageViewHolder();
                     init = true;
@@ -1309,8 +1308,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 String fileName, sendFrom, sendTo;
                 Date date;
 
+                View viewTemp = null;
+                LayoutInflater inflater = mChatActivity.getLayoutInflater();
+                int msgType = chatMessage.getMessageType();
                 switch (msgType) {
-                    // File transfer start
                     case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
                         clearMsgCache = true;
                         opSet = chatMessage.getOpSet();
@@ -1336,8 +1337,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                         FileSendConversation filexferS = (FileSendConversation) getFileXfer(position);
                         if (filexferS == null) {
-                            filexferS = FileSendConversation.newInstance(currentChatFragment, sendTo, fileName,
-                                    (msgType == ChatMessage.MESSAGE_STICKER_SEND));
+                            filexferS = FileSendConversation.newInstance(currentChatFragment, msgUuid, sendTo, fileName,
+                                     (msgType == ChatMessage.MESSAGE_STICKER_SEND));
                             setFileXfer(position, filexferS);
                         }
                         viewTemp = filexferS.SendFileConversationForm(inflater, messageViewHolder, parent, position, init);
@@ -1387,7 +1388,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 }
                 messageViewHolder.viewType = viewType;
                 viewHolders.put(position, messageViewHolder);
-                // messageViewHolder.timeView.setText(message.getDateStr());
                 return convertView;
             }
 
@@ -1516,6 +1516,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             Drawable avatar = null;
             Drawable status = null;
             if (viewHolder.viewType == INCOMING_MESSAGE_VIEW) {
+                // FFR: NPE
+                if (chatPanel == null)
+                    return;
+
                 Object descriptor = chatPanel.getChatSession().getDescriptor();
                 if (descriptor instanceof MetaContact) {
                     MetaContact metaContact = (MetaContact) descriptor;
@@ -1820,8 +1824,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             private String getDateStr()
             {
                 if (dateStr == null) {
-                    Date date = msg.getDate();
-                    dateStr = GuiUtils.formatDate(date) + " " + GuiUtils.formatTime(date);
+                    dateStr = GuiUtils.formatDateTime(msg.getDate());
                 }
                 return dateStr;
             }
@@ -1913,8 +1916,15 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         public ImageView arrowDir = null;
         public ImageView stickerView = null;
-        public ImageButton imageLabel = null;
+        public ImageButton fileIcon = null;
         public ProgressBar mProgressBar = null;
+
+        public View playerView = null;
+        public ImageView playbackPlay;
+        public TextView fileAudio = null;
+        public TextView playbackPosition;
+        public TextView playbackDuration;
+        public SeekBar playbackSeekBar;
 
         public Button showMapButton = null;
         public Button cancelButton = null;
@@ -1922,11 +1932,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public Button acceptButton = null;
         public Button rejectButton = null;
 
-        public TextView titleLabel = null;
         public TextView fileLabel = null;
-        public TextView viewFileXferError = null;
-        public TextView progressSpeedLabel = null;
-        public TextView estimatedTimeLabel = null;
+        public TextView fileStatus = null;
+        public TextView fileXferError = null;
+        public TextView fileXferSpeed = null;
+        public TextView estTimeRemain = null;
     }
 
 //    class IdRow2 // need to include in MessageViewHolder for stealth support
@@ -2186,11 +2196,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     private void cancelActiveFileTransfers()
     {
         Enumeration<String> activeKeys = activeFileTransfers.keys();
+        String key = null;
 
         while (activeKeys.hasMoreElements()) {
             // catch all so if anything happens we still will close the chatFragment / chatPanel
             try {
-                String key = activeKeys.nextElement();
+                key = activeKeys.nextElement();
                 Object descriptor = activeFileTransfers.get(key);
 
                 if (descriptor instanceof IncomingFileTransferRequest) {
@@ -2200,7 +2211,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     ((FileTransfer) descriptor).cancel();
                 }
             } catch (Throwable t) {
-                Timber.e(t, "Cannot initActive file transfer.");
+                Timber.e(t, "Error in cancel active file transfer: %s", key);
             }
         }
     }
@@ -2269,7 +2280,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             // state. Currently protocol did not broadcast status change under this condition.
             if ((newStatus == FileTransferStatusChangeEvent.CANCELED)
                     && (chatListAdapter.getXferStatus(msgPos) == FileTransferStatusChangeEvent.PREPARING)) {
-                String msg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_CANCELED);
+                String msg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                 // chatPanel.sendMessage(msg);
                 try {
                     chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
@@ -2304,20 +2315,20 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
     public class SendFile extends AsyncTask<Void, Void, Exception>
     {
-        private final File mFile;
         private final FileSendConversation sendFTConversion;
-        private final int msgId;
+        private final File mFile;
+        private final int msgViewId;
         private final Object entityJid;
-        private boolean chkMaxSize = true;
         private boolean mStickerMode;
+        private boolean chkMaxSize = true;
         private int mEncryption = IMessage.ENCRYPTION_NONE;
 
-        public SendFile(File file, FileSendConversation sFilexferCon, int mId, boolean stickerMode)
+        public SendFile(FileSendConversation sFilexferCon, int viewId)
         {
-            mFile = file;
+            msgViewId = viewId;
             sendFTConversion = sFilexferCon;
-            msgId = mId;
-            mStickerMode = stickerMode;
+            mFile =  sFilexferCon.getXferFile();
+            mStickerMode = sFilexferCon.isStickerMode();
             entityJid = currentChatTransport.getDescriptor();
         }
 
@@ -2332,13 +2343,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                 // stop background task to proceed and update status
                 chkMaxSize = false;
-                chatListAdapter.setXferStatus(msgId, FileTransferStatusChangeEvent.CANCELED);
+                chatListAdapter.setXferStatus(msgViewId, FileTransferStatusChangeEvent.CANCELED);
                 sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption);
             }
             else {
                 // must reset status here as background task cannot catch up with Android redraw
                 // request? causing double send requests in slow Android devices.
-                chatListAdapter.setXferStatus(msgId, FileTransferStatusChangeEvent.PREPARING);
+                chatListAdapter.setXferStatus(msgViewId, FileTransferStatusChangeEvent.PREPARING);
             }
         }
 
@@ -2364,7 +2375,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     FileTransfer fileTransfer = (FileTransfer) fileXfer;
 
                     // To be removed on file transfer completion
-                    addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgId);
+                    addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgViewId);
 
                     // Trigger FileSendConversation to add statusListener as well
                     sendFTConversion.setProtocolFileTransfer(fileTransfer);

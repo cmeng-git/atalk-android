@@ -57,6 +57,7 @@ public class NotificationHelper extends ContextWrapper
                     getString(R.string.noti_channel_MESSAGE_GROUP), NotificationManager.IMPORTANCE_LOW);
             // nMessage.setLightColor(Color.BLUE);
             nMessage.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            // nMessage.setAllowBubbles(true);
             getManager().createNotificationChannel(nMessage);
 
             NotificationChannel nFile = new NotificationChannel(AndroidNotifications.FILE_GROUP,

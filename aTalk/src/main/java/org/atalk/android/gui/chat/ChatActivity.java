@@ -670,8 +670,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 ((ChatRoomWrapper) chatSession.getDescriptor()).setUnreadCount(0);
 
                 ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
-//                ActionBarUtil.setAvatar(this, AndroidImageUtil.convertToBytes(BitmapFactory
-//                        .decodeResource(getResources(), R.drawable.ic_chatroom), 100));
                 ActionBarUtil.setAvatar(this, R.drawable.ic_chatroom);
                 ActionBarUtil.setStatus(this, ccSession.getChatStatusIcon());
                 ActionBarUtil.setSubtitle(this, ccSession.getChatSubject());
@@ -723,19 +721,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 return df.format(new Date(lastActiveTime));
             }
         }
-    }
-
-    /**
-     * Send an outgoing file message to chatFragment for it to start the file send process
-     * The recipient can be contact or chatRoom
-     *
-     * @param filePath of the file to be sent
-     */
-    public void sendFile(String filePath)
-    {
-        Date date = Calendar.getInstance().getTime();
-        String sendTo = selectedChatPanel.getChatSession().getCurrentChatTransport().getName();
-        selectedChatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, IMessage.ENCODE_PLAIN, filePath);
     }
 
     public static void sendLocation(String location)
@@ -927,9 +912,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         }
 
         Intent openIntent = new Intent(Intent.ACTION_VIEW);
-        if (mimeType.contains("3gp")) {
+        if (mimeType.contains("audio") || mimeType.contains("3gp")) {
             openIntent = new Intent(this, AudioBgService.class);
-            openIntent.setAction(AudioBgService.ACTION_PLAYBACK);
+            openIntent.setAction(AudioBgService.ACTION_PLAYBACK_PLAY);
             openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             openIntent.setDataAndType(uri, mimeType);
             startService(openIntent);

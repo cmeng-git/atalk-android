@@ -32,6 +32,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
 * Enhance and harmonize UI for file sharing in chat and chatRoom
 * Support share, quote and forward of messages and media files with preview before sending
+* Embedded audio media player with functions: Play, Pause, Resume, Stop and Seek
 * Support unread message badges in contact and chatRoom list views
 * XEP-0012: Last Activity to show the time of the last activity associated with a contact
 * XEP-0048: Bookmarks for conference room and autoJoin on login
