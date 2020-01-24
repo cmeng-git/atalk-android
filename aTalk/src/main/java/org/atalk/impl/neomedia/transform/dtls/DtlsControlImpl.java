@@ -67,7 +67,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     /**
      * The name of the property which specifies the signature algorithm used
      * during certificate creation. When a certificate is created and this
-     * property is not set, a default value of "SHA1withRSA" will be used.
+     * property is not set, a default value of "SHA256withRSA" will be used.
      */
     public static final String PROP_SIGNATURE_ALGORITHM = "neomedia.transform.dtls.SIGNATURE_ALGORITHM";
 
@@ -388,11 +388,11 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     private static Certificate generateX509Certificate(X500Name subject, AsymmetricCipherKeyPair keyPair)
     {
         // The signature algorithm of the generated certificate defaults to
-        // SHA1. However, allow the overriding of the default via the
+        // SHA256. However, allow the overriding of the default via the
         // ConfigurationService.
         String signatureAlgorithm = ConfigUtils.getString(
                 LibJitsi.getConfigurationService(),
-                PROP_SIGNATURE_ALGORITHM, "SHA1withRSA");
+                PROP_SIGNATURE_ALGORITHM, "SHA256withRSA");
 
         Timber.d("Signature algorithm: %s", signatureAlgorithm);
         try {
@@ -404,7 +404,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                     /* serial */BigInteger.valueOf(now), notBefore, notAfter, subject,
                     /* publicKeyInfo */
                     SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyPair.getPublic()));
-            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA1withRSA");
+            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA256withRSA");
             AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
             ContentSigner signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
 
