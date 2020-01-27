@@ -21,10 +21,10 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with BEEM.  If not, see <http://www.gnu.org/licenses/>.
+    along with BEEM.  If not, see <https://www.gnu.org/licenses/>.
 
     Please send bug reports with examples or suggestions to
-    contact@beem-project.com or http://dev.beem-project.com/
+    contact@beem-project.com or https://dev.beem-project.com/
 
     Epitech, hereby disclaims all copyright interest in the program "Beem"
     written by Frederic-Charles Barthelery,

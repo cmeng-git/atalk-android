@@ -44,7 +44,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Alexander Wenckus
  * @author Henning Staib
- * @see <a href="http://xmpp.org/extensions/xep-0047.html">XEP-0047: In-Band
+ * @see <a href="https://xmpp.org/extensions/xep-0047.html">XEP-0047: In-Band
  *      Bytestreams (IBB)</a>
  */
 public class IBBTransferNegotiator extends StreamNegotiator {

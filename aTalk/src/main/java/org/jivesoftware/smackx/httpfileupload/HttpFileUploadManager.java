@@ -69,7 +69,7 @@ import org.jxmpp.jid.DomainBareJid;
  * @author Grigory Fedorov
  * @author Florian Schmaus
  * @author Paul Schaub
- * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
  * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
  */
 public final class HttpFileUploadManager extends Manager {

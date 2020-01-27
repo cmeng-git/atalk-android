@@ -908,10 +908,10 @@
     <string name="plugin_otr_configform_VERIFY_STATUS">Verified: %1$s</string>
 
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s is trying to initiate an encrypted
-        &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         Off-The-Record conversation&lt;/a>with you. However your software does not support
-        Off-The-Record messaging. For more information see &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+        Off-The-Record messaging. For more information see &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
     <string name="plugin_otr_activator_historyoff">%1$s is NOT recording this conversation. You can &lt;a href=\"atalk://%2$s/%3$s\">activate chat history here&lt;/a>.</string>
     <string name="plugin_otr_activator_historyon">%1$s is recording this conversation on your device. You can &lt;a href=\"atalk://%2$s/%3$s\">turn off chat history here&lt;/a>.</string>
     <string name="plugin_otr_activator_msgfromanotherinstance">Received message from another OTR conversation instances with %1$s detected.</string>

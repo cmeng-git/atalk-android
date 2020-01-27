@@ -472,7 +472,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
      * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
      * @return the value of the <tt>show_frame</tt> field from the "uncompressed data chunk" in the
      * VP8 compressed frame contained in <tt>buf</tt> at offset <tt>offset</tt>.
-     * @{link http://tools.ietf.org/html/draft-ietf-payload-vp8-11} is used.
+     * @{link https://tools.ietf.org/html/draft-ietf-payload-vp8-11} is used.
      */
     private boolean isShowFrame(byte[] buf, int offset)
     {

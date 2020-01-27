@@ -32,8 +32,8 @@ public interface ScOtrEngine {
 	 * @param contact The contact with whom we want to start the Smp negotiation
 	 * @param question The question that is asked during the Smp negotiation
 	 * @param secret The secret answer for the question.
-	 * @See <a href="http://en.wikipedia.org/wiki/Socialist_Millionaire_Problem"
-	 * >http://en.wikipedia.org/wiki/Socialist_Millionaire_Problem</a>
+	 * @See <a href="https://en.wikipedia.org/wiki/Socialist_Millionaire_Problem"
+	 * >https://en.wikipedia.org/wiki/Socialist_Millionaire_Problem</a>
 	 */
 	public abstract void initSmp(OtrContact contact, String question, String secret);
 
@@ -46,8 +46,8 @@ public interface ScOtrEngine {
 	 * response
 	 * @param question The question that is asked during the Smp negotiation.
 	 * @param secret The secret answer for the question.
-	 * @See <a href="http://en.wikipedia.org/wiki/Socialist_Millionaire_Problem"
-	 * >http://en.wikipedia.org/wiki/Socialist_Millionaire_Problem</a>
+	 * @See <a href="https://en.wikipedia.org/wiki/Socialist_Millionaire_Problem"
+	 * >https://en.wikipedia.org/wiki/Socialist_Millionaire_Problem</a>
 	 */
 	public abstract void respondSmp(OtrContact contact, InstanceTag receiverTag, String question, String secret);
 
@@ -56,8 +56,8 @@ public interface ScOtrEngine {
 	 *
 	 * @param contact The contact with whom we want to abort the
 	 * Smp negotiation process.
-	 * @See <a href="http://en.wikipedia.org/wiki/Socialist_Millionaire_Problem"
-	 * >http://en.wikipedia.org/wiki/Socialist_Millionaire_Problem</a>
+	 * @See <a href="https://en.wikipedia.org/wiki/Socialist_Millionaire_Problem"
+	 * >https://en.wikipedia.org/wiki/Socialist_Millionaire_Problem</a>
 	 */
 	public abstract void abortSmp(OtrContact contact);
 

@@ -1587,7 +1587,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      * identifier (shared between the local audio and video streams towards the <tt>CallPeer</tt>)
      * and an identifier for the particular stream, separated by a space.
      *
-     * {@see http://tools.ietf.org/html/draft-ietf-mmusic-msid}
+     * {@see https://tools.ietf.org/html/draft-ietf-mmusic-msid}
      *
      * @param mediaType the media type of the stream for which to return the value for 'msid'
      * @return the value to use for the 'msid' source-specific SDP media attribute (RFC5576) for

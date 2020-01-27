@@ -16,17 +16,17 @@ such as audio, video, subtitles and related metadata.
 
 ## Tools
 
-* [ffmpeg](http://ffmpeg.org/ffmpeg.html) is a command line toolbox to manipulate, convert and stream multimedia content.
-* [ffplay](http://ffmpeg.org/ffplay.html) is a minimalistic multimedia player.
-* [ffprobe](http://ffmpeg.org/ffprobe.html) is a simple analysis tool to inspect multimedia content.
-* [ffserver](http://ffmpeg.org/ffserver.html) is a multimedia streaming server for live broadcasts.
+* [ffmpeg](https://ffmpeg.org/ffmpeg.html) is a command line toolbox to manipulate, convert and stream multimedia content.
+* [ffplay](https://ffmpeg.org/ffplay.html) is a minimalistic multimedia player.
+* [ffprobe](https://ffmpeg.org/ffprobe.html) is a simple analysis tool to inspect multimedia content.
+* [ffserver](https://ffmpeg.org/ffserver.html) is a multimedia streaming server for live broadcasts.
 * Additional small tools such as `aviocat`, `ismindex` and `qt-faststart`.
 
 ## Documentation
 
 The offline documentation is available in the **doc/** directory.
 
-The online documentation is available in the main [website](http://ffmpeg.org) and in the [wiki](http://trac.ffmpeg.org).
+The online documentation is available in the main [website](https://ffmpeg.org) and in the [wiki](https://trac.ffmpeg.org).
 
 ### Examples
 

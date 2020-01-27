@@ -21,7 +21,7 @@
 
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
-* Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
+* Instant messaging in plain text and End-to-End encryption with [OMEMO](https://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
 * SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
 * OMEMO encryption in multi-user-chat session, give users' maximum privacy and security
 * OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
@@ -128,7 +128,7 @@ Libraries used in this project:
 * [bouncycastle](https://github.com/bcgit/bc-java)
 * [butterknife](https://github.com/JakeWharton/butterknife)
 * [ckChangeLog](https://github.com/cketti/ckChangeLog)
-* [commons-text](http://commons.apache.org/proper/commons-text/)
+* [commons-text](https://commons.apache.org/proper/commons-text/)
 * [Dexter](https://github.com/Karumi/Dexter)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 * [glide](https://github.com/bumptech/glide)
@@ -154,7 +154,7 @@ Libraries used in this project:
 * [TokenAutoComplete](https://github.com/splitwise/TokenAutoComplete)
 * [uCrop](https://github.com/Yalantis/uCrop)
 * [weupnp](https://github.com/bitletorg/weupnp)
-* [x264](http://git.videolan.org/git/x264.git)
+* [x264](https://git.videolan.org/git/x264.git)
 * [zrtp4j-light](https://github.com/jitsi/zrtp4j)
 
 Other contributors:

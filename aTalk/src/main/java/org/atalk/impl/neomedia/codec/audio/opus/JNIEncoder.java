@@ -462,7 +462,7 @@ public class JNIEncoder extends AbstractCodec2
 
         /*
          * TODO Use the default value for maxaveragebitrate as defined at
-         * http://tools.ietf.org/html/draft-spittka-payload-rtp-opus-02#section-6.1
+         * https://tools.ietf.org/html/draft-spittka-payload-rtp-opus-02#section-6.1
          */
         int maxaveragebitrate = -1;
 
