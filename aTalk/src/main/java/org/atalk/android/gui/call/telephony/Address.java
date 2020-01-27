@@ -269,7 +269,7 @@ public class Address implements Serializable
 
     /**
      * Quote a string, if necessary, based upon the definition of an "atom," as defined by RFC2822
-     * (http://tools.ietf.org/html/rfc2822#section-3.2.4). Strings that consist purely of atoms are
+     * (https://tools.ietf.org/html/rfc2822#section-3.2.4). Strings that consist purely of atoms are
      * left unquoted; anything else is returned as a quoted string.
      *
      * @param text String to quote.

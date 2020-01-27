@@ -32,7 +32,7 @@ public class RTPExtension
 
 	/**
 	 * The URN identifying the abs-send-time RTP extension. Defined at
-	 * {@link "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"}
+	 * {@link "https://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"}
 	 */
 	public static final String ABS_SEND_TIME_URN
 			= "http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time";

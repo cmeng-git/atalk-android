@@ -41,8 +41,8 @@ public class XMLUtils
     /**
      * The string identifying the <tt>DocumentBuilderFactory</tt>feature which controls whether
      * inclusion of external general entities is allowed. See
-     * {@link "http://xerces.apache.org/xerces-j/features.html#external-general-entities"} and
-     * {@link "http://xerces.apache.org/xerces2-j/features.html#external-general-entities"}
+     * {@link "https://xerces.apache.org/xerces-j/features.html#external-general-entities"} and
+     * {@link "https://xerces.apache.org/xerces2-j/features.html#external-general-entities"}
      */
     private static final String FEATURE_EXTERNAL_GENERAL_ENTITIES
             = "http://xml.org/sax/features/external-general-entities";
@@ -50,8 +50,8 @@ public class XMLUtils
     /**
      * The string identifying the <tt>DocumentBuilderFactory</tt>feature which controls whether
      * inclusion of external parameter entities is allowed. See
-     * {@link "http://xerces.apache.org/xerces-j/features.html#external-parameter-entities"} and
-     * {@link "http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities"}
+     * {@link "https://xerces.apache.org/xerces-j/features.html#external-parameter-entities"} and
+     * {@link "https://xerces.apache.org/xerces2-j/features.html#external-parameter-entities"}
      */
     private static final String FEATURE_EXTERNAL_PARAMETER_ENTITIES
             = "http://xml.org/sax/features/external-parameter-entities";
@@ -59,7 +59,7 @@ public class XMLUtils
     /**
      * The string identifying the <tt>DocumentBuilderFactory</tt>feature which controls whether
      * DOCTYPE declaration is allowed. See
-     * {@link "http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl"}
+     * {@link "https://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl"}
      */
     private static final String FEATURE_DISSALLOW_DOCTYPE
             = "http://apache.org/xml/features/disallow-doctype-decl";

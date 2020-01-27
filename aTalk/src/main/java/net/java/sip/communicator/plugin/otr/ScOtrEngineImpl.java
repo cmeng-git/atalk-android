@@ -680,7 +680,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
             // QueryMessages it calls OtrEngineHost.getFallbackMessage() which is currently the
             // only host method that uses HTML so we can simply check if the injected message
             // contains the string that getFallbackMessage() returns.
-            String otrHtmlFallbackMessage = "<a href=\"http://en.wikipedia.org/wiki/Off-the-Record_Messaging\">";
+            String otrHtmlFallbackMessage = "<a href=\"https://en.wikipedia.org/wiki/Off-the-Record_Messaging\">";
             int mimeType = messageText.contains(otrHtmlFallbackMessage)
                     ? IMessage.ENCODE_HTML : IMessage.ENCODE_PLAIN;
             IMessage message = imOpSet.createMessage(messageText, mimeType, null);

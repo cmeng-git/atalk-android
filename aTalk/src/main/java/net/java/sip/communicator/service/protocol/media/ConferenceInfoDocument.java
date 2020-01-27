@@ -23,7 +23,7 @@ import timber.log.Timber;
  * A class that represents a Conference Information XML document as defined in RFC4575. It wraps
  * around a DOM <tt>Document</tt> providing convenience functions.
  *
- * {@link "http://tools.ietf.org/html/rfc4575"}
+ * {@link "https://tools.ietf.org/html/rfc4575"}
  *
  * @author Boris Grozev
  * @author Sebastien Vincent

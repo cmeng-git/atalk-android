@@ -913,10 +913,10 @@
     <string name="plugin_otr_configform_VERIFY_STATUS">Проверено: %1$s</string>
 
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight:bold;">%1$s пытается инициировать зашифрованный
-        &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         Отключить запись и&lt;/a>с вами. Однако ваше программное обеспечение не поддерживает
-        Off-The-Record. Для получения дополнительной информации см.&lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+        Off-The-Record. Для получения дополнительной информации см.&lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
     <string name="plugin_otr_activator_historyoff">%1$s НЕ записывает этот разговор. Вы можете &lt;a href=\"atalk://%2$s/%3$s\">активировать историю чатов здесь &lt;/a>.</string>
     <string name="plugin_otr_activator_historyon">%1$s записывает этот разговор на вашем устройстве. Вы можете &lt;a href=\"atalk://%2$s/%3$s\">отключить историю чата здесь &lt;/a>.</string>
     <string name="plugin_otr_activator_msgfromanotherinstance">Получено сообщение из других экземпляров разговора OTR с обнаруженными %1$s.</string>
