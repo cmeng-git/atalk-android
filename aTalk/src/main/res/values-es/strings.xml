@@ -917,10 +917,10 @@
     <string name="plugin_otr_configform_VERIFY_STATUS">Verificado: %1$s</string>
 
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s está intentando iniciar una encriptación
-        &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         Conversación Off-The-Record&lt;/a>contigo. Sin embargo, el software actual no soporta
-        mensajería Off-The-Record. Para más información, véase&lt;a href="http://es.wikipedia.org/wiki/Off-the-Record_Messaging">
-        http://es.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+        mensajería Off-The-Record. Para más información, véase&lt;a href="https://es.wikipedia.org/wiki/Off-the-Record_Messaging">
+        https://es.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
     <string name="plugin_otr_activator_historyoff">%1$s NO está grabando esta conversación
         Tienes que &lt;a href=\"atalk://%2$s/%3$s\">activar el historial de chat aquí&lt;/a>.</string>
     <string name="plugin_otr_activator_historyon">%1$s está grabando esta conversación en tu dispositivo.

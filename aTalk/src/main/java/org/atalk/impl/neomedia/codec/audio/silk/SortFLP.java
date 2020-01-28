@@ -9,7 +9,7 @@ package org.atalk.impl.neomedia.codec.audio.silk;
  * Insertion sort (fast for already almost sorted arrays): Best case: O(n) for an already sorted
  * array Worst case: O(n^2) for an inversely sorted array
  *
- * To be implemented: Shell short: http://en.wikipedia.org/wiki/Shell_sort
+ * To be implemented: Shell short: https://en.wikipedia.org/wiki/Shell_sort
  *
  * @author Jing Dai
  * @author Dingxin Xu

@@ -909,10 +909,10 @@
     <string name="plugin_otr_configform_REGENERATE">Menghasilkan kembali</string>
     <string name="plugin_otr_configform_VERIFY_STATUS">Diverifikasi: %1$s</string>
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s sedang mencoba untuk menginisiasi enkripsi
-        &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         Percakapan Off-The-Record&lt;/a>dengan Anda. Namun perangkat lunak Anda tidak mendukung
-        Perpesanan Off-The-Record. Untuk informasi lebih lanjut, lihat&lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+        Perpesanan Off-The-Record. Untuk informasi lebih lanjut, lihat&lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
     <string name="plugin_otr_activator_historyoff">%1$s TIDAK merekam percakapan ini. Anda dapat&lt;a href=\"atalk://%2$s/%3$s \">mengaktifkan riwayat obrolan di sini&lt;/a>.</string>
     <string name="plugin_otr_activator_historyon">%1$s merekam percakapan ini di perangkat Anda. Anda dapat&lt;a href=\"atalk://%2$s/%3$s \">mematikan riwayat obrolan di sini&lt;/a>.</string>
     <string name="plugin_otr_activator_msgfromanotherinstance">Pesan yang diterima dari instance percakapan OTR lain dengan %1$s terdeteksi.</string>

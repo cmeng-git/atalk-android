@@ -38,12 +38,12 @@ public class DOMElementWriter
 
 	/**
 	 * Decodes an XML (element) name according to
-	 * http://www.w3.org/TR/xml/#NT-Name.
+	 * https://www.w3.org/TR/xml/#NT-Name.
 	 *
 	 * @param name
 	 * 		the XML (element) name to be decoded
 	 * @return a <tt>String</tt> which represents <tt>name</tt> decoded
-	 * according to http://www.w3.org/TR/xml/#NT-Name
+	 * according to https://www.w3.org/TR/xml/#NT-Name
 	 */
 	public static String decodeName(String name)
 	{
@@ -100,7 +100,7 @@ public class DOMElementWriter
 
 	/**
 	 * Encodes a specific <tt>String</tt> so that it is a valid XML (element)
-	 * name according to http://www.w3.org/TR/xml/#NT-Name.
+	 * name according to https://www.w3.org/TR/xml/#NT-Name.
 	 *
 	 * @param value
 	 * 		the <tt>String</tt> to be encoded so that it is a valid XML name
@@ -156,7 +156,7 @@ public class DOMElementWriter
 
 	/**
 	 * Determines whether a specific characters is a <tt>NameChar</tt> as
-	 * defined by http://www.w3.org/TR/xml/#NT-Name.
+	 * defined by https://www.w3.org/TR/xml/#NT-Name.
 	 *
 	 * @param c
 	 * 		the character which is to be determines whether it is a
@@ -188,7 +188,7 @@ public class DOMElementWriter
 
 	/**
 	 * Determines whether a specific characters is a <tt>NameStartChar</tt> as
-	 * defined by http://www.w3.org/TR/xml/#NT-Name.
+	 * defined by https://www.w3.org/TR/xml/#NT-Name.
 	 *
 	 * @param c
 	 * 		the character to be determined whether it is a
@@ -446,10 +446,8 @@ public class DOMElementWriter
 	 * <tt>&amp;#x5d;&amp;#x5d;&amp;gt;</tt>.</p>
 	 * <p>
 	 * <p>See XML 1.0 2.2 <a
-	 * href="http://www.w3.org/TR/1998/REC-xml-19980210#charsets">http://www
-	 * .w3.org/TR/1998/REC-xml-19980210#charsets</a> and
-	 * 2.7 <a href="http://www.w3.org/TR/1998/REC-xml-19980210#sec-cdata-sect">http://www
-	 * .w3.org/TR/1998/REC-xml-19980210#sec-cdata-sect</a>.</p>
+	 * href="https://www.w3.org/TR/1998/REC-xml-19980210#charsets">https://www.w3.org/TR/1998/REC-xml-19980210#charsets</a> and
+	 * 2.7 <a href="https://www.w3.org/TR/1998/REC-xml-19980210#sec-cdata-sect">https://www.w3.org/TR/1998/REC-xml-19980210#sec-cdata-sect</a>.</p>
 	 *
 	 * @param value
 	 * 		the value to encode
@@ -525,8 +523,8 @@ public class DOMElementWriter
 	 * Is the given character allowed inside an XML document?
 	 * <p>
 	 * <p>See XML 1.0 2.2 <a
-	 * href="http://www.w3.org/TR/1998/REC-xml-19980210#charsets">
-	 * http://www.w3.org/TR/1998/REC-xml-19980210#charsets</a>.</p>
+	 * href="https://www.w3.org/TR/1998/REC-xml-19980210#charsets">
+	 * https://www.w3.org/TR/1998/REC-xml-19980210#charsets</a>.</p>
 	 *
 	 * @param c
 	 * 		the character whose nature we'd like to determine.
