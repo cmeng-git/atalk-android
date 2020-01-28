@@ -767,6 +767,15 @@ public class OperationSetBasicTelephonyJabberImpl
         Timber.d("### Processing Jingle IQ id: %s. Action: %s", jingle.getStanzaId(), action);
 
         if (action == JingleAction.SESSION_INITIATE) {
+            // Initiator attribute is RECOMMENDED but not REQUIRED attribute for
+            // Jingle action is "session-initiate".
+            // When Initiator attribute is not present copy the value from IQ "from" attribute.
+            // This is allowed according to XEP-0166
+            if (jingle.getInitiator() == null)
+            {
+                jingle.setInitiator(jingle.getFrom().asEntityFullJidIfPossible());
+            }
+
             TransferExtensionElement transfer = jingle.getExtension(
                     TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
             CallIdExtensionElement callidExt = jingle.getExtension(CallIdExtensionElement.ELEMENT, CallIdExtensionElement.NAMESPACE);
