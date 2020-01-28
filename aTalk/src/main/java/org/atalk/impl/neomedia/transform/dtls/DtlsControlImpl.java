@@ -79,7 +79,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     /**
      * The default RSA key size when configuration properties are not found.
      */
-    public static final int DEFAULT_RSA_KEY_SIZE = 1024;
+    public static final int DEFAULT_RSA_KEY_SIZE = 2048;
 
     /**
      * The RSA key size to use.
@@ -342,20 +342,20 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     private static X500Name generateCN()
     {
         X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-        String applicationName = System.getProperty(Version.PNAME_APPLICATION_NAME);
-        String applicationVersion = System.getProperty(Version.PNAME_APPLICATION_VERSION);
-        StringBuilder cn = new StringBuilder();
 
-        if (!StringUtils.isNullOrEmpty(applicationName, true))
-            cn.append(applicationName);
-        if (!StringUtils.isNullOrEmpty(applicationVersion, true)) {
-            if (cn.length() != 0)
-                cn.append(' ');
-            cn.append(applicationVersion);
+        final SecureRandom secureRandom = new SecureRandom();
+        final byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
+
+        final char [] chars = new char[32];
+
+        for(int i = 0; i < 16; i++)
+        {
+            final int b = bytes[i] & 0xff;
+            chars[i * 2] = HEX_ENCODE_TABLE[b >>> 4];
+            chars[i * 2 + 1] = HEX_ENCODE_TABLE[b & 0x0f];
         }
-        if (cn.length() == 0)
-            cn.append(DtlsControlImpl.class.getName());
-        builder.addRDN(BCStyle.CN, cn.toString());
+        builder.addRDN(BCStyle.CN, (new String(chars)).toLowerCase());
 
         return builder.build();
     }
