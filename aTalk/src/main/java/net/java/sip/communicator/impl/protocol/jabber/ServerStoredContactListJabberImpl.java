@@ -463,7 +463,7 @@ public class ServerStoredContactListJabberImpl
         }
         cursor.close();
 
-        // @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
+        // @see <a href="https://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
         StanzaListener stanzaInterceptor = new StanzaListener()
         {
             @Override

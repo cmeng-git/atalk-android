@@ -228,7 +228,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     public static final String URN_IETF_RFC_3264 = "urn:ietf:rfc:3264";
 
     /**
-     * http://xmpp.org/extensions/xep-0092.html Software Version.
+     * https://xmpp.org/extensions/xep-0092.html Software Version.
      */
     // Used in JVB
     public static final String URN_XMPP_IQ_VERSION = "jabber:iq:version";
@@ -357,9 +357,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * A set of features supported by our Jabber implementation. In general, we add new feature(s)
      * when we add new operation sets.
-     * (see xep-0030 : http://www.xmpp.org/extensions/xep-0030.html#info).
+     * (see xep-0030 : https://www.xmpp.org/extensions/xep-0030.html#info).
      * Example : to tell the world that we support jingle, we simply have to do :
-     * supportedFeatures.add("http://www.xmpp.org/extensions/xep-0166.html#ns"); Beware there is no
+     * supportedFeatures.add("https://www.xmpp.org/extensions/xep-0166.html#ns"); Beware there is no
      * canonical mapping between op set and jabber features (op set is a SC "concept"). This means
      * that one op set in SC can correspond to many jabber features. It is also possible that there
      * is no jabber feature corresponding to a SC op set or again, we can currently support some
@@ -1843,7 +1843,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         /* This is the "main" feature to advertise when a client support muc. We have to
          * add some features for specific functionality we support in muc.
-         * see http://www.xmpp.org/extensions/xep-0045.html
+         * see https://www.xmpp.org/extensions/xep-0045.html
          * The http://jabber.org/protocol/muc feature is already included in smack.
          */
         // XEP-0045: Multi-User Chat

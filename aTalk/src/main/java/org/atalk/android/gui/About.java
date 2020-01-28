@@ -49,7 +49,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"bouncycastle", "https://github.com/bcgit/bc-java"},
             new String[]{"butterknife", "https://github.com/JakeWharton/butterknife"},
             new String[]{"ckChangeLog", "https://github.com/cketti/ckChangeLog"},
-            new String[]{"commons-lang", "http://commons.apache.org/proper/commons-lang/"},
+            new String[]{"commons-lang", "https://commons.apache.org/proper/commons-lang/"},
             new String[]{"Dexter", "https://github.com/Karumi/Dexter"},
             new String[]{"dhcp4java", "https://github.com/ggrandes-clones/dhcp4java"},
             new String[]{"FFmpeg", "https://github.com/FFmpeg/FFmpeg"},
@@ -77,7 +77,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"TokenAutoComplete", "https://github.com/splitwise/TokenAutoComplete"},
             new String[]{"uCrop", "https://github.com/Yalantis/uCrop"},
             new String[]{"weupnp", "https://github.com/bitletorg/weupnp"},
-            new String[]{"x264", "http://git.videolan.org/git/x264.git"},
+            new String[]{"x264", "https://git.videolan.org/git/x264.git"},
             new String[]{"zrtp4j-light", "https://github.com/jitsi/zrtp4j"},
     };
 

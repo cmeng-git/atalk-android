@@ -133,7 +133,7 @@ public class TimeUtils
 
     /**
      * Converts the given timestamp in NTP Timestamp Format into NTP Short
-     * Format (see {@link "http://tools.ietf.org/html/rfc5905#section-6"}).
+     * Format (see {@link "https://tools.ietf.org/html/rfc5905#section-6"}).
      *
      * @param ntpTime the timestamp to convert.
      * @return the NTP Short Format timestamp, represented as a long.
@@ -145,7 +145,7 @@ public class TimeUtils
 
     /**
      * Converts a timestamp in NTP Short Format (Q16.16, see
-     * {@link "http://tools.ietf.org/html/rfc5905#section-6"}) into
+     * {@link "https://tools.ietf.org/html/rfc5905#section-6"}) into
      * milliseconds.
      *
      * @param ntpShortTime the timestamp in NTP Short Format to convert.
@@ -158,7 +158,7 @@ public class TimeUtils
 
     /**
      * Constructs a {@code long} representation of a timestamp in NTP Timestamp
-     * Format (see {@link "http://tools.ietf.org/html/rfc5905#section-6"}).
+     * Format (see {@link "https://tools.ietf.org/html/rfc5905#section-6"}).
      *
      * @param msw The most significant word (32bits) represented as a long.
      * @param lsw The least significant word (32bits) represented as a long.

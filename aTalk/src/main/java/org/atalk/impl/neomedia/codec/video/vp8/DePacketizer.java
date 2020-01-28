@@ -23,7 +23,7 @@ import timber.log.Timber;
 
 /**
  * A depacketizer from VP8.
- * See {@link "http://tools.ietf.org/html/draft-ietf-payload-vp8-11"}
+ * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp8-11"}
  *
  * @author Boris Grozev
  * @author George Politis
@@ -349,7 +349,7 @@ public class DePacketizer extends AbstractCodec2
 
     /**
      * A class that represents the VP8 Payload Descriptor structure defined
-     * in {@link "http://tools.ietf.org/html/draft-ietf-payload-vp8-10"}
+     * in {@link "https://tools.ietf.org/html/draft-ietf-payload-vp8-10"}
      */
     public static class VP8PayloadDescriptor
     {
@@ -712,7 +712,7 @@ public class DePacketizer extends AbstractCodec2
 
     /**
      * A class that represents the VP8 Payload Header structure defined
-     * in {@link "http://tools.ietf.org/html/draft-ietf-payload-vp8-10"}
+     * in {@link "https://tools.ietf.org/html/draft-ietf-payload-vp8-10"}
      */
     public static class VP8PayloadHeader
     {
