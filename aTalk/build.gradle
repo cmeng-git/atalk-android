@@ -195,7 +195,6 @@ dependencies {
     implementation "com.google.android.material:material:${rootProject.supportLibraryVersion}"
 
     // libraries from maven repository
-    implementation 'ch.imvs:sdes4j:1.1.4'
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
     implementation 'com.jakewharton:butterknife:10.1.0'
