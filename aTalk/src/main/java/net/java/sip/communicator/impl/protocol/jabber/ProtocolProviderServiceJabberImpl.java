@@ -983,7 +983,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             disconnectAndCleanConnection();
         }
         config.setSocketFactory(SocketFactory.getDefault());
-        TLSUtils.setSSLv3AndTLSOnly(config);
+        TLSUtils.setTLSOnly(config);
 
         // Cannot use a custom SSL context with DNSSEC enabled
         String dnssecMode = mAccountID.getDnssMode();
