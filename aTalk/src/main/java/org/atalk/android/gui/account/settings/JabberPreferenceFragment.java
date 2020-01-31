@@ -24,6 +24,11 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 
+import java.io.IOException;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import timber.log.Timber;
 
 /**
@@ -72,6 +77,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     public static final String P_KEY_SERVER_PORT = aTalkApp.getResString(R.string.pref_key_server_port);
     private static final String P_KEY_ALLOW_NON_SECURE_CONN = aTalkApp.getAppResources()
             .getString(R.string.pref_key_allow_non_secure_conn);
+    private static final String P_KEY_MINIMUM_TLS_VERSION = aTalkApp.getAppResources()
+            .getString(R.string.pref_key_minimum_TLS_version);
 
     // Jabber Resource
     private static final String P_KEY_AUTO_GEN_RESOURCE = aTalkApp.getResString(R.string.pref_key_auto_gen_resource);
@@ -175,6 +182,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         // Connection
         editor.putBoolean(P_KEY_GMAIL_NOTIFICATIONS, jbrReg.isGmailNotificationEnabled());
         editor.putBoolean(P_KEY_GOOGLE_CONTACTS_ENABLED, jbrReg.isGoogleContactsEnabled());
+        editor.putString(P_KEY_MINIMUM_TLS_VERSION, jbrReg.getMinimumTLSversion());
         editor.putBoolean(P_KEY_ALLOW_NON_SECURE_CONN, jbrReg.isAllowNonSecure());
         editor.putString(P_KEY_DTMF_METHOD, jbrReg.getDTMFMethod());
 
@@ -349,6 +357,36 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         }
         else if (key.equals(P_KEY_GOOGLE_CONTACTS_ENABLED)) {
             jbrReg.setGoogleContactsEnabled(shPrefs.getBoolean(P_KEY_GOOGLE_CONTACTS_ENABLED, false));
+        }
+        else if (key.equals(P_KEY_MINIMUM_TLS_VERSION)) {
+
+            String newMinimumTLSVersion = shPrefs.getString(P_KEY_MINIMUM_TLS_VERSION,
+                    ProtocolProviderServiceJabberImpl.defaultMinimumTLSversion);
+
+            boolean isSupported = false;
+            try
+            {
+                String supportedProtocols[] =
+                        ((SSLSocket) SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
+
+                for (String suppProto : supportedProtocols)
+                {
+                    if (suppProto.equals(newMinimumTLSVersion))
+                    {
+                        isSupported = true;
+                        break;
+                    }
+                }
+
+            } catch (IOException e)
+            {
+            }
+
+            if (!isSupported)
+            {
+                newMinimumTLSVersion = ProtocolProviderServiceJabberImpl.defaultMinimumTLSversion;
+            }
+            jbrReg.setMinimumTLSversion(newMinimumTLSVersion);
         }
         else if (key.equals(P_KEY_ALLOW_NON_SECURE_CONN)) {
             jbrReg.setAllowNonSecure(shPrefs.getBoolean(P_KEY_ALLOW_NON_SECURE_CONN, false));

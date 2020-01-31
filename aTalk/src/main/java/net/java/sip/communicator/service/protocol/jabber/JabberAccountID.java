@@ -9,6 +9,7 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
+import org.jivesoftware.smack.util.TLSUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
@@ -488,6 +489,26 @@ public class JabberAccountID extends AccountID
     public void setUseUPNP(boolean isUseUPNP)
     {
         putAccountProperty(ProtocolProviderFactory.IS_USE_UPNP, isUseUPNP);
+    }
+
+    /**
+     * Minimum TLS protocol version used for TLS connections.
+     *
+     * @return minimum TLS protocol version. Default TLS 1.2
+     */
+    public String getMinimumTLSversion()
+    {
+        return getAccountPropertyString(ProtocolProviderFactory.MINUMUM_TLS_VERSION, TLSUtils.PROTO_TLSV1_2);
+    }
+
+    /**
+     * Sets the <tt>minimumTLSversion</tt> property.
+     *
+     * @param minimumTLSversion minimum TLS protocol version
+     */
+    public void setMinimumTLSversion(String minimumTLSversion)
+    {
+        putAccountProperty(ProtocolProviderFactory.MINUMUM_TLS_VERSION, minimumTLSversion);
     }
 
     /**

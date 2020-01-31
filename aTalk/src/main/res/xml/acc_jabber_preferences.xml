@@ -80,6 +80,12 @@
                     android:inputType="number"
                     android:key="@string/pref_key_server_port"
                     android:title="@string/service_gui_JBR_PORT" />
+                <ListPreference
+                    android:entries="@array/TLS_version_name"
+                    android:entryValues="@array/TLS_version_value"
+                    android:key="@string/pref_key_minimum_TLS_version"
+                    android:summary="@string/service_gui_JBR_MINIMUM_TLS_SUMMARY"
+                    android:title="@string/service_gui_JBR_MINIMUM_TLS" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_allow_non_secure_conn"
                     android:summary="@string/service_gui_JBR_SSL_SUMMARY"

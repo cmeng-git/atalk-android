@@ -425,6 +425,11 @@ public abstract class ProtocolProviderFactory
     public static final String USE_JITSI_VIDEO_BRIDGE = "USE_JITSI_VIDEO_BRIDGE";
 
     /**
+     * Minimum TLS protocol version.
+     */
+    public static final String MINUMUM_TLS_VERSION = "MINUMUM_TLS_VERSION";
+
+    /**
      * Indicates if we allow non-TLS connection.
      */
     public static final String IS_ALLOW_NON_SECURE = "ALLOW_NON_SECURE";
