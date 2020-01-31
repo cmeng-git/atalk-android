@@ -383,4 +383,17 @@
         <item>ru</item>
     </string-array>
 
+    <string-array name="TLS_version_name">
+        <item>TLS 1.3</item>
+        <item>TLS 1.2</item>
+        <item>TLS 1.1</item>
+        <item>TLS 1.0</item>
+    </string-array>
+    <string-array name="TLS_version_value">
+        <item>TLSv1.3</item>
+        <item>TLSv1.2</item>
+        <item>TLSv1.1</item>
+        <item>TLSv1</item>
+    </string-array>
+
 </resources>

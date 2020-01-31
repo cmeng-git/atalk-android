@@ -484,6 +484,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public static int defaultPingInterval = 240;  // 4 minutes
 
+
+    public static String defaultMinimumTLSversion = TLSUtils.PROTO_TLSV1_2;
+
     /**
      * Flag to indicate the network type connection before the ConnectionClosedOnError occur
      * Note: Switching between WiFi and Mobile network will also causes ConnectionClosedOnError to occur
@@ -982,8 +985,36 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             Timber.w("Attempt on connection that is not null and isConnected %s", mAccountID.getAccountJid());
             disconnectAndCleanConnection();
         }
+
         config.setSocketFactory(SocketFactory.getDefault());
-        TLSUtils.setTLSOnly(config);
+
+        String supportedProtocols[] = {"TLSv1", "TLSv1.1", "TLSv1.2"};
+        try
+        {
+            supportedProtocols =
+                    ((SSLSocket)SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
+        } catch (IOException e)
+        {
+            // Use default list
+        }
+        Arrays.sort(supportedProtocols);
+
+        // Determine enabled TLS protocol versions using getMinimumTLSversion
+        ArrayList<String> enabledTLSProtocols = new ArrayList<String>();
+        for (int prot = supportedProtocols.length - 1; prot >= 0; prot--)
+        {
+            final String prot_version = supportedProtocols[prot];
+            enabledTLSProtocols.add(prot_version);
+            if (prot_version.equals(mAccountID.getMinimumTLSversion()))
+            {
+                break;
+            }
+        }
+        String enabledTLSProtocolsArray[]
+                = new String[enabledTLSProtocols.size()];
+        enabledTLSProtocols.toArray(enabledTLSProtocolsArray);
+
+        config.setEnabledSSLProtocols(enabledTLSProtocolsArray);
 
         // Cannot use a custom SSL context with DNSSEC enabled
         String dnssecMode = mAccountID.getDnssMode();
