@@ -1198,6 +1198,7 @@
     <!-- Jabber preferences -->
     <string name="service_gui_JBR_ADVANCED">Advanced</string>
     <string name="service_gui_JBR_ALLOW_NON_SECURE">Allow non-secure connections</string>
+    <string name="service_gui_JBR_MINIMUM_TLS">Minimum TLS version</string>
     <string name="service_gui_JBR_AUTO_SIGNIN">Connect at Startup</string>
     <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Auto discover STUN/TURN servers</string>
     <string name="service_gui_JBR_CONN_GENERAL">General</string>
@@ -1235,6 +1236,7 @@
     <string name="service_gui_JBR_SERVER">Connect Server IP</string>
     <string name="service_gui_JBR_SERVER_OPTIONS">Server options</string>
     <string name="service_gui_JBR_SSL_SUMMARY">Disable SSL/TLS server connection encryption</string>
+    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">Connect using this or higher TLS protocol version</string>
     <string name="service_gui_JBR_STORE_PASSWORD">Remember password</string>
     <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Save password for auto login on application start up</string>
     <string name="service_gui_JBR_STUN_LIST">Additional STUN/TURN servers&#8230;</string>
@@ -1321,6 +1323,7 @@
     <string name="pref_key_clist_user">pref_key_clist_user</string>
 
     <!-- Not present int SIP, but new in XMPP -->
+    <string name="pref_key_minimum_TLS_version">pref_key_minimum_TLS_version</string>
     <string name="pref_key_allow_non_secure_conn">pref_key_allow_non_secure_conn</string>
     <string name="pref_key_auto_gen_resource">pref_key_auto_gen_resource</string>
     <string name="pref_key_gmail_notifications">pref_key_gmail_notifications</string>
