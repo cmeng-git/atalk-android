@@ -194,11 +194,10 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
             }
 
             // Construct display name
-            Resources res = aTalkApp.getAppResources();
             Camera.getCameraInfo(cameraId, cameraInfo);
             String name = (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT)
-                    ? res.getString(R.string.service_gui_settings_FRONT_CAMERA)
-                    : res.getString(R.string.service_gui_settings_BACK_CAMERA);
+                    ? aTalkApp.getResString(R.string.service_gui_settings_FRONT_CAMERA)
+                    : aTalkApp.getResString(R.string.service_gui_settings_BACK_CAMERA);
             name += " (AndroidCamera#" + cameraId + ")";
             if (formats.isEmpty()) {
                 Timber.e("No supported formats reported by camera: %s", locator);

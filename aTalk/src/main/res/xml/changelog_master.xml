@@ -6,6 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.1.7 (02/02/2020)" versioncode="1117">
+        <change>Redesign chatRoom classes to improve UI, support new room features and correct implementations</change>
+        <change>Enhance chatRoom destroy option to support reason and alternate venue entry</change>
+        <change>Show destroy chatRoom option only if user is the room owner</change>
+        <change>Fix improper handling of chatRoom invitation declined and show user decline message</change>
+        <change>Improve Chat Invite Dialog to ensure correct highlight of selected contacts and Invite button state</change>
+        <change>Change context menu in ContactList and RoomList to use PopupMenu instead of android ContextMenu (clipped item lists)</change>
+        <change>Fix SDES encryption and ensure security protocol name and status are properly reflected during video call</change>
+        <change>Add user account option to specify Minimum TLS Version for connection setup (Default TLS 1.2)</change>
+        <change>Replace obsoleted SHA1 with SHA-256 for DTLS Cryptographic Hash Function as recommended by XEP-0414</change>
+        <change>Temporary disable DTLS_SRTP option as aTalk source is not compatible with BC v1.6.2</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.1.6 (01/21/2020)" versioncode="1116">
         <change>Implement embedded audio media player in chat view with functions: Play, Pause, Resume, Stop(long press) and Seek</change>
         <change>Standardize dateTime format and layout in chat message and file transfer views</change>

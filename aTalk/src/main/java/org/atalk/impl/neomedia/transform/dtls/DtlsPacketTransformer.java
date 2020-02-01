@@ -42,8 +42,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * The maximum number of times that
-     * {@link #runInConnectThread(DTLSProtocol, TlsPeer, DatagramTransport)} is
-     * to retry the invocations of
+     * {@link #runInConnectThread(DTLSProtocol, TlsPeer, DatagramTransport)} is to retry the invocations of
      * {@link DTLSClientProtocol#connect(TlsClient, DatagramTransport)} and
      * {@link DTLSServerProtocol#accept(TlsServer, DatagramTransport)} in anticipation of a successful connection.
      *
@@ -84,13 +83,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * Defined in order to reduce excessive memory use (which may lead to
      * {@link OutOfMemoryError}s, for example).
      */
-    private static final int TRANSFORM_QUEUE_CAPACITY
-            = RTPConnectorOutputStream.PACKET_QUEUE_CAPACITY;
+    private static final int TRANSFORM_QUEUE_CAPACITY = RTPConnectorOutputStream.PACKET_QUEUE_CAPACITY;
 
     static {
         ConfigurationService cfg = LibJitsi.getConfigurationService();
-        DROP_UNENCRYPTED_PKTS
-                = ConfigUtils.getBoolean(cfg, DROP_UNENCRYPTED_PKTS_PNAME, false);
+        DROP_UNENCRYPTED_PKTS = ConfigUtils.getBoolean(cfg, DROP_UNENCRYPTED_PKTS_PNAME, false);
     }
 
     /**
@@ -234,8 +231,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         this.transformEngine = transformEngine;
         this.componentID = componentID;
 
-        // Track the DTLS properties which control the conditional behaviors of
-        // DtlsPacketTransformer.
+        // Track the DTLS properties which control the conditional behaviors of DtlsPacketTransformer.
         getProperties().addPropertyChangeListener(this);
         propertyChange(/* propertyName */ (String) null);
     }
@@ -434,8 +430,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     /**
      * Tries to initialize {@link #_srtpTransformer} by using the
      * {@code DtlsPacketTransformer} for RTP. (The method invocations should be
-     * on the {@code DtlsPacketTransformer} for RTCP as the method name
-     * suggests.)
+     * on the {@code DtlsPacketTransformer} for RTCP as the method name suggests.)
      *
      * @return the (possibly updated) value of {@link #_srtpTransformer}.
      */
@@ -447,8 +442,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         if (rtpTransformer != this) {
             PacketTransformer srtpTransformer = rtpTransformer.getSRTPTransformer();
 
-            if (srtpTransformer != null
-                    && srtpTransformer instanceof SRTPTransformer) {
+            if (srtpTransformer instanceof SRTPTransformer) {
                 synchronized (this) {
                     if (_srtpTransformer == null) {
                         setSrtpTransformer(new SRTCPTransformer((SRTPTransformer) srtpTransformer));
@@ -462,8 +456,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * Initializes a new <tt>SRTPTransformer</tt> instance with a specific (negotiated)
-     * <tt>SRTPProtectionProfile</tt> and the keying material specified by a specific
-     * <tt>TlsContext</tt>.
+     * <tt>SRTPProtectionProfile</tt> and the keying material specified by a specific <tt>TlsContext</tt>.
      *
      * @param srtpProtectionProfile the (negotiated) <tt>SRTPProtectionProfile</tt> to initialize the new instance with
      * @param tlsContext the <tt>TlsContext</tt> which represents the keying material
@@ -487,93 +480,129 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
         int cipher_key_length;
         int cipher_salt_length;
+        int aead_auth_tag_length;
         int cipher;
         int auth_function;
         int auth_key_length;
         int RTCP_auth_tag_length, RTP_auth_tag_length;
 
         switch (srtpProtectionProfile) {
-            case SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32:
-                cipher_key_length = 128 / 8;
-                cipher_salt_length = 112 / 8;
-                cipher = SRTPPolicy.AESCM_ENCRYPTION;
-                auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
-                auth_key_length = 160 / 8;
-                RTCP_auth_tag_length = 80 / 8;
-                RTP_auth_tag_length = 32 / 8;
-                break;
+            /*
+             * RFC 5764 4.1.2.
+             */
             case SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80:
+                cipher = SRTPPolicy.AESCM_ENCRYPTION;
                 cipher_key_length = 128 / 8;
                 cipher_salt_length = 112 / 8;
-                cipher = SRTPPolicy.AESCM_ENCRYPTION;
                 auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
                 auth_key_length = 160 / 8;
-                RTCP_auth_tag_length = RTP_auth_tag_length = 80 / 8;
+                RTP_auth_tag_length = RTCP_auth_tag_length = 80 / 8;
                 break;
-            case SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_32:
-                cipher_key_length = 0;
-                cipher_salt_length = 0;
-                cipher = SRTPPolicy.NULL_ENCRYPTION;
+            case SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32:
+                cipher = SRTPPolicy.AESCM_ENCRYPTION;
+                cipher_key_length = 128 / 8;
+                cipher_salt_length = 112 / 8;
                 auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
                 auth_key_length = 160 / 8;
-                RTCP_auth_tag_length = 80 / 8;
                 RTP_auth_tag_length = 32 / 8;
+                RTCP_auth_tag_length = 80 / 8;
                 break;
             case SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_80:
+                cipher = SRTPPolicy.NULL_ENCRYPTION;
                 cipher_key_length = 0;
                 cipher_salt_length = 0;
-                cipher = SRTPPolicy.NULL_ENCRYPTION;
                 auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
                 auth_key_length = 160 / 8;
-                RTCP_auth_tag_length = RTP_auth_tag_length = 80 / 8;
+                RTP_auth_tag_length = RTCP_auth_tag_length = 80 / 8;
                 break;
+            case SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_32:
+                cipher = SRTPPolicy.NULL_ENCRYPTION;
+                cipher_key_length = 0;
+                cipher_salt_length = 0;
+                auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
+                auth_key_length = 160 / 8;
+                RTP_auth_tag_length = 32 / 8;
+                RTCP_auth_tag_length = 80 / 8;
+                break;
+
+            /*
+             * RFC 7714 14.2 - correspond to the use of an AEAD algorithm
+             * Note that these SRTP protection profiles do not specify an auth_function, auth_key_length,
+             * or auth_tag_length, because all of these profiles use AEAD algorithms and thus do not use a
+             * separate auth_function, auth_key, or auth_tag. The term aead_auth_tag_length" is used to emphasize
+             * that this refers to the authentication tag provided by the AEAD algorithm and that this tag is
+             * not located in the authentication tag field provided by SRTP/SRTCP.
+             */
+            case SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM:
+                Timber.w("Unsupported RFC-7714 SRTP profile: %s", SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM);
+                cipher = SRTPPolicy.AESCM_ENCRYPTION;
+                cipher_key_length = 128 / 8;
+                cipher_salt_length = 96 / 8;
+                aead_auth_tag_length = 16; // 16 octets
+                auth_function = SRTPPolicy.NULL_ENCRYPTION;
+                auth_key_length = 0;        // NA
+                RTP_auth_tag_length = 0;    // NA
+                RTCP_auth_tag_length = 0;   // NA
+                break;
+            case SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM:
+                Timber.w("Unsupported RFC-7714 SRTP profile: %s", SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM);
+                cipher = SRTPPolicy.AESCM_ENCRYPTION;
+                cipher_key_length = 256 / 8;
+                cipher_salt_length = 96 / 8;
+                aead_auth_tag_length = 16; // 16 octets
+                auth_function = SRTPPolicy.NULL_ENCRYPTION;
+                auth_key_length = 0;        // NA
+                RTP_auth_tag_length = 0;    // NA
+                RTCP_auth_tag_length = 0;   // NA
+                break;
+
             default:
                 throw new IllegalArgumentException("srtpProtectionProfile");
         }
 
         byte[] keyingMaterial = null;
-        if (tlsContext.getSecurityParameters().getMasterSecret() == null
-                && tlsContext.getResumableSession() != null) {
-            // BouncyCastle 1.59 clears the master secret from its session
-            // parameters immediately after connect, making them unavailable
-            // for exporting keying material. The value can still be present
-            // in the session parameters from the resumable session, which is
-            // used here.
-            final SessionParameters sessionParameters
-                    = tlsContext.getResumableSession().exportSessionParameters();
-            if (sessionParameters != null
-                    && sessionParameters.getMasterSecret() != null) {
-                keyingMaterial = exportKeyingMaterial(
-                        tlsContext,
-                        ExporterLabel.dtls_srtp,
-                        null,
-                        2 * (cipher_key_length + cipher_salt_length),
-                        sessionParameters.getMasterSecret()
-                );
-            }
-        }
-        else {
-            // Original, BouncyCastle 1.54-compatible code.
-            keyingMaterial = tlsContext.exportKeyingMaterial(ExporterLabel.dtls_srtp, null,
-                    2 * (cipher_key_length + cipher_salt_length));
-        }
         byte[] client_write_SRTP_master_key = new byte[cipher_key_length];
         byte[] server_write_SRTP_master_key = new byte[cipher_key_length];
         byte[] client_write_SRTP_master_salt = new byte[cipher_salt_length];
         byte[] server_write_SRTP_master_salt = new byte[cipher_salt_length];
-        byte[][] keyingMaterialValues = {
-                client_write_SRTP_master_key,
-                server_write_SRTP_master_key,
-                client_write_SRTP_master_salt,
-                server_write_SRTP_master_salt
-        };
 
-        for (int i = 0, keyingMaterialOffset = 0; i < keyingMaterialValues.length; i++) {
-            byte[] keyingMaterialValue = keyingMaterialValues[i];
+        SecurityParameters sp = tlsContext.getSecurityParameters();
+        if ((sp != null) && !sp.isExtendedMasterSecret()) {
+            if (sp.getMasterSecret() == null && tlsContext.getResumableSession() != null) {
+                // BouncyCastle 1.59 clears the master secret from its session
+                // parameters immediately after connect, making them unavailable
+                // for exporting keying material. The value can still be present
+                // in the session parameters from the resumable session, which is used here.
+                final SessionParameters ssp = tlsContext.getResumableSession().exportSessionParameters();
+                if ((ssp != null) && ssp.getMasterSecret() != null) {
+                    keyingMaterial = exportKeyingMaterial(tlsContext, ExporterLabel.dtls_srtp, null,
+                            2 * (cipher_key_length + cipher_salt_length), ssp.getMasterSecret()
+                    );
+                }
+            }
+            else {
+                // Original, BouncyCastle 1.54-compatible code.
+                // byte[] secret = sp.getMasterSecret(); // always null for isExtendedMasterSecret == true;
+                keyingMaterial = tlsContext.exportKeyingMaterial(ExporterLabel.dtls_srtp, null,
+                        2 * (cipher_key_length + cipher_salt_length));
+            }
 
-            System.arraycopy(keyingMaterial, keyingMaterialOffset, keyingMaterialValue, 0,
-                    keyingMaterialValue.length);
-            keyingMaterialOffset += keyingMaterialValue.length;
+            byte[][] keyingMaterialValues = {
+                    client_write_SRTP_master_key,
+                    server_write_SRTP_master_key,
+                    client_write_SRTP_master_salt,
+                    server_write_SRTP_master_salt
+            };
+
+            if (keyingMaterial != null) {
+                for (int i = 0, keyingMaterialOffset = 0; i < keyingMaterialValues.length; i++) {
+                    byte[] keyingMaterialValue = keyingMaterialValues[i];
+
+                    System.arraycopy(keyingMaterial, keyingMaterialOffset,
+                            keyingMaterialValue, 0, keyingMaterialValue.length);
+                    keyingMaterialOffset += keyingMaterialValue.length;
+                }
+            }
         }
 
         SRTPPolicy srtcpPolicy = new SRTPPolicy(
@@ -632,8 +661,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * Determines whether this {@code DtlsPacketTransformer} is to operate in
      * pure DTLS mode without SRTP extensions or in DTLS/SRTP mode.
      *
-     * @return {@code true} for pure DTLS without SRTP extensions or
-     * {@code false} for DTLS/SRTP
+     * @return {@code true} for pure DTLS without SRTP extensions or {@code false} for DTLS/SRTP
      */
     private boolean isSrtpDisabled()
     {
@@ -698,8 +726,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      *
      * @param pkts the {@code RawPacket}s to queue
      * @param transform {@code true} if {@code pkts} are to be sent to the
-     * remote peer or {@code false} if {@code pkts} were received from the
-     * remote peer
+     * remote peer or {@code false} if {@code pkts} were received from the remote peer
      */
     private void queueTransformSrtp(RawPacket[] pkts, boolean transform)
     {
@@ -733,8 +760,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * Processes a DTLS {@code RawPacket} received from the remote peer, and
      * reads any available application data into {@code outPkts}.
      *
-     * @param pkt the DTLS {@code RawPacket} received from the remote peer to
-     * process.
+     * @param pkt the DTLS {@code RawPacket} received from the remote peer to process.
      * @param outPkts a list of packets, to which application data read from
      * the DTLS transport should be appended. If {@code null}, application data will not be read.
      */
@@ -811,10 +837,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * @param tlsPeer
      * @param datagramTransport
      */
-    private void runInConnectThread(
-            DTLSProtocol dtlsProtocol,
-            TlsPeer tlsPeer,
-            DatagramTransport datagramTransport)
+    private void runInConnectThread(DTLSProtocol dtlsProtocol, TlsPeer tlsPeer, DatagramTransport datagramTransport)
     {
         DTLSTransport dtlsTransport = null;
         final boolean srtp = !isSrtpDisabled();
@@ -981,8 +1004,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * @param srtpTransformer the {@code SinglePacketTransformer} to set on
      * {@code _srtpTransformer}
      */
-    private synchronized void setSrtpTransformer(
-            SinglePacketTransformer srtpTransformer)
+    private synchronized void setSrtpTransformer(SinglePacketTransformer srtpTransformer)
     {
         if (_srtpTransformer != srtpTransformer) {
             _srtpTransformer = srtpTransformer;
@@ -1117,14 +1139,12 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Processes {@code RawPacket}s to be sent to or received from (depending on
-     * {@code transform}) the remote peer.
+     * Processes {@code RawPacket}s to be sent to or received from (depending on {@code transform}) the remote peer.
      *
      * @param inPkts the {@code RawPacket}s to be sent to or received from
      * (depending on {@code transform} the remote peer
      * @param transform {@code true} of {@code inPkts} are to be sent to the
-     * remote peer or {@code false} if {@code inPkts} have been received from
-     * the remote peer
+     * remote peer or {@code false} if {@code inPkts} have been received from the remote peer
      * @return the {@code RawPacket}s which are the result of the processing
      */
     private RawPacket[] transform(RawPacket[] inPkts, boolean transform)
@@ -1150,14 +1170,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * (depending on {@code transform} the remote peer among which there may (or
      * may not) be DTLS {@code RawPacket}s
      * @param transform {@code true} of {@code inPkts} are to be sent to the
-     * remote peer or {@code false} if {@code inPkts} have been received from
-     * the remote peer
+     * remote peer or {@code false} if {@code inPkts} have been received from the remote peer
      * @param outPkts the {@code List} of {@code RawPacket}s into which the
-     * results of the processing of the DTLS {@code RawPacket}s are to be
-     * written
+     * results of the processing of the DTLS {@code RawPacket}s are to be written
      * @return the {@code List} of {@code RawPacket}s which are the result of
-     * the processing including the elements of {@code outPkts}. Practically,
-     * {@code outPkts} itself.
+     * the processing including the elements of {@code outPkts}. Practically, {@code outPkts} itself.
      */
     private List<RawPacket> transformDtls(RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
     {
@@ -1195,29 +1212,24 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     /**
      * Processes non-DTLS {@code RawPacket}s to be sent to or received from
      * (depending on {@code transform}) the remote peer. The implementation
-     * assumes that all elements of {@code inPkts} are non-DTLS
-     * {@code RawPacket}s.
+     * assumes that all elements of {@code inPkts} are non-DTLS {@code RawPacket}s.
      *
      * @param inPkts the {@code RawPacket}s to be sent to or received from
      * (depending on {@code transform} the remote peer
      * @param transform {@code true} of {@code inPkts} are to be sent to the
-     * remote peer or {@code false} if {@code inPkts} have been received from
-     * the remote peer
+     * remote peer or {@code false} if {@code inPkts} have been received from the remote peer
      * @param outPkts the {@code List} of {@code RawPacket}s into which the
      * results of the processing of {@code inPkts} are to be written
      * @return the {@code List} of {@code RawPacket}s which are the result of
-     * the processing including the elements of {@code outPkts}. Practically,
-     * {@code outPkts} itself.
+     * the processing including the elements of {@code outPkts}. Practically, {@code outPkts} itself.
      */
     private List<RawPacket> transformNonDtls(RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
     {
         /* Pure/non-SRTP DTLS */
         if (isSrtpDisabled()) {
-            // (1) In the incoming/reverseTransform direction, only DTLS records
-            // pass through.
+            // (1) In the incoming/reverseTransform direction, only DTLS records pass through.
             // (2) In the outgoing/transform direction, the specified inPkts
-            // will pass through this PacketTransformer only if they get
-            // transformed into DTLS records.
+            // will pass through this PacketTransformer only if they get transformed into DTLS records.
             if (transform)
                 outPkts = transformNonSrtp(inPkts, outPkts);
         }
@@ -1230,8 +1242,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * Processes non-SRTP {@code RawPacket}s to be sent to the remote peer. The
-     * implementation assumes that all elements of {@code inPkts} are non-SRTP
-     * {@code RawPacket}s.
+     * implementation assumes that all elements of {@code inPkts} are non-SRTP {@code RawPacket}s.
      *
      * @param inPkts the {@code RawPacket}s to be sent to the remote peer
      * @param outPkts the {@code List} of {@code RawPacket}s into which the
@@ -1239,8 +1250,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * @return the {@code List} of {@code RawPacket}s which are the result of
      * the processing including the elements of {@code outPkts}. Practically,
      * {@code outPkts} itself. The implementation does not produce its own
-     * {@code RawPacket}s though because it merely wraps {@code inPkts} into
-     * DTLS application data.
+     * {@code RawPacket}s though because it merely wraps {@code inPkts} into DTLS application data.
      */
     private List<RawPacket> transformNonSrtp(RawPacket[] inPkts, List<RawPacket> outPkts)
     {
@@ -1267,13 +1277,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * @param inPkts the SRTP {@code RawPacket}s to be sent to or received from
      * (depending on {@code transform}) the remote peer
      * @param transform {@code true} of {@code inPkts} are to be sent to the
-     * remote peer or {@code false} if {@code inPkts} have been received from
-     * the remote peer
+     * remote peer or {@code false} if {@code inPkts} have been received from the remote peer
      * @param outPkts the {@code List} of {@code RawPacket}s into which the
      * results of the processing of {@code inPkts} are to be written
      * @return the {@code List} of {@code RawPacket}s which are the result of
-     * the processing including the elements of {@code outPkts}. Practically,
-     * {@code outPkts} itself.
+     * the processing including the elements of {@code outPkts}. Practically, {@code outPkts} itself.
      */
     private List<RawPacket> transformSrtp(RawPacket[] inPkts, boolean transform, List<RawPacket> outPkts)
     {
@@ -1294,8 +1302,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             // XXX Don't obtain a lock if the queue is empty. If a thread was in
             // the process of adding packets to it, they will be handled in a
             // subsequent call. If the queue is empty, as it usually is, the
-            // call to transformSrtp below is unnecessary, so we can avoid the
-            // lock.
+            // call to transformSrtp below is unnecessary, so we can avoid the lock.
             if (q.size() > 0) {
                 synchronized (q) {
                     // WARNING: this is a temporary workaround for an issue we
@@ -1313,15 +1320,13 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     try {
                         outPkts = transformSrtp(srtpTransformer, q, transform, outPkts, template);
                     } finally {
-                        // If a RawPacket from q causes an exception, do not
-                        // attempt to process it next time.
+                        // If a RawPacket from q causes an exception, do not attempt to process it next time.
                         clearQueue(q, template);
                     }
                 }
             }
 
-            // Process the (SRTP) packets provided to the current (method)
-            // invocation.
+            // Process the (SRTP) packets provided to the current (method) invocation.
             if (inPkts != null && inPkts.length != 0) {
                 outPkts = transformSrtp(srtpTransformer, Arrays.asList(inPkts), transform, outPkts, null);
             }
@@ -1334,21 +1339,18 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * (depending on {@code transform}) the remote peer. The implementation
      * assumes that all elements of {@code inPkts} are SRTP {@code RawPacket}s.
      *
-     * @param srtpTransformer the {@code SinglePacketTransformer} to perform the
-     * actual processing
+     * @param srtpTransformer the {@code SinglePacketTransformer} to perform the actual processing
      * @param inPkts the SRTP {@code RawPacket}s to be sent to or received from
      * (depending on {@code transform}) the remote peer
      * @param transform {@code true} of {@code inPkts} are to be sent to the
-     * remote peer or {@code false} if {@code inPkts} have been received from
-     * the remote peer
+     * remote peer or {@code false} if {@code inPkts} have been received from the remote peer
      * @param outPkts the {@code List} of {@code RawPacket}s into which the
      * results of the processing of {@code inPkts} are to be written
      * @param template A template to match input packets. Only input packets
      * matching this template (checked with {@link #match(RawPacket, RawPacket)})
      * will be processed. A null template matches all packets.
      * @return the {@code List} of {@code RawPacket}s which are the result of
-     * the processing including the elements of {@code outPkts}. Practically,
-     * {@code outPkts} itself.
+     * the processing including the elements of {@code outPkts}. Practically, {@code outPkts} itself.
      */
     private List<RawPacket> transformSrtp(SinglePacketTransformer srtpTransformer, Collection<RawPacket> inPkts,
             boolean transform, List<RawPacket> outPkts, RawPacket template)
@@ -1368,8 +1370,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * Removes from {@code q} all packets matching {@code template} (checked
-     * with {@link #match(RawPacket, RawPacket)}. A null {@code template}
-     * matches all packets.
+     * with {@link #match(RawPacket, RawPacket)}. A null {@code template} matches all packets.
      *
      * @param q the queue to remove packets from.
      * @param template the template
@@ -1383,8 +1384,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             // The purpose of these queues is to queue packets while DTLS is in
             // the process of establishing a connection. If some of the packets
             // were not "read" 3 seconds after DTLS finished, they can safely be
-            // dropped, and we do so to avoid looping through the queue on every
-            // subsequent packet.
+            // dropped, and we do so to avoid looping through the queue on every subsequent packet.
             q.clear();
             return;
         }
@@ -1401,8 +1401,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * will only be matched by a {@code null} template. Two non-{@code null}
      * packets match if they are both RTP or both RTCP and they have the same
      * SSRC or the same RTP Payload Type. The goal is for a template packet from
-     * one {@code MediaStream} to match the packets for that stream, and only
-     * these packets.
+     * one {@code MediaStream} to match the packets for that stream, and only these packets.
      *
      * @param template the template.
      * @param pkt the packet.

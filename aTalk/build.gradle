@@ -71,8 +71,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1116
-        versionName "2.1.6"
+        versionCode 1117
+        versionName "2.1.7"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -194,8 +194,6 @@ dependencies {
 
     implementation "com.google.android.material:material:${rootProject.supportLibraryVersion}"
 
-    // libraries from maven repository
-    implementation 'ch.imvs:sdes4j:1.1.4'
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
     implementation 'com.jakewharton:butterknife:10.1.0'
@@ -219,6 +217,7 @@ dependencies {
     // implementation 'cz.msebera.android:httpclient:4.5.8' // duplicate class
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 
+    implementation 'commons-codec:commons-codec:1.14'
     implementation 'org.apache.commons:commons-text:1.8'
     implementation 'org.apache.httpcomponents:httpmime:4.5.10'
     implementation 'org.apache.james:apache-mime4j-core:0.8.3'
@@ -236,7 +235,7 @@ dependencies {
 
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
-    implementation "org.igniterealtime.jbosh:jbosh:0.9.1"
+    implementation "org.igniterealtime.jbosh:jbosh:0.9.2"
 
     implementation "org.igniterealtime.smack:smack-compression-jzlib:$smackVersion"
     implementation "org.igniterealtime.smack:smack-core:$smackVersion"
@@ -311,6 +310,19 @@ dependencies {
         destinationName "zrtp4j-light-4.1.0.jar"
 
         classRename 'org.jitsi.**', 'org.atalk.@1'
+    }
+
+    // implementation 'ch.imvs:sdes4j:1.1.4'
+    // libraries from maven repository but need to change Base64 to ApacheBase64 to avoid conflict with android
+    // declaration of 'org.apache.commons.codec.binary.Base64' appears in /system/framework/org.apache.http.legacy.boot.jar
+    implementation jarjar.repackage {
+        from('ch.imvs:sdes4j:1.1.4') {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/libs")
+        destinationName "sde4j-1.1.4.jar"
+
+        classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
     }
 }
 

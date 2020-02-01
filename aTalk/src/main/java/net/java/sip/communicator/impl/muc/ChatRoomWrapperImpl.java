@@ -24,6 +24,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.util.StringUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -81,7 +82,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     /**
      * The participant nickName.
      */
-    private String nickName = null;
+    private String mNickName = null;
 
     private String bookmarkName = null;
 
@@ -200,11 +201,22 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
+     * Get the account User BareJid
+     *
+     * @return the account user BareJid
+     */
+    public BareJid getUser()
+    {
+        return mPPS.getConnection().getUser().asBareJid();
+    }
+
+    /**
      * Set the unread message count for this wrapper represent
      *
      * @param count unread message count
      */
-    public void setUnreadCount(int count) {
+    public void setUnreadCount(int count)
+    {
         unreadCount = count;
     }
 
@@ -213,7 +225,8 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the unread message count
      */
-    public int getUnreadCount() {
+    public int getUnreadCount()
+    {
         return unreadCount;
     }
 
@@ -323,12 +336,12 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      */
     public String getNickName()
     {
-        if (StringUtils.isNullOrEmpty(nickName)) {
-            nickName = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME);
-            if (StringUtils.isNullOrEmpty(nickName))
-                nickName = getDefaultNickname(mPPS);
+        if (StringUtils.isNullOrEmpty(mNickName)) {
+            mNickName = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME);
+            if (StringUtils.isNullOrEmpty(mNickName))
+                mNickName = getDefaultNickname(mPPS);
         }
-        return nickName;
+        return mNickName;
     }
 
     /**
@@ -348,16 +361,16 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     /**
      * Stores the nickName for the member.
      *
-     * @param value the nickName to store
+     * @param nickName the nickName to store
      */
-    public void setNickName(String value)
+    public void setNickName(String nickName)
     {
-        nickName = value;
+        mNickName = nickName;
         if (!isPersistent()) {
             setPersistent(true);
             ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
         }
-        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME, null);
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME, nickName);
     }
 
     /**
@@ -382,7 +395,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
             setPersistent(true);
             ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
         }
-        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.CHAT_ROOM_NAME, null);
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.CHATROOM_NAME, null);
     }
 
     /**
@@ -476,6 +489,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
         MUCActivator.getConfigurationService().removePropertyChangeListener(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_PER_CONTACT_ENABLED_PREFIX + "."
                         + chatRoomID, propertyListener);
+
     }
 
     /**

@@ -10,6 +10,7 @@ import android.os.*;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -35,8 +36,7 @@ import timber.log.Timber;
 import static org.atalk.android.aTalkApp.getCurrentActivity;
 
 /**
- * The <tt>ConferenceChatManager</tt> is the one that manages both chat room and ad-hoc chat
- * rooms invitations.
+ * The <tt>ConferenceChatManager</tt> is the one that manages both chat room and ad-hoc chat rooms invitations.
  *
  * @author Yana Stamcheva
  * @author Lubomir Marinov
@@ -45,8 +45,7 @@ import static org.atalk.android.aTalkApp.getCurrentActivity;
  * @author Eng Chong Meng
  */
 public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomInvitationListener,
-        ChatRoomInvitationRejectionListener, AdHocChatRoomMessageListener,
-        AdHocChatRoomInvitationListener, AdHocChatRoomInvitationRejectionListener,
+        AdHocChatRoomMessageListener, AdHocChatRoomInvitationListener,
         LocalUserChatRoomPresenceListener, LocalUserAdHocChatRoomPresenceListener,
         ServiceListener, ChatRoomLocalUserRoleListener
 {
@@ -116,10 +115,6 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         });
     }
 
-    public void invitationRejected(ChatRoomInvitationRejectedEvent evt)
-    {
-    }
-
     /**
      * Implements the <tt>ChatRoomMessageListener.messageDelivered</tt> method. <br>
      * Shows the message in the conversation area and clears the write message area.
@@ -155,10 +150,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     {
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
         ChatRoomMember sourceMember = evt.getSourceChatRoomMember();
-
         int messageType = evt.getEventType();
-
-        Timber.d("Message received from contact: %s", sourceMember.getContact());
         IMessage message = evt.getMessage();
         ChatPanel chatPanel;
 
@@ -219,10 +211,11 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 return;
         }
 
-        // contact can be null if messaage received with nickName only
-        Contact sender = sourceMember.getContact();
+        // contact may be null if message received with nickName only or when contact reject invitation
+        // Contact contact = sourceMember.getContact();
+        // String jabberID = (contact == null) ? displayName : contact.getAddress();
+        String jabberID = sourceMember.getContactAddress();
         String displayName = sourceMember.getNickName();
-        String jabberID = (sender == null) ? displayName : sender.getAddress();
 
         chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message, null);
     }
@@ -266,7 +259,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
                 break;
             case MessageDeliveryFailedEvent.FORBIDDEN:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN);
+                errorMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_SEND_MSG_FORBIDDEN);
                 break;
             case MessageDeliveryFailedEvent.UNSUPPORTED_OPERATION:
                 errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION);
@@ -316,7 +309,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {
             if (adHocChatRoomWrapper != null) {
                 this.fireAdHocChatRoomListChangedEvent(adHocChatRoomWrapper,
-                        AdHocChatRoomListChangeEvent.AD_HOC_CHAT_ROOM_CHANGED);
+                        AdHocChatRoomListChangeEvent.AD_HOC_CHATROOM_CHANGED);
 
                 // Check if we have already opened a chat window for this chat wrapper and load
                 // the real chat room corresponding to the wrapper.
@@ -334,8 +327,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
         else if (evt.getEventType().equals(LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOIN_FAILED)) {
             AndroidGUIActivator.getAlertUIService().showAlertPopup(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_FAILED_TO_JOIN_CHAT_ROOM, sourceAdHocChatRoom.getName())
-                            + evt.getReason());
+                    aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_REASON,
+                            sourceAdHocChatRoom.getName(), evt.getReason()));
         }
         else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals
@@ -344,7 +337,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
             // Need to refresh the chat room's list in order to change the state of the chat room
             // to offline.
-            fireAdHocChatRoomListChangedEvent(adHocChatRoomWrapper, AdHocChatRoomListChangeEvent.AD_HOC_CHAT_ROOM_CHANGED);
+            fireAdHocChatRoomListChangedEvent(adHocChatRoomWrapper, AdHocChatRoomListChangeEvent.AD_HOC_CHATROOM_CHANGED);
             sourceAdHocChatRoom.removeMessageListener(this);
         }
     }
@@ -400,8 +393,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
         else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOIN_FAILED.equals(eventType)) {
             AndroidGUIActivator.getAlertUIService().showAlertPopup(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_FAILED_TO_JOIN_CHAT_ROOM, sourceChatRoom.getName())
-                            + evt.getReason());
+                    aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_REASON,
+                            sourceChatRoom.getName(), evt.getReason()));
         }
         else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED.equals(eventType)
@@ -422,7 +415,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                         if (!StringUtils.isNullOrEmpty(evt.getAlternateAddress())) {
                             chatPanel.addMessage(sourceChatRoom.getName(), new Date(),
                                     ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
-                                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_ALTERNATE_ADDRESS,
+                                    aTalkApp.getResString(R.string.service_gui_CHATROOM_ALTERNATE_ADDRESS,
                                             evt.getAlternateAddress()));
                         }
                     }
@@ -491,7 +484,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         } catch (OperationFailedException | OperationNotSupportedException ex) {
             AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_CREATE_CHAT_ROOM_ERROR,
+                    aTalkApp.getResString(R.string.service_gui_CHATROOM_CREATE_ERROR,
                             protocolProvider.getProtocolDisplayName()));
         }
 
@@ -503,7 +496,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             adHocChatRoomList.addAdHocChatRoom(chatRoomWrapper);
 
             fireAdHocChatRoomListChangedEvent(chatRoomWrapper,
-                    AdHocChatRoomListChangeEvent.AD_HOC_CHAT_ROOM_ADDED);
+                    AdHocChatRoomListChangeEvent.AD_HOC_CHATROOM_ADDED);
         }
         return chatRoomWrapper;
     }
@@ -520,7 +513,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         if (chatRoom == null) {
             AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_NOT_CONNECTED,
+                    aTalkApp.getResString(R.string.service_gui_CHATROOM_NOT_CONNECTED,
                             chatRoomWrapper.getAdHocChatRoomName()));
             return;
         }
@@ -559,7 +552,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             chatRoomWrapper = new AdHocChatRoomWrapper(parentProvider, chatRoom);
             adHocChatRoomList.addAdHocChatRoom(chatRoomWrapper);
             fireAdHocChatRoomListChangedEvent(chatRoomWrapper,
-                    AdHocChatRoomListChangeEvent.AD_HOC_CHAT_ROOM_ADDED);
+                    AdHocChatRoomListChangeEvent.AD_HOC_CHATROOM_ADDED);
         }
         this.joinChatRoom(chatRoomWrapper);
         // ChatSessionManager.openChat(chatWindowManager.getMultiChat(chatRoomWrapper, true), true);
@@ -593,7 +586,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         }
         else {
             AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                    R.string.service_gui_WARNING, R.string.service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED);
+                    R.string.service_gui_WARNING, R.string.service_gui_CHATROOM_LEAVE_NOT_CONNECTED);
         }
     }
 
@@ -752,15 +745,15 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             String errorMessage;
             if (PROVIDER_NOT_REGISTERED.equals(returnCode)) {
                 errorMessage = aTalkApp.getResString(
-                        R.string.service_gui_CHAT_ROOM_NOT_CONNECTED, adHocChatRoomWrapper.getAdHocChatRoomName());
+                        R.string.service_gui_CHATROOM_NOT_CONNECTED, adHocChatRoomWrapper.getAdHocChatRoomName());
             }
             else if (SUBSCRIPTION_ALREADY_EXISTS.equals(returnCode)) {
-                errorMessage = aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_ALREADY_JOINED,
+                errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_ALREADY_JOINED,
                         adHocChatRoomWrapper.getAdHocChatRoomName());
             }
             else {
-                errorMessage = aTalkApp.getResString(
-                        R.string.service_gui_FAILED_TO_JOIN_CHAT_ROOM, adHocChatRoomWrapper.getAdHocChatRoomName());
+                errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_REASON,
+                        adHocChatRoomWrapper.getAdHocChatRoomName(), result);
             }
 
             if (!SUCCESS.equals(returnCode) && !AUTHENTICATION_FAILED.equals(returnCode)) {
@@ -881,10 +874,6 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         chatPanel.addMessage(sourceParticipant, sourceParticipant, evt.getTimestamp(),
                 messageType, message, null);
         ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());
-    }
-
-    public void invitationRejected(AdHocChatRoomInvitationRejectedEvent evt)
-    {
     }
 
     @Override

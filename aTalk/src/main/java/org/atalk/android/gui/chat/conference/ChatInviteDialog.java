@@ -39,8 +39,6 @@ import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.*;
 
-import timber.log.Timber;
-
 /**
  * The invite dialog is the one shown when the user clicks on the conference button in the chat toolbar.
  * this
@@ -59,7 +57,7 @@ public class ChatInviteDialog extends Dialog
     private final ChatTransport inviteChatTransport;
 
     /**
-     * A map of all active chats i.e. metaContactChat, MUC etc.
+     * A reference map of all invitees i.e. MetaContact UID to MetaContact .
      */
     private static final Map<String, MetaContact> mucContactInviteList = new LinkedHashMap<>();
 
@@ -97,29 +95,41 @@ public class ChatInviteDialog extends Dialog
         this.setContentView(R.layout.muc_invite_dialog);
 
         contactListView = this.findViewById(R.id.ContactListView);
-        contactListView.setSelector(R.drawable.array_list_selector);
+        contactListView.setSelector(R.drawable.list_selector_state);
         contactListView.setOnChildClickListener(this);
         contactListView.setOnGroupClickListener(this);
         initListAdapter();
 
         mInviteButton = this.findViewById(R.id.button_invite);
-        // Default to include the current contact of the MetaContactChatSession to be invited
-        if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
-            MetaContact mContact = chatPanel.getMetaContact();
-            mucContactInviteList.put(mContact.getMetaUID(), mContact);
-            mInviteButton.setEnabled(true);
-        }
-        else {
-            mInviteButton.setAlpha(.3f);
-        }
-
         mInviteButton.setOnClickListener(v -> {
             inviteContacts();
             closeDialog();
         });
 
+        // Default to include the current contact of the MetaContactChatSession to be invited
+        if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
+            MetaContact mContact = chatPanel.getMetaContact();
+            mucContactInviteList.put(mContact.getMetaUID(), mContact);
+        }
+        updateInviteState();
+
         Button mCancelButton = this.findViewById(R.id.buttonCancel);
         mCancelButton.setOnClickListener(v -> closeDialog());
+    }
+
+    /**
+     * Enable the Invite button if mucContactInviteList is not empty
+     */
+    private void updateInviteState()
+    {
+        if (mucContactInviteList.isEmpty()) {
+            mInviteButton.setEnabled(false);
+            mInviteButton.setAlpha(.3f);
+        }
+        else {
+            mInviteButton.setEnabled(true);
+            mInviteButton.setAlpha(1.0f);
+        }
     }
 
     private void initListAdapter()
@@ -187,15 +197,7 @@ public class ChatInviteDialog extends Dialog
                     listView.setItemChecked(index, true);
                     // v.setSelected(true); for single item selection only
                 }
-
-                if (mucContactInviteList.isEmpty()) {
-                    mInviteButton.setEnabled(false);
-                    mInviteButton.setAlpha(.3f);
-                }
-                else {
-                    mInviteButton.setEnabled(true);
-                    mInviteButton.setAlpha(1.0f);
-                }
+                updateInviteState();
                 return true;
             }
             return false;
@@ -222,8 +224,9 @@ public class ChatInviteDialog extends Dialog
             contactListView.collapseGroup(groupPosition);
         else {
             contactListView.expandGroup(groupPosition, true);
-            new Handler().postDelayed(()
-                    -> refreshContactSelected(groupPosition), 500);
+            new Handler().postDelayed(() -> {
+                refreshContactSelected(groupPosition);
+            }, 500);
         }
         return true;
     }
@@ -288,7 +291,7 @@ public class ChatInviteDialog extends Dialog
     }
 
     /**
-     * Refresh the hightlight of all the selected contacts when:
+     * Refresh highlight for all the selected contacts when:
      * a. Dialog onShow
      * b. User collapse and expand group
      *
@@ -296,28 +299,24 @@ public class ChatInviteDialog extends Dialog
      */
     private void refreshContactSelected(int grpPosition)
     {
-        int lastIndex = contactListView.getLastVisiblePosition();
         Collection<MetaContact> mContactList = mucContactInviteList.values();
+        int lastIndex = contactListView.getCount();
 
-        for (int i = 0; i <= lastIndex; i++) {
-            long lPosition = contactListView.getExpandableListPosition(i);
+        for (int index = 0; index <= lastIndex; index++) {
+            long lPosition = contactListView.getExpandableListPosition(index);
 
             int groupPosition = ExpandableListView.getPackedPositionGroup(lPosition);
-            if (groupPosition != grpPosition)
-                continue;
+            if ((grpPosition == -1) || (groupPosition == grpPosition)) {
+                int childPosition = ExpandableListView.getPackedPositionChild(lPosition);
+                MetaContact mContact = ((MetaContact) contactListAdapter.getChild(groupPosition, childPosition));
+                if (mContact == null)
+                    continue;
 
-            int childPosition = ExpandableListView.getPackedPositionChild(lPosition);
-            MetaContact mContact = ((MetaContact) contactListAdapter.getChild(groupPosition, childPosition));
-            if (mContact == null)
-                continue;
-
-            for (MetaContact metaContact : mContactList) {
-                if (metaContact.equals(mContact)) {
-                    // Get view index for selection highlight
-                    int index = contactListView.getFlatListPosition(
-                            ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
-                    contactListView.setItemChecked(index, true);
-                    break;
+                for (MetaContact metaContact : mContactList) {
+                    if (metaContact.equals(mContact)) {
+                        contactListView.setItemChecked(index, true);
+                        break;
+                    }
                 }
             }
         }
@@ -327,9 +326,8 @@ public class ChatInviteDialog extends Dialog
     public void onShow(DialogInterface arg0)
     {
         int indexes = contactListAdapter.getGroupCount();
-        for (int gIdx = 0; gIdx < indexes; gIdx++) {
-            refreshContactSelected(gIdx);
-        }
+        refreshContactSelected(-1);
+        updateInviteState();
     }
 
     private void closeDialog()

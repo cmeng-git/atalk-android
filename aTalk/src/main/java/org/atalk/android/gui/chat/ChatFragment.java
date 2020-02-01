@@ -246,7 +246,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         chatStateView = mCFView.findViewById(R.id.chatStateView);
         chatListView.setAdapter(chatListAdapter);
-        chatListView.setSelector(R.drawable.array_list_selector);
+        chatListView.setSelector(R.drawable.list_selector_state);
         initListViewListeners();
 
         // Chat intent handling - chatId should not be null
@@ -742,6 +742,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             cPos = checkedList.keyAt(i) - headerCount;
                             cType = chatListAdapter.getItemViewType(cPos);
                             if ((cType == ChatListAdapter.INCOMING_MESSAGE_VIEW)
+                                    || (cType == ChatListAdapter.SYSTEM_MESSAGE_VIEW) // allow delete of system message if any
                                     || (cType == ChatListAdapter.OUTGOING_MESSAGE_VIEW)
                                     || (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW)) {
                                 chatMsg = chatListAdapter.getMessage(cPos);

@@ -246,7 +246,6 @@ public abstract class AbstractSystrayService implements SystrayService
      */
     private class ServiceListenerImpl implements ServiceListener
     {
-
         /**
          * implements <tt>ServiceListener.serviceChanged</tt>
          *

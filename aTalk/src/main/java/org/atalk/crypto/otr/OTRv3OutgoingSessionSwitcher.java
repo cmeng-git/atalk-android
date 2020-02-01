@@ -175,10 +175,10 @@ public class OTRv3OutgoingSessionSwitcher extends OSGiDialogFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         if (view.isSelected()) {
-            view.setBackgroundResource(R.drawable.list_selection_gradient);
+            view.setBackgroundResource(R.drawable.color_blue_gradient);
         }
         else {
-            view.setBackgroundResource(R.drawable.array_list_selector);
+            view.setBackgroundResource(R.drawable.list_selector_state);
         }
 
         if (position < otrSessionLabels.size()) {

@@ -96,7 +96,7 @@ public class CaptchaDialog extends Dialog
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.captcha_challenge);
-        setTitle(R.string.captcha_challenge);
+        setTitle(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE);
 
         mImageView = findViewById(R.id.captcha);
         mCaptchaText = findViewById(R.id.input);
@@ -206,7 +206,7 @@ public class CaptchaDialog extends Dialog
         iqCaptcha.setTo(mMessage.getFrom());
         try {
             createStanzaCollectorAndSend(iqCaptcha).nextResultOrThrow();
-            mReasonText = mContext.getString(R.string.service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID);
+            mReasonText = mContext.getString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID);
             callBack.onResult(validated);
             return true;
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException

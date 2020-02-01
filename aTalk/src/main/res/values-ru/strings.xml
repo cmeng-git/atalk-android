@@ -39,7 +39,7 @@
     <string name="captcha_hint">Введите текст, который вы видите</string>
     <string name="captcha_retry">Нажмите «ОК», чтобы повторить попытку, или «Отмена», чтобы завершить</string>
 
-        <string name="choose_network">Выберите сеть</string>
+    <string name="choose_network">Выберите сеть</string>
     <string name="encryption_TOOLTIP">Шифровать чат</string>
     <string name="encryption_choices">EncryptChoices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
@@ -52,7 +52,6 @@
     <string name="no_application_found_to_open_file">Не найдено приложения для открытия файла</string>
     <string name="password">пароль</string>
     <string name="service_gui_PASSWORD">Пароль:</string>
-    <string name="reason_label">Причина:</string>
     <string name="send_process_signal">Отправить сигнал процесса</string>
     <string name="show_call_info">Информация о вызове</string>
     <string name="show_call_zrtp_info">"Вызов информации ZRTP</string>
@@ -140,6 +139,7 @@
     <string name="service_gui_CONTACT_INVALID">Выбранный контакт недействителен: %1$s</string>
     <string name="service_gui_Contacts">Контакты</string>
     <string name="service_gui_DONE">Готово</string>
+    <string name="service_gui_REASON_LABEL">Причина:</string>
     <string name="service_gui_SHARE">Поделиться…</string>
     <string name="service_gui_SHARE_TEXT">Поделиться текстом&#8230;</string>
     <string name="service_gui_SHARE_FILE">Поделиться файлом&#8230;</string>
@@ -158,32 +158,30 @@
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Изменить качество удаленного видео</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s конференция</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Конференции</string>
-    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Вы уже вошли в чат-комнату %1$s.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s настройка чата</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Не удалось получить конфигурационную форму в чате %1$s.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Не удалось получить форму конфигурации комнаты чата %1$s. Только владельцы чата могут видеть и изменять конфигурационную форму.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Список справа содержит пользователей, которые имеют роль участника в этом чате. Когда в чате есть «Только члены», это будут пользователи, которым разрешено присоединиться.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Редактировать список участников</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Произошла ошибка при попытке отправить конфигурационную форму для комнаты чата %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_JOIN">Присоединиться к чату</string>
-    <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Удаляет выбранную комнату из списка сохраненных комнат</string>
-    <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Сохраняет чат для будущего использования</string>
-    <string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">Передача сообщений запрещена (голос отменен)</string>
-	<string name="service_gui_CHAT_ROOM_USER_JOINED">присоединился к %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_KICKED">был удален из %1$s</string>
-	<string name="service_gui_CHAT_ROOM_USER_LEFT">оставил %1$s</string>
-	<string name="service_gui_CHAT_ROOM_USER_QUIT">имеет quit %1$s</string>
-	<string name="service_gui_CHAT_ROOM_NAME">Имя в чате</string>
-	<string name="service_gui_CHAT_ROOM_NAME_INFO">В поле ниже введите имя комнаты для чата, которую вы хотите создать.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_EXIST">Комната %1$s не найдена на сервере %2$s. Проверьте правильность введенного имени.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_CONNECTED">Вам нужно быть в сети, чтобы присоединиться к чат-комнате %1$s.</string>
-	<string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">Вам нужно быть в сети, чтобы выйти из чата.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_JOINED">Вам нужно войти в комнату чата, чтобы выполнить дальнейшие операции с ним.</string>
-	<string name="service_gui_CHAT_ROOM_OPTIONS">Параметры чата</string>
-	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Чат чата %1$s запросил пароль.</string>
-	<string name="service_gui_CHAT_ROOM">Чат</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Тема номера изменилась: \'%1$s\' => \'%2$s\'</string>
-	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Вы можете продолжить разговор в следующем чате: %1$s</string>
+    <string name="service_gui_CHATROOM">Чат</string>
+    <string name="service_gui_CHATROOM_ALREADY_JOINED">Вы уже вошли в чат-комнату %1$s.</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION">%1$s настройка чата</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Не удалось получить конфигурационную форму в чате %1$s.</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Не удалось получить форму конфигурации комнаты чата %1$s. Только владельцы чата могут видеть и изменять конфигурационную форму.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Список справа содержит пользователей, которые имеют роль участника в этом чате. Когда в чате есть «Только члены», это будут пользователи, которым разрешено присоединиться.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Редактировать список участников</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">Произошла ошибка при попытке отправить конфигурационную форму для комнаты чата %1$s.</string>
+    <string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">Удаляет выбранную комнату из списка сохраненных комнат</string>
+    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Сохраняет чат для будущего использования</string>
+    <string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">Передача сообщений запрещена (голос отменен)</string>
+	<string name="service_gui_CHATROOM_USER_JOINED">присоединился к %1$s</string>
+    <string name="service_gui_CHATROOM_USER_KICKED">был удален из %1$s</string>
+	<string name="service_gui_CHATROOM_USER_LEFT">оставил %1$s</string>
+	<string name="service_gui_CHATROOM_USER_QUIT">имеет quit %1$s</string>
+	<string name="service_gui_CHATROOM_NAME">Имя в чате</string>
+	<string name="service_gui_CHATROOM_NAME_INFO">В поле ниже введите имя комнаты для чата, которую вы хотите создать.</string>
+	<string name="service_gui_CHATROOM_NOT_EXIST">Комната %1$s не найдена на сервере %2$s. Проверьте правильность введенного имени.</string>
+	<string name="service_gui_CHATROOM_NOT_CONNECTED">Вам нужно быть в сети, чтобы присоединиться к чат-комнате %1$s.</string>
+	<string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">Вам нужно быть в сети, чтобы выйти из чата.</string>
+	<string name="service_gui_CHATROOM_NOT_JOINED">Вам нужно войти в комнату чата, чтобы выполнить дальнейшие операции с ним.</string>
+	<string name="service_gui_CHATROOM_OPTIONS">Параметры чата</string>
+	<string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Чат чата %1$s запросил пароль.</string>
+	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Тема номера изменилась: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOMS">Чаты</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s теперь известен как %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Очистить пользовательские сообщения</string>
@@ -211,17 +209,13 @@
     <string name="service_gui_CONTACTS">Контакты</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Копировать текст сообщения</string>
 
-<string name="service_gui_CREATE">Создать</string>
+    <string name="service_gui_CREATE">Создать</string>
     <string name="service_gui_CREATE_CALL_FAILED">Не удалось создать вызов.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM">Создать чат-комнату&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Не удалось создать чат-комнату:\n%1$s.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Создать мастер чата</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Создать конференцию&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Создать чат конференции&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Создать группу&#8230;</string>
     <string name="service_gui_CREATE_GROUP_NAME">В поле ниже введите имя группы, которую вы хотите создать.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ваш список контактов не содержит групп. Сначала создайте группу (File/Create group).</string>
-    <string name="service_gui_ROOM_NAME">chatroom</string>
 
     <!-- About Dialog -->
     <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Онлайн-справка </a></string>
@@ -236,7 +230,7 @@
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP-запрос авторизации</string>
     <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Авторизация для %2$s\n(ID: %3$s).\nПринимаете ли вы этот запрос для учетной записи:\n%4$s?\n\nПроверьте, соответствует ли данный идентификатор сайту, если он доступен</string>
 
-        <string name="app_authors_fmt">Авторы: %1$s</string>
+    <string name="app_authors_fmt">Авторы: %1$s</string>
     <string name="app_libraries">aTalk использует следующие сторонние библиотеки: %1$s</string>
     <string name="app_revision_fmt">Информация о пересмотре: %1$s</string>
     <string name="app_xeps">aTalk поддерживает следующие XEP: %1$s</string>
@@ -245,9 +239,7 @@
     <!-- PTT Chat -->
     <string name="chat_noaudio_buddyOffline">Аудио-чат с автономным получателем не разрешен.</string>
     <string name="chat_RecordCancel">&lt;сдвинуть влево\nчтобы отменить</string>
-    <string name="chat_soundRecordCancelButton">Отменить</string>
     <string name="chat_soundRecordStartButton">Начать запись</string>
-    <string name="chat_soundRecordStopButton">Готово</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Широта:</string>
@@ -312,7 +304,6 @@
 	<string name="service_gui_EXIT">Выход</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Давно отсутствую</string>
     <string name="service_gui_FAILED_STATUS">Не удалось выполнить вызов</string>
-	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Не удалось присоединиться к чату с именем: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Бесплатно для чата</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -365,28 +356,52 @@
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Удалить медиа с моего телефона</string>
 
+    <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Альтернативное место:</string>
+    <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Вы можете продолжить разговор в следующем чате: %1$s</string>
     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Закладка</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Закладка</string>
     <string name="service_gui_CHATROOM_AUTOJOIN">Авто вступать</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Не удалось обновить закладки для %1$s: %2$s</string>
 
-        <string name="service_gui_CHATROOM_OCCUPANT">Жители чатов</string>
+    <string name="service_gui_CHATROOM_OCCUPANT">Жители чатов</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Удалить эту историю чата</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Стереть всю историю чатов.</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Отключить историю для этого чатаRoom</string>
     <string name="service_gui_CHATROOM_INFO">Информация о ChatRoom</string>
 
-    <string name="service_gui_DESTROY_CHATROOM">Уничтожить этот chatRoom</string>
-    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Произошла ошибка при уничтожении комнаты чата:\n%1$s</string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Не удалось удалить chatRoom на сервере:\n\'%1$s\'\n%2$s\n\nПродолжить очистку локального chatRoom\nВы можете еще позже воссоздать/присоединиться к chatRoom.</string>
-	<string name="service_gui_DESTROY_CHATROOM_TEXT">Владелец учетной записи: %1$s.\nВы уверены, что хотите уничтожить\n\'%2$s\'\nи всю историю чатов?</string>
-    <string name="service_gui_DESTROY_CHATROOM_TITLE">Уничтожить chatRoom</string>
-    <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\' удалено успешно!</string>
+    <string name="service_gui_CHATROOM_CREATE">Создать чат-комнату&#8230;</string>
+    <string name="service_gui_CHATROOM_CREATE_ERROR">Не удалось создать чат-комнату:\n%1$s.</string>
+    <string name="service_gui_CHATROOM_CREATE_WIZARD">Создать мастер чата</string>
 
-    <string name="service_gui_INCOMING_CALL">Входящий вызов, полученный от: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY">Уничтожить этот chatRoom</string>
+    <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">Произошла ошибка при уничтожении комнаты чата:\n%1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_ERROR">Не удалось удалить chatRoom на сервере:\n\'%1$s\'\n%2$s\n\nПродолжить очистку локального chatRoom.</string>
+    <string name="service_gui_CHATROOM_DESTROY_MESSAGE">Этот групповой чат был уничтожен!\nПричина: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_NOTE">Чтобы проинформировать других участников, пожалуйста, укажите причину и альтернативное место встречи chatRoom, чтобы присоединиться.</string>
+	<string name="service_gui_CHATROOM_DESTROY_PROMPT">Владелец учетной записи: %1$s.\nВы уверены, что хотите уничтожить\n\'%2$s\'\nи всю историю чатов?</string>
+    <string name="service_gui_CHATROOM_DESTROY_REASON">неактивный групповой чат</string>
+    <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\' удалено успешно!</string>
+    <string name="service_gui_CHATROOM_DESTROY_TITLE">Уничтожить chatRoom</string>
+
+    <string name="service_gui_CHATROOM_JOIN">Вступить в чат</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Не удалось присоединиться к комнате:\n%1$s с псевдонимом: %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Не удалось присоединиться к чату %1$s:\n%2$s</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Комната чата запрашивает пароль.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Требуется регистрация в чате.</string>
+    <string name="service_gui_CHATROOM_JOIN_TITLE">Вступить в чат</string>
+    <string name="service_gui_CHATROOM_JOIN_NAME">Введите имя комнаты для чата, к которой вы хотели бы присоединиться.</string>
+    <string name="service_gui_CHATROOM_JOIN_WIZARD">Вступить в мастер чата</string>
+
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha вызов</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Чат-чат защищен вызовом captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Проверка CAPTCHA действительна</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Не удалось выполнить проверку CAPTCHA</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s тайм-аут вызова ChatRoom CAPTCHA;\nпожалуйста, присоединитесь к chatRoom и попробуйте снова.</string>
+
+    <string name="service_gui_INCOMING_CALL">Входящий вызов, полученный от: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Входящий вызов</string>
     <string name="service_gui_INITIATING_CALL_STATUS">Инициирующий вызов</string>
-	<string name="service_gui_INVITATION">Текст приглашения:</string>
+	<string name="service_gui_INVITATION">Пригласительное сообщение:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Приглашение получено</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s приглашает вас войти в чат-комнату %2$S. Вы можете принять, отклонить или проигнорировать это приглашение.</string>
 	<string name="service_gui_INVITATION_REJECTED">%1$s отклонил ваше приглашение присоединиться к чату. Причина: %2$s.</string>
@@ -403,7 +418,6 @@
     <string name="service_gui_INFO">Информация</string>
 	<string name="service_gui_ADDRESS">Адрес</string>
     <string name="service_gui_CITY">Город</string>
-    <string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Закрыть</string>
     <string name="service_gui_COUNTRY">Страна</string>
     <string name="service_gui_EMAIL">Email</string>
     <string name="service_gui_EMAILS">Письма</string>
@@ -416,19 +430,6 @@
 	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Присоединиться к существующей видеоконференции</string>
 	<string name="service_gui_JOIN_VIDEO">Присоединить видео</string>
 	<string name="service_gui_JOB_TITLE">Название работы</string>
-	<string name="service_gui_JOIN_CHAT_ROOM">Вступить в чат&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Не удалось присоединиться к комнате:\n%1$s с псевдонимом: %2$s.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD">Комната чата запрашивает пароль.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION">Требуется регистрация в чате.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Вступить в чат</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Введите имя комнаты для чата, к которой вы хотели бы присоединиться.</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Вступить в мастер чата</string>
-
-    <string name="captcha_challenge">Captcha вызов</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Чат-чат защищен вызовом captcha</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Проверка CAPTCHA действительна</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Не удалось выполнить проверку CAPTCHA</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s тайм-аут вызова ChatRoom CAPTCHA;\nпожалуйста, присоединитесь к chatRoom и попробуйте снова.</string>
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Автоматически присоединяться</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Не присоединяться автоматически</string>
@@ -807,7 +808,7 @@
 	<string name="plugin_contactinfo_TITLE">Контактная информация</string>
     <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Резюме контактной информации для</string>
     <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Расширенная контактная информация для</string>
-    <string name="plugin_contactinfo_NOT_SPECIFIED">[Не указано]</string>
+    <string name="service_gui_INFO_NOT_SPECIFIED">[Не указано]</string>
     <string name="plugin_contactinfo_USER_PICTURES">Пользовательские изображения</string>
     <string name="plugin_contactinfo_USER_STATUS_MESSAGE">Сообщение о статусе</string>
 
@@ -1136,7 +1137,6 @@
 
     <!-- Jabber preferences -->
     <string name="service_gui_JBR_ADVANCED">Дополнительно</string>
-    <string name="service_gui_JBR_ALLOW_NON_SECURE">Разрешить незащищенные соединения</string>
     <string name="service_gui_JBR_AUTO_SIGNIN">Подключиться при запуске</string>
     <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Автоматическое открытие серверов STUN/TURN</string>
     <string name="service_gui_JBR_CONN_GENERAL">Общие</string>
@@ -1159,7 +1159,11 @@
     <string name="service_gui_JBR_KEEP_ALIVE">Сохранить вживую</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Включить опцию Keep Alive</string>
     <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Включить, если наблюдается частая отключение мобильной сети</string>
-    <string name="service_gui_JBR_OVERRIDE_SERVER">Изменить параметры сервера по умолчанию</string>
+    <string name="service_gui_JBR_MINIMUM_TLS">Минимальная версия TLS</string>
+    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">Соединитесь, используя эту или более позднюю версию протокола TLS</string>
+    <string name="service_gui_JBR_NON_SECURE_ALLOW">Разрешить незащищенные соединения</string>
+    <string name="service_gui_JBR_NON_SSL_SUMMARY">Отключить шифрование соединения с сервером SSL/TLS</string>
+    <string name="service_gui_JBR_OVERRIDE_SERVER">Изменить параметры сервера по умолчанию</string>
     <string name="service_gui_JBR_PASSWORD">Введите пароль</string>
     <string name="service_gui_JBR_PING_INTERVAL">Интервал Ping (1~3600 секунд)</string>
     <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Включить оптимизацию Ping Interval</string>
@@ -1172,7 +1176,6 @@
     <string name="service_gui_JBR_RESURCE_NAME">Имя ресурса</string>
     <string name="service_gui_JBR_SERVER">Подключение IP-адреса сервера</string>
     <string name="service_gui_JBR_SERVER_OPTIONS">Параметры сервера</string>
-    <string name="service_gui_JBR_SSL_SUMMARY">Отключить шифрование соединения с сервером SSL/TLS</string>
     <string name="service_gui_JBR_STORE_PASSWORD">Запомнить пароль</string>
     <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Сохранить пароль для автоматического входа в систему при запуске приложения</string>
     <string name="service_gui_JBR_STUN_LIST">Дополнительные серверы STUN/TURN&#8230;</string>

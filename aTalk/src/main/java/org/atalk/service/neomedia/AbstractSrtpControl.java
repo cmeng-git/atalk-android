@@ -14,8 +14,7 @@ import java.util.*;
  *
  * @author Lyubomir Marinov
  */
-public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
-		implements SrtpControl
+public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine> implements SrtpControl
 {
 	private final SrtpControlType srtpControlType;
 

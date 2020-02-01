@@ -16,12 +16,12 @@
  */
 package org.atalk.android.gui.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.CheckBox;
 
-import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -48,7 +48,7 @@ import static org.atalk.android.R.id.cb_media_delete;
 
 /**
  * The <tt>EntityListHelper</tt> is the class through which we make operations with the
- * <tt>MetaContact</tt> or <tt>ChatRoomWrapper</tt> in the list All methods in this class are static.
+ * <tt>MetaContact</tt> or <tt>ChatRoomWrapper</tt> in the list. All methods in this class are static.
  *
  * @author Eng Chong Meng
  */
@@ -60,55 +60,35 @@ public class EntityListHelper
     public static final int ALL_ENTITIES = 2;
 
     /**
-     * Removes given <tt>entity</tt> from the contact list or chatRoom list. Asks the user for
-     * confirmation before proceed.
+     * Removes given <tt>metaContact</tt> from the contact list. Asks the user for confirmation before proceed.
+     * DomainJid will not be removed
      *
-     * @param descriptor the contact or chatRoom to be removed from the list.
+     * @param metaContact the contact to be removed from the list.
      */
-    public static void removeEntity(final Object descriptor, final ChatPanel chatPanel)
+    public static void removeEntity(Activity activity, final MetaContact metaContact, final ChatPanel chatPanel)
     {
-        Context ctx = aTalkApp.getGlobalContext();
         String message;
         String title;
 
-        if (descriptor instanceof MetaContact) {
-            title = ctx.getString(R.string.service_gui_REMOVE_CONTACT);
-            Contact contact = ((MetaContact) descriptor).getDefaultContact();
-            Jid contactJid = contact.getJid();
-            if (!(contactJid instanceof DomainBareJid)) {
-                message = ctx.getString(R.string.service_gui_REMOVE_CONTACT_TEXT,
-                        contact.getProtocolProvider().getAccountID().getUserID(), contactJid);
-            }
-            else {
-                aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
-                return;
-            }
+        title = activity.getString(R.string.service_gui_REMOVE_CONTACT);
+        Contact contact = metaContact.getDefaultContact();
+        Jid contactJid = contact.getJid();
+        if (!(contactJid instanceof DomainBareJid)) {
+            message = activity.getString(R.string.service_gui_REMOVE_CONTACT_TEXT,
+                    contact.getProtocolProvider().getAccountID().getUserID(), contactJid);
         }
-        else if (descriptor instanceof ChatRoomWrapper) {
-            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
-            title = ctx.getString(R.string.service_gui_DESTROY_CHATROOM_TITLE);
-            message = ctx.getString(R.string.service_gui_DESTROY_CHATROOM_TEXT,
-                    chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID(),
-                    chatRoomWrapper.getChatRoomID());
-        }
-        else
+        else {
+            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
             return;
+        }
 
-        DialogActivity.showConfirmDialog(ctx, title, message,
-                ctx.getString(R.string.service_gui_REMOVE), new DialogActivity.DialogListener()
+        DialogActivity.showConfirmDialog(activity, title, message,
+                activity.getString(R.string.service_gui_REMOVE), new DialogActivity.DialogListener()
                 {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
-                        if (descriptor instanceof MetaContact) {
-                            doRemoveContact((MetaContact) descriptor);
-                        }
-                        else {
-                            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
-                            ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
-                            MUCActivator.getMUCService().destroyChatRoom(chatRoomWrapper,
-                                    "User destroy chatRoom!", chatRoom.getIdentifier());
-                        }
+                        doRemoveContact(metaContact);
                         if (chatPanel != null) {
                             ChatSessionManager.removeActiveChat(chatPanel);
                         }
@@ -226,8 +206,8 @@ public class EntityListHelper
                         CheckBox cbMediaDelete = dialog.findViewById(cb_media_delete);
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
-                        EntityListHelper mErase = new EntityListHelper();
-                        mErase.new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles, mediaDelete).execute(desc);
+                        // EntityListHelper mErase = new EntityListHelper();
+                        new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles, mediaDelete).execute(desc);
                         return true;
                     }
 
@@ -242,17 +222,17 @@ public class EntityListHelper
      * Perform history message delete in background.
      * Purge all history messages for the descriptor if messageUUIDs is null
      */
-    private class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer>
+    private static class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer>
     {
         private TaskCompleted mCallback;
         private boolean isPurgeMediaFile;
-        private List<String> messageUUIDs;
+        private List<String> msgUUIDs;
         private List<File> msgFiles;
 
         private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles, boolean purgeMedia)
         {
             this.mCallback = (TaskCompleted) context;
-            this.messageUUIDs = msgUUIDs;
+            this.msgUUIDs = msgUUIDs;
             this.msgFiles = msgFiles;
             this.isPurgeMediaFile = purgeMedia;
         }
@@ -287,11 +267,11 @@ public class EntityListHelper
 
                 if (desc instanceof MetaContact) {
                     MetaContact metaContact = (MetaContact) desc;
-                    mhs.eraseLocallyStoredHistory(metaContact, messageUUIDs);
+                    mhs.eraseLocallyStoredHistory(metaContact, msgUUIDs);
                 }
                 else {
                     ChatRoom chatRoom = ((ChatRoomWrapper) desc).getChatRoom();
-                    mhs.eraseLocallyStoredHistory(chatRoom, messageUUIDs);
+                    mhs.eraseLocallyStoredHistory(chatRoom, msgUUIDs);
                 }
             }
             else {
@@ -333,8 +313,8 @@ public class EntityListHelper
                         CheckBox cbMediaDelete = dialog.findViewById(cb_media_delete);
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
-                        EntityListHelper mErase = new EntityListHelper();
-                        mErase.new doEraseAllContactHistory(caller, mediaDelete).execute();
+                        // EntityListHelper mErase = new EntityListHelper();
+                        new doEraseAllContactHistory(caller, mediaDelete).execute();
                         return true;
                     }
 
@@ -346,7 +326,7 @@ public class EntityListHelper
         );
     }
 
-    private class doEraseAllContactHistory extends AsyncTask<Void, Void, Integer>
+    private static class doEraseAllContactHistory extends AsyncTask<Void, Void, Integer>
     {
         private boolean isPurgeMediaFile;
         private TaskCompleted mCallback;

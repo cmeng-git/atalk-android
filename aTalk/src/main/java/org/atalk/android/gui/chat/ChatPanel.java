@@ -407,9 +407,10 @@ public class ChatPanel implements Chat, MessageListener
         if (metaHistory == null)
             return msgCache;
 
-        // descriptor can either be metaContact or chatRoomWrapper (ChatRoom), from whom the history to be loaded
+        // descriptor can either be metaContact or chatRoomWrapper=>ChatRoom, from whom the history to be loaded
         Object descriptor = mChatSession.getDescriptor();
-        Collection<Object> history;
+        if (descriptor instanceof ChatRoomWrapper)
+            descriptor = ((ChatRoomWrapper) descriptor).getChatRoom();
 
         // Refresh msgCache if set via file transfer sending status change request
         if (cacheRefresh) {
@@ -418,6 +419,7 @@ public class ChatPanel implements Chat, MessageListener
         }
 
         // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
+        Collection<Object> history;
         if (msgCache.size() == 0) {
             history = metaHistory.findLast(chatHistoryFilter, descriptor, HISTORY_CHUNK_SIZE);
         }
@@ -886,7 +888,7 @@ public class ChatPanel implements Chat, MessageListener
             // Do not display change subject message if this is the original subject
             if (!TextUtils.isEmpty(oldSubject))
                 this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
-                        aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, oldSubject, subject));
+                        aTalkApp.getResString(R.string.service_gui_CHATROOM_SUBJECT_CHANGED, oldSubject, subject));
         }
     }
 

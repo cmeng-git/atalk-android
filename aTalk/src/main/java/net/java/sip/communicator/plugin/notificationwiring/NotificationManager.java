@@ -21,7 +21,6 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.*;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
-import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.util.AndroidImageUtil;
@@ -31,7 +30,6 @@ import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.service.resources.ResourceManagementService;
 import org.jivesoftware.smackx.chatstates.ChatState;
-import org.jxmpp.jid.Jid;
 import org.osgi.framework.*;
 
 import java.lang.ref.WeakReference;
@@ -623,7 +621,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (multiChatOpSet != null) {
                 multiChatOpSet.addPresenceListener(this);
                 multiChatOpSet.addInvitationListener(conferenceChatManager);
-                multiChatOpSet.addInvitationRejectionListener(conferenceChatManager);
                 multiChatOpSet.addPresenceListener(conferenceChatManager);
             }
 
@@ -633,7 +630,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (adHocMultiChatOpSet != null) {
                 adHocMultiChatOpSet.addPresenceListener(this);
                 adHocMultiChatOpSet.addInvitationListener(conferenceChatManager);
-                adHocMultiChatOpSet.addInvitationRejectionListener(conferenceChatManager);
                 adHocMultiChatOpSet.addPresenceListener(conferenceChatManager);
             }
         }
@@ -690,7 +686,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         if (multiChatOpSet != null) {
             multiChatOpSet.removePresenceListener(this);
             multiChatOpSet.removeInvitationListener(conferenceChatManager);
-            multiChatOpSet.removeInvitationRejectionListener(conferenceChatManager);
             multiChatOpSet.removePresenceListener(conferenceChatManager);
         }
 
@@ -699,7 +694,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         if (multiAdHocChatOpSet != null) {
             multiAdHocChatOpSet.removePresenceListener(this);
             multiAdHocChatOpSet.removeInvitationListener(conferenceChatManager);
-            multiAdHocChatOpSet.removeInvitationRejectionListener(conferenceChatManager);
             multiAdHocChatOpSet.removePresenceListener(conferenceChatManager);
         }
 

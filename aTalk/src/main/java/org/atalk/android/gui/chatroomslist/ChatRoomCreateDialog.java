@@ -56,6 +56,8 @@ import timber.log.Timber;
  */
 public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListener
 {
+    private static final String CHATROOM = "chatroom";
+
     private final MainMenuActivity mParent;
     private final MUCServiceImpl mucService;
 
@@ -90,7 +92,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.service_gui_CHAT_ROOM_JOIN);
+        setTitle(R.string.service_gui_CHATROOM_JOIN);
         this.setContentView(R.layout.muc_room_create_dialog);
 
         accountsSpinner = this.findViewById(R.id.jid_Accounts_Spinner);
@@ -147,7 +149,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         @Override
         protected void onPreExecute()
         {
-            chatRoomComboBox.setText(mParent.getString(R.string.service_gui_ROOM_NAME));
+            chatRoomComboBox.setText(CHATROOM);
             chatRoomComboBox.setSuggestionSource(chatRoomList);
         }
 
@@ -175,7 +177,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         {
             super.onPostExecute(result);
             if (chatRoomList.size() == 0)
-                chatRoomList.add(mParent.getString(R.string.service_gui_ROOM_NAME));
+                chatRoomList.add(CHATROOM);
 
             String chatRoomID = chatRoomList.get(0);
             chatRoomComboBox.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -296,7 +298,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
                 // Return without open the chat room, the protocol failed to create a chat room (null)
                 if (chatRoomWrapper == null) {
-                    aTalkApp.showToastMessage(R.string.service_gui_CREATE_CHAT_ROOM_ERROR, chatRoomID);
+                    aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_CREATE_ERROR, chatRoomID);
                     return false;
                 }
 
@@ -349,10 +351,10 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             return true;
         }
         else if (TextUtils.isEmpty(chatRoomID)) {
-            aTalkApp.showToastMessage(R.string.service_gui_JOIN_CHAT_ROOM_NAME);
+            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_NAME);
         }
         else {
-            aTalkApp.showToastMessage(R.string.service_gui_FAILED_TO_JOIN_CHAT_ROOM, "null");
+            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_FAILED, chatRoomID, nickName);
         }
         return false;
     }

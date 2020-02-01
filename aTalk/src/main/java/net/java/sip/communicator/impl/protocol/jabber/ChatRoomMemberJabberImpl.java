@@ -7,8 +7,9 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
-import net.java.sip.communicator.service.protocol.jabber.JabberChatRoomMember;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.muc.Occupant;
 import org.jxmpp.jid.EntityFullJid;
@@ -22,7 +23,7 @@ import org.jxmpp.jid.parts.Resourcepart;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
+public class ChatRoomMemberJabberImpl implements ChatRoomMember
 {
     /**
      * The chat room that we are a member of.
@@ -32,13 +33,13 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
     /**
      * The role that this member has in its member room.
      */
-    private ChatRoomMemberRole role;
+    private ChatRoomMemberRole mRole;
 
     /**
      * The jabber id of the member (will only be visible to members with necessary permissions)
      * can either be BareJid or NickName
      */
-    private final Jid jabberID;
+    private final Jid jabberJid;
 
     /**
      * The nick name that this member is using inside its containing chat room.
@@ -88,11 +89,11 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      *
      * @param chatRoom the room that this <tt>ChatRoomMemberJabberImpl</tt> is a member of.
      * @param nickName the nick name that the member is using to participate in the chat room
-     * @param jabberID the jabber id, if available, of the member or null otherwise.
+     * @param jabberJid the jabber id, if available, of the member or null otherwise.
      */
-    public ChatRoomMemberJabberImpl(ChatRoomJabberImpl chatRoom, Resourcepart nickName, Jid jabberID)
+    public ChatRoomMemberJabberImpl(ChatRoomJabberImpl chatRoom, Resourcepart nickName, Jid jabberJid)
     {
-        this.jabberID = jabberID;
+        this.jabberJid = jabberJid;
         this.nickName = nickName;
         this.chatRoom = chatRoom;
 
@@ -100,15 +101,15 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
                 chatRoom.getParentProvider().getOperationSet(OperationSetPersistentPresence.class);
 
         // jabberID may be null
-        if (jabberID != null) {
+        if (jabberJid != null) {
             // If we found the mContact we set also its avatar.
-            mContact = presenceOpSet.findContactByID(jabberID.asBareJid());
+            mContact = presenceOpSet.findContactByID(jabberJid.asBareJid());
             if (mContact != null) {
                 this.avatar = mContact.getImage();
             }
         }
 
-        // just query the stack for role, if its present will be set
+        // just query the server muc member for role, the value is set if present
         getRole();
     }
 
@@ -129,7 +130,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public Jid getJabberID()
     {
-        return jabberID;
+        return jabberJid;
     }
 
     /**
@@ -140,7 +141,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public String getContactAddress()
     {
-        return (jabberID != null) ? jabberID.toString() : nickName.toString();
+        return (jabberJid != null) ? jabberJid.toString() : getNickName();
     }
 
     /**
@@ -150,10 +151,10 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public String getNickName()
     {
-        return nickName.toString();
+        return (nickName == null) ? null : nickName.toString();
     }
 
-    public Resourcepart getNickNameAsResourcepart()
+    public Resourcepart getNickAsResourcepart()
     {
         return nickName;
     }
@@ -163,7 +164,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      *
      * @param newNick the newNick of the participant
      */
-    protected void setNickName(Resourcepart newNick)
+    protected void setNick(Resourcepart newNick)
     {
         if ((newNick == null) || (newNick.length() == 0))
             throw new IllegalArgumentException("a room member nickname could not be null");
@@ -189,18 +190,17 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public ChatRoomMemberRole getRole()
     {
-        if (role == null) {
-            EntityFullJid roleJid = null;
-            roleJid = JidCreate.entityFullFrom(chatRoom.getIdentifier(), nickName);
-
-            Occupant o = chatRoom.getMultiUserChat().getOccupant(roleJid);
+        if ((mRole == null) && (nickName != null)) {
+            EntityFullJid memberJid = JidCreate.entityFullFrom(chatRoom.getIdentifier(), nickName);
+            Occupant o = chatRoom.getMultiUserChat().getOccupant(memberJid);
             if (o == null) {
                 return ChatRoomMemberRole.GUEST;
             }
-            else
-                role = ChatRoomJabberImpl.smackRoleToScRole(o.getRole(), o.getAffiliation());
+            else {
+                mRole = ChatRoomJabberImpl.smackRoleToScRole(o.getRole(), o.getAffiliation());
+            }
         }
-        return role;
+        return mRole;
     }
 
     /**
@@ -211,7 +211,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     ChatRoomMemberRole getCurrentRole()
     {
-        return this.role;
+        return mRole;
     }
 
     /**
@@ -221,7 +221,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public void setRole(ChatRoomMemberRole role)
     {
-        this.role = role;
+        mRole = role;
     }
 
     /**
@@ -256,7 +256,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
     {
         // old history muc message has mContact field = null (not stored);
         if ((mContact == null) && (presenceOpSet != null)) {
-            mContact = presenceOpSet.findContactByID(getNickName());
+            mContact = presenceOpSet.findContactByID(jabberJid);
         }
         return mContact;
     }
@@ -303,7 +303,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public String getEmail()
     {
-        return this.email;
+        return email;
     }
 
     /**
@@ -321,7 +321,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public String getAvatarUrl()
     {
-        return this.avatarUrl;
+        return avatarUrl;
     }
 
     /**
@@ -339,7 +339,7 @@ public class ChatRoomMemberJabberImpl implements JabberChatRoomMember
      */
     public String getStatisticsID()
     {
-        return this.statisticsID;
+        return statisticsID;
     }
 
     /**

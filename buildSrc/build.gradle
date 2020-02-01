@@ -96,6 +96,7 @@ jarJarDeps.dependsOn(
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
         classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
+        classDelete 'org.jivesoftware.smackx.muc.MultiUserChat**'
     },
 
     jarjar.repackage {

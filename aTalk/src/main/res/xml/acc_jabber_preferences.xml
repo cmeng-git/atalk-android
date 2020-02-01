@@ -88,8 +88,8 @@
                     android:title="@string/service_gui_JBR_MINIMUM_TLS" />
                 <CheckBoxPreference
                     android:key="@string/pref_key_allow_non_secure_conn"
-                    android:summary="@string/service_gui_JBR_SSL_SUMMARY"
-                    android:title="@string/service_gui_JBR_ALLOW_NON_SECURE" />
+                    android:summary="@string/service_gui_JBR_NON_SSL_SUMMARY"
+                    android:title="@string/service_gui_JBR_NON_SECURE_ALLOW" />
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="@string/pref_cat_jbr_resource"

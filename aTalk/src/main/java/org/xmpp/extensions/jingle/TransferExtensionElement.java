@@ -62,7 +62,7 @@ public class TransferExtensionElement extends AbstractExtensionElement
     {
         try {
             return JidCreate.from(getAttributeAsString(FROM_ATTR_NAME));
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             return null;
         }
     }

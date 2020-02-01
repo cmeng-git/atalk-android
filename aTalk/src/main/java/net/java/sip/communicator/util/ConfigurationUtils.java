@@ -2081,7 +2081,7 @@ public class ConfigurationUtils
     public static void updateChatRoomStatus(ProtocolProviderService protocolProvider,
             String chatRoomId, String chatRoomStatus)
     {
-        updateChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.LAST_CHAT_ROOM_STATUS, chatRoomStatus);
+        updateChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.CHATROOM_LAST_STATUS, chatRoomStatus);
     }
 
     /**
@@ -2093,7 +2093,7 @@ public class ConfigurationUtils
      */
     public static String getChatRoomStatus(ProtocolProviderService protocolProvider, String chatRoomId)
     {
-        return getChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.LAST_CHAT_ROOM_STATUS);
+        return getChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.CHATROOM_LAST_STATUS);
     }
 
     /**
@@ -2141,7 +2141,7 @@ public class ConfigurationUtils
         try {
             return attributes.getString(property);
         } catch (JSONException e) {
-            // Timber.i("ChatRoom property not found for: " + chatRoomId + ": " + property);
+            // Timber.w("ChatRoom property not found for: " + chatRoomId + ": " + property);
         }
         return null;
     }

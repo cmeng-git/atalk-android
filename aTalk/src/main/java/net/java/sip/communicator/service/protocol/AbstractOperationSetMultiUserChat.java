@@ -48,8 +48,8 @@ public abstract class AbstractOperationSetMultiUserChat implements OperationSetM
     }
 
     /*
-     * ImplementsOperationSetMultiUserChat#addInvitationRejectionListener(
-     * ChatRoomInvitationRejectionListener).
+     * ImplementsOperationSetMultiUserChat
+     * #addInvitationRejectionListener(ChatRoomInvitationRejectionListener).
      */
     public void addInvitationRejectionListener(ChatRoomInvitationRejectionListener listener)
     {

@@ -17,6 +17,7 @@ package net.java.sip.communicator.service.muc;
 
 import net.java.sip.communicator.service.protocol.ChatRoom;
 
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -100,6 +101,13 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
      * @return the chat room name
      */
     String getChatRoomName();
+
+    /**
+     * Get the account User BareJid
+     *
+     * @return the account user BareJid
+     */
+    BareJid getUser();
 
     /**
      * Set the unread message count for this wrapper represent

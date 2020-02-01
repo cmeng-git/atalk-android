@@ -23,12 +23,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import android.widget.ExpandableListView.*;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
@@ -39,6 +41,7 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.model.*;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -54,8 +57,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomListFragment extends OSGiFragment
-        implements OnChildClickListener, OnGroupClickListener
+public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickListener
 {
     /**
      * Search options menu items.
@@ -136,13 +138,40 @@ public class ChatRoomListFragment extends OSGiFragment
 
         ViewGroup content = (ViewGroup) inflater.inflate(R.layout.chatroom_list, container, false);
         chatRoomListView = content.findViewById(R.id.chatRoomListView);
-        chatRoomListView.setSelector(R.drawable.array_list_selector);
-        chatRoomListView.setOnChildClickListener(this);
+        chatRoomListView.setSelector(R.drawable.list_selector_transparent);
         chatRoomListView.setOnGroupClickListener(this);
+        initChatRoomListAdapter();
 
-        // Adds context menu for contact list items
-        registerForContextMenu(chatRoomListView);
         return content;
+    }
+
+    /**
+     * Initialize the chatRoom list adapter;
+     * Leave invalidateViews() to BaseChatRoomListAdapter as data update is async in new thread
+     */
+    private void initChatRoomListAdapter()
+    {
+        chatRoomListView.setAdapter(getChatRoomListAdapter());
+
+        // Attach ChatRoomProvider expand memory
+        listExpandHandler = new ChatRoomGroupExpandHandler(chatRoomListAdapter, chatRoomListView);
+        listExpandHandler.bindAndRestore();
+
+        // Restore search state based on entered text
+        if (mSearchItem != null) {
+            SearchView searchView = (SearchView) mSearchItem.getActionView();
+            int id = searchView.getContext().getResources()
+                    .getIdentifier("android:id/search_src_text", null, null);
+
+            String filter = ViewUtil.toString(searchView.findViewById(id));
+            filterChatRoomWrapperList(filter);
+            bindSearchListener();
+        } else {
+            chatRoomListAdapter.filterData("");
+        }
+
+        // Restore scroll position
+        chatRoomListView.setSelectionFromTop(scrollPosition, scrollTopPosition);
     }
 
     /**
@@ -152,42 +181,20 @@ public class ChatRoomListFragment extends OSGiFragment
     public void onResume()
     {
         super.onResume();
-        if (chatRoomListView == null)
-            return;
 
-        chatRoomListView.setAdapter(getChatRoomListAdapter());
-
-        // Attach ChatRoomProvider  expand memory
-        listExpandHandler = new ChatRoomGroupExpandHandler(chatRoomListAdapter, chatRoomListView);
-        listExpandHandler.bindAndRestore();
-
-        chatRoomListAdapter.filterData("");
-
-        // Restore search state based on entered text
-        if (mSearchItem != null) {
-            SearchView searchView = (SearchView) mSearchItem.getActionView();
-            int id = searchView.getContext().getResources()
-                    .getIdentifier("android:id/search_src_text", null, null);
-            TextView textView = searchView.findViewById(id);
-
-            filterChatRoomWrapperList(textView.getText().toString());
-            bindSearchListener();
+        // Invalidate view to update read counter and expand groups (collapsed when access settings)
+        if (chatRoomListAdapter != null) {
+            chatRoomListAdapter.expandAllGroups();
+            chatRoomListAdapter.invalidateViews();
         }
-        // Restore scroll position
-        chatRoomListView.setSelectionFromTop(scrollPosition, scrollTopPosition);
-
-        // Must only perform in BaseChatRoomListAdapter as data update is async in new thread
-        // chatRoomListAdapter.invalidateViews();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onPause()
+    public void onDestroy()
     {
-        super.onPause();
-
         // Unbind search listener
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
@@ -212,6 +219,7 @@ public class ChatRoomListFragment extends OSGiFragment
             chatRoomListAdapter = null;
         }
         disposeSourcesAdapter();
+        super.onDestroy();
     }
 
     /**
@@ -291,48 +299,27 @@ public class ChatRoomListFragment extends OSGiFragment
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onCreateContextMenu(@NotNull ContextMenu menu, @NotNull View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
-        super.onCreateContextMenu(menu, v, menuInfo);
-
-        if (chatRoomListView.getExpandableListAdapter() != getChatRoomListAdapter()) {
-            return;
-        }
-
-        ExpandableListContextMenuInfo info = (ExpandableListContextMenuInfo) menuInfo;
-        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-        int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-        int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
-
-        // Only create a context menu for child items
-        MenuInflater inflater = mActivity.getMenuInflater();
-        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-            createGroupCtxMenu(menu, inflater, group);
-        }
-        else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-            createChatRoomCtxMenu(menu, inflater, group, child);
-        }
-    }
-
-    /**
-     * Inflates chatRoom context menu.
+     * Inflates chatRoom Item popup menu.
+     * Avoid using android contextMenu (in fragment) - truncated menu list
      *
-     * @param menu the menu to inflate when long press on chatRoom item.
-     * @param inflater the menu inflater.
-     * @param group clicked group index.
-     * @param child clicked contact index.
+     * @param roomView click view.
+     * @param crWrapper an instance of ChatRoomWrapper.
      */
-    private void createChatRoomCtxMenu(ContextMenu menu, MenuInflater inflater, int group, int child)
+    public void showPopupMenu(View roomView, ChatRoomWrapper crWrapper)
     {
-        // Inflate contact list context menu
-        inflater.inflate(R.menu.chatroom_ctx_menu, menu);
+        // Inflate chatRoom list popup menu
+        PopupMenu popup = new PopupMenu(mActivity, roomView);
+        Menu menu = popup.getMenu();
+        popup.getMenuInflater().inflate(R.menu.chatroom_ctx_menu, menu);
+        popup.setOnMenuItemClickListener(new PopupMenuItemClick());
 
-        // Remembers clicked chatRoomWrapper
-        mClickedChatRoom = (ChatRoomWrapper) chatRoomListAdapter.getChild(group, child);
-        menu.setHeaderTitle(mClickedChatRoom.getChatRoomID());
+        // Remember clicked chatRoomWrapper
+        mClickedChatRoom = crWrapper;
+
+        // Only room owner is allowed to destroy chatRoom, or non-joined room (un-deterministic)
+        ChatRoomMemberRole role = mClickedChatRoom.getChatRoom().getUserRole();
+        boolean allowDestroy = ((role == null) || ChatRoomMemberRole.OWNER.equals(role));
+        menu.findItem(R.id.destroy_chatroom).setVisible(allowDestroy);
 
         // Checks if close chat option should be visible for this contact
         boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID()) != null;
@@ -345,59 +332,56 @@ public class ChatRoomListFragment extends OSGiFragment
 
         // may not want to offer erase all chatRooms chat history
         menu.findItem(R.id.erase_all_chatroom_history).setVisible(false);
+        popup.show();
     }
 
     /**
-     * Inflates group context menu.
-     *
-     * @param menu the menu to inflate into.
-     * @param inflater the inflater.
-     * @param group clicked group index.
+     * Interface responsible for receiving menu item click events if the items
+     * themselves do not have individual item click listeners.
      */
-    private void createGroupCtxMenu(ContextMenu menu, MenuInflater inflater, int group)
+    private class PopupMenuItemClick implements OnMenuItemClickListener
     {
-        mClickedGroup = (ChatRoomProviderWrapper) chatRoomListAdapter.getGroup(group);
+        /**
+         * This method will be invoked when a menu item is clicked if the item
+         * itself did not already handle the event.
+         *
+         * @param item the menu item that was clicked
+         * @return {@code true} if the event was handled, {@code false} otherwise
+         */
 
-        // Inflate chatRoom list context menu
-        inflater.inflate(R.menu.group_menu, menu);
-        menu.setHeaderTitle(mClickedGroup.getProtocolProvider().getAccountID().getAccountUniqueID());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
-        ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID());
-        switch (item.getItemId()) {
-            case R.id.close_chatroom:
-                if (chatPanel != null)
-                    onCloseChat(chatPanel);
-                return true;
-            case R.id.close_all_chatrooms:
-                onCloseAllChats();
-                return true;
-            case R.id.erase_chatroom_history:
-                EntityListHelper.eraseEntityChatHistory(mActivity,
-                        mClickedChatRoom, null, null);
-                return true;
-            case R.id.erase_all_chatroom_history:
-                EntityListHelper.eraseAllContactHistory(mActivity);
-                return true;
-            case R.id.destroy_chatroom:
-                EntityListHelper.removeEntity(mClickedChatRoom, chatPanel);
-                return true;
-            case R.id.chatroom_info:
-                ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(mClickedChatRoom);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.addToBackStack(null);
-                chatRoomInfoDialog.show(ft, "infoDialog");
-                return true;
-            case R.id.chatroom_ctx_menu_exit:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        @Override
+        public boolean onMenuItemClick(MenuItem item)
+        {
+            ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID());
+            switch (item.getItemId()) {
+                case R.id.close_chatroom:
+                    if (chatPanel != null)
+                        onCloseChat(chatPanel);
+                    return true;
+                case R.id.close_all_chatrooms:
+                    onCloseAllChats();
+                    return true;
+                case R.id.erase_chatroom_history:
+                    EntityListHelper.eraseEntityChatHistory(mActivity, mClickedChatRoom, null, null);
+                    return true;
+                case R.id.erase_all_chatroom_history:
+                    EntityListHelper.eraseAllContactHistory(mActivity);
+                    return true;
+                case R.id.destroy_chatroom:
+                    // EntityListHelper.removeEntity(mClickedChatRoom, chatPanel);
+                    new ChatRoomDestroyDialog().show(mActivity, mClickedChatRoom, chatPanel);
+                    return true;
+                case R.id.chatroom_info:
+                    ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(mClickedChatRoom);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.addToBackStack(null);
+                    chatRoomInfoDialog.show(ft, "infoDialog");
+                    return true;
+                case R.id.chatroom_ctx_menu_exit:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 
@@ -434,39 +418,9 @@ public class ChatRoomListFragment extends OSGiFragment
     }
 
     /**
-     * Callback method to be invoked when a child in this expandable list has been clicked.
-     *
-     * @param listView The ExpandableListView where the click happened
-     * @param v The view within the expandable list/ListView that was clicked
-     * @param groupPosition The group position that contains the child that was clicked
-     * @param childPosition The child position within the group
-     * @param id The row id of the child that was clicked
-     * @return True if the click was handled
-     */
-    @Override
-    public boolean onChildClick(ExpandableListView listView, View v, int groupPosition, int childPosition, long id)
-    {
-        BaseChatRoomListAdapter adapter = (BaseChatRoomListAdapter) listView.getExpandableListAdapter();
-        int position = adapter.getListIndex(groupPosition, childPosition);
-
-        chatRoomListView.setSelection(position);
-        // adapter.invalidateViews(); not necessary
-
-        Object clicked = adapter.getChild(groupPosition, childPosition);
-        if (clicked instanceof ChatRoomWrapper) {
-            joinChatRoom((ChatRoomWrapper) clicked);
-            return true;
-        }
-        else {
-            Timber.d("No a chatRoomWrapper @: %d: %d", groupPosition, childPosition);
-            return false;
-        }
-    }
-
-    /**
      * Open and join chat conference for the given chatRoomWrapper.
      */
-    private void joinChatRoom(ChatRoomWrapper chatRoomWrapper)
+    public void joinChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
         if (chatRoomWrapper != null) {
             ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();

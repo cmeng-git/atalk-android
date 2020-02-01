@@ -46,7 +46,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Matt Tucker
  * @author Florian Schmaus
- * @see <a href="https://xmpp.org/rfcs/rfc6120.html#stanzas">RFC 6120 § 8. XML Stanzas</a>
+ * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas">RFC 6120 § 8. XML Stanzas</a>
  */
 public abstract class Stanza implements TopLevelStreamElement {
 

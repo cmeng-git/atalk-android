@@ -463,7 +463,7 @@ public class MetaContactChatSession extends ChatSession
     /**
      * Returns the descriptor of this chat session.
      *
-     * @return the descriptor of this chat session.
+     * @return the descriptor i.e. MetaContact of this chat session.
      */
     @Override
     public Object getDescriptor()

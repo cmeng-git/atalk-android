@@ -80,7 +80,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     /**
      * Returns the descriptor of this chat session.
      *
-     * @return the descriptor of this chat session.
+     * @return the descriptor i.e. ChatRoomWrapper of this chat session.
      */
     @Override
     public Object getDescriptor()
@@ -373,7 +373,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                  */
                 if (!evt.isReasonUserList()) {
                     statusMessage = aTalkApp.getResString(
-                            R.string.service_gui_CHAT_ROOM_USER_JOINED, sourceChatRoom.getName());
+                            R.string.service_gui_CHATROOM_USER_JOINED, sourceChatRoom.getName());
                     sessionRenderer.updateChatContactStatus(chatContact, statusMessage);
                 }
             }
@@ -383,15 +383,15 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                 switch (eventType) {
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHAT_ROOM_USER_LEFT, sourceChatRoom.getName());
+                                R.string.service_gui_CHATROOM_USER_LEFT, sourceChatRoom.getName());
                         break;
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHAT_ROOM_USER_KICKED, sourceChatRoom.getName());
+                                R.string.service_gui_CHATROOM_USER_KICKED, sourceChatRoom.getName());
                         break;
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHAT_ROOM_USER_QUIT, sourceChatRoom.getName());
+                                R.string.service_gui_CHATROOM_USER_QUIT, sourceChatRoom.getName());
                         break;
                 }
 

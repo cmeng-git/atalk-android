@@ -126,7 +126,7 @@ public class JingleNodeDialogFragment extends DialogFragment
         Jid jidAddress = null;
         try {
             jidAddress = JidCreate.from(jingleAddress);
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             e.printStackTrace();
         }
 

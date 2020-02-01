@@ -106,7 +106,7 @@ public abstract class ChatSession
     /**
      * Returns the descriptor of this chat session.
      *
-     * @return the descriptor of this chat session.
+     * @return the descriptor of this chat session i.e. MetaContact or ChatRoomWrapper
      */
     public abstract Object getDescriptor();
 

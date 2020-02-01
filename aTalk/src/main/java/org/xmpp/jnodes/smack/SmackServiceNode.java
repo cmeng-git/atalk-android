@@ -293,7 +293,7 @@ public class SmackServiceNode implements ConnectionListener
         try {
             deepSearch(xmppConnection, maxEntries, JidCreate.from(xmppConnection.getHost()),
                     mappedNodes, maxDepth - 1, maxSearchNodes, protocol, visited);
-        } catch (XmppStringprepException ignore) {
+        } catch (XmppStringprepException | IllegalArgumentException ignore) {
         }
 
         // Request to Buddies

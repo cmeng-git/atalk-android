@@ -158,7 +158,9 @@ public class AdHocConferenceChatTransport implements ChatTransport
     public boolean allowsChatStateNotifications()
     {
         Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
+        // isJoined as one of the condition???
         return tnOpSet != null;
+
     }
 
     /**

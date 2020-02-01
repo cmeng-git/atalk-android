@@ -147,13 +147,9 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             addPreferencesFromResource(R.xml.acc_encoding_preferences);
 
             Preference secProtocolsPref = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
-            secProtocolsPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                public boolean onPreferenceClick(Preference preference)
-                {
-                    showEditSecurityProtocolsDialog();
-                    return true;
-                }
+            secProtocolsPref.setOnPreferenceClickListener(preference -> {
+                showEditSecurityProtocolsDialog();
+                return true;
             });
 
             ListPreference savpPreference = (ListPreference) findPreference(PREF_KEY_SEC_SAVP_OPTION);
@@ -271,13 +267,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             final Map<String, Integer> encMap = securityReg.getEncryptionProtocols();
             List<String> encryptionsInOrder = new ArrayList<>(encMap.keySet());
 
-            Collections.sort(encryptionsInOrder, new Comparator<String>()
-            {
-                public int compare(String s, String s2)
-                {
-                    return encMap.get(s) - encMap.get(s2);
-                }
-            });
+            Collections.sort(encryptionsInOrder, (s, s2) -> encMap.get(s) - encMap.get(s2));
 
             Map<String, Boolean> encStatus = securityReg.getEncryptionProtocolStatus();
             StringBuilder summary = new StringBuilder();
@@ -292,7 +282,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
             String summaryStr = summary.toString();
             if (summaryStr.isEmpty()) {
-                summaryStr = aTalkApp.getAppResources().getString(R.string.service_gui_LIST_EMPTY);
+                summaryStr = aTalkApp.getResString(R.string.service_gui_LIST_EMPTY);
             }
 
             Preference preference = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
@@ -307,8 +297,9 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             Preference pref = findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
             boolean isOn = pref.getSharedPreferences().getBoolean(PREF_KEY_SEC_SIPZRTP_ATTR, true);
 
-            Resources res = aTalkApp.getAppResources();
-            String sumary = isOn ? res.getString(R.string.service_gui_SEC_ZRTP_SIGNALING_ON) : res.getString(R.string.service_gui_SEC_ZRTP_SIGNALING_OFF);
+            String sumary = isOn
+                    ? aTalkApp.getResString(R.string.service_gui_SEC_ZRTP_SIGNALING_ON)
+                    : aTalkApp.getResString(R.string.service_gui_SEC_ZRTP_SIGNALING_OFF);
 
             pref.setSummary(sumary);
         }
@@ -339,7 +330,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                     sb.append(", ");
             }
             if (selected.length == 0)
-                sb.append(aTalkApp.getAppResources().getString(R.string.service_gui_LIST_EMPTY));
+                sb.append(aTalkApp.getResString(R.string.service_gui_LIST_EMPTY));
             return sb.toString();
         }
 

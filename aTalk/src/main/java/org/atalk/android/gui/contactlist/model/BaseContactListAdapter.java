@@ -14,6 +14,7 @@ import android.widget.*;
 
 import net.java.sip.communicator.impl.protocol.jabber.ContactJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.Contact;
 
 import org.atalk.android.R;
@@ -61,8 +62,15 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * A map reference of MetaContact to ContactViewHolder for the unread message count update
      */
     private Map<MetaContact, ContactViewHolder> mContactViewHolder = new HashMap<>();
-    
-    private final boolean isShownCallButton;
+
+    /**
+     * Flag set to true to indicate the view is the main contact list and all available options etc are enabled
+     * Otherwise the view is meant for group chat invite, all the following options take effects:
+     * a. Hide all media call buttons
+     * b. Disabled Context menu (popup menus) i.e. onClick and onLongClick
+     * c. Multiple contact selection are allowed
+     */
+    private final boolean isMainContactList;
 
     private LayoutInflater mInflater;
 
@@ -70,15 +78,14 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * Creates the contact list adapter.
      *
      * @param clFragment the parent <tt>ContactListFragment</tt>
-     * @param isShowButton enable/disable call buttons option
+     * @param mainContactList call buttons and other options are only enable when it is the main Contact List view
      */
-    public BaseContactListAdapter(ContactListFragment clFragment, boolean isShowButton)
+    public BaseContactListAdapter(ContactListFragment clFragment, boolean mainContactList)
     {
         // cmeng - must use this mInflater as clFragment may not always attached to FragmentManager e.g. muc invite dialog
         mInflater = LayoutInflater.from(aTalkApp.getGlobalContext());
-
         contactListFragment = clFragment;
-        isShownCallButton = isShowButton;
+        isMainContactList = mainContactList;
         contactListView = contactListFragment.getContactListView();
     }
 
@@ -135,7 +142,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Refreshes the list view.
+     * Refreshes the view with expands group and invalid view.
      */
     public void invalidateViews()
     {
@@ -168,8 +175,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param contactIndex the index of the contact to update
      * @param contactImpl contact implementation object instance
      */
-    protected void updateAvatar(final int groupIndex, final int contactIndex,
-            final Object contactImpl)
+    protected void updateAvatar(final int groupIndex, final int contactIndex, final Object contactImpl)
     {
         int firstIndex = contactListView.getFirstVisiblePosition();
         View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
@@ -219,7 +225,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
         if (count == 0) {
             contactViewHolder.unreadCount.setVisibility(View.GONE);
-        } else {
+        }
+        else {
             contactViewHolder.unreadCount.setVisibility(View.VISIBLE);
             contactViewHolder.unreadCount.setUnreadCount(count);
         }
@@ -277,19 +284,26 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     {
         // Keeps reference to avoid future findViewById()
         ContactViewHolder contactViewHolder;
+        Object child = getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.contact_list_row, parent, false);
 
             contactViewHolder = new ContactViewHolder();
+            View contactView = convertView.findViewById(R.id.contact_view);
+            if (isMainContactList) {
+                contactView.setOnClickListener(this);
+                contactView.setOnLongClickListener(this);
+                contactView.setTag(child);
+            }
+
             contactViewHolder.displayName = convertView.findViewById(R.id.displayName);
             contactViewHolder.statusMessage = convertView.findViewById(R.id.statusMessage);
 
             contactViewHolder.avatarView = convertView.findViewById(R.id.avatarIcon);
             contactViewHolder.avatarView.setOnClickListener(this);
             contactViewHolder.avatarView.setOnLongClickListener(this);
-
-            contactViewHolder.avatarView.setTag(contactViewHolder);
+            contactViewHolder.avatarView.setTag(child);
             contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
 
             contactViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
@@ -317,26 +331,23 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         contactViewHolder.childPosition = childPosition;
 
         // return and stop further process if child contact may have been removed
-        Object child = getChild(groupPosition, childPosition);
-        if (child == null)
+        if (!(child instanceof MetaContact))
             return convertView;
 
         UIContactRenderer renderer = getContactRenderer(groupPosition);
         if (renderer.isSelected(child)) {
-            convertView.setBackgroundResource(R.drawable.list_selection_gradient);
+            convertView.setBackgroundResource(R.drawable.color_blue_gradient);
         }
         else {
-            convertView.setBackgroundResource(R.drawable.array_list_selector);
+            convertView.setBackgroundResource(R.drawable.list_selector_state);
         }
 
         // Set display name and status message for contacts or phone book contacts
         String sDisplayName = renderer.getDisplayName(child);
         String statusMessage = renderer.getStatusMessage(child);
 
-        if ((child instanceof MetaContact)
-                && (((MetaContact) child).getDefaultContact() != null)) {
-
-            MetaContact metaContact = (MetaContact) child;
+        MetaContact metaContact = (MetaContact) child;
+        if (metaContact.getDefaultContact() != null) {
             mContactViewHolder.put(metaContact, contactViewHolder);
             updateUnreadCount(metaContact, metaContact.getUnreadCount());
 
@@ -368,7 +379,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         boolean isShowVideoCall = renderer.isShowVideoCallBtn(child);
         boolean isShowCall = renderer.isShowCallBtn(child);
 
-        if (isShownCallButton && (isShowVideoCall || isShowCall)) {
+        if (isMainContactList && (isShowVideoCall || isShowCall)) {
             contactViewHolder.callButtonLayout.setVisibility(View.VISIBLE);
             AndroidUtils.setOnTouchBackgroundEffect(contactViewHolder.callButtonLayout);
 
@@ -406,11 +417,16 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     {
         // Keeps reference to avoid future findViewById()
         GroupViewHolder groupViewHolder;
+        Object group = getGroup(groupPosition);
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.contact_list_group_row, parent, false);
+
             groupViewHolder = new GroupViewHolder();
-            groupViewHolder.displayName = convertView.findViewById(R.id.displayName);
+            groupViewHolder.groupName = convertView.findViewById(R.id.groupName);
+            groupViewHolder.groupName.setOnLongClickListener(this);
+            groupViewHolder.groupName.setTag(group);
+
             groupViewHolder.indicator = convertView.findViewById(R.id.groupIndicatorView);
             convertView.setTag(groupViewHolder);
         }
@@ -418,10 +434,9 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             groupViewHolder = (GroupViewHolder) convertView.getTag();
         }
 
-        Object group = getGroup(groupPosition);
-        if (group != null) {
+        if (group instanceof MetaContactGroup) {
             UIGroupRenderer groupRenderer = getGroupRenderer(groupPosition);
-            groupViewHolder.displayName.setText(groupRenderer.getDisplayName(group));
+            groupViewHolder.groupName.setText(groupRenderer.getDisplayName(group));
         }
 
         // Group expand indicator
@@ -465,46 +480,59 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     public void onClick(View view)
     {
-        if (!(view.getTag() instanceof ContactViewHolder)) {
-            return;
+        ContactViewHolder viewHolder = null;
+
+        Object object = view.getTag();
+        if (object instanceof ContactViewHolder) {
+            viewHolder = (ContactViewHolder) view.getTag();
+            int groupPos = viewHolder.groupPosition;
+            int childPos = viewHolder.childPosition;
+            object = getChild(groupPos, childPos);
         }
 
-        ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
-        int groupPos = viewHolder.groupPosition;
-        int childPos = viewHolder.childPosition;
-        Object contact = getChild(groupPos, childPos);
+        if (object instanceof MetaContact) {
+            MetaContact metaContact = (MetaContact) object;
+            Contact contact = metaContact.getDefaultContact();
 
-        if (contact != null) {
-            UIContactRenderer renderer = getContactRenderer(groupPos);
-            String contactAddress = renderer.getDefaultAddress(contact);
+            if (view.getId() == R.id.contact_view) {
+                contactListFragment.startChat(metaContact);
+            }
+            else if (contact != null) {
+                Jid jid = contact.getJid();
+                String JidAddress = contact.getAddress();
 
-            switch (view.getId()) {
-                case R.id.contactCallButton:
-                    if (contact instanceof MetaContact) {
-                        Jid jid = ((MetaContact) contact).getDefaultContact().getJid();
+                switch (view.getId()) {
+                    case R.id.contact_view:
+                        contactListFragment.startChat(metaContact);
+                        break;
+
+                    case R.id.contactCallButton:
                         if (jid instanceof DomainBareJid) {
-                            TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
+                            TelephonyFragment extPhone = TelephonyFragment.newInstance(JidAddress);
                             contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
                                     .replace(android.R.id.content, extPhone).commit();
                             break;
                         }
-                    }
-                case R.id.contactCallVideoButton:
-                    boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                    AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
-                            viewHolder.callVideoButton, contactAddress, isVideoCall);
-                    break;
 
-                case R.id.avatarIcon:
-                    aTalkApp.showToastMessage(contactAddress);
-                    break;
+                    case R.id.contactCallVideoButton:
+                        if (viewHolder != null) {
+                            boolean isVideoCall = viewHolder.callVideoButton.isPressed();
+                            AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
+                                    viewHolder.callVideoButton, JidAddress, isVideoCall);
+                        }
+                        break;
 
-                default:
-                    break;
+                    case R.id.avatarIcon:
+                        aTalkApp.showToastMessage(JidAddress);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
         else {
-            Timber.w("No valid contact found at this position: %s:%s", groupPos, childPos);
+            Timber.w("Clicked item is not a valid MetaContact");
         }
     }
 
@@ -514,28 +542,36 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     public boolean onLongClick(View view)
     {
-        if (!(view.getTag() instanceof ContactViewHolder)
-                && !(view.getId() == R.id.avatarIcon)) {
-            return false;
-        }
+        Object clicked = view.getTag();
 
         // proceed to retrieve avatar for the clicked contact
-        ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
-        int groupPos = viewHolder.groupPosition;
-        int childPos = viewHolder.childPosition;
-        Object clicked = getChild(groupPos, childPos);
-
         if (clicked instanceof MetaContact) {
-            Contact contact = ((MetaContact) clicked).getDefaultContact();
-            Jid contactJid = contact.getJid();
-            if (!(contactJid instanceof DomainBareJid)) {
-                ((ContactJabberImpl) contact).getAvatar(true);
-                aTalkApp.showToastMessage(R.string.service_gui_AVATAR_RETRIEVING, contactJid);
+            MetaContact metaContact = (MetaContact) clicked;
+            switch (view.getId()) {
+                case R.id.contact_view:
+                    contactListFragment.showPopupMenuContact(view, metaContact);
+                    return true;
+
+                case R.id.avatarIcon:
+                    Contact contact = metaContact.getDefaultContact();
+                    if (contact != null) {
+                        Jid contactJid = contact.getJid();
+                        if (!(contactJid instanceof DomainBareJid)) {
+                            ((ContactJabberImpl) contact).getAvatar(true);
+                            aTalkApp.showToastMessage(R.string.service_gui_AVATAR_RETRIEVING, contactJid);
+                        }
+                        else {
+                            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
+                        }
+                    }
+                    return true;
             }
-            else {
-                aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
+        }
+        else if (clicked instanceof MetaContactGroup) {
+            if (view.getId() == R.id.groupName) {
+                contactListFragment.showPopUpMenuGroup(view, (MetaContactGroup) clicked);
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -572,6 +608,6 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     private static class GroupViewHolder
     {
         ImageView indicator;
-        TextView displayName;
+        TextView groupName;
     }
 }

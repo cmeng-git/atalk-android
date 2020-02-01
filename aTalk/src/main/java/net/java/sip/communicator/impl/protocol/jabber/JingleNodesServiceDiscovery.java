@@ -161,7 +161,7 @@ public class JingleNodesServiceDiscovery implements Runnable
                 try {
                     SmackServiceNode.deepSearch(xmppConnection, maxEntries, JidCreate.from(xmppConnection.getHost()),
                             mappedNodes, maxDepth - 1, maxSearchNodes, protocol, visited);
-                } catch (XmppStringprepException e) {
+                } catch (XmppStringprepException | IllegalArgumentException e) {
                     e.printStackTrace();
                 }
 

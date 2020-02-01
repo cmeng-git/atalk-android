@@ -15,7 +15,6 @@ import net.java.sip.communicator.service.history.event.ProgressEvent;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchProgressListener;
-import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.event.*;
 
@@ -70,8 +69,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findByStartDate((MetaContact) descriptor, startDate));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
+                else if (descriptor instanceof ChatRoom) {
                     result.addAll(mhs.findByStartDate((ChatRoom) descriptor, startDate));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
@@ -112,9 +110,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findByEndDate((MetaContact) descriptor, endDate));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
-                    result.addAll(mhs.findByEndDate(chatRoom, endDate));
+                else if (descriptor instanceof ChatRoom) {
+                    result.addAll(mhs.findByEndDate((ChatRoom) descriptor, endDate));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
             }
@@ -155,9 +152,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findByPeriod((MetaContact) descriptor, startDate, endDate));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
-                    result.addAll(mhs.findByPeriod(chatRoom, startDate, endDate));
+                else if (descriptor instanceof ChatRoom) {
+                    result.addAll(mhs.findByPeriod((ChatRoom) descriptor, startDate, endDate));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
             }
@@ -219,9 +215,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findByPeriod((MetaContact) descriptor, startDate, endDate, keywords, caseSensitive));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
-                    result.addAll(mhs.findByPeriod(chatRoom, startDate, endDate, keywords, caseSensitive));
+                else if (descriptor instanceof ChatRoom) {
+                    result.addAll(mhs.findByPeriod((ChatRoom) descriptor, startDate, endDate, keywords, caseSensitive));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
             }
@@ -308,9 +303,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findByKeywords((MetaContact) descriptor, keywords, caseSensitive));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
-                    result.addAll(mhs.findByKeywords(chatRoom, keywords, caseSensitive));
+                else if (descriptor instanceof ChatRoom) {
+                    result.addAll(mhs.findByKeywords((ChatRoom) descriptor, keywords, caseSensitive));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
             }
@@ -358,9 +352,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findLast((MetaContact) descriptor, count));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
-                    result.addAll(mhs.findLast(chatRoom, count));
+                else if (descriptor instanceof ChatRoom) {
+                    result.addAll(mhs.findLast((ChatRoom) descriptor, count));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
             }
@@ -407,9 +400,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findFirstMessagesAfter((MetaContact) descriptor, date, count));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
-                    result.addAll(mhs.findFirstMessagesAfter(chatRoom, date, count));
+                else if (descriptor instanceof ChatRoom) {
+                    result.addAll(mhs.findFirstMessagesAfter((ChatRoom) descriptor, date, count));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
             }
@@ -465,9 +457,8 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
                 if (descriptor instanceof MetaContact) {
                     result.addAll(mhs.findLastMessagesBefore((MetaContact) descriptor, date, count));
                 }
-                else if (descriptor instanceof ChatRoomWrapper) {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
-                    result.addAll(mhs.findLastMessagesBefore(chatRoom, date, count));
+                else if (descriptor instanceof ChatRoom) {
+                    result.addAll(mhs.findLastMessagesBefore((ChatRoom) descriptor, date, count));
                 }
                 mhs.removeSearchProgressListener(listenWrapper);
             }

@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.UIService;
@@ -31,8 +32,7 @@ import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoDialog;
+import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
@@ -55,7 +55,8 @@ import org.jxmpp.jid.Jid;
 
 import java.io.File;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -428,8 +429,12 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mOtr_Session.setVisible(!isDomainJid);
             }
             else {
+                // Only room owner is allowed to destroy chatRoom - role should not be null for joined room
+                ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) chatSession.getDescriptor();
+                ChatRoomMemberRole role = chatRoomWrapper.getChatRoom().getUserRole();
+                mDestroyChatRoom.setVisible(ChatRoomMemberRole.OWNER.equals(role));
+
                 mLeaveChatRoom.setVisible(true);
-                mDestroyChatRoom.setVisible(true);
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
                 mSendFile.setVisible(hasUploadService);
                 mSendLocation.setVisible(false);
@@ -486,7 +491,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     return true;
 
                 case R.id.destroy_chat_room:
-                    EntityListHelper.removeEntity(chatRoomWrapper, selectedChatPanel);
+                    new ChatRoomDestroyDialog().show(this, chatRoomWrapper, selectedChatPanel);
                     // It is safer to just finish. see case R.id.close_chat:
                     finish();
                     return true;
@@ -499,21 +504,28 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     return true;
 
                 case R.id.change_chatroom_attr:
-                    ChatRoomInfoChangeDialog chatRoomInfoChangeDialog = new ChatRoomInfoChangeDialog(this, chatRoomWrapper);
-                    chatRoomInfoChangeDialog.show();
+                    new ChatRoomInfoChangeDialog().show(this, chatRoomWrapper);
                     return true;
 
                 case R.id.show_chatroom_occupant:
                     StringBuilder memberList = new StringBuilder();
                     List<ChatRoomMember> occupants = chatRoomWrapper.getChatRoom().getMembers();
-                    for (ChatRoomMember member : occupants) {
-                        ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
-                        memberList.append(occupant.getNickName())
-                                .append(" - ")
-                                .append(occupant.getJabberID())
-                                .append(" (" + member.getRole().getRoleName() + ")")
-                                .append("<br/>");
+                    if (occupants.size() > 0) {
+                        for (ChatRoomMember member : occupants) {
+                            ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
+                            memberList.append(occupant.getNickName())
+                                    .append(" - ")
+                                    .append(occupant.getJabberID())
+                                    .append(" (")
+                                    .append(member.getRole().getRoleName())
+                                    .append(")")
+                                    .append("<br/>");
+                        }
                     }
+                    else {
+                        memberList.append(getString(R.string.service_gui_LIST_EMPTY));
+                    }
+
                     String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
                     selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
                             memberList.toString());

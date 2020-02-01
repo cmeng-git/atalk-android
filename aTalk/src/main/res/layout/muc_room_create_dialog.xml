@@ -73,7 +73,7 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_CHAT_ROOM" />
+        android:text="@string/service_gui_CHATROOM" />
 
     <org.atalk.android.util.ComboBox
         android:id="@+id/chatRoom_Combo"

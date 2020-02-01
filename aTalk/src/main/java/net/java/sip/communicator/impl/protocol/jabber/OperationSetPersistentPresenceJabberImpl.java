@@ -289,7 +289,7 @@ public class OperationSetPersistentPresenceJabberImpl
         }
         try {
             return ssContactList.createUnresolvedContact(parentGroup, JidCreate.from(address));
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid JID", e);
         }
     }
@@ -331,20 +331,19 @@ public class OperationSetPersistentPresenceJabberImpl
      * @return a reference to the Contact with the specified <tt>contactID</tt> or null if we don't
      * have a subscription for the that identifier.
      */
-
     public Contact findContactByID(String contactID)
     {
         try {
             return ssContactList.findContactById(JidCreate.from(contactID));
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             Timber.e(e, "Could not parse contact into Jid: %s", contactID);
             return null;
         }
     }
 
-    public Contact findContactByID(Jid contactId)
+    public Contact findContactByID(Jid contactJid)
     {
-        return ssContactList.findContactById(contactId);
+        return ssContactList.findContactById(contactJid);
     }
 
     /**
