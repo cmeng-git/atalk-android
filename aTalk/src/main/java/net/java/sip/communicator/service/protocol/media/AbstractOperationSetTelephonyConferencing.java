@@ -305,7 +305,6 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
             calleeAddresses.add(parseAddressString(callee));
 
         MediaAwareCallT call = createOutgoingCall();
-
         if (conference == null)
             conference = call.getConference();
         else

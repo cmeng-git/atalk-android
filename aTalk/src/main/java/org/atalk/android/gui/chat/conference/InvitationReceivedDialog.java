@@ -38,7 +38,7 @@ public class InvitationReceivedDialog extends Dialog
     /**
      * The <tt>MultiUserChatManager</tt> is the one that deals with invitation events.
      */
-    private ConferenceChatManager mMultiUserChatManager = null;
+    private ConferenceChatManager mMultiUserChatManager;
 
     /**
      * The operation set that would handle the rejection if the user choose to reject the
@@ -127,9 +127,8 @@ public class InvitationReceivedDialog extends Dialog
         infoTextArea.setText(mContext.getString(R.string.service_gui_INVITATION_RECEIVED_MSG,
                 mInviter, mChatRoomName));
 
-        TextView textInvitation = this.findViewById(R.id.textInvitation);
+        EditText textInvitation = this.findViewById(R.id.textInvitation);
         if (!TextUtils.isEmpty(mReason)) {
-            textInvitation.setSingleLine(false);
             textInvitation.setText(mReason);
         }
         else {

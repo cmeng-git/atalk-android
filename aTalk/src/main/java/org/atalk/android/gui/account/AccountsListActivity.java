@@ -128,8 +128,8 @@ public class AccountsListActivity extends OSGiActivity
             case R.id.add_group:
                 AddGroupDialog.showCreateGroupDialog(this, null);
                 return true;
-            case R.id.purge_stores:
-                ServerPersistentStoresRefreshDialog.showCreateGroupDialog(this, null);
+            case R.id.refresh_database:
+                new ServerPersistentStoresRefreshDialog().show(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

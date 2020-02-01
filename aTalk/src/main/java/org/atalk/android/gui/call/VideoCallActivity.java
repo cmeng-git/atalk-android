@@ -35,6 +35,7 @@ import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
+import org.atalk.impl.neomedia.transform.sdes.SDesControlImpl;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jxmpp.jid.Jid;
@@ -993,6 +994,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         boolean isSecure = false;
         boolean isVerified = false;
         ZrtpControl zrtpCtrl = null;
+        SrtpControlType srtpControlType = SrtpControlType.NULL;
 
         Iterator<? extends CallPeer> callPeers = call.getCallPeers();
         if (callPeers.hasNext()) {
@@ -1000,21 +1002,30 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             if (cpCandidate instanceof MediaAwareCallPeer<?, ?, ?>) {
                 MediaAwareCallPeer<?, ?, ?> mediaAwarePeer = (MediaAwareCallPeer<?, ?, ?>) cpCandidate;
                 SrtpControl srtpCtrl = mediaAwarePeer.getMediaHandler().getEncryptionMethod(MediaType.AUDIO);
-                isSecure = srtpCtrl != null && srtpCtrl.getSecureCommunicationStatus();
+                isSecure = (srtpCtrl != null) && srtpCtrl.getSecureCommunicationStatus();
 
                 if (srtpCtrl instanceof ZrtpControl) {
+                    srtpControlType = SrtpControlType.ZRTP;
                     zrtpCtrl = (ZrtpControl) srtpCtrl;
                     isVerified = zrtpCtrl.isSecurityVerified();
                 }
-                else {
+                else if (srtpCtrl instanceof SDesControl) {
+                    srtpControlType = SrtpControlType.SDES;
+                    isVerified = true;
+                }
+                else if (srtpCtrl instanceof DtlsControl) {
+                    srtpControlType = SrtpControlType.DTLS_SRTP;
                     isVerified = true;
                 }
             }
         }
-        // Protocol name label
-        ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.security_protocol,
-                zrtpCtrl != null ? "zrtp" : "");
+
+        // Update padLock status and protocol name label (only if in secure mode) 
         doUpdatePadlockStatus(isSecure, isVerified);
+        if (isSecure) {
+            ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.security_protocol,
+                    srtpControlType.toString().toLowerCase());
+        }
     }
 
     /**
@@ -1118,22 +1129,34 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         runOnUiThread(() -> {
             SrtpControl srtpCtrl = evt.getSecurityController();
+            boolean isVerified = false;
             ZrtpControl zrtpControl = null;
+            SrtpControlType srtpControlType = SrtpControlType.NULL;
+
             if (srtpCtrl instanceof ZrtpControl) {
+                srtpControlType = SrtpControlType.ZRTP;
                 zrtpControl = (ZrtpControl) srtpCtrl;
+
+                isVerified = zrtpControl.isSecurityVerified();
+                if (!isVerified) {
+                    String toastMsg = getString(R.string.service_gui_security_VERIFY_TOAST);
+                    sasToastController.showToast(false, toastMsg);
+                }
+            }
+            else if (srtpCtrl instanceof SDesControlImpl) {
+                srtpControlType = SrtpControlType.SDES;
+                isVerified = true;
+            }
+            else if (srtpCtrl instanceof DtlsControl) {
+                srtpControlType = SrtpControlType.DTLS_SRTP;
+                isVerified = true;
             }
 
-            boolean isVerified = zrtpControl != null && zrtpControl.isSecurityVerified();
-            doUpdatePadlockStatus(zrtpControl != null, isVerified);
+            // Update both secure padLock status and protocol name
+            doUpdatePadlockStatus(true, isVerified);
+            ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.security_protocol,
+                    srtpControlType.toString());
 
-            // Protocol name label
-            ViewUtil.setTextViewValue(findViewById(android.R.id.content),
-                    R.id.security_protocol, zrtpControl != null ? "zrtp" : "sdes");
-
-            if (!isVerified && zrtpControl != null) {
-                String toastMsg = getString(R.string.service_gui_security_VERIFY_TOAST);
-                sasToastController.showToast(false, toastMsg);
-            }
         });
     }
 

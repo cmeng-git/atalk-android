@@ -46,7 +46,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * The InBandBytestreamManager class handles establishing In-Band Bytestreams as specified in the <a
- * href="https://xmpp.org/extensions/xep-0047.html">XEP-0047</a>.
+ * href="http://xmpp.org/extensions/xep-0047.html">XEP-0047</a>.
  * <p>
  * The In-Band Bytestreams (IBB) enables two entities to establish a virtual bytestream over which
  * they can exchange Base64-encoded chunks of data over XMPP itself. It is the fall-back mechanism
@@ -56,7 +56,7 @@ import org.jxmpp.jid.Jid;
  * send data packets or message stanzas. If IQ stanzas are used every data stanza is acknowledged by
  * the receiver. This is the recommended way to avoid possible rate-limiting penalties. Message
  * stanzas are not acknowledged because most XMPP server implementation don't support stanza
- * flow-control method like <a href="https://xmpp.org/extensions/xep-0079.html">Advanced Message
+ * flow-control method like <a href="http://xmpp.org/extensions/xep-0079.html">Advanced Message
  * Processing</a>. To set the stanza that should be used invoke {@link #setStanza(StanzaType)}.
  * <p>
  * To establish an In-Band Bytestream invoke the {@link #establishSession(Jid)} method. This will
@@ -74,7 +74,7 @@ import org.jxmpp.jid.Jid;
  * <p>
  * Note that the registered {@link InBandBytestreamListener} will NOT be notified on incoming
  * In-Band bytestream requests sent in the context of <a
- * href="https://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
+ * href="http://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
  * {@link FileTransferManager})
  * <p>
  * If no {@link InBandBytestreamListener}s are registered, all incoming In-Band bytestream requests
@@ -228,7 +228,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * <p>
      * Note that the registered {@link InBandBytestreamListener} will NOT be notified on incoming
      * Socks5 bytestream requests sent in the context of <a
-     * href="https://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
+     * href="http://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
      * {@link FileTransferManager})
      *
      * @param listener the listener to register
@@ -261,7 +261,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * <p>
      * Note that the registered {@link InBandBytestreamListener} will NOT be notified on incoming
      * Socks5 bytestream requests sent in the context of <a
-     * href="https://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
+     * href="http://xmpp.org/extensions/xep-0096.html">XEP-0096</a> file transfer. (See
      * {@link FileTransferManager})
      *
      * @param listener the listener to register
@@ -314,7 +314,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * connection.
      * <p>
      * The recommended default block size is 4096 bytes. See <a
-     * href="https://xmpp.org/extensions/xep-0047.html#usage">XEP-0047</a> Section 5.
+     * href="http://xmpp.org/extensions/xep-0047.html#usage">XEP-0047</a> Section 5.
      *
      * @return the default block size
      */
@@ -327,7 +327,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * connection.
      * <p>
      * The default block size must be between 1 and 65535 bytes. The recommended default block size
-     * is 4096 bytes. See <a href="https://xmpp.org/extensions/xep-0047.html#usage">XEP-0047</a>
+     * is 4096 bytes. See <a href="http://xmpp.org/extensions/xep-0047.html#usage">XEP-0047</a>
      * Section 5.
      *
      * @param defaultBlockSize the default block size to set
@@ -378,7 +378,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Returns the stanza used to send data packets.
      * <p>
      * Default is {@link StanzaType#IQ}. See <a
-     * href="https://xmpp.org/extensions/xep-0047.html#message">XEP-0047</a> Section 4.
+     * href="http://xmpp.org/extensions/xep-0047.html#message">XEP-0047</a> Section 4.
      *
      * @return the stanza used to send data packets
      */
@@ -390,7 +390,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * Sets the stanza used to send data packets.
      * <p>
      * The use of {@link StanzaType#IQ} is recommended. See <a
-     * href="https://xmpp.org/extensions/xep-0047.html#message">XEP-0047</a> Section 4.
+     * href="http://xmpp.org/extensions/xep-0047.html#message">XEP-0047</a> Section 4.
      *
      * @param stanza the stanza to set
      */

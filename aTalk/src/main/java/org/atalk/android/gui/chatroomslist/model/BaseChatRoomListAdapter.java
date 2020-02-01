@@ -51,7 +51,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
-        implements View.OnClickListener, ChatRoomBookmarkDialog.OnFinishedCallback
+        implements View.OnClickListener, View.OnLongClickListener, ChatRoomBookmarkDialog.OnFinishedCallback
 {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
@@ -142,7 +142,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
                     try {
                         chatRoomListView.expandGroup(position);
                     } catch (Exception e) {
-                        Timber.e(e,"Expand group Exception %s; %s", position, chatRoomListFragment);
+                        Timber.e(e, "Expand group Exception %s; %s", position, chatRoomListFragment);
                     }
 
                 }
@@ -151,13 +151,12 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Refreshes the list view.
+     * Refreshes the view with expands group and invalid view.
      */
     public void invalidateViews()
     {
         if (chatRoomListView != null) {
             chatRoomListFragment.runOnUiThread(chatRoomListView::invalidateViews);
-            expandAllGroups();
         }
     }
 
@@ -277,12 +276,20 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             convertView = inflater.inflate(R.layout.chatroom_list_row, parent, false);
 
             chatRoomViewHolder = new ChatRoomViewHolder();
-            chatRoomViewHolder.roomName = convertView.findViewById(R.id.roominfo_name);
+            View roomView = convertView.findViewById(R.id.room_view);
+            roomView.setOnClickListener(this);
+            roomView.setOnLongClickListener(this);
+            roomView.setTag(getChild(groupPosition, childPosition));
+
+            chatRoomViewHolder.roomName = convertView.findViewById(R.id.room_name);
             chatRoomViewHolder.statusMessage = convertView.findViewById(R.id.room_status);
 
             chatRoomViewHolder.roomIcon = convertView.findViewById(R.id.room_icon);
             chatRoomViewHolder.roomIcon.setOnClickListener(this);
             chatRoomViewHolder.roomIcon.setTag(chatRoomViewHolder);
+
+            chatRoomViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
+            chatRoomViewHolder.unreadCount.setTag(chatRoomViewHolder);
 
             chatRoomViewHolder.autojoin = convertView.findViewById(R.id.cb_autojoin);
             chatRoomViewHolder.autojoin.setOnClickListener(this);
@@ -292,10 +299,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             chatRoomViewHolder.bookmark.setOnClickListener(this);
             chatRoomViewHolder.bookmark.setTag(chatRoomViewHolder);
 
-            chatRoomViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
-            chatRoomViewHolder.unreadCount.setTag(chatRoomViewHolder);
-
             convertView.setTag(chatRoomViewHolder);
+
         }
         else {
             chatRoomViewHolder = (ChatRoomViewHolder) convertView.getTag();
@@ -315,10 +320,10 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
         UIChatRoomRenderer renderer = getChatRoomRenderer(groupPosition);
         if (renderer.isSelected(child)) {
-            convertView.setBackgroundResource(R.drawable.list_selection_gradient);
+            convertView.setBackgroundResource(R.drawable.color_blue_gradient);
         }
         else {
-            convertView.setBackgroundResource(R.drawable.array_list_selector);
+            convertView.setBackgroundResource(R.drawable.list_selector_state);
         }
         // Update display information.
         String roomName = renderer.getDisplayName(child);
@@ -414,17 +419,22 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      */
     public void onClick(View view)
     {
-        if (!(view.getTag() instanceof ChatRoomViewHolder)) {
-            return;
+        Object object = view.getTag();
+        if (object instanceof ChatRoomViewHolder) {
+            mViewHolder = (ChatRoomViewHolder) view.getTag();
+            int groupPos = mViewHolder.groupPosition;
+            int childPos = mViewHolder.childPosition;
+            object = getChild(groupPos, childPos);
         }
 
-        mViewHolder = (ChatRoomViewHolder) view.getTag();
-        int groupPos = mViewHolder.groupPosition;
-        int childPos = mViewHolder.childPosition;
-        ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) getChild(groupPos, childPos);
+        if (object instanceof ChatRoomWrapper) {
+            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
 
-        if (chatRoomWrapper != null) {
             switch (view.getId()) {
+                case R.id.room_view:
+                    chatRoomListFragment.joinChatRoom(chatRoomWrapper);
+                    break;
+
                 case R.id.cb_autojoin:
                     // Set chatRoom autoJoin on first login
                     chatRoomWrapper.setAutoJoin(mViewHolder.autojoin.isChecked());
@@ -467,8 +477,19 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             }
         }
         else {
-            Timber.w("No chatRoom found at %d:%d", groupPos, childPos);
+            Timber.w("Clicked item is not a chatRoom Wrapper");
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view)
+    {
+        Object chatRoomWrapper = view.getTag();
+        if (chatRoomWrapper instanceof ChatRoomWrapper) {
+            chatRoomListFragment.showPopupMenu(view, (ChatRoomWrapper) chatRoomWrapper);
+            return true;
+        }
+        return false;
     }
 
     /**

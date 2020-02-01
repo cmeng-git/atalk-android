@@ -96,9 +96,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     private boolean mDialogMode = false;
 
-    public MetaContactListAdapter(ContactListFragment contactListFragment, boolean isShowButton)
+    public MetaContactListAdapter(ContactListFragment contactListFragment, boolean mainContactList)
     {
-        super(contactListFragment, isShowButton);
+        super(contactListFragment, mainContactList);
 
         this.originalContacts = new LinkedList<>();
         this.contacts = new LinkedList<>();
@@ -884,10 +884,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             MetaContact metaContact = contactListService.findMetaContactByContact(sourceContact);
             // metaContact is already existing, just update it
             if (metaContact != null) {
-                if (mDialogMode || presenceFilter.isShowOffline())
-                    updateStatus(metaContact);
-                else
-                    filterData("");
+                // if (mDialogMode || presenceFilter.isShowOffline())
+                updateStatus(metaContact);
             }
         });
     }
@@ -898,8 +896,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      * @param metaContact the <tt>MetaContact</tt> for which we add the listener
      * @param l the <tt>MessageListener</tt> to add
      */
-    private void addContactStatusListener(MetaContact metaContact,
-            ContactPresenceStatusListener l)
+    private void addContactStatusListener(MetaContact metaContact, ContactPresenceStatusListener l)
     {
         Iterator<Contact> protoContacts = metaContact.getContacts();
         while (protoContacts.hasNext()) {
@@ -919,8 +916,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      * @param metaContact the <tt>MetaContact</tt> for which we remove the listener
      * @param l the <tt>MessageListener</tt> to remove
      */
-    private void removeContactStatusListener(MetaContact metaContact,
-            ContactPresenceStatusListener l)
+    private void removeContactStatusListener(MetaContact metaContact, ContactPresenceStatusListener l)
     {
         Iterator<Contact> protoContacts = metaContact.getContacts();
         while (protoContacts.hasNext()) {
@@ -969,14 +965,13 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     private void uiChangeUpdate()
     {
-        uiHandler.post(() -> notifyDataSetChanged());
+        uiHandler.post(this::notifyDataSetChanged);
     }
 
     //	/**
     //	 * Sets the default filter to the given <tt>filter</tt>.
     //	 *
-    //	 * @param filter
-    //	 * 		the <tt>ContactListFilter</tt> to set as default
+    //	 * @param filter the <tt>ContactListFilter</tt> to set as default
     //	 */
     //	public void setDefaultFilter(ContactListFilter filter) {
     //		this.defaultFilter = filter;
@@ -1020,8 +1015,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     //			if (!(contactSource instanceof AsyncContactSourceService)
     //					|| ((AsyncContactSourceService) contactSource).canBeUsedToSearchContacts()) {
     //
-    //				// ExternalContactSource extContactSource = new ExternalContactSource
-    // (contactSource, this);
+    //				// ExternalContactSource extContactSource = new ExternalContactSource(contactSource, this);
     //				int sourceIndex = contactSource.getIndex();
     ////				if (sourceIndex >= 0 && mContactSources.size() >= sourceIndex)
     ////					mContactSources.add(sourceIndex, extContactSource);
@@ -1029,8 +1023,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     ////					mContactSources.add(extContactSource);
     //			}
     //		}
-    ////		AndroidGUIActivator.bundleContext.addServiceListener(new ContactSourceServiceListener
-    // ());
+    ////		AndroidGUIActivator.bundleContext.addServiceListener(new ContactSourceServiceListener());
     //	}
     //
     //	/**
@@ -1094,11 +1087,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     //	 * Returns the <tt>ExternalContactSource</tt> corresponding to the given
     //	 * <tt>ContactSourceService</tt>.
     //	 *
-    //	 * @param contactSource
-    //	 * 		the <tt>ContactSourceService</tt>, which
+    //	 * @param contactSource the <tt>ContactSourceService</tt>, which
     //	 * 		corresponding external source implementation we're looking for
-    //	 * @return the <tt>ExternalContactSource</tt> corresponding to the given
-    //	 * <tt>ContactSourceService</tt>
+    //	 * @return the <tt>ExternalContactSource</tt> corresponding to the given <tt>ContactSourceService</tt>
     //	 */
     //	public ContactSourceService getContactSource(ContactSourceService contactSource) {
     ////		for (ContactSourceService extSource : mContactSources) {
@@ -1112,8 +1103,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     //	/**
     //	 * Returns all <tt>UIContactSource</tt>s of the given type.
     //	 *
-    //	 * @param type
-    //	 * 		the type of sources we're looking for
+    //	 * @param type the type of sources we're looking for
     //	 * @return a list of all <tt>UIContactSource</tt>s of the given type
     //	 */
     //	public List<ContactSourceService> getContactSources(int type) {

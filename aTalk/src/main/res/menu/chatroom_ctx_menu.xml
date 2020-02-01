@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
     <item
         android:id="@+id/close_chatroom"
         android:title="@string/service_gui_CLOSE_CHAT">
@@ -19,7 +18,7 @@
     </item>
     <item
         android:id="@+id/destroy_chatroom"
-        android:title="@string/service_gui_DESTROY_CHATROOM">
+        android:title="@string/service_gui_CHATROOM_DESTROY">
     </item>
     <item
         android:id="@+id/send_chatroom_file"

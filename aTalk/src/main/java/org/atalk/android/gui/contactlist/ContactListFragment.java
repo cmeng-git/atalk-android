@@ -5,17 +5,15 @@
  */
 package org.atalk.android.gui.contactlist;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
-import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -27,11 +25,13 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountInfoPresenceActivity;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.model.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +49,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ContactListFragment extends OSGiFragment implements OnChildClickListener, OnGroupClickListener
+public class ContactListFragment extends OSGiFragment implements OnGroupClickListener
 {
     /**
      * Search options menu items.
@@ -130,13 +130,39 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
 
         ViewGroup content = (ViewGroup) inflater.inflate(R.layout.contact_list, container, false);
         contactListView = content.findViewById(R.id.contactListView);
-        contactListView.setSelector(R.drawable.array_list_selector);
-        contactListView.setOnChildClickListener(this);
+        contactListView.setSelector(R.drawable.list_selector_state);
         contactListView.setOnGroupClickListener(this);
+        initContactListAdapter();
 
-        // Adds context menu for contact list items
-        registerForContextMenu(contactListView);
         return content;
+    }
+
+    /**
+     * Initialize the contact list adapter;
+     */
+    private void initContactListAdapter()
+    {
+        contactListView.setAdapter(getContactListAdapter());
+
+        // Attach contact groups expand memory
+        listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
+        listExpandHandler.bindAndRestore();
+
+        // Restore search state based on entered text
+        if (mSearchItem != null) {
+            SearchView searchView = (SearchView) mSearchItem.getActionView();
+            int id = searchView.getContext().getResources()
+                    .getIdentifier("android:id/search_src_text", null, null);
+
+            String filter = ViewUtil.toString(searchView.findViewById(id));
+            filterContactList(filter);
+            bindSearchListener();
+        } else {
+            contactListAdapter.filterData("");
+        }
+
+        // Restore scroll position
+        contactListView.setSelectionFromTop(scrollPosition, scrollTopPosition);
     }
 
     /**
@@ -146,41 +172,20 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
     public void onResume()
     {
         super.onResume();
-        if (contactListView == null)
-            return;
 
-        contactListView.setAdapter(getContactListAdapter());
-
-        // Attach contact groups expand memory
-        listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
-        listExpandHandler.bindAndRestore();
-        contactListAdapter.filterData("");
-
-        // Restore search state based on entered text
-        if (mSearchItem != null) {
-            SearchView searchView = (SearchView) mSearchItem.getActionView();
-            int id = searchView.getContext().getResources()
-                    .getIdentifier("android:id/search_src_text", null, null);
-            TextView textView = searchView.findViewById(id);
-
-            filterContactList(textView.getText().toString());
-            bindSearchListener();
+        // Invalidate view to update read counter and expand groups (collapsed when access settings)
+        if (contactListAdapter != null) {
+            contactListAdapter.expandAllGroups();
+            contactListAdapter.invalidateViews();
         }
-        // Restore scroll position
-        contactListView.setSelectionFromTop(scrollPosition, scrollTopPosition);
-
-        // Invalidate view to update
-        contactListAdapter.invalidateViews();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onPause()
+    public void onDestroy()
     {
-        super.onPause();
-
         // Unbind search listener
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
@@ -205,6 +210,7 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
             contactListAdapter = null;
         }
         disposeSourcesAdapter();
+        super.onDestroy();
     }
 
     /**
@@ -268,9 +274,9 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
             contactListAdapter = new MetaContactListAdapter(this, true);
             contactListAdapter.initModelData();
         }
+
         // Do not include groups with zero member in main contact list
         // contactListAdapter.nonZeroContactGroupList();
-
         return contactListAdapter;
     }
 
@@ -291,49 +297,36 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         sourcesAdapter = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onCreateContextMenu(@NotNull ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    public void showPopUpMenuGroup(View groupView, MetaContactGroup group)
     {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (contactListView.getExpandableListAdapter() != getContactListAdapter()) {
-            return;
-        }
+        // Inflate chatRoom list popup menu
+        PopupMenu popup = new PopupMenu(mActivity, groupView);
+        Menu menu = popup.getMenu();
+        popup.getMenuInflater().inflate(R.menu.group_menu, menu);
+        popup.setOnMenuItemClickListener(new PopupMenuItemClick());
 
-        ExpandableListView.ExpandableListContextMenuInfo info
-                = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
-        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-        int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-        int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
-
-        // Create different context menu for both group and child items
-        MenuInflater inflater = mActivity.getMenuInflater();
-        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-            createGroupCtxMenu(menu, inflater, group);
-        }
-        else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-            createContactCtxMenu(menu, inflater, group, child);
-        }
+        // Remembers clicked metaContactGroup
+        mClickedGroup = group;
+        popup.show();
     }
 
     /**
-     * Inflates contact context menu.
+     * Inflates contact Item popup menu.
+     * Avoid using android contextMenu (in fragment) - truncated menu list
      *
-     * @param menu the menu to inflate when long press on contact item.
-     * @param inflater the menu inflater.
-     * @param group clicked group index.
-     * @param child clicked contact index.
+     * @param contactView click view.
+     * @param metaContact an instance of MetaContact.
      */
-    private void createContactCtxMenu(ContextMenu menu, MenuInflater inflater, int group, int child)
+    public void showPopupMenuContact(View contactView, MetaContact metaContact)
     {
-        // Inflate contact list context menu
-        inflater.inflate(R.menu.contact_ctx_menu, menu);
+        // Inflate chatRoom list popup menu
+        PopupMenu popup = new PopupMenu(mActivity, contactView);
+        Menu menu = popup.getMenu();
+        popup.getMenuInflater().inflate(R.menu.contact_ctx_menu, menu);
+        popup.setOnMenuItemClickListener(new PopupMenuItemClick());
 
         // Remembers clicked contact
-        mClickedContact = ((MetaContact) contactListAdapter.getChild(group, child));
-        menu.setHeaderTitle(mClickedContact.getDisplayName());
+        mClickedContact = metaContact;
 
         // Checks if close chat option should be visible for this contact
         boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedContact) != null;
@@ -374,83 +367,79 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
             reRequestVisible = true;
         }
         menu.findItem(R.id.re_request_auth).setVisible(reRequestVisible);
+        popup.show();
     }
 
     /**
-     * Inflates group context menu.
-     *
-     * @param menu the menu to inflate into.
-     * @param inflater the inflater.
-     * @param group clicked group index.
+     * Interface responsible for receiving menu item click events if the items
+     * themselves do not have individual item click listeners.
      */
-    private void createGroupCtxMenu(ContextMenu menu, MenuInflater inflater, int group)
+    private class PopupMenuItemClick implements OnMenuItemClickListener
     {
-        mClickedGroup = (MetaContactGroup) contactListAdapter.getGroup(group);
-
-        // Inflate contact list context menu
-        inflater.inflate(R.menu.group_menu, menu);
-        menu.setHeaderTitle(mClickedGroup.getGroupName());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
-        FragmentTransaction ft;
-        ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedContact);
-        switch (item.getItemId()) {
-            case R.id.close_chat:
-                if (chatPanel != null)
-                    onCloseChat(chatPanel);
-                return true;
-            case R.id.close_all_chats:
-                onCloseAllChats();
-                return true;
-            case R.id.erase_contact_chat_history:
-                EntityListHelper.eraseEntityChatHistory(getContext(), mClickedContact, null, null);
-                return true;
-            case R.id.erase_all_contact_chat_history:
-                EntityListHelper.eraseAllContactHistory(getContext());
-                return true;
-            case R.id.rename_contact:
-                // Show rename contact dialog
-                ft = getFragmentManager().beginTransaction();
-                ft.addToBackStack(null);
-                DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
-                renameFragment.show(ft, "renameDialog");
-                return true;
-            case R.id.remove_contact:
-                EntityListHelper.removeEntity(mClickedContact, chatPanel);
-                return true;
-            case R.id.move_contact:
-                // Show move contact dialog
-                ft = getFragmentManager().beginTransaction();
-                ft.addToBackStack(null);
-                DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
-                newFragment.show(ft, "moveDialog");
-                return true;
-            case R.id.re_request_auth:
-                if (mClickedContact != null)
-                    requestAuthorization(mClickedContact.getDefaultContact());
-                return true;
-            case R.id.send_contact_file:
-                // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
-                // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(mActivity,
-                // clickedContact);
-                // attachOptionDialog.show();
-                return true;
-            case R.id.remove_group:
-                EntityListHelper.removeMetaContactGroup(mClickedGroup);
-                return true;
-            case R.id.contact_info:
-                startContactInfoActivity(mClickedContact);
-                return true;
-            case R.id.contact_ctx_menu_exit:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        /**
+         * This method will be invoked when a menu item is clicked if the item
+         * itself did not already handle the event.
+         *
+         * @param item the menu item that was clicked
+         * @return {@code true} if the event was handled, {@code false} otherwise
+         */
+        @Override
+        public boolean onMenuItemClick(MenuItem item)
+        {
+            FragmentTransaction ft;
+            ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedContact);
+            switch (item.getItemId()) {
+                case R.id.close_chat:
+                    if (chatPanel != null)
+                        onCloseChat(chatPanel);
+                    return true;
+                case R.id.close_all_chats:
+                    onCloseAllChats();
+                    return true;
+                case R.id.erase_contact_chat_history:
+                    EntityListHelper.eraseEntityChatHistory(getContext(), mClickedContact, null, null);
+                    return true;
+                case R.id.erase_all_contact_chat_history:
+                    EntityListHelper.eraseAllContactHistory(getContext());
+                    return true;
+                case R.id.rename_contact:
+                    // Show rename contact dialog
+                    ft = getFragmentManager().beginTransaction();
+                    ft.addToBackStack(null);
+                    DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
+                    renameFragment.show(ft, "renameDialog");
+                    return true;
+                case R.id.remove_contact:
+                    EntityListHelper.removeEntity(mActivity, mClickedContact, chatPanel);
+                    return true;
+                case R.id.move_contact:
+                    // Show move contact dialog
+                    ft = getFragmentManager().beginTransaction();
+                    ft.addToBackStack(null);
+                    DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
+                    newFragment.show(ft, "moveDialog");
+                    return true;
+                case R.id.re_request_auth:
+                    if (mClickedContact != null)
+                        requestAuthorization(mClickedContact.getDefaultContact());
+                    return true;
+                case R.id.send_contact_file:
+                    // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
+                    // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(mActivity,
+                    // clickedContact);
+                    // attachOptionDialog.show();
+                    return true;
+                case R.id.remove_group:
+                    EntityListHelper.removeMetaContactGroup(mClickedGroup);
+                    return true;
+                case R.id.contact_info:
+                    startContactInfoActivity(mClickedContact);
+                    return true;
+                case R.id.contact_ctx_menu_exit:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 
@@ -532,25 +521,30 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
     }
 
     /**
+     * Expands/collapses the group given by <tt>groupPosition</tt>.
+     *
+     * @param parent the parent expandable list view
+     * @param v the view
+     * @param groupPosition the position of the group
+     * @param id the identifier
+     * @return <tt>true</tt> if the group click action has been performed
+     */
+    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
+    {
+        if (contactListView.isGroupExpanded(groupPosition))
+            contactListView.collapseGroup(groupPosition);
+        else {
+            contactListView.expandGroup(groupPosition, true);
+        }
+        return true;
+    }
+
+    /**
      * cmeng: when metaContact is owned by two different user accounts, the first launched chatSession
      * will take predominant over subsequent metaContact chat session launches by another account
      */
-    @Override
-    public boolean onChildClick(ExpandableListView listView, View v, int groupPosition, int childPosition, long id)
+    public boolean startChat(MetaContact metaContact)
     {
-        BaseContactListAdapter adapter = (BaseContactListAdapter) listView.getExpandableListAdapter();
-        int position = adapter.getListIndex(groupPosition, childPosition);
-
-        contactListView.setSelection(position);
-        adapter.invalidateViews();
-
-        Object clicked = adapter.getChild(groupPosition, childPosition);
-        if (!(clicked instanceof MetaContact)) {
-            Timber.d("No metaContact at position: %s, %s", groupPosition, childPosition);
-            return false;
-        }
-
-        MetaContact metaContact = (MetaContact) clicked;
         if (metaContact.getDefaultContact() == null) {
             aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, metaContact.getDisplayName());
             return false;
@@ -567,31 +561,6 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
             return true;
         }
         return false;
-    }
-
-    /**
-     * Expands/collapses the group given by <tt>groupPosition</tt>.
-     *
-     * @param parent the parent expandable list view
-     * @param v the view
-     * @param groupPosition the position of the group
-     * @param id the identifier
-     * @return <tt>true</tt> if the group click action has been performed
-     */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
-    {
-        if (contactListView.isGroupExpanded(groupPosition))
-            contactListView.collapseGroup(groupPosition);
-        else {
-            contactListView.expandGroup(groupPosition, true);
-        }
-        return true;
-    }
-
-    public MetaContact getClickedContact()
-    {
-        return mClickedContact;
     }
 
     /**
@@ -613,6 +582,11 @@ public class ContactListFragment extends OSGiFragment implements OnChildClickLis
         else {
             Timber.w("Failed to start chat with %s", descriptor);
         }
+    }
+
+    public MetaContact getClickedContact()
+    {
+        return mClickedContact;
     }
 
     /**

@@ -113,7 +113,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     {
         try {
             return findContact(JidCreate.from(id));
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             return null;
         }
     }

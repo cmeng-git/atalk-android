@@ -16,14 +16,17 @@ import org.atalk.service.neomedia.SrtpControlType;
  */
 public class SrtpControls
 {
-	private static final SrtpControlType[] SORTED_SRTP_CONTROL_TYPES = { SrtpControlType.ZRTP,
-		SrtpControlType.DTLS_SRTP, SrtpControlType.MIKEY, SrtpControlType.SDES };
+	private static final SrtpControlType[] SORTED_SRTP_CONTROL_TYPES = {
+	        SrtpControlType.ZRTP,
+            SrtpControlType.DTLS_SRTP,
+            SrtpControlType.MIKEY,
+            SrtpControlType.SDES };
 
 	/**
 	 * The <tt>SrtpControl</tt> implementations which are the elements of this sorted set.
 	 */
-	private final SrtpControl[][] elements = new SrtpControl[MediaType.values().length][SrtpControlType
-		.values().length];
+	private final SrtpControl[][] elements = new SrtpControl[MediaType.values().length]
+            [SrtpControlType.values().length];
 
 	/**
 	 * Initializes a new <tt>SrtpControls</tt> instance.

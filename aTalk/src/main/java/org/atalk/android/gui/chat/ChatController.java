@@ -21,7 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
@@ -38,7 +38,8 @@ import org.atalk.persistance.FilePathHelper;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.chatstates.ChatState;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
@@ -110,7 +111,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     private ChatTransport mChatTransport = null;
     /**
-     * Typing state control thread that goes down from composing to stopped state.
+     * Typing state control thread that goes from composing to stopped state.
      */
     private ChatStateControl chatStateCtrlThread;
     /**
@@ -237,7 +238,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * Init to correct mChatTransport; if chatTransPort allows, then enable chatState
      * notifications thread. Perform only if the chatFragment is really visible to user
-     * <p>this
+     *
      * Otherwise the non-focus chatFragment will cause out-of-sync between chatFragment and
      * chatController i.e. entered msg display in wrong chatFragment
      */
@@ -689,7 +690,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Updates chat state.
-     * <p>
+     *
      * {@inheritDoc}
      */
     @Override

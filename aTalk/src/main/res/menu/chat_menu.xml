@@ -33,7 +33,7 @@
         android:visible="false" />
     <item
         android:id="@+id/destroy_chat_room"
-        android:title="@string/service_gui_DESTROY_CHATROOM_TITLE"
+        android:title="@string/service_gui_CHATROOM_DESTROY_TITLE"
         android:visible="false" />
     <item
         android:id="@+id/change_chatroom_attr"

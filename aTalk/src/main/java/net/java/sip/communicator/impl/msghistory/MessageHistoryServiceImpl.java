@@ -21,7 +21,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
-import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.*;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
@@ -36,7 +36,6 @@ import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchPr
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
@@ -50,6 +49,8 @@ import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.*;
 
@@ -635,10 +636,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param editedAccUID the current edited account
      * @return count of messages for the specified accountUuid
      */
-    public int getMessageCountForAccountUuid(String editedAccUID) {
+    public int getMessageCountForAccountUuid(String editedAccUID)
+    {
         int msgCount = 0;
         String sessionUuid = null;
-        List<String> sessionUuids = new ArrayList<>();;
+        List<String> sessionUuids = new ArrayList<>();
         String[] columns = {ChatSession.SESSION_UUID};
         String[] args = {editedAccUID};
 
@@ -690,8 +692,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             return null;
 
 		/*
-		 Check to ensure account is online (required to fetch room) before proceed. This is to take care in case
-		 user has exited whie muc chatroom messages fetching is still on going
+		 * Check to ensure account is online (required to fetch room) before proceed. This is to take care in case
+		 * user has exited while muc chatRoom messages fetching is still on going
          */
         ProtocolProviderService pps = accountID.getProtocolProvider();
         if (pps == null || !pps.isRegistered())
@@ -960,28 +962,26 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     private EventObject convertHistoryRecordToMessageEvent(Cursor cursor, ChatRoom chatRoom)
     {
         Map<String, String> mProperties = new Hashtable<>();
-
         for (int i = 0; i < cursor.getColumnCount(); i++) {
             String value = (cursor.getString(i) == null) ? "" : cursor.getString(i);
             mProperties.put(cursor.getColumnName(i), value);
         }
 
+        // jabberID should contain user bareJid if muc msg in; else contact fullJid if muc msg out
+        // EntityBareJid if from chatRoom itself (should not have stored in DB)
         String jabberID = XmppStringUtils.parseBareJid(mProperties.get(ChatMessage.JID));
-        // cmeng: from chatRoom, then Jid is null (should be system message) ?
-        if (TextUtils.isEmpty(jabberID))
-            jabberID = mProperties.get(ChatMessage.ENTITY_JID);
 
-        int msgType = Integer.parseInt(mProperties.get(ChatMessage.MSG_TYPE));
+        ProtocolProviderService pps = chatRoom.getParentProvider();
+        OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
+                pps.getOperationSet(OperationSetPersistentPresence.class);
+        Contact contact = presenceOpSet.findContactByID(jabberID);
 
         // Do not include ChatMessage.MESSAGE_HTTP_FILE_LINK
+        int msgType = Integer.parseInt(mProperties.get(ChatMessage.MSG_TYPE));
         if ((msgType == ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY)
                 || (msgType == ChatMessage.MESSAGE_FILE_TRANSFER_SEND)
                 || (msgType == ChatMessage.MESSAGE_STICKER_SEND)) {
 
-            ProtocolProviderService pps = chatRoom.getParentProvider();
-            OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
-                    pps.getOperationSet(OperationSetPersistentPresence.class);
-            Contact contact = presenceOpSet.findContactByID(jabberID);
             if (contact != null) {
                 return createFileRecordFromProperties(mProperties, contact);
             }
@@ -991,20 +991,27 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         MessageImpl msg = createMessageFromProperties(mProperties);
         Date timestamp = new Date(Long.parseLong(mProperties.get(ChatMessage.TIME_STAMP)));
-        String nickName = mProperties.get(ChatMessage.ENTITY_JID);  // nick for muc
-
-        // getUserRole must have ResourcePart != null
-        ChatRoomMemberRole userRole = ChatRoomMemberRole.GUEST;
-        if (chatRoom.getUserNickname() != null) {
-            userRole = chatRoom.getUserRole();
-        }
-        ChatRoomMember from = new ChatRoomMemberImpl(chatRoom, nickName, jabberID, userRole);
 
         if (msg.isOutgoing) {
             return new ChatRoomMessageDeliveredEvent(chatRoom, timestamp, msg, ChatMessage.MESSAGE_MUC_OUT);
         }
-        else // muc incoming message can be MESSAGE_HTTP_FILE_LINK
+        else {
+            // muc incoming message can be MESSAGE_HTTP_FILE_LINK
+            // Incoming muc message contact should not be null unless the sender is not one of user's contacts
+            Jid userJid = (contact == null) ? null : contact.getJid();
+
+            // Incoming muc message Entity_Jid is the nick name of the sender; null if from chatRoom
+            String nickName = mProperties.get(ChatMessage.ENTITY_JID);
+            Resourcepart nick = null;
+            try {
+                nick = Resourcepart.from(nickName);
+            } catch (XmppStringprepException e) {
+                Timber.w("History record to message conversion with null nick");
+            }
+
+            ChatRoomMember from = new ChatRoomMemberJabberImpl((ChatRoomJabberImpl) chatRoom, nick, userJid);
             return new ChatRoomMessageReceivedEvent(chatRoom, from, timestamp, msg, msgType);
+        }
     }
 
     /**
@@ -1038,10 +1045,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Create from the retrieved database mProperties to FileRecord
      *
      * @param mProperties message properties converted from cursor
-     * @param contact the entityJid of the history message
+     * @param entityJid an instance of Contact or ChatRoom of the history message
      * @return FileRecord
      */
-    private FileRecord createFileRecordFromProperties(Map<String, String> mProperties, Object contact)
+    private FileRecord createFileRecordFromProperties(Map<String, String> mProperties, Object entityJid)
     {
         String uuid = mProperties.get(ChatMessage.UUID);
         String dir = mProperties.get(ChatMessage.DIRECTION);
@@ -1049,7 +1056,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String file = mProperties.get(ChatMessage.FILE_PATH);
         int encType = Integer.parseInt(mProperties.get(ChatMessage.ENC_TYPE));
         int status = Integer.parseInt(mProperties.get(ChatMessage.STATUS));
-        return new FileRecord(uuid, contact, dir, date, new File(file), encType, status);
+        return new FileRecord(uuid, entityJid, dir, date, new File(file), encType, status);
     }
 
     /**
@@ -2298,95 +2305,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 return 0;
 
             return date1.compareTo(date2);
-        }
-    }
-
-    /**
-     * Simple ChatRoomMember implementation. Searches for contact matches, to use its display nick.
-     */
-    public static class ChatRoomMemberImpl implements ChatRoomMember
-    {
-        private final ChatRoom chatRoom;
-        private final String nick;
-        private ChatRoomMemberRole role;
-        private Contact contact;
-        private String mContactAddress;
-        private OperationSetPersistentPresence opSetPresence = null;
-
-        public ChatRoomMemberImpl(ChatRoom chatRoom, String fromStr, String jabberID, ChatRoomMemberRole role)
-        {
-            this.chatRoom = chatRoom;
-            this.nick = fromStr;
-            this.role = role;
-            mContactAddress = jabberID;
-
-            opSetPresence = getProtocolProvider().getOperationSet(OperationSetPersistentPresence.class);
-            if (opSetPresence != null) {
-                contact = opSetPresence.findContactByID(jabberID);
-            }
-        }
-
-        public ChatRoom getChatRoom()
-        {
-            return chatRoom;
-        }
-
-        public ProtocolProviderService getProtocolProvider()
-        {
-            return chatRoom.getParentProvider();
-        }
-
-        public String getContactAddress()
-        {
-            return mContactAddress;
-        }
-
-        public String getNickName()
-        {
-            String name = nick;
-            if (StringUtils.isNullOrEmpty(name) && (getContact() != null)
-                    && (getContact().getDisplayName() != null)) {
-                name = getContact().getDisplayName();
-            }
-            return name;
-        }
-
-        public ChatRoomMemberRole getRole()
-        {
-            return role;
-        }
-
-        public void setRole(ChatRoomMemberRole newRole)
-        {
-            role = newRole;
-        }
-
-        public byte[] getAvatar()
-        {
-            // return null;
-            return getContact().getImage();
-        }
-
-        public Contact getContact()
-        {
-            return contact;
-        }
-
-        @Override
-        public PresenceStatus getPresenceStatus()
-        {
-            // FIXME is this correct response?
-            return GlobalStatusEnum.ONLINE;
-            // return getContact().getPresenceStatus();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getDisplayName()
-        {
-            return null;
         }
     }
 

@@ -9,9 +9,7 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
-import org.atalk.service.version.Version;
 import org.atalk.util.ConfigUtils;
-import org.atalk.util.StringUtils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -92,8 +90,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * The name of the property to specify RSA key size certainty.
      * https://docs.oracle.com/javase/7/docs/api/java/math/BigInteger.html
      */
-    public static final String RSA_KEY_SIZE_CERTAINTY_PNAME
-            = "neomedia.transform.dtls.RSA_KEY_SIZE_CERTAINTY";
+    public static final String RSA_KEY_SIZE_CERTAINTY_PNAME = "neomedia.transform.dtls.RSA_KEY_SIZE_CERTAINTY";
 
     /**
      * The RSA key size certainty to use.
@@ -156,8 +153,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * the media session if the fingerprint does not match the hashed
      * certificate. The default value is {@code true}.
      */
-    private static final String VERIFY_AND_VALIDATE_CERTIFICATE_PNAME
-            = "neomedia.transform.dtls.verifyAndValidateCertificate";
+    private static final String VERIFY_AND_VALIDATE_CERTIFICATE_PNAME = "neomedia.transform.dtls.verifyAndValidateCertificate";
 
     /**
      * The cache of {@link #certificateInfo} so that we do not invoke CPU
@@ -183,8 +179,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                 RSA_KEY_SIZE_CERTAINTY_PNAME,
                 DEFAULT_RSA_KEY_SIZE_CERTAINTY);
 
-        CERT_CACHE_EXPIRE_TIME
-                = ConfigUtils.getLong(
+        CERT_CACHE_EXPIRE_TIME = ConfigUtils.getLong(
                 LibJitsi.getConfigurationService(),
                 CERT_CACHE_EXPIRE_TIME_PNAME,
                 DEFAULT_CERT_CACHE_EXPIRE_TIME);
@@ -194,8 +189,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Chooses the first from a list of <tt>SRTPProtectionProfile</tt>s that is supported by
-     * <tt>DtlsControlImpl</tt>.
+     * Chooses the first from a list of <tt>SRTPProtectionProfile</tt>s that is supported by <tt>DtlsControlImpl</tt>.
      *
      * @param theirs the list of <tt>SRTPProtectionProfile</tt>s to choose from
      * @return the first from the specified <tt>theirs</tt> that is supported by <tt>DtlsControlImpl</tt>
@@ -224,8 +218,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     private static final String computeFingerprint(Certificate certificate, String hashFunction)
     {
         try {
-            AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder()
-                    .find(hashFunction.toUpperCase());
+            AlgorithmIdentifier digAlgId
+                    = new DefaultDigestAlgorithmIdentifierFinder().find(hashFunction.toUpperCase());
             Digest digest = BcDefaultDigestProvider.INSTANCE.get(digAlgId);
             byte[] in = certificate.getEncoded(ASN1Encoding.DER);
             byte[] out = new byte[digest.getDigestSize()];
@@ -347,10 +341,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
         final byte[] bytes = new byte[16];
         secureRandom.nextBytes(bytes);
 
-        final char [] chars = new char[32];
+        final char[] chars = new char[32];
 
-        for(int i = 0; i < 16; i++)
-        {
+        for (int i = 0; i < 16; i++) {
             final int b = bytes[i] & 0xff;
             chars[i * 2] = HEX_ENCODE_TABLE[b >>> 4];
             chars[i * 2 + 1] = HEX_ENCODE_TABLE[b & 0x0f];

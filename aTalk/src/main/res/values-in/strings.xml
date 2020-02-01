@@ -52,7 +52,6 @@
     <string name="no_application_found_to_open_file">Tidak ada yang menambahkan aplikasi untuk perangkat lunak untuk arsip</string>
     <string name="password">kata sandi</string>
     <string name="service_gui_PASSWORD">Kata Sandi:</string>
-    <string name="reason_label">Alasan:</string>
     <string name="send_process_signal">Kirim Sinyal Proses</string>
     <string name="show_call_info">Info panggilan</string>
     <string name="show_call_zrtp_info">"Panggil info ZRTP</string>
@@ -140,6 +139,7 @@
     <string name="service_gui_CONTACT_INVALID">Kontak yang dipilih tidak dikenali: %1$s</string>
     <string name="service_gui_Contacts">Kontak</string>
     <string name="service_gui_DONE">Selesai</string>
+    <string name="service_gui_REASON_LABEL">Alasan:</string>
     <string name="service_gui_SHARE">Bagikan…</string>
     <string name="service_gui_SHARE_TEXT">Bagikan teks&#8230;</string>
     <string name="service_gui_SHARE_FILE">Bagikan file&#8230;</string>
@@ -158,32 +158,30 @@
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Ubah kualitas video jarak jauh</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">konferensi %1$s \</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Konferensi</string>
-    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Anda telah bergabung dengan ruang obrolan %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s konfigurasi ruang obrolan</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Gagal mendapatkan %1$s formulir konfigurasi ruang obrolan.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Tidak dapat memperoleh %1$s formulir konfigurasi ruang obrolan. Hanya pemilik ruang obrolan yang dapat melihat dan mengubah formulir konfigurasi.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Daftar di sebelah kanan berisi pengguna yang memiliki peran anggota di ruang obrolan ini. Ketika ruang obrolan adalah \'Anggota-hanya\' mereka akan menjadi pengguna yang diizinkan untuk bergabung.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Ubah Daftar Anggota</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Terjadi kesalahan saat mencoba mengirimkan formulir konfigurasi untuk ruang obrolan %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_JOIN">Bergabung dengan Ruang Obrolan</string>
-    <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Menghapus ruang yang dipilih dari daftar ruang yang disimpan</string>
-    <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Menyimpan ruang obrolan untuk penggunaan selanjutnya</string>
-    <string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">Pengiriman pesan dilarang (suara dicabut)</string>
-    <string name="service_gui_CHAT_ROOM_USER_JOINED">telah bergabung dengan %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_KICKED">telah ditendang dari %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_LEFT">telah meninggalkan %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_QUIT">telah berhenti %1$s</string>
-    <string name="service_gui_CHAT_ROOM_NAME">Nama ruang obrolan</string>
-    <string name="service_gui_CHAT_ROOM_NAME_INFO">Di kolom di bawah ini masukkan nama ruang obrolan yang ingin Anda buat.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_EXIST">Ruangan %1$s tidak ditemukan di server %2$s. Harap verifikasi jika nama yang Anda ketikkan benar.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_CONNECTED">Anda harus online untuk bergabung dengan ruang obrolan %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">Anda harus online untuk meninggalkan ruang obrolan.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_JOINED">Anda harus bergabung dengan ruang obrolan untuk melakukan operasi lebih lanjut dengannya.</string>
-    <string name="service_gui_CHAT_ROOM_OPTIONS">Opsi ruang obrolan</string>
-    <string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Ruang obrolan %1$s telah meminta kata sandi.</string>
-    <string name="service_gui_CHAT_ROOM">Ruang Chat</string>
-    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Subjek kamar berubah: \'%1$s\' => \'%2$s\'</string>
-    <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Anda dapat melanjutkan percakapan di ruang obrolan berikut: %1$s</string>
+    <string name="service_gui_CHATROOM">Ruang Chat</string>
+    <string name="service_gui_CHATROOM_ALREADY_JOINED">Anda telah bergabung dengan ruang obrolan %1$s.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">%1$s konfigurasi ruang obrolan</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Gagal mendapatkan %1$s formulir konfigurasi ruang obrolan.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Tidak dapat memperoleh %1$s formulir konfigurasi ruang obrolan. Hanya pemilik ruang obrolan yang dapat melihat dan mengubah formulir konfigurasi.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Daftar di sebelah kanan berisi pengguna yang memiliki peran anggota di ruang obrolan ini. Ketika ruang obrolan adalah \'Anggota-hanya\' mereka akan menjadi pengguna yang diizinkan untuk bergabung.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Ubah Daftar Anggota</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">Terjadi kesalahan saat mencoba mengirimkan formulir konfigurasi untuk ruang obrolan %1$s.</string>
+    <string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">Menghapus ruang yang dipilih dari daftar ruang yang disimpan</string>
+    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Menyimpan ruang obrolan untuk penggunaan selanjutnya</string>
+    <string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">Pengiriman pesan dilarang (suara dicabut)</string>
+    <string name="service_gui_CHATROOM_USER_JOINED">telah bergabung dengan %1$s</string>
+    <string name="service_gui_CHATROOM_USER_KICKED">telah ditendang dari %1$s</string>
+    <string name="service_gui_CHATROOM_USER_LEFT">telah meninggalkan %1$s</string>
+    <string name="service_gui_CHATROOM_USER_QUIT">telah berhenti %1$s</string>
+    <string name="service_gui_CHATROOM_NAME">Nama ruang obrolan</string>
+    <string name="service_gui_CHATROOM_NAME_INFO">Di kolom di bawah ini masukkan nama ruang obrolan yang ingin Anda buat.</string>
+    <string name="service_gui_CHATROOM_NOT_EXIST">Ruangan %1$s tidak ditemukan di server %2$s. Harap verifikasi jika nama yang Anda ketikkan benar.</string>
+    <string name="service_gui_CHATROOM_NOT_CONNECTED">Anda harus online untuk bergabung dengan ruang obrolan %1$s.</string>
+    <string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">Anda harus online untuk meninggalkan ruang obrolan.</string>
+    <string name="service_gui_CHATROOM_NOT_JOINED">Anda harus bergabung dengan ruang obrolan untuk melakukan operasi lebih lanjut dengannya.</string>
+    <string name="service_gui_CHATROOM_OPTIONS">Opsi ruang obrolan</string>
+    <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Ruang obrolan %1$s telah meminta kata sandi.</string>
+    <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Subjek kamar berubah: \'%1$s\' => \'%2$s\'</string>
     <string name="service_gui_CHAT_ROOMS">Ruang obrolan</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s sekarang dikenal sebagai %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Hapus pesan khusus</string>
@@ -213,15 +211,11 @@
 
     <string name="service_gui_CREATE">Buat</string>
     <string name="service_gui_CREATE_CALL_FAILED">Gagal membuat panggilan.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM">Bikin ruang obrolan&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Gagal membuat ruang obrolan:\n%1$s.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Bikin wizard ruang chat</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Bikin panggilan konferensi&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Bikin obrolan konferensi&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Bikin grup&#8230;</string>
     <string name="service_gui_CREATE_GROUP_NAME">Pada bidang di bawah, masukkan nama grup yang ingin Anda buat.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Daftar kontak Anda tidak berisi grup apa pun. Harap buat grup terlebih dahulu (Fail/Buat grup).</string>
-    <string name="service_gui_ROOM_NAME">ruang obrolan</string>
 
     <!-- About Dialog -->
     <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Bantuan Online</a></string>
@@ -245,9 +239,7 @@
     <!-- PTT Chat -->
     <string name="chat_noaudio_buddyOffline">Obrolan audio dengan penerima offline tidak diizinkan.</string>
     <string name="chat_RecordCancel">&lt; geser ke kiri\nuntuk membatalkan</string>
-    <string name="chat_soundRecordCancelButton">Batalkan</string>
     <string name="chat_soundRecordStartButton">Mulai Merekam</string>
-    <string name="chat_soundRecordStopButton">Selesai</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitud:</string>
@@ -309,7 +301,6 @@
     <string name="service_gui_EXIT">Tinggal</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Meninggal lama</string>
     <string name="service_gui_FAILED_STATUS">Panggilan gagal</string>
-    <string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Gagal bergabung ke ruang obrolan dengan nama: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Gratis untuk obrolan</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -362,6 +353,8 @@
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
 
+    <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Bilik Alternatif:</string>
+    <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Anda dapat melanjutkan percakapan di ruang obrolan berikut: %1$s</string>
     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Bookmark ChatRoom</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
     <string name="service_gui_CHATROOM_AUTOJOIN">Hubung Oto</string>
@@ -373,17 +366,39 @@
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Matikan histori untuk chatRoom ini</string>
     <string name="service_gui_CHATROOM_INFO">Info ChatRoom</string>
 
-    <string name="service_gui_DESTROY_CHATROOM">Hancurkan chatRoom ini</string>
-    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Terjadi kesalahan saat menghancurkan ruang obrolan:\n%1$s</string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Gagal menghapus chatRoom di server:\n\'%1$s\'\n%2$s\n\nLanjutkan untuk menghapus chatRoom lokal\nAnda masih dapat membuat/bergabung kembali dengan chatRoom nanti.</string>
-    <string name="service_gui_DESTROY_CHATROOM_TEXT">Pemilik akun: %1$s.\nApakah Anda yakin ingin menghancurkan\n\'%2$s\'\ndan semua riwayat obrolannya?</string>
-    <string name="service_gui_DESTROY_CHATROOM_TITLE">Hancurkan chatRoom</string>
-    <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\'telah dihapus Berhasil!</string>
+    <string name="service_gui_CHATROOM_CREATE">Bikin ruang obrolan&#8230;</string>
+    <string name="service_gui_CHATROOM_CREATE_ERROR">Gagal membuat ruang obrolan:\n%1$s.</string>
+    <string name="service_gui_CHATROOM_CREATE_WIZARD">Bikin wizard ruang chat</string>
 
-    <string name="service_gui_INCOMING_CALL">Panggilan masuk diterima dari: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY">Hancurkan chatRoom ini</string>
+    <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">Terjadi kesalahan saat menghancurkan ruang obrolan:\n%1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_ERROR">Gagal menghapus chatRoom di server:\n\'%1$s\'\n%2$s\n\nLanjutkan untuk menghapus chatRoom lokal.</string>
+    <string name="service_gui_CHATROOM_DESTROY_MESSAGE">Obrolan grup ini telah dihancurkan!\nAlasan: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_NOTE">Untuk memberi tahu peserta lain, silakan masukkan alasan dan tempat chatRoom alternatif untuk bergabung.</string>
+    <string name="service_gui_CHATROOM_DESTROY_PROMPT">Pemilik akun: %1$s.\nApakah Anda yakin ingin menghancurkan\n\'%2$s\'\ndan semua riwayat obrolannya?</string>
+    <string name="service_gui_CHATROOM_DESTROY_REASON">obrolan grup tidak aktif</string>
+        <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\'telah dihapus Berhasil!</string>
+    <string name="service_gui_CHATROOM_DESTROY_TITLE">Hancurkan chatRoom</string>
+
+    <string name="service_gui_CHATROOM_JOIN">Bergabung dengan ruang obrolan</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Gagal bergabung ke kamar:\n%1$s dengan nama panggilan: %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Gagal bergabung ke ruang obrolan %1$s:\n%2$s</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Ruang obrolan meminta kata sandi.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Ruang obrolan membutuhkan registrasi.</string>
+    <string name="service_gui_CHATROOM_JOIN_TITLE">Bergabung dengan ruang obrolan</string>
+    <string name="service_gui_CHATROOM_JOIN_NAME">Masukkan nama ruang obrolan yang ingin Anda ikuti.</string>
+    <string name="service_gui_CHATROOM_JOIN_WIZARD">Bergabung dengan wizard ruang chat</string>
+
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Tantangan Captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Ruang obrolan dilindungi dengan tantangan captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Verifikasi CAPTCHA betul</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
+
+        <string name="service_gui_INCOMING_CALL">Panggilan masuk diterima dari: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Panggilan masuk</string>
     <string name="service_gui_INITIATING_CALL_STATUS">Memulai panggilan</string>
-    <string name="service_gui_INVITATION">Teks undangan:</string>
+    <string name="service_gui_INVITATION">Pesan undangan:</string>
     <string name="service_gui_INVITATION_RECEIVED">Undangan diterima</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s telah mengundang Anda untuk bergabung dengan ruang obrolan %2$s. Anda dapat menerima, menolak, atau mengabaikan undangan ini.</string>
     <string name="service_gui_INVITATION_REJECTED">%1$s telah menolak undangan Anda untuk bergabung dengan ruang obrolan. Alasan: %2$s.</string>
@@ -401,7 +416,6 @@
 
 	<string name="service_gui_ADDRESS">Alamat</string>
     <string name="service_gui_CITY">Kota</string>
-    <string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Tutup</string>
     <string name="service_gui_COUNTRY">Negara</string>
     <string name="service_gui_EMAIL">Email</string>
     <string name="service_gui_EMAILS">Email</string>
@@ -414,19 +428,6 @@
 	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Bergabung dengan konferensi video yang ada</string>
 	<string name="service_gui_JOIN_VIDEO">Bergabung dengan video</string>
 	<string name="service_gui_JOB_TITLE">Judul pekerjaan</string>
-	<string name="service_gui_JOIN_CHAT_ROOM">Bergabung dengan ruang obrolan&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Gagal bergabung ke kamar:\n%1$s dengan nama panggilan: %2$s.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD">Ruang obrolan meminta kata sandi.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION">Ruang obrolan membutuhkan registrasi.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Bergabung dengan ruang obrolan</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Masukkan nama ruang obrolan yang ingin Anda ikuti.</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Bergabung dengan wizard ruang chat</string>
-
-    <string name="captcha_challenge">Tantangan Captcha</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Ruang obrolan dilindungi dengan tantangan captcha</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Verifikasi CAPTCHA betul</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Gabung otomatis</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Jangan bergabung secara otomatis</string>
@@ -805,7 +806,7 @@
     <string name="plugin_contactinfo_TITLE">Detail kontak</string>
     <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Ringkasan info kontak untuk</string>
     <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Info kontak yang diperluas untuk</string>
-    <string name="plugin_contactinfo_NOT_SPECIFIED">[Tidak ditentukan]</string>
+    <string name="service_gui_INFO_NOT_SPECIFIED">[Tidak ditentukan]</string>
     <string name="plugin_contactinfo_USER_PICTURES">Gambar pengguna</string>
     <string name="plugin_contactinfo_USER_STATUS_MESSAGE">Pesan Status</string>
 
@@ -1131,7 +1132,6 @@
 
     <!-- Jabber preferences -->
     <string name="service_gui_JBR_ADVANCED">Lanjutan</string>
-    <string name="service_gui_JBR_ALLOW_NON_SECURE">Izinkan koneksi tidak aman</string>
     <string name="service_gui_JBR_AUTO_SIGNIN">Terhubung saat Memulai</string>
     <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Menemukan server STUN/TURN otomatis</string>
     <string name="service_gui_JBR_CONN_GENERAL">Umum</string>
@@ -1154,6 +1154,10 @@
     <string name="service_gui_JBR_KEEP_ALIVE">Tetap hidup</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Aktifkan opsi Keep Alive</string>
     <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Aktifkan jika mengalami pemutusan jaringan seluler yang sering</string>
+    <string name="service_gui_JBR_MINIMUM_TLS">Versi TLS minimum</string>
+    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">Hubungkan menggunakan ini atau versi protokol TLS yang lebih tinggi</string>
+    <string name="service_gui_JBR_NON_SECURE_ALLOW">Izinkan koneksi tidak aman</string>
+    <string name="service_gui_JBR_NON_SSL_SUMMARY">Nonaktifkan enkripsi koneksi server SSL/TLS</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Ganti opsi default server</string>
     <string name="service_gui_JBR_PASSWORD">Masukkan Kata Sandi</string>
     <string name="service_gui_JBR_PING_INTERVAL">Interval Ping (1~3600 detik)</string>
@@ -1167,7 +1171,6 @@
     <string name="service_gui_JBR_RESURCE_NAME">Nama sumber daya</string>
     <string name="service_gui_JBR_SERVER">Hubungkan Server IP</string>
     <string name="service_gui_JBR_SERVER_OPTIONS">Opsi server</string>
-    <string name="service_gui_JBR_SSL_SUMMARY">Nonaktifkan enkripsi koneksi server SSL/TLS</string>
     <string name="service_gui_JBR_STORE_PASSWORD">Menyimpan kata sandi</string>
     <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Simpan kata sandi untuk masuk otomatis saat aplikasi memulai</string>
     <string name="service_gui_JBR_STUN_LIST">Server STUN/TURN tambahan&#8230;</string>

@@ -56,7 +56,6 @@
     <string name="no_application_found_to_open_file">No se ha encontrado ninguna aplicación para abrir el archivo</string>
     <string name="password">contraseña</string>
     <string name="service_gui_PASSWORD">Contraseña:</string>
-    <string name="reason_label">Motivo:</string>
     <string name="send_process_signal">Enviar señal de proceso</string>
     <string name="show_call_info">Información de la llamada</string>
     <string name="show_call_zrtp_info">"Información ZRTP de la llamada</string>
@@ -144,6 +143,7 @@
     <string name="service_gui_CONTACT_INVALID">El contacto seleccionado no es válido: %1$s</string>
     <string name="service_gui_Contacts">Contactos</string>
     <string name="service_gui_DONE">¡Hecho!</string>
+    <string name="service_gui_REASON_LABEL">Motivo:</string>
     <string name="service_gui_SHARE">compartir…</string>
     <string name="service_gui_SHARE_TEXT">Compartir texto&#8230;</string>
     <string name="service_gui_SHARE_FILE">Recurso compartido de archivos&#8230;</string>
@@ -162,32 +162,30 @@
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Cambiar la calidad de vídeo remoto</string>
 	<string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s sala</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Salas</string>
-	<string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Ya estás en la sala %1$s.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION">configuración de la sala %1$s </string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Error al obtener el formulario de configuración de la sala %1$s.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">No se pudo obtener el formulario de configuración de la sala %1$s. Sólo los propietarios de la sala de chat pueden ver y cambiar la configuración.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">La lista de la derecha contiene los usuarios que tienen un rol de miembro en esta sala de chat. Cuando la sala de chat es \'Sólo para miembros\', esos serán los usuarios a los que se les permite unirse.</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Editar la lista de miembros</string>
-	<string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Se ha producido un error al intentar enviar el formulario de configuración para la sala %1$s.</string>
-	<string name="service_gui_CHAT_ROOM_JOIN">Entrar en una sala</string>
-	<string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Eliminar la sala seleccionada de la lista de salas guardadas</string>
-	<string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Guardar la sala para un uso futuro</string>
-	<string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">El envío de mensajes está prohibido (voz revocada)</string>
-	<string name="service_gui_CHAT_ROOM_USER_JOINED">se ha unido %1$s</string>
-	<string name="service_gui_CHAT_ROOM_USER_KICKED">ha sido expulsado de %1$s</string>
-	<string name="service_gui_CHAT_ROOM_USER_LEFT">ha salido %1$s</string>
-	<string name="service_gui_CHAT_ROOM_USER_QUIT">ha dejado %1$s</string>
-	<string name="service_gui_CHAT_ROOM_NAME">sala</string>
-	<string name="service_gui_CHAT_ROOM_NAME_INFO">En el siguiente campo introducir el nombre de la sala de chat que desea crear.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_EXIST">La habitación %1$s no se encontró en el servidor %2$s. Por favor verificar si el nombre que se ha escrito es correcto.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_CONNECTED">Se necesita estar conectado para unirse a la sala %1$s..</string>
-	<string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">Se necesita estar en línea para poder salir de una sala.</string>
-	<string name="service_gui_CHAT_ROOM_NOT_JOINED">Se necesita estar unido a la sala de chat para poder hacer más operaciones con ella..</string>
-	<string name="service_gui_CHAT_ROOM_OPTIONS">Opciones de la Sala</string>
-	<string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">En la sala %1$s se requiere contraseña para ser miembro.</string>
-	<string name="service_gui_CHAT_ROOM">Sala</string>
-	<string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Asunto de la habitación cambiado: \'%1$s\' => \'%2$s\'</string>
-	<string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Se puede continuar la conversación en la siguiente sala: %1$s</string>
+    <string name="service_gui_CHATROOM">Sala</string>
+	<string name="service_gui_CHATROOM_ALREADY_JOINED">Ya estás en la sala %1$s.</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION">configuración de la sala %1$s </string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Error al obtener el formulario de configuración de la sala %1$s.</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">No se pudo obtener el formulario de configuración de la sala %1$s. Sólo los propietarios de la sala de chat pueden ver y cambiar la configuración.</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">La lista de la derecha contiene los usuarios que tienen un rol de miembro en esta sala de chat. Cuando la sala de chat es \'Sólo para miembros\', esos serán los usuarios a los que se les permite unirse.</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Editar la lista de miembros</string>
+	<string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">Se ha producido un error al intentar enviar el formulario de configuración para la sala %1$s.</string>
+	<string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">Eliminar la sala seleccionada de la lista de salas guardadas</string>
+	<string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Guardar la sala para un uso futuro</string>
+	<string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">El envío de mensajes está prohibido (voz revocada)</string>
+	<string name="service_gui_CHATROOM_USER_JOINED">se ha unido %1$s</string>
+	<string name="service_gui_CHATROOM_USER_KICKED">ha sido expulsado de %1$s</string>
+	<string name="service_gui_CHATROOM_USER_LEFT">ha salido %1$s</string>
+	<string name="service_gui_CHATROOM_USER_QUIT">ha dejado %1$s</string>
+	<string name="service_gui_CHATROOM_NAME">sala</string>
+	<string name="service_gui_CHATROOM_NAME_INFO">En el siguiente campo introducir el nombre de la sala de chat que desea crear.</string>
+	<string name="service_gui_CHATROOM_NOT_EXIST">La habitación %1$s no se encontró en el servidor %2$s. Por favor verificar si el nombre que se ha escrito es correcto.</string>
+	<string name="service_gui_CHATROOM_NOT_CONNECTED">Se necesita estar conectado para unirse a la sala %1$s..</string>
+	<string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">Se necesita estar en línea para poder salir de una sala.</string>
+	<string name="service_gui_CHATROOM_NOT_JOINED">Se necesita estar unido a la sala de chat para poder hacer más operaciones con ella..</string>
+	<string name="service_gui_CHATROOM_OPTIONS">Opciones de la Sala</string>
+	<string name="service_gui_CHATROOM_REQUIRES_PASSWORD">En la sala %1$s se requiere contraseña para ser miembro.</string>
+	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Asunto de la habitación cambiado: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOMS">Salas</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s ahora se conoce como %2$s</string>
 	<string name="service_gui_CLEAR_CUSTOM_MESSAGES">Borrar los mensajes personalizados</string>
@@ -217,15 +215,11 @@
 
     <string name="service_gui_CREATE">Crear</string>
     <string name="service_gui_CREATE_CALL_FAILED">No se ha podido realizar la llamada.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM">Crear Sala&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Error al crear la sala:\n%1$s.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Asistente para crear una sala</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Crear una conferencia telefónica&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Crear una sala&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Crear un grupo&#8230;</string>
     <string name="service_gui_CREATE_GROUP_NAME">En el siguiente campo introducir el nombre del grupo que desea crear.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">La lista de contactos no contiene ningún grupo. Por favor, crear un grupo primero (Archivo/Crear grupo).</string>
-	<string name="service_gui_ROOM_NAME">Nombre de la sala</string>
 
     <!-- About Dialog -->
     <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ayuda on-line</a></string>
@@ -249,9 +243,7 @@
     <!-- PTT Chat -->
     <string name="chat_noaudio_buddyOffline">No se permite el chat de audio con un destinatario que está fuera de línea.</string>
     <string name="chat_RecordCancel">&lt;portaobjetos de la izquierda\npara cancelar</string>
-    <string name="chat_soundRecordCancelButton">Cancelar</string>
     <string name="chat_soundRecordStartButton">Comenzar la grabación</string>
-    <string name="chat_soundRecordStopButton">Hecho</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitud:</string>
@@ -313,7 +305,6 @@
 	<string name="service_gui_EXIT">Salir</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Ausencia extendida</string>
     <string name="service_gui_FAILED_STATUS">Fallo en la llamada</string>
-	<string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Error al unirse a la sala de nombre: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Disponible para conversar</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -366,6 +357,8 @@
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
+    <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Lugar alternativo:</string>
+    <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Se puede continuar la conversación en la siguiente sala: %1$s</string>
     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Salas en marcadores</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Marcadores</string>
     <string name="service_gui_CHATROOM_AUTOJOIN">Autounirse</string>
@@ -377,17 +370,39 @@
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Desactivar el historial en esta sala de charla</string>
     <string name="service_gui_CHATROOM_INFO">Información de la sala de charla</string>
 
-    <string name="service_gui_DESTROY_CHATROOM">Destruir esta sala de charla</string>
-    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Se produjo un error al destruir la sala de chat:\n%1$s </string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Error al eliminar el chatRoom en el servidor:\n\'%1$s\'\n%2$s\n\nSe debe purgar el chatRoom local\nPuede que aún pueda recrear/volver a unirse al chatRoom más tarde.</string>
-    <string name="service_gui_DESTROY_CHATROOM_TEXT">Propietario de la sala de charla: %1$s.\n¿Seguro que se quiere eliminar\n\'%2$s\'\ny todo su historial de charla?</string>
-    <string name="service_gui_DESTROY_CHATROOM_TITLE">Eliminar la sala de charla</string>
-    <string name="service_gui_DESTROYED_CHATROOM">\'%s\' ha sido eliminado exitosamente!</string>
+    <string name="service_gui_CHATROOM_CREATE">Crear Sala&#8230;</string>
+    <string name="service_gui_CHATROOM_CREATE_ERROR">Error al crear la sala:\n%1$s.</string>
+    <string name="service_gui_CHATROOM_CREATE_WIZARD">Asistente para crear una sala</string>
+
+    <string name="service_gui_CHATROOM_DESTROY">Destruir esta sala de charla</string>
+    <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">Se produjo un error al destruir la sala de chat:\n%1$s </string>
+    <string name="service_gui_CHATROOM_DESTROY_ERROR">Error al eliminar el chatRoom en el servidor:\n\'%1$s\'\n%2$s\n\nSe debe purgar el chatRoom local.</string>
+    <string name="service_gui_CHATROOM_DESTROY_MESSAGE">¡Este chat grupal ha sido destruido!\nMotivo: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_NOTE">Para informar a otros participantes, ingrese un motivo y un lugar de chatRoom alternativo para unirse.</string>
+    <string name="service_gui_CHATROOM_DESTROY_PROMPT">Propietario de la sala de charla: %1$s.\n¿Seguro que se quiere eliminar\n\'%2$s\'\ny todo su historial de charla?</string>
+    <string name="service_gui_CHATROOM_DESTROY_REASON">chat grupal inactivo</string>
+    <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%s\' ha sido eliminado exitosamente!</string>
+    <string name="service_gui_CHATROOM_DESTROY_TITLE">Eliminar la sala de charla</string>
+
+    <string name="service_gui_CHATROOM_JOIN">Entrar en una sala</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Error al unirse a la sala:\n%1$s con apodo: %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Error al unirse a la sala %1$s:\n%2$s</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD"> La sala de chat solicita una contraseña.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION"> La sala de chat requiere registro.</string>
+    <string name="service_gui_CHATROOM_JOIN_TITLE">Unirse a una sala de charla</string>
+    <string name="service_gui_CHATROOM_JOIN_NAME">Por favor, introduce el nombre de la sala de chat a la que te gustaría unirte.</string>
+    <string name="service_gui_CHATROOM_JOIN_WIZARD">Unirse con el asistente de la sala de charla</string>
+
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Desafío Captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">La sala de chat está protegida con captcha challenge</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">La verificación de CAPTCHA es válida</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">La verificación de CAPTCHA ha fallado</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA desafío timeout;\npor favor, vuelva a unirse a chatRoom y vuelva a intentarlo.</string>
 
     <string name="service_gui_INCOMING_CALL">Llamada recibida desde: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Llamada entrante</string>
     <string name="service_gui_INITIATING_CALL_STATUS">Iniciando la llamada</string>
-	<string name="service_gui_INVITATION">Texto de invitación:</string>
+	<string name="service_gui_INVITATION">Mensaje de invitación:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Invitación recibida</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s ha cursado una invitación para participar en la sala de charla %2$s. Se puedes aceptar, rechazar o ignorar esta invitación.</string>
 	<string name="service_gui_INVITATION_REJECTED">%1$s ha rechazado la invitación a unirse a la sala de chat. Motivo: %2$s.</string>
@@ -405,7 +420,6 @@
 
     <string name="service_gui_ADDRESS">" 7/5000 Dirección"</string>
     <string name="service_gui_CITY">Ciudad</string>
-	<string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Cerrar</string>
     <string name="service_gui_COUNTRY">País</string>
     <string name="service_gui_EMAIL">Correo</string>
     <string name="service_gui_EMAILS">Correos</string>
@@ -418,19 +432,6 @@
 	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Unirse a una videoconferencia existente</string>
 	<string name="service_gui_JOIN_VIDEO">Unirse al video</string>
 	<string name="service_gui_JOB_TITLE">Cargo</string>
-	<string name="service_gui_JOIN_CHAT_ROOM">Unirse a una sala de charla&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Error al unirse a la sala:\n%1$s con apodo: %2$s.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD"> La sala de chat solicita una contraseña.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION"> La sala de chat requiere registro.</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_TITLE">Unirse a una sala de charla</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Por favor, introduce el nombre de la sala de chat a la que te gustaría unirte.</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Unirse con el asistente de la sala de charla</string>
-
-    <string name="captcha_challenge">Desafío Captcha</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">La sala de chat está protegida con captcha challenge</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">La verificación de CAPTCHA es válida</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">La verificación de CAPTCHA ha fallado</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA desafío timeout;\npor favor, vuelva a unirse a chatRoom y vuelva a intentarlo.</string>
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Unirse automáticamente</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">No unirse automáticamente</string>
@@ -810,7 +811,7 @@
 	<string name="plugin_contactinfo_TITLE">Detalles del contacto</string>
     <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Resumen de la información de contacto de</string>
     <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Información ampliada del contacto para</string>
-    <string name="plugin_contactinfo_NOT_SPECIFIED">[No especificado]</string>
+    <string name="service_gui_INFO_NOT_SPECIFIED">[No especificado]</string>
     <string name="plugin_contactinfo_USER_PICTURES">Imágenes de usuario</string>
     <string name="plugin_contactinfo_USER_STATUS_MESSAGE">Estado del Mensaje</string>
 
@@ -994,7 +995,6 @@
 
     <!-- DNS config -->
     <string name="service_gui_settings_DNSSEC_DANE">Seguridad DNSSEC/DANE</string>
-
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Configurar los ajustes de DNS</string>
     <string name="plugin_dnsconfig_DNSSEC">Seguridad en DNS (DNSSEC)</string>
@@ -1144,7 +1144,6 @@
 
     <!-- Jabber preferences -->
     <string name="service_gui_JBR_ADVANCED">Advanzado</string>
-    <string name="service_gui_JBR_ALLOW_NON_SECURE">Permitir conexiones no seguras</string>
     <string name="service_gui_JBR_AUTO_SIGNIN">Conectar al inicio</string>
     <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Auto descubrir servidores STUN/TURN</string>
     <string name="service_gui_JBR_CONN_GENERAL">General</string>
@@ -1167,6 +1166,10 @@
     <string name="service_gui_JBR_KEEP_ALIVE">Mantener activo</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Habilitar la opción de mantener activo</string>
     <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Habilitar si experimenta desconexión frecuente de la red móvil</string>
+    <string name="service_gui_JBR_MINIMUM_TLS">Versión mínima de TLS</string>
+    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">Conéctese con esta o una versión de protocolo TLS superior</string>
+    <string name="service_gui_JBR_NON_SECURE_ALLOW">Permitir conexiones no seguras</string>
+    <string name="service_gui_JBR_NON_SSL_SUMMARY">Desactivar el cifrado SSL/TLS en la conexión al servidor</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Anular las opciones predeterminadas del servidor</string>
     <string name="service_gui_JBR_PASSWORD">Introducir la contraseña</string>
     <string name="service_gui_JBR_PING_INTERVAL">Intervalo de ping (1~3600 segundos)</string>
@@ -1180,7 +1183,6 @@
     <string name="service_gui_JBR_RESURCE_NAME">Nombre del recursoe</string>
     <string name="service_gui_JBR_SERVER">Conectar al servidor con IP</string>
 	<string name="service_gui_JBR_SERVER_OPTIONS">Opciones del servidor</string>
-    <string name="service_gui_JBR_SSL_SUMMARY">Desactivar el cifrado SSL/TLS en la conexión al servidor</string>
     <string name="service_gui_JBR_STORE_PASSWORD">Recordar la contraseña</string>
     <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Guardar la contraseña para el inicio automático de sesión al iniciar la aplicación</string>
     <string name="service_gui_JBR_STUN_LIST">Servidor STUN/TURN adicionales&#8230;</string>

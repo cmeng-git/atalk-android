@@ -171,10 +171,8 @@ public class SRTCPCryptoContext extends BaseSRTPCryptoContext
 
                 case SRTPPolicy.SKEIN_AUTHENTICATION:
                     // Skein MAC uses number of bits as MAC size, not just bytes
-                    mac.init(new ParametersForSkein(
-                            new KeyParameter(authKey),
-                            ParametersForSkein.Skein512,
-                            tagStore.length * 8));
+                    mac.init(new ParametersForSkein(new KeyParameter(authKey),
+                            ParametersForSkein.Skein512, tagStore.length * 8));
                     break;
             }
 

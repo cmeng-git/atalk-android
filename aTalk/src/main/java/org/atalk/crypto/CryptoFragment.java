@@ -106,7 +106,12 @@ public class CryptoFragment extends OSGiFragment
     private MenuItem mOtr_Session;
 
     private XMPPConnection mConnection;
+
+    /**
+     * Can either be Contact or ChatRoom
+     */
     private Object mDescriptor;
+
     private OmemoManager mOmemoManager;
     private OmemoStore mOmemoStore;
 
@@ -1067,8 +1072,7 @@ public class CryptoFragment extends OSGiFragment
     }
 
     /**
-     * Note: mDescriptor is always null when first triggers by chatFragment. It gets updated in
-     * notifyCryptoModeChanged()
+     * Note: mDescriptor is always null when first triggers by chatFragment. It gets updated in notifyCryptoModeChanged()
      *
      * @param listener CryptoModeChangeListener added by chatFragment.
      * @see #notifyCryptoModeChanged(int)

@@ -181,7 +181,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
         }
         metaContactList.filterData(queryStr);
 
-        results = new ArrayList<ResultGroup>();
+        results = new ArrayList<>();
         notifyDataSetChanged();
     }
 

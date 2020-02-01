@@ -21,25 +21,25 @@ public interface ChatMessage
 {
     /* DB database column  fields */
     String TABLE_NAME = "messages";
-    String UUID = "uuid";
+    String UUID = "uuid";   // msg Unique identification in database (deletion Id)
     String SESSION_UUID = "chatSessionUuid"; // chatSession Uuid
     String TIME_STAMP = "timeStamp"; // TimeStamp
-    String ENTITY_JID = "entityJid"; // contactJid or chatRoomJid (nick)
-    String JID = "Jid";                // chatRoom member FullJid
-    String MSG_BODY = "msgBody";    // message content
-    String ENC_TYPE = "encType";    // see IMessage for the ENCRYPTION_xxx & MASK definitions
-    String MSG_TYPE = "msgType";    // as defined in below * message type *
-    String DIRECTION = "direction"; // in or out
+    String ENTITY_JID = "entityJid"; // nick (muc); contact BareJid (others)
+    String JID = "Jid";              // chatRoom member: contact FullJid (msg out); user BareJid (msg in)
+    String MSG_BODY = "msgBody";     // message content
+    String ENC_TYPE = "encType";     // see IMessage for the ENCRYPTION_xxx & MASK definitions
+    String MSG_TYPE = "msgType";     // as defined in below * message type *
+    String DIRECTION = "direction";  // in or out
     String STATUS = "status";        // see STATUS_xxx
-    String FILE_PATH = "filePath";  // filepath
-    String FINGERPRINT = "OmemoFingerprint";    // rx fingerPrint
-    String STEALTH_TIMER = "stealthTimer";        // stealth timer
+    String FILE_PATH = "filePath";   // filepath
+    String FINGERPRINT = "OmemoFingerprint"; // rx fingerPrint
+    String STEALTH_TIMER = "stealthTimer";   // stealth timer
     String CARBON = "carbon";
-    String READ = "read";        // read status
-    String OOB = "oob";            // 0
+    String READ = "read";            // read status
+    String OOB = "oob";              // 0
     String ERROR_MSG = "errorMsg";
-    String SERVER_MSG_ID = "serverMsgId";  // muc msg id???
-    String REMOTE_MSG_ID = "remoteMsgId";  // thread?
+    String SERVER_MSG_ID = "serverMsgId";    // chat msg Id - message out
+    String REMOTE_MSG_ID = "remoteMsgId";    // chat msg Id - message in
 
     String ME_COMMAND = "/me ";
 

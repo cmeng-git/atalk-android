@@ -118,7 +118,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_CHAT_ROOM" />
+            android:text="@string/service_gui_CHATROOM" />
 
         <CheckBox
             android:id="@+id/cb_bookmark"

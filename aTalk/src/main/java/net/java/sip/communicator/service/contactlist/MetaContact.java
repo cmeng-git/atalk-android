@@ -41,8 +41,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * Returns the default protocol specific <tt>Contact</tt> to use when
      * communicating with this <tt>MetaContact</tt>.
      *
-     * @return the default <tt>Contact</tt> to use when communicating with
-     * this <tt>MetaContact</tt>
+     * @return the default <tt>Contact</tt> to use when communicating with this <tt>MetaContact</tt>
      */
     Contact getDefaultContact();
 
@@ -93,8 +92,7 @@ public interface MetaContact extends Comparable<MetaContact>
     boolean containsContact(Contact protocolContact);
 
     /**
-     * Returns the number of protocol specific <tt>Contact</tt>s that this
-     * <tt>MetaContact</tt> contains.
+     * Returns the number of protocol specific <tt>Contact</tt>s that this <tt>MetaContact</tt> contains.
      *
      * @return an int indicating the number of protocol specific contacts merged
      * in this <tt>MetaContact</tt>
@@ -145,8 +143,7 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns a String identifier (the actual contents is left to
-     * implementations) that uniquely represents this <tt>MetaContact</tt>
-     * in the containing <tt>MetaContactList</tt>
+     * implementations) that uniquely represents this <tt>MetaContact</tt> in the containing <tt>MetaContactList</tt>
      *
      * @return String
      */
@@ -260,8 +257,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * specified <tt>value</tt>.
      * <p>
      * The user-defined association created by this method and stored in this
-     * instance is not serialized by this instance and is thus only meant for
-     * runtime use.
+     * instance is not serialized by this instance and is thus only meant for runtime use.
      * </p>
      * <p>
      * The storage of the user data is implementation-specific and is thus not

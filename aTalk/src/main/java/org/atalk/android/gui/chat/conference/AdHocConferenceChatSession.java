@@ -403,7 +403,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
              */
             if (!evt.isReasonUserList()) {
                 statusMessage = aTalkApp.getResString(
-                        R.string.service_gui_CHAT_ROOM_USER_JOINED, sourceChatRoom.getName());
+                        R.string.service_gui_CHATROOM_USER_JOINED, sourceChatRoom.getName());
                 sessionRenderer.updateChatContactStatus(chatContact, statusMessage);
             }
         }
@@ -411,11 +411,11 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
                 || eventType.equals(AdHocChatRoomParticipantPresenceChangeEvent.CONTACT_QUIT)) {
             if (eventType.equals(AdHocChatRoomParticipantPresenceChangeEvent.CONTACT_LEFT)) {
                 statusMessage = aTalkApp.getResString(
-                        R.string.service_gui_CHAT_ROOM_USER_LEFT, sourceChatRoom.getName());
+                        R.string.service_gui_CHATROOM_USER_LEFT, sourceChatRoom.getName());
             }
             else if (eventType.equals(AdHocChatRoomParticipantPresenceChangeEvent.CONTACT_QUIT)) {
                 statusMessage = aTalkApp.getResString(
-                        R.string.service_gui_CHAT_ROOM_USER_QUIT, sourceChatRoom.getName());
+                        R.string.service_gui_CHATROOM_USER_QUIT, sourceChatRoom.getName());
             }
 
             for (ChatContact<?> chatContact : chatParticipants) {

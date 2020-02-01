@@ -3,13 +3,14 @@
     android:layout_width="fill_parent"
     android:layout_height="@dimen/contact_list_row_height"
     android:background="@color/white"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
     android:descendantFocusability="blocksDescendants">
+
     <RelativeLayout
         android:id="@+id/avatarLayout"
         android:layout_width="@dimen/contact_list_avatar_width"
         android:layout_height="fill_parent"
-        android:layout_marginBottom="1dp"
-        android:layout_marginStart="5dp"
         android:padding="5dp">
 
         <ImageView
@@ -17,34 +18,33 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="1px"
             android:src="@drawable/avatar" />
 
         <ImageView
             android:id="@+id/contactStatusIcon"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_alignParentBottom="true"
+            android:layout_alignBottom="@id/avatarIcon"
             android:layout_alignParentEnd="true"
             android:src="@drawable/contact_online" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/contact_view"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/avatarLayout"
-        android:layout_toStartOf="@+id/callButtonLayout"
-        android:orientation="vertical">
+        android:layout_toStartOf="@+id/rightShadowBottom"
+        android:gravity="bottom"
+        android:paddingBottom="4dp"
+        android:paddingStart="10dp">
 
         <TextView
             android:id="@+id/displayName"
             style="@style/MediumFont"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="start"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Displayname@server.com"
@@ -53,10 +53,8 @@
         <TextView
             android:id="@+id/statusMessage"
             style="@style/SmallFont"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/displayName"
             android:layout_gravity="start"
             android:layout_marginBottom="5dp"
             android:ellipsize="end"
@@ -64,15 +62,14 @@
             android:maxLines="1"
             android:text="Some long status message"
             android:textColor="@color/list_details_selection_color" />
-    </RelativeLayout>
+    </LinearLayout>
 
     <org.atalk.android.gui.widgets.UnreadCountCustomView
         android:id="@+id/unread_count"
         android:layout_width="@dimen/IconSize"
         android:layout_height="@dimen/IconSize"
         android:layout_toStartOf="@+id/callButtonLayout"
-        android:layout_centerVertical="true"
-        android:visibility="gone" />
+        android:layout_centerVertical="true" />
 
     <LinearLayout
         android:id="@+id/callButtonLayout"

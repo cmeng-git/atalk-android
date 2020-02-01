@@ -302,9 +302,13 @@ public class OperationSetTelephonyConferencingJabberImpl
      */
     @Override
     protected String parseAddressString(String calleeAddressString)
-            throws OperationFailedException, XmppStringprepException
+            throws OperationFailedException
     {
-        return getBasicTelephony().getFullCalleeURI(JidCreate.from(calleeAddressString)).toString();
+        try {
+            return getBasicTelephony().getFullCalleeURI(JidCreate.from(calleeAddressString)).toString();
+        } catch (XmppStringprepException | IllegalArgumentException e) {
+            throw new OperationFailedException("Could not parse: " + calleeAddressString, 0, e);
+        }
     }
 
     /**

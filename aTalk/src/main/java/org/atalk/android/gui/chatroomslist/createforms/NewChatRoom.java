@@ -14,6 +14,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
  * The <tt>NewChatRoom</tt> is meant to be used from the <tt>CreateChatRoomWizard</tt>, to collect information concerning the new chat room.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class NewChatRoom
 {
@@ -38,7 +39,7 @@ public class NewChatRoom
 	public List<String> getUserList()
 	{
 		if (userList == null || userList.size() < 1)
-			return new LinkedList<String>();
+			return new LinkedList<>();
 
 		return userList;
 	}

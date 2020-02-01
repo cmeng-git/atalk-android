@@ -70,7 +70,7 @@ public class SSRCInfoExtensionElement extends AbstractExtensionElement
     {
         try {
             return JidCreate.from(getAttributeAsString(OWNER_ATTR_NAME));
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid owner", e);
         }
     }

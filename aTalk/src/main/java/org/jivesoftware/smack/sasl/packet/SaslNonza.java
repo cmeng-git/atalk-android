@@ -182,7 +182,7 @@ public interface SaslNonza extends Nonza {
 
     /**
      * A SASL failure stream element, also called "SASL Error".
-     * @see <a href="https://xmpp.org/rfcs/rfc6120.html#sasl-errors">RFC 6120 6.5 SASL Errors</a>
+     * @see <a href="http://xmpp.org/rfcs/rfc6120.html#sasl-errors">RFC 6120 6.5 SASL Errors</a>
      */
     class SASLFailure extends AbstractError implements SaslNonza {
         public static final String ELEMENT = "failure";

@@ -173,7 +173,7 @@ public class ConferenceChatTransport implements ChatTransport
     {
         // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
         // return ((tnOpSet != null) && isChatStateSupported);
-        return isChatStateSupported;
+        return (isChatStateSupported && chatRoom.isJoined());
     }
 
     public static void setChatStateSupport(boolean isEnable)
@@ -193,7 +193,7 @@ public class ConferenceChatTransport implements ChatTransport
     {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
-            aTalkApp.showToastMessage(R.string.service_gui_CHAT_ROOM_NOT_JOINED);
+            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_NOT_JOINED);
             return;
         }
 

@@ -355,7 +355,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      *
      * @param string the String to sasl prep.
      * @return the given String SASL preped
-     * @see <a href="https://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
+     * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
      */
     protected static String saslPrep(String string) {
         return Normalizer.normalize(string, Form.NFKC);

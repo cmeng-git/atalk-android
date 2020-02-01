@@ -1,5 +1,39 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.1.7 (1117)
+Author:         cmeng
+Upload Date:	02/02/2020
+- Redesign ChatRoomListFragment to ensure all listeners are retained when a group chat session is opened
+- ChatRoomListAdapter.dispose() should only be executed onDestroy(). Otherwise all chatRoom listeners are removed
+- Enhance chatRoom destroy to support reason and alternate room entry to continue discussion
+  creating new ChatRoomDestroyDialog and remove chatRoom from EntityListHelper#removeEntity()
+- Fix incorrect implementation of chatRoom destroy alternateAddress i.e. new room to join (not implemented in v2.1.6)
+- Show Destroy chatRoom option only if user is the owner in ChatRoomList context and conference chat session
+  Save UserRole in database for later retrieval when user yet to join the chatRoom
+- Update getUserRole() and store userRole to DB for later retrieval for non-joined room
+- ChatRoomMemberRole: add method fromString to convert string to Enum value
+- ConferenceChatTransport#allowsChatStateNotifications to include chatRoom.isJoined() as one of the test condition
+  This happen when a joined room is destroyed, to prevent chatState init or sending
+- Do not send chatState when user left the room or room has already destroyed
+- Patch smack MultiUserChat so the room destroy state is properly delivered and user/charRoom status are sync and updated
+- Fix improper handling of ChatRoomJabberImpl#invitationDeclined() in sourceMember.getContact() may not be available causing:
+  IllegalArgumentException: Not a valid combination of localpart, domainpart and resource
+- Change ChatRoomInfoChangeDialog implementation to use DialogActivity.showCustomDialog().
+- Change context menu in ContactList and RoomList to use PopupMenu instead of android ContextMenu (clipped item lists)
+- ServerPersistentStoresRefreshDialog minimize use of the static in main class
+- ChatInviteDialog clean up: ensure correct highlight of selected contacts and Invite button state
+- Add user account option to specify Minimum TLS Version in connection setup (Default TLS 1.2)
+- Replace obsoleted SHA-1 with SHA-256 for use with DTLS as recommended by XEP-0414: Cryptographic Hash Function Recommendations for XMPP
+- Fix SDES encryption and ensure security protocol name and status are properly reflected in VideoCallActivity (zrtp, sdes etc).
+- Cleanup MetaHistoryServiceImpl passing Object descriptor should either be MetaContact or ChatRoom
+- Cleanup convertHistoryRecordToMessageEvent#convertHistoryRecordToMessageEvent and remove embedded ChatRoomMemberImpl class
+- Allow deletion of the any stray system messages in the chat session
+- Disable DTLS_SRTP option as the source is not compatible with BC1.6.2 (need further work on this)
+- Remove unused MUC classes i.e. CustomContactActionsService, MUCGroupCustomContactActionService and cleanup MUCActivator
+- Remove JabberChatRoomMember class, not much of use
+- upgrade to jbosh:0.9.2
+
+=========================================================================
 Version:		2.1.6 (1116)
 Author:         cmeng
 Upload Date:	01/21/2020

@@ -300,7 +300,7 @@ public class OperationSetBasicTelephonyJabberImpl
         Jid calleeJid = null;
         try {
             calleeJid = JidCreate.from(calleeAddress);
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             e.printStackTrace();
         }
 

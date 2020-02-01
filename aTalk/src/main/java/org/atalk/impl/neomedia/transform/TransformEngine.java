@@ -19,12 +19,12 @@ public interface TransformEngine
 	 *
 	 * @return the <tt>PacketTransformer</tt> for RTP packets
 	 */
-	public PacketTransformer getRTPTransformer();
+	PacketTransformer getRTPTransformer();
 
 	/**
 	 * Gets the <tt>PacketTransformer</tt> for RTCP packets.
 	 *
 	 * @return the <tt>PacketTransformer</tt> for RTCP packets
 	 */
-	public PacketTransformer getRTCPTransformer();
+	PacketTransformer getRTCPTransformer();
 }

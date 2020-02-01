@@ -18,11 +18,9 @@ package org.atalk.android.gui.chatroomslist;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
-import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoomMember;
@@ -37,7 +35,6 @@ import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
@@ -87,6 +84,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
     {
         RoomInfo chatRoomInfo = null;
         String errMsg;
+        String EMPTY = "";
 
         @Override
         protected void onPreExecute()
@@ -119,60 +117,43 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
         protected void onPostExecute(Void result)
         {
             super.onPostExecute(result);
-            String textValue;
+
             if (chatRoomInfo != null) {
                 TextView textView = contentView.findViewById(R.id.roominfo_name);
                 textView.setText(chatRoomInfo.getName());
 
                 textView = contentView.findViewById(R.id.roominfo_subject);
-                textView.setText(chatRoomInfo.getSubject());
+                textView.setText(toString(chatRoomInfo.getSubject(), EMPTY));
 
                 textView = contentView.findViewById(R.id.roominfo_description);
-                textValue = chatRoomInfo.getDescription();
-                if (TextUtils.isEmpty(textValue))
-                    textValue = mChatRoomWrapper.getBookmarkName();
-                textView.setText(textValue);
+                textView.setText(toString(chatRoomInfo.getDescription(), mChatRoomWrapper.getBookmarkName()));
 
                 textView = contentView.findViewById(R.id.roominfo_occupants);
-                StringBuilder memberList = new StringBuilder();
-                List<ChatRoomMember> occupants = mChatRoomWrapper.getChatRoom().getMembers();
-                for (ChatRoomMember member : occupants) {
-                    ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
-                    memberList.append(occupant.getNickName())
-                            .append(" - ")
-                            .append(occupant.getJabberID())
-                            .append("; ");
+                int count = chatRoomInfo.getOccupantsCount();
+                if (count == -1) {
+                    List<ChatRoomMember> occupants = mChatRoomWrapper.getChatRoom().getMembers();
+                    count = occupants.size();
                 }
-                textView.setText(memberList);
+                textView.setText(toValue(count, EMPTY));
 
                 textView = contentView.findViewById(R.id.maxhistoryfetch);
-                int value = chatRoomInfo.getMaxHistoryFetch();
-                if (value < 0)
-                    textValue = "not specified";
-                else
-                    textValue = Integer.toString(value);
-                textView.setText(textValue);
+                textView.setText(toValue(chatRoomInfo.getMaxHistoryFetch(),
+                        getString(R.string.service_gui_INFO_NOT_SPECIFIED)));
 
                 textView = contentView.findViewById(R.id.roominfo_contactjid);
-                // getContactJids() may throw NPE if contact == null
-                List<EntityBareJid> contactJids = new ArrayList<>();
                 try {
-                    contactJids = chatRoomInfo.getContactJids();
-                    textValue = contactJids.get(0).toString();
-                    textView.setText(textValue);
+                    List<EntityBareJid> contactJids = chatRoomInfo.getContactJids();
+                    if (!contactJids.isEmpty())
+                        textView.setText(contactJids.get(0));
                 } catch (NullPointerException e) {
                     Timber.e("Contact Jids exception: %s", e.getMessage());
                 }
 
                 textView = contentView.findViewById(R.id.roominfo_lang);
-                textValue = chatRoomInfo.getLang();
-                textValue = (textValue == null) ? "" : textValue;
-                textView.setText(textValue);
+                textView.setText(toString(chatRoomInfo.getLang(), EMPTY));
 
                 textView = contentView.findViewById(R.id.roominfo_ldapgroup);
-                textValue = chatRoomInfo.getLdapGroup();
-                textValue = (textValue == null) ? "" : textValue;
-                textView.setText(textValue);
+                textView.setText(toString(chatRoomInfo.getLdapGroup(), EMPTY));
 
                 CheckBox cbox = contentView.findViewById(R.id.muc_membersonly);
                 cbox.setChecked(chatRoomInfo.isMembersOnly());
@@ -190,8 +171,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
                 cbox.setChecked(chatRoomInfo.isModerated());
 
                 cbox = contentView.findViewById(R.id.room_subject_modifiable);
-                Boolean state = chatRoomInfo.isSubjectModifiable();
-                cbox.setChecked((state != null) ? state : false);
+                cbox.setChecked(toBoolean(chatRoomInfo.isSubjectModifiable()));
             }
             else {
                 TextView textView = contentView.findViewById(R.id.roominfo_name);
@@ -201,6 +181,40 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
                 textView.setTextColor(getResources().getColor(R.color.red));
                 textView.setText(errMsg);
             }
+        }
+
+        /**
+         * Return String value of the integer value
+         *
+         * @param value Integer
+         * @param defaultValue return default string if int == -1
+         * @return String value of the specified Integer value
+         */
+        private String toValue(int value, String defaultValue)
+        {
+            return (value != -1) ? Integer.toString(value) : defaultValue;
+        }
+
+        /**
+         * Return string if not null or default
+         * @param text test String
+         * @param defaultValue return default string
+         * @return text if not null else defaultValue
+         */
+        private String toString(String text, String defaultValue)
+        {
+            return (text != null) ? text : defaultValue;
+        }
+
+        /**
+         * Return Boolean state if not null else false
+         *
+         * @param state Boolean state
+         * @return Boolean value if not null else false
+         */
+        private boolean toBoolean(Boolean state)
+        {
+            return (state != null) ? state : false;
         }
     }
 }

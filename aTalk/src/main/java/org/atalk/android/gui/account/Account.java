@@ -447,7 +447,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
         Jid jid = null;
         try {
             jid = JidCreate.from(mAccountID.getUserID());
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             e.printStackTrace();
         }
         return jid;

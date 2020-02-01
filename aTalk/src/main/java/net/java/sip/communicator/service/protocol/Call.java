@@ -213,7 +213,7 @@ public abstract class Call extends DataObject
     {
         CallPeerEvent event = new CallPeerEvent(sourceCallPeer, this, eventID, delayed);
 
-        Timber.d("Dispatching a CallPeer event to %s listeners. The event is: %s",
+        Timber.d("Dispatching CallPeer event to %s listeners. The event is: %s",
                 callListeners.size(), event);
 
         Iterator<CallChangeListener> listeners;

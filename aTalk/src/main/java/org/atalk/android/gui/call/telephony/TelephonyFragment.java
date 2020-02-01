@@ -231,7 +231,7 @@ public class TelephonyFragment extends OSGiFragment
         if (recipient.contains("@")) {
             try {
                 Jid phoneJid = JidCreate.from(recipient);
-            } catch (XmppStringprepException e) {
+            } catch (XmppStringprepException | IllegalArgumentException e) {
                 aTalkApp.showToastMessage(R.string.unknown_recipient);
                 return;
             }

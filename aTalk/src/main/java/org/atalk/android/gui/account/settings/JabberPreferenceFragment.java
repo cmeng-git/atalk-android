@@ -75,10 +75,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             = aTalkApp.getResString(R.string.pref_key_is_server_overridden);
     public static final String P_KEY_SERVER_ADDRESS = aTalkApp.getResString(R.string.pref_key_server_address);
     public static final String P_KEY_SERVER_PORT = aTalkApp.getResString(R.string.pref_key_server_port);
-    private static final String P_KEY_ALLOW_NON_SECURE_CONN = aTalkApp.getAppResources()
-            .getString(R.string.pref_key_allow_non_secure_conn);
-    private static final String P_KEY_MINIMUM_TLS_VERSION = aTalkApp.getAppResources()
-            .getString(R.string.pref_key_minimum_TLS_version);
+    private static final String P_KEY_ALLOW_NON_SECURE_CONN = aTalkApp.getResString(R.string.pref_key_allow_non_secure_conn);
+    private static final String P_KEY_MINIMUM_TLS_VERSION = aTalkApp.getResString(R.string.pref_key_minimum_TLS_version);
 
     // Jabber Resource
     private static final String P_KEY_AUTO_GEN_RESOURCE = aTalkApp.getResString(R.string.pref_key_auto_gen_resource);
@@ -102,8 +100,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 
     // Telephony
     private static final String P_KEY_CALLING_DISABLED = aTalkApp.getResString(R.string.pref_key_calling_disabled);
-    private static final String P_KEY_OVERRIDE_PHONE_SUFFIX = aTalkApp.getAppResources()
-            .getString(R.string.pref_key_override_phone_suffix);
+    private static final String P_KEY_OVERRIDE_PHONE_SUFFIX = aTalkApp.getResString(R.string.pref_key_override_phone_suffix);
     private static final String P_KEY_TELE_BYPASS_GTALK_CAPS
             = aTalkApp.getResString(R.string.pref_key_tele_bypass_gtalk_caps);
 
@@ -364,26 +361,20 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
                     ProtocolProviderServiceJabberImpl.defaultMinimumTLSversion);
 
             boolean isSupported = false;
-            try
-            {
-                String supportedProtocols[] =
-                        ((SSLSocket) SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
+            try {
+                String[] supportedProtocols
+                        = ((SSLSocket) SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
 
-                for (String suppProto : supportedProtocols)
-                {
-                    if (suppProto.equals(newMinimumTLSVersion))
-                    {
+                for (String suppProto : supportedProtocols) {
+                    if (suppProto.equals(newMinimumTLSVersion)) {
                         isSupported = true;
                         break;
                     }
                 }
-
-            } catch (IOException e)
-            {
+            } catch (IOException ignore) {
             }
 
-            if (!isSupported)
-            {
+            if (!isSupported) {
                 newMinimumTLSVersion = ProtocolProviderServiceJabberImpl.defaultMinimumTLSversion;
             }
             jbrReg.setMinimumTLSversion(newMinimumTLSVersion);

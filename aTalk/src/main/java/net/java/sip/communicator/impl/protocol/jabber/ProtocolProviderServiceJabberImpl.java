@@ -141,7 +141,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.net.*;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -483,7 +484,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * See {@link #initSmackDefaultSettings()}
      */
     public static int defaultPingInterval = 240;  // 4 minutes
-
 
     public static String defaultMinimumTLSversion = TLSUtils.PROTO_TLSV1_2;
 
@@ -985,35 +985,28 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             Timber.w("Attempt on connection that is not null and isConnected %s", mAccountID.getAccountJid());
             disconnectAndCleanConnection();
         }
-
         config.setSocketFactory(SocketFactory.getDefault());
 
-        String supportedProtocols[] = {"TLSv1", "TLSv1.1", "TLSv1.2"};
-        try
-        {
-            supportedProtocols =
-                    ((SSLSocket)SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
-        } catch (IOException e)
-        {
+        String[] supportedProtocols = {"TLSv1", "TLSv1.1", "TLSv1.2"};
+        try {
+            supportedProtocols = ((SSLSocket) SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
+        } catch (IOException e) {
             // Use default list
         }
         Arrays.sort(supportedProtocols);
 
         // Determine enabled TLS protocol versions using getMinimumTLSversion
-        ArrayList<String> enabledTLSProtocols = new ArrayList<String>();
-        for (int prot = supportedProtocols.length - 1; prot >= 0; prot--)
-        {
+        ArrayList<String> enabledTLSProtocols = new ArrayList<>();
+        for (int prot = supportedProtocols.length - 1; prot >= 0; prot--) {
             final String prot_version = supportedProtocols[prot];
             enabledTLSProtocols.add(prot_version);
-            if (prot_version.equals(mAccountID.getMinimumTLSversion()))
-            {
+            if (prot_version.equals(mAccountID.getMinimumTLSversion())) {
                 break;
             }
         }
-        String enabledTLSProtocolsArray[]
-                = new String[enabledTLSProtocols.size()];
-        enabledTLSProtocols.toArray(enabledTLSProtocolsArray);
 
+        String[] enabledTLSProtocolsArray = new String[enabledTLSProtocols.size()];
+        enabledTLSProtocols.toArray(enabledTLSProtocolsArray);
         config.setEnabledSSLProtocols(enabledTLSProtocolsArray);
 
         // Cannot use a custom SSL context with DNSSEC enabled
@@ -1025,12 +1018,13 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * BOSH connection does not support TLS;
              * XEP-206 Note: The client SHOULD ignore any Transport Layer Security (TLS) feature since
              * BOSH channel encryption SHOULD be negotiated at the HTTP layer.
-            */
+             */
             boolean tlsRequired;
             if (isBosh) {
                 tlsRequired = false;
                 config.setSecurityMode(SecurityMode.disabled);
-            } else {
+            }
+            else {
                 /*
                  * user have the possibility to disable TLS but in this case, it will not be able to
                  * connect to a server which requires TLS;

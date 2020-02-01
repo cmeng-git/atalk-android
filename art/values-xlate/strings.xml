@@ -52,7 +52,6 @@
     <string name="no_application_found_to_open_file">No application found to open file</string>
     <string name="password">password</string>
     <string name="service_gui_PASSWORD">Password:</string>
-    <string name="reason_label">Reason:</string>
     <string name="send_process_signal">Send Process Signal</string>
     <string name="show_call_info">Call info</string>
     <string name="show_call_zrtp_info">"Call ZRTP info</string>
@@ -140,6 +139,7 @@
     <string name="service_gui_CONTACT_INVALID">The selected contact is not valid: %1$s</string>
     <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
+    <string name="service_gui_REASON_LABEL">Reason:</string>
     <string name="service_gui_SHARE">Share…</string>
     <string name="service_gui_SHARE_TEXT">Share text&#8230;</string>
     <string name="service_gui_SHARE_FILE">Share file&#8230;</string>
@@ -158,32 +158,30 @@
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s conference</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Conferences</string>
-    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">You have already joined the %1$s chat room.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s chat room configuration</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Failed to obtain the %1$s chat room configuration form.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Could not obtain the %1$s chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">List on the right contains users that have member role in this chat room. When chat room is \'Members-only\' those will be the users that are allowed to join.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Edit Members List</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">An error occurred while trying to submit the configuration form for chat room %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_JOIN">Join Chat Room</string>
-    <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Removes the selected room from the list of saved rooms</string>
-    <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Saves the chat room for future use</string>
-    <string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">Message sending is forbidden (voice revoked)</string>
-    <string name="service_gui_CHAT_ROOM_USER_JOINED">has joined %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_KICKED">has been kicked from %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_LEFT">has left %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_QUIT">has quit %1$s</string>
-    <string name="service_gui_CHAT_ROOM_NAME">Chat room name</string>
-    <string name="service_gui_CHAT_ROOM_NAME_INFO">In the field below enter the name of the chat room that you would like to create.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_EXIST">The %1$s room was not found in the %2$s server. Please verify if the name you typed is correct.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_CONNECTED">You need to be online in order to join the %1$s chat room.</string>
-    <string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">You need to be online in order to leave a chat room.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_JOINED">You need to have joined the chat room in order to do further operations with it.</string>
-    <string name="service_gui_CHAT_ROOM_OPTIONS">Chat room options</string>
-    <string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">The %1$s chat room has requested a password.</string>
-    <string name="service_gui_CHAT_ROOM">Chat Room</string>
-    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">Room subject changed: \'%1$s\' => \'%2$s\'</string>
-    <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
+    <string name="service_gui_CHATROOM">Chat Room</string>
+    <string name="service_gui_CHATROOM_ALREADY_JOINED">You have already joined the %1$s chat room.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">%1$s chat room configuration</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Failed to obtain the %1$s chat room configuration form.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Could not obtain the %1$s chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">List on the right contains users that have member role in this chat room. When chat room is \'Members-only\' those will be the users that are allowed to join.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Edit Members List</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">An error occurred while trying to submit the configuration form for chat room %1$s.</string>
+    <string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">Removes the selected room from the list of saved rooms</string>
+    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Saves the chat room for future use</string>
+    <string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">Message sending is forbidden (voice revoked)</string>
+    <string name="service_gui_CHATROOM_USER_JOINED">has joined %1$s</string>
+    <string name="service_gui_CHATROOM_USER_KICKED">has been kicked from %1$s</string>
+    <string name="service_gui_CHATROOM_USER_LEFT">has left %1$s</string>
+    <string name="service_gui_CHATROOM_USER_QUIT">has quit %1$s</string>
+    <string name="service_gui_CHATROOM_NAME">Chat room name</string>
+    <string name="service_gui_CHATROOM_NAME_INFO">In the field below enter the name of the chat room that you would like to create.</string>
+    <string name="service_gui_CHATROOM_NOT_EXIST">The %1$s room was not found in the %2$s server. Please verify if the name you typed is correct.</string>
+    <string name="service_gui_CHATROOM_NOT_CONNECTED">You need to be online in order to join the %1$s chat room.</string>
+    <string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">You need to be online in order to leave a chat room.</string>
+    <string name="service_gui_CHATROOM_NOT_JOINED">You need to have joined the chat room in order to do further operations with it.</string>
+    <string name="service_gui_CHATROOM_OPTIONS">Chat room options</string>
+    <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">The %1$s chat room has requested a password.</string>
+    <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Room subject changed: \'%1$s\' => \'%2$s\'</string>
     <string name="service_gui_CHAT_ROOMS">Chat rooms</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s is now known as %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Clear custom messages</string>
@@ -213,15 +211,11 @@
 
     <string name="service_gui_CREATE">Create</string>
     <string name="service_gui_CREATE_CALL_FAILED">Failed to create the call.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM">Create chat room&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Failed to create chat room for:\n%1$s</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Create chat room wizard</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Create a conference call&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Create a conference chat&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Create group&#8230;</string>
     <string name="service_gui_CREATE_GROUP_NAME">In the field below enter the name of the group you would like to create.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Your contact list does not contain any groups. Please create a group first (File/Create group).</string>
-    <string name="service_gui_ROOM_NAME">chatroom</string>
 
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
@@ -246,9 +240,7 @@
     <!-- PTT Chat -->
     <string name="chat_noaudio_buddyOffline">Audio chat with an offline recipient is not allowed.</string>
     <string name="chat_RecordCancel">&lt; slide left\nto cancel</string>
-    <string name="chat_soundRecordCancelButton">Cancel</string>
     <string name="chat_soundRecordStartButton">Start Recording</string>
-    <string name="chat_soundRecordStopButton">Done</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitude:</string>
@@ -310,7 +302,6 @@
     <string name="service_gui_EXIT">Exit</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Extended Away</string>
     <string name="service_gui_FAILED_STATUS">Call failed</string>
-    <string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Failed to join chat room with name: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Free for chat</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -363,6 +354,8 @@
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Delete media from my phone</string>
 
+    <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Alternate Venue:</string>
+    <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">ChatRoom Bookmark</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
     <string name="service_gui_CHATROOM_AUTOJOIN">Auto Join</string>
@@ -374,17 +367,39 @@
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Turn off history for this chatRoom</string>
     <string name="service_gui_CHATROOM_INFO">ChatRoom info</string>
 
-    <string name="service_gui_DESTROY_CHATROOM">Destroy this chatRoom</string>
-    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Error occurred while destroying chat room:\n%1$s</string>
-    <string name="service_gui_DESTROY_CHATROOM_ERROR">Failed to remove chatRoom on server:\n\'%1$s\'\n%2$s\n\nProceed to purge local chatRoom\nYou may still recreate/rejoin chatRoom later.</string>
-    <string name="service_gui_DESTROY_CHATROOM_TEXT">Account owner: %1$s.\nAre you sure you want to destroy\n\'%2$s\'\nand all its chat history?</string>
-    <string name="service_gui_DESTROY_CHATROOM_TITLE">Destroy chatRoom</string>
-    <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\' has been removed Successfully!</string>
+    <string name="service_gui_CHATROOM_CREATE">Create chat room&#8230;</string>
+    <string name="service_gui_CHATROOM_CREATE_ERROR">Failed to create chat room for:\n%1$s</string>
+    <string name="service_gui_CHATROOM_CREATE_WIZARD">Create chat room wizard</string>
+
+    <string name="service_gui_CHATROOM_DESTROY">Destroy this chatRoom</string>
+    <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">Error occurred while destroying chat room:\n%1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_ERROR">Failed to remove chatRoom on server:\n\'%1$s\'\n%2$s\n\nProceed to purge local chatRoom.</string>
+    <string name="service_gui_CHATROOM_DESTROY_MESSAGE">This group chat has been destroyed!\nReason: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_NOTE">To inform other participants, please enter a reason and an alternative chatRoom venue to join.</string>
+    <string name="service_gui_CHATROOM_DESTROY_PROMPT">Account owner: %1$s.\nAre you sure you want to destroy\n\'%2$s\'\nand all its chat history?</string>
+    <string name="service_gui_CHATROOM_DESTROY_REASON">inactive group chat</string>
+    <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\' has been removed Successfully!</string>
+    <string name="service_gui_CHATROOM_DESTROY_TITLE">Destroy chatRoom</string>
+
+    <string name="service_gui_CHATROOM_JOIN">Join chat room</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Failed to join room:\n%1$s with nickname: %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Failed to join chat room %1$s:\n%2$s</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD"> The chat room requests a password.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION"> The chat room requires registration.</string>
+    <string name="service_gui_CHATROOM_JOIN_TITLE">Join chat room</string>
+    <string name="service_gui_CHATROOM_JOIN_NAME">Please enter the name of the chat room you would like to join.</string>
+    <string name="service_gui_CHATROOM_JOIN_WIZARD">Join chat room wizard</string>
+
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha challenge</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">The chat room is protected with captcha challenge</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">The CAPTCHA verification is valid</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">The CAPTCHA verification has failed</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA challenge timeout;\nplease rejoin chatRoom and try again.</string>
 
     <string name="service_gui_INCOMING_CALL">Incoming call received from: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Incoming call</string>
     <string name="service_gui_INITIATING_CALL_STATUS">Initiating call</string>
-    <string name="service_gui_INVITATION">Invitation text:</string>
+    <string name="service_gui_INVITATION">Invitation message:</string>
     <string name="service_gui_INVITATION_RECEIVED">Invitation received</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s has invited you to join %2$s chat room. You could accept, reject or ignore this invitation.</string>
     <string name="service_gui_INVITATION_REJECTED">%1$s has rejected your invitation to join chat room. Reason: %2$s.</string>
@@ -402,7 +417,6 @@
 
     <string name="service_gui_ADDRESS">Address</string>
     <string name="service_gui_CITY">City</string>
-    <string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Close</string>
     <string name="service_gui_COUNTRY">Country</string>
     <string name="service_gui_EMAIL">Email</string>
     <string name="service_gui_EMAILS">Emails</string>
@@ -415,19 +429,6 @@
     <string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Join an existing video conference</string>
     <string name="service_gui_JOIN_VIDEO">Join video</string>
     <string name="service_gui_JOB_TITLE">Job title</string>
-    <string name="service_gui_JOIN_CHAT_ROOM">Join chat room&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Failed to join room:\n%1$s with nickname: %2$s.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD"> The chat room requests a password.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION"> The chat room requires registration.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Join chat room</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_NAME">Please enter the name of the chat room you would like to join.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Join chat room wizard</string>
-
-    <string name="captcha_challenge">Captcha challenge</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">The chat room is protected with captcha challenge</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">The CAPTCHA verification is valid</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">The CAPTCHA verification has failed</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA challenge timeout;\nplease rejoin chatRoom and try again.</string>
 
     <string name="service_gui_JOIN_AUTOMATICALLY">Join automatically</string>
     <string name="service_gui_DONT_JOIN_AUTOMATICALLY">Don\'t join automatically</string>
@@ -1130,7 +1131,6 @@
 
     <!-- Jabber preferences -->
     <string name="service_gui_JBR_ADVANCED">Advanced</string>
-    <string name="service_gui_JBR_ALLOW_NON_SECURE">Allow non-secure connections</string>
     <string name="service_gui_JBR_AUTO_SIGNIN">Connect at Startup</string>
     <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Auto discover STUN/TURN servers</string>
     <string name="service_gui_JBR_CONN_GENERAL">General</string>
@@ -1153,6 +1153,10 @@
     <string name="service_gui_JBR_KEEP_ALIVE">Keep alive</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Enable Keep Alive option</string>
     <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Enable if experiencing frequent mobile network disconnection</string>
+    <string name="service_gui_JBR_MINIMUM_TLS">Minimum TLS version</string>
+    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">Connect using this or higher TLS protocol version</string>
+    <string name="service_gui_JBR_NON_SECURE_ALLOW">Allow non-secure connections</string>
+    <string name="service_gui_JBR_NON_SSL_SUMMARY">Disable SSL/TLS server connection encryption</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Override server default options</string>
     <string name="service_gui_JBR_PASSWORD">Enter Password</string>
     <string name="service_gui_JBR_PING_INTERVAL">Ping interval (1~3600 seconds)</string>
@@ -1166,7 +1170,6 @@
     <string name="service_gui_JBR_RESURCE_NAME">Resource name</string>
     <string name="service_gui_JBR_SERVER">Connect Server IP</string>
     <string name="service_gui_JBR_SERVER_OPTIONS">Server options</string>
-    <string name="service_gui_JBR_SSL_SUMMARY">Disable SSL/TLS server connection encryption</string>
     <string name="service_gui_JBR_STORE_PASSWORD">Remember password</string>
     <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Save password for auto login on application start up</string>
     <string name="service_gui_JBR_STUN_LIST">Additional STUN/TURN servers&#8230;</string>

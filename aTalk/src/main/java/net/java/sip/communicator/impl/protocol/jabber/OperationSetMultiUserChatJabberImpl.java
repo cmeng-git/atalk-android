@@ -192,8 +192,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                         FormField submitField = field.build();
                     }
                     // cmeng - all the below fields are already in the default form.
-                    String[] fields = {"muc#roomconfig_membersonly", "muc#roomconfig_allowinvites",
-                            "muc#roomconfig_publicroom"};
+                    String[] fields = {"muc#roomconfig_membersonly", "muc#roomconfig_allowinvites", "muc#roomconfig_publicroom"};
                     Boolean[] values = {true, true, false};
                     for (int i = 0; i < fields.length; i++) {
                         try {
@@ -372,7 +371,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         try {
             Jid jid = JidCreate.from(contactAddress);
             return opSetPersPresence.isPrivateMessagingContact(jid);
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             Timber.e(e, "%s is not a valid JID", contactAddress);
             return false;
         }

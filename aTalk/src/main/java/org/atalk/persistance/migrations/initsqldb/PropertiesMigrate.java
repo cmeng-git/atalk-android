@@ -192,7 +192,7 @@ public class PropertiesMigrate
                     if (!property.contains("."))
                         accountValues.put(value, property); // chatRoomName -> chatRoomID
                     else {
-                        if (!property.contains(ChatRoom.CHAT_ROOM_NAME))
+                        if (!property.contains(ChatRoom.CHATROOM_NAME))
                             accountValues.put(property, value);
                     }
                     continue;

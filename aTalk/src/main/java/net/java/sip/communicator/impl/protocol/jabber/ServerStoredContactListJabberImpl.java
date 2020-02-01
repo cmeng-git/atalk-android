@@ -1620,8 +1620,8 @@ public class ServerStoredContactListJabberImpl
                 return JidCreate.entityBareFrom(Localpart.from(id), accountJid.getDomain());
             }
             return temp.asEntityBareJidOrThrow();
-        } catch (XmppStringprepException e) {
-            throw new OperationFailedException("Could not parse id", 0, e);
+        } catch (XmppStringprepException | IllegalArgumentException e) {
+            throw new OperationFailedException("Could not parse: " + id, 0, e);
         }
     }
 

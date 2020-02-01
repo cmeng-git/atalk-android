@@ -12,7 +12,7 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reason_label" />
+        android:text="@string/service_gui_REASON_LABEL" />
 
     <TextView
         android:id="@+id/reason_field"

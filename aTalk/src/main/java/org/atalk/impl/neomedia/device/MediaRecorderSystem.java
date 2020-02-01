@@ -153,11 +153,10 @@ public class MediaRecorderSystem extends DeviceSystem
             }
 
             // Create display name
-            Resources res = aTalkApp.getAppResources();
             Camera.getCameraInfo(cameraId, cameraInfo);
             String name = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT
-                    ? res.getString(R.string.service_gui_settings_FRONT_CAMERA)
-                    : res.getString(R.string.service_gui_settings_BACK_CAMERA);
+                    ? aTalkApp.getResString(R.string.service_gui_settings_FRONT_CAMERA)
+                    : aTalkApp.getResString(R.string.service_gui_settings_BACK_CAMERA);
             name += " (MediaRecoder#" + cameraId + ")";
 
             AndroidCamera device = new AndroidCamera(name, locator, formats);
