@@ -82,7 +82,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      */
     public int getCurrentProtocolVersion()
     {
-        ZRTPTransformEngine zrtpEngine = this.transformEngine;
+        ZRTPTransformEngine zrtpEngine = getTransformEngine();
         return (zrtpEngine != null) ? zrtpEngine.getCurrentProtocolVersion() : 0;
     }
 
@@ -119,7 +119,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      */
     public int getNumberSupportedVersions()
     {
-        ZRTPTransformEngine zrtpEngine = this.transformEngine;
+        ZRTPTransformEngine zrtpEngine = getTransformEngine();
         return (zrtpEngine != null) ? zrtpEngine.getNumberSupportedVersions() : 0;
     }
 
@@ -134,7 +134,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      */
     public String getPeerHelloHash()
     {
-        ZRTPTransformEngine zrtpEngine = this.transformEngine;
+        ZRTPTransformEngine zrtpEngine = getTransformEngine();
         return (zrtpEngine != null) ? zrtpEngine.getPeerHelloHash() : "";
     }
 
@@ -167,7 +167,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      */
     public boolean getSecureCommunicationStatus()
     {
-        ZRTPTransformEngine zrtpEngine = this.transformEngine;
+        ZRTPTransformEngine zrtpEngine = getTransformEngine();
         return (zrtpEngine != null) && zrtpEngine.getSecureCommunicationStatus();
     }
 
@@ -332,7 +332,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
             // it may happen when using multistreams, audio has inited
             // and started video
             // initially engine has value enableZrtp = false
-            zrtpAutoStart = transformEngine.isEnableZrtp();
+            zrtpAutoStart = engine.isEnableZrtp();
             securityEventManager.setSessionType(mediaType);
         }
         engine.setConnector(zrtpConnector);
