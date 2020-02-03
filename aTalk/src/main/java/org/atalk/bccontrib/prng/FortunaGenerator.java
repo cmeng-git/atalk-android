@@ -7,6 +7,7 @@ import org.bouncycastle.crypto.engines.AESFastEngine;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.prng.RandomGenerator;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 /**
@@ -154,8 +155,15 @@ public class FortunaGenerator implements RandomGenerator {
     /** The index into buffer of where the next byte will come from. */
     protected int ndx = 0;
 
+    private static byte[] getSecureRandomSeed()
+    {
+        byte[] someData = new byte[256];
+        (new SecureRandom()).nextBytes(someData);
+        return someData;
+    }
+
     public FortunaGenerator() {
-    	this(null);
+        this(getSecureRandomSeed());
     }
     
     public FortunaGenerator(byte[] seed) {
