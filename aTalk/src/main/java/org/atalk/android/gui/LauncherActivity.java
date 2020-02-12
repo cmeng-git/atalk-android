@@ -14,7 +14,6 @@ import android.widget.*;
 
 import org.atalk.android.*;
 import org.atalk.impl.androidtray.NotificationHelper;
-import org.atalk.impl.androidupdate.OnlineUpdateService;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.EventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
@@ -109,12 +108,6 @@ public class LauncherActivity extends OSGiActivity
                 // Starts restore intent
                 startActivity(restoreIntent);
                 finish();
-            }
-            else if (BuildConfig.DEBUG) {
-                // Perform software version update check on first launch - for debug version only
-                Intent dailyCheckupIntent = new Intent(getApplicationContext(), OnlineUpdateService.class);
-                dailyCheckupIntent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
-                startService(dailyCheckupIntent);
             }
 
             // Start home screen Activity
