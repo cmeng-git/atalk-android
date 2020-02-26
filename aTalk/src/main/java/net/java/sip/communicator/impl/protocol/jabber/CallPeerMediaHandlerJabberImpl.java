@@ -2130,6 +2130,15 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
                 if ((zrtpHashPacketExtension != null) && (zrtpHashPacketExtension.getValue() != null)) {
                     addAdvertisedEncryptionMethod(SrtpControlType.ZRTP);
+
+                    ZrtpControl zrtpControl
+                            = (ZrtpControl) getSrtpControls().get(mediaType, SrtpControlType.ZRTP);
+
+                    if (zrtpControl != null)
+                    {
+                        zrtpControl.setReceivedSignaledZRTPVersion(zrtpHashPacketExtension.getVersion());
+                        zrtpControl.setReceivedSignaledZRTPHashValue(zrtpHashPacketExtension.getValue());
+                    }
                 }
             }
         }
@@ -2275,6 +2284,22 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 ZrtpControl zrtpControl
                         = (ZrtpControl) getSrtpControls().getOrCreate(mediaType, SrtpControlType.ZRTP);
                 int numberSupportedVersions = zrtpControl.getNumberSupportedVersions();
+
+                // Try to get the remote ZRTP version and hash value
+                if (remoteDescription != null) {
+                    EncryptionExtensionElement remoteEncryption
+                            = remoteDescription.getFirstChildOfType(EncryptionExtensionElement.class);
+
+                    if (remoteEncryption != null) {
+                        ZrtpHashExtensionElement zrtpHashPacketExtension
+                                = remoteEncryption.getFirstChildOfType(ZrtpHashExtensionElement.class);
+
+                        if ((zrtpHashPacketExtension != null) && (zrtpHashPacketExtension.getValue() != null)) {
+                            zrtpControl.setReceivedSignaledZRTPVersion(zrtpHashPacketExtension.getVersion());
+                            zrtpControl.setReceivedSignaledZRTPHashValue(zrtpHashPacketExtension.getValue());
+                        }
+                    }
+                }
 
                 for (int i = 0; i < numberSupportedVersions; i++) {
                     String[] helloHash = zrtpControl.getHelloHashSep(i);
