@@ -109,4 +109,16 @@ public interface ZrtpControl extends SrtpControl
      * @param verified the new SAS verification status
      */
     public void setSASVerification(boolean verified);
+
+    /**
+     * Set ZRTP version received from the signaling layer.
+     * @param version received version
+     */
+    public void setReceivedSignaledZRTPVersion(String version);
+
+    /**
+     * Set ZRTP hash value received from the signaling layer.
+     * @param value hash value
+     */
+    public void setReceivedSignaledZRTPHashValue(String value);
 }

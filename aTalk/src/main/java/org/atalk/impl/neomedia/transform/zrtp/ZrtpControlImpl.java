@@ -345,4 +345,22 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
         engine.sendInfo(
                 ZrtpCodes.MessageSeverity.Info, EnumSet.of(ZRTPCustomInfoCodes.ZRTPEnabledByDefault));
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see net.java.sip.communicator.service.neomedia.ZrtpControl#setReceivedSignaledZRTPVersion(String)
+     */
+    public void setReceivedSignaledZRTPVersion(final String version) {
+        getTransformEngine().setReceivedSignaledZRTPVersion(version);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see net.java.sip.communicator.service.neomedia.ZrtpControl#isSecurityVerified(String)
+     */
+    public void setReceivedSignaledZRTPHashValue(final String value) {
+        getTransformEngine().setReceivedSignaledZRTPHashValue(value);
+    }
 }
