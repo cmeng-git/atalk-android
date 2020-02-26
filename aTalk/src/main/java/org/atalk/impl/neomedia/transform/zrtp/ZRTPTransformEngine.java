@@ -932,7 +932,9 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     {
         final String version_and_hash[] = zrtpEngine.getPeerHelloHashSep();
 
-        if (version_and_hash != null) {
+        if (version_and_hash != null
+            && receivedSignaledZRTPVersion != null
+            && receivedSignaledZRTPHashValue != null) {
             final String peerHelloVersion = version_and_hash[0];
             final String peerHelloHash = version_and_hash[1];
 
