@@ -370,6 +370,16 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     private boolean disposed = false;
 
     /**
+     * This is the peer ZRTP version received from the signaling layer.
+     */
+    private String receivedSignaledZRTPVersion = null;
+
+    /**
+     * This is the peer ZRTP hash value received from the signaling layer.
+     */
+    private String receivedSignaledZRTPHashValue = null;
+
+    /**
      * Construct a ZRTPTransformEngine.
      */
     public ZRTPTransformEngine()
@@ -920,6 +930,22 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      */
     public void sendInfo(ZrtpCodes.MessageSeverity severity, EnumSet<?> subCode)
     {
+        final String version_and_hash[] = zrtpEngine.getPeerHelloHashSep();
+
+        if (version_and_hash != null) {
+            final String peerHelloVersion = version_and_hash[0];
+            final String peerHelloHash = version_and_hash[1];
+
+            if (!peerHelloVersion.equals(receivedSignaledZRTPVersion)
+                    || !peerHelloHash.equals(receivedSignaledZRTPHashValue))
+            {
+                if (securityEventManager != null) {
+                    securityEventManager.showMessage(ZrtpCodes.MessageSeverity.Severe, EnumSet.of(ZrtpCodes.SevereCodes.SevereSecurityException));
+                }
+                close();
+            }
+        }
+
         if (securityEventManager != null)
             securityEventManager.showMessage(severity, subCode);
     }
@@ -1381,5 +1407,21 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     public int getCurrentProtocolVersion()
     {
         return (zrtpEngine != null) ? zrtpEngine.getCurrentProtocolVersion() : 0;
+    }
+
+    /**
+     * Set ZRTP version received from the signaling layer.
+     * @param version received version
+     */
+    public void setReceivedSignaledZRTPVersion(final String version) {
+        this.receivedSignaledZRTPVersion = version;
+    }
+
+    /**
+     * Set ZRTP hash value received from the signaling layer.
+     * @param value hash value
+     */
+    public void setReceivedSignaledZRTPHashValue(final String value) {
+        this.receivedSignaledZRTPHashValue = value;
     }
 }
