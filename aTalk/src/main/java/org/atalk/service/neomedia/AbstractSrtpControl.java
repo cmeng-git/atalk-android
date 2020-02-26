@@ -104,9 +104,11 @@ public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
 	 */
 	public T getTransformEngine()
 	{
-		if (transformEngine == null)
-			transformEngine = createTransformEngine();
-		return transformEngine;
+		synchronized (this) {
+			if (transformEngine == null)
+				transformEngine = createTransformEngine();
+			return transformEngine;
+		}
 	}
 
 	/**
