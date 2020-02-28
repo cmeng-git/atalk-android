@@ -18,7 +18,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.EntityCapsManager.NodeVerHash;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
@@ -306,7 +305,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
         // Not found: Then discover by requesting the information from the remote entity allowing only 10S for blocking access
         discoverInfo = getRemoteDiscoverInfo(entityJid,
-                ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+                ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         if (discoverInfo != null) {
             // store in local nonCapsCache only if (nvh == null)
             if ((nvh == null) && cacheNonCaps) {
@@ -372,7 +371,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         Timber.w("### Remote discovery for: %s", entityJid);
         DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityJid);
 
-        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         return discoInfo;
     }
 
@@ -721,7 +720,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                 // Discover by requesting the information from the remote entity;
                 // will return null if no nvh in JID_TO_NODEVER_CACHE=>CAPS_CACHE
                 DiscoverInfo discoverInfo = getRemoteDiscoverInfo(entityJid,
-                        ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
+                        ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_30);
 
                 // (discoverInfo = null) if iq result with "item-not-found"
                 if (discoverInfo != null) {

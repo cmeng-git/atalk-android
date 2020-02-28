@@ -1,5 +1,59 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.2.0 (1120)
+Author:         cmeng
+Upload Date:	02/28/2020
+- Implement XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates
+- Fix incorrect implementation in MessageSourceService#saveRecentMessageToHistory()
+- Contact list view item may not tagged with correct metaContact, causing incorrect chat session being launched
+  must always init and re-tagged in BaseContactListAdapter#getChildView() for new or reused views.
+- ChatRoom list view item may not tagged with correct chatRoomWrapper, causing incorrect chat session being launched
+  must always init and re-tagged in BaseChatRoomListAdapter#getChildView() for new or reused views.
+- Change the XMPP Connection reply timeout to smack default of 5 seconds under all normal operations.
+  Too many FFR on ANR at smack.StanzaCollector.nextResult (StanzaCollector.java:206) when server is not responding.
+- When aTalk is minimized or closed, generate an alert tone and wake aTalk and show join room dialog on receive an invitation
+- Move from chatRoomJabberImpl to OperationSetMultiUserChatJabberImpl#addAsyncStanzaListener() to to handle captcha and error messages from room
+- Complete redesign handler and enhanced UI for room with captcha protection:
+  Omit use of SMACK_REPLY_CAPTCHA_TIMEOUT, Otherwise 60s ANR occurs if aTalk is not in-focus.
+  Allow retry on user incorrect captcha code entry
+  Display captcha failed/passed result on chat view
+- Hide chatRoom option items that are invalid when user has not joined the room.
+- Do not highlight chat room in list when user cancel captcha challenge or failure to join chat room i.e. remove from active chatRoom list
+- Ensure all room created are non-anonymous and member-only to provide OMEMO encryption.
+
+- Implement auto-accept content download for file sharing via http file upload
+- Fix unable share unencrypted file between aTalk and Conversations see https://github.com/cmeng-git/atalk-android/issues/104
+  OperationSetFileTransferJabberImpl#sendFile() throws OperationNotSupportedException
+  if !(contactJid instanceof EntityFullJid) to allow caller to use alternative httpFileUpload
+
+- Revert change to ConferenceChatTransport#allowsChatStateNotifications to include chatRoom.isJoined() as one of the test condition
+  Not necessary as Check already included in sendChatStateNotification(). Otherwise in new captcha handler,
+  have problem in room with captcha protection, need to re-enter room to send chatState notification.
+- Implement LifecycleObserver to detect aTalk is in foreground or background
+  Must not launch any UI when aTalk is in background e.g. CaptchaDialog - system crash.
+- Implement TLS client certification configuration options
+- Fix incorrect implementation and clean up all various AuthWindow classes:
+  AuthWindowImpl.setVisible must not execute from main thread, otherwise "synchronized (notifyLock){}" blocks UI in startActivity()
+
+- Add silent notifications channel for snooze and chatState notification
+- Reclassified chatState popup notifications to Silent Notification i.e. no head-up notification.
+- Implement android Heads-up notification with 'Mark as read', 'Reply' and 'Snooze'
+- Implement quite hours to mute all notification alerts
+
+- Fix report problem in https://github.com/cmeng-git/atalk-android/issues/110:
+  Provide receipt status for each message in merged message view holder; prefix X mark on each undelivered message
+  Remove original message views of both send and receive corrected messages
+  Retain message multiple lines structure when doing edit
+- Allow message sending using CTRL-ENTER from physical keyboard
+- Compile and include online update service to debug version only
+- (MilanKral) Implement ZRTP-Hash element checking for the integrity of the ZRTP key exchange:
+  Fix https://github.com/cmeng-git/atalk-android/issues/101
+  Using <zrtp-hash/> element check the integrity of the ZRTP key exchange. #112
+- ZrtpControImpl: When advertise ZRTP Signalling option is enabled, access to ZRTP transform engine is called before it is being created
+- Initialize FortunaGenerator() default constructor with SecureRandom seed
+- Fix Field Failure Report (FFR) on ANR and Crash from v2.1.7
+
+=========================================================================
 Version:		2.1.7 (1117)
 Author:         cmeng
 Upload Date:	02/02/2020

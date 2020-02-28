@@ -43,11 +43,9 @@ import timber.log.Timber;
  * <li>The GNU ZRTP core is independent of a specific RTP/SRTP stack and the operating system and
  * consists of the ZRTP protocol state engine, the ZRTP protocol messages, and the GNU ZRTP4J
  * engine. The GNU ZRTP4J engine provides methods to setup ZRTP message and to analyze received ZRTP
- * messages, to compute the crypto data required for SRTP, and to maintain the required hashes and
- * HMAC.</li>
+ * messages, to compute the crypto data required for SRTP, and to maintain the required hashes and HMAC.</li>
  * <li>The second part of an implementation is specific <em>glue</em> code the binds the GNU ZRTP
- * core to the actual RTP/SRTP implementation and other operating system specific services such as
- * timers.</li>
+ * core to the actual RTP/SRTP implementation and other operating system specific services such as timers.</li>
  * </ul>
  *
  * The GNU ZRTP4J core uses a callback interface class (refer to ZrtpCallback) to access RTP/SRTP or
@@ -60,8 +58,7 @@ import timber.log.Timber;
  *
  * To perform its tasks ZRTPTransformEngine
  * <ul>
- * <li>extends specific classes to hook into the JMF RTP methods and the RTP/SRTP send and receive
- * queues</li>
+ * <li>extends specific classes to hook into the JMF RTP methods and the RTP/SRTP send and receive queues</li>
  * <li>implements the ZrtpCallback interface to provide to enable data send and receive other
  * specific services (timer to GNU ZRTP4J</li>
  * <li>provides ZRTP specific methods that applications may use to control and setup GNU ZRTP</li>
@@ -108,8 +105,7 @@ import timber.log.Timber;
  *
  * <pre>
  * ...
- *   transConnector = (ZrtpTransformConnector)TransformManager
- *                                                  .createZRTPConnector(sa);
+ *   transConnector = (ZrtpTransformConnector)TransformManager.createZRTPConnector(sa);
  *   zrtpEngine = transConnector.getEngine();
  *   zrtpEngine.setUserCallback(new MyCallback());
  *   if (!zrtpEngine.initialize(&quot;test_t.zid&quot;))
@@ -136,6 +132,7 @@ import timber.log.Timber;
  *
  * @author Werner Dittmann &lt;Werner.Dittmann@t-online.de>
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public class ZRTPTransformEngine extends SinglePacketTransformer implements SrtpControl.TransformEngine, ZrtpCallback
 {
@@ -1101,8 +1098,8 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Gets the Hello packet Hash
      *
-     * @param index Hello hash of the Hello packet identified by index. Index must be 0 <= index <
-     * SUPPORTED_ZRTP_VERSIONS.
+     * @param index Hello hash of the Hello packet identified by index.
+     * Index must be 0 <= index < SUPPORTED_ZRTP_VERSIONS.
      * @return the Hello packet hash
      */
     public String getHelloHash(int index)
@@ -1113,8 +1110,8 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Get the ZRTP Hello Hash data - separate strings.
      *
-     * @param index Hello hash of the Hello packet identified by index. Index must be 0 <= index <
-     * SUPPORTED_ZRTP_VERSIONS.
+     * @param index Hello hash of the Hello packet identified by index.
+     * Index must be 0 <= index < SUPPORTED_ZRTP_VERSIONS.
      * @return String array containing the version string at offset 0, the Hello hash value as
      * hex-digits at offset 1. Hello hash is available immediately after class
      * instantiation. Returns {@code null} if ZRTP is not available.

@@ -22,6 +22,7 @@ import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -54,9 +55,21 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     }
 
     @Override
-    public boolean isDisplayBold(Object chatRoomWrapper)
+    public boolean isDisplayBold(Object crWrapper)
     {
-        return ChatSessionManager.getActiveChat(((ChatRoomWrapper) chatRoomWrapper).getChatRoomID()) != null;
+        ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) crWrapper;
+        ChatPanel chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID());
+
+        if (chatPanel != null){
+            if (chatRoomWrapper.getChatRoom().isJoined())
+                return true;
+            else {
+                ChatSessionManager.removeActiveChat(chatPanel);
+            }
+        }
+        return false;
+
+        // return ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID()) != null;
     }
 
     @Override

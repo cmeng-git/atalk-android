@@ -355,16 +355,6 @@ public class NotificationDetails extends OSGiActivity implements NotificationCha
 
         soundHandler.setDescriptor(soundDescriptor);
         notificationService.registerNotificationForEvent(eventType, soundHandler);
-
-//        SoundNotificationAction origSoundAction = (SoundNotificationAction)
-//                notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_SOUND);
-//
-//        notificationService.registerNotificationForEvent(eventType, new SoundNotificationAction(
-//                soundDescriptor,
-//                origSoundAction.getLoopInterval(),
-//                origSoundAction.isSoundNotificationEnabled(),
-//                origSoundAction.isSoundPlaybackEnabled(),
-//                origSoundAction.isSoundPCSpeakerEnabled()));
     }
 
     /**

@@ -249,8 +249,7 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
                     if (icon instanceof ImageIcon)
                         imageIcon = (ImageIcon) icon;
 
-                    AuthenticationWindowCreator creator
-                            = new AuthenticationWindowCreator(
+                    AuthenticationWindowCreator creator = new AuthenticationWindowCreator(
                             userName,
                             password,
                             server,

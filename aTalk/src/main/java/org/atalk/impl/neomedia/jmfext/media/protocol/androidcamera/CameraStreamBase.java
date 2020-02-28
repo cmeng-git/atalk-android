@@ -141,8 +141,8 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             mCamera.startPreview();
         } catch (Exception e) {
             Timber.e("Set camera preview failed: %s", e.getMessage());
-            aTalkApp.showAlertDialogOnUI(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED, mPreviewSize.toString(), e.getMessage());
+            aTalkApp.showGenericError(R.string.service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED,
+                    mPreviewSize.toString(), e.getMessage());
 
             // Close camera on error
             if (mCamera != null) {

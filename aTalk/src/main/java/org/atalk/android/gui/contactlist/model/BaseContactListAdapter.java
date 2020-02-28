@@ -290,20 +290,12 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             convertView = mInflater.inflate(R.layout.contact_list_row, parent, false);
 
             contactViewHolder = new ContactViewHolder();
-            View contactView = convertView.findViewById(R.id.contact_view);
-            if (isMainContactList) {
-                contactView.setOnClickListener(this);
-                contactView.setOnLongClickListener(this);
-                contactView.setTag(child);
-            }
-
             contactViewHolder.displayName = convertView.findViewById(R.id.displayName);
             contactViewHolder.statusMessage = convertView.findViewById(R.id.statusMessage);
 
             contactViewHolder.avatarView = convertView.findViewById(R.id.avatarIcon);
             contactViewHolder.avatarView.setOnClickListener(this);
             contactViewHolder.avatarView.setOnLongClickListener(this);
-            contactViewHolder.avatarView.setTag(child);
             contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
 
             contactViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
@@ -333,6 +325,15 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         // return and stop further process if child contact may have been removed
         if (!(child instanceof MetaContact))
             return convertView;
+
+        // Must init child tag here as reused convertView may not necessary contains the correct metaContact
+        View contactView = convertView.findViewById(R.id.contact_view);
+        if (isMainContactList) {
+            contactView.setOnClickListener(this);
+            contactView.setOnLongClickListener(this);
+        }
+        contactView.setTag(child);
+        contactViewHolder.avatarView.setTag(child);
 
         UIContactRenderer renderer = getContactRenderer(groupPosition);
         if (renderer.isSelected(child)) {

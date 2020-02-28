@@ -116,8 +116,7 @@ public class AndroidGUIActivator implements BundleActivator
         bundleContext.registerService(UIService.class.getName(), uiService, null);
 
         // Register the alert service android implementation.
-        Context androidContext = aTalkApp.getGlobalContext();
-        alertUIService = new AlertUIServiceImpl(androidContext);
+        alertUIService = new AlertUIServiceImpl(aTalkApp.getGlobalContext());
         bundleContext.registerService(AlertUIService.class.getName(), alertUIService, null);
 
         // Creates and registers presence status handler

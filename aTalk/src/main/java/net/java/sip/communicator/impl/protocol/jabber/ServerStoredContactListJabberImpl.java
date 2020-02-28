@@ -8,6 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl.ContactChangesListener;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.customavatar.CustomAvatarService;
 import net.java.sip.communicator.service.protocol.*;
@@ -72,7 +73,7 @@ public class ServerStoredContactListJabberImpl
     /**
      * The provider that is on top of us.
      */
-    private final ProtocolProviderServiceJabberImpl jabberProvider;
+    private final ProtocolProviderServiceJabberImpl mPPS;
 
     /**
      * For multiple accounts support, RootGroup can be owned by any of pps at instance to add contact
@@ -142,8 +143,8 @@ public class ServerStoredContactListJabberImpl
         // We need to init these as early as possible to ensure that the provider and the
         // operationsSet would not be null in the incoming events.
         this.parentOperationSet = parentOperationSet;
-        this.jabberProvider = provider;
-        this.rootGroup = new RootContactGroupJabberImpl(this.jabberProvider);
+        this.mPPS = provider;
+        this.rootGroup = new RootContactGroupJabberImpl(this.mPPS);
         this.infoRetriever = infoRetriever;
     }
 
@@ -224,7 +225,7 @@ public class ServerStoredContactListJabberImpl
         }
 
         ServerStoredGroupEvent evt = new ServerStoredGroupEvent(group, eventID,
-                parentOperationSet.getServerStoredContactListRoot(), jabberProvider, parentOperationSet);
+                parentOperationSet.getServerStoredContactListRoot(), mPPS, parentOperationSet);
         Timber.log(TimberLog.FINER, "Will dispatch the following grp event: %s", evt);
 
         Iterable<ServerStoredGroupListener> listeners;
@@ -305,7 +306,7 @@ public class ServerStoredContactListJabberImpl
      */
     ProtocolProviderServiceJabberImpl getParentProvider()
     {
-        return jabberProvider;
+        return mPPS;
     }
 
     /**
@@ -472,7 +473,7 @@ public class ServerStoredContactListJabberImpl
                 Presence presence = (Presence) stanza;
                 if ((presence.getType() == Presence.Type.subscribe) && presence.getTo().isParentOf(contactJid)) {
                     Nick nicknameExt
-                            = new Nick(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(jabberProvider));
+                            = new Nick(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS));
                     presence.addExtension(nicknameExt);
 
                     // cmeng - End the listener once job is completed - otherwise receive multiple triggers.
@@ -686,7 +687,7 @@ public class ServerStoredContactListJabberImpl
 
         // aTalk implementation is ContactGroup.VOLATILE_GROUP is equivalent to "VolatileContactJabberImpl"
         if ((contactToRemove instanceof VolatileContactJabberImpl) || ((contactToRemove.getParentContactGroup() != null)
-                &&  ContactGroup.VOLATILE_GROUP.equals(contactToRemove.getParentContactGroup().getGroupName()))) {
+                && ContactGroup.VOLATILE_GROUP.equals(contactToRemove.getParentContactGroup().getGroupName()))) {
             contactDeleted(contactToRemove);
             return;
         }
@@ -765,7 +766,7 @@ public class ServerStoredContactListJabberImpl
 
         // create the entry with the new group so it can be removed from other groups if any.
         // modify our reply timeout because some XMPP may send "result" IQ late (> 5 seconds).
-        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
+        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_30);
 
         try {
             mRoster.createItemAndRequestSubscription(contact.getSourceEntry().getJid(), contact.getDisplayName(),
@@ -778,7 +779,7 @@ public class ServerStoredContactListJabberImpl
             e.printStackTrace();
         } finally {
             // Reset to default
-            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         }
     }
 
@@ -786,9 +787,11 @@ public class ServerStoredContactListJabberImpl
      * Sets a reference to the currently active and valid instance of roster that this list is to
      * be used for retrieving server stored information
      */
-    void init(OperationSetPersistentPresenceJabberImpl.ContactChangesListener presenceChangeListener)
+    void init(ContactChangesListener presenceChangeListener)
     {
-        xmppConnection = jabberProvider.getConnection();
+        // FFR: v2.1.6 Huawei nova 3i/Y9 prime (HWINE) android-9, xmppConnection == null
+        // even this is called when PPS is registered ? no action taken
+        xmppConnection = mPPS.getConnection();
         mRoster = Roster.getInstanceFor(xmppConnection);
 
         initRoster();
@@ -832,7 +835,7 @@ public class ServerStoredContactListJabberImpl
         }
         // Send <presence/> only we do not have OperationSetPersistentPresence feature, which are
         // more readily to support <Presence/> sending with <photo/> tag
-        else if (jabberProvider.getOperationSet(OperationSetPersistentPresence.class) == null) {
+        else if (mPPS.getOperationSet(OperationSetPersistentPresence.class) == null) {
             try {
                 Timber.w("Smack sending presence without OpSetPP support!");
                 Presence presence = new Presence(Presence.Type.available);
@@ -1101,10 +1104,10 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
-     *
      * @param enable if set enable the retrieval of avatar from server if null
      */
-    public void setRetrieveOnStart(boolean enable) {
+    public void setRetrieveOnStart(boolean enable)
+    {
         infoRetrieveOnStart = enable;
     }
 
@@ -1615,7 +1618,7 @@ public class ServerStoredContactListJabberImpl
         try {
             Jid temp = JidCreate.from(id);
             if (!temp.hasLocalpart()) {
-                AccountID accountID = jabberProvider.getAccountID();
+                AccountID accountID = mPPS.getAccountID();
                 Jid accountJid = JidCreate.from(accountID.getUserID());
                 return JidCreate.entityBareFrom(Localpart.from(id), accountJid.getDomain());
             }

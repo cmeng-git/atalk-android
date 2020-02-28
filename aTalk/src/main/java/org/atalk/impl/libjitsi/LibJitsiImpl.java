@@ -8,7 +8,6 @@ package org.atalk.impl.libjitsi;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.service.libjitsi.LibJitsi;
 
 import java.util.HashMap;
@@ -132,8 +131,7 @@ public class LibJitsiImpl extends LibJitsi
         else {
             Timber.w(exception, "Failed to initialize service implementation %s. Will continue without it.", serviceImplClassName);
             if (serviceImplClassName.contains("MediaServiceImpl")) {
-                DialogActivity.showDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_ERROR),
-                        aTalkApp.getResString(R.string.service_gui_CALL_DISABLE_ON_FAULT, serviceImplClassName, exception));
+                aTalkApp.showGenericError(R.string.service_gui_CALL_DISABLE_ON_FAULT, serviceImplClassName, exception);
                 aTalk.disableMediaServiceOnFault = true;
             }
         }

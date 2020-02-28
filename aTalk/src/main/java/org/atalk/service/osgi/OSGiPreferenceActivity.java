@@ -5,11 +5,9 @@
  */
 package org.atalk.service.osgi;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.*;
-import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
@@ -97,7 +95,6 @@ public class OSGiPreferenceActivity extends PreferenceActivity
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState)
     {

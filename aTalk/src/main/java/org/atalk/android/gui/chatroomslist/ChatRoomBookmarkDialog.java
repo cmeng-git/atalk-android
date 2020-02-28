@@ -50,9 +50,9 @@ import timber.log.Timber;
  */
 public class ChatRoomBookmarkDialog extends OSGiDialogFragment
 {
-    private static MUCServiceImpl mucService;
-    private static ChatRoomWrapper mChatRoomWrapper;
-    private static OnFinishedCallback finishedCallback = null;
+    private MUCServiceImpl mucService;
+    private ChatRoomWrapper mChatRoomWrapper;
+    private OnFinishedCallback finishedCallback = null;
 
     /**
      * The account list view.
@@ -75,12 +75,12 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
      */
     public static ChatRoomBookmarkDialog getInstance(ChatRoomWrapper chatRoomWrapper, OnFinishedCallback callback)
     {
-        mucService = MUCActivator.getMUCService();
-        mChatRoomWrapper = chatRoomWrapper;
-        finishedCallback = callback;
+        ChatRoomBookmarkDialog dialog = new ChatRoomBookmarkDialog();
+        dialog.mucService = MUCActivator.getMUCService();
+        dialog.mChatRoomWrapper = chatRoomWrapper;
+        dialog.finishedCallback = callback;
 
         Bundle args = new Bundle();
-        ChatRoomBookmarkDialog dialog = new ChatRoomBookmarkDialog();
         dialog.setArguments(args);
         return dialog;
     }

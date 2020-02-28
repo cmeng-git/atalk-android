@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.*;
 import android.view.KeyEvent;
@@ -282,7 +281,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
             String summaryStr = summary.toString();
             if (summaryStr.isEmpty()) {
-                summaryStr = aTalkApp.getResString(R.string.service_gui_LIST_EMPTY);
+                summaryStr = aTalkApp.getResString(R.string.service_gui_LIST_NONE);
             }
 
             Preference preference = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
@@ -330,7 +329,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                     sb.append(", ");
             }
             if (selected.length == 0)
-                sb.append(aTalkApp.getResString(R.string.service_gui_LIST_EMPTY));
+                sb.append(aTalkApp.getResString(R.string.service_gui_LIST_NONE));
             return sb.toString();
         }
 

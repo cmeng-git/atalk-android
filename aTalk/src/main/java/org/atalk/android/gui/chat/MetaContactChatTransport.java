@@ -639,6 +639,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                         return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
                 } catch (OperationNotSupportedException ex) {
                     // Fallback to use Http file upload if client does not support legacy SOCKS5 and IBS
+                    // or contact is offline
                     return httpFileUpload(file, chatType, xferCon);
                 }
             }

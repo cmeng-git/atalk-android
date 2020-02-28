@@ -27,22 +27,21 @@ public interface UpdateService
      * Checks for updates.
      *
      * @param notifyAboutNewestVersion <tt>true</tt> if the user is to be
-     * notified if they have the newest version already; otherwise,
-     * <tt>false</tt>
+     * notified if they have the newest version already; otherwise, <tt>false</tt>
      */
-    public void checkForUpdates(boolean notifyAboutNewestVersion);
+    void checkForUpdates(boolean notifyAboutNewestVersion);
 
     /**
      * Determines whether we are currently running the latest version.
      *
      * @return <tt>true</tt> if we are currently running the latest version; otherwise, <tt>false</tt>
      */
-    public boolean isLatestVersion();
+    boolean isLatestVersion();
 
     /**
      * Gets the latest available (software) version online.
      *
      * @return the latest (software) version
      */
-    public String getLatestVersion();
+    String getLatestVersion();
 }

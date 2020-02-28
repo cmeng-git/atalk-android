@@ -71,8 +71,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1117
-        versionName "2.1.7"
+        versionCode 1120
+        versionName "2.2.0"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -189,10 +189,10 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:${rootProject.supportLibraryVersion}"
     implementation "androidx.legacy:legacy-support-v13:${rootProject.supportLibraryVersion}"
     implementation "androidx.appcompat:appcompat:1.1.0"
-    // implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    implementation "com.google.android.material:material:${rootProject.supportLibraryVersion}"
+    implementation "com.google.android.material:material:1.1.0"
 
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'

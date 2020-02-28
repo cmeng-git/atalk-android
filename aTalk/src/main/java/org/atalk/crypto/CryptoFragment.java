@@ -204,8 +204,9 @@ public class CryptoFragment extends OSGiFragment
 
         switch (item.getItemId()) {
             case R.id.crypto_choice:
-                boolean isOmemoSupported = omemoCapable.containsKey(mDescriptor)
-                        ? omemoCapable.get(mDescriptor) : false;
+                Boolean isOmemoSupported = omemoCapable.get(mDescriptor);
+                if (isOmemoSupported == null)
+                    isOmemoSupported = false;
                 mOmemo.setEnabled(isOmemoSupported);
                 mOmemo.getIcon().setAlpha(isOmemoSupported ? 255 : 80);
 
@@ -245,7 +246,7 @@ public class CryptoFragment extends OSGiFragment
 
             case R.id.otr_session:
                 OTRv3OutgoingSessionSwitcher otrSessionDialog = OTRv3OutgoingSessionSwitcher.newInstance(currentOtrContact);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 otrSessionDialog.show(ft, "otrDialog");
                 break;

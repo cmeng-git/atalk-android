@@ -23,6 +23,7 @@ import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.dialogs.ProgressDialogFragment;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.plugin.certconfig.TLS_Configuration;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.osgi.OSGiActivity;
@@ -34,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**
@@ -125,12 +127,22 @@ public class AccountsListActivity extends OSGiActivity
             case R.id.add_account:
                 startActivity(AccountLoginActivity.class);
                 return true;
+
             case R.id.add_group:
                 AddGroupDialog.showCreateGroupDialog(this, null);
                 return true;
+
+            case R.id.TLS_Configuration:
+                TLS_Configuration tlsConfiguration = new TLS_Configuration(getBaseContext());
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                ft.replace(android.R.id.content, tlsConfiguration).commit();
+                return true;
+
             case R.id.refresh_database:
                 new ServerPersistentStoresRefreshDialog().show(this);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

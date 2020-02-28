@@ -203,9 +203,11 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         }
 
         // Save scroll position
-        scrollPosition = chatRoomListView.getFirstVisiblePosition();
-        View itemView = chatRoomListView.getChildAt(0);
-        scrollTopPosition = itemView == null ? 0 : itemView.getTop();
+        if (chatRoomListView != null) {
+            scrollPosition = chatRoomListView.getFirstVisiblePosition();
+            View itemView = chatRoomListView.getChildAt(0);
+            scrollTopPosition = itemView == null ? 0 : itemView.getTop();
+        }
 
         // Dispose of group expand memory
         if (listExpandHandler != null) {
@@ -321,7 +323,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         boolean allowDestroy = ((role == null) || ChatRoomMemberRole.OWNER.equals(role));
         menu.findItem(R.id.destroy_chatroom).setVisible(allowDestroy);
 
-        // Checks if close chat option should be visible for this contact
+        // Checks if close chat option should be visible for this chatRoom
         boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID()) != null;
         menu.findItem(R.id.close_chatroom).setVisible(closeChatVisible);
 
@@ -348,7 +350,6 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
          * @param item the menu item that was clicked
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
-
         @Override
         public boolean onMenuItemClick(MenuItem item)
         {
@@ -368,7 +369,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                     EntityListHelper.eraseAllContactHistory(mActivity);
                     return true;
                 case R.id.destroy_chatroom:
-                    // EntityListHelper.removeEntity(mClickedChatRoom, chatPanel);
+                    // mClickedChatRoom.
                     new ChatRoomDestroyDialog().show(mActivity, mClickedChatRoom, chatPanel);
                     return true;
                 case R.id.chatroom_info:
@@ -461,17 +462,21 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     }
 
     /**
-     * Filters contact list for given <tt>query</tt>.
+     * Filters chatRoom list for given <tt>query</tt>.
      *
-     * @param query the query string that will be used for filtering contacts.
+     * @param query the query string that will be used for filtering chat rooms.
      */
     private void filterChatRoomWrapperList(String query)
     {
+        // FFR: 2.1.5 Samsung Galaxy J2 Prime (grandpplte), Android 6.0, NPE for chatRoomListView
+        if (chatRoomListView == null)
+            return;
+
         if (StringUtils.isNullOrEmpty(query)) {
             // Cancel any pending queries
             disposeSourcesAdapter();
 
-            // Display the contact list
+            // Display the chatRoom list
             if (chatRoomListView.getExpandableListAdapter() != getChatRoomListAdapter()) {
                 chatRoomListView.setAdapter(getChatRoomListAdapter());
                 chatRoomListAdapter.filterData("");

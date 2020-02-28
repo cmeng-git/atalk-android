@@ -4,19 +4,19 @@
     <item
         android:id="@+id/chat_message_edit"
         android:icon="@drawable/ic_action_edit_dark"
-        android:title="@string/chat_message_edit"
+        android:title="@string/service_gui_EDIT"
         android:showAsAction="always">
     </item>
     <item
         android:id="@+id/chat_message_quote"
         android:icon="@drawable/ic_action_quote_dark"
-        android:title="@string/chat_message_quote"
+        android:title="@string/service_gui_QUOTE"
         android:showAsAction="always">
     </item>
     <item
         android:id="@+id/chat_message_del"
         android:icon="@drawable/ic_action_delete_dark"
-        android:title="@string/chat_message_delete"
+        android:title="@string/service_gui_DELETE"
         android:showAsAction="always">
     </item>
     <item
@@ -28,19 +28,19 @@
     <item
         android:id="@+id/chat_message_forward"
         android:icon="@drawable/ic_action_forward_dark"
-        android:title="@string/chat_message_forward"
+        android:title="@string/service_gui_FORWARD"
         android:showAsAction="ifRoom">
     </item>
     <item
         android:id="@+id/chat_message_copy"
         android:icon="@drawable/ic_action_copy_dark"
-        android:title="@string/chat_message_copy"
+        android:title="@string/service_gui_COPY"
         android:showAsAction="ifRoom">
     </item>
     <item
         android:id="@+id/select_all"
         android:icon="@drawable/ic_action_select_all_dark"
-        android:title="@string/chat_message_select_all"
+        android:title="@string/service_gui_SELECT_ALL"
         android:showAsAction="ifRoom">
     </item>
 

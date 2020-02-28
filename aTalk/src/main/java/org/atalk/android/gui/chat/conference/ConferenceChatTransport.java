@@ -173,7 +173,7 @@ public class ConferenceChatTransport implements ChatTransport
     {
         // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
         // return ((tnOpSet != null) && isChatStateSupported);
-        return (isChatStateSupported && chatRoom.isJoined());
+        return isChatStateSupported;
     }
 
     public static void setChatStateSupport(boolean isEnable)

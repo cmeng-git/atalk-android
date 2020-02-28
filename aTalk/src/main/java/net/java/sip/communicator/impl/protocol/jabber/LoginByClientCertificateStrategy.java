@@ -88,7 +88,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
      * @param certificateService certificate service to retrieve the SSL context
      * @param trustManager Trust manager to use for the context
      * @return Configured and initialized SSL Context
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException Security Exception
      */
     public SSLContext createSslContext(CertificateService certificateService, X509TrustManager trustManager)
             throws GeneralSecurityException
@@ -104,25 +104,26 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
      * @param userName The username for the login.
      * @param resource The XMPP resource.
      * @return true when the login succeeded, false when the certificate wasn't accepted.
-     * @throws XMPPException
+     * @throws XMPPException Exception
      */
+    @Override
     public boolean login(AbstractXMPPConnection connection, String userName, Resourcepart resource)
             throws XMPPException, SmackException
     {
         SASLAuthentication.registerSASLMechanism(new SASLExternalMechanism());
 
-        // user/password MUST be empty. In fact they shouldn't be
-        // necessary at all because the user name is derived from the client certificate.
+        // user/password MUST be empty. In fact they shouldn't be necessary at all
+        // because the user name is derived from the client certificate.
         try {
             try {
                 connection.login("", "", resource);
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                Timber.e("Certificate login failed: %s", e.getMessage());
             }
             return true;
         } catch (XMPPException | SmackException ex) {
             if (ex.getMessage().contains("EXTERNAL failed: not-authorized")) {
-                Timber.e(ex, "Certificate login failed");
+                Timber.e("Certificate login failed: %s", ex.getMessage());
                 return false;
             }
             throw ex;

@@ -15,13 +15,30 @@
  */
 package net.java.sip.communicator.service.certificate;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Data object for client certificate configuration entries.
  *
  * @author Ingo Bauersachs
+ * @author Eng Chong Meng
  */
 public class CertificateConfigEntry
 {
+    /*
+     * CERT_NONE for use on android device to denote no client TLS Certificate being selected.
+     */
+    public static final CertificateConfigEntry CERT_NONE = new CertificateConfigEntry("None");
+
+    /**
+     * Default construct with only display defined
+     * @param displayName Certificate display name
+     */
+    public CertificateConfigEntry(String displayName)
+    {
+        this.displayName = displayName;
+    }
+
     // ------------------------------------------------------------------------
     // Fields
     // ------------------------------------------------------------------------
@@ -36,6 +53,7 @@ public class CertificateConfigEntry
     // ------------------------------------------------------------------------
     // Properties
     // ------------------------------------------------------------------------
+
     /**
      * Sets the key store type.
      *
@@ -74,6 +92,12 @@ public class CertificateConfigEntry
     public String getKeyStorePassword()
     {
         return keyStorePassword;
+    }
+
+
+    public char[] getKSPassword()
+    {
+        return (keyStorePassword == null) ? null : keyStorePassword.toCharArray();
     }
 
     /**
@@ -176,9 +200,25 @@ public class CertificateConfigEntry
         return savePassword;
     }
 
+    /**
+     * Human readable and uniquely identify the certificate
+     * Min is the displayName e.g. 'None' certificate
+     *
+     * @return String representing the certificate
+     */
+    @NotNull
     @Override
     public String toString()
     {
-        return displayName;
+        String certName = "";
+        if (id != null)
+            certName = id + "-";
+
+        certName += displayName;
+
+        if (keyStoreType != null)
+            certName += " [" + keyStoreType.getName() + "]";
+
+        return certName;
     }
 }

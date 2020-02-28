@@ -52,10 +52,10 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
 
             sysTray.showPopupMessage(popupMsg);
         }
+        // Allow messages to be empty? since some protocols allow empty lines.
         else if (message == null) {
             Timber.e("Message is null!");
         }
-        // Allow messages to be empty, since some protocols allow empty lines.
     }
 
     /**

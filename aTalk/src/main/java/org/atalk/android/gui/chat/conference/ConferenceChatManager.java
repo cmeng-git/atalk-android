@@ -6,11 +6,13 @@
 package org.atalk.android.gui.chat.conference;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.*;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
+import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -20,6 +22,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.LauncherActivity;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.util.AndroidUtils;
@@ -94,6 +97,18 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         final OperationSetMultiUserChat multiUserChatOpSet = evt.getSourceOperationSet();
         final ChatRoomInvitation invitation = evt.getInvitation();
 
+        // Wake aTalk to show invitation dialog
+        if (!aTalkApp.isForeground) {
+            Timber.d("Receive invitation while aTalk is in background");
+            NotificationManager.fireNotification(NotificationManager.INCOMING_INVITATION);
+
+            Context context = aTalkApp.getGlobalContext();
+            Intent i = new Intent(context, LauncherActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+            aTalkApp.waitForFocus();
+        }
+
         // Event thread - Must execute in UiThread for dialog
         new Handler(Looper.getMainLooper()).post(() -> {
             Activity activity = aTalkApp.getCurrentActivity();
@@ -103,13 +118,13 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 dialog.show();
             }
             else {
-                // cmeng - auto accept and join room if aTalk is minimized. Set setCurrentChatId to null
-                // so incomingMessage pop-message is active
+                // cmeng - auto accept and join room.
+                // Set setCurrentChatId to null so incomingMessage pop-message is active
                 try {
                     invitation.getTargetChatRoom().join();
                     ChatSessionManager.setCurrentChatId(null);
                 } catch (OperationFailedException e) {
-                    e.printStackTrace();
+                    Timber.w("Join group chat failed!");
                 }
             }
         });
@@ -335,8 +350,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 (eventType)) {
             this.closeAdHocChatRoom(adHocChatRoomWrapper);
 
-            // Need to refresh the chat room's list in order to change the state of the chat room
-            // to offline.
+            // Need to refresh the chat room's list in order to change the state of the chat room to offline.
             fireAdHocChatRoomListChangedEvent(adHocChatRoomWrapper, AdHocChatRoomListChangeEvent.AD_HOC_CHATROOM_CHANGED);
             sourceAdHocChatRoom.removeMessageListener(this);
         }
@@ -350,8 +364,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     public void localUserPresenceChanged(final LocalUserChatRoomPresenceChangeEvent evt)
     {
         ChatRoom sourceChatRoom = evt.getChatRoom();
-        ChatRoomWrapper chatRoomWrapper
-                = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoom(sourceChatRoom);
+        ChatRoomWrapper chatRoomWrapper = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoom(sourceChatRoom);
 
         String eventType = evt.getEventType();
         if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {

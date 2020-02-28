@@ -27,6 +27,7 @@ import android.os.*;
 import android.text.*;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.util.DisplayMetrics;
 import android.util.SparseBooleanArray;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -646,6 +647,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 case R.id.chat_message_edit:
                     if ((mChatController != null) && (chatMsg != null)) {
                         mChatController.editText(chatListView, chatMsg, cPos);
+
+                        // Clear the selected Item highlight
+                        // chatListView.clearChoices();
                     }
                     return true;
 
@@ -752,7 +756,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                         lastDeletedMessageDate = chatMsg.getDate();
                                     }
 
-                                        // merged messages do not have file contents
+                                    // merged messages do not have file contents
                                     if (chatMsg instanceof MergedMessage) {
                                         msgUidDel.addAll(((MergedMessage) chatMsg).getMessageUIDs());
                                     }
@@ -979,24 +983,34 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 int lastMsgIdx = getLastMessageIdx(newMessage);
                 ChatMessage lastMsg = (lastMsgIdx != -1) ? chatListAdapter.getMessage(lastMsgIdx) : null;
 
-                // Create a new message view holder only if message is non-consecutive
+                // Create a new message view holder only if message is non-consecutive i.e non-merged message
                 if ((lastMsg == null) || (!lastMsg.isConsecutiveMessage(newMessage))) {
                     messages.add(new MessageDisplay(newMessage));
                     msgIdx = messages.size() - 1;
+
+                    // Start service for Split Street View Panorama and Map support.
+                    if (mSVP_Started) {
+                        mSVP = svpApi.svpHandler(mSVP, getMessageDisplay(msgIdx));
+                    }
+
+                    /* List must be scrolled manually, when android:transcriptMode="normal" is set*
+                     * notifyDataSetChanged causing display contents to be invalidated.
+                     */
+                    chatListAdapter.notifyDataSetChanged();
+                    chatListView.setSelection(msgIdx + chatListView.getHeaderViewsCount());
                 }
                 else {
-                    // Merge the message and update the object in the list
-                    messages.get(lastMsgIdx).update(lastMsg.mergeMessage(newMessage));
+                    // Consecutive message (including corrected message); proceed to update the viewHolder only
+                    MessageDisplay msgDisplay = messages.get(lastMsgIdx);
+                    msgDisplay.update(lastMsg.mergeMessage(newMessage));
                     msgIdx = lastMsgIdx;
-                }
 
-                if (mSVP_Started) {
-                    mSVP = svpApi.svpHandler(mSVP, getMessageDisplay(msgIdx));
+                    MessageViewHolder viewHolder = viewHolders.get(msgIdx);
+                    if (viewHolder != null) {
+                        // Just update the corrected message body without refresh the whole view
+                        viewHolder.messageView.setText(msgDisplay.getBody());
+                    }
                 }
-
-                // List must be scrolled manually, when android:transcriptMode="normal" is set
-                chatListAdapter.notifyDataSetChanged();
-                chatListView.setSelection(msgIdx + chatListView.getHeaderViewsCount());
             });
         }
 
@@ -1011,19 +1025,19 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
          */
         private synchronized void prependMessages(List<ChatMessage> chatMessages)
         {
-            List<MessageDisplay> newMsgs = new ArrayList<>();
+            List<MessageDisplay> newMessageList = new ArrayList<>();
             MessageDisplay previous = null;
             for (ChatMessage next : chatMessages) {
                 if (previous == null || !previous.msg.isConsecutiveMessage(next)) {
                     previous = new MessageDisplay(next);
-                    newMsgs.add(previous);
+                    newMessageList.add(previous);
                 }
                 else {
                     // Merge the message and update the object in the list
                     previous.update(previous.msg.mergeMessage(next));
                 }
             }
-            messages.addAll(0, newMsgs);
+            messages.addAll(0, newMessageList);
         }
 
         /**
@@ -1129,12 +1143,16 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 if ((msgIds != null) && msgIds.contains(msgId)) {
                     // must reload cached messages from DB on resume i.e. after session exit
                     clearMsgCache = true;
-                    // Update MessageDisplay to take care when view is refresh e.g. new message arrived or scroll
-                    message.updateDeliveryStatus(receiptStatus);
 
+                    // Update MessageDisplay to take care when view is refresh e.g. new message arrived or scroll
                     MessageViewHolder viewHolder = viewHolders.get(index);
-                    if (viewHolder != null)
+                    ChatMessage chatMessage = message.updateDeliveryStatus(msgId, receiptStatus);
+                    if (viewHolder != null) {
+                        // Need to update merged messages new receipt statuses
+                        if (chatMessage instanceof MergedMessage)
+                            viewHolder.messageView.setText(message.getBody());
                         setMessageReceiptStatus(viewHolder.msgReceiptView, receiptStatus);
+                    }
                     return viewHolder;
                 }
             }
@@ -1339,7 +1357,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         FileSendConversation filexferS = (FileSendConversation) getFileXfer(position);
                         if (filexferS == null) {
                             filexferS = FileSendConversation.newInstance(currentChatFragment, msgUuid, sendTo, fileName,
-                                     (msgType == ChatMessage.MESSAGE_STICKER_SEND));
+                                    (msgType == ChatMessage.MESSAGE_STICKER_SEND));
                             setFileXfer(position, filexferS);
                         }
                         viewTemp = filexferS.SendFileConversationForm(inflater, messageViewHolder, parent, position, init);
@@ -1639,8 +1657,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Class used to cache processed message contents. Prevents from re-processing on each
-         * View display.
+         * Class used to cache processed message contents. Prevents from re-processing on each View display.
          */
         class MessageDisplay implements OnClickListener, View.OnLongClickListener
         {
@@ -1854,15 +1871,15 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             {
                 String body = msg.getMessage();
                 if ((msgBody == null) && !TextUtils.isEmpty(body)) {
-                    if (body.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
-                        // Convert to Spanned body to support text mark up display
-                        msgBody = Html.fromHtml(body, imageGetter, null);
-                    }
+                    boolean hasHtmlTag = body.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
+
+                    // Convert to Spanned body to support text mark up display
+                    // need to replace '\n' with <br/> to avoid stripped off by fromHtml()
+                    body = body.replace("\n", "<br/>");
+                    msgBody = Html.fromHtml(body, imageGetter, null);
+
                     // Proceed with Linkify process if msgBody contains no HTML tags
-                    else {
-                        // need to replace '\n' with <br/> to avoid stripped off by fromHtml()
-                        body = body.replace("\n", "<br/>");
-                        msgBody = Html.fromHtml(body, imageGetter, null);
+                    if (!hasHtmlTag) {
                         try {
                             Pattern urlMatcher = Pattern.compile("\\b[A-Za-z]+://[A-Za-z0-9:./?=]+\\b");
                             Linkify.addLinks((Spannable) msgBody, urlMatcher, null);
@@ -1880,24 +1897,47 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
 
             /**
-             * Updates this display instance with new message causing display contents to be invalidated.
-             * Both receiptStatus and serverMsgId of the merged message will use the new chatMessage
+             * Updates this display instance with new message.
+             * Both receiptStatus and serverMsgId of the message will use the new chatMessage
              *
              * @param chatMessage new message content
              */
             public void update(ChatMessage chatMessage)
             {
-                dateStr = null;
-                msgBody = null;
                 msg = chatMessage;
+                initDMessageStatus();
 
                 receiptStatus = chatMessage.getReceiptStatus();
                 serverMsgId = chatMessage.getServerMsgId();
             }
 
-            public void updateDeliveryStatus(int deliveryStatus)
+            /**
+             * Update this display instance for the delivery status for both single and merged messages
+             *
+             * @param msgId the message Id for which the delivery status has been updated
+             * @param deliveryStatus  delivery status
+             * @return the updated ChatMessage instance
+             */
+
+            public ChatMessage updateDeliveryStatus(String msgId, int deliveryStatus)
             {
+                if (msg instanceof MergedMessage) {
+                    msg = ((MergedMessage) msg).updateDeliveryStatus(msgId, deliveryStatus);
+                } else {
+                    ((ChatMessageImpl) msg).setReceiptStatus(deliveryStatus);
+                }
+                initDMessageStatus();
                 receiptStatus = deliveryStatus;
+                return msg;
+            }
+
+            /**
+             * Following parameters must be set to null for any update to the ChatMessage.
+             * This is to allow rebuild for msgBody and dateStr for view holder display update
+             */
+            private void initDMessageStatus() {
+                msgBody = null;
+                dateStr = null;
             }
         }
     }
@@ -2256,9 +2296,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             fileTransfer.removeStatusListener(currentChatFragment);
         }
 
+        Integer msgId = activeMsgTransfers.get(id);
         synchronized (activeMsgTransfers) {
-            int msgId = activeMsgTransfers.get(id);
-            chatListAdapter.setFileXfer(msgId, null);
+            if (msgId != null)
+                chatListAdapter.setFileXfer(msgId, null);
             activeMsgTransfers.remove(id);
         }
     }
@@ -2274,11 +2315,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         FileTransfer fileTransfer = event.getFileTransfer();
         final int newStatus = event.getNewStatus();
 
-        int msgPos = activeMsgTransfers.get(fileTransfer.getID());
-        // if chatFragment is still active
-        if (chatListAdapter != null) {
+        Integer msgPos = activeMsgTransfers.get(fileTransfer.getID());
+
+        // if chatFragment is still active and msgPos not null
+        if ((chatListAdapter != null) && (msgPos != null))  {
             // Send an initActive message to recipient if file transfer is initActive while in preparing
             // state. Currently protocol did not broadcast status change under this condition.
+
             if ((newStatus == FileTransferStatusChangeEvent.CANCELED)
                     && (chatListAdapter.getXferStatus(msgPos) == FileTransferStatusChangeEvent.PREPARING)) {
                 String msg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
@@ -2328,7 +2371,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         {
             msgViewId = viewId;
             sendFTConversion = sFilexferCon;
-            mFile =  sFilexferCon.getXferFile();
+            mFile = sFilexferCon.getXferFile();
             mStickerMode = sFilexferCon.isStickerMode();
             entityJid = currentChatTransport.getDescriptor();
         }

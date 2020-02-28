@@ -32,7 +32,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
     /**
      * The provider that created us.
      */
-    protected final T parentProvider;
+    protected final T mPPS;
 
     /**
      * A list of listeners registered for <tt>ProviderPresenceStatusChangeEvent</tt>s.
@@ -53,11 +53,11 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * Initializes a new <tt>AbstractOperationSetPersistentPresence</tt> instance created by a
      * specific <tt>ProtocolProviderService</tt> .
      *
-     * @param parentProvider the <tt>ProtocolProviderService</tt> which created the new instance
+     * @param pps the <tt>ProtocolProviderService</tt> which created the new instance
      */
-    protected AbstractOperationSetPersistentPresence(T parentProvider)
+    protected AbstractOperationSetPersistentPresence(T pps)
     {
-        this.parentProvider = parentProvider;
+        this.mPPS = pps;
     }
 
     /**
@@ -114,8 +114,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * @param parentGroup the group that contains the source contact.
      * @param oldValue the status that the source contact detained before changing it.
      */
-    protected void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup,
-            PresenceStatus oldValue)
+    protected void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup, PresenceStatus oldValue)
     {
         PresenceStatus newValue = source.getPresenceStatus();
 
@@ -137,7 +136,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
             PresenceStatus oldValue, PresenceStatus newValue, boolean isResourceChange)
     {
         ContactPresenceStatusChangeEvent evt = new ContactPresenceStatusChangeEvent(source,
-                parentProvider, parentGroup, oldValue, newValue, isResourceChange);
+                mPPS, parentGroup, oldValue, newValue, isResourceChange);
 
         Collection<ContactPresenceStatusListener> listeners;
         synchronized (contactPresenceStatusListeners) {
@@ -188,7 +187,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      */
     protected void fireProviderStatusChangeEvent(PresenceStatus oldValue, PresenceStatus newValue)
     {
-        ProviderPresenceStatusChangeEvent evt = new ProviderPresenceStatusChangeEvent(parentProvider, oldValue, newValue);
+        ProviderPresenceStatusChangeEvent evt = new ProviderPresenceStatusChangeEvent(mPPS, oldValue, newValue);
 
         Collection<ProviderPresenceStatusListener> listeners;
         synchronized (providerPresenceStatusListeners) {
@@ -208,7 +207,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      */
     protected void fireProviderStatusMessageChangeEvent(String oldStatusMessage, String newStatusMessage)
     {
-        PropertyChangeEvent evt = new PropertyChangeEvent(parentProvider,
+        PropertyChangeEvent evt = new PropertyChangeEvent(mPPS,
                 ProviderPresenceStatusListener.STATUS_MESSAGE, oldStatusMessage, newStatusMessage);
 
         Collection<ProviderPresenceStatusListener> listeners;
@@ -230,7 +229,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
     protected void fireServerStoredGroupEvent(ContactGroup source, int eventID)
     {
         ServerStoredGroupEvent evt = new ServerStoredGroupEvent(source, eventID,
-                source.getParentContactGroup(), parentProvider, this);
+                source.getParentContactGroup(), mPPS, this);
 
         Iterable<ServerStoredGroupListener> listeners;
         synchronized (serverStoredGroupListeners) {
@@ -260,14 +259,13 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      */
     public void fireSubscriptionEvent(Contact source, ContactGroup parentGroup, int eventID)
     {
-        fireSubscriptionEvent(source, parentGroup, eventID, SubscriptionEvent.ERROR_UNSPECIFIED,
-                null);
+        fireSubscriptionEvent(source, parentGroup, eventID, SubscriptionEvent.ERROR_UNSPECIFIED, null);
     }
 
     public void fireSubscriptionEvent(Contact source, ContactGroup parentGroup, int eventID,
             int errorCode, String errorReason)
     {
-        SubscriptionEvent evt = new SubscriptionEvent(source, parentProvider, parentGroup, eventID,
+        SubscriptionEvent evt = new SubscriptionEvent(source, mPPS, parentGroup, eventID,
                 errorCode, errorReason);
 
         Collection<SubscriptionListener> listeners;
@@ -300,11 +298,9 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * @param oldParent the group where the contact was located before being moved.
      * @param newParent the group where the contact has been moved.
      */
-    public void fireSubscriptionMovedEvent(Contact source, ContactGroup oldParent,
-            ContactGroup newParent)
+    public void fireSubscriptionMovedEvent(Contact source, ContactGroup oldParent, ContactGroup newParent)
     {
-        SubscriptionMovedEvent evt = new SubscriptionMovedEvent(source, parentProvider, oldParent,
-                newParent);
+        SubscriptionMovedEvent evt = new SubscriptionMovedEvent(source, mPPS, oldParent, newParent);
 
         Collection<SubscriptionListener> listeners;
         synchronized (subscriptionListeners) {

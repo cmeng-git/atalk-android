@@ -6,11 +6,7 @@
 package org.atalk.impl.neomedia.transform.zrtp;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
-import org.atalk.service.neomedia.AbstractSrtpControl;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.SrtpControl;
-import org.atalk.service.neomedia.SrtpControlType;
-import org.atalk.service.neomedia.ZrtpControl;
+import org.atalk.service.neomedia.*;
 
 import java.util.EnumSet;
 
@@ -22,6 +18,7 @@ import gnu.java.zrtp.utils.ZrtpUtils;
  *
  * @author Damian Minkov
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> implements ZrtpControl
 {
@@ -101,8 +98,8 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     /**
      * Get the ZRTP Hello Hash data - separate strings.
      *
-     * @param index Hello hash of the Hello packet identified by index. Index must be 0 <= index <
-     * SUPPORTED_ZRTP_VERSIONS.
+     * @param index Hello hash of the Hello packet identified by index.
+     * Index must be 0 <= index < SUPPORTED_ZRTP_VERSIONS.
      * @return String array containing the version string at offset 0, the Hello hash value as
      * hex-digits at offset 1. Hello hash is available immediately after class
      * instantiation. Returns {@code null} if ZRTP is not available.
@@ -125,12 +122,11 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
 
     /**
      * Get the peer's Hello Hash data.
-     * <p/>
+     *
      * Use this method to get the peer's Hello Hash data. The method returns the data as a string.
      *
      * @return a String containing the Hello hash value as hex-digits. Peer Hello hash is available
-     * after we received a Hello packet from our peer. If peer's hello hash is not available
-     * return null.
+     * after we received a Hello packet from our peer. If peer's hello hash is not available return null.
      */
     public String getPeerHelloHash()
     {
@@ -156,8 +152,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     public String getPeerZidString()
     {
         byte[] zid = getPeerZid();
-        String s = new String(ZrtpUtils.bytesToHexString(zid, zid.length));
-        return s;
+        return new String(ZrtpUtils.bytesToHexString(zid, zid.length));
     }
 
     /**
@@ -185,8 +180,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      * Returns the timeout value that will we will wait and fire timeout secure event if call is
      * not secured. The value is in milliseconds.
      *
-     * @return the timeout value that will we will wait and fire timeout secure event if call is
-     * not secured.
+     * @return the timeout value that will we will wait and fire timeout secure event if call is not secured.
      */
     public long getTimeoutValue()
     {
@@ -206,8 +200,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     {
         ZRTPTransformEngine transformEngine = new ZRTPTransformEngine();
 
-        // NOTE: set paranoid mode before initializing
-        // zrtpEngine.setParanoidMode(paranoidMode);
+        // NOTE: set paranoid mode before initializing zrtpEngine.setParanoidMode(paranoidMode);
         transformEngine.initialize("GNUZRTP4J.zid", false, ZrtpConfigureUtils.getZrtpConfiguration());
         transformEngine.setUserCallback(new SecurityEventManager(this));
         return transformEngine;
@@ -308,19 +301,15 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
 
         // ZRTP engine initialization
         ZRTPTransformEngine engine = getTransformEngine();
+
         // Create security user callback for each peer.
         SecurityEventManager securityEventManager = engine.getUserCallback();
 
         // Decide if this will become the ZRTP Master session:
-        // - Statement: audio media session will be started before video
-        // media session
-        // - if no other audio session was started before then this will
-        // become
-        // ZRTP Master session
-        // - only the ZRTP master sessions start in "auto-sensing" mode
-        // to immediately catch ZRTP communication from other client
-        // - after the master session has completed its key negotiation
-        // it will start other media sessions (see SCCallback)
+        // - Statement: audio media session will be started before video media session
+        // - if no other audio session was started before then this will become ZRTP Master session
+        // - only the ZRTP master sessions start in "auto-sensing" mode to immediately catch ZRTP communication from other client
+        // - after the master session has completed its key negotiation it will start other media sessions (see SCCallback)
         if (masterSession) {
             zrtpAutoStart = true;
 
@@ -329,8 +318,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
         }
         else {
             // check whether video was not already started
-            // it may happen when using multistreams, audio has inited
-            // and started video
+            // it may happen when using multistreams, audio has initiated and started video
             // initially engine has value enableZrtp = false
             zrtpAutoStart = engine.isEnableZrtp();
             securityEventManager.setSessionType(mediaType);
@@ -339,11 +327,9 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
         securityEventManager.setSrtpListener(getSrtpListener());
 
         // tells the engine whether to autostart(enable)
-        // zrtp communication, if false it just passes packets without
-        // transformation
+        // zrtp communication, if false it just passes packets without transformation
         engine.setEnableZrtp(zrtpAutoStart);
-        engine.sendInfo(
-                ZrtpCodes.MessageSeverity.Info, EnumSet.of(ZRTPCustomInfoCodes.ZRTPEnabledByDefault));
+        engine.sendInfo(ZrtpCodes.MessageSeverity.Info, EnumSet.of(ZRTPCustomInfoCodes.ZRTPEnabledByDefault));
     }
 
     /*
@@ -351,7 +337,8 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      *
      * @see net.java.sip.communicator.service.neomedia.ZrtpControl#setReceivedSignaledZRTPVersion(String)
      */
-    public void setReceivedSignaledZRTPVersion(final String version) {
+    public void setReceivedSignaledZRTPVersion(final String version)
+    {
         getTransformEngine().setReceivedSignaledZRTPVersion(version);
     }
 
@@ -360,7 +347,8 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      *
      * @see net.java.sip.communicator.service.neomedia.ZrtpControl#isSecurityVerified(String)
      */
-    public void setReceivedSignaledZRTPHashValue(final String value) {
+    public void setReceivedSignaledZRTPHashValue(final String value)
+    {
         getTransformEngine().setReceivedSignaledZRTPHashValue(value);
     }
 }

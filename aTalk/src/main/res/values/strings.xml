@@ -73,15 +73,14 @@
     <string name="attachOptionDialog_Videos">Videos</string>
     <string name="attachOptionDialog_videoRecord">Record video</string>
     <string name="attachOptionDialog_shareFile">Share File</string>
-    <string name="chat_fileTransferButton">Open</string>
-    <string name="chat_message_copy">Copy</string>
-    <string name="chat_message_delete">Delete</string>
-    <string name="chat_message_edit">Edit</string>
-    <string name="chat_message_forward">Forward…</string>
+    <string name="service_gui_COPY">Copy</string>
+    <string name="service_gui_DELETE">Delete</string>
+    <string name="service_gui_EDIT">Edit</string>
+    <string name="service_gui_FORWARD">Forward…</string>
     <string name="chat_message_long_press_hint">Avoid clicking within the message area for multi-item selection operation</string>
-    <string name="chat_message_quote">Quote</string>
-    <string name="chat_message_reply">Reply</string>
-    <string name="chat_message_select_all">Select all</string>
+    <string name="service_gui_QUOTE">Quote</string>
+    <string name="service_gui_REPLY">Reply</string>
+    <string name="service_gui_SELECT_ALL">Select all</string>
     <string name="chatRoom_Subject">Subject</string>
     <string name="choose_file_activity_title">Choose a file</string>
     <string name="menu_settings">Settings</string>
@@ -147,10 +146,13 @@
     <string name="service_gui_CONTACT_INVALID">The selected contact is not valid: %1$s</string>
     <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
+    <string name="service_gui_MAS">Mark as read</string>
     <string name="service_gui_REASON_LABEL">Reason:</string>
+    <string name="service_gui_SET">Set</string>
     <string name="service_gui_SHARE">Share…</string>
     <string name="service_gui_SHARE_TEXT">Share text&#8230;</string>
     <string name="service_gui_SHARE_FILE">Share file&#8230;</string>
+    <string name="service_gui_SNOOZE">Snooze</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
@@ -307,12 +309,13 @@
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
     <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
     <string name="service_gui_DENY">Deny</string>
-    <string name="service_gui_DISPLAY_NAME">Contact Display Name</string>
+    <string name="service_gui_DISPLAY_NAME">Display Name</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Contact Display Name</string>
     <string name="service_gui_DND_STATUS">Do not disturb</string>
     <string name="service_gui_DURATION">duration</string>
 
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Set status message</string>
-    <string name="service_gui_EDITED_AT">edited at %1$s</string>
+    <string name="service_gui_EDITED">edited</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Enter name or number</string>
     <string name="service_gui_ERROR">Error</string>
     <string name="service_gui_ERROR_WAS">Error was: %1$s</string>
@@ -858,6 +861,26 @@
     <string name="plugin_accountinfo_WORK_EMAIL">Work E-mail:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Work Phone:</string>
 
+    <!-- Certificate configuration plugin -->
+    <string name="plugin_certconfig_TITLE">TLS configuration</string>
+    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Source of trusted root certificates</string>
+    <string name="plugin_certconfig_CERT_LIST_TITLE">TLS client authentication configurations</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">The configurations managed here can be chosen as client TLS certificates in the account configurations (e.g. to authenticate with a certificate against your SIP provider instead of a username and password).</string>
+    <string name="plugin_certconfig_ALIAS">Alias name in KeyStore</string>
+    <string name="plugin_certconfig_KEYSTORE_TYPE">Type</string>
+    <string name="plugin_certconfig_CERT_ENTRY_TITLE">TLS client certificate</string>
+    <string name="plugin_certconfig_KEYSTORE">File</string>
+    <string name="plugin_certconfig_KEYSTORE_PASSWORD">Password</string>
+    <string name="plugin_certconfig_INCOMPLETE">Please enter a value for all fields</string>
+    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">Unable to show the certificate (%1$s).</string>
+    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">Unable to load the keystore (%1$s).</string>
+    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">Certificate stores (PKCS#11 Module, PKCS#12 files, Java ks Keystore)</string>
+    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">Unable to obtain aliases from keystore (%1$s).</string>
+    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">The selected Keystore type seems to be invalid (%1$s).</string>
+    <string name="plugin_certconfig_REVOCATION_TITLE">Certificate revocation options</string>
+    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">CRL (Certificate Revocation List) check enabled</string>
+    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">OCSP (Online Certificate Status Protocol) check enabled</string>
+
     <!-- connection info -->
     <string name="plugin_connectioninfo_TITLE">Connection Info</string>
 
@@ -884,6 +907,7 @@
     <string name="plugin_notificationconfig_event_IncomingCall">Incoming Call</string>
     <string name="plugin_notificationconfig_event_IncomingCall_description">Incoming call description.</string>
     <string name="plugin_notificationconfig_event_IncomingFile">Incoming File</string>
+    <string name="plugin_notificationconfig_event_IncomingInvitation">Incoming Invitation</string>
     <string name="plugin_notificationconfig_event_IncomingMessage">Incoming Message</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Incoming message description</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Log Files Archived</string>
@@ -1090,20 +1114,23 @@
     <string name="pref_remove_trusted_certificates_title">Remove certificate</string>
     <string name="pref_remove_trusted_certificates_summary">Delete manually approved certificates</string>
 
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Client TLS certificate</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Please select TLS certificate</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Certificate use in user authentication with server</string>
+
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Storing account changes, please wait&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Committing&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(Not set)</string>
 
-    <!-- Connection settings -->
-    <string name="service_gui_CONN_NO_CERT">None</string>
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Audio encoding</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Override global</string>
     <string name="service_gui_ENC_VIDEO_TITLE">Video encoding</string>
 
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_EMPTY">None</string>
+    <string name="service_gui_LIST_NONE">None</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encryption</string>
     <string name="service_gui_SEC_PROTOCOLS_TITLE">Security protocols</string>
     <string name="service_gui_SEC_PROTOCOLS_MSG">Please select desired protocols in order</string>
@@ -1181,8 +1208,6 @@
     <string name="service_gui_SIP_PROXY_ADDR">Proxy address</string>
     <string name="service_gui_SIP_PROXY_PORT">Proxy port</string>
     <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_TLS_CERT">Client TLS certificate</string>
-    <string name="service_gui_SIP_TLS_CERT_PROMPT">Please select TLS certificate</string>
     <string name="service_gui_SIP_SUBSCRIPTION_DUR">Default subscription duration(in s.)</string>
     <string name="service_gui_SIP_USER">CRYPTO ID</string>
     <string name="service_gui_SIP_VOICEMAIL">Voicemail</string>
@@ -1295,6 +1320,7 @@
     <!-- Account preferences -->
     <string name="pref_key_auth_name">pref_key_auth_name</string>
     <string name="pref_key_client_tls_cert">pref_key_client_tls_cert</string>
+    <!--string name="pref_key_client_tls_cert_enabled">pref_key_client_cert_enabled</string-->
     <string name="pref_key_default_domain">pref_key_default_domain</string>
     <string name="pref_key_display_name">pref_key_display_name</string>
     <string name="pref_key_dtmf_method">pref_key_dtmf_method</string>
@@ -1307,6 +1333,7 @@
     <string name="pref_key_ping_interval">pref_key_ping_interval</string>
     <string name="pref_key_polling_period">pref_key_polling_period</string>
     <string name="pref_key_preferred_transport">pref_key_preferred_transport</string>
+    <string name="pref_key_is_server_overridden">pref_key_is_server_overridden</string>
     <string name="pref_key_server_address">pref_key_server_address</string>
     <string name="pref_key_server_port">pref_key_server_port</string>
     <string name="pref_key_store_password">pref_key_store_password</string>
@@ -1318,7 +1345,6 @@
 
     <!-- Contact list -->
     <string name="pref_key_contact_list_type">pref_key_contact_list_type</string>
-    <string name="pref_key_is_server_overridden">pref_key_is_server_overridden</string>
     <string name="pref_key_clist_password">pref_key_clist_password</string>
     <string name="pref_key_clist_server_uri">pref_key_clist_server_uri</string>
     <string name="pref_key_clist_use_sip_credentials">pref_key_clist_use_sip_credentials</string>
@@ -1439,6 +1465,10 @@
     <!-- Popup notifications type -->
     <string name="pref_key_auto_update_check_enable">pref.key.notification.auto_update_check_enable</string>
     <string name="pref_key_popup_handler">pref.key.notification.popup_handler</string>
+
+    <string name="pref_headsup_notifications">Heads-up Notifications</string>
+    <string name="pref_headsup_notifications_summary">Show Heads-up Notifications</string>
+
     <string name="service_gui_settings_auto_update_check_status">Enable auto SW update check</string>
     <string name="service_gui_settings_POPUP_HANDLER">Popup notifications type</string>
 
@@ -1449,6 +1479,17 @@
     <!-- Events -->
     <string name="service_gui_settings_EVENTS_SUMMARY">Configure individual notifications</string>
     <string name="service_gui_settings_EVENTS_TITLE">Events</string>
+
+    <!-- Quite hour settings -->
+    <string name="pref_key_quiet_hours_enable">pref.key.quiet_hours_enable</string>
+    <string name="pref_key_quiet_hours_start">pref.key.quiet_hours_start</string>
+    <string name="pref_key_quiet_hours_end">pref.key.quiet_hours_end</string>
+
+    <string name="title_pref_quiet_hours">Quiet Hours</string>
+    <string name="title_pref_quiet_hours_start_time">Start time</string>
+    <string name="title_pref_quiet_hours_end_time">End time</string>
+    <string name="title_pref_enable_quiet_hours">Enable quiet hours</string>
+    <string name="pref_quiet_hours_summary">Notifications will be silenced during quiet hours</string>
 
     <!-- aTalk icon -->
     <string name="pref_key_show_atalk_icon">org.atalk.android.show_icon</string>
@@ -1781,5 +1822,6 @@
     <string name="noti_channel_CALL_GROUP">Call Notification</string>
     <string name="noti_channel_MISSED_CALL">Miss Call Notification</string>
     <string name="noti_channel_DEFAULT_GROUP">General Notification</string>
+    <string name="noti_channel_SILENT_GROUP">Silent Notification</string>
 
 </resources>

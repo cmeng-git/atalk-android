@@ -110,6 +110,9 @@ public class AndroidSecurityAuthority implements SecurityAuthority
         // InBand Registration argument
         args.putBoolean(CredentialsFragment.ARG_IB_REGISTRATION, accountID.isIbRegistration());
 
+        args.putString(CredentialsFragment.ARG_CERT_ID,
+                accountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE));
+
         args.putBoolean(CredentialsFragment.ARG_IS_SHOWN_SERVER_OPTION, isShowServerOption);
         if (isShowServerOption) {
             // Server overridden argument
@@ -118,7 +121,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
             args.putString(CredentialsFragment.ARG_SERVER_PORT, accountID.getServerPort());
         }
         args.putString(CredentialsFragment.ARG_LOGIN_REASON, credentials.getLoginReason());
-        aTalkApp.waitForDisplay();
+        aTalkApp.waitForFocus();
 
         // Obtain credentials lock
         final Object credentialsLock = new Object();

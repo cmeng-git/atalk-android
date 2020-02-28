@@ -1100,8 +1100,14 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             return;
         }
 
+        // Replace last message in DB with the new received correction message content only - no new message record
+        IMessage message = evt.getSourceMessage();
+        String msgCorrectionId = evt.getCorrectedMessageUID();
+        if (!TextUtils.isEmpty(msgCorrectionId))
+            message.setMessageUID(msgCorrectionId);
+
         String sessionUuid = getSessionUuidByJid(entityJid);
-        writeMessage(sessionUuid, ChatMessage.DIR_IN, entityJid, evt.getSourceMessage(), evt.getTimestamp(), msgType);
+        writeMessage(sessionUuid, ChatMessage.DIR_IN, entityJid, message, evt.getTimestamp(), msgType);
     }
 
     public void messageDelivered(MessageDeliveredEvent evt)

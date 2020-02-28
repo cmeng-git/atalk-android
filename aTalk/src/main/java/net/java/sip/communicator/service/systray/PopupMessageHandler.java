@@ -10,27 +10,26 @@ import net.java.sip.communicator.service.systray.event.*;
 
 /**
  * The <tt>PopupMessageHandler</tt> role is to give different methods to display
- * <tt>PopupMessage</tt> and listen for events (user click) coming from that
- * popup.
+ * <tt>PopupMessage</tt> and listen for events (user click) coming from that popup.
  *
  * @author Symphorien Wanko
+ * @author Eng Chong Meng
  */
 public interface PopupMessageHandler
 {
-
     /**
      * Registers a listener to be informed of systray popup events.
      *
      * @param listener the listened which will be informed of systray popup events
      */
-    public void addPopupMessageListener(SystrayPopupMessageListener listener);
+    void addPopupMessageListener(SystrayPopupMessageListener listener);
 
     /**
      * Removes a listener previously added with <tt>addPopupMessageListener</tt>.
      *
      * @param listener the listener to remove
      */
-    public void removePopupMessageListener(SystrayPopupMessageListener listener);
+    void removePopupMessageListener(SystrayPopupMessageListener listener);
 
     /**
      * Shows the given <tt>PopupMessage</tt>. Any given <tt>PopupMessage</tt>
@@ -40,7 +39,7 @@ public interface PopupMessageHandler
      *
      * @param popupMessage the message to show
      */
-    public void showPopupMessage(PopupMessage popupMessage);
+    void showPopupMessage(PopupMessage popupMessage);
 
     /**
      * Returns a preference index, which indicates how many features the handler
@@ -54,7 +53,7 @@ public interface PopupMessageHandler
      *
      * @return an integer representing preference index of this popup handler
      */
-    public int getPreferenceIndex();
+    int getPreferenceIndex();
 
     /**
      * Returns a readable localized description of this popup handler.
@@ -62,5 +61,5 @@ public interface PopupMessageHandler
      * @return a string describing this popup handler
      */
     @Override
-    public String toString();
+    String toString();
 }

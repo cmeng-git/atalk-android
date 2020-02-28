@@ -50,10 +50,9 @@
 
     <Spinner
         android:id="@+id/selectAccountSpinner"
+        style="@style/SpinnerView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:background="@drawable/spinner_dark" />
+        android:layout_marginBottom="@dimen/between_padding" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,20 +62,18 @@
         <Button
             android:id="@+id/button_cancel"
             style="@style/ButtonTop"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
             android:text="@string/service_gui_CANCEL" />
 
         <Button
             android:id="@+id/button_video"
             style="@style/ButtonTop"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_marginStart="4dp"
             android:text="@string/service_gui_CALL_VIDEO" />
 
         <Button
             android:id="@+id/button_audio"
             style="@style/ButtonTop"
+            android:layout_marginStart="4dp"
             android:text="@string/service_gui_CALL" />
     </LinearLayout>
 

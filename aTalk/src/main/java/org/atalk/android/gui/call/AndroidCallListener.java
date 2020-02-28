@@ -21,7 +21,6 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 
 import java.util.*;
 

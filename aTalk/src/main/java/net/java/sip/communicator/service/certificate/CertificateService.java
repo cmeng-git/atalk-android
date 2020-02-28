@@ -16,6 +16,7 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
 package net.java.sip.communicator.service.certificate;
 
 import java.security.GeneralSecurityException;
+import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.List;
@@ -37,6 +38,18 @@ public interface CertificateService
     // ------------------------------------------------------------------------
     // Configuration property names
     // ------------------------------------------------------------------------
+
+    /**
+     * Property that is being applied to the system properties for PKIX TrustManager Support
+     *
+     * <tt>com.sun.net.ssl.checkRevocation</tt> and
+     * <tt>com.sun.security.enableCRLDP</tt>
+     * <tt>ocsp.enable</tt>
+     */
+    String SECURITY_SSL_CHECK_REVOCATION = "com.sun.net.ssl.checkRevocation";
+    String SECURITY_CRLDP_ENABLE = "com.sun.security.enableCRLDP";
+    String SECURITY_OCSP_ENABLE = "ocsp.enable";
+
     /**
      * Property for always trust mode. When enabled certificate check is skipped.
      */

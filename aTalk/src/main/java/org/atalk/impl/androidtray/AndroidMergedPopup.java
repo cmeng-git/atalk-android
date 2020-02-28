@@ -42,14 +42,21 @@ public class AndroidMergedPopup extends AndroidPopup
     @Override
     protected AndroidPopup mergePopup(PopupMessage popupMessage)
     {
-        // Timing out notifications are replaced
-        /*
-         * AndroidPopup replace = null; if(mergedPopups.size() > 0) { replace = mergedPopups.get(mergedPopups.size()-1);
-         * if(replace.timeoutHandler != null) { replace.cancelTimeout(); } } if(replace != null) {
-         * mergedPopups.set(mergedPopups.indexOf(replace), new AndroidPopup(handler, popupMessage)); } else {
-         */
+        // Timing out notifications are replaced - not valid in android
+//        AndroidPopup replace = null;
+//        if (mergedPopups.size() > 0) {
+//            replace = mergedPopups.get(mergedPopups.size() - 1);
+//            if (replace.timeoutHandler != null) {
+//                replace.cancelTimeout();
+//            }
+//        }
+//        if (replace != null) {
+//            mergedPopups.set(mergedPopups.indexOf(replace), new AndroidPopup(handler, popupMessage));
+//        }
+//        else {
+//            mergedPopups.add(new AndroidPopup(handler, popupMessage));
+//        }
         mergedPopups.add(new AndroidPopup(handler, popupMessage));
-        // }
         return this;
     }
 
@@ -70,11 +77,11 @@ public class AndroidMergedPopup extends AndroidPopup
      * {@inheritDoc}
      */
     @Override
-    NotificationCompat.Builder buildNotification()
+    NotificationCompat.Builder buildNotification(int nId)
     {
-        NotificationCompat.Builder builder = super.buildNotification();
+        NotificationCompat.Builder builder = super.buildNotification(nId);
         // Set number of events
-        builder.setNumber(1 + mergedPopups.size());
+        builder.setNumber(mergedPopups.size() + 1);
         return builder;
     }
 
@@ -88,5 +95,10 @@ public class AndroidMergedPopup extends AndroidPopup
         for (AndroidPopup popup : mergedPopups) {
             inboxStyle.addLine(popup.getMessage());
         }
+    }
+
+    protected boolean displaySnoozeAction()
+    {
+        return mergedPopups.size() > 2;
     }
 }

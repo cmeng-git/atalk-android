@@ -127,7 +127,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occured.
+     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occurred.
      *
      * @param newStatus the new status
      * @param reason the reason of the status change

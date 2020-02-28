@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.UIService;
@@ -352,6 +351,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             finish();
             return true;
         }
+        else {
+            // Pass to ChatController to handle
+            ChatFragment chatFragment;
+            if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null) {
+                if (chatFragment.getChatController().onKeyUp(keyCode, event))
+                    return true;
+            }
+        }
         return super.onKeyUp(keyCode, event);
     }
 
@@ -434,13 +441,17 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 ChatRoomMemberRole role = chatRoomWrapper.getChatRoom().getUserRole();
                 mDestroyChatRoom.setVisible(ChatRoomMemberRole.OWNER.equals(role));
 
-                mLeaveChatRoom.setVisible(true);
+                boolean isJoined = chatRoomWrapper.getChatRoom().isJoined();
+                mLeaveChatRoom.setVisible(isJoined);
+                mSendFile.setVisible(isJoined && hasUploadService);
+                mSendLocation.setVisible(isJoined);
+                mChatRoomSubject.setVisible(isJoined);
+
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
-                mSendFile.setVisible(hasUploadService);
-                mSendLocation.setVisible(false);
                 mChatRoomInfo.setVisible(true);
                 mChatRoomMember.setVisible(true);
-                mChatRoomSubject.setVisible(true);
+
+                // not available in chatRoom
                 mCallAudioContact.setVisible(false);
                 mCallVideoContact.setVisible(false);
                 mOtr_Session.setVisible(false);
@@ -509,7 +520,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
 
                 case R.id.show_chatroom_occupant:
                     StringBuilder memberList = new StringBuilder();
-                    List<ChatRoomMember> occupants = chatRoomWrapper.getChatRoom().getMembers();
+                    List<ChatRoomMember> occupants = chatRoom.getMembers();
                     if (occupants.size() > 0) {
                         for (ChatRoomMember member : occupants) {
                             ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
@@ -523,7 +534,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                         }
                     }
                     else {
-                        memberList.append(getString(R.string.service_gui_LIST_EMPTY));
+                        memberList.append(getString(R.string.service_gui_LIST_NONE));
                     }
 
                     String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
@@ -706,6 +717,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             return null;
 
         long lastActiveTime = mRecipient.getLastActiveTime();
+        // Retrieve from server if this is the first access
         if (lastActiveTime == -1) {
             Jid jid = mRecipient.getJid();
             LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);

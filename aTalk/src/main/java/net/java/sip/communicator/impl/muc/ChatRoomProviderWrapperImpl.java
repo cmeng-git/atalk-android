@@ -15,6 +15,7 @@
  */
 package net.java.sip.communicator.impl.muc;
 
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJabberImpl;
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
@@ -313,12 +314,8 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
                 @Override
                 public void run()
                 {
-                    ChatRoom chatRoom = null;
-                    try {
-                        chatRoom = groupChatOpSet.findRoom(chatRoomWrapper.getChatRoomName());
-                    } catch (OperationFailedException | OperationNotSupportedException | XmppStringprepException e1) {
-                        Timber.e(e1, "Failed to find chat room with name:%s", chatRoomWrapper.getChatRoomName());
-                    }
+                    ChatRoom chatRoom = ((OperationSetMultiUserChatJabberImpl) groupChatOpSet)
+                            .findRoom(chatRoomWrapper.getEntityBareJid());
 
                     if (chatRoom != null) {
                         chatRoomWrapper.setChatRoom(chatRoom);

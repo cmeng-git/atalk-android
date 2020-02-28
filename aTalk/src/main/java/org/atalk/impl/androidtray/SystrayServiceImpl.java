@@ -136,8 +136,8 @@ public class SystrayServiceImpl extends AbstractSystrayService
     }
 
     /**
-     * Class implements <tt>SystrayPopupMessageListener</tt> in order to display chat <tt>Activity</tt> when popup is
-     * clicked.
+     * Class implements <tt>SystrayPopupMessageListener</tt> in order to display chat
+     * <tt>Activity</tt> when popup is clicked.
      */
     private class PopupListenerImpl implements SystrayPopupMessageListener
     {

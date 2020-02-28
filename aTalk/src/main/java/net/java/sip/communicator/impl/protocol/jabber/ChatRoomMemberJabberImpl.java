@@ -103,7 +103,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
         // jabberID may be null
         if (jabberJid != null) {
             // If we found the mContact we set also its avatar.
-            mContact = presenceOpSet.findContactByID(jabberJid.asBareJid());
+            mContact = presenceOpSet.findContactByID(jabberJid);
             if (mContact != null) {
                 this.avatar = mContact.getImage();
             }

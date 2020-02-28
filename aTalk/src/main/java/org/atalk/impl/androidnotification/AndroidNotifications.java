@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.atalk.android.plugin.notificationwiring;
+package org.atalk.impl.androidnotification;
 
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.plugin.notificationwiring.SoundProperties;
@@ -20,6 +20,7 @@ import java.util.List;
  * Android notifications wiring which overrides some default notifications and adds vibrate actions.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class AndroidNotifications implements BundleActivator
 {
@@ -48,10 +49,18 @@ public class AndroidNotifications implements BundleActivator
      */
     public static final String MISSED_CALL = "missed_call";
 
-    public static List<String> notificationIds = Arrays.asList(DEFAULT_GROUP, MESSAGE_GROUP, FILE_GROUP, CALL_GROUP, MISSED_CALL);
+    /**
+     * Missed call event.
+     */
+    public static final String SILENT_GROUP = "silent";
+
+
+    public static List<String> notificationIds
+            = Arrays.asList(DEFAULT_GROUP, MESSAGE_GROUP, FILE_GROUP, CALL_GROUP, MISSED_CALL, SILENT_GROUP);
 
     /**
-     // Overrides default notifications to suit Android devices
+     * Overrides SIP default notifications to suit Android devices available resources
+     *
      * {@inheritDoc}
      */
     public void start(BundleContext bundleContext)
@@ -87,9 +96,12 @@ public class AndroidNotifications implements BundleActivator
 
         // Proactive notifications: new(No default message, Notification hide timeout, displayed on aTalk icon)
         notificationService.registerDefaultNotificationForEvent(NotificationManager.PROACTIVE_NOTIFICATION,
-                new PopupMessageNotificationAction(null, 7000, DEFAULT_GROUP));
+                new PopupMessageNotificationAction(null, 7000, SILENT_GROUP));
 
-        // Remove not-used events
+        notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_INVITATION,
+                new SoundNotificationAction(SoundProperties.INCOMING_INVITATION, -1, true, false, false));
+
+        // Remove obosoleted/unused events
         notificationService.removeEventNotification(NotificationManager.CALL_SAVED);
     }
 

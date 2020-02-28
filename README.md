@@ -23,6 +23,7 @@
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](https://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
 * SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
+* Use of SASL External with Certificate for client authentication and login
 * OMEMO encryption in multi-user-chat session, give users' maximum privacy and security
 * OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
 * Support http file upload for file sharing with offline contact and members in conference room
@@ -88,6 +89,7 @@ It supports the following XEP's, standards for XMPP clients.
 * [XEP-0172: User Nickname](https://xmpp.org/extensions/xep-0172.html)
 * [XEP-0176: Jingle ICE-UDP Transport Method](https://xmpp.org/extensions/xep-0176.html)
 * [XEP-0177: Jingle Raw UDP Transport Method](https://xmpp.org/extensions/xep-0177.html)
+* [XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates](https://xmpp.org/extensions/xep-0178.html)
 * [XEP-0184: Message Delivery Receipts](https://xmpp.org/extensions/xep-0184.html)
 * [XEP-0191: Blocking command (NI)](https://xmpp.org/extensions/xep-0191.html)
 * [XEP-0198: Stream Management](https://xmpp.org/extensions/xep-0198.html)

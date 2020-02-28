@@ -17,7 +17,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 import org.atalk.android.R;
 import org.atalk.android.gui.call.*;
 import org.atalk.android.gui.util.AndroidImageUtil;
-import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
+import org.atalk.impl.androidnotification.AndroidNotifications;
 
 import java.util.HashMap;
 import java.util.Map;

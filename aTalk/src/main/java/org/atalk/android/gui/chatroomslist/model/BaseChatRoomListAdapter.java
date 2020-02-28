@@ -270,17 +270,12 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     {
         // Keeps reference to avoid future findViewById()
         ChatRoomViewHolder chatRoomViewHolder;
+        Object child = getChild(groupPosition, childPosition);
 
         if (convertView == null) {
-            LayoutInflater inflater = chatRoomListFragment.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.chatroom_list_row, parent, false);
+            convertView = mInflater.inflate(R.layout.chatroom_list_row, parent, false);
 
             chatRoomViewHolder = new ChatRoomViewHolder();
-            View roomView = convertView.findViewById(R.id.room_view);
-            roomView.setOnClickListener(this);
-            roomView.setOnLongClickListener(this);
-            roomView.setTag(getChild(groupPosition, childPosition));
-
             chatRoomViewHolder.roomName = convertView.findViewById(R.id.room_name);
             chatRoomViewHolder.statusMessage = convertView.findViewById(R.id.room_status);
 
@@ -300,7 +295,6 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             chatRoomViewHolder.bookmark.setTag(chatRoomViewHolder);
 
             convertView.setTag(chatRoomViewHolder);
-
         }
         else {
             chatRoomViewHolder = (ChatRoomViewHolder) convertView.getTag();
@@ -310,9 +304,14 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         chatRoomViewHolder.childPosition = childPosition;
 
         // return and stop further process if child has been removed
-        Object child = getChild(groupPosition, childPosition);
         if (!(child instanceof ChatRoomWrapper))
             return convertView;
+
+        // Must init child Tag here as reused convertView may not necessary contains the correct crWrapper
+        View roomView = convertView.findViewById(R.id.room_view);
+        roomView.setOnClickListener(this);
+        roomView.setOnLongClickListener(this);
+        roomView.setTag(child);
 
         ChatRoomWrapper crWrapper = (ChatRoomWrapper) child;
         crwViewHolder.put(crWrapper, chatRoomViewHolder);
@@ -466,7 +465,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
                 case R.id.room_icon:
                 case R.id.cb_bookmark:
-                    FragmentTransaction ft = chatRoomListFragment.getFragmentManager().beginTransaction();
+                    FragmentTransaction ft = chatRoomListFragment.getParentFragmentManager().beginTransaction();
                     ft.addToBackStack(null);
                     ChatRoomBookmarkDialog chatRoomBookmarkFragment
                             = ChatRoomBookmarkDialog.getInstance(chatRoomWrapper, this);

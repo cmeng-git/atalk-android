@@ -19,7 +19,7 @@ public class AsyncExecutor<T extends Runnable>
 {
     private long keepAliveTime;
 
-    private final List<CommandFuture<T>> queue = new LinkedList<> ();
+    private final List<CommandFuture<T>> queue = new LinkedList<>();
 
     private boolean shutdown;
 
@@ -185,8 +185,7 @@ public class AsyncExecutor<T extends Runnable>
         if ((thread == null)
                 && (!shutdown && !shutdownNow)
                 && !queue.isEmpty()) {
-            thread
-                    = new Thread(getClass().getName())
+            thread = new Thread(getClass().getName())
             {
                 @Override
                 public void run()

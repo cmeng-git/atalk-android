@@ -266,8 +266,8 @@ public interface ChatMessage
     String getCorrectedMessageUID();
 
     /**
-     * Indicates if given <tt>nextMsg</tt> is a consecutive message or if the <tt>nextMsg</tt> is a replacement for this
-     * message.
+     * Indicates if given <tt>nextMsg</tt> is a consecutive message or if the <tt>nextMsg</tt>
+     * is a replacement for this message.
      *
      * @param nextMsg the next message to check
      * @return <tt>true</tt> if the given message is a consecutive or replacement message, <tt>false</tt> - otherwise
@@ -275,11 +275,11 @@ public interface ChatMessage
     boolean isConsecutiveMessage(ChatMessage nextMsg);
 
     /**
-     * Merges given message. If given message is consecutive to this one, then their contents will be merged. If given
-     * message is a replacement message for <tt>this</tt> one, then the replacement will be returned.
+     * Merges given message. If given message is consecutive to this one, then their contents will be merged.
+     * If given message is a replacement message for <tt>this</tt> one, then the replacement will be returned.
      *
-     * @param consecutiveMessage the next message to merge with <tt>this</tt> instance(it must be consecutive in terms of
-     * <tt>isConsecutiveMessage</tt> method).
+     * @param consecutiveMessage the next message to merge with <tt>this</tt> instance
+     * (it must be consecutive in terms of <tt>isConsecutiveMessage</tt> method).
      * @return merge operation result that should be used instead of this <tt>ChatMessage</tt> instance.
      */
     ChatMessage mergeMessage(ChatMessage consecutiveMessage);

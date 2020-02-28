@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
@@ -162,6 +163,7 @@ import timber.log.Timber;
  * @author Emil Ivov
  * @author Hristo Terezov
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderService
         implements PingFailedListener, HTTPAuthorizationRequestListener, DialogActivity.DialogListener
@@ -274,18 +276,22 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung SII takes up to 30
      * Sec to response to sasl authentication challenge on first login
      */
-    public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30 = 30000;  // 30 seconds
+    public static final int SMACK_REPLY_EXTENDED_TIMEOUT_30 = 30000;  // 30 seconds
 
     // vCard save takes about 29 seconds on Note 8
-    public static final int SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_40 = 40000;  // 40 seconds
+    public static final int SMACK_REPLY_EXTENDED_TIMEOUT_40 = 40000;  // 40 seconds
 
     // Captcha entry timeout is control by server - so set to long smack timeout (60S)
-    public static final int SMACK_PACKET_CAPTCHA_TIMEOUT = 60000;
+    public static final int SMACK_REPLY_CAPTCHA_TIMEOUT = 60000;
+
+    public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;
 
     /**
-     * aTalk Smack packet reply default timeout.
+     * aTalk Smack packet reply default timeout - use Smack default instead of 10s (starting v2.1.8).
+     * Too many FFR on ANR at smack.StanzaCollector.nextResult (StanzaCollector.java:206) when server is not responding.
+     * - change the xmppConnect replyTimeout to smack default of 5 seconds under normal operation.
      */
-    public static final int SMACK_PACKET_REPLY_TIMEOUT_10 = 10000;
+    public static final int SMACK_REPLY_TIMEOUT_DEFAULT = SmackConfiguration.getDefaultReplyTimeout();
 
     public static final int DEFAULT_PORT = 5222;
 
@@ -315,6 +321,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Indicates whether or not the provider is initialized and ready for use.
      */
     private boolean isInitialized = false;
+
+    /**
+     * False to disable resetting the smack reply timer on completion; let AndroidOmemoService as the task is async
+     */
+    private boolean resetSmackTimer = true;
 
     /**
      * We use this to lock access to initialization.
@@ -724,8 +735,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @throws XMPPException if we cannot connect to the server - network problem
      * @throws OperationFailedException if login parameters as server port are not correct
      */
-    private void initializeConnectAndLogin(SecurityAuthority authority, int reasonCode, String
-            loginReason, Boolean isShowAlways)
+    private void initializeConnectAndLogin(SecurityAuthority authority, int reasonCode,
+            String loginReason, Boolean isShowAlways)
             throws XMPPException, SmackException, OperationFailedException
     {
         synchronized (initializationLock) {
@@ -760,6 +771,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 // server disconnect us after such an error, do cleanup or connection denied.
                 disconnectAndCleanConnection();
                 throw ex; // rethrow the original exception
+            } finally {
+                // Reset to Smack default on login process completion
+                if ((mConnection != null) && resetSmackTimer)
+                    mConnection.setReplyTimeout(SMACK_REPLY_TIMEOUT_DEFAULT);
+                resetSmackTimer = true;
             }
         }
     }
@@ -782,7 +798,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
         String clientCertId = mAccountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
-        if (clientCertId != null) {
+        if ((clientCertId != null) && !clientCertId.equals(CertificateConfigEntry.CERT_NONE.toString())) {
             return new LoginByClientCertificateStrategy(mAccountID, ccBuilder);
         }
         else {
@@ -991,6 +1007,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         try {
             supportedProtocols = ((SSLSocket) SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
         } catch (IOException e) {
+            Timber.d("Use default supported Protocols: %s", Arrays.toString(supportedProtocols));
             // Use default list
         }
         Arrays.sort(supportedProtocols);
@@ -1040,17 +1057,19 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     X509TrustManager sslTrustManager = getTrustManager(cvs, serviceName);
                     sslContext = loginStrategy.createSslContext(cvs, sslTrustManager);
                     config.setCustomSSLContext(sslContext);
+                    config.setAuthzid(mAccountID.getBareJid().asEntityBareJidIfPossible());
                     // config.setHostnameVerifier() => use smack default
 
                 } catch (GeneralSecurityException e) {
                     Timber.e(e, "Error creating custom trust manager");
-                    StanzaError stanzaError = StanzaError.getBuilder(Condition.service_unavailable).build();
-                    throw new XMPPErrorException(null, stanzaError);
+                    // StanzaError stanzaError = StanzaError.getBuilder(Condition.service_unavailable).build();
+                    throw new ATalkXmppException("Security-Exception: Creating custom TrustManager", e);
                 }
             }
             else if (tlsRequired) {
-                StanzaError stanzaError = StanzaError.getBuilder(Condition.service_unavailable).build();
-                throw new XMPPErrorException(null, stanzaError);
+                // StanzaError stanzaError = StanzaError.getBuilder(Condition.service_unavailable).build();
+                // throw new XMPPErrorException(null, stanzaError);
+                throw new ATalkXmppException("Security-Exception: Certificate verification service is unavailable and TLS is required");
             }
         }
         else {
@@ -1087,8 +1106,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             mConnection.addConnectionListener(xmppConnectionListener);
         }
 
-        // Allow longer timeout during login for slow client device
-        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
+        // Allow longer timeout during login for slow client device; clear to default in caller
+        mConnection.setReplyTimeout(SMACK_REPLY_EXTENDED_TIMEOUT_30);
 
         // Init the connection SynchronizedPoints
         xmppConnected = new LoginSynchronizationPoint<>(this, "connection connected");
@@ -1228,11 +1247,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // wait for connectionListener to report status. Exceptions are handled in try/catch
             accountAuthenticated.checkIfSuccessOrWait();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Timber.w("Xmpp Connection authentication exception: %s", e.getMessage());
         }
-
-        // Reset back to Smack default - may not reach here if exception
-        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_TIMEOUT_10);
 
         if (!success) {
             disconnectAndCleanConnection();
@@ -1359,8 +1375,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         /**
          * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
          *
-         * Note that the connection is likely not yet authenticated and therefore only limited operations like registering
-         * an account may be possible.
+         * Note that the connection is likely not yet authenticated and therefore only limited operations
+         * like registering an account may be possible.
          *
          * @param connection the XMPPConnection which successfully connected to its endpoint.
          */
@@ -1393,19 +1409,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         public void authenticated(XMPPConnection connection, boolean resumed)
         {
             accountAuthenticated.reportSuccess();
-
-            /*
-             * Must initialize omemoManager on every new connected connection, to ensure both pps and omemoManager is referred
-             * to same instance of xmppConnection.  Perform only after connection is connected to ensure the user is defined
-             */
-            // androidOmemoService = new AndroidOmemoService(ProtocolProviderServiceJabberImpl.this);
-
-            /*  Must only initialize omemoDevice after user authenticated */
-            androidOmemoService.initOmemoDevice();
-
-            // Init HTTPAuthorizationRequestManager on authenticated
-            httpAuthorizationRequestManager = HTTPAuthorizationRequestManager.getInstanceFor(mConnection);
-            httpAuthorizationRequestManager.addIncomingListener(ProtocolProviderServiceJabberImpl.this);
 
             // Get the Roster instance for this authenticated user
             mRoster = Roster.getInstanceFor(mConnection);
@@ -1440,6 +1443,23 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             if (mAccountID.isIbRegistration())
                 mAccountID.setIbRegistration(false);
+
+            // Init HTTPAuthorizationRequestManager on authenticated
+            httpAuthorizationRequestManager = HTTPAuthorizationRequestManager.getInstanceFor(mConnection);
+            httpAuthorizationRequestManager.addIncomingListener(ProtocolProviderServiceJabberImpl.this);
+
+            /*
+             * Must initialize omemoManager on every new connected connection, to ensure both pps and omemoManager is referred
+             * to same instance of xmppConnection.  Perform only after connection is connected to ensure the user is defined
+             */
+            // androidOmemoService = new AndroidOmemoService(ProtocolProviderServiceJabberImpl.this);
+
+            /*
+             * Must only initialize omemoDevice after user authenticated
+             * Leave the smack reply timer reset to androidOmemoService as it is running async
+             */
+            resetSmackTimer = false;
+            androidOmemoService.initOmemoDevice();
 
             // Fire registration state has changed
             if (resumed) {
@@ -1527,8 +1547,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         if (mConnection == null)
             return;
-
-        mConnection.setReplyTimeout(SMACK_PACKET_REPLY_TIMEOUT_10);
 
         /*
          * Must stop any reconnection timer if any; disconnect does not kill the timer. It continuous
@@ -1734,8 +1752,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          * Must initialize omemoManager on every new connected connection, to ensure both pps and
          * omemoManager is referred to same instance of xmppConnection.  Perform only after connection
          * is connected to ensure the user is defined
+         *
+         * Move to authenticated stage?
+         * Perform here to ensure only one androidOmemoService is created. Otherwise onResume may create multiple instances
          */
-        androidOmemoService = new AndroidOmemoService(this); // move to authenticated stage?
+        androidOmemoService = new AndroidOmemoService(this);
 
         /*
          * add SupportedFeatures only prior to registerServiceDiscoveryManager. Otherwise found
@@ -1959,7 +1980,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         /*
          * The CapsExtension node value to advertise in <presence/>.
          */
-        String entityNode = OSUtils.IS_ANDROID ? "http://android.atalk.org" : "http://atalk.org";
+        String entityNode = OSUtils.IS_ANDROID ? "https://android.atalk.org" : "https://atalk.org";
         EntityCapsManager.setDefaultEntityNode(entityNode);
 
         /* setup EntityCapsManager persistent store for XEP-0115: Entity Capabilities */
@@ -2430,9 +2451,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * Add additional exMsg message if necessary to achieve this effect.
      *
-     * @param ex the <tt>XMPPException</tt> which is to be determined whether it signals that attempted
-     * authentication has failed
-     * @return <tt>>>-1</tt> if the specified <tt>ex</tt> signals that attempted authentication is
+     * @param ex the <tt>Exception</tt> which is to be determined whether it signals
+     * that attempted authentication has failed
+     * @return if the specified <tt>ex</tt> signals that attempted authentication is
      * known' otherwise <tt>SecurityAuthority.REASON_UNKNOWN</tt> is returned.
      * @see SecurityAuthority#REASON_UNKNOWN
      */
@@ -2481,6 +2502,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         else if (exMsg.contains("not-allowed")) {
             failureMode = SecurityAuthority.DNSSEC_NOT_ALLOWED;
         }
+        else if (exMsg.contains("security-exception")) {
+            failureMode = SecurityAuthority.SECURITY_EXCEPTION;
+        }
         return failureMode;
     }
 
@@ -2521,21 +2545,30 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             reasonCode = RegistrationStateChangeEvent.REASON_MULTIPLE_LOGIN;
         }
 
+        // we fired these for some reason that we have gone offline; lets clean
+        // the current connection state for any future connections
         if (regState == RegistrationState.UNREGISTERED
                 || regState == RegistrationState.CONNECTION_FAILED) {
-            // we fired that for some reason we are going offline lets clean the connection state
-            // for any future connections
             disconnectAndCleanConnection();
         }
 
         String reason = ex.getMessage();
         fireRegistrationStateChanged(getRegistrationState(), regState, reasonCode, reason);
 
-        // Try re-register and ask user for new credentials giving detail reason description.
-        if (ex instanceof XMPPErrorException) {
-            reason = ((XMPPErrorException) ex).getStanzaError().getDescriptiveText();
+        // Show error and abort further attempt for unknown or specified exceptions; others proceed to retry
+        if ((failMode == SecurityAuthority.REASON_UNKNOWN)
+                || (failMode == SecurityAuthority.SECURITY_EXCEPTION)
+                || (failMode == SecurityAuthority.POLICY_VIOLATION)) {
+            if (TextUtils.isEmpty(reason))
+                reason = ex.getCause().getMessage();
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                    aTalkApp.getResString(R.string.service_gui_ERROR), reason);
         }
-        if (failMode != SecurityAuthority.REASON_UNKNOWN) {
+        else {
+            // Try re-register and ask user for new credentials giving detail reason description.
+            if (ex instanceof XMPPErrorException) {
+                reason = ((XMPPErrorException) ex).getStanzaError().getDescriptiveText();
+            }
             reRegister(failMode, reason);
         }
     }
@@ -2634,9 +2667,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * The trust manager which asks the client whether to trust particular certificate which is not
-     * android root's CA trusted.
+     * android root's CA trusted. Note: X509ExtendedTrustManager required API-24
      */
-    private class HostTrustManager implements X509TrustManager
+    private class HostTrustManager implements X509TrustManager // X509ExtendedTrustManager
     {
         /**
          * The default trust manager.
@@ -2675,6 +2708,39 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 throws CertificateException, UnsupportedOperationException
         {
             throw new UnsupportedOperationException();
+        }
+
+        // All 4 Overrides are for X509ExtendedTrustManager
+        // @Override
+        public void checkClientTrusted(X509Certificate[] chain,
+                String authType, Socket socket)
+                throws CertificateException
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        // @Override
+        public void checkServerTrusted(X509Certificate[] chain,
+                String authType, Socket socket)
+                throws CertificateException
+        {
+            checkServerTrusted(chain, authType);
+        }
+
+        // @Override
+        public void checkClientTrusted(X509Certificate[] chain,
+                String authType, SSLEngine engine)
+                throws CertificateException
+        {
+            throw new UnsupportedOperationException();
+        }
+
+        // @Override
+        public void checkServerTrusted(X509Certificate[] chain,
+                String authType, SSLEngine engine)
+                throws CertificateException
+        {
+            checkServerTrusted(chain, authType);
         }
 
         /**

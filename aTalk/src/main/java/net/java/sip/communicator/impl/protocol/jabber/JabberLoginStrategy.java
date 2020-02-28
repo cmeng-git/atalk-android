@@ -38,7 +38,8 @@ interface JabberLoginStrategy
     UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode, String reason, Boolean isShowAlways);
 
     /**
-     * Determines whether the login preparation was successful and the strategy is ready to start connecting.
+     * Determines whether the login preparation was successful and the strategy
+     * is ready to start connecting.
      *
      * @return true if prepareLogin was successful.
      */

@@ -155,13 +155,6 @@ public class FortunaGenerator implements RandomGenerator {
     /** The index into buffer of where the next byte will come from. */
     protected int ndx = 0;
 
-    private static byte[] getSecureRandomSeed()
-    {
-        byte[] someData = new byte[256];
-        (new SecureRandom()).nextBytes(someData);
-        return someData;
-    }
-
     public FortunaGenerator() {
         this(getSecureRandomSeed());
     }
@@ -200,6 +193,13 @@ public class FortunaGenerator implements RandomGenerator {
             pool0Count = 0;
         }
         generator.nextBytes(buffer, 0, buffer.length);
+    }
+
+    private static byte[] getSecureRandomSeed()
+    {
+        byte[] someData = new byte[256];
+        (new SecureRandom()).nextBytes(someData);
+        return someData;
     }
 
     /**

@@ -13,6 +13,7 @@ import java.util.*;
  * Provides an abstract, base implementation of {@link SrtpControl} to facilitate implementers.
  *
  * @author Lyubomir Marinov
+ * @author MilanKral
  */
 public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine> implements SrtpControl
 {

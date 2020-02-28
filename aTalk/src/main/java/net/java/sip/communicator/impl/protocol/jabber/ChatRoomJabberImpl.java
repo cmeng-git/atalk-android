@@ -11,6 +11,7 @@ import android.text.Html;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
@@ -19,8 +20,8 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.CaptchaDialog;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.chat.conference.CaptchaDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.XhtmlUtil;
@@ -31,12 +32,9 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
-import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
-import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.muc.*;
 import org.jivesoftware.smackx.muc.packet.Destroy;
@@ -213,7 +211,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     private int mCaptchaState = CaptchaDialog.unknown;
     private final MucMessageListener messageListener;
-    private Message sMessage;
+
+    private Message captchaMessage;
 
     /**
      * Creates an instance of a chat room and initialize all the necessary listeners
@@ -248,58 +247,100 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         invitationRejectionListeners = new InvitationRejectionListeners();
         multiUserChat.addInvitationRejectionListener(invitationRejectionListeners);
 
-        // setup message listener to receive presence captcha challenge message
-        StanzaFilter fromRoomFilter = FromMatchesFilter.create(multiUserChat.getRoom());
-        StanzaFilter fromRoomCaptchaFilter = new AndFilter(fromRoomFilter,
-                new OrFilter(MessageTypeFilter.NORMAL, MessageTypeFilter.ERROR));
-
-        // must perform captcha challenge check before joining chatRoom (MucMessageListener only in effect after joined)
-        provider.getConnection().addAsyncStanzaListener(packet -> {
-            sMessage = (Message) packet;
-            if (sMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
-                initCaptchaProcess(sMessage);
-            }
-            // Handle only error message (currently not supported by smack)
-            else if (Message.Type.error == sMessage.getType()) {
-                // Timber.d("ChatRoom Message: %s", sMessage.toXML());
-                messageListener.processMessage(sMessage);
-            }
-
-        }, fromRoomCaptchaFilter);
-
         ConferenceChatManager conferenceChatManager = AndroidGUIActivator.getUIService().getConferenceChatManager();
         addMessageListener(conferenceChatManager);
     }
 
     /**
-     * Show captcha challenge for spam group chat if requested
+     * Show captcha challenge for group chat if requested
      *
-     * @param message message containing captcha challenge info
+     * @param message Stanza Message containing captcha challenge info
      */
-    private void initCaptchaProcess(final Message message)
+    public void initCaptchaProcess(final Message message)
     {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (aTalkApp.getCurrentActivity() == null)
-                return;
+        // Set flag to ignore reply timeout
+        captchaMessage = message;
+        mCaptchaState = CaptchaDialog.awaiting;
 
+        // Do not proceed to launch CaptchaDialog if app is in background - system crash
+        if (!aTalkApp.isForeground) {
+            return;
+        }
+
+        aTalkApp.waitForFocus();
+        new Handler(Looper.getMainLooper()).post(() -> {
+            // Already timeout on default smack reply time, so not required (server gives 60s timeout)
+            // mPPS.getConnection().setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_CAPTCHA_TIMEOUT);
             CaptchaDialog captchaDialog = new CaptchaDialog(aTalkApp.getCurrentActivity(),
                     mMultiUserChat, message, ChatRoomJabberImpl.this);
             captchaDialog.show();
         });
     }
 
+    /**
+     * Captcha dialog callback on user response to the challenge
+     *
+     * @param state Captcha dialog response state from server/user
+     * @see CaptchaDialog state
+     */
     @Override
     public void onResult(int state)
     {
         mCaptchaState = state;
-        if (state == CaptchaDialog.cancel) {
-            String errMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, getName(), mNickName);
-            MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR), errMsg);
+        switch (mCaptchaState) {
+            case CaptchaDialog.validated:
+                if (mMultiUserChat.isJoined())
+                    onJoinSuccess();
+                else {
+                    try {
+                        Timber.d("Rejoined chat room after captcha challenge");
+                        // must re-joined immediately, otherwise smack has problem handling room delayed messages
+                        joinAs(mNickName.toString(), mPassword);
+                    } catch (OperationFailedException e) {
+                        Timber.w("Rejoined error: %s", e.getMessage());
+                    }
+                }
+                break;
+
+            case CaptchaDialog.failed:
+                // CaptchaDialog will display the error message, try to rejoin
+                try {
+                    joinAs(mNickName.toString(), mPassword);
+                } catch (OperationFailedException e) {
+                    Timber.w("Rejoined error: %s", e.getMessage());
+                }
+                break;
+
+            case CaptchaDialog.cancel:
+                String errMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, getName(), mNickName);
+                MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR), errMsg);
+                break;
+            default:
+                break;
         }
-        else {
-            // Give user a second chance to reply to captcha challenge via webLink
-            messageListener.processMessage(sMessage);
-        }
+    }
+
+    /**
+     * Captcha dialog callback on server response to user input
+     *
+     * @param message message string
+     * @param msgType messageType
+     */
+    @Override
+    public void addMessage(String message, int msgType)
+    {
+        Chat chatPanel = MUCActivator.getUIService().getChat(ChatRoomJabberImpl.this);
+        chatPanel.addMessage(mMultiUserChat.getRoom().toString(), new Date(), msgType, IMessage.ENCODE_PLAIN, message);
+    }
+
+    /**
+     * Provide access to the smack processMessage() by external class
+     *
+     * @param message chatRoom message
+     */
+    public void processMessage(Message message)
+    {
+        messageListener.processMessage(message);
     }
 
     /**
@@ -632,6 +673,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         boolean retry = true;
         String errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, getName(), nickname);
 
+        mPassword = password;
         // parseLocalPart or take nickname as it to join chatRoom
         String sNickname = nickname.split("@")[0];
         try {
@@ -641,23 +683,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     mMultiUserChat.changeNickname(mNickName);
             }
             else {
-                // Allow longer timeout during join chatRoom to allow time to handle any captcha challenge
-                mPPS.getConnection().setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_CAPTCHA_TIMEOUT);
                 if (password == null)
                     mMultiUserChat.join(mNickName);
                 else
                     mMultiUserChat.join(mNickName, new String(password));
             }
-
-            // update members list only on successful joining chatRoom
-            ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName, mPPS.getOurJID());
-            synchronized (members) {
-                members.put(mNickName, member);
-            }
-
-            // unblock all conference event UI display on received own <presence/> stanza e.g. participants' <presence/> etc
-            mucOwnPresenceReceived = true;
-            opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
+            onJoinSuccess();
             retry = false;
         } catch (XMPPErrorException ex) {
             StanzaError xmppError = ex.getStanzaError();
@@ -700,11 +731,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             }
         } catch (Throwable ex) {
             Timber.e("%s: %s", errorMessage, ex.getMessage());
-            if ((ex instanceof SmackException.NoResponseException) && (mCaptchaState == CaptchaDialog.cancel)) {
-                // Ignore server response timeout if user has canceled captcha challenge request
-                // - likely not get call as user cancel is implemented by sending empty reply to cancel smack delay
-                Timber.d("Join room - User canceled (Ignore NoResponseException)");
-                // To abort retry by caller
+            // Ignore server response timeout if received captcha challenge or user canceled captcha challenge request
+            // - likely not get call as user cancel is implemented by sending empty reply to cancel smack delay
+            if ((ex instanceof SmackException.NoResponseException)
+                    && ((mCaptchaState == CaptchaDialog.cancel) || (mCaptchaState == CaptchaDialog.awaiting))) {
+                Timber.d("Join room (Ignore NoResponseException): Received captcha challenge or user canceled");
                 retry = false;
             }
             else if (mCaptchaState == CaptchaDialog.unknown) {
@@ -719,10 +750,25 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING, getName());
                 throw new OperationFailedException(errorMessage, OperationFailedException.CAPTCHA_CHALLENGE, ex);
             }
-        } finally {
-            mPPS.getConnection().setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
         }
+        // Abort retry by caller if false
         return retry;
+    }
+
+    /**
+     * Process to perform upon a successful join room request
+     */
+    private void onJoinSuccess()
+    {
+        // update members list only on successful joining chatRoom
+        ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName, mPPS.getOurJID());
+        synchronized (members) {
+            members.put(mNickName, member);
+        }
+
+        // unblock all conference event UI display on received own <presence/> stanza e.g. participants' <presence/> etc
+        mucOwnPresenceReceived = true;
+        opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED, null);
     }
 
     //    /**
@@ -1636,8 +1682,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Creates the corresponding ChatRoomMemberPresenceChangeEvent and notifies all
-     * <tt>ChatRoomMemberPresenceListener</tt>s that a ChatRoomMember has joined or left this
-     * <tt>ChatRoom</tt>.
+     * <tt>ChatRoomMemberPresenceListener</tt>s that a ChatRoomMember has joined or left this <tt>ChatRoom</tt>.
      *
      * @param member the <tt>ChatRoomMember</tt> that changed its presence status
      * @param actor the <tt>ChatRoomMember</tt> that participated as an actor in this event
@@ -1935,7 +1980,22 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL))
                 return;
 
-            String msgBody = message.getBody();
+            // Captcha challenge body is in body extension
+            String msgBody = null;
+            Set<Message.Body> msgBodies = message.getBodies();
+            if (!msgBodies.isEmpty()) {
+                for (Message.Body body : msgBodies) {
+                    if (body != null) {
+                        msgBody = body.getMessage();
+                        break;
+                    }
+                }
+            }
+            // Check if the message is of Type.error if none in Message Body
+            if ((msgBody == null) && (message.getType() == Message.Type.error)) {
+                msgBody = "";
+            }
+
             if (msgBody == null)
                 return;
 
@@ -2020,8 +2080,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
                 StanzaError error = message.getError();
                 String errorReason = error.getConditionText();
-                if (TextUtils.isEmpty(errorReason))
-                    errorReason = error.getDescriptiveText();
+                if (TextUtils.isEmpty(errorReason)) {
+                    // errorReason = error.getDescriptiveText();
+                    errorReason = error.toString();
+                }
 
                 // Default error
                 int errorResultCode = MessageDeliveryFailedEvent.UNKNOWN_ERROR;
@@ -2043,7 +2105,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // Check received message for sent message: either a delivery report or a message coming from the
             // chaRoom server. Checking using nick OR jid in case user join with a different nick.
-            Timber.d("Received from %s the message %s", fromNick, message.toString());
+            Timber.d("Received room message %s", message.toString());
             if (((getUserNickname() != null) && getUserNickname().equals(fromNick))
                     || ((jabberID != null) && jabberID.equals(getAccountId(member.getChatRoom())))) {
 
@@ -2650,6 +2712,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         /**
          * Processes a <tt>Presence</tt> packet addressed to our own occupant JID.
+         * with either MUCUser extension or MUCInitialPresence extension (error)
          *
          * @param presence the packet to process.
          */
@@ -2700,6 +2763,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         }
                     }
                 }
+            }
+            // Check for presence error (which use MUCInitialPresence extension)
+            else if (Presence.Type.error == presence.getType()) {
+                String errMessage = presence.getError().toString();
+                addMessage(errMessage, ChatMessage.MESSAGE_ERROR);
             }
         }
 
