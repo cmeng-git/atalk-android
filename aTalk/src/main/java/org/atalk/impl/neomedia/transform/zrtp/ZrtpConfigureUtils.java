@@ -21,11 +21,14 @@ public class ZrtpConfigureUtils
 	public static ZrtpConfigure getZrtpConfiguration()
 	{
 		ZrtpConfigure active = new ZrtpConfigure();
-		setupConfigure(ZrtpConstants.SupportedPubKeys.DH2K, active);
-		setupConfigure(ZrtpConstants.SupportedHashes.S256, active);
-		setupConfigure(ZrtpConstants.SupportedSymCiphers.AES1, active);
-		setupConfigure(ZrtpConstants.SupportedSASTypes.B32, active);
-		setupConfigure(ZrtpConstants.SupportedAuthLengths.HS32, active);
+
+		active.addAlgo(ZrtpConstants.SupportedHashes.S384);
+		active.addAlgo(ZrtpConstants.SupportedSymCiphers.AES3);
+		active.addAlgo(ZrtpConstants.SupportedSymCiphers.TWO3);
+		active.addAlgo(ZrtpConstants.SupportedPubKeys.E255);
+		active.addAlgo(ZrtpConstants.SupportedPubKeys.MULT);
+		active.addAlgo(ZrtpConstants.SupportedAuthLengths.HS80);
+		active.addAlgo(ZrtpConstants.SupportedAuthLengths.SK64);
 
 		return active;
 	}
