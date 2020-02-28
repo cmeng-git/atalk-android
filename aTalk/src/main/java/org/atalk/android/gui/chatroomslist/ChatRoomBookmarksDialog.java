@@ -307,6 +307,8 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
 
         // Create an ArrayAdapter using the string array and aTalk default spinner layout
         ArrayAdapter<String> mAdapter = new ArrayAdapter<>(mParent, R.layout.simple_spinner_item, mChatRoomList);
+        mAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+
         // Apply the adapter to the spinner
         chatRoomSpinner.setAdapter(mAdapter);
         chatRoomSpinner.setOnItemSelectedListener(this);

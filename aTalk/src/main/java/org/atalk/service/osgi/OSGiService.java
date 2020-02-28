@@ -12,7 +12,7 @@ import android.os.IBinder;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
+import org.atalk.impl.androidnotification.AndroidNotifications;
 import org.atalk.impl.osgi.OSGiServiceImpl;
 
 import java.security.Security;

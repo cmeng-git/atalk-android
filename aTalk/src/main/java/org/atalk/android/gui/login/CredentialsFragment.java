@@ -21,7 +21,10 @@ import android.text.*;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.Arrays;
@@ -103,6 +106,8 @@ public class CredentialsFragment extends Fragment
      */
     public static final String ARG_LOGIN_REASON = "login_reason";
 
+    public static final String ARG_CERT_ID = "cert_id";
+
     private CheckBox mServerOverrideCheckBox;
     private EditText mServerIpField;
     private EditText mServerPortField;
@@ -117,7 +122,7 @@ public class CredentialsFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Bundle args = getArguments();
-        View content = inflater.inflate(R.layout.credentials, container, false);
+        View content = inflater.inflate(R.layout.account_credentials, container, false);
 
         Spinner spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
         ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(getActivity(),
@@ -142,6 +147,12 @@ public class CredentialsFragment extends Fragment
 
         ViewUtil.setCompoundChecked(content, R.id.store_password, args.getBoolean(ARG_STORE_PASSWORD, true));
         ViewUtil.setCompoundChecked(content, R.id.ib_registration, args.getBoolean(ARG_IB_REGISTRATION, false));
+
+        ImageView showCert = content.findViewById(R.id.showCert);
+        String clientCertId = args.getString(ARG_CERT_ID);
+        if ((clientCertId == null) || clientCertId.equals(CertificateConfigEntry.CERT_NONE.toString())) {
+            showCert.setVisibility(View.GONE);
+        }
 
         mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
         mServerIpField = content.findViewById(R.id.serverIpField);

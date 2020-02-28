@@ -109,7 +109,7 @@ public abstract class AbstractSystrayService implements SystrayService
      */
     public void showPopupMessage(PopupMessage popupMessage)
     {
-        // since popup handler could be loaded and unloader on the fly,
+        // since popup handler could be loaded and unloaded on the fly,
         // we have to check if we currently have a valid one.
         if (activePopupHandler != null)
             activePopupHandler.showPopupMessage(popupMessage);

@@ -157,17 +157,11 @@
             android:enabled="true"
             android:text="@string/service_gui_CANCEL" />
 
-        <View
-            android:id="@+id/centerShim"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:visibility="invisible" />
-
         <Button
             android:id="@+id/button_Apply"
             style="@style/ButtonTop"
             android:enabled="true"
+            android:layout_marginStart="4dp"
             android:text="@string/service_gui_APPLY" />
     </LinearLayout>
 </LinearLayout>

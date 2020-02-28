@@ -183,6 +183,5 @@ public class Registration extends IQ {
         public String getNamespace() {
             return NAMESPACE;
         }
-
     }
 }

@@ -19,12 +19,12 @@
             android:title="@string/service_gui_settings_AUTO_START" />
 
         <EditTextPreference
-            android:key="@string/pref_key_webview_PAGE"
             android:dialogMessage="@string/service_gui_settings_WEBVIEW_DLG_TITLE"
-            android:inputType="textWebEditText"
-            android:title="@string/service_gui_settings_WEBVIEW_TITLE"
             android:hint="https://demo.agayon.be/"
-            android:summary="@string/service_gui_settings_WEBVIEW_SUMMARY" />
+            android:inputType="textWebEditText"
+            android:key="@string/pref_key_webview_PAGE"
+            android:summary="@string/service_gui_settings_WEBVIEW_SUMMARY"
+            android:title="@string/service_gui_settings_WEBVIEW_TITLE" />
 
         <ListPreference
             android:dialogTitle="@string/service_gui_settings_LOCALE"
@@ -215,6 +215,46 @@
             android:key="@string/pref_key_popup_handler"
             android:title="@string/service_gui_settings_POPUP_HANDLER" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="notification_headsup"
+            android:summary="@string/pref_headsup_notifications_summary"
+            android:title="@string/pref_headsup_notifications" />
+
+        <PreferenceScreen
+            android:key="quiet_hours"
+            android:summary="@string/pref_quiet_hours_summary"
+            android:title="@string/title_pref_quiet_hours">
+            <PreferenceCategory
+                android:key="quiet_hour_details"
+                android:title="@string/title_pref_quiet_hours">
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="@string/pref_key_quiet_hours_enable"
+                    android:summary="@string/pref_quiet_hours_summary"
+                    android:title="@string/title_pref_enable_quiet_hours" />
+                <org.atalk.android.gui.settings.TimePreference
+                    android:dependency="@string/pref_key_quiet_hours_enable"
+                android:key="pref.key.quiet_hours_start"
+                    android:negativeButtonText="@string/service_gui_CANCEL"
+                    android:positiveButtonText="@string/service_gui_SET"
+                    android:title="@string/title_pref_quiet_hours_start_time" />
+                <org.atalk.android.gui.settings.TimePreference
+                    android:dependency="@string/pref_key_quiet_hours_enable"
+                android:key="pref.key.quiet_hours_end"
+                    android:negativeButtonText="@string/service_gui_CANCEL"
+                    android:positiveButtonText="@string/service_gui_SET"
+                    android:title="@string/title_pref_quiet_hours_end_time" />
+                <intent android:action="android.intent.action.VIEW">
+                    <!--android:targetClass="eu.siacs.conversations.ui.SettingsActivity"
+                    android:targetPackage="@string/applicationId"-->
+                    <extra
+                        android:name="page"
+                        android:value="quiet_hours" />
+                </intent>
+            </PreferenceCategory>
+        </PreferenceScreen>
+
         <!-- Events -->
         <PreferenceScreen
             android:summary="@string/service_gui_settings_EVENTS_SUMMARY"
@@ -236,8 +276,8 @@
         android:title="@string/service_gui_settings_ADVANCED">
 
         <PreferenceScreen
-            android:title="@string/service_gui_settings_EXPERT"
-            android:summary="@string/service_gui_settings_EXPERT_SUMMARY">
+            android:summary="@string/service_gui_settings_EXPERT_SUMMARY"
+            android:title="@string/service_gui_settings_EXPERT">
 
             <!-- Video Settings -->
             <PreferenceCategory

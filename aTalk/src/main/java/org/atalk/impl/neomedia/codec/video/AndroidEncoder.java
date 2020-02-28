@@ -255,7 +255,6 @@ public class AndroidEncoder extends AndroidCodec
 	/**
 	 * {@inheritDoc}
 	 */
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	protected void doClose()
 	{

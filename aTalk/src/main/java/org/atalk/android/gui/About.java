@@ -38,8 +38,10 @@ import de.cketti.library.changelog.ChangeLog;
 
 /**
  * About activity
+ *
+ * @author Eng Chong Meng
  */
-public class About extends Activity implements OnClickListener, View.OnLongClickListener
+public class About extends Activity implements OnClickListener
 {
     private static String[][] USED_LIBRARIES = new String[][]{
             new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
@@ -109,6 +111,7 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
             new String[]{"XEP-0172: User Nickname", "https://xmpp.org/extensions/xep-0172.html"},
             new String[]{"XEP-0176: Jingle ICE-UDP Transport Method", "https://xmpp.org/extensions/xep-0176.html"},
             new String[]{"XEP-0177: Jingle Raw UDP Transport Method", "https://xmpp.org/extensions/xep-0177.html"},
+            new String[]{"XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates", "https://xmpp.org/extensions/xep-0178.html"},
             new String[]{"XEP-0184: Message Delivery Receipts", "https://xmpp.org/extensions/xep-0184.html"},
             new String[]{"XEP-0191: Blocking command (NI)", "https://xmpp.org/extensions/xep-0191.html"},
             new String[]{"XEP-0198: Stream Management", "https://xmpp.org/extensions/xep-0198.html"},
@@ -168,15 +171,10 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
         View btn_submitLogs = findViewById(R.id.submit_logs);
         btn_submitLogs.setOnClickListener(this);
 
-        View btn_update = findViewById(R.id.check_new_version);
-        btn_update.setOnClickListener(this);
-
         if (BuildConfig.DEBUG) {
+            View btn_update = findViewById(R.id.check_new_version);
             btn_update.setVisibility(View.VISIBLE);
-        }
-        else {
-            btn_update.setVisibility(View.GONE);
-            btn_submitLogs.setOnLongClickListener(this);
+            btn_update.setOnClickListener(this);
         }
 
         String aboutInfo = getAboutInfo();
@@ -208,10 +206,11 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
                     @Override
                     public void run()
                     {
-                        UpdateService updateService = ServiceUtils.getService(
-                                AndroidGUIActivator.bundleContext, UpdateService.class);
-                        if (updateService != null)
+                        UpdateService updateService
+                                = ServiceUtils.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
+                        if (updateService != null) {
                             updateService.checkForUpdates(true);
+                        }
                     }
                 }.start();
                 break;
@@ -238,26 +237,6 @@ public class About extends Activity implements OnClickListener, View.OnLongClick
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
-    }
-
-    @Override
-    public boolean onLongClick(View view)
-    {
-        if (view.getId() == R.id.submit_logs) {
-            new Thread()
-            {
-                @Override
-                public void run()
-                {
-                    UpdateService updateService = ServiceUtils.getService(
-                            AndroidGUIActivator.bundleContext, UpdateService.class);
-                    if (updateService != null)
-                        updateService.checkForUpdates(true);
-                }
-            }.start();
-            return true;
-        }
-        return false;
     }
 
     private String getAboutInfo()

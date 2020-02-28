@@ -13,7 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.*;
 
 import org.atalk.android.*;
-import org.atalk.impl.androidtray.NotificationHelper;
+import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.EventReceiver;
 import org.atalk.service.osgi.OSGiActivity;

@@ -8,8 +8,7 @@ package net.java.sip.communicator.util;
 import org.osgi.framework.*;
 
 /**
- * Gathers utility functions related to OSGi services such as getting a service registered in a
- * BundleContext.
+ * Gathers utility functions related to OSGi services such as getting a service registered in a BundleContext.
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
@@ -36,8 +35,7 @@ public class ServiceUtils
     }
 
     /**
-     * Gets an OSGi service references registered in a specific <tt>BundleContext</tt> by its
-     * <tt>Class</tt>.
+     * Gets an OSGi service references registered in a specific <tt>BundleContext</tt> by its <tt>Class</tt>.
      *
      * @param bundleContext the <tt>BundleContext</tt> in which the services to get have been registered
      * @param serviceClass the <tt>Class</tt> of the OSGi service references to get

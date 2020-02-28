@@ -66,15 +66,14 @@
     <string name="attachOptionDialog_Videos">Видео</string>
     <string name="attachOptionDialog_videoRecord">Захват видео</string>
     <string name="attachOptionDialog_shareFile">Поделиться файлом</string>
-    <string name="chat_fileTransferButton">Открыть</string>
-    <string name="chat_message_copy">копировать</string>
-    <string name="chat_message_delete">Удалить</string>
-    <string name="chat_message_edit">Изменить</string>
-    <string name="chat_message_forward">Вперед…</string>
+    <string name="service_gui_COPY">копировать</string>
+    <string name="service_gui_DELETE">Удалить</string>
+    <string name="service_gui_EDIT">Изменить</string>
+    <string name="service_gui_FORWARD">Вперед…</string>
     <string name="chat_message_long_press_hint">Не нажимайте в области сообщений для операции выбора нескольких элементов</string>
-    <string name="chat_message_quote">цитировать</string>
-    <string name="chat_message_reply">отвечать</string>
-    <string name="chat_message_select_all">Выбрать все</string>
+    <string name="service_gui_QUOTE">цитировать</string>
+    <string name="service_gui_REPLY">отвечать</string>
+    <string name="service_gui_SELECT_ALL">Выбрать все</string>
     <string name="chatRoom_Subject">Тема</string>
     <string name="choose_file_activity_title">Выберите файл</string>
     <string name="menu_settings">Настройки</string>
@@ -139,10 +138,13 @@
     <string name="service_gui_CONTACT_INVALID">Выбранный контакт недействителен: %1$s</string>
     <string name="service_gui_Contacts">Контакты</string>
     <string name="service_gui_DONE">Готово</string>
+    <string name="service_gui_MAS">пометить, как прочитанное</string>
     <string name="service_gui_REASON_LABEL">Причина:</string>
+    <string name="service_gui_SET">Устанавливать</string>
     <string name="service_gui_SHARE">Поделиться…</string>
     <string name="service_gui_SHARE_TEXT">Поделиться текстом&#8230;</string>
     <string name="service_gui_SHARE_FILE">Поделиться файлом&#8230;</string>
+    <string name="service_gui_SNOOZE">вздремнуть</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Автосоединение</string>
@@ -270,7 +272,7 @@
         настроек &gt; Приложения &gt; «Демоки Google Maps API».</string>
     <string name="permission_required_toast">Для этой демонстрации требуется разрешение на размещение.</string>
 
-    <!--    Persistent Store    -->
+    <!-- Persistent Store -->
 	<string name="service_gui_EXPORT_SQL_DB">Экспорт базы данных aTalk SQL</string>
     <string name="service_gui_PURGE_DEBUG_LOG">Очистить файл журнала отладки aTalk</string>
     <string name="service_gui_PURGE_SQL_DB">Очистить базу данных ATalk SQL - Опасность!</string>
@@ -292,12 +294,13 @@
     <string name="service_gui_DISCONNECTED_STATUS">Отключено</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Отключение %1$s</string>
     <string name="service_gui_DENY">Запретить</string>
-    <string name="service_gui_DISPLAY_NAME">Контактное отображаемое имя</string>
+    <string name="service_gui_DISPLAY_NAME">отображаемое имя</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Контактное отображаемое имя</string>
     <string name="service_gui_DND_STATUS">Не беспокоить</string>
     <string name="service_gui_DURATION">duration</string>
 
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Установить сообщение о статусе</string>
-    <string name="service_gui_EDITED_AT">отредактировано в %1$s</string>
+    <string name="service_gui_EDITED">отредактировано</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Введите имя или номер</string>
     <string name="service_gui_ERROR">Ошибка</string>
     <string name="service_gui_ERROR_WAS">Ошибка: %1$s</string>
@@ -416,6 +419,7 @@
     <string name="service_gui_INVITE_REJECT_REASON">Занято</string>
     <string name="service_gui_IGNORE">Игнорировать</string>
     <string name="service_gui_INFO">Информация</string>
+
 	<string name="service_gui_ADDRESS">Адрес</string>
     <string name="service_gui_CITY">Город</string>
     <string name="service_gui_COUNTRY">Страна</string>
@@ -433,7 +437,7 @@
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Автоматически присоединяться</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Не присоединяться автоматически</string>
-	<string name="service_gui_KICK">Kick</string>
+    <string name="service_gui_KICK">Kick</string>
 	<string name="service_gui_KICK_FAILED">Ошибка отказа</string>
 	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Не удалось нажать %1$s. Произошла общая ошибка сервера.</string>
 	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Не удалось нажать %1$s. Владельца и администратора комнаты нельзя было пинать.</string>
@@ -746,7 +750,6 @@
     <string name="service_gui_security_STRING_COMPARED">String сравнивается:</string>
     <string name="service_gui_security_VERIFY_TOAST">Включена защита звонков! Нажмите, чтобы сравнить строку безопасности сейчас или используйте меню позже.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Видео не защищено</string>
-
     <string name="service_gui_avatar_CHOOSE_ICON">Выберите изображение</string>
     <string name="service_gui_avatar_REMOVE_ICON">Удалить текущее изображение</string>
 
@@ -801,6 +804,27 @@
     <string name="plugin_accountinfo_WORK_EMAIL">Работа E-mail:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Рабочий телефон:</string>
 
+    <!-- Certificate configuration plugin -->
+    <string name="plugin_certconfig_TITLE">Конфигурация TLS</string>
+    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Источник доверенных корневых сертификатов</string>
+    <string name="plugin_certconfig_CERT_LIST_TITLE">Конфигурации аутентификации клиента TLS</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">206/5000
+Управляемые здесь конфигурации могут быть выбраны в качестве клиентских сертификатов TLS в конфигурациях учетной записи (например, для аутентификации с помощью сертификата против вашего поставщика SIP вместо имени пользователя и пароля).</string>
+    <string name="plugin_certconfig_ALIAS">Псевдоним в KeyStore</string>
+    <string name="plugin_certconfig_KEYSTORE_TYPE">Тип</string>
+    <string name="plugin_certconfig_CERT_ENTRY_TITLE">Сертификат клиента TLS</string>
+    <string name="plugin_certconfig_KEYSTORE">файл</string>
+    <string name="plugin_certconfig_KEYSTORE_PASSWORD">пароль</string>
+    <string name="plugin_certconfig_INCOMPLETE">Пожалуйста, введите значение для всех полей</string>
+    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">Невозможно показать сертификат (%1$s).</string>
+    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">Невозможно загрузить хранилище ключей (%1$s).</string>
+    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">Certificate stores (PKCS#11 Module, PKCS#12 files, Java ks Keystore)</string>
+    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">Невозможно получить псевдонимы из хранилища ключей (%1$s).</string>
+    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">Выбранный тип хранилища ключей кажется недействительным (%1$s).</string>
+    <string name="plugin_certconfig_REVOCATION_TITLE">Варианты отзыва сертификатов</string>
+    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">Проверка списка отзыва сертификатов CRL включена</string>
+    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">Включена проверка OCSP (онлайн-протокола статуса сертификата)</string>
+
     <!-- connection info -->
     <string name="plugin_connectioninfo_TITLE">Информация о подключении</string>
 
@@ -827,6 +851,7 @@
     <string name="plugin_notificationconfig_event_IncomingCall">Входящий вызов</string>
     <string name="plugin_notificationconfig_event_IncomingCall_description">Описание входящих вызовов.</string>
     <string name="plugin_notificationconfig_event_IncomingFile">Входящий файл</string>
+    <string name="plugin_notificationconfig_event_IncomingInvitation">Входящее приглашение</string>
     <string name="plugin_notificationconfig_event_IncomingMessage">Входящее сообщение</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Описание входящих сообщений</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Файлы журнала Архивированные</string>
@@ -955,7 +980,7 @@
     <string name="omemo_rebuild_session">Перестроить новый сеанс для отсутствия: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Не удалось удалить неактивное устройство omemo для: %1$s.</string>
 
-    <!-- Account proxy plugin -->
+    <!-- Account proxy settings -->
     <string name="service_gui_settings_BOSH_PROXY">Конфигурация прокси-сервера</string>
     <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Настройка подключения через BOSH/Proxy для учетной записи</string>
     <string name="plugin_proxy_BOSHURL_NULL">Содержимое поля BOSH URL не может быть пустым</string>
@@ -1029,20 +1054,23 @@
     <string name="pref_remove_trusted_certificates_title">Удалить сертификат</string>
     <string name="pref_remove_trusted_certificates_summary">Удаление утвержденных вручную сертификатов</string>
 
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Клиентский сертификат TLS</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Выберите сертификат TLS</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Использование сертификата при аутентификации пользователя на сервере</string>
+
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Сохранение изменений учетной записи, подождите&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Committing&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(Не задано)</string>
     
-    <!-- Connection settings -->
-    <string name="service_gui_CONN_NO_CERT">None</string>
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Кодировка аудио</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Переопределить глобальную</string>
 	<string name="service_gui_ENC_VIDEO_TITLE">Кодирование видео</string>
-    
+
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_EMPTY">None</string>
+    <string name="service_gui_LIST_NONE">None</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Шифрование</string>
     <string name="service_gui_SEC_PROTOCOLS_TITLE">Протоколы безопасности</string>
     <string name="service_gui_SEC_PROTOCOLS_MSG">Выберите нужные протоколы в порядке</string>
@@ -1060,7 +1088,7 @@
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">Адрес JID</string>
     <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Реле поддержки</string>
-    
+
     <!-- STUN edit -->
     <string name="service_gui_STUN_TURN_SERVER">STUN/TURN Сервер</string>
     <string name="service_gui_STUN_EDIT_ADDRESS">IP-адрес</string>
@@ -1068,7 +1096,7 @@
     <string name="service_gui_STUN_EDIT_PORT">Порт сервера</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Поддержка TURN</string>
     <string name="service_gui_STUN_EDIT_TURN_USER">TURN username</string>
- 
+
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Включить шифрование вызовов</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Протоколы шифрования</string>
@@ -1119,8 +1147,6 @@
     <string name="service_gui_SIP_PROXY_ADDR">Адрес прокси</string>
     <string name="service_gui_SIP_PROXY_PORT">Порт прокси</string>
     <string name="service_gui_SIP_REGISTRAR">Регистратор</string>
-    <string name="service_gui_SIP_TLS_CERT">Клиентский сертификат TLS</string>
-    <string name="service_gui_SIP_TLS_CERT_PROMPT">Выберите сертификат TLS</string>
     <string name="service_gui_SIP_SUBSCRIPTION_DUR">Продолжительность подписки по умолчанию (в с.)</string>
     <string name="service_gui_SIP_USER">CRYPTO ID</string>
     <string name="service_gui_SIP_VOICEMAIL">Голосовая почта</string>
@@ -1210,7 +1236,7 @@
     <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Войдите на страницу доступа по умолчанию для webView:</string>
     <string name="service_gui_settings_WEBVIEW_TITLE">Страница веб-доступа</string>
 
-    <!-- Message settings -->
+    <!-- Messaging settings -->
     <string name="service_gui_settings_MSG">обмен сообщениями</string>
 
     <!-- Group messages in one window -->
@@ -1270,6 +1296,13 @@
     <!-- Events -->
     <string name="service_gui_settings_EVENTS_SUMMARY">Настройка индивидуальных уведомлений</string>
     <string name="service_gui_settings_EVENTS_TITLE">События</string>
+
+    <!-- Quite hour settings -->
+    <string name="title_pref_quiet_hours">Тихие часы</string>
+    <string name="title_pref_quiet_hours_start_time">Начало</string>
+    <string name="title_pref_quiet_hours_end_time">Окончание</string>
+    <string name="title_pref_enable_quiet_hours">Включить режим «тихих часов»</string>
+    <string name="pref_quiet_hours_summary">Уведомления будут отключены во время «тихих часов»</string>
 
     <!-- aTalk icon -->
     <string name="service_gui_settings_SHOW_ICON">Показать значок aTalk</string>
@@ -1376,15 +1409,14 @@
     <string name="service_gui_settings_CRYPTO_REQUIRE_ON">Принимаются только защищенные сеансы</string>
     <string name="service_gui_settings_CRYPTO_REQUIRE_TITLE">Требовать личные сообщения</string>
 
-
     <!-- OMEMO security category-->
-	<string name="pref_cat_OMEMO_SECURITY_SETTINGS">OMEMO Messaging Security</string>
+    <string name="pref_cat_OMEMO_SECURITY_SETTINGS">OMEMO Messaging Security</string>
     <!-- OMEMO device screen -->
     <string name="pref_omemo_blind_trust_before_verification">Слепое доверие перед проверкой</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Автоматическое доверие ко всем новым устройствам контактов,
         которые ранее не были проверены; запрос на подтверждение вручную, когда подтвержденный контакт добавляет новые устройства.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">После восстановления вашей идентичности OMEMO все ваши контакты получат новый
+    <string name="pref_omemo_regenerate_identities_summary">После восстановления вашей идентичности OMEMO все ваши контакты получат новый
         отпечаток пальца и должны будут повторно подтвердить вас. Перезапустите aTalk после регенерации. Выполняйте только при наличии проблемы установки omemo.</string>
     <string name="pref_omemo_regenerate_identities_title">Регенерировать идентификаторы OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Оповещения OMEMO Обновить</string>

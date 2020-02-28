@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.List;
@@ -119,6 +120,8 @@ public interface OperationSetPresence extends OperationSet
      * have a subscription for the that identifier.
      */
     Contact findContactByID(String contactID);
+
+    Contact findContactByID(Jid contactJid);
 
     /**
      * Handler for incoming authorization requests. An authorization request notifies the user that

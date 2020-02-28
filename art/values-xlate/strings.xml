@@ -66,15 +66,14 @@
     <string name="attachOptionDialog_Videos">Videos</string>
     <string name="attachOptionDialog_videoRecord">Record video</string>
     <string name="attachOptionDialog_shareFile">Share File</string>
-    <string name="chat_fileTransferButton">Open</string>
-    <string name="chat_message_copy">Copy</string>
-    <string name="chat_message_delete">Delete</string>
-    <string name="chat_message_edit">Edit</string>
-    <string name="chat_message_forward">Forward…</string>
+    <string name="service_gui_COPY">Copy</string>
+    <string name="service_gui_DELETE">Delete</string>
+    <string name="service_gui_EDIT">Edit</string>
+    <string name="service_gui_FORWARD">Forward…</string>
     <string name="chat_message_long_press_hint">Avoid clicking within the message area for multi-item selection operation</string>
-    <string name="chat_message_quote">Quote</string>
-    <string name="chat_message_reply">Reply</string>
-    <string name="chat_message_select_all">Select all</string>
+    <string name="service_gui_QUOTE">Quote</string>
+    <string name="service_gui_REPLY">Reply</string>
+    <string name="service_gui_SELECT_ALL">Select all</string>
     <string name="chatRoom_Subject">Subject</string>
     <string name="choose_file_activity_title">Choose a file</string>
     <string name="menu_settings">Settings</string>
@@ -139,10 +138,13 @@
     <string name="service_gui_CONTACT_INVALID">The selected contact is not valid: %1$s</string>
     <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
+    <string name="service_gui_MAS">Mark as read</string>
     <string name="service_gui_REASON_LABEL">Reason:</string>
+    <string name="service_gui_SET">Set</string>
     <string name="service_gui_SHARE">Share…</string>
     <string name="service_gui_SHARE_TEXT">Share text&#8230;</string>
     <string name="service_gui_SHARE_FILE">Share file&#8230;</string>
+    <string name="service_gui_SNOOZE">Snooze</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
@@ -218,7 +220,6 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Your contact list does not contain any groups. Please create a group first (File/Create group).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
     <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online Help</a></string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
@@ -290,12 +291,13 @@
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
     <string name="service_gui_DENY">Deny</string>
-    <string name="service_gui_DISPLAY_NAME">Contact Display Name</string>
+    <string name="service_gui_DISPLAY_NAME">Display Name</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Contact Display Name</string>
     <string name="service_gui_DND_STATUS">Do not disturb</string>
     <string name="service_gui_DURATION">duration</string>
 
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Set status message</string>
-    <string name="service_gui_EDITED_AT">edited at %1$s</string>
+    <string name="service_gui_EDITED">edited</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Enter name or number</string>
     <string name="service_gui_ERROR">Error</string>
     <string name="service_gui_ERROR_WAS">Error was: %1$s</string>
@@ -468,8 +470,7 @@
     <string name="service_gui_MSG_DELIVERY_ERROR">Failed to deliver message.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">The above message could not be delivered</string>
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">An internal error occurred. This is most probably a bug. Please report it via debug log.</string>
-    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">The protocol you are using does not support offline messages.
-        You could try to reach %1$s through another protocol or wait until he/she becomes online.</string>
+    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">The protocol you are using does not support offline messages. You could try to reach %1$s through another protocol or wait until he/she becomes online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Unknown error has occurred while delivering your message.</string>
     <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Unsupported operation.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">A network problem occurred. Please check your network configuration and try again.</string>
@@ -797,6 +798,26 @@
     <string name="plugin_accountinfo_WORK_EMAIL">Work E-mail:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Work Phone:</string>
 
+    <!-- Certificate configuration plugin -->
+    <string name="plugin_certconfig_TITLE">TLS configuration</string>
+    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Source of trusted root certificates</string>
+    <string name="plugin_certconfig_CERT_LIST_TITLE">TLS client authentication configurations</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">The configurations managed here can be chosen as client TLS certificates in the account configurations (e.g. to authenticate with a certificate against your SIP provider instead of a username and password).</string>
+    <string name="plugin_certconfig_ALIAS">Alias name in KeyStore</string>
+    <string name="plugin_certconfig_KEYSTORE_TYPE">Type</string>
+    <string name="plugin_certconfig_CERT_ENTRY_TITLE">TLS client certificate</string>
+    <string name="plugin_certconfig_KEYSTORE">File</string>
+    <string name="plugin_certconfig_KEYSTORE_PASSWORD">Password</string>
+    <string name="plugin_certconfig_INCOMPLETE">Please enter a value for all fields</string>
+    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">Unable to show the certificate (%1$s).</string>
+    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">Unable to load the keystore (%1$s).</string>
+    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">Certificate stores (PKCS#11 Module, PKCS#12 files, Java ks Keystore)</string>
+    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">Unable to obtain aliases from keystore (%1$s).</string>
+    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">The selected Keystore type seems to be invalid (%1$s).</string>
+    <string name="plugin_certconfig_REVOCATION_TITLE">Certificate revocation options</string>
+    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">CRL (Certificate Revocation List) check enabled</string>
+    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">OCSP (Online Certificate Status Protocol) check enabled</string>
+
     <!-- connection info -->
     <string name="plugin_connectioninfo_TITLE">Connection Info</string>
 
@@ -804,7 +825,7 @@
     <string name="plugin_contactinfo_TITLE">Contact details</string>
     <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Summary of contact info for</string>
     <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Extended contact info for</string>
-    <string name="plugin_contactinfo_NOT_SPECIFIED">[Not specified]</string>
+    <string name="service_gui_INFO_NOT_SPECIFIED">[Not specified]</string>
     <string name="plugin_contactinfo_USER_PICTURES">User pictures</string>
     <string name="plugin_contactinfo_USER_STATUS_MESSAGE">Status Message</string>
 
@@ -823,6 +844,7 @@
     <string name="plugin_notificationconfig_event_IncomingCall">Incoming Call</string>
     <string name="plugin_notificationconfig_event_IncomingCall_description">Incoming call description.</string>
     <string name="plugin_notificationconfig_event_IncomingFile">Incoming File</string>
+    <string name="plugin_notificationconfig_event_IncomingInvitation">Incoming Invitation</string>
     <string name="plugin_notificationconfig_event_IncomingMessage">Incoming Message</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Incoming message description</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Log Files Archived</string>
@@ -1023,20 +1045,23 @@
     <string name="pref_remove_trusted_certificates_title">Remove certificate</string>
     <string name="pref_remove_trusted_certificates_summary">Delete manually approved certificates</string>
 
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Client TLS certificate</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Please select TLS certificate</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Certificate use in user authentication with server</string>
+
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Storing account changes, please wait&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Committing&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(Not set)</string>
 
-    <!-- Connection settings -->
-    <string name="service_gui_CONN_NO_CERT">None</string>
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Audio encoding</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Override global</string>
     <string name="service_gui_ENC_VIDEO_TITLE">Video encoding</string>
 
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_EMPTY">None</string>
+    <string name="service_gui_LIST_NONE">None</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encryption</string>
     <string name="service_gui_SEC_PROTOCOLS_TITLE">Security protocols</string>
     <string name="service_gui_SEC_PROTOCOLS_MSG">Please select desired protocols in order</string>
@@ -1113,8 +1138,6 @@
     <string name="service_gui_SIP_PROXY_ADDR">Proxy address</string>
     <string name="service_gui_SIP_PROXY_PORT">Proxy port</string>
     <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_TLS_CERT">Client TLS certificate</string>
-    <string name="service_gui_SIP_TLS_CERT_PROMPT">Please select TLS certificate</string>
     <string name="service_gui_SIP_SUBSCRIPTION_DUR">Default subscription duration(in s.)</string>
     <string name="service_gui_SIP_USER">CRYPTO ID</string>
     <string name="service_gui_SIP_VOICEMAIL">Voicemail</string>
@@ -1246,6 +1269,7 @@
     <string name="service_gui_settings_CHAT_ALERTS">Show status bar notifications</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
 
@@ -1263,6 +1287,13 @@
     <!-- Events -->
     <string name="service_gui_settings_EVENTS_SUMMARY">Configure individual notifications</string>
     <string name="service_gui_settings_EVENTS_TITLE">Events</string>
+
+    <!-- Quite hour settings -->
+    <string name="title_pref_quiet_hours">Quiet Hours</string>
+    <string name="title_pref_quiet_hours_start_time">Start time</string>
+    <string name="title_pref_quiet_hours_end_time">End time</string>
+    <string name="title_pref_enable_quiet_hours">Enable quiet hours</string>
+    <string name="pref_quiet_hours_summary">Notifications will be silenced during quiet hours</string>
 
     <!-- aTalk icon -->
     <string name="service_gui_settings_SHOW_ICON">Display aTalk icon</string>
@@ -1521,4 +1552,5 @@
     <string name="location_permission_dialog_message">Enable Location permission now?</string>
     <string name="location_services_off">Location services OFF</string>
     <string name="open_location_settings">Enable location services now?</string>
+
 </resources>

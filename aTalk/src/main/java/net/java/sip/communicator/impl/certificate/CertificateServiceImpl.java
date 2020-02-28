@@ -67,6 +67,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
          * Serial version UID.
          */
         private static final long serialVersionUID = 0L;
+
         {
             if (!OSUtils.IS_WINDOWS64) {
                 add(new KeyStoreType("PKCS11", new String[]{".dll", ".so"}, false));
@@ -164,9 +165,9 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         setTrustStore();
         config.addPropertyChangeListener(PNAME_TRUSTSTORE_TYPE, this);
 
-        System.setProperty("com.sun.security.enableCRLDP", config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
-        System.setProperty("com.sun.net.ssl.checkRevocation", config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
-        Security.setProperty("ocsp.enable", config.getString(PNAME_OCSP_ENABLED, "false"));
+        System.setProperty(SECURITY_CRLDP_ENABLE, config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
+        System.setProperty(SECURITY_SSL_CHECK_REVOCATION, config.getString(PNAME_REVOCATION_CHECK_ENABLED, "false"));
+        Security.setProperty(SECURITY_OCSP_ENABLE, config.getString(PNAME_OCSP_ENABLED, "false"));
     }
 
     public void propertyChange(PropertyChangeEvent evt)
@@ -181,7 +182,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         String tsPassword = credService.loadPassword(PNAME_TRUSTSTORE_PASSWORD);
 
         // use the OS store as default store on Windows
-        if ((!"meta:default".equals(tsType) || (tsType == null)) && OSUtils.IS_WINDOWS) {
+        if (((tsType == null) || !"meta:default".equals(tsType)) && OSUtils.IS_WINDOWS) {
             tsType = "Windows-ROOT";
             config.setProperty(PNAME_TRUSTSTORE_TYPE, tsType);
         }
@@ -230,7 +231,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 continue;
 
             String pnBase = PNAME_CLIENTAUTH_CERTCONFIG_BASE + "." + propValue;
-            CertificateConfigEntry e = new CertificateConfigEntry();
+            CertificateConfigEntry e = new CertificateConfigEntry(null);
             e.setId(propValue);
             e.setAlias(config.getString(pnBase + ".alias"));
             e.setDisplayName(config.getString(pnBase + ".displayName"));
@@ -377,11 +378,11 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     }
 
     private Builder loadKeyStore(final CertificateConfigEntry entry)
-            throws KeyStoreException
+            throws KeyStoreException, UnrecoverableEntryException
     {
         final File f = new File(entry.getKeyStore());
-        final KeyStoreType kt = entry.getKeyStoreType();
-        if ("PKCS11".equals(kt.getName())) {
+        final String keyStoreType = entry.getKeyStoreType().getName();
+        if ("PKCS11".equals(keyStoreType)) {
             String config = "name=" + f.getName() + "\nlibrary=" + f.getAbsoluteFile();
             try {
                 Class<?> pkcs11c = Class.forName("sun.security.pkcs11.SunPKCS11");
@@ -389,45 +390,40 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 Provider p = (Provider) c.newInstance(new ByteArrayInputStream(config.getBytes()));
                 Security.insertProviderAt(p, 0);
             } catch (Exception e) {
-                Timber.e(e, "Tried to access the PKCS11 provider on an unsupported platform or the load failed");
+                Timber.e("Access PKCS11 provider on an unsupported platform or the load failed", e.getMessage());
             }
         }
+        KeyStore.Builder ksBuilder = KeyStore.Builder.newInstance(keyStoreType, null, f,
+                new KeyStore.CallbackHandlerProtection(callbacks -> {
+                    for (Callback cb : callbacks) {
+                        if (!(cb instanceof PasswordCallback))
+                            throw new UnsupportedCallbackException(cb);
 
-        KeyStore.Builder ksBuilder = KeyStore.Builder.newInstance(kt.getName(), null, f,
-                new KeyStore.CallbackHandlerProtection(new CallbackHandler()
-                {
-                    public void handle(Callback[] callbacks)
-                            throws IOException, UnsupportedCallbackException
-                    {
-                        for (Callback cb : callbacks) {
-                            if (!(cb instanceof PasswordCallback))
-                                throw new UnsupportedCallbackException(cb);
-
-                            PasswordCallback pwcb = (PasswordCallback) cb;
-                            if (entry.isSavePassword()) {
-                                pwcb.setPassword(entry.getKeyStorePassword().toCharArray());
-                                return;
+                        PasswordCallback pwcb = (PasswordCallback) cb;
+                        if (entry.isSavePassword()) {
+                            pwcb.setPassword(entry.getKSPassword());
+                            return;
+                        }
+                        else {
+                            AuthenticationWindowService authenticationWindowService
+                                    = CertificateVerificationActivator.getAuthenticationWindowService();
+                            if (authenticationWindowService == null) {
+                                Timber.e("No AuthenticationWindowService implementation");
+                                throw new IOException("User cancel");
                             }
-                            else {
-                                AuthenticationWindowService authenticationWindowService
-                                        = CertificateVerificationActivator.getAuthenticationWindowService();
 
-                                if (authenticationWindowService == null) {
-                                    Timber.e("No AuthenticationWindowService implementation");
-                                    throw new IOException("User cancel");
-                                }
+                            AuthenticationWindowService.AuthenticationWindow aw
+                                    = authenticationWindowService.create(f.getName(), null, keyStoreType, false,
+                                    false, null, null, null, null, null, null, null);
 
-                                AuthenticationWindowService.AuthenticationWindow aw
-                                        = authenticationWindowService.create(f.getName(), null, kt.getName(), false,
-                                        false, null, null, null, null, null, null, null);
-
-                                aw.setAllowSavePassword(false);
-                                aw.setVisible(true);
-                                if (!aw.isCanceled())
-                                    pwcb.setPassword(aw.getPassword());
-                                else
-                                    throw new IOException("User cancel");
+                            aw.setAllowSavePassword(true);
+                            aw.setVisible(true);
+                            if (!aw.isCanceled()) {
+                                pwcb.setPassword(aw.getPassword());
+                                entry.setKeyStorePassword(new String(aw.getPassword()));
                             }
+                            else
+                                throw new IOException("User cancel");
                         }
                     }
                 }));
@@ -448,21 +444,34 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
 
             CertificateConfigEntry entry = null;
             for (CertificateConfigEntry e : getClientAuthCertificateConfigs()) {
-                if (e.getId().equals(clientCertConfig)) {
+                if (e.toString().equals(clientCertConfig)) {
                     entry = e;
                     break;
                 }
             }
-            if (entry == null)
-                throw new GeneralSecurityException("Client certificate config with id <"
-                        + clientCertConfig + "> not found.");
+            if (entry == null) {
+                throw new GeneralSecurityException("Client certificate config with id <" + clientCertConfig + "> not found.");
+            }
 
-            final KeyManagerFactory kmf = KeyManagerFactory.getInstance("NewSunX509");
-            kmf.init(new KeyStoreBuilderParameters(loadKeyStore(entry)));
+            KeyStore clientKeyStore = loadKeyStore(entry).getKeyStore();
+            char[] clientKeyStorePass = entry.getKSPassword();
 
-            return getSSLContext(kmf.getKeyManagers(), trustManager);
+            // cmeng: "NewSunX509" or "SunX509": NoSuchAlgorithmException: SunX509 KeyManagerFactory not available
+            // final KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509"); OR "NewSunX509"
+
+            // Not supported: GeneralSecurityException: Cannot init SSLContext: ManagerFactoryParameters not supported
+            // KeyStoreBuilderParameters ksBuilerParm = new KeyStoreBuilderParameters(loadKeyStore(entry));
+            // kmf.init(ksBuilerParm);
+
+            // so use getDefaultAlgorithm() => "PKIX"
+            String kmfAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+            final KeyManagerFactory kmf = KeyManagerFactory.getInstance(kmfAlgorithm);
+
+            kmf.init(clientKeyStore, clientKeyStorePass);
+            KeyManager[] kms = kmf.getKeyManagers();
+            return getSSLContext(kms, trustManager);
         } catch (Exception e) {
-            throw new GeneralSecurityException("Cannot init SSLContext", e);
+            throw new GeneralSecurityException("Cannot init SSLContext: " + e.getMessage(), e);
         }
     }
 
@@ -474,9 +483,16 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     public SSLContext getSSLContext(KeyManager[] keyManagers, X509TrustManager trustManager)
             throws GeneralSecurityException
     {
+        // cmeng: need to take care o daneVerifier? from abstractXMPPConnection#getSmackTlsContext()
+        // if (daneVerifier != null) {
+        //     // User requested DANE verification.
+        //     daneVerifier.init(context, kms, customTrustManager, secureRandom);
+        // }
+
         try {
+            final SecureRandom secureRandom = new java.security.SecureRandom();
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagers, new TrustManager[]{trustManager}, null);
+            sslContext.init(keyManagers, new TrustManager[]{trustManager}, secureRandom);
             return sslContext;
         } catch (Exception e) {
             throw new GeneralSecurityException("Cannot init SSLContext", e);
@@ -869,7 +885,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         }
 
         // show for proper moment, other may be obscure by others
-        aTalkApp.waitForDisplay();
+        aTalkApp.waitForFocus();
         VerifyCertificateDialogService.VerifyCertificateDialog dialog
                 = CertificateVerificationActivator.getCertificateDialogService().createDialog(chain, null, message);
         dialog.setVisible(true);

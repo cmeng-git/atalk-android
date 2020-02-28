@@ -22,6 +22,7 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.settings.TimePreference;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
@@ -264,6 +265,10 @@ public class ConfigurationUtils
      */
     private static boolean isPresetStatusMessagesEnabled;
 
+    private static boolean isQuiteHoursEnable = true;
+    private static Long quiteHoursStart = 0L;
+    private static Long quiteHoursEnd = 0L;
+
     /**
      * The last directory used in file transfer.
      */
@@ -433,6 +438,10 @@ public class ConfigurationUtils
     private static String pHideAccountStatusSelectors = "gui.HIDE_ACCOUNT_STATUS_SELECTORS";
     private static String pAutoAnswerDisableSubmenu = "gui.AUTO_ANSWER_DISABLE_SUBMENU";
     private static String pHideExtendedAwayStatus = "protocol.globalstatus.HIDE_EXTENDED_AWAY_STATUS";
+
+    public static String pQuiteHoursEnable = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
+    public static String pQuiteHoursStart = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
+    public static String pQuiteHoursEnd = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
 
     /**
      * Indicates if phone numbers should be normalized before dialed.
@@ -796,6 +805,11 @@ public class ConfigurationUtils
 
         isSmsNotifyTextDisabled = configService.getBoolean(SMS_MSG_NOTIFY_TEXT_DISABLED_PROP, isSmsNotifyTextDisabled);
         showMasterPasswordWarning = configService.getBoolean(MASTER_PASS_WARNING_PROP, true);
+
+        // Quite Time settings
+        isQuiteHoursEnable = configService.getBoolean(pQuiteHoursEnable, true);
+        quiteHoursStart = configService.getLong(pQuiteHoursStart, TimePreference.DEFAULT_VALUE);
+        quiteHoursEnd = configService.getLong(pQuiteHoursEnd, TimePreference.DEFAULT_VALUE);
     }
 
     /**
@@ -1592,6 +1606,79 @@ public class ConfigurationUtils
     {
         alerterEnabled = isEnabled;
         configService.setProperty(ALERTER_ENABLED_PROP, Boolean.toString(isEnabled));
+    }
+
+    public static void setQuiteHour(String property, Object value) {
+        if (value instanceof Boolean) {
+            setQuiteHoursEnable(Boolean.valueOf(value.toString()));
+        } else if (pQuiteHoursStart.equals(property)) {
+            setQuiteHoursStart((Long) value);
+        } else {
+            setQuiteHoursEnd((Long) value);
+        }
+    }
+
+    /**
+     * Returns {@code true} if Quite Hours is enabled
+     *
+     * @return {@code true} if Quite Hours is enables, {@code false} otherwise.
+     */
+    public static boolean isQuiteHoursEnable()
+    {
+        return isQuiteHoursEnable;
+    }
+
+    /**
+     * Updates the Quite Hours property.
+     *
+     * @param isEnabled indicates whether to enable or disable quite hours.
+     */
+    public static void setQuiteHoursEnable(boolean isEnabled)
+    {
+        isQuiteHoursEnable = isEnabled;
+        configService.setProperty(pQuiteHoursEnable, Boolean.toString(isEnabled));
+    }
+
+    /**
+     * Returns Quite Hours start time.
+     *
+     * @return {@code true} get the Quite Hours start time.
+     */
+    public static long getQuiteHoursStart()
+    {
+        return quiteHoursStart;
+    }
+
+    /**
+     * Updates the Quite Hours start time
+     *
+     * @param isEnabled set the quite hours start time.
+     */
+    public static void setQuiteHoursStart(long time)
+    {
+        quiteHoursStart = time;
+        configService.setProperty(pQuiteHoursStart, time);
+    }
+
+    /**
+     * Returns Quite Hours end time.
+     *
+     * @return {@code true} get the Quite Hours end time.
+     */
+    public static long getQuiteHoursEnd()
+    {
+        return quiteHoursEnd;
+    }
+
+    /**
+     * Updates the Quite Hours end time
+     *
+     * @param isEnabled set the quite hours end time.
+     */
+    public static void setQuiteHoursEnd(long time)
+    {
+        quiteHoursEnd = time;
+        configService.setProperty(pQuiteHoursEnd, time);
     }
 
     /**

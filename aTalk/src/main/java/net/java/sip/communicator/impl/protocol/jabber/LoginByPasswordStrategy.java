@@ -65,8 +65,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      * @param isShowAlways <tt>true</tt> always show the credential prompt for user entry
      * @return UserCredentials in case they need to be cached for this session (i.e. password is not persistent)
      */
-    public UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode,
-            String reason, Boolean isShowAlways)
+    public UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode, String reason, Boolean isShowAlways)
     {
         return loadPassword(authority, reasonCode, reason, isShowAlways);
     }
@@ -78,7 +77,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      */
     public boolean loginPreparationSuccessful()
     {
-        return password != null;
+        return (password != null);
     }
 
     /**
@@ -121,7 +120,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
     {
         // Wait for right moment before proceed, otherwise captcha dialog will be
         // obscured by other launching activities in progress on first aTalk launch.
-        aTalkApp.waitForDisplay();
+        aTalkApp.waitForFocus();
         new Handler(Looper.getMainLooper()).post(() -> {
             Context context = aTalkApp.getCurrentActivity();
             if (context != null) {

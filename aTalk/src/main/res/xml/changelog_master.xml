@@ -6,6 +6,27 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.2.0 (02/28/2020)" versioncode="1120">
+        <change>Implement XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication (experimental)</change>
+        <change>Implement TLS client certification configuration options</change>
+        <change>Implement auto-accept content download for file sharing via http file upload protocol</change>
+        <change>When aTalk is minimized, gives alert notification and show join room dialog on receive an invitation</change>
+        <change>Resign handler and enhanced UI for room with captcha protection; remove timeout timer, allow retry and show result in chat etc.</change>
+        <change>Implement android heads-up notification with 'Reply', 'Mark as read' and 'Snooze'</change>
+        <change>Implement quite hours to mute all notification alerts</change>
+        <change>Provide receipt status for each message in merged message view holder; prefix X mark on each undelivered message</change>
+        <change>Remove original message view of both send and receive corrected message</change>
+        <change>Retain message multiple lines structure when doing edit</change>
+        <change>Allow message sending using CTRL-ENTER from physical keyboard</change>
+        <change>Reduce xmppConnection replyTimeout to 5s in normal operation. Reduce ANR wait when server is not responding.</change>
+        <change>Implement ZRTP-Hash element checking for the integrity of the ZRTP key exchange</change>
+        <change>Ensure ZRTP transform engine is created prior to any ZRTP function call</change>
+        <change>Fix file share error for unencrypted file between aTalk and Conversations</change>
+        <change>Fix launching of incorrect chat session on the selected contact/chatroom in main list view</change>
+        <change>Ensure all room created are non-anonymous and member-only to provide OMEMO encryption</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.1.7 (02/02/2020)" versioncode="1117">
         <change>Redesign chatRoom classes to improve UI, support new room features and correct implementations</change>
         <change>Enhance chatRoom destroy option to support reason and alternate venue entry</change>

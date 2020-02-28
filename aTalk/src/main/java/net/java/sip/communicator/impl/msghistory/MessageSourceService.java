@@ -59,7 +59,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /* DB database column fields for call history */
     public static final String TABLE_NAME = "recentMessages";
     public static final String UUID = "uuid";    // unique identification for the recent message
-    public static final String ACCOUNT_UID = "accountUid";// account uid
+    public static final String ACCOUNT_UID = "accountUid";  // account uid
     public static final String ENTITY_JID = "entityJid";    // contact Jid
     public static final String TIME_STAMP = "timeStamp";    // callEnd TimeStamp
     public static final String VERSION = "version";         // version
@@ -173,15 +173,8 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     public void handleProviderAdded(final ProtocolProviderService provider, final boolean isStatusChanged)
     {
-        Timber.i("Handle new provider added and status changed to online: %s", provider.getAccountID().getUserID());
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                handleProviderAddedInSeparateThread(provider, isStatusChanged);
-            }
-        }).start();
+        Timber.d("Handle new provider added and status changed to online: %s", provider.getAccountID().getUserID());
+        new Thread(() -> handleProviderAddedInSeparateThread(provider, isStatusChanged)).start();
     }
 
     /**
@@ -193,13 +186,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     private void handleProviderAddedInSeparateThread(ProtocolProviderService provider, boolean isStatusChanged)
     {
-        // lets check if we have cached recent messages for this provider, and fire events if
-        // found and are newer
+        // lets check if we have cached recent messages for this provider, and fire events if found and are newer
         synchronized (recentMessages) {
             List<ComparableEvtObj> cachedRecentMessages = getCachedRecentMessages(provider, isStatusChanged);
             if (cachedRecentMessages.isEmpty()) {
-                // there is no cached history for this, let's check and load it not from cache,
-                // but do a local search
+                // there is no cached history for this, let's check and load it not from cache, but do a local search
                 Collection<EventObject> res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
                         provider.getAccountID().getAccountUniqueID(), null, isSMSEnabled);
 
@@ -223,8 +214,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     public void handleProviderRemoved(ProtocolProviderService provider)
     {
-        // let's remove the recent messages for this provider, and update with recent messages for
-        // the available providers
+        // Remove the recent messages for this provider, and update with recent messages for the available providers
         synchronized (recentMessages) {
             if (provider != null) {
                 List<ComparableEvtObj> removedItems = new ArrayList<>();
@@ -249,8 +239,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             if (!this.messageHistoryService.isHistoryLoggingEnabled())
                 return;
 
-            // lets do the same as we enable provider for all registered providers and finally
-            // fire events
+            // lets do the same as we enable provider for all registered providers and finally fire events
             List<ComparableEvtObj> contactsToAdd = new ArrayList<>();
             for (ProtocolProviderService pps : messageHistoryService.getCurrentlyAvailableProviders()) {
                 contactsToAdd.addAll(getCachedRecentMessages(pps, true));
@@ -326,10 +315,9 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             for (ComparableEvtObj evtObj : recentMessages) {
                 // the contains will use the correct equals method of the object evtObj
                 if (!currentContactsInQuery.contains(evtObj)) {
-                    MessageSourceContact newSourceContact = new MessageSourceContact(
-                            evtObj.getEventObject(), MessageSourceService.this);
+                    MessageSourceContact newSourceContact
+                            = new MessageSourceContact(evtObj.getEventObject(), MessageSourceService.this);
                     newSourceContact.initDetails(evtObj.getEventObject());
-
                     recentQuery.addQueryResult(newSourceContact);
                 }
             }
@@ -427,8 +415,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     private void addNewRecentMessages(List<ComparableEvtObj> contactsToAdd)
     {
-        // now find object to fire new, and object to fire remove let us find duplicates and fire
-        // update
+        // now find object to fire new, and object to fire remove let us find duplicates and fire update
         List<ComparableEvtObj> duplicates = new ArrayList<>();
         for (ComparableEvtObj msgToAdd : contactsToAdd) {
             if (recentMessages.contains(msgToAdd)) {
@@ -453,8 +440,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         // trim
         List<ComparableEvtObj> removedItems = null;
         if (recentMessages.size() > numberOfMessages) {
-            removedItems = new ArrayList<>
-                    (recentMessages.subList(numberOfMessages, recentMessages.size()));
+            removedItems = new ArrayList<> (recentMessages.subList(numberOfMessages, recentMessages.size()));
             recentMessages.removeAll(removedItems);
         }
         if (recentQuery != null) {
@@ -494,16 +480,16 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         List<String> contacts = new ArrayList<>();
         List<String> argList = new ArrayList<>();
 
-        String[] columns = {MessageSourceService.ENTITY_JID};
-        String whereCondition = MessageSourceService.ACCOUNT_UID + "=?";
+        String[] columns = {ENTITY_JID};
+        String whereCondition = ACCOUNT_UID + "=?";
         argList.add(provider);
 
         // add startDate if not null as additional search condition
         if (startDate != null) {
-            whereCondition += " AND " + MessageSourceService.TIME_STAMP + ">=?";
+            whereCondition += " AND " + TIME_STAMP + ">=?";
             argList.add(String.valueOf(startDate.getTime()));
         }
-        String[] args = argList.toArray(new String[argList.size()]);
+        String[] args = argList.toArray(new String[0]);
 
         // Retrieve all the entityJid for the given provider and startDate
         Cursor cursor = mDB.query(MessageSourceService.TABLE_NAME, columns,
@@ -517,18 +503,20 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * Adds recent message in history database.
+     * Adds recent message in history database;
+     * Remove excess of old records (+10) each time if db exceed NUMBER_OF_MSGS_IN_HISTORY.
      */
     private void saveRecentMessageToHistory(ComparableEvtObj msc)
     {
         // Keep the record size to within the specified NUMBER_OF_MSGS_IN_HISTORY
-        Cursor cursor = mDB.query(MessageSourceService.TABLE_NAME, null, null, null, null,
-                null, ORDER_ASC);
+        Cursor cursor = mDB.query(MessageSourceService.TABLE_NAME, null, null, null,
+                null, null, ORDER_ASC);
         int excess = cursor.getCount() - NUMBER_OF_MSGS_IN_HISTORY;
-        while (excess-- >= 0) {
-            cursor.moveToNext();
-            String[] args = {cursor.getColumnName(0)};
-            mDB.delete(MessageSourceService.TABLE_NAME, MessageSourceService.UUID + "=?", args);
+        if (excess > 0) {
+            cursor.move(excess + 12);
+            String[] args = {cursor.getString(cursor.getColumnIndex(TIME_STAMP))};
+            int count = mDB.delete(MessageSourceService.TABLE_NAME, TIME_STAMP + "<?", args);
+            Timber.d("No of recent old messages deleted : %s", count);
         }
         cursor.close();
 
@@ -537,11 +525,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         String accountUid = msc.getProtocolProviderService().getAccountID().getAccountUniqueID();
 
         contentValues.clear();
-        contentValues.put(MessageSourceService.UUID, uuid);
-        contentValues.put(MessageSourceService.ACCOUNT_UID, accountUid);
-        contentValues.put(MessageSourceService.ENTITY_JID, msc.getContactAddress());
-        contentValues.put(MessageSourceService.TIME_STAMP, msc.getTimestamp().getTime());
-        contentValues.put(MessageSourceService.VERSION, RECENT_MSGS_VER);
+        contentValues.put(UUID, uuid);
+        contentValues.put(ACCOUNT_UID, accountUid);
+        contentValues.put(ENTITY_JID, msc.getContactAddress());
+        contentValues.put(TIME_STAMP, msc.getTimestamp().getTime());
+        contentValues.put(VERSION, RECENT_MSGS_VER);
 
         mDB.insert(MessageSourceService.TABLE_NAME, null, contentValues);
     }
@@ -552,15 +540,14 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     private void updateRecentMessageToHistory(ComparableEvtObj msg)
     {
         contentValues.clear();
-        contentValues.put(MessageSourceService.TIME_STAMP, msg.getTimestamp().getTime());
-        contentValues.put(MessageSourceService.VERSION, RECENT_MSGS_VER);
+        contentValues.put(TIME_STAMP, msg.getTimestamp().getTime());
+        contentValues.put(VERSION, RECENT_MSGS_VER);
 
         String accountUid = msg.getProtocolProviderService().getAccountID().getAccountUniqueID();
         String entityJid = msg.getContactAddress();
         String[] args = {accountUid, entityJid};
 
-        mDB.update(MessageSourceService.TABLE_NAME, contentValues,
-                MessageSourceService.ACCOUNT_UID + "=? AND " + MessageSourceService.ENTITY_JID + "=?", args);
+        mDB.update(MessageSourceService.TABLE_NAME, contentValues, ACCOUNT_UID + "=? AND " + ENTITY_JID + "=?", args);
     }
 
     // ================ Message events handlers =======================
@@ -580,14 +567,12 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         if (isSMSEnabled && !evt.isSmsMessage())
             return;
 
-        handle(evt, evt.getDestinationContact().getProtocolProvider(),
-                evt.getDestinationContact().getAddress());
+        handle(evt, evt.getDestinationContact().getProtocolProvider(), evt.getDestinationContact().getAddress());
     }
 
     /**
-     * Not used.
      *
-     * @param evt the <tt>MessageFailedEvent</tt> containing the ID of the
+     * @param evt the <tt>MessageFailedEvent</tt>
      */
     @Override
     public void messageDeliveryFailed(MessageDeliveryFailedEvent evt)
@@ -617,9 +602,8 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * Not used.
      *
-     * @param evt the <tt>ChatRoomMessageDeliveryFailedEvent</tt> containing
+     * @param evt the <tt>ChatRoomMessageDeliveryFailedEvent</tt>
      */
     @Override
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
@@ -639,7 +623,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * Not used.
      *
      * @param evt the <tt>AdHocChatRoomMessageDeliveryFailedEvent</tt>
      */
@@ -749,7 +732,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             return;
 
         Contact contact = evt.getSourceContact();
-
         if (contact == null)
             return;
 
@@ -781,7 +763,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     public void supportedOperationSetsChanged(ContactCapabilitiesEvent event)
     {
         Contact contact = event.getSourceContact();
-
         if (contact == null)
             return;
 

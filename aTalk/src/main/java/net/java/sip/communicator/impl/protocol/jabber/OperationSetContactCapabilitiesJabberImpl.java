@@ -279,7 +279,7 @@ public class OperationSetContactCapabilitiesJabberImpl
         OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
 
         if (opsetPresence != null) {
-            Contact contact = opsetPresence.findContactByID(user.toString());
+            Contact contact = opsetPresence.findContactByID(user);
 
             // If the contact isn't null and is online we try to discover the new set of
             // operation sets and to notify interested parties. Otherwise we ignore the event.
@@ -322,7 +322,7 @@ public class OperationSetContactCapabilitiesJabberImpl
         OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
 
         if (opsetPresence != null) {
-            Contact contact = opsetPresence.findContactByID(user.toString());
+            Contact contact = opsetPresence.findContactByID(user);
 
             // this called by received discovery info for particular jid so we use its online and
             // opsets for this particular jid

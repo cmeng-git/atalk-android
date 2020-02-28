@@ -42,6 +42,7 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Boris Grozev
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPeerJabberImpl>
 {
@@ -743,8 +744,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                             ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0};
 
                     /*
-                     * If Jitsi Videobridge is to be employed, pick up a Jingle transport supported
-                     * by it.
+                     * If Jitsi Videobridge is to be employed, pick up a Jingle transport supported by it.
                      */
                     if (peer.isJitsiVideobridge()) {
                         CallJabberImpl call = peer.getCall();
@@ -754,8 +754,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
                             /*
                              * Jitsi Videobridge supports the Jingle Raw UDP transport from its
-                             * inception. But that is not the case with the Jingle ICE-UDP
-                             * transport.
+                             * inception. But that is not the case with the Jingle ICE-UDP transport.
                              */
                             if ((jitsiVideobridge != null)
                                     && !protocolProvider.isFeatureSupported(jitsiVideobridge,
@@ -889,7 +888,6 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
              */
             if (transportInfoSender != null)
                 throw new IllegalArgumentException("transportInfoSender");
-
             transportManager.startCandidateHarvest(local, transportInfoSender);
         }
         else {
@@ -1660,8 +1658,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
     /**
      * If Jitsi Videobridge is in use, returns the <tt>ColibriConferenceIQ.Channel</tt> that this
-     * <tt>CallPeerMediaHandler</tt> uses for media of type <tt>mediaType</tt>. Otherwise, returns
-     * <tt>null</tt>
+     * <tt>CallPeerMediaHandler</tt> uses for media of type <tt>mediaType</tt>. Otherwise, returns <tt>null</tt>
      *
      * @param mediaType the <tt>MediaType</tt> for which to return a <tt>ColibriConferenceIQ.Channel</tt>
      * @return the <tt>ColibriConferenceIQ.Channel</tt> that this <tt>CallPeerMediaHandler</tt>
@@ -2113,8 +2110,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (call.getConference().isJitsiVideobridge())
             return;
 
-        // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for
-        // a given DESCRIPTION.
+        // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
         EncryptionExtensionElement encryptionPacketExtension
                 = description.getFirstChildOfType(EncryptionExtensionElement.class);
 
@@ -2122,8 +2118,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             AccountID accountID = peer.getProtocolProvider().getAccountID();
 
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
-                    && accountID.isEncryptionProtocolEnabled(
-                    SrtpControlType.ZRTP) && call.isSipZrtpAttribute()) {
+                    && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP) && call.isSipZrtpAttribute()) {
                 // ZRTP
                 ZrtpHashExtensionElement zrtpHashPacketExtension
                         = encryptionPacketExtension.getFirstChildOfType(ZrtpHashExtensionElement.class);
@@ -2131,11 +2126,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 if ((zrtpHashPacketExtension != null) && (zrtpHashPacketExtension.getValue() != null)) {
                     addAdvertisedEncryptionMethod(SrtpControlType.ZRTP);
 
-                    ZrtpControl zrtpControl
-                            = (ZrtpControl) getSrtpControls().get(mediaType, SrtpControlType.ZRTP);
-
-                    if (zrtpControl != null)
-                    {
+                    ZrtpControl zrtpControl = (ZrtpControl) getSrtpControls().get(mediaType, SrtpControlType.ZRTP);
+                    if (zrtpControl != null) {
                         zrtpControl.setReceivedSignaledZRTPVersion(zrtpHashPacketExtension.getVersion());
                         zrtpControl.setReceivedSignaledZRTPHashValue(zrtpHashPacketExtension.getValue());
                     }
@@ -2255,8 +2247,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         CallPeer peer = getPeer();
         Call call = peer.getCall();
 
-        // ZRTP is not supported in telephony conferences utilizing the
-        // server-side technology Jitsi Videobridge yet.
+        // ZRTP is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
         if (call.getConference().isJitsiVideobridge())
             return false;
 
@@ -2264,8 +2255,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (remoteDescription == null)
             isRemoteZrtpCapable = true;
         else {
-            // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element
-            // for a given DESCRIPTION.
+            // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
             EncryptionExtensionElement remoteEncryption
                     = remoteDescription.getFirstChildOfType(EncryptionExtensionElement.class);
             isRemoteZrtpCapable = (remoteEncryption != null) && isRemoteZrtpCapable(remoteEncryption);
@@ -2275,14 +2265,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (isRemoteZrtpCapable) {
             AccountID accountID = peer.getProtocolProvider().getAccountID();
 
-            if (accountID.getAccountPropertyBoolean(
-                    ProtocolProviderFactory.DEFAULT_ENCRYPTION,
-                    true)
-                    && accountID.isEncryptionProtocolEnabled(
-                    SrtpControlType.ZRTP)
+            if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
+                    && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP)
                     && call.isSipZrtpAttribute()) {
-                ZrtpControl zrtpControl
-                        = (ZrtpControl) getSrtpControls().getOrCreate(mediaType, SrtpControlType.ZRTP);
+                ZrtpControl zrtpControl = (ZrtpControl) getSrtpControls().getOrCreate(mediaType, SrtpControlType.ZRTP);
                 int numberSupportedVersions = zrtpControl.getNumberSupportedVersions();
 
                 // Try to get the remote ZRTP version and hash value
@@ -2338,8 +2324,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         CallPeer peer = getPeer();
         /*
-         * SDES is not supported in telephony conferences utilizing the
-         * server-side technology Jitsi Videobridge yet.
+         * SDES is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
          */
         if (peer.getCall().getConference().isJitsiVideobridge())
             return false;

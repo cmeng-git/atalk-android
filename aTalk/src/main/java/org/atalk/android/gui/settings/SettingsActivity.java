@@ -84,6 +84,9 @@ public class SettingsActivity extends OSGiActivity
 
     // Notifications
     static private final String P_KEY_POPUP_HANDLER = aTalkApp.getResString(R.string.pref_key_popup_handler);
+    static private final String P_KEY_QUIET_HOURS_ENABLE = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
+    static private final String P_KEY_QUIET_HOURS_START = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
+    static private final String P_KEY_QUIET_HOURS_END = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
 
     // Call section
     static private final String P_KEY_NORMALIZE_PNUMBER = aTalkApp.getResString(R.string.pref_key_normalize_pnumber);
@@ -144,6 +147,8 @@ public class SettingsActivity extends OSGiActivity
 
         private AudioSystem audioSystem;
 
+        private static ConfigurationService mConfigService;
+
         /**
          * Summary mapper used to display preferences values as summaries.
          */
@@ -166,6 +171,9 @@ public class SettingsActivity extends OSGiActivity
         public void onStart()
         {
             super.onStart();
+
+            // FFR: v2.1.5 NPE; use UtilActivator instead of AndroidGUIActivator which was initialize much later
+            mConfigService = UtilActivator.getConfigurationService();
 
             // init display locale
             initLocale();
@@ -262,7 +270,7 @@ public class SettingsActivity extends OSGiActivity
                 localePreference.setValue(language1);
                 localePreference.setSummary(localePreference.getEntry());
 
-                AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_LOCALE, language1);
+                mConfigService.setProperty(P_KEY_LOCALE, language1);
                 aTalk.setATLanguage(language1);
                 aTalk.setLanguage(aTalkApp.getGlobalContext(), language1);
                 aTalk.setPrefChange(true);
@@ -372,8 +380,6 @@ public class SettingsActivity extends OSGiActivity
          */
         private void initNotificationPreferences()
         {
-            ConfigurationService cfg = UtilActivator.getConfigurationService();
-
             // Remove for android play store release
             // PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_UPDATE_CHECK_ENABLE,
             //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
@@ -391,7 +397,7 @@ public class SettingsActivity extends OSGiActivity
             values[0] = "Auto";
             int selectedIdx = 0; // Auto by default
 
-            String configuredHandler = (String) cfg.getProperty("systray.POPUP_HANDLER");
+            String configuredHandler = (String) mConfigService.getProperty("systray.POPUP_HANDLER");
             int idx = 1;
             for (ServiceReference<PopupMessageHandler> ref : handlerRefs) {
                 PopupMessageHandler handler = bc.getService(ref);
@@ -411,6 +417,14 @@ public class SettingsActivity extends OSGiActivity
             handlerList.setValueIndex(selectedIdx);
             // Summaries mapping
             summaryMapper.includePreference(handlerList, "Auto");
+
+            // Quite hours enable
+            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_QUIET_HOURS_ENABLE,
+                    ConfigurationUtils.isQuiteHoursEnable());
+
+            SharedPreferences.Editor editor = getPreferenceScreen().getEditor();
+            editor.putLong(P_KEY_QUIET_HOURS_START, ConfigurationUtils.getQuiteHoursStart());
+            editor.putLong(P_KEY_QUIET_HOURS_END, ConfigurationUtils.getQuiteHoursEnd());
         }
 
         /**
@@ -647,7 +661,7 @@ public class SettingsActivity extends OSGiActivity
             // Disable for android play store
             /* else if (key.equals(P_KEY_AUTO_UPDATE_CHECK_ENABLE)) {
 				Boolean isEnable = shPreferences.getBoolean(P_KEY_AUTO_UPDATE_CHECK_ENABLE, true);
-				AndroidGUIActivator.getConfigurationService().setProperty(AUTO_UPDATE_CHECK_ENABLE, isEnable);
+				mConfigService.setProperty(AUTO_UPDATE_CHECK_ENABLE, isEnable);
 
 				// Perform software version update check on first launch
 				Intent intent = new Intent(this.getActivity(), OnlineUpdateService.class);
@@ -683,6 +697,15 @@ public class SettingsActivity extends OSGiActivity
                         systray.setActivePopupMessageHandler(handlerInstance);
                     }
                 }
+            }
+            else if (key.equals(P_KEY_QUIET_HOURS_ENABLE)) {
+                ConfigurationUtils.setQuiteHoursEnable(shPreferences.getBoolean(P_KEY_QUIET_HOURS_ENABLE, true));
+            }
+            else if (key.equals(P_KEY_QUIET_HOURS_START)) {
+                ConfigurationUtils.setQuiteHoursStart(shPreferences.getLong(P_KEY_QUIET_HOURS_START, TimePreference.DEFAULT_VALUE));
+            }
+            else if (key.equals(P_KEY_QUIET_HOURS_END)) {
+                ConfigurationUtils.setQuiteHoursEnd(shPreferences.getLong(P_KEY_QUIET_HOURS_END, TimePreference.DEFAULT_VALUE));
             }
             // Normalize phone number
             else if (key.equals(P_KEY_NORMALIZE_PNUMBER)) {
@@ -774,7 +797,7 @@ public class SettingsActivity extends OSGiActivity
             // Interface Display Theme
             else if (key.equals(P_KEY_THEME)) {
                 int theme = shPreferences.getInt(P_KEY_THEME, aTalkApp.mTheme.ordinal());
-                AndroidGUIActivator.getConfigurationService().setProperty(P_KEY_THEME, theme);
+                mConfigService.setProperty(P_KEY_THEME, theme);
                 aTalkApp.initTheme();
             }
         }

@@ -117,6 +117,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:fitsSystemWindows="true"
+            android:visibility="gone"
             android:text="@string/check_new_version" />
 
         <Button

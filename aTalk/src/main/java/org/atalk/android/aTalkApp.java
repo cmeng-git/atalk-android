@@ -31,6 +31,7 @@ import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
+import androidx.lifecycle.*;
 import androidx.multidex.MultiDex;
 import timber.log.Timber;
 
@@ -40,7 +41,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class aTalkApp extends Application
+public class aTalkApp extends Application implements LifecycleObserver
 {
     /**
      * Name of config property that indicates whether foreground icon should be displayed.
@@ -51,6 +52,11 @@ public class aTalkApp extends Application
      * The EXIT action name that is broadcast to all OSGiActivities
      */
     public static final String ACTION_EXIT = "org.atalk.android.exit";
+
+    /**
+     * Indicate if aTalk is in foreground (true) or background (false)
+     */
+    public static boolean isForeground = false;
 
     public static boolean permissionFirstRequest = true;
 
@@ -100,8 +106,23 @@ public class aTalkApp extends Application
     public void onCreate()
     {
         super.onCreate();
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         mInstance = this;
         TimberLogImpl.init();
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onAppForegrounded()
+    {
+        isForeground = true;
+        Timber.d("APP FOREGROUNDED");
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onAppBackgrounded()
+    {
+        isForeground = false;
+        Timber.d("APP BACKGROUNDED");
     }
 
     @Override
@@ -278,11 +299,12 @@ public class aTalkApp extends Application
         currentActivity.runOnUiThread(() -> showToastMessage(getAppResources().getString(id, arg)));
     }
 
-    public static void showAlertDialogOnUI(final String title, final int id, final Object... arg)
+    public static void showGenericError(final int id, final Object... arg)
     {
         currentActivity.runOnUiThread(() -> {
             String msg = getResString(id, arg);
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
+            DialogActivity.showDialog(getGlobalContext(),
+                    aTalkApp.getResString(R.string.service_gui_ERROR), msg);
         });
     }
 
@@ -481,14 +503,14 @@ public class aTalkApp extends Application
     /**
      * If OSGi has not started, then wait for the <tt>LauncherActivity</tt> etc to complete before
      * showing any dialog. Dialog should only be shown while <tt>NOT in LaunchActivity</tt> etc
-     * Otherwise the dialog will be obscured by these activity; max wait = 10 seconds
+     * Otherwise the dialog will be obscured by these activities; max wait = 5 seconds
      */
-    public static void waitForDisplay()
+    public static void waitForFocus()
     {
         // if (AndroidGUIActivator.bundleContext == null) { #false on first application installation
         final Object currentActivityMonitor = aTalkApp.getCurrentActivityMonitor();
         synchronized (currentActivityMonitor) {
-            int wait = 5; // * 2 seconds
+            int wait = 5; // 5 x 1 seconds
             while ((wait > 0)) {
                 Activity activity = aTalkApp.getCurrentActivity();
                 if (activity != null) {
@@ -503,7 +525,7 @@ public class aTalkApp extends Application
                 }
                 try {
                     wait--;
-                    currentActivityMonitor.wait(2000);
+                    currentActivityMonitor.wait(1000);
                 } catch (InterruptedException e) {
                     Timber.e(e, "%s", e.getMessage());
                 }

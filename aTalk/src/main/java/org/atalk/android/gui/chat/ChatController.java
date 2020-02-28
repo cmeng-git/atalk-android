@@ -13,8 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.text.*;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -594,6 +593,24 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         return done;
     }
 
+    /**
+     * Handling of KeyCode in ChatController, called from ChatActivity
+     * Note: KeyEvent.Callback is only available in Activity
+     */
+    public boolean onKeyUp(int keyCode, KeyEvent event)
+    {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                if (event.isCtrlPressed()) {
+                    if (chatFragment != null) {
+                        sendBtn.performClick();
+                    }
+                    return true;
+                }
+        }
+        return false;
+    }
+
     // Need to wait on new thread for animation to end
     private void onAnimationEnd(final int wait)
     {
@@ -873,6 +890,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     newState = ChatState.gone;
                 }
 
+                // Timber.d("Chat State changes %s (%s)", newState, mChatState);
                 // Post new chat state
                 setNewChatState(newState);
             }

@@ -659,16 +659,14 @@ public class MediaHandler extends PropertyChangeNotifier
      * @return the SRTP control type (MIKEY, SDES, ZRTP) used for the given media type or
      * <tt>null</tt> if SRTP is not enabled for the given media type
      */
-    SrtpControl getEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler,
-            MediaType mediaType)
+    SrtpControl getEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType)
     {
         /*
          * Find the first existing SRTP control type for the specified media type which is active
          * i.e. secures the communication.
          */
         for (SrtpControlType srtpControlType : SrtpControlType.values()) {
-            SrtpControl srtpControl
-                    = getSrtpControls(callPeerMediaHandler).get(mediaType, srtpControlType);
+            SrtpControl srtpControl = getSrtpControls(callPeerMediaHandler).get(mediaType, srtpControlType);
 
             if ((srtpControl != null) && srtpControl.getSecureCommunicationStatus()) {
                 return srtpControl;

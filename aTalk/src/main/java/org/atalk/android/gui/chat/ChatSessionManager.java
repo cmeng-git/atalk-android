@@ -103,10 +103,11 @@ public class ChatSessionManager
      */
     public synchronized static void removeActiveChat(ChatPanel chatPanel)
     {
+        // FFR: v2.1.5 NPE for chatPanel
         if (chatPanel != null) {
-            chatPanel.dispose();
             activeChats.remove(chatPanel.getChatSession().getChatId());
             fireChatClosed(chatPanel);
+            chatPanel.dispose();
         }
     }
 

@@ -66,15 +66,14 @@
     <string name="attachOptionDialog_Videos">Video</string>
     <string name="attachOptionDialog_videoRecord">Rekam video</string>
     <string name="attachOptionDialog_shareFile">Bagikan Fail</string>
-    <string name="chat_fileTransferButton">Buka</string>
-    <string name="chat_message_copy">Duplikat</string>
-    <string name="chat_message_delete">Hapuskan</string>
-    <string name="chat_message_edit">Meredaksi</string>
-    <string name="chat_message_forward">Teruskan…</string>
+    <string name="service_gui_COPY">Duplikat</string>
+    <string name="service_gui_DELETE">Hapuskan</string>
+    <string name="service_gui_EDIT">Meredaksi</string>
+    <string name="service_gui_FORWARD">Teruskan…</string>
     <string name="chat_message_long_press_hint">Hindari mengklik dalam area pesan untuk operasi pemilihan multi-item</string>
-    <string name="chat_message_quote">Mengutip</string>
-    <string name="chat_message_reply">Jawab</string>
-    <string name="chat_message_select_all">Pilih semua</string>
+    <string name="service_gui_QUOTE">Mengutip</string>
+    <string name="service_gui_REPLY">Jawab</string>
+    <string name="service_gui_SELECT_ALL">Pilih semua</string>
     <string name="chatRoom_Subject">Subjek</string>
     <string name="choose_file_activity_title">Pilih fail</string>
     <string name="menu_settings">Pengaturan</string>
@@ -139,10 +138,13 @@
     <string name="service_gui_CONTACT_INVALID">Kontak yang dipilih tidak dikenali: %1$s</string>
     <string name="service_gui_Contacts">Kontak</string>
     <string name="service_gui_DONE">Selesai</string>
+    <string name="service_gui_MAS">tandai membaca</string>
     <string name="service_gui_REASON_LABEL">Alasan:</string>
+    <string name="service_gui_SET">Set</string>
     <string name="service_gui_SHARE">Bagikan…</string>
     <string name="service_gui_SHARE_TEXT">Bagikan teks&#8230;</string>
     <string name="service_gui_SHARE_FILE">Bagikan file&#8230;</string>
+    <string name="service_gui_SNOOZE">Tunda</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
@@ -289,12 +291,13 @@
     <string name="service_gui_DISCONNECTED_STATUS">Terputus</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Memutuskan sambungan %1$s</string>
     <string name="service_gui_DENY">Tolak</string>
-    <string name="service_gui_DISPLAY_NAME">Nama Tampilan Kontak</string>
+    <string name="service_gui_DISPLAY_NAME">Nama Tampilan</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Nama Tampilan Kontak</string>
     <string name="service_gui_DND_STATUS">Jangan ganggu</string>
     <string name="service_gui_DURATION">durasi</string>
 
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Setel status pesan</string>
-    <string name="service_gui_EDITED_AT">diedit pada %1$s</string>
+    <string name="service_gui_EDITED">meredaksi</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Masukkan nama atau nomor</string>
     <string name="service_gui_ERROR">Kesalahan</string>
     <string name="service_gui_ERROR_WAS">Kesalahannya adalah: %1$s</string>
@@ -474,6 +477,7 @@
     <string name="service_gui_MSG_NOT_DELIVERED">Terjadi masalah jaringan. Silakan periksa konfigurasi jaringan Anda dan coba lagi.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s menulis</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Anda harus login terlebih dahulu untuk mengirim pesan.</string>
+
 	<string name="service_gui_MISSED_CALLS_TOOL_TIP">Panggilan tidak terjawab dari:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Beberapa instans masuk tidak diizinkan. Akun berikut: Nama pengguna: %1$s, Nama server: %2$s telah diputuskan.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Saling Menerus Saat</string>
@@ -799,6 +803,26 @@
     <string name="plugin_accountinfo_WORK_EMAIL">E-mail Kerja:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Telepon Kerja:</string>
 
+    <!-- Certificate configuration plugin -->
+    <string name="plugin_certconfig_TITLE">Konfigurasi TLS</string>
+    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Sumber sertifikat akar tepercaya</string>
+    <string name="plugin_certconfig_CERT_LIST_TITLE">Konfigurasi otentikasi klien TLS</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">Konfigurasi yang dikelola di sini dapat dipilih sebagai sertifikat TLS klien dalam konfigurasi akun (mis. Untuk mengautentikasi dengan sertifikat terhadap penyedia SIP Anda alih-alih nama pengguna dan kata sandi).</string>
+    <string name="plugin_certconfig_ALIAS">Nama alias di KeyStore</string>
+    <string name="plugin_certconfig_KEYSTORE_TYPE">Jenis</string>
+    <string name="plugin_certconfig_CERT_ENTRY_TITLE">Сертификат клиента TLS</string>
+    <string name="plugin_certconfig_KEYSTORE">File</string>
+    <string name="plugin_certconfig_KEYSTORE_PASSWORD">Kata sandi</string>
+    <string name="plugin_certconfig_INCOMPLETE">Silakan masukkan nilai untuk semua bidang</string>
+    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">Tidak dapat menampilkan sertifikat (%1$s).</string>
+    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">Tidak dapat memuat keystore (%1$s).</string>
+    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">Certificate stores (PKCS#11 Module, PKCS#12 files, Java ks Keystore)</string>
+    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">Tidak dapat memperoleh alias dari keystore (%1$s).</string>
+    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">Jenis Keystore yang dipilih tampaknya tidak valid (%1$s).</string>
+    <string name="plugin_certconfig_REVOCATION_TITLE">Opsi pencabutan sertifikat</string>
+    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">Pemeriksaan CRL (Daftar Pencabutan Sertifikat) diaktifkan</string>
+    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">Pemeriksaan OCSP (Online Certificate Status Protocol) diaktifkan</string>
+
     <!-- connection info -->
 	<string name="plugin_connectioninfo_TITLE">Info Koneksi</string>
 
@@ -825,6 +849,7 @@
     <string name="plugin_notificationconfig_event_IncomingCall">Panggilan Masuk</string>
     <string name="plugin_notificationconfig_event_IncomingCall_description">Deskripsi panggilan masuk.</string>
     <string name="plugin_notificationconfig_event_IncomingFile">Fail Masuk</string>
+    <string name="plugin_notificationconfig_event_IncomingInvitation">Undangan Masuk</string>
     <string name="plugin_notificationconfig_event_IncomingMessage">Pesan Masuk</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Deskripsi pesan masuk</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Fail Log Diarsipkan</string>
@@ -909,6 +934,7 @@
     <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Tombol Pribadi Saya</string>
     <string name="plugin_otr_configform_REGENERATE">Menghasilkan kembali</string>
     <string name="plugin_otr_configform_VERIFY_STATUS">Diverifikasi: %1$s</string>
+
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s sedang mencoba untuk menginisiasi enkripsi
         &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         Percakapan Off-The-Record&lt;/a>dengan Anda. Namun perangkat lunak Anda tidak mendukung
@@ -951,7 +977,7 @@
     <string name="omemo_rebuild_session">Rekonstruksi sesi baru karena hilang: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Gagal menghapus perangkat omemo yang tidak aktif untuk: %1$s.</string>
 
-    <!-- Account proxy plugin -->
+    <!-- Account proxy settings -->
     <string name="service_gui_settings_BOSH_PROXY">Konfigurasi Proksi</string>
     <string name="service_gui_settings_BOSH_PROXY_SUMMARY">konfigurasikan koneksi melalui BOSH/Proxy untuk akun</string>
     <string name="plugin_proxy_BOSHURL_NULL">Konten bidang URL BOSH tidak boleh kosong</string>
@@ -982,7 +1008,7 @@
     <string name="plugin_provisioning_RESTART_WARNING">Perhatikan bahwa perubahan Anda hanya akan berlaku pada saat Anda memulai aTalk!</string>
 
     <!-- DNS config -->
-	<string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE Security</string>
+    <string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE Security</string>
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Konfigurasikan pengaturan DNS</string>
     <string name="plugin_dnsconfig_DNSSEC">Keamanan DNS (DNSSEC)</string>
@@ -1024,20 +1050,24 @@
     <string name="pref_remove_trusted_certificates_title">Hapus sertifikat</string>
     <string name="pref_remove_trusted_certificates_summary">Hapus sertifikat yang disetujui secara manual</string>
 
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Sertifikat TLS Klien</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Harap pilih sertifikat TLS</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Penggunaan sertifikat dalam otentikasi pengguna dengan server</string>
+
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Menyimpan perubahan akun, harap tunggu&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Berkomitmen&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(Tidak ditentukan)</string>
     
-    <!-- Connection settings -->
-    <string name="service_gui_CONN_NO_CERT">Tidak ada</string>
+
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Enkode audio</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Ganti global</string>
     <string name="service_gui_ENC_VIDEO_TITLE">Enkode video</string>
 
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_EMPTY">Tidak ada</string>
+    <string name="service_gui_LIST_NONE">Tidak ada</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Enkripsi</string>
     <string name="service_gui_SEC_PROTOCOLS_TITLE">Protokol keamanan</string>
     <string name="service_gui_SEC_PROTOCOLS_MSG">Silakan pilih protokol yang diinginkan agar</string>
@@ -1114,8 +1144,6 @@
     <string name="service_gui_SIP_PROXY_ADDR">Alamat proxy</string>
     <string name="service_gui_SIP_PROXY_PORT">Port proxy</string>
     <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_TLS_CERT">Sertifikat TLS Klien</string>
-    <string name="service_gui_SIP_TLS_CERT_PROMPT">Harap pilih sertifikat TLS</string>
     <string name="service_gui_SIP_SUBSCRIPTION_DUR">Durasi langganan default (dalam s.)</string>
     <string name="service_gui_SIP_USER">ID CRYPTO</string>
     <string name="service_gui_SIP_VOICEMAIL">Voicemail</string>
@@ -1205,7 +1233,7 @@
     <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Masuk ke halaman akses default webView:</string>
     <string name="service_gui_settings_WEBVIEW_TITLE">Halaman Akses Web</string>
 
-    <!-- Message settings -->
+    <!-- Messaging settings -->
     <string name="service_gui_settings_MSG">Messaging</string>
 
     <!-- Group messages in one window -->
@@ -1247,6 +1275,7 @@
     <string name="service_gui_settings_CHAT_ALERTS">Tampilkan pemberitahuan bilah status</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
 
@@ -1264,6 +1293,13 @@
     <!-- Events -->
     <string name="service_gui_settings_EVENTS_SUMMARY">Konfigurasikan pemberitahuan individual</string>
     <string name="service_gui_settings_EVENTS_TITLE">Acara</string>
+
+    <!-- Quite hour settings -->
+    <string name="title_pref_quiet_hours">Jam Tenang</string>
+    <string name="title_pref_quiet_hours_start_time">Waktu mulai</string>
+    <string name="title_pref_quiet_hours_end_time">Akhir waktu</string>
+    <string name="title_pref_enable_quiet_hours">Aktifkan jam tenang</string>
+    <string name="pref_quiet_hours_summary">Pemberitahuan akan dibungkam selama jam tenang</string>
 
     <!-- aTalk icon -->
     <string name="service_gui_settings_SHOW_ICON">Tunjukkan ikon aTalk</string>
@@ -1384,7 +1420,7 @@
     <string name="pref_omemo_purge_devices_title">Membersihkan identitas yang tidak digunakan</string>
     <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">Perangkat OMEMO Hapus</string>
 
-    <!-- Key &FingerPrint security category -->
+    <!-- Key & FingerPrint security category -->
     <string name="pref_cat_KEY_FINGERPRINT_SECURITY">Kunci &amp; Keamanan Cap Jari</string>
     <!-- Crypto private Keys screen -->
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Kelola sidik jari pribadi kripto</string>

@@ -193,23 +193,25 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
             searchView.setOnCloseListener(null);
         }
 
-        // Save scroll position
-        scrollPosition = contactListView.getFirstVisiblePosition();
-        View itemView = contactListView.getChildAt(0);
-        scrollTopPosition = itemView == null ? 0 : itemView.getTop();
+        if (contactListView != null) {
+            // Save scroll position
+            scrollPosition = contactListView.getFirstVisiblePosition();
+            View itemView = contactListView.getChildAt(0);
+            scrollTopPosition = itemView == null ? 0 : itemView.getTop();
 
-        // Dispose of group expand memory
-        if (listExpandHandler != null) {
-            listExpandHandler.unbind();
-            listExpandHandler = null;
-        }
+            // Dispose of group expand memory
+            if (listExpandHandler != null) {
+                listExpandHandler.unbind();
+                listExpandHandler = null;
+            }
 
-        contactListView.setAdapter((ExpandableListAdapter) null);
-        if (contactListAdapter != null) {
-            contactListAdapter.dispose();
-            contactListAdapter = null;
+            contactListView.setAdapter((ExpandableListAdapter) null);
+            if (contactListAdapter != null) {
+                contactListAdapter.dispose();
+                contactListAdapter = null;
+            }
+            disposeSourcesAdapter();
         }
-        disposeSourcesAdapter();
         super.onDestroy();
     }
 

@@ -42,7 +42,6 @@ public class DrawableCache
         final int cacheSize = maxMemory / 8;
         cache = new LruCache<String, BitmapDrawable>(cacheSize)
         {
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
             @Override
             protected int sizeOf(String key, BitmapDrawable value)
             {

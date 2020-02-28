@@ -70,15 +70,14 @@
     <string name="attachOptionDialog_Videos">Vídeos</string>
     <string name="attachOptionDialog_videoRecord">Grabar un vídeo</string>
     <string name="attachOptionDialog_shareFile">Compartir archivo</string>
-    <string name="chat_fileTransferButton">Abrir</string>
-    <string name="chat_message_copy">Dupdo</string>
-    <string name="chat_message_delete">Borrar</string>
-    <string name="chat_message_edit">Editar</string>
-    <string name="chat_message_forward">Reenviar…</string>
+    <string name="service_gui_COPY">Dupdo</string>
+    <string name="service_gui_DELETE">Borrar</string>
+    <string name="service_gui_EDIT">Editar</string>
+    <string name="service_gui_FORWARD">Reenviar…</string>
     <string name="chat_message_long_press_hint">Evitar hacer clic dentro del área de mensajes para la operación de selección de varios items.</string>
-    <string name="chat_message_quote">Citar</string>
-    <string name="chat_message_reply">Responder</string>
-    <string name="chat_message_select_all">Seleccionar todo</string>
+    <string name="service_gui_QUOTE">Citar</string>
+    <string name="service_gui_REPLY">Responder</string>
+    <string name="service_gui_SELECT_ALL">Seleccionar todo</string>
     <string name="chatRoom_Subject">Tema</string>
     <string name="choose_file_activity_title">Elije un archivo</string>
     <string name="menu_settings">Ajustes</string>
@@ -143,10 +142,13 @@
     <string name="service_gui_CONTACT_INVALID">El contacto seleccionado no es válido: %1$s</string>
     <string name="service_gui_Contacts">Contactos</string>
     <string name="service_gui_DONE">¡Hecho!</string>
+    <string name="service_gui_MAS">Marcar como leído</string>
     <string name="service_gui_REASON_LABEL">Motivo:</string>
+    <string name="service_gui_SET">Conjunto</string>
     <string name="service_gui_SHARE">compartir…</string>
     <string name="service_gui_SHARE_TEXT">Compartir texto&#8230;</string>
     <string name="service_gui_SHARE_FILE">Recurso compartido de archivos&#8230;</string>
+    <string name="service_gui_SNOOZE">dormitar</string>
 
     <!-- Conference Chat -->
 	<string name="service_gui_AUTOJOIN">Unirse automáticamente</string>
@@ -293,12 +295,13 @@
     <string name="service_gui_DISCONNECTED_STATUS">Desconectado</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Desconectando %1$s</string>
     <string name="service_gui_DENY">Denegar</string>
-    <string name="service_gui_DISPLAY_NAME">Nombre del contacto que mostrar</string>
+    <string name="service_gui_DISPLAY_NAME">Nombre para mostrar</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Nombre del contacto que mostrar</string>
     <string name="service_gui_DND_STATUS">no molestar</string>
     <string name="service_gui_DURATION">duración</string>
 
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Fijar mensaje de estado</string>
-    <string name="service_gui_EDITED_AT">editado en %s</string>
+    <string name="service_gui_EDITED">editado</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Introduzca nombre o número</string>
     <string name="service_gui_ERROR">Error</string>
     <string name="service_gui_ERROR_WAS">El error fue: %1$s</string>
@@ -804,6 +807,26 @@
     <string name="plugin_accountinfo_WORK_EMAIL">E-mail del trabajo:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Teléfono del trabajo:</string>
 
+    <!-- Certificate configuration plugin -->
+    <string name="plugin_certconfig_TITLE">Configuración TLS</string>
+    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Fuente de certificados raíz de confianza</string>
+    <string name="plugin_certconfig_CERT_LIST_TITLE">Configuraciones de autenticación de cliente TLS</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">Las configuraciones administradas aquí se pueden elegir como certificados TLS del cliente en las configuraciones de la cuenta (por ejemplo, para autenticarse con un certificado contra su proveedor SIP en lugar de un nombre de usuario y contraseña).</string>
+    <string name="plugin_certconfig_ALIAS">Nombre de alias en KeyStore</string>
+    <string name="plugin_certconfig_KEYSTORE_TYPE">Tipo</string>
+    <string name="plugin_certconfig_CERT_ENTRY_TITLE">Certificado de cliente TLS</string>
+    <string name="plugin_certconfig_KEYSTORE">файл</string>
+    <string name="plugin_certconfig_KEYSTORE_PASSWORD">Contraseña</string>
+    <string name="plugin_certconfig_INCOMPLETE">Por favor, introduzca un valor para todos los campos</string>
+    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">No se puede mostrar el certificado (%1$s).</string>
+    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">No se puede cargar el almacén de claves (%1$s).</string>
+    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">Certificate stores (PKCS#11 Module, PKCS#12 files, Java ks Keystore)</string>
+    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">No se pueden obtener alias del almacén de claves (%1$s).</string>
+    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">El tipo de almacén de claves seleccionado parece no ser válido (%1$s).</string>
+    <string name="plugin_certconfig_REVOCATION_TITLE">Opciones de revocación de certificados</string>
+    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">Verificación de CRL (Lista de revocación de certificados) habilitada</string>
+    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">OCSP (Protocolo de estado del certificado en línea) verificación habilitada</string>
+
     <!-- connection info -->
     <string name="plugin_connectioninfo_TITLE">Información de la conexión</string>
 
@@ -830,6 +853,7 @@
     <string name="plugin_notificationconfig_event_IncomingCall">Llamada entrante</string>
     <string name="plugin_notificationconfig_event_IncomingCall_description">Descripción de la llamada entrante.</string>
     <string name="plugin_notificationconfig_event_IncomingFile">Fichero entrante</string>
+    <string name="plugin_notificationconfig_event_IncomingInvitation">Invitación entrante</string>
     <string name="plugin_notificationconfig_event_IncomingMessage">Mensaje entrante</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Descripción del mensaje entrante</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Archivos de registro archivados</string>
@@ -963,7 +987,7 @@
     <string name="omemo_rebuild_session">Reiniciar una nueva sesión para que no aparezca: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Error al eliminar el dispositivo omemo inactivo para: %1$s.</string>
 
-    <!-- Account proxy plugin -->
+    <!-- Account proxy settings -->
     <string name="service_gui_settings_BOSH_PROXY">Configuración del BOSH/Proxy</string>
     <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Configurar la conexión a través de BOSH/Proxy para la cuenta</string>
     <string name="plugin_proxy_BOSHURL_NULL">El contenido del campo URL BOSH no puede estar vacío</string>
@@ -1036,20 +1060,23 @@
     <string name="pref_remove_trusted_certificates_title">Eliminar certificado</string>
     <string name="pref_remove_trusted_certificates_summary">Eliminar certificados aprobados manualmente</string>
 
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Por favor, seleccional el certificado TLS</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Uso del certificado en la autenticación del usuario con el servidor</string>
+
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Cambios en el almacenamiento de la cuenta, por favor espera&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Comprometiéndose&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(No fijado)</string>
 
-    <!-- Connection settings -->
-    <string name="service_gui_CONN_NO_CERT">Ninguno</string>
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Codificando el audio</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Anular global</string>
 	<string name="service_gui_ENC_VIDEO_TITLE">Codificando el vídeo</string>
 
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_EMPTY">Ninguno</string>
+    <string name="service_gui_LIST_NONE">Ninguno</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encriptación</string>
     <string name="service_gui_SEC_PROTOCOLS_TITLE">Protocolos de seguridad</string>
     <string name="service_gui_SEC_PROTOCOLS_MSG">Por favor, seleccionar el orden de llos protocolos deseados</string>
@@ -1126,8 +1153,6 @@
     <string name="service_gui_SIP_PROXY_ADDR">Dirección del proxy</string>
     <string name="service_gui_SIP_PROXY_PORT">Puerto del proxy</string>
     <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_TLS_CERT">Certificado TLS del cliente</string>
-    <string name="service_gui_SIP_TLS_CERT_PROMPT">Por favor, seleccional el certificado TLS</string>
     <string name="service_gui_SIP_SUBSCRIPTION_DUR">Duración predeterminada de la suscripción(en s.)</string>
     <string name="service_gui_SIP_USER">CRYPTO ID</string>
     <string name="service_gui_SIP_VOICEMAIL">Buzón de voz</string>
@@ -1259,6 +1284,7 @@
     <string name="service_gui_settings_CHAT_ALERTS">Mostrar notificaciones de la barra de estado</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
 
@@ -1276,6 +1302,13 @@
     <!-- Events -->
     <string name="service_gui_settings_EVENTS_SUMMARY">Configurar avisos individuales</string>
     <string name="service_gui_settings_EVENTS_TITLE">Eventos</string>
+
+    <!-- Quite hour settings -->
+    <string name="title_pref_quiet_hours">Horario de silencio</string>
+    <string name="title_pref_quiet_hours_start_time">Hora de comienzo</string>
+    <string name="title_pref_quiet_hours_end_time">Hora de fin</string>
+    <string name="title_pref_enable_quiet_hours">Habilitar horario de silencio</string>
+    <string name="pref_quiet_hours_summary">Las notificaciones serán silenciadas durante el horario de silencio</string>
 
     <!-- aTalk icon -->
     <string name="service_gui_settings_SHOW_ICON">Mostrar el icono aTalk</string>
@@ -1465,7 +1498,6 @@
     <string name="service_gui_settings_SILK_ASSUME_PL">Asumir siempre la pérdida de paquetes</string>
     <string name="service_gui_settings_SILK_FEC_SAT">Umbral de actividad del habla (0–1)</string>
     <string name="service_gui_settings_SILK_ADVERTISE_FEC">Anunciar el soporte de FEC en SDP</string>
-
 
     <!-- SIP config -->
     <string name="plugin_generalconfig_SIP_CLIENT_PORT">Puerto del ciente SIP</string>

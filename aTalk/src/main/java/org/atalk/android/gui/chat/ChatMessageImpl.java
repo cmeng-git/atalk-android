@@ -12,7 +12,6 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.GuiUtils;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;
@@ -259,7 +258,7 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Returns the content of the message.
+     * Returns the content of the message or cached output if it is an correction message
      *
      * @return the content of the message.
      */
@@ -282,8 +281,8 @@ public class ChatMessageImpl implements ChatMessage
 
         // Apply the "edited at" tag for corrected message
         if (correctedMessageUID != null) {
-            String editedStr = aTalkApp.getResString(R.string.service_gui_EDITED_AT, GuiUtils.formatTime(getDate()));
-            output = "<i>" + output + "  <font color=\"#989898\" >(" + editedStr + ")</font></i>";
+            String editStr = aTalkApp.getResString(R.string.service_gui_EDITED);
+            output = String.format("<i>%s <small><font color='#989898'>(%s)</font></small></i>", output, editStr);
         }
         cachedOutput = output;
         return cachedOutput;
@@ -308,6 +307,11 @@ public class ChatMessageImpl implements ChatMessage
     public int getReceiptStatus()
     {
         return receiptStatus;
+    }
+
+    public void setReceiptStatus(int status)
+    {
+        receiptStatus = status;
     }
 
     /**
@@ -452,18 +456,19 @@ public class ChatMessageImpl implements ChatMessage
 
         String bodyText = nextMsg.getMessage();
 
+        // Same UID specified i.e. corrected message
+        boolean uidEqual = ((messageUID != null)
+                && messageUID.equals(nextMsg.getCorrectedMessageUID()));
+
         // New FTRequest message always treated as non-consecutiveMessage
         boolean nonFTMsg = ((messageType != MESSAGE_FILE_TRANSFER_RECEIVE)
                 && (messageType != MESSAGE_FILE_TRANSFER_SEND) && (messageType != MESSAGE_STICKER_SEND));
-        // New system message always treated as non-consecutiveMessage
+        // system message always treated as non-consecutiveMessage
         boolean nonHttpFTMsg = (bodyText == null)
                 || !bodyText.matches("(?s)^aesgcm:.*|^http[s].*");
         boolean nonSystemMsg = (messageType != MESSAGE_SYSTEM);
         // New LatLng message always treated as non-consecutiveMessage
         boolean nonLatLng = (!TextUtils.isEmpty(message) && !message.contains("LatLng:"));
-        // Same UID specified
-        boolean uidEqual = ((messageUID != null)
-                && messageUID.equals(nextMsg.getCorrectedMessageUID()));
         // Same message type and from the same contactName
         boolean mTypeJidEqual = ((contactName != null)
                 && (messageType == nextMsg.getMessageType())
@@ -474,8 +479,8 @@ public class ChatMessageImpl implements ChatMessage
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
         boolean isMarkUpText = (bodyText != null) && bodyText.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
 
-        return (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame && nonHttpFTMsg && !isMarkUpText
-                && (uidEqual || (mTypeJidEqual && inElapseTime)));
+        return uidEqual || (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame && nonHttpFTMsg && !isMarkUpText
+                && mTypeJidEqual && inElapseTime);
     }
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)
@@ -501,8 +506,8 @@ public class ChatMessageImpl implements ChatMessage
 
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageDeliveredEvent evt)
     {
-        ChatRoom chatRoom = evt.getSourceChatRoom();
         final IMessage message = evt.getMessage();
+        ChatRoom chatRoom = evt.getSourceChatRoom();
 
         return new ChatMessageImpl(chatRoom.toString(), chatRoom.getName(), evt.getTimestamp(),
                 ChatMessage.MESSAGE_MUC_OUT, message, null);
@@ -510,11 +515,11 @@ public class ChatMessageImpl implements ChatMessage
 
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageReceivedEvent evt)
     {
+        final IMessage message = evt.getMessage();
         String nickName = evt.getSourceChatRoomMember().getNickName();
         // Extract the contact with the resource part
         String contact = evt.getSourceChatRoomMember().getContactAddress(); //.split("/")[0];
 
-        final IMessage message = evt.getMessage();
         return new ChatMessageImpl(contact, nickName, evt.getTimestamp(), evt.getEventType(), message, null);
     }
 

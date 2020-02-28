@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.atalk.impl.androidtray;
+package org.atalk.impl.androidnotification;
 
 import android.annotation.TargetApi;
 import android.app.*;
@@ -25,7 +25,6 @@ import android.os.Build;
 import android.provider.Settings;
 
 import org.atalk.android.R;
-import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
 
 import java.util.List;
 
@@ -38,7 +37,9 @@ import androidx.annotation.RequiresApi;
  */
 public class NotificationHelper extends ContextWrapper
 {
-    private NotificationManager manager;
+    private NotificationManager notificationManager = null;
+
+    private static final int LED_COLOR = 0xff00ff00;
 
     /**
      * Registers notification channels, which can be used later by individual notifications.
@@ -50,51 +51,54 @@ public class NotificationHelper extends ContextWrapper
         super(ctx);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Init the system service NotificationManager
+            notificationManager = ctx.getSystemService(NotificationManager.class);
+
             // Delete any unused channel IDs
             deleteObsoletedChannelIds();
 
-            NotificationChannel nMessage = new NotificationChannel(AndroidNotifications.MESSAGE_GROUP,
-                    getString(R.string.noti_channel_MESSAGE_GROUP), NotificationManager.IMPORTANCE_LOW);
-            // nMessage.setLightColor(Color.BLUE);
-            nMessage.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            final NotificationChannel nMessage = new NotificationChannel(AndroidNotifications.MESSAGE_GROUP,
+                    getString(R.string.noti_channel_MESSAGE_GROUP), NotificationManager.IMPORTANCE_HIGH);
+            nMessage.setShowBadge(true);
+            nMessage.setLightColor(LED_COLOR);
             // nMessage.setAllowBubbles(true);
-            getManager().createNotificationChannel(nMessage);
+            nMessage.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            notificationManager.createNotificationChannel(nMessage);
 
-            NotificationChannel nFile = new NotificationChannel(AndroidNotifications.FILE_GROUP,
+            final NotificationChannel nFile = new NotificationChannel(AndroidNotifications.FILE_GROUP,
                     getString(R.string.noti_channel_FILE_GROUP), NotificationManager.IMPORTANCE_LOW);
+            nFile.setShowBadge(false);
             // nFile.setLightColor(Color.GREEN);
             nFile.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            getManager().createNotificationChannel(nFile);
+            notificationManager.createNotificationChannel(nFile);
 
-            NotificationChannel nCall = new NotificationChannel(AndroidNotifications.CALL_GROUP,
+            final NotificationChannel nCall = new NotificationChannel(AndroidNotifications.CALL_GROUP,
                     getString(R.string.noti_channel_CALL_GROUP), NotificationManager.IMPORTANCE_LOW);
+            nCall.setShowBadge(false);
             // nCall.setLightColor(Color.CYAN);
             nCall.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            getManager().createNotificationChannel(nCall);
+            notificationManager.createNotificationChannel(nCall);
 
-            NotificationChannel nMissCall = new NotificationChannel(AndroidNotifications.MISSED_CALL,
+            final NotificationChannel nMissCall = new NotificationChannel(AndroidNotifications.MISSED_CALL,
                     getString(R.string.noti_channel_MISSED_CALL), NotificationManager.IMPORTANCE_LOW);
+            nMissCall.setShowBadge(false);
             nMissCall.setLightColor(Color.RED);
-            nMissCall.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            getManager().createNotificationChannel(nMissCall);
+            nMissCall.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationManager.createNotificationChannel(nMissCall);
 
-            NotificationChannel nDefault = new NotificationChannel(AndroidNotifications.DEFAULT_GROUP,
+            final NotificationChannel nDefault = new NotificationChannel(AndroidNotifications.DEFAULT_GROUP,
                     getString(R.string.noti_channel_DEFAULT_GROUP), NotificationManager.IMPORTANCE_LOW);
-            // nDefault.setLightColor(Color.WHITE);
             nDefault.setShowBadge(false);
+            // nDefault.setLightColor(Color.WHITE);
             nDefault.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            getManager().createNotificationChannel(nDefault);
-        }
-    }
+            notificationManager.createNotificationChannel(nDefault);
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private void deleteObsoletedChannelIds()
-    {
-        List<NotificationChannel> channelGroups = getManager().getNotificationChannels();
-        for (NotificationChannel nc : channelGroups) {
-            if (!AndroidNotifications.notificationIds.contains(nc.getId())) {
-                getManager().deleteNotificationChannel(nc.getId());
-            }
+            final NotificationChannel nQuietHours = new NotificationChannel(AndroidNotifications.SILENT_GROUP,
+                    getString(R.string.noti_channel_SILENT_GROUP), NotificationManager.IMPORTANCE_LOW);
+            nQuietHours.setShowBadge(true);
+            nQuietHours.setLightColor(LED_COLOR);
+            nQuietHours.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            notificationManager.createNotificationChannel(nQuietHours);
         }
     }
 
@@ -104,25 +108,9 @@ public class NotificationHelper extends ContextWrapper
      * @param id The ID of the notification
      * @param notification The notification object
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void notify(int id, Notification.Builder notification)
     {
-        getManager().notify(id, notification.build());
-    }
-
-    /**
-     * Get the notification manager.
-     *
-     * Utility method as this helper works with it a lot.
-     *
-     * @return The system service NotificationManager
-     */
-    private NotificationManager getManager()
-    {
-        if (manager == null) {
-            manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        }
-        return manager;
+        notificationManager.notify(id, notification.build());
     }
 
     /**
@@ -148,5 +136,16 @@ public class NotificationHelper extends ContextWrapper
         i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
         i.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
         startActivity(i);
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void deleteObsoletedChannelIds()
+    {
+        List<NotificationChannel> channelGroups = notificationManager.getNotificationChannels();
+        for (NotificationChannel nc : channelGroups) {
+            if (!AndroidNotifications.notificationIds.contains(nc.getId())) {
+                notificationManager.deleteNotificationChannel(nc.getId());
+            }
+        }
     }
 }

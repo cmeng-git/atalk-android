@@ -1,51 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="@dimen/account_list_row_height">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/screen_padding"
+    android:layout_marginEnd="@dimen/screen_padding"
+    android:padding="2dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
 
     <ToggleButton
         android:id="@+id/accountToggleButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="5dp" />
+        android:layout_height="wrap_content"/>
 
     <ImageView
         android:id="@+id/accountProtoIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="5dp"
-        android:layout_toEndOf="@+id/accountToggleButton"
         android:src="@drawable/jabber_logo" />
+
+    <TextView
+        android:id="@+id/protocolProvider"
+        style="@style/MediumFont"
+        android:layout_width="0dp"
+        android:layout_weight="8"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp" />
+
+    <ImageView
+        android:id="@+id/accountStatusIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/jabber_status_phone" />
 
     <TextView
         android:id="@+id/accountStatus"
         style="@style/MediumFont"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="2"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="5dp" />
+        android:layout_marginStart="10dp"/>
 
-    <ImageView
-        android:id="@+id/accountStatusIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="5dp"
-        android:layout_toStartOf="@+id/accountStatus"
-        android:src="@drawable/jabber_status_phone" />
-
-    <TextView
-        android:id="@+id/protocolProvider"
-        style="@style/LargeFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@+id/accountProtoIcon" />
-
-</RelativeLayout>
+</LinearLayout>

@@ -11,7 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/label_padding" >
 
         <TextView
             android:id="@+id/contactPhoneName"
@@ -19,8 +20,6 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/label_padding"
-            android:layout_marginBottom="@dimen/label_padding"
             android:text="@string/service_gui_CONTACT_PHONE_NUMBER"
            />
 
@@ -30,41 +29,32 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/label_padding"
+            android:layout_marginStart="@dimen/label_padding"
             android:text="@string/service_gui_JBR_TELE_DOMAIN" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/between_padding" >
 
         <org.atalk.android.gui.call.telephony.RecipientSelectView
             android:id="@+id/address"
             style="@style/EntryTextView"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="@dimen/item_height"
-            android:layout_marginBottom="@dimen/between_padding"
             android:dropDownAnchor="@id/address"
             android:dropDownWidth="wrap_content"
             android:imeOptions="actionNext"
-            android:inputType="textNoSuggestions"
-            android:layout_marginEnd="@dimen/label_padding"
-            android:paddingBottom="@dimen/label_padding"
-            android:paddingLeft="@dimen/between_padding"
-            android:paddingRight="@dimen/between_padding"
-            android:paddingStart="@dimen/between_padding"
-            android:paddingTop="@dimen/label_padding" />
+            android:inputType="textNoSuggestions" />
 
         <TextView
             android:id="@+id/telephonyDomain"
             style="@style/EntryTextView"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="@dimen/item_height"
-            android:layout_marginBottom="@dimen/between_padding"
-            android:padding="8dp" />
+        android:layout_marginStart="@dimen/label_padding" />
 
     </LinearLayout>
 
@@ -78,10 +68,9 @@
 
     <Spinner
         android:id="@+id/selectAccountSpinner"
+        style="@style/SpinnerView"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:background="@drawable/spinner_dark" />
+        android:layout_marginBottom="@dimen/between_padding" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -91,18 +80,18 @@
         <Button
             android:id="@+id/button_cancel"
             style="@style/ButtonTop"
-            android:layout_marginEnd="2dp"
             android:text="@string/service_gui_CANCEL" />
 
         <Button
             android:id="@+id/button_video"
             style="@style/ButtonTop"
-            android:layout_marginEnd="2dp"
+            android:layout_marginStart="4dp"
             android:text="@string/service_gui_CALL_VIDEO" />
 
         <Button
             android:id="@+id/button_audio"
             style="@style/ButtonTop"
+            android:layout_marginStart="4dp"
             android:text="@string/service_gui_CALL" />
     </LinearLayout>
 

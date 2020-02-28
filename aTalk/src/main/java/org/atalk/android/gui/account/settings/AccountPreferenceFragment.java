@@ -479,7 +479,6 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
         try {
             mActivity.runOnUiThread(this::displayOperationInProgressDialog);
             doCommitChanges();
-
             mActivity.runOnUiThread(this::dismissOperationInProgressDialog);
         } catch (Exception e) {
             Timber.e(e, "Error occurred while trying to commit changes");

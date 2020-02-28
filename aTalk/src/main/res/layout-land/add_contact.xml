@@ -75,7 +75,7 @@
                 android:layout_alignStart="@id/editDisplayName"
                 android:layout_below="@id/editContactName"
                 android:layout_marginBottom="@dimen/label_padding"
-                android:text="@string/service_gui_DISPLAY_NAME" />
+                android:text="@string/service_gui_CONTACT_DISPLAY_NAME" />
 
             <EditText
                 android:id="@+id/editDisplayName"

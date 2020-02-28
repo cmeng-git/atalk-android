@@ -88,7 +88,7 @@ public class PropertyChangeNotifier
         PropertyChangeListener[] ls;
 
         synchronized (listeners) {
-            ls = listeners.toArray(new PropertyChangeListener[listeners.size()]);
+            ls = listeners.toArray(new PropertyChangeListener[0]);
         }
 
         if (ls.length != 0) {

@@ -173,9 +173,21 @@ public class ViewUtil
      */
     public static String toString(final TextView textView)
     {
-        CharSequence editText = (textView == null)? null : textView.getText();
-        String text = (editText == null)? null : editText.toString().trim();
-        return ((text == null) || (text.length() == 0))? null : text;
+        CharSequence editText = (textView == null) ? null : textView.getText();
+        String text = (editText == null) ? null : editText.toString().trim();
+        return ((text == null) || (text.length() == 0)) ? null : text;
+    }
+
+    /**
+     * get the textView string value or null (length == 0)
+     *
+     * @param textView TextView or EditText
+     * @return String or null
+     */
+    public static char[] toCharArray(final TextView textView)
+    {
+        String text = toString(textView);
+        return (text == null) ? null : text.toCharArray();
     }
 
     /**

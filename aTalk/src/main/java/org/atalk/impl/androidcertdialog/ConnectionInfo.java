@@ -38,7 +38,7 @@ public class ConnectionInfo extends OSGiActivity
     /*
      * Adapter used to displays connection info and SSL certificates for all protocolProviders.
      */
-    private ConnectionInfoAdapter pProvidersAdapter;
+    private ConnectionInfoAdapter mCIAdapter;
 
     /*
      * X509 SSL Certificate view on dialog window
@@ -59,8 +59,8 @@ public class ConnectionInfo extends OSGiActivity
         ListView pProviderKeysList = findViewById(R.id.list);
         List<ProtocolProviderService> protocolProviders = new ArrayList<>(AccountUtils.getRegisteredProviders());
 
-        this.pProvidersAdapter = new ConnectionInfoAdapter(protocolProviders);
-        pProviderKeysList.setAdapter(pProvidersAdapter);
+        this.mCIAdapter = new ConnectionInfoAdapter(protocolProviders);
+        pProviderKeysList.setAdapter(mCIAdapter);
 
         pProviderKeysList.setOnItemClickListener(
                 (parent, view, position, id) -> showSslCertificate(position)
@@ -92,7 +92,7 @@ public class ConnectionInfo extends OSGiActivity
      */
     private void showSslCertificateDeleteAlert(int position)
     {
-        ProtocolProviderService pps = (ProtocolProviderService) pProvidersAdapter.getItem(position);
+        ProtocolProviderService pps = (ProtocolProviderService) mCIAdapter.getItem(position);
         AccountID account = pps.getAccountID();
         final String bareJid = account.getAccountJid();
         final String certificateEntry = CertificateServiceImpl.PNAME_CERT_TRUST_PREFIX
@@ -120,7 +120,7 @@ public class ConnectionInfo extends OSGiActivity
      */
     public void showSslCertificate(int position)
     {
-        ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) pProvidersAdapter.getItem(position);
+        ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) mCIAdapter.getItem(position);
         if (pps.isRegistered()) {
             OperationSetTLS opSetTLS = pps.getOperationSet(OperationSetTLS.class);
             Certificate[] chain = opSetTLS.getServerCertificates();

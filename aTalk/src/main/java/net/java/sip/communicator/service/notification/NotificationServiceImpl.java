@@ -7,7 +7,9 @@ package net.java.sip.communicator.service.notification;
 
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.gui.settings.TimePreference;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 
@@ -197,23 +199,27 @@ class NotificationServiceImpl implements NotificationService
                         ((LogMessageNotificationHandler) handler).logMessage(
                                 (LogMessageNotificationAction) action, data.getMessage());
                         break;
+
                     case ACTION_SOUND:
                         SoundNotificationAction soundNotificationAction = (SoundNotificationAction) action;
-                        if (soundNotificationAction.isSoundNotificationEnabled()
+                        if (!isQuietHours() && (soundNotificationAction.isSoundNotificationEnabled()
                                 || soundNotificationAction.isSoundPlaybackEnabled()
-                                || soundNotificationAction.isSoundPCSpeakerEnabled()) {
+                                || soundNotificationAction.isSoundPCSpeakerEnabled())) {
                             ((SoundNotificationHandler) handler).start((SoundNotificationAction) action, data);
                         }
                         break;
+
                     case ACTION_COMMAND:
                         @SuppressWarnings("unchecked")
                         Map<String, String> cmdargs = (Map<String, String>) data.getExtra(
                                 NotificationData.COMMAND_NOTIFICATION_HANDLER_CMDARGS_EXTRA);
                         ((CommandNotificationHandler) handler).execute((CommandNotificationAction) action, cmdargs);
                         break;
+
                     case ACTION_VIBRATE:
                         ((VibrateNotificationHandler) handler).vibrate((VibrateNotificationAction) action);
                         break;
+
                     case ACTION_POPUP_MESSAGE:
                     default:
                         ((PopupMessageNotificationHandler) handler).popupMessage(
@@ -225,6 +231,27 @@ class NotificationServiceImpl implements NotificationService
             } catch (Exception e) {
                 Timber.e(e, "Error dispatching notification of type %s from %s", actionType, handler);
             }
+        }
+    }
+
+    /**
+     * Check if Quite Hours is in effect
+     * @return false if option is not enable or is not wihtin the quite hours period.
+     */
+    public static boolean isQuietHours()
+    {
+        if (!ConfigurationUtils.isQuiteHoursEnable())
+            return false;
+
+        final long startTime = TimePreference.minutesToTimestamp(ConfigurationUtils.getQuiteHoursStart());
+        final long endTime = TimePreference.minutesToTimestamp(ConfigurationUtils.getQuiteHoursEnd());
+        final long nowTime = Calendar.getInstance().getTimeInMillis();
+
+        if (endTime < startTime) {
+            return nowTime > startTime || nowTime < endTime;
+        }
+        else {
+            return nowTime > startTime && nowTime < endTime;
         }
     }
 

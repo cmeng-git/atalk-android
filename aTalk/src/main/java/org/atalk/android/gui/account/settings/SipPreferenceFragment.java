@@ -207,25 +207,27 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         // Enable/disable contact list items on init
         updateContactListViews();
 
-        List<String> certs = new ArrayList<String>();
-        certs.add(getResources().getString(R.string.service_gui_CONN_NO_CERT));
+        List<String> certList = new ArrayList<>();
 
-        CertificateService certService = SIPAccountRegistrationActivator.getCertificateService();
-        for (CertificateConfigEntry e : certService.getClientAuthCertificateConfigs()) {
-            certs.add(e.getId());
+        CertificateService cvs = SIPAccountRegistrationActivator.getCertificateService();
+        List<CertificateConfigEntry> certEntries = cvs.getClientAuthCertificateConfigs();
+        certEntries.add(0, CertificateConfigEntry.CERT_NONE);
+
+        for (CertificateConfigEntry e : certEntries) {
+            certList.add(e.toString());
         }
 
         AccountID accountID = getAccountID();
 
         String currentCert = accountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
-        if (!certs.contains(currentCert) && !isInitialized()) {
+        if (!certList.contains(currentCert) && !isInitialized()) {
             // The empty one
-            currentCert = certs.get(0);
+            currentCert = certList.get(0);
             getPreferenceManager().getSharedPreferences().edit().putString(PREF_KEY_TLS_CERT_ID, currentCert).apply();
         }
 
-        String[] entries = new String[certs.size()];
-        entries = certs.toArray(entries);
+        String[] entries = new String[certList.size()];
+        entries = certList.toArray(entries);
         ListPreference certPreference = (ListPreference) findPreference(PREF_KEY_TLS_CERT_ID);
         certPreference.setEntries(entries);
         certPreference.setEntryValues(entries);
@@ -251,13 +253,9 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         summaryMapper.includePreference(findPreference(PREF_KEY_SERVER_PORT), emptyStr);
         summaryMapper.includePreference(findPreference(PREF_KEY_AUTH_NAME), emptyStr);
         summaryMapper.includePreference(findPreference(PREF_KEY_TLS_CERT_ID), emptyStr);
-        summaryMapper.includePreference(findPreference(PREF_KEY_DTMF_METHOD), emptyStr, new SummaryMapper.SummaryConverter()
-        {
-            public String convertToSummary(String input)
-            {
-                ListPreference lp = (ListPreference) findPreference(PREF_KEY_DTMF_METHOD);
-                return lp.getEntry().toString();
-            }
+        summaryMapper.includePreference(findPreference(PREF_KEY_DTMF_METHOD), emptyStr, input -> {
+            ListPreference lp = (ListPreference) findPreference(PREF_KEY_DTMF_METHOD);
+            return lp.getEntry().toString();
         });
 
         // Connection -> Keep alive
@@ -306,9 +304,6 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
             // reg.setServerAddress(
             // prefs.getString(PREF_KEY_SERVER_ADDRESS, null));
             // Can not be changed
-        }
-        else if (key.equals(PREF_KEY_PROXY_ADDRESS)) {
-            reg.setProxy(prefs.getString(PREF_KEY_PROXY_ADDRESS, null));
         }
         else if (key.equals(PREF_KEY_USER_ID)) {
             // User id can not be changed
@@ -384,7 +379,6 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         else if (key.equals(PREF_KEY_CLIST_PASSWORD)) {
             reg.setClistOptionPassword(prefs.getString(PREF_KEY_CLIST_PASSWORD, null));
         }
-
     }
 
     /**

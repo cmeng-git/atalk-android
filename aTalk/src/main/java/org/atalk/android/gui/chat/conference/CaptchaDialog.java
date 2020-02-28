@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.atalk.android.gui.chat;
+package org.atalk.android.gui.chat.conference;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -26,7 +26,10 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.*;
 
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+
 import org.atalk.android.R;
+import org.atalk.android.gui.chat.ChatMessage;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.*;
@@ -51,6 +54,7 @@ import timber.log.Timber;
  */
 public class CaptchaDialog extends Dialog
 {
+    /* Captcha response state */
     public static final int unknown = -1;
     public static final int validated = 0;
     public static final int awaiting = 1;
@@ -70,7 +74,6 @@ public class CaptchaDialog extends Dialog
     private DataForm formSubmit;
     private String mReasonText;
 
-    private static MultiUserChat mMultiUserChat;
     private static XMPPConnection mConnection;
     private static Message mMessage;
     private Context mContext;
@@ -79,13 +82,13 @@ public class CaptchaDialog extends Dialog
     public interface CaptchaDialogListener
     {
         void onResult(int state);
+        void addMessage(String msg, int msgType);
     }
 
     public CaptchaDialog(Context context, MultiUserChat multiUserChat, Message message, CaptchaDialogListener listener)
     {
         super(context);
         mContext = context;
-        mMultiUserChat = multiUserChat;
         mConnection = multiUserChat.getXmppConnection();
         mMessage = message;
         callBack = listener;
@@ -208,20 +211,28 @@ public class CaptchaDialog extends Dialog
             createStanzaCollectorAndSend(iqCaptcha).nextResultOrThrow();
             mReasonText = mContext.getString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID);
             callBack.onResult(validated);
+            callBack.addMessage(mReasonText, ChatMessage.MESSAGE_SYSTEM);
             return true;
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
                 | SmackException.NotConnectedException | InterruptedException ex) {
             String errMsg = ex.getMessage();
-            if (ex instanceof XMPPException.XMPPErrorException) {
-                StanzaError xmppError = ((XMPPException.XMPPErrorException) ex).getStanzaError();
-                errMsg += "\n: " + xmppError.getDescriptiveText();
-            }
-            Timber.e("Captcha Reply Exception: %s", errMsg);
+
+            // Not required. The return error message will contain the descriptive text
+            // if (ex instanceof XMPPException.XMPPErrorException) {
+            //    StanzaError xmppError = ((XMPPException.XMPPErrorException) ex).getStanzaError();
+            //    errMsg += "\n: " + xmppError.getDescriptiveText();
+            // }
+
+            Timber.e("Captcha Exception: %s", errMsg);
             mReasonText = errMsg;
-            if (isCancel)
+            if (isCancel) {
+                callBack.addMessage(errMsg, ChatMessage.MESSAGE_ERROR);
                 callBack.onResult(cancel);
-            else
+            }
+            else {
+                // caller will retry, so do not show error.
                 callBack.onResult(failed);
+            }
         }
         return false;
     }

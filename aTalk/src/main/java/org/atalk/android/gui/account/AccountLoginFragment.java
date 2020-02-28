@@ -12,16 +12,18 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.android.plugin.certconfig.CertConfigActivator;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The <tt>AccountLoginFragment</tt> is used for creating new account, but can be also used to obtain
@@ -31,7 +33,7 @@ import java.util.Map;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AccountLoginFragment extends OSGiFragment
+public class AccountLoginFragment extends OSGiFragment implements AdapterView.OnItemSelectedListener
 {
     /**
      * The username property name.
@@ -42,6 +44,11 @@ public class AccountLoginFragment extends OSGiFragment
      * The password property name.
      */
     public static final String ARG_PASSWORD = "Password";
+
+    /**
+     * The password property name.
+     */
+    public static final String ARG_CLIENT_CERT = "ClientCert";
 
     /**
      * Contains all implementation specific properties that define the account.
@@ -60,11 +67,22 @@ public class AccountLoginFragment extends OSGiFragment
 
     private CheckBox mShowPasswordCheckBox;
     private CheckBox mSavePasswordCheckBox;
+    private CheckBox mClientCertCheckBox;
     private CheckBox mServerOverrideCheckBox;
     private CheckBox mIBRegistrationCheckBox;
 
     private Spinner spinnerNwk;
     private Spinner spinnerDM;
+
+    private Spinner spinnerCert;
+    private CertificateConfigEntry mCertEntry = null;
+
+    /**
+     * A map of <row, CertificateConfigEntry>
+     */
+    private Map<Integer, CertificateConfigEntry> mCertEntryList = new LinkedHashMap<>();
+
+    Activity mActivity;
 
     /**
      * {@inheritDoc}
@@ -73,6 +91,7 @@ public class AccountLoginFragment extends OSGiFragment
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
+        mActivity = activity;
         if (activity instanceof AccountLoginListener) {
             this.loginListener = (AccountLoginListener) activity;
         }
@@ -99,13 +118,13 @@ public class AccountLoginFragment extends OSGiFragment
     {
         View content = inflater.inflate(R.layout.account_create_new, container, false);
         spinnerNwk = content.findViewById(R.id.networkSpinner);
-        ArrayAdapter<CharSequence> adapterNwk = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapterNwk = ArrayAdapter.createFromResource(mActivity,
                 R.array.networks_array, R.layout.simple_spinner_item);
         adapterNwk.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerNwk.setAdapter(adapterNwk);
 
         spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
-        ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(mActivity,
                 R.array.dnssec_Mode_name, R.layout.simple_spinner_item);
         adapterDM.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerDM.setAdapter(adapterDM);
@@ -114,11 +133,18 @@ public class AccountLoginFragment extends OSGiFragment
         mShowPasswordCheckBox = content.findViewById(R.id.show_password);
         mSavePasswordCheckBox = content.findViewById(R.id.store_password);
         mIBRegistrationCheckBox = content.findViewById(R.id.ibRegistration);
+
+        mClientCertCheckBox = content.findViewById(R.id.clientCertEnable);
+
+        spinnerCert = content.findViewById(R.id.clientCertEntry);
+        initCertList();
+
         mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
         mServerIpField = content.findViewById(R.id.serverIpField);
         mServerPortField = content.findViewById(R.id.serverPortField);
 
         // Hide ip and port fields on first create
+        updateCertEntryViewVisibility(false);
         updateViewVisibility(false);
         initializeViewListeners();
         initButton(content);
@@ -138,10 +164,35 @@ public class AccountLoginFragment extends OSGiFragment
         return content;
     }
 
+    /**
+     * Certificate spinner list for selection
+     */
+    private void initCertList()
+    {
+        List<String> certList = new ArrayList<>();
+
+        CertificateService cvs = CertConfigActivator.getCertService();
+        List<CertificateConfigEntry> certEntries = cvs.getClientAuthCertificateConfigs();
+        certEntries.add(0, CertificateConfigEntry.CERT_NONE);
+
+        for (int idx = 0; idx < certEntries.size(); idx++) {
+            CertificateConfigEntry entry = certEntries.get(idx);
+            certList.add(entry.toString());
+            mCertEntryList.put(idx, entry);
+        }
+
+        ArrayAdapter<String> certAdapter = new ArrayAdapter<>(mActivity, R.layout.simple_spinner_item, certList);
+        certAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        spinnerCert.setAdapter(certAdapter);
+        spinnerCert.setOnItemSelectedListener(this);
+    }
+
     private void initializeViewListeners()
     {
         mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ViewUtil.showPassword(mPasswordField, isChecked));
+        mClientCertCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> updateCertEntryViewVisibility(isChecked));
         mServerOverrideCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
                 -> updateViewVisibility(isChecked));
     }
@@ -170,6 +221,13 @@ public class AccountLoginFragment extends OSGiFragment
             userName = (userName == null) ? null : userName.replaceAll("\\s", "");
             String password = ViewUtil.toString(mPasswordField);
 
+            if (mClientCertCheckBox.isChecked() && (!CertificateConfigEntry.CERT_NONE.equals(mCertEntry))) {
+                accountProperties.put(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE, mCertEntry.toString());
+            }
+            else {
+                accountProperties.put(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE, CertificateConfigEntry.CERT_NONE.toString());
+            }
+
             String serverAddress = ViewUtil.toString(mServerIpField);
             String serverPort = ViewUtil.toString(mServerPortField);
 
@@ -192,8 +250,18 @@ public class AccountLoginFragment extends OSGiFragment
         });
 
         final Button cancelButton = content.findViewById(R.id.buttonCancel);
-        if (getActivity() != null)
-            cancelButton.setOnClickListener(v -> getActivity().finish());
+        if (mActivity != null)
+            cancelButton.setOnClickListener(v -> mActivity.finish());
+    }
+
+    private void updateCertEntryViewVisibility(boolean isEnabled)
+    {
+        if (isEnabled) {
+            spinnerCert.setVisibility(View.VISIBLE);
+        }
+        else {
+            spinnerCert.setVisibility(View.GONE);
+        }
     }
 
     private void updateViewVisibility(boolean IsServerOverridden)
@@ -264,6 +332,19 @@ public class AccountLoginFragment extends OSGiFragment
         return fragment;
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
+    {
+        if (adapter.getId() == R.id.clientCertEntry) {
+            mCertEntry = mCertEntryList.get(pos);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent)
+    {
+    }
+
     /**
      * The interface is used to notify listener when user click the sign-in button.
      */
@@ -276,7 +357,6 @@ public class AccountLoginFragment extends OSGiFragment
          * @param password the password entered by the user.
          * @param network the network name selected by the user.
          */
-        public void onLoginPerformed(String userName, String password, String network,
-                Map<String, String> accountProperties);
+        void onLoginPerformed(String userName, String password, String network, Map<String, String> accountProperties);
     }
 }

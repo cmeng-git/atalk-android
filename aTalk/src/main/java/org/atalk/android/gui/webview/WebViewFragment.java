@@ -120,7 +120,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
 
             public void openFileChooser(ValueCallback uploadMsg, String acceptType)
             {
-                openFileChooser(uploadMsg, null, null);
+                openFileChooser(uploadMsg, acceptType, null);
             }
 
             public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture)
@@ -128,8 +128,10 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
                 mUploadMessage = uploadMsg;
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("*/*");
-                WebViewFragment.this.startActivityForResult(Intent.createChooser(i, "File Browser"), FILE_REQUEST_CODE);
+                i.setType(acceptType);
+
+                Intent chooseFile = Intent.createChooser(i, "File Browser");
+                startActivityForResult(chooseFile, FILE_REQUEST_CODE);
             }
 
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMessageArray,
@@ -144,10 +146,8 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("*/*");
 
-                Intent ci = new Intent(Intent.ACTION_CHOOSER);
-                ci.putExtra(Intent.EXTRA_INTENT, i);
-                ci.putExtra(Intent.EXTRA_TITLE, "File Browser");
-                startActivityForResult(ci, FILE_REQUEST_CODE);
+                Intent chooseFile = Intent.createChooser(i, "File Browser");
+                startActivityForResult(chooseFile, FILE_REQUEST_CODE);
                 return true;
             }
         });

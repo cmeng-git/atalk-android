@@ -135,7 +135,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 initHttpFileDownload();
             });
 
-            boolean isAutoAccept = (fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize());
+            boolean isAutoAccept = ((fileSize == -1)
+                    || (fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize()));
             if (isAutoAccept)
                 initHttpFileDownload();
 
@@ -339,10 +340,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         if (previousDownloads.contains(dnLink))
             return;
 
-        messageViewHolder.timeView.setText(mDate);
-        messageViewHolder.fileStatus.setText(
-                aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSender));
-
         if (downloadReceiver == null) {
             downloadReceiver = new DownloadReceiver();
             aTalkApp.getGlobalContext().registerReceiver(downloadReceiver,
@@ -361,11 +358,21 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         // mChatFragment.getChatPanel().addMessage("", new Date(), IMessage.ENCODE_PLAIN, IMessage.ENCODE_PLAIN, aesgcmUrl.getAesgcmUrl());
 
         Uri uri = Uri.parse(url);
+        if (fileSize == -1) {
+            fileSize = queryFileSize(uri);
+            messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));
+            if ((fileSize == -1) || (fileSize > ConfigurationUtils.getAutoAcceptFileSize())) {
+                return;
+            }
+        }
+
+        messageViewHolder.timeView.setText(mDate);
+        messageViewHolder.fileStatus.setText(aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSender));
         Long jobId = download(uri);
         if (jobId > 0) {
             previousDownloads.put(jobId, dnLink);
             updateView(FileTransferStatusChangeEvent.IN_PROGRESS, null);
-            Timber.d("Init HttpFileDownload: %s", previousDownloads.toString());
+            Timber.d("Download Manager init HttpFileDownload Size: %s %s", fileSize, previousDownloads.toString());
         }
     }
 
@@ -391,9 +398,36 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         return -1;
     }
 
-    // private String getUserAgent() {
-    //    return aTalkApp.getResString(R.string.APPLICATION_NAME) + '/' + UpdateServiceImpl.getCurrentVersion();
-    // }
+    /**
+     * Query the http uploaded file size for auto download.
+     */
+    private long queryFileSize(Uri uri)
+    {
+        Timber.d("Download Manager file size query started");
+        int size = -1;
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        long id = downloadManager.enqueue(request);
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(id);
+
+        // allow loop for 3 seconds for slow server
+        int wait = 3;
+        while ((wait-- > 0) && (size == -1)) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Timber.w("Download Manager query file size exception: %s", e.getMessage());
+                return -1;
+            }
+            Cursor cursor = downloadManager.query(query);
+            if (cursor.moveToFirst()) {
+                size = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+            }
+            cursor.close();
+        }
+        Timber.d("Download Manager file size query end: %s (%s)", size, wait);
+        return size;
+    }
 
     /**
      * Queries the <tt>DownloadManager</tt> for the status of download job identified by given <tt>id</tt>.

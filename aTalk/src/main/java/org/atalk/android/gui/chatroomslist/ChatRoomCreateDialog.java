@@ -294,7 +294,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             if (chatRoomWrapper == null) {
                 // Just create chatRoomWrapper without joining
                 chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
-                        reason, false, false, false);
+                        reason, false, false, true);
 
                 // Return without open the chat room, the protocol failed to create a chat room (null)
                 if (chatRoomWrapper == null) {

@@ -1004,7 +1004,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         Jid userFullJid = isForwardedSentOmemoMessage ? message.getTo() : message.getFrom();
         BareJid userBareJid = userFullJid.asBareJid();
         putJidForAddress(userBareJid, message.getThread());
-        Contact sourceContact = opSetPersPresence.findContactByID(userBareJid.toString());
+        Contact sourceContact = opSetPersPresence.findContactByID(userBareJid);
         if (sourceContact == null) {
             // create new volatile contact
             sourceContact = opSetPersPresence.createVolatileContact(userBareJid);

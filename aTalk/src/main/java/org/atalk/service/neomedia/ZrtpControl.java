@@ -10,6 +10,7 @@ package org.atalk.service.neomedia;
  *
  * @author Damian Minkov
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public interface ZrtpControl extends SrtpControl
 {
@@ -18,14 +19,14 @@ public interface ZrtpControl extends SrtpControl
      *
      * @return the cipher information string.
      */
-    public String getCipherString();
+    String getCipherString();
 
     /**
      * Gets the negotiated ZRTP protocol version.
      *
      * @return the <tt>int</tt> representation of the negotiated ZRTP protocol version.
      */
-    public int getCurrentProtocolVersion();
+    int getCurrentProtocolVersion();
 
     /**
      * Returns the zrtp hello hash String.
@@ -34,7 +35,7 @@ public interface ZrtpControl extends SrtpControl
      * <code>0 &lt;= index &lt; SUPPORTED_ZRTP_VERSIONS</code>.
      * @return String the zrtp hello hash.
      */
-    public String getHelloHash(int index);
+    String getHelloHash(int index);
 
     /**
      * Gets the ZRTP Hello Hash data - separate strings.
@@ -45,14 +46,14 @@ public interface ZrtpControl extends SrtpControl
      * hex-digits at offset 1. Hello hash is available immediately after class
      * instantiation. Returns <tt>null</tt> if ZRTP is not available.
      */
-    public String[] getHelloHashSep(int index);
+    String[] getHelloHashSep(int index);
 
     /**
      * Gets the number of supported ZRTP protocol versions.
      *
      * @return the number of supported ZRTP protocol versions.
      */
-    public int getNumberSupportedVersions();
+    int getNumberSupportedVersions();
 
     /**
      * Gets the peer's Hello Hash data as a <tt>String</tt>.
@@ -61,7 +62,7 @@ public interface ZrtpControl extends SrtpControl
      * after we received a Hello packet from our peer. If peer's hello hash is not
      * available, returns <tt>null</tt>.
      */
-    public String getPeerHelloHash();
+    String getPeerHelloHash();
 
     /**
      * Gets other party's ZID (ZRTP Identifier) data that was received during ZRTP processing. The
@@ -69,7 +70,7 @@ public interface ZrtpControl extends SrtpControl
      *
      * @return the ZID data as a <tt>byte</tt> array.
      */
-    public byte[] getPeerZid();
+    byte[] getPeerZid();
 
     /**
      * Gets other party's ZID (ZRTP Identifier) data that was received during ZRTP processing as a
@@ -78,14 +79,14 @@ public interface ZrtpControl extends SrtpControl
      *
      * @return the ZID data as a <tt>String</tt>.
      */
-    public String getPeerZidString();
+    String getPeerZidString();
 
     /**
      * Gets the SAS for the current media stream.
      *
      * @return the four character ZRTP SAS.
      */
-    public String getSecurityString();
+    String getSecurityString();
 
     /**
      * Returns the timeout value in milliseconds that we will wait and fire timeout secure event if
@@ -94,31 +95,30 @@ public interface ZrtpControl extends SrtpControl
      * @return the timeout value in milliseconds that we will wait and fire timeout secure event if
      * call is not secured.
      */
-    public long getTimeoutValue();
+    long getTimeoutValue();
 
     /**
      * Gets the status of the SAS verification.
      *
      * @return <tt>true</tt> when the SAS has been verified.
      */
-    public boolean isSecurityVerified();
+    boolean isSecurityVerified();
 
     /**
      * Sets the SAS verification
      *
      * @param verified the new SAS verification status
      */
-    public void setSASVerification(boolean verified);
-
+    void setSASVerification(boolean verified);
     /**
      * Set ZRTP version received from the signaling layer.
      * @param version received version
      */
-    public void setReceivedSignaledZRTPVersion(String version);
+    void setReceivedSignaledZRTPVersion(String version);
 
     /**
      * Set ZRTP hash value received from the signaling layer.
      * @param value hash value
      */
-    public void setReceivedSignaledZRTPHashValue(String value);
+    void setReceivedSignaledZRTPHashValue(String value);
 }

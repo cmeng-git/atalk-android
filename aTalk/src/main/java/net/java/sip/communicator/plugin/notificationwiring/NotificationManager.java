@@ -47,10 +47,10 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class NotificationManager implements AdHocChatRoomMessageListener, CallChangeListener, CallListener,
-        CallPeerConferenceListener, CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener,
-        ScFileTransferListener, LocalUserAdHocChatRoomPresenceListener, LocalUserChatRoomPresenceListener,
-        MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener
+public class NotificationManager implements CallChangeListener, CallListener, CallPeerConferenceListener,
+        CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener, LocalUserChatRoomPresenceListener,
+        AdHocChatRoomMessageListener, LocalUserAdHocChatRoomPresenceListener,
+        ScFileTransferListener, MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener
 {
     /**
      * Default event type for a busy call.
@@ -91,6 +91,11 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * Default event type for incoming file transfers.
      */
     public static final String INCOMING_FILE = "IncomingFile";
+
+    /**
+     * Default event type for incoming invitation received.
+     */
+    public static final String INCOMING_INVITATION = "IncomingInvitation";
 
     /**
      * Default event type for receiving messages.
@@ -198,7 +203,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * @param eventType the event type for which we want to fire a notification
      */
-    private static void fireNotification(String eventType)
+    public static void fireNotification(String eventType)
     {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null)
@@ -840,6 +845,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     }
 
     /**
+     * cmeng: should remove this from here
      * Implements the <tt>LocalUserChatRoomPresenceListener.localUserPresenceChanged</tt> method.
      *
      * @param evt the <tt>LocalUserChatRoomPresenceChangeEvent</tt> that notified us

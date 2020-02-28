@@ -24,8 +24,8 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.conference.*;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
+import org.atalk.android.gui.chat.conference.*;
 import org.atalk.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -568,6 +568,31 @@ public class ChatPanel implements Chat, MessageListener
         throw new RuntimeException("Not supported yet");
     }
 
+    public static void sendMessage(Object descriptor, String message, int encType)
+    {
+    }
+
+    /**
+     * Sends the chat message or corrects the last message if the chatPanel has correction UID set.
+     *
+     * @param message the text string to be sent
+     * @param encType The encType of the message to be sent: RemoteOnly | 1=text/html or 0=text/plain.
+     */
+    public void sendMessage(String message, int encType)
+    {
+        int encryption = IMessage.ENCRYPTION_NONE;
+        if (isOmemoChat())
+            encryption = IMessage.ENCRYPTION_OMEMO;
+        else if (isOTRChat())
+            encryption = IMessage.ENCRYPTION_OTR;
+
+        try {
+            mCurrentChatTransport.sendInstantMessage(message, encryption | encType);
+        } catch (Exception ex) {
+            aTalkApp.showToastMessage(ex.getMessage());
+        }
+    }
+
     /**
      * Add a message to this <tt>Chat</tt>. Mainly use for File Transfer and System messages
      *
@@ -964,8 +989,8 @@ public class ChatPanel implements Chat, MessageListener
                 }
             }
             else if (pps.getOperationSet(OperationSetAdHocMultiUserChat.class) != null) {
-                AdHocChatRoomWrapper chatRoomWrapper = conferenceChatManager.createAdHocChatRoom
-                        (pps, chatContacts, reason);
+                AdHocChatRoomWrapper chatRoomWrapper
+                        = conferenceChatManager.createAdHocChatRoom(pps, chatContacts, reason);
                 // conferenceChatSession = new AdHocConferenceChatSession(this, chatRoomWrapper);
                 Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
                 aTalkApp.getGlobalContext().startActivity(chatIntent);
