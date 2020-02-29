@@ -186,7 +186,8 @@ public class BaseSRTPCryptoContext
 
 			case SRTPPolicy.AESCM_ENCRYPTION:
 	            // use OpenSSL if available and AES128 is in use
-	            if (OpenSSLWrapperLoader.isLoaded() && encKeyLength == 16) {
+	            if (OpenSSLWrapperLoader.isLoaded()
+						&& (encKeyLength == 16 || encKeyLength == 32)) {
 	                cipherCtr = new SRTPCipherCTROpenSSL();
 	            }
 	            else {
