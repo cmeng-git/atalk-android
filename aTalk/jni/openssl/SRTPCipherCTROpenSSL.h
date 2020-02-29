@@ -9,18 +9,18 @@ extern "C" {
 #endif
 /*
  * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
- * Method:    AES128CTR_CTX_create
+ * Method:    AES_CTR_CTX_create
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES128CTR_1CTX_1create
+JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES_1CTR_1CTX_1create
   (JNIEnv *, jclass);
 
 /*
  * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
- * Method:    AES128CTR_CTX_destroy
+ * Method:    AES_CTR_CTX_destroy
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES128CTR_1CTX_1destroy
+JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES_1CTR_1CTX_1destroy
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -37,6 +37,22 @@ JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCiphe
  * Signature: (J[B[BII)Z
  */
 JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES128CTR_1CTX_1process
+  (JNIEnv *, jclass, jlong, jbyteArray, jbyteArray, jint, jint);
+
+/*
+ * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
+ * Method:    AES256CTR_CTX_init
+ * Signature: (J[B)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES256CTR_1CTX_1init
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
+ * Method:    AES256CTR_CTX_process
+ * Signature: (J[B[BII)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES256CTR_1CTX_1process
   (JNIEnv *, jclass, jlong, jbyteArray, jbyteArray, jint, jint);
 
 #ifdef __cplusplus
