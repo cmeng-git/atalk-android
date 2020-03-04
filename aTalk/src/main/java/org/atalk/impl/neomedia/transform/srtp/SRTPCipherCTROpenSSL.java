@@ -30,16 +30,20 @@ public class SRTPCipherCTROpenSSL extends SRTPCipherCTR
     private static native boolean AES128CTR_CTX_process(long ctx, byte[] iv,
             byte[] inOut, int offset, int len);
 
+    private static native boolean AES192CTR_CTX_init(long ctx, byte[] key);
+
+    private static native boolean AES192CTR_CTX_process(long ctx, byte[] iv,
+                                                        byte[] inOut, int offset, int len);
+
     private static native boolean AES256CTR_CTX_init(long ctx, byte[] key);
 
     private static native boolean AES256CTR_CTX_process(long ctx, byte[] iv,
                                                         byte[] inOut, int offset, int len);
 
-
     private int key_length = -1;
 
     /**
-     * the OpenSSL AES128CTR / AES256 context
+     * the OpenSSL AES128CTR / AES192 / AES256 context
      */
     private long ctx = 0;
 
@@ -65,12 +69,18 @@ public class SRTPCipherCTROpenSSL extends SRTPCipherCTR
                     throw new RuntimeException("AES128CTR_CTX_init");
                 break;
 
+            case 24:
+                if (!AES192CTR_CTX_init(ctx, key))
+                    throw new RuntimeException("AES256CTR_CTX_init");
+                break;
+
             case 32:
                 if (!AES256CTR_CTX_init(ctx, key))
                     throw new RuntimeException("AES256CTR_CTX_init");
                 break;
+
             default:
-                throw new IllegalArgumentException("Only AES128 and AES256 is supported");
+                throw new IllegalArgumentException("Only AES128, AES192 and AES256 is supported");
         }
 
         key_length = key.length;
@@ -110,13 +120,18 @@ public class SRTPCipherCTROpenSSL extends SRTPCipherCTR
                     throw new RuntimeException("AES128CTR_CTX_process");
                 break;
 
+            case 24:
+                if (!AES192CTR_CTX_process(ctx, iv, data, off, len))
+                    throw new RuntimeException("AES192CTR_CTX_process");
+                break;
+
             case 32:
                 if (!AES256CTR_CTX_process(ctx, iv, data, off, len))
                     throw new RuntimeException("AES256CTR_CTX_process");
                 break;
 
             default:
-                throw new IllegalArgumentException("Only AES128 and AES256 is supported");
+                throw new IllegalArgumentException("Only AES128, AES192 and AES256 is supported");
         }
     }
 }

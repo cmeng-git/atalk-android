@@ -108,6 +108,60 @@ exit:
 
 /*
  * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
+ * Method:    AES192CTR_CTX_init
+ * Signature: (J[B)Z
+ */
+JNIEXPORT jboolean JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES192CTR_1CTX_1init
+  (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray key)
+{
+    unsigned char key_[24];
+    (*env)->GetByteArrayRegion(env, key, 0, 24, key_);
+    return EVP_CipherInit_ex((EVP_CIPHER_CTX *) (intptr_t) ctx, EVP_aes_192_ctr(), NULL, key_, NULL, 1);
+}
+
+/*
+ * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
+ * Method:    AES192CTR_CTX_process
+ * Signature: (J[B[BII)Z
+ */
+JNIEXPORT jboolean JNICALL
+Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES192CTR_1CTX_1process
+  (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray iv, jbyteArray inOut, jint offset, jint len)
+{
+    int ok = 0;
+    unsigned char iv_[16];
+    (*env)->GetByteArrayRegion(env, iv, 0, 16, iv_);
+    jbyte *inOut_;
+    inOut_ = (*env)->GetPrimitiveArrayCritical(env, inOut, NULL);
+    if (!inOut)
+        goto exit;
+
+    ok = EVP_CipherInit_ex(
+                (EVP_CIPHER_CTX *) (intptr_t) ctx,
+                NULL,
+                NULL,
+                NULL,
+                iv_,
+                -1);
+    if(ok == 0)
+        goto exit;
+
+    int len_ = len;
+    ok = EVP_CipherUpdate(
+                (EVP_CIPHER_CTX *) (intptr_t) ctx,
+                (unsigned char *) (inOut_ + offset), &len_,
+                (unsigned char *) (inOut_ + offset), len);
+
+exit:
+    if (inOut_)
+        (*env)->ReleasePrimitiveArrayCritical(env, inOut, inOut_, 0);
+
+    return ok;
+}
+
+/*
+ * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
  * Method:    AES256CTR_CTX_init
  * Signature: (J[B)Z
  */

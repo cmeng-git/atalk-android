@@ -47,6 +47,10 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
         super(SrtpControlType.SDES);
 
         {
+            enabledCryptoSuites.add(SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80);
+            enabledCryptoSuites.add(SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_32);
+            enabledCryptoSuites.add(SrtpCryptoSuite.AES_192_CM_HMAC_SHA1_80);
+            enabledCryptoSuites.add(SrtpCryptoSuite.AES_192_CM_HMAC_SHA1_32);
             enabledCryptoSuites.add(SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_80);
             enabledCryptoSuites.add(SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_32);
             enabledCryptoSuites.add(SrtpCryptoSuite.F8_128_HMAC_SHA1_80);
@@ -202,7 +206,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
     {
         enabledCryptoSuites.clear();
         for (String c : ciphers)
-            enabledCryptoSuites.add(c);
+            enabledCryptoSuites.add(c.trim());
     }
 
     public void start(MediaType mediaType)
