@@ -61,6 +61,17 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
     private static final String PREF_KEY_SEC_SAVP_OPTION = aTalkApp.getResString(R.string.pref_key_enc_savp_option);
 
+    private static final String[] cryptoSuiteEntries = {
+            SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80,
+            SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_32,
+            SrtpCryptoSuite.AES_192_CM_HMAC_SHA1_80,
+            SrtpCryptoSuite.AES_192_CM_HMAC_SHA1_32,
+            SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_80,
+            SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_32,
+            SrtpCryptoSuite.F8_128_HMAC_SHA1_80
+    };
+
+
     /**
      * Fragment implementing {@link Preference} support in this activity.
      */
@@ -177,17 +188,13 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
             MultiSelectListPreference cipherList = (MultiSelectListPreference) findPreference(PREF_KEY_SEC_CIPHER_SUITES);
 
-            String[] entries = new String[3];
-            entries[0] = SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_80;
-            entries[1] = SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_32;
-            entries[2] = SrtpCryptoSuite.F8_128_HMAC_SHA1_80;
-            cipherList.setEntries(entries);
-            cipherList.setEntryValues(entries);
+            cipherList.setEntries(cryptoSuiteEntries);
+            cipherList.setEntryValues(cryptoSuiteEntries);
 
             Set<String> selected;
             selected = new HashSet<>();
             if (ciphers != null) {
-                for (String entry : entries) {
+                for (String entry : cryptoSuiteEntries) {
                     if (ciphers.contains(entry))
                         selected.add(entry);
                 }
@@ -321,14 +328,25 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
          */
         private String getCipherSuitesSummary(MultiSelectListPreference ml)
         {
-            Object[] selected = ml.getValues().toArray();
+            Set<String> selected = ml.getValues();
+
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < selected.length; i++) {
-                sb.append(selected[i]);
-                if (i != selected.length - 1)
-                    sb.append(", ");
+
+            boolean firstElem = true;
+            for (String entry : cryptoSuiteEntries) {
+                if (selected.contains(entry))
+                {
+                    if (firstElem) {
+                        sb.append(entry);
+                        firstElem = false;
+                    } else {
+                        sb.append(", ");
+                        sb.append(entry);
+                    }
+                }
             }
-            if (selected.length == 0)
+
+            if (selected.isEmpty())
                 sb.append(aTalkApp.getResString(R.string.service_gui_LIST_NONE));
             return sb.toString();
         }

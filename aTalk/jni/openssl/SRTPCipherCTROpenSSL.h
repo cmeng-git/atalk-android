@@ -41,6 +41,22 @@ JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCiphe
 
 /*
  * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
+ * Method:    AES192CTR_CTX_init
+ * Signature: (J[B)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES192CTR_1CTX_1init
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
+ * Method:    AES192CTR_CTX_process
+ * Signature: (J[B[BII)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL_AES192CTR_1CTX_1process
+  (JNIEnv *, jclass, jlong, jbyteArray, jbyteArray, jint, jint);
+
+/*
+ * Class:     org_atalk_impl_neomedia_transform_srtp_SRTPCipherCTROpenSSL
  * Method:    AES256CTR_CTX_init
  * Signature: (J[B)Z
  */
