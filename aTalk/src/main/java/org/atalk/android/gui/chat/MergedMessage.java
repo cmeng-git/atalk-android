@@ -61,18 +61,18 @@ public class MergedMessage implements ChatMessage
      * {@inheritDoc}
      */
     @Override
-    public String getContactName()
+    public String getSender()
     {
-        return rootMessage.getContactName();
+        return rootMessage.getSender();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getContactDisplayName()
+    public String getSenderName()
     {
-        return rootMessage.getContactDisplayName();
+        return rootMessage.getSenderName();
     }
 
     /**

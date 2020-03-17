@@ -30,18 +30,19 @@ public class MyGlideApp extends AppGlideModule
 
         Context ctx = aTalkApp.getGlobalContext();
         if (FileBackend.isMediaFile(file)) {
-            // History file image view is only a small preview
+            // History file image view is only a small preview (192 px max height)
             if (isHistory) {
                 GlideApp.with(ctx)
                         .load(file)
-                        .centerCrop()
+                        .override(640, 192)
                         .placeholder(R.drawable.ic_file_open)
                         .into(viewHolder);
             }
-            // sent or received file will be full image
+            // sent or received file will be large image
             else {
                 GlideApp.with(ctx)
                         .load(file)
+                        .override(1280, 608)
                         .error(R.drawable.ic_file_open)
                         .into(viewHolder);
             }

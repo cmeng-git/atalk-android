@@ -270,7 +270,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID());
                 }
             }
-            if (chatPanel != null) {
+            if ((chatPanel != null) && (replyText != null)) {
                 Timber.d("Popup action reply message to: %s %s", tag, replyText);
                 chatPanel.sendMessage(replyText.toString(), IMessage.ENCODE_PLAIN);
             }

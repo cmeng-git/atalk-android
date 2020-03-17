@@ -26,7 +26,7 @@
         android:layout_width="7dp"
         android:layout_height="fill_parent"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/chatseparator" />
+        android:background="@drawable/chat_separator" />
 
     <ImageView
         android:id="@+id/groupIndicatorView"

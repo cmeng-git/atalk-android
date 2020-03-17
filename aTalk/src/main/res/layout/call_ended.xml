@@ -27,7 +27,7 @@
                 android:contentDescription="@string/service_gui_CALL"
                 android:paddingBottom="@dimen/between_padding"
                 android:scaleType="fitXY"
-                android:src="@drawable/personphoto" />
+                android:src="@drawable/person_photo" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"

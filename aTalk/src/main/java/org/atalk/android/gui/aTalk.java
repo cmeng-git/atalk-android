@@ -107,6 +107,10 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        // Must use aTalk context
+        aTalkApp.setLanguage(mContext);
+
         // Checks if OSGi has been started and if not starts LauncherActivity which will restore this Activity from its Intent.
         if (postRestoreIntent()) {
             return;
@@ -128,12 +132,16 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         handleIntent(getIntent(), savedInstanceState);
         
-        // Migrate aTalk to new directory structure 2.1.4 (12/18/2019) - may be removed in future release
+        // Migrate aTalk to new directory structure 2.1.4 (2019/12/18) - may be removed in future release
         MigrateDir.aTalkDirMigrate();
+
+        // Purge obsoleted aTalk avatarcache directory and contents 2.2.0 (2020/03/13)
+        // may be removed in future release
+        MigrateDir.purgeAvatarCache();
 
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
         runOnUiThread(() -> new Handler().postDelayed(() -> {
-            ChangeLog cl = new ChangeLog(aTalk.this);
+            ChangeLog cl = new ChangeLog(mContext);
             if (cl.isFirstRun() && !isFinishing()) {
                 cl.getLogDialog().show();
             }
@@ -185,7 +193,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     protected void onResume()
     {
         super.onResume();
-        // Re-init aTalk to refresh the newly selected language
+
+        // Re-init aTalk to refresh the newly user selected language and theme
         if (mPrefChange) {
             mPrefChange = false;
             finish();
@@ -272,7 +281,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         private MainPagerAdapter(FragmentManager fm)
         {
             // Must use BEHAVIOR_SET_USER_VISIBLE_HINT to see conference list on first slide to conference view
-            super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT);
+            // super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT); not valid anymore after change to BaseChatRoomListAdapter
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @NotNull

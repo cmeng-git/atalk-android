@@ -558,7 +558,7 @@
     <string name="service_gui_SEND_LOGS_TITLE">aTalk Fehlerbericht per E-Mail</string>
     <string name="service_gui_SEND_LOGS_INFO">Die folgenden Informationen können dem Entwickler dabei helfen, das Problem zu beheben:\n\n
          1. Was haben Sie zuletzt getan, bevor das Problem aufgetreten ist?\n\n\n
-         2. Was war das Problem, das Sie sehen?\n\n\n
+         2. Was war das Problem, das Sie sehen, fügen Sie einen Schnappschuss der Anzeige hinzu, falls verfügbar?\n\n\n
          3. Können Sie oder wie Sie das Problem reproduzieren?</string>
 
     <string name="service_gui_SEND_MESSAGE">Sende eine Nachricht</string>
@@ -861,7 +861,7 @@
     <string name="plugin_notificationconfig_vibration">Vibration</string>
     <string name="plugin_notificationconfig_sound_file">Audiodatei:</string>
 
-    <!-- call recordingconfig -->
+    <!-- call recording config -->
     <string name="plugin_callrecordingconfig_CALL_SAVED">Anruf erfolgreich gespeichert</string>
     <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Speichern unter: %1$s</string>
 
@@ -1267,6 +1267,9 @@
     <!-- Popup notifications type -->
     <string name="service_gui_settings_auto_update_check_status">Auf Softwareupdates automatisch prüfen</string>
     <string name="service_gui_settings_POPUP_HANDLER">Popup-Benachrichtigungen einblenden</string>
+
+    <string name="pref_headsup_notifications">Benachrichtigungsvorschau</string>
+    <string name="pref_headsup_notifications_summary">Zeige Benachrichtigungsvorschau am oberen Bildschirmrand an</string>
 
     <!-- Status bar notifications handler -->
     <string name="impl_popup_auto">Automatisch</string>

@@ -197,7 +197,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
             // Save scroll position
             scrollPosition = contactListView.getFirstVisiblePosition();
             View itemView = contactListView.getChildAt(0);
-            scrollTopPosition = itemView == null ? 0 : itemView.getTop();
+            scrollTopPosition = (itemView == null)? 0 : itemView.getTop();
 
             // Dispose of group expand memory
             if (listExpandHandler != null) {

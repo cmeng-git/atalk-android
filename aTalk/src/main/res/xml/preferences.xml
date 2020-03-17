@@ -34,13 +34,13 @@
             android:persistent="false"
             android:title="@string/service_gui_settings_LOCALE" />
 
-        <!--ListPreference
+        <ListPreference
             android:persistent="false"
-            android:key="pref_key_theme"
+            android:key="@string/pref_key_theme"
             android:title="@string/settings_theme_label"
             android:entries="@array/settings_theme_entries"
             android:entryValues="@array/settings_theme_values"
-            android:dialogTitle="@string/settings_theme_label" /-->
+            android:dialogTitle="@string/settings_theme_label" />
     </PreferenceCategory>
 
     <!-- Chat Security Settings -->
@@ -217,7 +217,7 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="notification_headsup"
+            android:key="@string/pref_key_heads_up_enable"
             android:summary="@string/pref_headsup_notifications_summary"
             android:title="@string/pref_headsup_notifications" />
 
@@ -314,10 +314,12 @@
 
                 <EditTextPreference
                     android:inputType="number"
+                    android:dialogMessage="\n"
                     android:key="@string/pref_key_video_max_bandwidth"
                     android:title="@string/service_gui_settings_VIDEO_MAX_BANDWIDTH" />
                 <EditTextPreference
                     android:inputType="number"
+                    android:dialogMessage="\n"
                     android:key="@string/pref_key_video_bitrate"
                     android:title="@string/service_gui_settings_VIDEO_BITRATE" />
 

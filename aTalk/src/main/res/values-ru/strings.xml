@@ -562,7 +562,7 @@
     <string name="service_gui_SEND_LOGS_TITLE">отчет об ошибках aTalk по электронной почте</string>
     <string name="service_gui_SEND_LOGS_INFO">Приведенная ниже информация может помочь разработчику решить проблему:\n\n
          1. Что было последним, что вы сделали, прежде чем возникла проблема?\n\n\n
-         2. Какую проблему вы видите?\n\n\n
+         2. В чем была проблема, которую вы видите, включая снимок экрана, если он доступен?\n\n\n
          3. Можно или как воспроизвести проблему?</string>
 
     <string name="service_gui_SEND_MESSAGE">Отправить сообщение</string>
@@ -870,7 +870,7 @@
     <string name="plugin_notificationconfig_vibration">Вибрация</string>
     <string name="plugin_notificationconfig_sound_file">Звуковой файл:</string>
 
-    <!-- call recordingconfig -->
+    <!-- call recording config -->
 	<string name="plugin_callrecordingconfig_CALL_SAVED">Вызов успешно сохранен</string>
     <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Сохранить в: %1$s</string>
 
@@ -1288,6 +1288,9 @@
     <!-- Popup notifications type -->
     <string name="service_gui_settings_auto_update_check_status">Включить проверку обновлений автоматического SW</string>
     <string name="service_gui_settings_POPUP_HANDLER">Тип всплывающих уведомлений</string>
+
+    <string name="pref_headsup_notifications">Экранные уведомления</string>
+    <string name="pref_headsup_notifications_summary">Показывать экранные уведомления</string>
 
     <!-- Status bar notifications handler -->
     <string name="impl_popup_auto">Авто</string>

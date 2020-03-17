@@ -23,7 +23,7 @@
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](https://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
 * SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
-* Use of SASL External with Certificate for client authentication and login
+* Use of the SASL EXTERNAL mechanism with PKIX certificates for client-server authentication and login
 * OMEMO encryption in multi-user-chat session, give users' maximum privacy and security
 * OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
 * Support http file upload for file sharing with offline contact and members in conference room
@@ -51,10 +51,10 @@ aTalk is an xmpp client designed for android and supports the following features
 * Built-in demo for GPS-Location features
 * Integrated photo editor with zooming and cropping, user can update the avatar with ease
 * Last message correction, message carbons and offline messages (OMEMO)
-* Mobile network ping interval self-tune optimization support
+* Stream Management and mobile network ping interval self-tune optimization support
 * In-Band Registration with captcha option support
 * Multiple accounts creation
-* Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish). 
+* Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish).
 
 ## XMPP Standards Implemented
 
@@ -145,6 +145,7 @@ Libraries used in this project:
 * [libphonenumber](https://github.com/googlei18n/libphonenumber)
 * [libvpx](https://github.com/webmproject/libvpx)
 * [miniDNS](https://github.com/MiniDNS/minidns)
+* [Noembed](https://noembed.com/)
 * [otr4j](https://github.com/jitsi/otr4j)
 * [opensles](https://github.com/openssl/openssl )
 * [osgi.core](http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0)

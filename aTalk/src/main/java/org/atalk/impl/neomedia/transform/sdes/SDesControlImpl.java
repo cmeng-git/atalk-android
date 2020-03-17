@@ -20,6 +20,7 @@ import ch.imvs.sdes4j.srtp.*;
  *
  * @author Ingo Bauersachs
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> implements SDesControl
 {

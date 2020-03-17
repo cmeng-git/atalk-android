@@ -49,9 +49,9 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     private boolean mStickerMode;
     private FileHistoryServiceImpl mFHS;
 
-    private FileSendConversation(ChatFragment cPanel)
+    private FileSendConversation(ChatFragment cPanel, String dir)
     {
-        super(cPanel);
+        super(cPanel, dir);
     }
 
     /**
@@ -66,7 +66,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     public static FileSendConversation newInstance(ChatFragment cPanel, String msgUuid, String sendTo,
             final String fileName, boolean stickerMode)
     {
-        FileSendConversation fragmentSFC = new FileSendConversation(cPanel);
+        FileSendConversation fragmentSFC = new FileSendConversation(cPanel, FileRecord.OUT);
         fragmentSFC.msgUuid = msgUuid;
         fragmentSFC.mSendTo = sendTo;
         fragmentSFC.mXferFile = new File(fileName);
@@ -84,7 +84,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
 
         updateFileViewInfo(mXferFile, false);
-        messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowout);
+        // messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_out);
         messageViewHolder.timeView.setText(mDate);
         messageViewHolder.fileStatus.setText(aTalkApp.getResString(R.string.xFile_FILE_WAITING_TO_ACCEPT, mSendTo));
 

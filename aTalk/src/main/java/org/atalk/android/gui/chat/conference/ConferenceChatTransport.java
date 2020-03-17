@@ -381,7 +381,7 @@ public class ConferenceChatTransport implements ChatTransport
             try {
                 chatRoom.invite(contactAddress, reason);
             } catch (SmackException.NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
+                Timber.w("Invite chat contact exception: %s", e.getMessage());
             }
     }
 

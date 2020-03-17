@@ -54,6 +54,12 @@ public class ViewUtil
         tv.setTextColor(aTalkApp.getAppResources().getColor(color));
     }
 
+    public static void setTextViewAlpha(View container, int id, float alpha)
+    {
+        TextView tv = container.findViewById(id);
+        tv.setAlpha(alpha);
+    }
+
     public static String getTextViewValue(View container, int id)
     {
         return toString(container.findViewById(id));

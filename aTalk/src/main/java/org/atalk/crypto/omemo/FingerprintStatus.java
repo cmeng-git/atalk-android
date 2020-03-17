@@ -66,8 +66,8 @@ public class FingerprintStatus implements Comparable<FingerprintStatus>
     public static FingerprintStatus fromCursor(Cursor cursor) {
         final FingerprintStatus status = new FingerprintStatus();
         try {
-            int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             BareJid bareJid = JidCreate.bareFrom(cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.BARE_JID)));
+            int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             status.mDevice = new OmemoDevice(bareJid, deviceId);
         }
         catch (XmppStringprepException e) {

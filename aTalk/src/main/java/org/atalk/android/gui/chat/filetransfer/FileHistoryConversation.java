@@ -40,14 +40,14 @@ public class FileHistoryConversation extends FileTransferConversation
     private FileRecord fileRecord;
     private ChatMessage chatMessage;
 
-    private FileHistoryConversation(ChatFragment cPanel)
+    private FileHistoryConversation(ChatFragment cPanel, String dir)
     {
-        super(cPanel);
+        super(cPanel, dir);
     }
 
     public static FileHistoryConversation newInstance(ChatFragment cPanel, FileRecord fileRecord, ChatMessage msg)
     {
-        FileHistoryConversation fragmentFHC = new FileHistoryConversation(cPanel);
+        FileHistoryConversation fragmentFHC = new FileHistoryConversation(cPanel, fileRecord.getDirection());
         fragmentFHC.fileRecord = fileRecord;
         fragmentFHC.chatMessage = msg;
         return fragmentFHC;
@@ -69,10 +69,10 @@ public class FileHistoryConversation extends FileTransferConversation
         String entityJid = fileRecord.getJidAddress();
         String dir = fileRecord.getDirection();
 
-        if (FileRecord.IN.equals(dir))
-            messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowin);
-        else
-            messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowout);
+        // if (FileRecord.IN.equals(dir))
+        //     messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_in);
+        // else
+        //     messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_out);
 
         File filePath = fileRecord.getFile();
         int status = fileRecord.getStatus();

@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.*;
 
+import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
@@ -47,9 +48,9 @@ public class FileReceiveConversation extends FileTransferConversation
     private String mDate;
     private String mSendTo;
 
-    private FileReceiveConversation(ChatFragment cPanel)
+    private FileReceiveConversation(ChatFragment cPanel, String dir)
     {
-        super(cPanel);
+        super(cPanel, dir);
     }
 
     /**
@@ -64,7 +65,7 @@ public class FileReceiveConversation extends FileTransferConversation
     public static FileReceiveConversation newInstance(ChatFragment cPanel, String sendTo,
             OperationSetFileTransfer opSet, IncomingFileTransferRequest request, final Date date)
     {
-        FileReceiveConversation fragmentRFC = new FileReceiveConversation(cPanel);
+        FileReceiveConversation fragmentRFC = new FileReceiveConversation(cPanel, FileRecord.IN);
         fragmentRFC.mSendTo = sendTo;
         fragmentRFC.fileTransferOpSet = opSet;
         fragmentRFC.fileTransferRequest = request;
@@ -80,7 +81,7 @@ public class FileReceiveConversation extends FileTransferConversation
     {
         msgViewId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
-        messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowin);
+        // messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_in);
         messageViewHolder.stickerView.setImageDrawable(null);
 
         messageViewHolder.timeView.setText(mDate);

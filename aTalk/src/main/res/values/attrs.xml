@@ -2,6 +2,12 @@
 <resources>
 
     <declare-styleable name="AppStyles">
+        <attr name="iconCertificate" format="reference" />
+        <attr name="iconCryptoNone" format="reference" />
+        <attr name="iconCryptoOmemo" format="reference" />
+        <attr name="iconCryptoOtr" format="reference" />
+        <attr name="iconFolder" format="reference" />
+
         <attr name="iconActionDelete" format="reference" />
         <attr name="iconActionMove" format="reference" />
         <attr name="iconActionCopy" format="reference" />
@@ -55,16 +61,19 @@
     <attr name="dialogTextColor" format="reference" />
 
     <!-- Attributes -->
+    <attr name="colorForeground" format="reference|color" />
+    <attr name="colorBackground" format="reference|color" />
+
+    <attr name="colorBackgroundPrimary" format="reference|color" />
+    <attr name="colorBackgroundSecondary" format="reference|color" />
+
+    <attr name="textColorPrimary" format="reference|color" />
+    <attr name="textColorSecondary" format="reference|color" />
+
     <attr name="ChatMsgHeaderMeColor" format="reference|color" />
     <attr name="ChatMsgHeaderYouColor" format="reference|color" />
     <attr name="OnlineFriends" format="reference" />
     <attr name="AllFriends" format="reference" />
-
-    <attr name="color_text_primary" format="reference|color" />
-    <attr name="color_text_secondary" format="reference|color" />
-
-    <attr name="color_background_secondary" format="reference|color" />
-    <attr name="color_background_primary" format="reference|color" />
 
     <attr name="ChatNewMessageColor" format="reference|color" />
     <attr name="ChatStoredMessageColor" format="reference|color" />

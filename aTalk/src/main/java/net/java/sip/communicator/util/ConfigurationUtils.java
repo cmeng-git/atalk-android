@@ -12,16 +12,16 @@ import android.database.sqlite.SQLiteDatabase;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.aTalkApp.Theme;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.settings.TimePreference;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.util.java.awt.Color;
@@ -29,7 +29,6 @@ import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
-import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
@@ -269,6 +268,8 @@ public class ConfigurationUtils
     private static Long quiteHoursStart = 0L;
     private static Long quiteHoursEnd = 0L;
 
+    private static boolean isHeadsUpEnable = true;
+
     /**
      * The last directory used in file transfer.
      */
@@ -443,6 +444,8 @@ public class ConfigurationUtils
     public static String pQuiteHoursStart = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
     public static String pQuiteHoursEnd = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
 
+    private static String pHeadsUpEnable = aTalkApp.getResString(R.string.pref_key_heads_up_enable);
+
     /**
      * Indicates if phone numbers should be normalized before dialed.
      */
@@ -490,10 +493,13 @@ public class ConfigurationUtils
         configService.addPropertyChangeListener(new ConfigurationChangeListener());
         mDB = DatabaseBackend.getWritableDB();
 
+        // Init the aTalk app Theme before any activity use
+        initAppTheme();
+
         // Load the UI language last selected by user or default to system language i.e. ""
         mLanguage = configService.getString(aTalkApp.getResString(R.string.pref_key_locale, ""));
-        aTalk.setATLanguage(mLanguage);
-
+        aTalkApp.setATLanguage(mLanguage);
+        
         // Load the "webPage" property.
         mWebPage = configService.getString(pWebPage);
         if (StringUtils.isNullOrEmpty(mWebPage))
@@ -810,6 +816,8 @@ public class ConfigurationUtils
         isQuiteHoursEnable = configService.getBoolean(pQuiteHoursEnable, true);
         quiteHoursStart = configService.getLong(pQuiteHoursStart, TimePreference.DEFAULT_VALUE);
         quiteHoursEnd = configService.getLong(pQuiteHoursEnd, TimePreference.DEFAULT_VALUE);
+
+        isHeadsUpEnable = configService.getBoolean(pHeadsUpEnable, true);
     }
 
     /**
@@ -1682,6 +1690,29 @@ public class ConfigurationUtils
     }
 
     /**
+     * Return TRUE if "sendChatStateNotifications" property is true, otherwise - return FALSE.
+     * Indicates to the user interface whether chat state notifications are enabled or disabled.
+     *
+     * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
+     */
+    public static boolean isHeadsUpEnable()
+    {
+        return isHeadsUpEnable;
+    }
+
+    /**
+     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param sendThumbnail {@code true} to indicate that chat state notifications are enabled,
+     * {@code false} otherwise.
+     */
+    public static void setHeadsUp(boolean headsUp)
+    {
+        isHeadsUpEnable = headsUp;
+        configService.setProperty(pHeadsUpEnable, Boolean.toString(isHeadsUpEnable));
+    }
+
+    /**
      * Returns {@code true} if a string with a alphabetical character might be considered as
      * a phone number. {@code false} otherwise.
      *
@@ -2074,28 +2105,45 @@ public class ConfigurationUtils
         configService.setProperty("gui.chat.DEFAULT_FONT_COLOR", defaultFontColor);
     }
 
-    /**
-     * Returns the current language configuration.
-     *
-     * @return the current locale
-     */
-    public static Locale getCurrentLanguage()
-    {
-        String localeId = configService.getString(ResourceManagementService.DEFAULT_LOCALE_CONFIG);
-        return (localeId != null) ? ResourceManagementServiceUtils.getLocale(localeId) : Locale.getDefault();
-    }
+      // Not use in aTalk
+//    /**
+//     * Returns the current language configuration.
+//     *
+//     * @return the current locale
+//     */
+//    public static Locale getCurrentLanguage()
+//    {
+//        String localeId = configService.getString(ResourceManagementService.DEFAULT_LOCALE_CONFIG);
+//        return (localeId != null) ? ResourceManagementServiceUtils.getLocale(localeId) : Locale.getDefault();
+//    }
+//
+//    /**
+//     * Sets the current language configuration.
+//     *
+//     * @param locale the locale to set
+//     */
+//    public static void setLanguage(Locale locale)
+//    {
+//        String language = locale.getLanguage();
+//        String country = locale.getCountry();
+//        configService.setProperty(ResourceManagementService.DEFAULT_LOCALE_CONFIG,
+//                (country.length() > 0) ? (language + '_' + country) : language);
+//    }
 
     /**
-     * Sets the current language configuration.
-     *
-     * @param locale the locale to set
+     * Initialize aTalk app Theme;default to Theme.DARK if not defined
      */
-    public static void setLanguage(Locale locale)
+    public static void initAppTheme()
     {
-        String language = locale.getLanguage();
-        String country = locale.getCountry();
-        configService.setProperty(ResourceManagementService.DEFAULT_LOCALE_CONFIG,
-                (country.length() > 0) ? (language + '_' + country) : language);
+        Theme theme;
+        int themeValue = configService.getInt(SettingsActivity.P_KEY_THEME, Theme.DARK.ordinal());
+        if (themeValue == Theme.DARK.ordinal() || themeValue == android.R.style.Theme) {
+            theme = Theme.DARK;
+        }
+        else {
+            theme = Theme.LIGHT;
+        }
+        aTalkApp.setAppTheme(theme);
     }
 
     /**

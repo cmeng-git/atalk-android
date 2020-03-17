@@ -54,7 +54,6 @@ public class ChatStateNotificationEvent extends EventObject
         super(chatDescriptor);
         this.mChatState = state;
         this.message = msg;
-
     }
 
     /**
@@ -96,7 +95,6 @@ public class ChatStateNotificationEvent extends EventObject
                 ? ((Contact) chatDescriptor).getAddress()
                 : ((ChatRoom) chatDescriptor).getName();
 
-        return "ChatStateNotificationEvent[from = " + from +
-                "; state = " + getChatState();
+        return "ChatStateNotificationEvent[from = " + from + "; state = " + getChatState();
     }
 }

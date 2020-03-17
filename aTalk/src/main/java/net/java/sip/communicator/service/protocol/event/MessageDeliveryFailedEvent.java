@@ -81,6 +81,8 @@ public class MessageDeliveryFailedEvent extends EventObject
 
     public static final int NOT_ACCEPTABLE = 9;
 
+    public static final int SYSTEM_ERROR_MESSAGE = 10;
+
     /**
      * An error code indicating the reason for the failure of this delivery.
      */

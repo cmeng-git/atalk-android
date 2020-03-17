@@ -30,6 +30,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.ImageView.ScaleType;
 import android.widget.*;
 
+import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -136,6 +137,8 @@ public abstract class FileTransferConversation extends OSGiFragment
     private boolean isMediaAudio = false;
     private String mimeType = null;
 
+    private final String mDir;
+
     private boolean isSeeking = false;
     private int positionSeek;
 
@@ -171,10 +174,11 @@ public abstract class FileTransferConversation extends OSGiFragment
 
     private final Vector<UploadProgressListener> uploadProgressListeners = new Vector<>();
 
-    protected FileTransferConversation(ChatFragment cPanel)
+    protected FileTransferConversation(ChatFragment cPanel, String dir)
     {
         mChatFragment = cPanel;
         mChatActivity = (ChatActivity) cPanel.getActivity();
+        mDir = dir;
     }
 
     protected View inflateViewForFileTransfer(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
@@ -184,10 +188,13 @@ public abstract class FileTransferConversation extends OSGiFragment
         View convertView = null;
 
         if (init) {
-            convertView = inflater.inflate(R.layout.chat_file_transfer_row, container, false);
+            if (FileRecord.IN.equals(mDir))
+                convertView = inflater.inflate(R.layout.chat_file_transfer_in_row, container, false);
+            else
+                convertView = inflater.inflate(R.layout.chat_file_transfer_out_row, container, false);
 
             messageViewHolder.fileIcon = convertView.findViewById(R.id.button_file);
-            messageViewHolder.arrowDir = convertView.findViewById(R.id.filexferArrowView);
+            // messageViewHolder.arrowDir = convertView.findViewById(R.id.filexferArrowView);
             messageViewHolder.stickerView = convertView.findViewById(R.id.sticker);
 
             messageViewHolder.playerView = convertView.findViewById(R.id.playerView);

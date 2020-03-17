@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/screen_padding"
-    android:background="@color/theme_background">
+    android:padding="@dimen/screen_padding">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -34,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/service_gui_ERROR"
-                    android:textColor="?attr/color_text_primary"
+                    android:textColor="?attr/textColorPrimary"
                     android:textSize="?attr/TextSizeHeadline"
                     android:textStyle="bold" />
 
@@ -43,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:textColor="?attr/color_text_primary"
+                    android:textColor="?attr/textColorPrimary"
                     android:textSize="?attr/TextSizeBody" />
             </LinearLayout>
 
@@ -64,7 +63,7 @@
                     android:id="@+id/own_keys_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/color_text_primary"
+                    android:textColor="?attr/textColorPrimary"
                     android:textSize="?attr/TextSizeHeadline"
                     android:textStyle="bold" />
 

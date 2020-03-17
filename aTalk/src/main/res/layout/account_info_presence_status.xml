@@ -41,23 +41,20 @@
             android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/personphoto" />
+            android:src="@drawable/person_photo" />
 
         <Spinner
             android:id="@+id/presenceStatusSpinner"
-            android:layout_width="fill_parent"
+            style="@style/SpinnerItem.DropDownItem"
             android:layout_height="32dp"
             android:layout_alignEnd="@+id/statusMessage"
             android:layout_alignTop="@+id/accountAvatar"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_toEndOf="@+id/accountAvatar"
-            android:spinnerMode="dropdown" />
+            android:layout_toEndOf="@+id/accountAvatar" />
 
         <EditText
             android:id="@+id/statusMessage"
             style="@style/MediumFont"
-            android:layout_width="@dimen/status_screen_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/accountAvatar"
             android:layout_below="@+id/presenceStatusSpinner"

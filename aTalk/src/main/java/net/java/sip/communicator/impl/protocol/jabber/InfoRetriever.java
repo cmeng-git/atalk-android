@@ -140,7 +140,7 @@ public class InfoRetriever
         // Set the timeout to wait before considering vCard has time out - too long field ANR - use default instead
         // connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
-        Timber.i("Start loading VCard information for: %s", bareJid);
+        Timber.d("Start loading VCard information for: %s", bareJid);
         VCardAvatarManager vCardAvatarManager = VCardAvatarManager.getInstanceFor(connection);
         VCard card = vCardAvatarManager.downloadVCard(bareJid);
 

@@ -18,6 +18,7 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.systray.PopupMessage;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -275,7 +276,7 @@ public class AndroidPopup
     {
         NotificationCompat.Builder builder;
         // Do not show head-up notification when user has put the id notification in snooze
-        if (isSnooze(nId)) {
+        if (isSnooze(nId) || !ConfigurationUtils.isHeadsUpEnable()) {
             builder = new NotificationCompat.Builder(mContext, AndroidNotifications.SILENT_GROUP);
         } else {
             builder = new NotificationCompat.Builder(mContext, group);
@@ -425,7 +426,7 @@ public class AndroidPopup
      * @return true if the group is MESSAGE_GROUP
      */
     public boolean isHeadUpNotificationAllow() {
-        return AndroidNotifications.MESSAGE_GROUP.equals(group);
+        return ConfigurationUtils.isHeadsUpEnable() && AndroidNotifications.MESSAGE_GROUP.equals(group);
     }
 
     /**

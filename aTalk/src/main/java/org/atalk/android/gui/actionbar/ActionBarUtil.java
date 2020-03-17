@@ -32,7 +32,6 @@ public class ActionBarUtil
      * The avatar drawable for display on ActionBar
      */
     private static LayerDrawable avatarDrawable;
-    private static String LAST_SEEN = ":";
 
     /**
      * Sets the action bar title for the given activity.
@@ -116,7 +115,9 @@ public class ActionBarUtil
         // cmeng: always clear old avatar picture when pager scroll to different chat fragment
         // and invalidate Drawable for scrolled page to update Logo properly
         avatarDrawable = getDefaultAvatarDrawable(activity);
-        avatarDrawable.invalidateDrawable(avatarDrawable);
+
+        // cmeng: 20200312: seems no necessary anymore? so disable it seems ok now
+        // avatarDrawable.invalidateDrawable(avatarDrawable);
 
         BitmapDrawable avatarBmp = null;
         if (avatar != null) {
@@ -140,7 +141,8 @@ public class ActionBarUtil
         }
     }
 
-    public static void setAvatar(Activity activity, @DrawableRes int resId) {
+    public static void setAvatar(Activity activity, @DrawableRes int resId)
+    {
         ActionBar actionBar = activity.getActionBar();
         if (actionBar != null) {
             actionBar.setLogo(resId);

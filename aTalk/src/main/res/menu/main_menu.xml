@@ -31,7 +31,7 @@
         android:title="@string/service_gui_CHATROOM_BOOKMARK_TITLE" />
     <item
         android:id="@+id/add_contact"
-        android:icon="@drawable/addcontact_dark"
+        android:icon="@drawable/add_contact_dark"
         android:title="@string/service_gui_ADD_CONTACT" />
     <item
         android:id="@+id/main_settings"

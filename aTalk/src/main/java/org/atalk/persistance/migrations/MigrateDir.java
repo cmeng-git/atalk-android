@@ -25,15 +25,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.service.contactlist.MetaContact;
+
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.persistance.FileBackend;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import androidx.core.content.ContextCompat;
 import timber.log.Timber;
@@ -141,4 +147,57 @@ public class MigrateDir
             aTalkApp.shutdownApplication();
         }
     }
+
+     // ============ for aTalk v2.2.0 and below ============
+    /**
+     * Remove obsoleted AvatarCacheUtils avatars stored directory and its contents.
+     */
+    public static void purgeAvatarCache()
+    {
+        File avatarCacheDir = new File(aTalkApp.getGlobalContext().getFilesDir() + "/avatarcache");
+        if (avatarCacheDir.exists()) {
+            try {
+                FileBackend.deleteRecursive(avatarCacheDir);
+            } catch (IOException e) {
+                Timber.e("Failed to purge aTalk avatarCache directory: %s", e.getMessage());
+            }
+        }
+    }
+
+//    /**
+//     * cmeng 20200314: currently not use
+//     * Fill up all the Outgoing messages' Jid
+//     */
+//    public static void updateSessionMessageJid() {
+//        Map<String, String> sessionTable = new LinkedHashMap<>();
+//        String sessionUuid, userId;
+//
+//        SQLiteDatabase mDB = DatabaseBackend.getWritableDB();
+//        ContentValues values = new ContentValues();
+//        String[] columns = {ChatSession.SESSION_UUID, ChatSession.ACCOUNT_UUID};
+//
+//        Cursor cursor = mDB.query(ChatSession.TABLE_NAME, columns, null, null, null, null, null);
+//        while (cursor.moveToNext()) {
+//            sessionUuid = cursor.getString(0);
+//            userId = cursor.getString(0).split(":")[1];
+//            sessionTable.put(sessionUuid, userId);
+//        }
+//        cursor.close();
+//
+//        String[] selectionArgs = {"0", "1", "55"};
+//        columns = new String[] {ChatMessage.SESSION_UUID, ChatMessage.TIME_STAMP};
+//        cursor = mDB.query(ChatMessage.TABLE_NAME, columns, ChatMessage.MSG_TYPE + "=? OR " + ChatMessage.MSG_TYPE
+//                        + "=? OR " + ChatMessage.MSG_TYPE + "=?", selectionArgs, ChatMessage.SESSION_UUID, null, null);
+//        while (cursor.moveToNext()) {
+//            sessionUuid = cursor.getString(0);
+//            userId = sessionTable.get(sessionUuid);
+//            if (!TextUtils.isEmpty(userId)) {
+//                values.clear();
+//                values.put(ChatMessage.JID, userId);
+//                String[] args = {sessionUuid};
+//                mDB.update(ChatMessage.TABLE_NAME, values, ChatMessage.SESSION_UUID + "=?", args);
+//            }
+//        }
+//        cursor.close();
+//    }
 }

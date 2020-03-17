@@ -53,8 +53,7 @@
         android:icon="@drawable/ic_logo"
         android:label="@string/APPLICATION_NAME"
         android:logo="@drawable/ic_notification"
-        android:networkSecurityConfig="@xml/network_security_configuration"
-        android:theme="@style/Theme.App">
+        android:networkSecurityConfig="@xml/network_security_configuration" >
 
         <!-- Apache HTTP client deprecation: (no effect so far)
          https://developer.android.com/about/versions/pie/android-9.0-changes-28#apache-p
@@ -97,7 +96,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/APPLICATION_NAME"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.App.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="org.atalk.android.gui.ShutdownActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -128,7 +127,7 @@
             android:name="org.atalk.android.plugin.permissions.PermissionsActivity"
             android:label="@string/APPLICATION_NAME"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.App.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -136,8 +135,8 @@
         </activity>
         <activity
             android:name="org.atalk.android.gui.Splash"
-            android:label="@string/app_name"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!-- Account settings and sub-menu-->
         <activity
             android:name="org.atalk.android.gui.account.AccountsListActivity"
@@ -423,7 +422,7 @@
         <activity
             android:name="org.atalk.android.gui.About"
             android:label="@string/About_action"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name="org.atalk.android.gui.share.ShareActivity"

@@ -238,7 +238,8 @@ public class ShareActivity extends ExitMenuActivity
         private SharePagerAdapter(FragmentManager fm)
         {
             // Must use BEHAVIOR_SET_USER_VISIBLE_HINT to see conference list on first slide to conference view
-            super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT);
+            // super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT); not valid anymore after change to BaseChatRoomListAdapter
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @NotNull

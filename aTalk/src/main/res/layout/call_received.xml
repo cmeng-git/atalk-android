@@ -23,7 +23,7 @@
             android:contentDescription="@string/service_gui_CALL"
             android:paddingBottom="@dimen/between_padding"
             android:scaleType="fitXY"
-            android:src="@drawable/personphoto" />
+            android:src="@drawable/person_photo" />
 
         <TextView
             android:id="@+id/calleeDisplayName"
@@ -74,7 +74,7 @@
             android:contentDescription="@string/accept_call_video"
             android:focusable="true"
             android:onClick="onAnswerWithVideoClicked"
-            android:src="@drawable/acceptvideocall" />
+            android:src="@drawable/accept_video_call" />
 
         <ImageButton
             android:id="@+id/callButton"

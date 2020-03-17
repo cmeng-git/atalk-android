@@ -147,7 +147,7 @@ public class AndroidUtils
                 .setWhen(date)
                 .setSmallIcon(R.drawable.ic_notification);
 
-        nBuilder.setContentIntent(aTalkApp.getAtalkIconIntent());
+        nBuilder.setContentIntent(aTalkApp.getaTalkIconIntent());
         NotificationManager mNotificationManager
                 = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

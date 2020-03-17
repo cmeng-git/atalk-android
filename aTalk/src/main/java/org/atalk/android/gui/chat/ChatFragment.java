@@ -27,7 +27,6 @@ import android.os.*;
 import android.text.*;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.util.DisplayMetrics;
 import android.util.SparseBooleanArray;
 import android.view.*;
 import android.view.View.OnClickListener;
@@ -50,8 +49,7 @@ import org.atalk.android.gui.chat.filetransfer.*;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.share.ShareUtil;
-import org.atalk.android.gui.util.EntityListHelper;
-import org.atalk.android.gui.util.HtmlImageGetter;
+import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
@@ -295,7 +293,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // Proceed only if there is no active file transfer in progress
                 // Detects event when user scrolls to the top of the list
                 View childFirst = chatListView.getChildAt(0);
-                if ((activeFileTransfers.size() == 0) && (scrollState == 0) && childFirst != null) {
+                if ((childFirst != null) && (scrollState == 0) && (activeFileTransfers.size() == 0)) {
                     if (childFirst.getTop() == 0) {
                         // Loads some more history if there's no loading task in progress
                         if (loadHistoryTask == null) {
@@ -312,7 +310,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // Remembers scrolling position to restore after new history messages are loaded
                 scrollFirstVisible = firstVisibleItem;
                 View firstVisible = view.getChildAt(0);
-                scrollTopOffset = (firstVisible != null) ? firstVisible.getTop() : 0;
+                scrollTopOffset = (firstVisible == null)? 0 : firstVisible.getTop();
                 // Timber.d("Last scroll position: %s: %s", scrollFirstVisible, scrollTopOffset);
             }
         });
@@ -588,7 +586,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             // Position must be aligned to the number of header views included
             cPos = position - headerCount;
             int cType = chatListAdapter.getItemViewType(cPos);
-            boolean isFileRecord = (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW);
+            boolean isFileRecord = (cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
+                    || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW);
 
             // Allow max of 5 actions including the overflow icon to be shown
             if (isSingleItemSelected && !isFileRecord) {
@@ -710,7 +709,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                         sBuilder.append(chatMsg.getContentForClipboard());
                                 }
 
-                                else if (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW) {
+                                else if ((cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
+                                        || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
                                     if (chatMsg.getFileRecord() != null) {
                                         file = chatMsg.getFileRecord().getFile();
                                         if ((file != null) && file.exists()) {
@@ -746,9 +746,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             cPos = checkedList.keyAt(i) - headerCount;
                             cType = chatListAdapter.getItemViewType(cPos);
                             if ((cType == ChatListAdapter.INCOMING_MESSAGE_VIEW)
-                                    || (cType == ChatListAdapter.SYSTEM_MESSAGE_VIEW) // allow delete of system message if any
                                     || (cType == ChatListAdapter.OUTGOING_MESSAGE_VIEW)
-                                    || (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW)) {
+                                    || (cType == ChatListAdapter.SYSTEM_MESSAGE_VIEW) // allow delete of system message if any
+                                    || (cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
+                                    || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
                                 chatMsg = chatListAdapter.getMessage(cPos);
                                 if (chatMsg != null) {
                                     if (i == 0) {
@@ -767,7 +768,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                          * Include only the incoming received media or aTalk created outgoing tmp files
                                          * OR all voice file for deletion
                                          */
-                                        if (cType == ChatListAdapter.FILE_TRANSFER_MESSAGE_VIEW) {
+                                        if ((cType == ChatListAdapter.FILE_TRANSFER_IN_MESSAGE_VIEW)
+                                                || (cType == ChatListAdapter.FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
                                             int chatMsgType = chatMsg.getMessageType();
                                             boolean isSafeDel = (ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE == chatMsgType);
 
@@ -939,12 +941,17 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         /**
          * The type for Receive File message view.
          */
-        private static final int FILE_TRANSFER_MESSAGE_VIEW = 5;
+        private static final int FILE_TRANSFER_IN_MESSAGE_VIEW = 5;
+
+        /**
+         * The type for Send File message view.
+         */
+        private static final int FILE_TRANSFER_OUT_MESSAGE_VIEW = 6;
 
         /**
          * Maximum number of message view types support
          */
-        static final int VIEW_TYPE_MAX = 6;
+        static final int VIEW_TYPE_MAX = 7;
 
         /**
          * Counter used to generate row ids.
@@ -1008,7 +1015,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     MessageViewHolder viewHolder = viewHolders.get(msgIdx);
                     if (viewHolder != null) {
                         // Just update the corrected message body without refresh the whole view
-                        viewHolder.messageView.setText(msgDisplay.getBody());
+                        viewHolder.messageView.setText(msgDisplay.getBody(null));
                     }
                 }
             });
@@ -1150,7 +1157,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     if (viewHolder != null) {
                         // Need to update merged messages new receipt statuses
                         if (chatMessage instanceof MergedMessage)
-                            viewHolder.messageView.setText(message.getBody());
+                            viewHolder.messageView.setText(message.getBody(null));
                         setMessageReceiptStatus(viewHolder.msgReceiptView, receiptStatus);
                     }
                     return viewHolder;
@@ -1233,12 +1240,22 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 case ChatMessage.MESSAGE_ERROR:
                     return ERROR_MESSAGE_VIEW;
 
-                case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
                 case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
+                case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
+                    return FILE_TRANSFER_IN_MESSAGE_VIEW;
+
                 case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
                 case ChatMessage.MESSAGE_STICKER_SEND:
-                case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
-                    return FILE_TRANSFER_MESSAGE_VIEW;
+                    return FILE_TRANSFER_OUT_MESSAGE_VIEW;
+
+                case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
+                    FileRecord fileRecord = chatMessage.getFileRecord();
+                    if ((fileRecord == null) || FileRecord.IN.equals(fileRecord.getDirection())) {
+                        return FILE_TRANSFER_IN_MESSAGE_VIEW;
+                    }
+                    else {
+                        return FILE_TRANSFER_OUT_MESSAGE_VIEW;
+                    }
 
                 default: // Default others to INCOMING_MESSAGE_VIEW
                     return INCOMING_MESSAGE_VIEW;
@@ -1306,7 +1323,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             String msgUuid = chatMessage.getMessageUID();
 
             // File Transfer convertView creation
-            if (viewType == FILE_TRANSFER_MESSAGE_VIEW) {
+            if ((viewType == FILE_TRANSFER_IN_MESSAGE_VIEW)
+                    || (viewType == FILE_TRANSFER_OUT_MESSAGE_VIEW)) {
                 // Reuse convert view if available and valid
                 boolean init = false;
                 if (convertView == null) {
@@ -1335,7 +1353,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         clearMsgCache = true;
                         opSet = chatMessage.getOpSet();
                         request = chatMessage.getFTRequest();
-                        sendFrom = chatMessage.getContactName();
+                        sendFrom = chatMessage.getSender();
                         date = chatMessage.getDate();
 
                         FileReceiveConversation filexferR = (FileReceiveConversation) getFileXfer(position);
@@ -1352,7 +1370,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     case ChatMessage.MESSAGE_STICKER_SEND:
                         clearMsgCache = true;
                         fileName = chatMessage.getMessage();
-                        sendTo = chatMessage.getContactName();
+                        sendTo = chatMessage.getSender();
 
                         FileSendConversation filexferS = (FileSendConversation) getFileXfer(position);
                         if (filexferS == null) {
@@ -1368,13 +1386,14 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         clearMsgCache = (FileRecord.STATUS_ACTIVE == fileRecord.getStatus());
                         FileHistoryConversation filexferH = FileHistoryConversation.newInstance(currentChatFragment,
                                 fileRecord, chatMessage);
+                        // init = init || FileRecord.OUT.equals(fileRecord.getDirection());
                         viewTemp = filexferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
                         break;
 
                     case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
                         // Must reload msgCache from DB on chat window refresh
                         clearMsgCache = true;
-                        sendFrom = chatMessage.getContactName();
+                        sendFrom = chatMessage.getSender();
                         date = chatMessage.getDate();
                         HttpFileDownloadJabberImpl httpFileTransfer = chatMessage.getHttpFileTransfer();
                         if (httpFileTransfer == null) {
@@ -1437,9 +1456,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         || messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW
                         || messageViewHolder.viewType == CORRECTED_MESSAGE_VIEW) {
 
-                    String jid = chatMessage.getContactName();
+                    String jid = chatMessage.getSender();
                     if (messageViewHolder.viewType == INCOMING_MESSAGE_VIEW) {
-                        messageViewHolder.jidView.setText(chatMessage.getContactDisplayName() + ":");
+                        messageViewHolder.jidView.setText(chatMessage.getSenderName() + ":");
                         setEncState(messageViewHolder.encStateView, msgDisplay.getEncryption());
                     }
                     if (messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW
@@ -1463,7 +1482,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 }
 
                 // check and make link clickable if it is not an HTTP file link
-                Spannable body = (Spannable) msgDisplay.getBody();
+                Spannable body = (Spannable) msgDisplay.getBody(messageViewHolder.messageView);
 
                 // OTR system messages must use setMovementMethod to make the link clickable
                 if (messageViewHolder.viewType == SYSTEM_MESSAGE_VIEW) {
@@ -1473,7 +1492,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     // Set up link movement method i.e. make all links in TextView clickable
                     messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
                 }
-                messageViewHolder.messageView.setText(body);
+
+                // getBody() will return null if there is img src tag to be updated via async
+                if (body != null)
+                    messageViewHolder.messageView.setText(body);
 
                 // Set clicks adapter for re-edit last outgoing message OR HTTP link download support
                 messageViewHolder.messageView.setOnClickListener(msgClickAdapter);
@@ -1746,8 +1768,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             private void checkLatLng()
             {
                 String str = msg.getMessage();
-                if ((str != null) && ((getMessageType() == ChatMessage.MESSAGE_IN)
-                        || (getMessageType() == ChatMessage.MESSAGE_OUT))) {
+                int msgTye = msg.getMessageType();
+
+                if (!TextUtils.isEmpty(str) && ((msgTye == ChatMessage.MESSAGE_IN)
+                        || (msgTye == ChatMessage.MESSAGE_OUT)
+                        || (msgTye == ChatMessage.MESSAGE_MUC_IN)
+                        || (msgTye == ChatMessage.MESSAGE_MUC_OUT))) {
                     int startIndex = str.indexOf("LatLng:");
                     if (startIndex != -1) {
                         try {
@@ -1789,7 +1815,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
 
             /**
-             * Perform google street and map view playback when user longclick the show map button
+             * Perform google street and map view playback when user longClick the show map button
              *
              * @param v View
              */
@@ -1863,20 +1889,31 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
 
             /**
-             * Returns <tt>Spanned</tt> message body processed for HTML tags.
+             * Process HTML tags with image src as async task, populate the given msgView and return null;
+             * Else Returns <tt>Spanned</tt> message body processed for HTML tags.
              *
-             * @return <tt>Spanned</tt> message body.
+             * @param msgView the message view container to be populated
+             * @return <tt>Spanned</tt> message body if contains no "<img" tag.
              */
-            public Spanned getBody()
+            public Spanned getBody(TextView msgView)
             {
                 String body = msg.getMessage();
                 if ((msgBody == null) && !TextUtils.isEmpty(body)) {
                     boolean hasHtmlTag = body.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
+                    boolean hasImgSrcTag = hasHtmlTag && body.contains("<img");
 
                     // Convert to Spanned body to support text mark up display
                     // need to replace '\n' with <br/> to avoid stripped off by fromHtml()
                     body = body.replace("\n", "<br/>");
-                    msgBody = Html.fromHtml(body, imageGetter, null);
+
+                    if (hasImgSrcTag && (msgView != null)) {
+                        msgView.setText(Html.fromHtml(body, new XhtmlImageParser(msgView, body), null));
+                        // Async will update the text view, so just return null to caller.
+                        return null;
+                    }
+                    else {
+                        msgBody = Html.fromHtml(body, imageGetter, null);
+                    }
 
                     // Proceed with Linkify process if msgBody contains no HTML tags
                     if (!hasHtmlTag) {
@@ -1915,7 +1952,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
              * Update this display instance for the delivery status for both single and merged messages
              *
              * @param msgId the message Id for which the delivery status has been updated
-             * @param deliveryStatus  delivery status
+             * @param deliveryStatus delivery status
              * @return the updated ChatMessage instance
              */
 
@@ -1923,7 +1960,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             {
                 if (msg instanceof MergedMessage) {
                     msg = ((MergedMessage) msg).updateDeliveryStatus(msgId, deliveryStatus);
-                } else {
+                }
+                else {
                     ((ChatMessageImpl) msg).setReceiptStatus(deliveryStatus);
                 }
                 initDMessageStatus();
@@ -1935,7 +1973,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
              * Following parameters must be set to null for any update to the ChatMessage.
              * This is to allow rebuild for msgBody and dateStr for view holder display update
              */
-            private void initDMessageStatus() {
+            private void initDMessageStatus()
+            {
                 msgBody = null;
                 dateStr = null;
             }
@@ -1955,7 +1994,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public ImageView msgReceiptView;
         public TextView timeView;
 
-        public ImageView arrowDir = null;
+        // public ImageView arrowDir = null;
         public ImageView stickerView = null;
         public ImageButton fileIcon = null;
         public ProgressBar mProgressBar = null;
@@ -2130,19 +2169,21 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     private void setMessageReceiptStatus(ImageView receiptStatusView, int deliveryStatus)
     {
         runOnUiThread(() -> {
-            switch (deliveryStatus) {
-                case ChatMessage.MESSAGE_DELIVERY_NONE:
-                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_queued);
-                    break;
-                case ChatMessage.MESSAGE_DELIVERY_RECEIPT:
-                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_read);
-                    break;
-                case ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT:
-                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_client);
-                    break;
-                case ChatMessage.MESSAGE_DELIVERY_SERVER_SENT:
-                    receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_server);
-                    break;
+            if (receiptStatusView != null) {
+                switch (deliveryStatus) {
+                    case ChatMessage.MESSAGE_DELIVERY_NONE:
+                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_queued);
+                        break;
+                    case ChatMessage.MESSAGE_DELIVERY_RECEIPT:
+                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_read);
+                        break;
+                    case ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT:
+                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_client);
+                        break;
+                    case ChatMessage.MESSAGE_DELIVERY_SERVER_SENT:
+                        receiptStatusView.setImageResource(R.drawable.ic_msg_delivery_sent_server);
+                        break;
+                }
             }
         });
     }
@@ -2318,7 +2359,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         Integer msgPos = activeMsgTransfers.get(fileTransfer.getID());
 
         // if chatFragment is still active and msgPos not null
-        if ((chatListAdapter != null) && (msgPos != null))  {
+        if ((chatListAdapter != null) && (msgPos != null)) {
             // Send an initActive message to recipient if file transfer is initActive while in preparing
             // state. Currently protocol did not broadcast status change under this condition.
 

@@ -114,7 +114,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        mParent.setTheme(aTalkApp.getAppThemeResourceId());
         super.onCreate(savedInstanceState);
+
         setTitle(R.string.service_gui_CHATROOM_BOOKMARK_TITLE);
         this.setContentView(R.layout.chatroom_bookmarks);
 

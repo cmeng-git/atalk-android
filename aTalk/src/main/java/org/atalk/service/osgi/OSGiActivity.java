@@ -108,6 +108,8 @@ public class OSGiActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        // Always call setTheme() method before super.onCreate(savedInstanceState)
+        setTheme(aTalkApp.getAppThemeResourceId());
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();
 

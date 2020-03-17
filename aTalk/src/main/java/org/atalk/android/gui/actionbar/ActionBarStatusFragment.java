@@ -6,7 +6,7 @@
 package org.atalk.android.gui.actionbar;
 
 import android.app.ActionBar;
-import android.graphics.Typeface;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -84,7 +84,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      * The global status menu.
      */
     private GlobalStatusMenu globalStatusMenu;
-    private ActionBar actionBar;
+    private ActionBar mActionBar;
     private FragmentActivity fragmentActivity;
 
     private static GlobalDisplayDetailsService displayDetailsService;
@@ -97,20 +97,17 @@ public class ActionBarStatusFragment extends OSGiFragment
         fragmentActivity = getActivity();
 
         // Create custom ActionBar View
-        actionBar = fragmentActivity.getActionBar();
-        if (actionBar != null) {
-            actionBar.setCustomView(R.layout.action_bar);
-            actionBar.setDisplayUseLogoEnabled(true);
+        mActionBar = fragmentActivity.getActionBar();
+        if (mActionBar != null) {
+            mActionBar.setCustomView(R.layout.action_bar);
+            mActionBar.setDisplayUseLogoEnabled(true);
         }
-
-        this.globalStatusMenu = createGlobalStatusMenu();
-        TextView tv = fragmentActivity.findViewById(R.id.actionBarStatus);
-        tv.setTypeface(null, Typeface.BOLD);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-        tv.setSelected(true);
-
         loginRenderer = AndroidGUIActivator.getLoginRenderer();
         displayDetailsService = AndroidGUIActivator.getGlobalDisplayDetailsService();
+
+        globalStatusMenu = createGlobalStatusMenu();
+        TextView tv = fragmentActivity.findViewById(R.id.actionBarStatus);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 
         final RelativeLayout actionBarView = fragmentActivity.findViewById(R.id.actionBarView);
         actionBarView.setOnClickListener(v -> {
@@ -146,27 +143,27 @@ public class ActionBarStatusFragment extends OSGiFragment
      */
     private GlobalStatusMenu createGlobalStatusMenu()
     {
+        Resources res = getResources();
         ActionMenuItem ffcItem = new ActionMenuItem(FFC,
-                getResources().getString(R.string.service_gui_FFC_STATUS),
-                getResources().getDrawable(R.drawable.global_ffc));
+                res.getString(R.string.service_gui_FFC_STATUS),
+                res.getDrawable(R.drawable.global_ffc));
         ActionMenuItem onlineItem = new ActionMenuItem(ONLINE,
-                getResources().getString(R.string.service_gui_ONLINE),
-                getResources().getDrawable(R.drawable.global_online));
+                res.getString(R.string.service_gui_ONLINE),
+                res.getDrawable(R.drawable.global_online));
         ActionMenuItem offlineItem = new ActionMenuItem(OFFLINE,
-                getResources().getString(R.string.service_gui_OFFLINE),
-                getResources().getDrawable(R.drawable.global_offline));
+                res.getString(R.string.service_gui_OFFLINE),
+                res.getDrawable(R.drawable.global_offline));
         ActionMenuItem awayItem = new ActionMenuItem(AWAY,
-                getResources().getString(R.string.service_gui_AWAY_STATUS),
-                getResources().getDrawable(R.drawable.global_away));
+                res.getString(R.string.service_gui_AWAY_STATUS),
+                res.getDrawable(R.drawable.global_away));
         ActionMenuItem extendedAwayItem = new ActionMenuItem(EXTENDED_AWAY,
-                getResources().getString(R.string.service_gui_EXTENDED_AWAY_STATUS),
-                getResources().getDrawable(R.drawable.global_extended_away));
+                res.getString(R.string.service_gui_EXTENDED_AWAY_STATUS),
+                res.getDrawable(R.drawable.global_extended_away));
         ActionMenuItem dndItem = new ActionMenuItem(DND,
-                getResources().getString(R.string.service_gui_DND_STATUS),
-                getResources().getDrawable(R.drawable.global_dnd));
+                res.getString(R.string.service_gui_DND_STATUS),
+                res.getDrawable(R.drawable.global_dnd));
 
         final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(fragmentActivity);
-
         globalStatusMenu.addActionItem(ffcItem);
         globalStatusMenu.addActionItem(onlineItem);
         globalStatusMenu.addActionItem(offlineItem);
@@ -179,7 +176,7 @@ public class ActionBarStatusFragment extends OSGiFragment
         for (ProtocolProviderService pps : registeredProviders) {
             AccountID accountId = pps.getAccountID();
             String userJid = accountId.getAccountJid();
-            Drawable icon = getResources().getDrawable(R.drawable.jabber_status_online);
+            Drawable icon = res.getDrawable(R.drawable.jabber_status_online);
 
             ActionMenuItem actionItem = new ActionMenuItem(ACTION_ID++, userJid, icon);
             globalStatusMenu.addActionItem(actionItem, pps);
@@ -261,7 +258,6 @@ public class ActionBarStatusFragment extends OSGiFragment
     public void globalDisplayAvatarChanged(final GlobalAvatarChangeEvent evt)
     {
         runOnUiThread(() -> setGlobalAvatar(evt.getNewAvatar()));
-
     }
 
     /**
@@ -284,7 +280,7 @@ public class ActionBarStatusFragment extends OSGiFragment
             ActionBarUtil.setAvatar(fragmentActivity, avatar);
         }
         else {
-            actionBar.setLogo(R.drawable.ic_icon);
+            mActionBar.setLogo(R.drawable.ic_icon);
         }
     }
 

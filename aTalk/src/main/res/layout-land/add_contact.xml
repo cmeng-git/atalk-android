@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/theme_background"
     android:gravity="center">
 
     <LinearLayout
@@ -20,10 +19,8 @@
 
         <Spinner
             android:id="@+id/selectAccountSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/item_height"
-            android:layout_marginBottom="@dimen/between_padding"
-            android:background="@drawable/spinner_dark" />
+            style="@style/SpinnerView"
+            android:layout_marginBottom="@dimen/between_padding" />
 
         <TextView
             android:id="@+id/contactNameTxt"
@@ -61,11 +58,10 @@
 
             <Spinner
                 android:id="@+id/selectGroupSpinner"
+                style="@style/SpinnerView"
                 android:layout_width="280dp"
-                android:layout_height="@dimen/item_height"
                 android:layout_alignStart="@id/editContactName"
-                android:layout_below="@id/selectGroupTxt"
-                android:background="@drawable/spinner_dark" />
+                android:layout_below="@id/selectGroupTxt" />
 
             <TextView
                 android:id="@+id/displayNameText"
@@ -102,16 +98,11 @@
                 android:onClick="onCancelClicked"
                 android:text="@string/service_gui_CANCEL" />
 
-            <View
-                android:id="@+id/centerShim"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="5dp"
-                android:visibility="invisible" />
 
             <Button
                 android:id="@+id/button_add"
                 style="@style/ButtonTop"
+                android:layout_marginStart="10dp"
                 android:onClick="onAddClicked"
                 android:text="@string/service_gui_ADD" />
         </LinearLayout>

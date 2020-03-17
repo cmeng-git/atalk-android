@@ -3,8 +3,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
-    android:background="@color/theme_background"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding">
 
@@ -18,10 +16,8 @@
 
     <Spinner
         android:id="@+id/selectAccountSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:background="@drawable/spinner_dark" />
+        style="@style/SpinnerView"
+        android:layout_marginBottom="@dimen/between_padding" />
 
     <TextView
         android:id="@+id/contactNameTxt"
@@ -48,10 +44,8 @@
 
     <Spinner
         android:id="@+id/selectGroupSpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/item_height"
-        android:layout_marginBottom="@dimen/between_padding"
-        android:background="@drawable/spinner_dark" />
+        style="@style/SpinnerView"
+        android:layout_marginBottom="@dimen/between_padding" />
 
     <TextView
         android:id="@+id/displayNameText"
