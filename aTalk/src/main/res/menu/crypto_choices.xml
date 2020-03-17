@@ -10,16 +10,16 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/encryption_none"
-                    android:icon="@drawable/crypto_none"
+                    android:icon="?attr/iconCryptoNone"
                     android:title="@string/encryption_choice_unencrypted"
                     />
                 <item
                     android:id="@+id/encryption_omemo"
-                    android:icon="@drawable/crypto_omemo"
+                    android:icon="?attr/iconCryptoOmemo"
                     android:title="@string/encryption_choice_omemo"/>
                 <item
                     android:id="@+id/encryption_otr"
-                    android:icon="@drawable/crypto_otr"
+                    android:icon="?attr/iconCryptoOtr"
                     android:title="@string/encryption_choice_otr"/>
             </group>
         </menu>

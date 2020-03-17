@@ -2085,8 +2085,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     errorReason = error.toString();
                 }
 
-                // Default error
-                int errorResultCode = MessageDeliveryFailedEvent.UNKNOWN_ERROR;
+                // Failed Event error
+                int errorResultCode = (ChatMessage.MESSAGE_SYSTEM == messageReceivedEventType)?
+                        MessageDeliveryFailedEvent.SYSTEM_ERROR_MESSAGE : MessageDeliveryFailedEvent.UNKNOWN_ERROR;
+
                 Condition errorCondition = error.getCondition();
                 if (Condition.service_unavailable == errorCondition) {
                     if (!member.getPresenceStatus().isOnline()) {
@@ -2097,9 +2099,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     errorResultCode = MessageDeliveryFailedEvent.NOT_ACCEPTABLE;
                 }
 
-                ChatRoomMessageDeliveryFailedEvent evt = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
+                ChatRoomMessageDeliveryFailedEvent failedEvent
+                        = new ChatRoomMessageDeliveryFailedEvent(ChatRoomJabberImpl.this,
                         member, errorResultCode, System.currentTimeMillis(), errorReason, newMessage);
-                fireMessageEvent(evt);
+                fireMessageEvent(failedEvent);
                 return;
             }
 

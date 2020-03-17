@@ -5,5 +5,4 @@
     <dimen name="chat_arrow_top">10dp</dimen>
     <dimen name="chat_arrow_height">30dp</dimen>
     <dimen name="chat_text_margin">6dp</dimen>
-    <dimen name="actionbar_height" >55dp</dimen>
 </resources>

@@ -253,6 +253,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         // Just show the pass in error message if false
         boolean mergeMessage = true;
+        boolean resendLastMessage = true;
         String errorMsg;
         String reason = evt.getReason();
 
@@ -284,6 +285,9 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 errorMsg = evt.getReason();
                 mergeMessage = false;
                 break;
+
+            case MessageDeliveryFailedEvent.SYSTEM_ERROR_MESSAGE:
+                resendLastMessage = false;
             default:
                 if (TextUtils.isEmpty(reason))
                     errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);
@@ -301,8 +305,10 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 ? sourceChatRoom.getName() : destMember.getNickName();
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true);
 
-        chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(),
-                srcMessage.getContent());
+        if (resendLastMessage) {
+            chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(),
+                    srcMessage.getContent());
+        }
         chatPanel.addMessage(sender, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN, errorMsg);
 
         ChatSessionManager.setCurrentChatId(chatPanel.getChatSession().getChatId());

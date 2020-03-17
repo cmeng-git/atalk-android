@@ -85,6 +85,13 @@ public class TelephonyFragment extends OSGiFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        // All not working in aTalk : set background color in layout instead
+        // ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(mActivity, aTalkApp.getAppThemeResourceId());
+        // LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+        // View content = localInflater.inflate(R.layout.telephony, container, false);
+
+        // inflater.getContext().setTheme(aTalkApp.getAppThemeResourceId());
+
         super.onCreate(savedInstanceState);
         View content = inflater.inflate(R.layout.telephony, container, false);
 
@@ -152,7 +159,6 @@ public class TelephonyFragment extends OSGiFragment
         });
 
         initAccountSpinner();
-
         initButton(content);
         return content;
     }

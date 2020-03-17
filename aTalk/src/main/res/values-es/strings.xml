@@ -560,9 +560,10 @@
     <string name="service_gui_SEND_LOGS">Reportar Bugs</string>
     <string name="service_gui_SEND_LOGS_QUESTION">aTalk se acaba de recuperar después de un grave cierre. ¿Quieres informar de los errores a los devepers?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">Reportar bugs a aTalk</string>
-    <string name="service_gui_SEND_LOGS_TITLE">La información a continuación puede ayudar al desarrollador a solucionar el problema:\n\n
+    <string name="service_gui_SEND_LOGS_TITLE">Informe de errores de aTalk por correo electrónico</string>
+    <string name="service_gui_SEND_LOGS_INFO">La información a continuación puede ayudar al desarrollador a solucionar el problema:\n\n
          1. ¿Qué fue lo último que hiciste antes de que ocurriera el problema?\n\n\n
-         2. ¿Cuál fue el problema que ves?\n\n\n
+         2. ¿Cuál fue el problema que ves, incluye una instantánea de la pantalla si está disponible??\n\n\n
          3. ¿Puedes o cómo reproducir el problema?</string>
 
     <string name="service_gui_SEND_MESSAGE">Enviar un mensaje</string>
@@ -872,7 +873,7 @@
     <string name="plugin_notificationconfig_vibration">Vibración</string>
     <string name="plugin_notificationconfig_sound_file">Archivo de sonido:</string>
 
-    <!-- call recordingconfig -->
+    <!-- call recording config -->
     <string name="plugin_callrecordingconfig_CALL_SAVED">Llamada guardada exitosamente</string>
     <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Guardar en: %1$s</string>
 
@@ -1294,6 +1295,9 @@
     <!-- Popup notifications type -->
     <string name="service_gui_settings_auto_update_check_status">Activar la comprobación automática de actualización de SW</string>
     <string name="service_gui_settings_POPUP_HANDLER">Tipo de notificaciones emergentes</string>
+
+    <string name="pref_headsup_notifications">Notificaciones emergentes</string>
+    <string name="pref_headsup_notifications_summary">Mostrar ventana emergente al recibir una notificación</string>
 
     <!-- Status bar notifications handler -->
     <string name="impl_popup_auto">Automático</string>

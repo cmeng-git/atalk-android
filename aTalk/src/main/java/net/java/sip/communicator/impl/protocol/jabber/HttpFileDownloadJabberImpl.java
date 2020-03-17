@@ -140,7 +140,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
         return mSender;
     }
 
-//    public Contact getContactName()
+//    public Contact getSender()
 //    {
 //        return mSender;
 //    }

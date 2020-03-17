@@ -1,8 +1,7 @@
 package org.atalk.android.gui.menu;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.*;
@@ -23,6 +22,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.StatusListAdapter;
 import org.atalk.android.gui.widgets.ActionMenuItem;
+import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.*;
 
 import java.beans.PropertyChangeEvent;
@@ -31,7 +31,7 @@ import java.util.*;
 import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
-public class GlobalStatusMenu extends FragmentActivity
+public class GlobalStatusMenu extends OSGiActivity
         implements OnDismissListener, ServiceListener, ProviderPresenceStatusListener
 {
     private FragmentActivity mActivity;
@@ -177,7 +177,7 @@ public class GlobalStatusMenu extends FragmentActivity
 
         onShow();
         if (mBackground == null)
-            mWindow.setBackgroundDrawable(new BitmapDrawable());
+            mWindow.setBackgroundDrawable(new BitmapDrawable(null, (Bitmap) null));
         else
             mWindow.setBackgroundDrawable(mBackground);
 
@@ -282,17 +282,13 @@ public class GlobalStatusMenu extends FragmentActivity
         final int pos = mChildPos;
         final int actionId = action.getActionId();
 
-        container.setOnClickListener(new OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                if (mItemClickListener != null)
-                    mItemClickListener.onItemClick(GlobalStatusMenu.this, pos, actionId);
+        container.setOnClickListener(v -> {
+            if (mItemClickListener != null)
+                mItemClickListener.onItemClick(GlobalStatusMenu.this, pos, actionId);
 
-                if (!getActionItem(pos).isSticky()) {
-                    mDidAction = true;
-                    dismiss();
-                }
+            if (!getActionItem(pos).isSticky()) {
+                mDidAction = true;
+                dismiss();
             }
         });
 
@@ -313,7 +309,6 @@ public class GlobalStatusMenu extends FragmentActivity
         actionItems.add(action);
         String title = action.getTitle();
         Drawable icon = action.getIcon();
-
         View container = mInflater.inflate(R.layout.status_menu_item_spinner, null);
 
         ImageView img = container.findViewById(R.id.iv_icon);
@@ -330,14 +325,16 @@ public class GlobalStatusMenu extends FragmentActivity
         else
             text.setVisibility(View.GONE);
 
-        // Create spinner with presence status list for the given pps
-        final Spinner statusSpinner = container.findViewById(R.id.presenceSpinner);
-        final OperationSetPresence accountPresence = pps.getOperationSet(OperationSetPresence.class);
-
         // WindowManager$BadTokenException
+        final OperationSetPresence accountPresence = pps.getOperationSet(OperationSetPresence.class);
         List<PresenceStatus> presenceStatuses = accountPresence.getSupportedStatusSet();
+
+        // Create spinner with presence status list for the given pps
+        // Note: xml layout has forced to use Spinner.MODE_DIALOG, other Note-5 crashes when use MODE_DROPDOWN
+        final Spinner statusSpinner = container.findViewById(R.id.presenceSpinner);
         StatusListAdapter statusAdapter
                 = new StatusListAdapter(mActivity, R.layout.account_presence_status_row, presenceStatuses);
+        statusAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         statusSpinner.setAdapter(statusAdapter);
 
         // Default state to offline
@@ -363,11 +360,9 @@ public class GlobalStatusMenu extends FragmentActivity
                         // cmeng: set state to false to force it to execute offline->online
                         if (globalStatus != null) {
                             globalStatus.publishStatus(pps, selectedStatus, false);
-                            // Timber.w("## Publish global presence status: " + selectedStatus.getStatusName() + ": " + pps);
                         }
                         if (pps.isRegistered()) {
                             accountPresence.publishPresenceStatus(selectedStatus, statusMessage);
-                            // Timber.w("## Publish account presence status: " + selectedStatus.getStatusName() + ": " + pps);
                         }
                     } catch (Exception e) {
                         Timber.e(e, "Account presence publish error.");

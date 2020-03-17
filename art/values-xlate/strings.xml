@@ -558,7 +558,7 @@
     <string name="service_gui_SEND_LOGS_TITLE">aTalk bugs report via email</string>
     <string name="service_gui_SEND_LOGS_INFO">Info below can help developer fix the problem:\n\n
         1. What was the last thing you did before the problem happen?\n\n\n
-        2. What was the problem that you see?\n\n\n
+        2. What was the problem that you see, include a snapshot of the display if available?\n\n\n
         3. Can you or how to reproduce the problem?</string>
 
     <string name="service_gui_SEND_MESSAGE">Send a message</string>
@@ -863,7 +863,7 @@
     <string name="plugin_notificationconfig_vibration">Vibration</string>
     <string name="plugin_notificationconfig_sound_file">Sound file:</string>
 
-    <!-- call recordingconfig -->
+    <!-- call recording config -->
     <string name="plugin_callrecordingconfig_CALL_SAVED">Call saved successfully</string>
     <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Save to: %1$s</string>
 
@@ -1279,6 +1279,9 @@
     <!-- Popup notifications type -->
     <string name="service_gui_settings_auto_update_check_status">Enable auto SW update check</string>
     <string name="service_gui_settings_POPUP_HANDLER">Popup notifications type</string>
+
+    <string name="pref_headsup_notifications">Heads-up Notifications</string>
+    <string name="pref_headsup_notifications_summary">Show Heads-up Notifications</string>
 
     <!-- Status bar notifications handler -->
     <string name="impl_popup_auto">Auto</string>

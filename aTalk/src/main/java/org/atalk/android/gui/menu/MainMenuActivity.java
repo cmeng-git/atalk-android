@@ -21,10 +21,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.*;
 
 import net.java.sip.communicator.service.protocol.*;
@@ -52,7 +49,8 @@ import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.fragment.app.Fragment;
 
@@ -71,9 +69,6 @@ public class MainMenuActivity extends ExitMenuActivity
 {
     private MenuItem mShowHideOffline;
     private MenuItem mOnOffLine;
-
-    // Default to system locale language
-    private static String mLanguage = "";
 
     /**
      * Video bridge conference call menu. In the case of more than one account.
@@ -105,11 +100,6 @@ public class MainMenuActivity extends ExitMenuActivity
     {
         super.onCreate(savedInstanceState);
         mContext = this;
-
-        setLanguage(mContext, mLanguage);
-
-        // cmeng - not implemented yet, do not set
-        // setTheme(aTalkApp.getAppThemeResourceId());
     }
 
     @Override
@@ -167,35 +157,6 @@ public class MainMenuActivity extends ExitMenuActivity
         // Adds exit option from super class
         super.onCreateOptionsMenu(menu);
         return true;
-    }
-
-    public static void setLanguage(Context context, String language)
-    {
-        Locale locale;
-        if (TextUtils.isEmpty(language)) {
-            locale = Resources.getSystem().getConfiguration().locale;
-        }
-        else if (language.length() == 5 && language.charAt(2) == '_') {
-            // language is in the form: en_US
-            locale = new Locale(language.substring(0, 2), language.substring(3));
-        }
-        else {
-            locale = new Locale(language);
-        }
-        Resources resources = context.getResources();
-        Configuration config = resources.getConfiguration();
-        config.locale = locale;
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-    }
-
-    public static String getATLanguage()
-    {
-        return mLanguage;
-    }
-
-    public static void setATLanguage(String language)
-    {
-        mLanguage = language;
     }
 
     /**
@@ -304,9 +265,27 @@ public class MainMenuActivity extends ExitMenuActivity
                 else
                     menuVbItem.actionPerformed();
                 break;
+            case R.id.show_location:
+                Intent intent = new Intent(this, GeoLocation.class);
+                intent.putExtra(GeoLocation.SEND_LOCATION, false);
+                startActivity(intent);
+                break;
+            case R.id.telephony:
+                TelephonyFragment extPhone = new TelephonyFragment();
+                getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
+                break;
             case R.id.muc_bookmarks:
                 ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
                 chatRoomBookmarksDialog.show();
+                break;
+            case R.id.add_contact:
+                startActivity(AddContactActivity.class);
+                break;
+            case R.id.main_settings:
+                startActivity(SettingsActivity.class);
+                break;
+            case R.id.account_settings:
+                startActivity(AccountsListActivity.class);
                 break;
             case R.id.show_hide_offline:
                 boolean isShowOffline = ConfigurationUtils.isShowOffline();
@@ -319,26 +298,6 @@ public class MainMenuActivity extends ExitMenuActivity
                 String onOffLine = aTalkApp.getResString(!isShowOffline
                         ? R.string.service_gui_HIDE_OFFLINE_CONTACTS : R.string.service_gui_SHOW_OFFLINE_CONTACTS);
                 mShowHideOffline.setTitle(onOffLine);
-                break;
-            case R.id.add_contact:
-                startActivity(AddContactActivity.class);
-                break;
-            case R.id.telephony:
-                TelephonyFragment extPhone = new TelephonyFragment();
-                getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
-                break;
-            case R.id.show_location:
-                if (!BuildConfig.FLAVOR.equals("fdroid")) {
-                    Intent intent = new Intent(this, GeoLocation.class);
-                    intent.putExtra(GeoLocation.SEND_LOCATION, false);
-                    startActivity(intent);
-                }
-                break;
-            case R.id.main_settings:
-                startActivity(SettingsActivity.class);
-                break;
-            case R.id.account_settings:
-                startActivity(AccountsListActivity.class);
                 break;
             case R.id.notification_setting:
                 openNotificationSettings();

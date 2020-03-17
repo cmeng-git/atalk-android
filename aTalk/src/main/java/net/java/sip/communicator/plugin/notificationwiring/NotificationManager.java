@@ -159,7 +159,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             contactIcon = contact.getImage();
             if (contactIcon == null) {
-                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.personphoto);
+                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.person_photo);
             }
         }
         else if (chatDescriptor instanceof ChatRoom) {

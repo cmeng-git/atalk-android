@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
-    android:background="@color/theme_background"
+    android:background="?attr/colorBackground"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding">
 
@@ -69,7 +69,6 @@
     <Spinner
         android:id="@+id/selectAccountSpinner"
         style="@style/SpinnerView"
-        android:layout_width="wrap_content"
         android:layout_marginBottom="@dimen/between_padding" />
 
     <LinearLayout

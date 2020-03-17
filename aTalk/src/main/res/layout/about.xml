@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/theme_background"
     android:divider="?android:attr/dividerHorizontal"
-
-    android:orientation="vertical"
     android:layout_margin="5dp"
     android:paddingTop="10dp"
-    android:showDividers="middle">
+    android:showDividers="middle"
+    android:orientation="vertical">
 
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="250dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_Container">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -39,7 +38,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/AboutDialogTextColor"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
@@ -69,7 +67,6 @@
 
             <TextView
                 android:id="@+id/atalk_help"
-                style="@style/AboutDialogTextColor"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -88,45 +85,36 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/button_Container"
         style="?android:attr/buttonBarStyle"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical">
 
         <Button
             android:id="@+id/history_log"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:fitsSystemWindows="true"
+            style="@style/Button"
             android:text="@string/show_history_log" />
 
         <Button
             android:id="@+id/submit_logs"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:fitsSystemWindows="true"
+            style="@style/Button"
+            android:layout_marginStart="2dp"
             android:text="@string/service_gui_SEND_LOGS" />
 
         <Button
             android:id="@+id/check_new_version"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:fitsSystemWindows="true"
+            style="@style/Button"
+            android:layout_marginStart="2dp"
             android:visibility="gone"
             android:text="@string/check_new_version" />
 
         <Button
             android:id="@+id/ok_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
+            style="@style/Button"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:fitsSystemWindows="true"
+            android:layout_marginStart="2dp"
             android:text="@string/service_gui_OK" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

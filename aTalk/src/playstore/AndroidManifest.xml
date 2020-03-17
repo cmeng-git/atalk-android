@@ -11,7 +11,7 @@
         android:label="@string/APPLICATION_NAME"
         android:logo="@drawable/ic_notification"
         android:networkSecurityConfig="@xml/network_security_configuration"
-        android:theme="@style/Theme.App">
+        android:theme="@style/AppTheme">
 
     <!--
           The API key for Google Maps-based APIs is defined as a string resource.

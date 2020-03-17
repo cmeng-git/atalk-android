@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/statusMenuSpinner"
     android:layout_width="wrap_content"
-    android:minWidth="170dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="10dp">
@@ -17,8 +16,8 @@
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/jabber_status_online" />
 
@@ -28,13 +27,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingStart="5dp"
-            android:textColor="#fff" />
+            android:paddingStart="5dp" />
     </LinearLayout>
 
     <Spinner
         android:id="@+id/presenceSpinner"
-        android:layout_width="fill_parent"
-        android:layout_height="32dp"
-        android:spinnerMode="dialog" />
+		android:spinnerMode="dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"/>
 </LinearLayout>

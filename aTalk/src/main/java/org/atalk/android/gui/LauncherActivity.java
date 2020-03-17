@@ -12,7 +12,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
 
-import org.atalk.android.*;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.EventReceiver;
@@ -22,13 +23,12 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The splash screen fragment displays animated aTalk logo and indeterminate progress indicators.
- * <p>
- * <p>
+ *
  * TODO: Eventually add exit option to the launcher Currently it's not possible to cancel OSGi
  * startup. Attempt to stop service during startup is causing immediate service restart after
  * shutdown even with synchronization of onCreate and OnDestroy commands. Maybe there is still
  * some reference to OSGI service being held at that time ?
- * <p>
+ *
  * TODO: Prevent from recreating this Activity on startup. On startup when this Activity is
  * recreated it will also destroy OSGiService which is currently not handled properly. Options
  * specified in AndroidManifest.xml should cover most cases for now:
@@ -61,6 +61,10 @@ public class LauncherActivity extends OSGiActivity
     {
         setupStrictMode();
         super.onCreate(savedInstanceState);
+
+        // Do not show actionBar in splash screen - need this even it is specified in Manifest file
+        if (getActionBar() != null)
+            getActionBar().hide();
 
         if (OSGiService.isShuttingDown()) {
             switchActivity(ShutdownActivity.class);

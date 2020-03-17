@@ -140,7 +140,7 @@ public class OSGiService extends Service
     {
         String title = getResources().getString(R.string.APPLICATION_NAME);
         // The intent to launch when the user clicks the expanded notification
-        PendingIntent pendIntent = aTalkApp.getAtalkIconIntent();
+        PendingIntent pendIntent = aTalkApp.getaTalkIconIntent();
 
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
         nBuilder.setContentTitle(title)

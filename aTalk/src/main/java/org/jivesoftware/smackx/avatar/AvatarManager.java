@@ -260,6 +260,32 @@ public class AvatarManager extends Manager
         return (avatarId == null) ? null : getAvatarImageByHash(avatarId);
     }
 
+
+    /**
+     * Calculate the avatarId and save its image to cache on condition is forced or none is found.
+     * The method is created for aTalk external access
+     *
+     * @param userId the bareJid of the avatarImage
+     * @param avatarImage Byte[] value of avatar image data.
+     * @param force override existing even if it exists
+     * @return return true is success
+     */
+    public static boolean addAvatarImage(BareJid userId, byte[] avatarImage, boolean force)
+    {
+        if ((userId == null) || (avatarImage.length == 0))
+            return false;
+
+        String avatarId = getAvatarHash(avatarImage);
+        if (force || getAvatarImageByHash(avatarId).length == 0) {
+            if (!TextUtils.isEmpty(avatarId)) {
+                addAvatarImageByAvatarId(avatarId, avatarImage);
+                addJidToAvatarHashIndex(userId, avatarId);
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Get the avatarHash for jid
      *

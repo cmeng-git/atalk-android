@@ -88,6 +88,6 @@
         android:layout_toEndOf="@+id/outgoingMessageHolder"
         android:layout_marginStart="-10dp"
         android:layout_marginTop="@dimen/chat_arrow_top"
-        android:src="@drawable/messagearrowout_correction_dark" />
+        android:src="@drawable/message_arrow_out_correction_dark" />
 
 </RelativeLayout>

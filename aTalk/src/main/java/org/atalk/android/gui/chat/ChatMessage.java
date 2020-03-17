@@ -182,18 +182,30 @@ public interface ChatMessage
     int MESSAGE_MUC_IN = 81;
 
     /**
-     * Returns the name of the contact sending the message.
-     *
-     * @return the name of the contact sending the message.
+     * The display name of the message sender.
      */
-    String getContactName();
 
     /**
-     * Returns the display name of the contact sending the message.
+     * Returns the string Id of the message sender.
+     * Actual value is pending on message type i.e.:
+     * a. userId: swordfish@atalk.org
+     * b. contactId: leopard@atalk.org
+     * c. chatRoom: conference@atalk.org
+     * d. nickName: leopard
      *
-     * @return the display name of the contact sending the message
+     * Exception as recipient:
+     * contactId: ChatMessage.MESSAGE_FILE_TRANSFER_SEND & ChatMessage.MESSAGE_STICKER_SEND:
+     *
+     * @return the string id of the message sender.
      */
-    String getContactDisplayName();
+    String getSender();
+
+    /**
+     * Returns the display name of the message sender.
+     *
+     * @return the display name of the message sender
+     */
+    String getSenderName();
 
     /**
      * Returns the date and time of the message.

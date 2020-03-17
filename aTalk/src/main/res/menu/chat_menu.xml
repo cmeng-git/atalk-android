@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/send_file"
-        android:icon="@drawable/ic_action_attach_dark"
+        android:icon="@drawable/ic_attach_dark"
         android:showAsAction="ifRoom"
         android:title="@string/service_gui_FILE_SEND_TO" />
     <item
@@ -22,7 +22,7 @@
         android:title="@string/service_gui_CALL" />
     <item
         android:id="@+id/call_contact_video"
-        android:icon="@drawable/chatcallvideo_dark"
+        android:icon="@drawable/chat_call_video_dark"
         android:title="@string/service_gui_CALL_VIDEO" />
     <item
         android:id="@+id/erase_chat_history"
@@ -49,6 +49,6 @@
         android:visible="false" />
     <item
         android:id="@+id/otr_session"
-        android:icon="@drawable/crypto_otr"
+        android:icon="@drawable/crypto_otr_dark"
         android:title="OTR Sessions" />
 </menu>

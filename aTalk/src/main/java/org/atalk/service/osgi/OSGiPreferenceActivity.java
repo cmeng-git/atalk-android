@@ -98,6 +98,9 @@ public class OSGiPreferenceActivity extends PreferenceActivity
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState)
     {
+        // Always call setTheme() method before super.onCreate(savedInstanceState)
+        setTheme(aTalkApp.getAppThemeResourceId());
+
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();
 

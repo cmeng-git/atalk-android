@@ -8,10 +8,12 @@ package org.atalk.android;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.*;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.AccountManager;
@@ -22,7 +24,6 @@ import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
@@ -30,6 +31,8 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
+
+import java.util.Locale;
 
 import androidx.lifecycle.*;
 import androidx.multidex.MultiDex;
@@ -60,6 +63,10 @@ public class aTalkApp extends Application implements LifecycleObserver
 
     public static boolean permissionFirstRequest = true;
 
+    // Both mLanguage and mTheme will get initialize by ConfigurationUtils on startup
+    private static String mLanguage = "";           // Default to system locale language
+    private static Theme mTheme = Theme.DARK;
+
     /**
      * Possible values for the different theme settings.
      *
@@ -71,8 +78,6 @@ public class aTalkApp extends Application implements LifecycleObserver
         LIGHT,
         DARK
     }
-
-    public static Theme mTheme = Theme.DARK;
 
     /**
      * Static instance holder.
@@ -111,6 +116,16 @@ public class aTalkApp extends Application implements LifecycleObserver
         TimberLogImpl.init();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onTerminate()
+    {
+        mInstance = null;
+        super.onTerminate();
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onAppForegrounded()
     {
@@ -130,16 +145,6 @@ public class aTalkApp extends Application implements LifecycleObserver
     {
         super.attachBaseContext(base);
         MultiDex.install(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onTerminate()
-    {
-        mInstance = null;
-        super.onTerminate();
     }
 
     /**
@@ -356,7 +361,7 @@ public class aTalkApp extends Application implements LifecycleObserver
      *
      * @return new pending <tt>Intent</tt> to be started, when aTalk icon is clicked.
      */
-    public static PendingIntent getAtalkIconIntent()
+    public static PendingIntent getaTalkIconIntent()
     {
         Intent intent = ChatSessionManager.getLastChatIntent();
         if (intent == null) {
@@ -385,28 +390,59 @@ public class aTalkApp extends Application implements LifecycleObserver
         return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, false);
     }
 
-    /**
-     * Initialize display Theme
-     */
-    public static void initTheme()
+    public static String getATLanguage()
     {
-        int themeValue = getConfig().getInt(SettingsActivity.P_KEY_THEME, Theme.LIGHT.ordinal());
-        if (themeValue == aTalkApp.Theme.DARK.ordinal() || themeValue == android.R.style.Theme) {
-            mTheme = Theme.DARK;
-        }
-        else {
-            mTheme = Theme.LIGHT;
-        }
+        return mLanguage;
     }
 
-    public static int getAppThemeResourceId(Theme themeId)
+    public static void setATLanguage(String language)
     {
-        return (themeId == Theme.LIGHT) ? R.style.Theme_App_Light : R.style.Theme_App_Dark;
+        mLanguage = language;
+    }
+
+    public static void setLanguage(Context context)
+    {
+        Locale locale;
+        if (TextUtils.isEmpty(mLanguage)) {
+            locale = Resources.getSystem().getConfiguration().locale;
+        }
+        else if (mLanguage.length() == 5 && mLanguage.charAt(2) == '_') {
+            // language is in the form: en_US
+            locale = new Locale(mLanguage.substring(0, 2), mLanguage.substring(3));
+        }
+        else {
+            locale = new Locale(mLanguage);
+        }
+        Resources resources = context.getResources();
+        Configuration config = resources.getConfiguration();
+        config.locale = locale;
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+    }
+
+    /**
+     * Get the app specific theme to init android theme for use
+     *
+     * @param theme the current theme
+     * @return app android theme for use
+     */
+    public static int getAppThemeResourceId(Theme theme)
+    {
+        return (theme == Theme.LIGHT) ? R.style.AppTheme_Light : R.style.AppTheme_Dark;
     }
 
     public static int getAppThemeResourceId()
     {
         return getAppThemeResourceId(mTheme);
+    }
+
+    public static Theme getAppTheme()
+    {
+        return mTheme;
+    }
+
+    public static void setAppTheme(Theme theme)
+    {
+        mTheme = theme;
     }
 
     /**

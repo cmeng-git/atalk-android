@@ -133,8 +133,8 @@ public class AndroidGUIActivator implements BundleActivator
                 new Thread(() -> loginManager.runLogin()).start();
             }
         }
-
         ConfigurationUtils.loadGuiConfigurations();
+
         // Register show history settings OTR link listener
         ChatSessionManager.addChatLinkListener(new CryptoFragment.ShowHistoryLinkListener());
     }

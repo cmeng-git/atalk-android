@@ -19,6 +19,7 @@ package org.atalk.android.plugin.certconfig;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
@@ -108,12 +109,21 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         cs = CertConfigActivator.getCertService();
-        if (getDialog() != null)
+        View contentView = inflater.inflate(R.layout.cert_tls_entry_config, container, false);
+
+        if (getDialog() != null) {
             getDialog().setTitle(R.string.plugin_certconfig_CERT_ENTRY_TITLE);
 
-        View contentView = inflater.inflate(R.layout.cert_tls_entry_config, container, false);
-        txtDisplayName = contentView.findViewById(R.id.certDisplayName);
+            Window window = getDialog().getWindow();
+            if (window != null) {
+                Rect displayRectangle = new Rect();
+                window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+                contentView.setMinimumWidth(displayRectangle.width());
+                contentView.setMinimumHeight(displayRectangle.height());
+            }
+        }
 
+        txtDisplayName = contentView.findViewById(R.id.certDisplayName);
         txtKeyStore = contentView.findViewById(R.id.certFileName);
 
         ImageButton cmdBrowse = contentView.findViewById(R.id.browse);

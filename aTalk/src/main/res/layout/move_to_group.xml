@@ -4,7 +4,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_centerHorizontal="true"
-    android:background="@color/theme_background"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding">
 
@@ -25,8 +24,7 @@
 
     <Spinner
         android:id="@+id/selectGroupSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_height"
+        style="@style/SpinnerView"
         android:layout_marginBottom="@dimen/between_padding" />
 
     <LinearLayout

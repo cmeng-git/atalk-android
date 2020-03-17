@@ -9,7 +9,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -21,12 +23,11 @@ import android.widget.Toast;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
+import net.sf.fmj.utility.IOUtils;
 
 import org.atalk.android.*;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
@@ -49,10 +50,14 @@ import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.File;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -72,7 +77,8 @@ import static org.atalk.persistance.FileBackend.getMimeType;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatActivity extends OSGiActivity implements OnPageChangeListener, TaskCompleted
+public class ChatActivity extends OSGiActivity
+        implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener
 {
     private static final int REQUEST_CODE_SELECT_PHOTO = 100;
     private static final int REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY = 101;
@@ -189,6 +195,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mediaPreviewAdapter = new MediaPreviewAdapter(this, imagePreview);
         mediaPreview.setAdapter(mediaPreviewAdapter);
 
+        // Registered location listener - only use by playStore version
+        GeoLocation.registeredLocationListener(this);
         handleIntent(getIntent(), savedInstanceState);
     }
 
@@ -390,7 +398,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
             menu.removeItem(R.id.send_location);
         }
-
         setOptionItem();
         return true;
     }
@@ -476,18 +483,36 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         if ((selectedChatPanel == null) || (selectedChatPanel.getChatSession() == null))
             return super.onOptionsItemSelected(item);
 
-        Object object = selectedChatPanel.getChatSession().getDescriptor();
+        Object descriptor = selectedChatPanel.getChatSession().getDescriptor();
 
-        if (object instanceof ChatRoomWrapper) {
-            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+        // Common handler for both the ChatRoomWrapper and MetaContact
+        switch (item.getItemId()) {
+            case R.id.send_file:
+                AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this);
+                attachOptionDialog.show();
+                return true;
+
+            case R.id.muc_invite:
+                ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
+                inviteDialog.show();
+                return true;
+
+            case R.id.erase_chat_history:
+                EntityListHelper.eraseEntityChatHistory(ChatActivity.this, descriptor, null, null);
+                return true;
+
+            case R.id.send_location:
+                Intent intent = new Intent(this, GeoLocation.class);
+                intent.putExtra(GeoLocation.SEND_LOCATION, true);
+                startActivity(intent);
+                return true;
+        }
+
+        if (descriptor instanceof ChatRoomWrapper) {
+            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
 
             switch (item.getItemId()) {
-                case R.id.muc_invite:
-                    ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
-                    inviteDialog.show();
-                    return true;
-
                 case R.id.leave_chat_room:
                     if (chatRoom != null) {
                         ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
@@ -536,29 +561,15 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     else {
                         memberList.append(getString(R.string.service_gui_LIST_NONE));
                     }
-
                     String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
                     selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
                             memberList.toString());
                     return true;
-
-                case R.id.send_file:
-                    // Note: mRecipient is not used
-                    AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
-                    attachOptionDialog.show();
-                    return true;
             }
         }
         else {
-            Intent intent;
-
             // Handle item selection
             switch (item.getItemId()) {
-                case R.id.muc_invite:
-                    ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
-                    inviteDialog.show();
-                    return true;
-
                 case R.id.call_contact_audio: // start audio call
                     if (mRecipient != null) {
                         Jid jid = mRecipient.getJid();
@@ -577,24 +588,6 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     if (mRecipient != null)
                         AndroidCallUtil.createCall(this, mRecipient.getAddress(),
                                 mRecipient.getProtocolProvider(), true);
-                    return true;
-
-                case R.id.send_location:
-                    if (!BuildConfig.FLAVOR.equals("fdroid")) {
-                        intent = new Intent(this, GeoLocation.class);
-                        intent.putExtra(GeoLocation.SEND_LOCATION, true);
-                        startActivity(intent);
-                    }
-                    return true;
-
-                case R.id.erase_chat_history:
-                    EntityListHelper.eraseEntityChatHistory(ChatActivity.this,
-                            selectedChatPanel.getChatSession().getDescriptor(), null, null);
-                    return true;
-
-                case R.id.send_file:
-                    AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
-                    attachOptionDialog.show();
                     return true;
             }
         }
@@ -670,22 +663,18 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 ((MetaContact) chatSession.getDescriptor()).setUnreadCount(0);
 
                 ActionBarUtil.setAvatar(this, chatSession.getChatAvatar());
-
                 PresenceStatus status = chatSession.getCurrentChatTransport().getStatus();
                 if (status != null) {
                     ActionBarUtil.setStatus(this, status.getStatusIcon());
 
-                    String presenceStatus = status.getStatusName();
                     if (!status.isOnline()) {
-                        String lastSeen = getLastSeen();
-                        if (lastSeen != null)
-                            presenceStatus = lastSeen;
+                        getLastSeen(status);
                     }
                     else {
                         // Reset elapse time to fetch new again when contact goes offline again
                         mRecipient.setLastActiveTime(-1);
+                        ActionBarUtil.setSubtitle(this, status.getStatusName());
                     }
-                    ActionBarUtil.setSubtitle(this, presenceStatus);
                 }
             }
             else if (chatSession instanceof ConferenceChatSession) {
@@ -701,80 +690,66 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     }
 
     /**
-     * Convert to string of the lastSeen elapsed Time
-     *
-     * @return lastSeen string for display; null if exception
+     * Fetch and display the contact lastSeen elapsed Time; run in new thread to avoid ANR
      */
-    public String getLastSeen()
+    public void getLastSeen(PresenceStatus status)
     {
         // cmeng: this happen if the contact remove presence subscription while still in chat session
-        if (mRecipient == null) {
-            return null;
-        }
+        if (mRecipient != null) {
+            XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
 
-        XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
-        if ((connection == null) || !connection.isAuthenticated())
-            return null;
+            // Proceed only if user is online and registered
+            if ((connection != null) && connection.isAuthenticated()) {
+                new Thread(() -> {
+                    final String lastSeen;
+                    Contact mContact = mRecipient;
 
-        long lastActiveTime = mRecipient.getLastActiveTime();
-        // Retrieve from server if this is the first access
-        if (lastActiveTime == -1) {
-            Jid jid = mRecipient.getJid();
-            LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);
+                    // Retrieve from server if this is the first access
+                    long lastActiveTime = mRecipient.getLastActiveTime();
+                    if (lastActiveTime == -1) {
+                        Jid jid = mRecipient.getJid();
+                        LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);
 
-            try {
-                long elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
-                lastActiveTime = (System.currentTimeMillis() - elapseTime * 1000L);
-                mRecipient.setLastActiveTime(lastActiveTime);
-            } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                    | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException ignore) {
-            }
-        }
-
-        if (lastActiveTime == -1) {
-            return null;
-        }
-        else {
-            if (DateUtils.isToday(lastActiveTime)) {
-                DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-                return getString(R.string.service_gui_LAST_SEEN, df.format(new Date(lastActiveTime)));
-            }
-            else {
-                // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
-                DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-                return df.format(new Date(lastActiveTime));
-            }
-        }
-    }
-
-    public static void sendLocation(String location)
-    {
-        final ChatPanel chatPanel;
-        UIService uiService = AndroidGUIActivator.getUIService();
-        if (uiService != null) {
-            if (mRecipient != null) {
-                chatPanel = (ChatPanel) uiService.getChat(mRecipient);
-                if (chatPanel != null) {
-                    int encryption = IMessage.ENCRYPTION_NONE;
-                    if (chatPanel.isOmemoChat())
-                        encryption = IMessage.ENCRYPTION_OMEMO;
-                    else if (chatPanel.isOTRChat())
-                        encryption = IMessage.ENCRYPTION_OTR;
-
-                    ChatTransport mChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
-                    try {
-                        mChatTransport.sendInstantMessage(location, encryption | IMessage.ENCODE_PLAIN);
-                    } catch (Exception e) {
-                        aTalkApp.showToastMessage(e.getMessage());
+                        try {
+                            long elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
+                            lastActiveTime = (System.currentTimeMillis() - elapseTime * 1000L);
+                            mRecipient.setLastActiveTime(lastActiveTime);
+                        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
+                                | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException e) {
+                            Timber.w("Exception in getLastSeen 5s", e.getMessage());
+                        }
                     }
-                }
+
+                    if (lastActiveTime != -1) {
+                        if (DateUtils.isToday(lastActiveTime)) {
+                            DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+                            lastSeen = getString(R.string.service_gui_LAST_SEEN, df.format(new Date(lastActiveTime)));
+                        }
+                        else {
+                            // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
+                            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+                            lastSeen = df.format(new Date(lastActiveTime));
+                        }
+                    }
+                    else {
+                        lastSeen = status.getStatusName();
+                    }
+                    // Update display only if the result is for the intended mContact;
+                    // user may have slide to new chatSession if server has slow response
+                    if (mContact.equals(mRecipient))
+                        runOnUiThread(() -> ActionBarUtil.setSubtitle(ChatActivity.this, lastSeen));
+                }).start();
             }
+            return;
         }
+
+        // Reset elapse time to fetch new again when contact goes offline again and just update with contact old status
+        mRecipient.setLastActiveTime(-1);
+        ActionBarUtil.setSubtitle(this, status.getStatusName());
     }
 
-    public void sendAttachment(AttachOptionItem attachOptionItem, final Contact contact)
+    public void sendAttachment(AttachOptionItem attachOptionItem)
     {
-        mRecipient = contact;
         Intent intent = new Intent();
         Uri fileUri;
 
@@ -876,7 +851,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     if ("text/plain".equals(intent.getType())) {
                         String text = intent.getStringExtra(Intent.EXTRA_TEXT);
                         if (!TextUtils.isEmpty(text)) {
-                            selectedChatPanel.setEditedText(text);
+                            if (FileBackend.isHttpFileDnLink(text)) {
+                                MediaShareAsynTask msTask = new MediaShareAsynTask();
+                                msTask.execute(text);
+                                break;
+                            }
+                            else {
+                                selectedChatPanel.setEditedText(text);
+                            }
                         }
                     }
                     else {
@@ -905,6 +887,22 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     break;
             }
         }
+    }
+
+    /**
+     * callBack for GeoLocation onResult received
+     *
+     * @param location Geo Location information
+     * @param locAddress Geo Location Address
+     */
+    @Override
+    public void onResult(Location location, String locAddress)
+    {
+        String mLatitude = String.valueOf(location.getLatitude());
+        String mLongitude = String.valueOf(location.getLongitude());
+        String msg = locAddress + " \nLatLng: " + mLatitude + "," + mLongitude;
+
+        selectedChatPanel.sendMessage(msg, IMessage.ENCODE_PLAIN);
     }
 
     /**
@@ -956,6 +954,87 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             startActivity(openIntent);
         } catch (ActivityNotFoundException e) {
             showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+        }
+    }
+
+    /**
+     * Construct media url share with thumbnail and title via URL_EMBBED which supports with JSONObject:
+     *
+     * {"width":480,"provider_name":"YouTube","url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+     * "title":"Rick Astley - Never Gonna Give You Up (Video)","author_name":"RickAstleyVEVO",
+     * "thumbnail_width":480,"height":270,"thumbnail_url":"https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+     * "author_url":"https://www.youtube.com/user/RickAstleyVEVO","type":"video","provider_url":"https://www.youtube.com/",
+     * "thumbnail_height":360,"version":"1.0","html":"\n<iframe width=\" 480\" height=\"270\"
+     * src=\"https://www.youtube.com/embed/dQw4w9WgXcQ?feature=oembed\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>\n"}
+     */
+    private class MediaShareAsynTask extends AsyncTask<String, Void, String>
+    {
+        private String URL_EMBBED = "https://noembed.com/embed?url=";
+        private String mUrl;
+
+        @Override
+        protected String doInBackground(String... params)
+        {
+            mUrl = params[0];
+            // mUrl = "https://vimeo.com/45196609";  // invalid link
+            return getUrlInfo(mUrl);
+        }
+
+        @Override
+        protected void onPostExecute(String result)
+        {
+            String urlInfo = null;
+            if (!TextUtils.isEmpty(result)) {
+                try {
+                    final JSONObject attributes = new JSONObject(result);
+                    String title = attributes.getString("title");
+                    String imageUrl = attributes.getString("thumbnail_url");
+
+                    urlInfo = aTalkApp.getResString(R.string.service_gui_URL_MEDIA_SHARE, imageUrl, title, mUrl);
+                    selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
+                } catch (JSONException e) {
+                    Timber.w("Exception in JSONObject access: %s", result);
+                }
+            }
+
+            // send mUrl instead fetch urlInfo failed
+            if (urlInfo == null) {
+                // selectedChatPanel.setEditedText(mUrl); too late as controller msgEdit is already initialized
+                selectedChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
+            }
+        }
+
+        /***
+         * Get the Drawable from the given URL (change to secure https if necessary)
+         * aTalk/android supports only secure https connection
+         * https://noembed.com/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ
+         *
+         * @param urlString url string
+         * @return Jason String
+         */
+        public String getUrlInfo(String urlString)
+        {
+            try {
+                urlString = URL_EMBBED + urlString.replace("http:", "https:");
+                URL mUrl = new URL(urlString);
+                HttpURLConnection httpConnection = (HttpURLConnection) mUrl.openConnection();
+                httpConnection.setRequestMethod("GET");
+                httpConnection.setRequestProperty("Content-length", "0");
+                httpConnection.setUseCaches(false);
+                httpConnection.setAllowUserInteraction(false);
+                httpConnection.setConnectTimeout(3000);
+                httpConnection.setReadTimeout(3000);
+                httpConnection.connect();
+
+                int responseCode = httpConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = httpConnection.getInputStream();
+                    return IOUtils.readAllToString(inputStream);
+                }
+            } catch (IOException e) {
+                Timber.w("Exception in get URL info: ", e.getMessage());
+            }
+            return null;
         }
     }
 

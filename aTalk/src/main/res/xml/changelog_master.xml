@@ -6,12 +6,27 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.2.1 (03/17/2020)" versioncode="1121">
+        <change>Add user selectable Themes support</change>
+        <change>Implement user selectable option for heads-up notification</change>
+        <change>Support download and display of url image in src tag embedded in xhtml message</change>
+        <change>Share of youtube and other social media links are tagged with thumbnail and title</change>
+        <change>New features support for group chat: Erase chatRoom history and GPS location sending</change>
+        <change>Upgrade glide library to v4.11.0 for better control of image preview sizes for history and new medias</change>
+        <change>Execute getLastSeen for contacts in new thread to avoid ANR</change>
+        <change>Refresh Setting... immediately when user changes Language or Theme options</change>
+        <change>Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES-256 &amp; TWOFISH-256, and enable elliptic curve crypto using Curve 25519</change>
+        <change>Enhance SDES encryption with AES 256 and AES 192</change>
+        <change>Enhance AES-256 acceleration using OpenSSL</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.2.0 (02/28/2020)" versioncode="1120">
         <change>Implement XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication (experimental)</change>
         <change>Implement TLS client certification configuration options</change>
         <change>Implement auto-accept content download for file sharing via http file upload protocol</change>
         <change>When aTalk is minimized, gives alert notification and show join room dialog on receive an invitation</change>
-        <change>Resign handler and enhanced UI for room with captcha protection; remove timeout timer, allow retry and show result in chat etc.</change>
+        <change>Redesign handler and enhanced UI for room with captcha protection; remove timeout timer, allow retry and show result in chat etc.</change>
         <change>Implement android heads-up notification with 'Reply', 'Mark as read' and 'Snooze'</change>
         <change>Implement quite hours to mute all notification alerts</change>
         <change>Provide receipt status for each message in merged message view holder; prefix X mark on each undelivered message</change>

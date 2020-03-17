@@ -837,7 +837,7 @@ public class CryptoFragment extends OSGiFragment
                     tipKey = R.string.plugin_otr_menu_OTR_HANDSHAKE;
                     break;
                 case TIMED_OUT:
-                    iconId = R.drawable.crypto_otr_pdbroken;
+                    iconId = R.drawable.crypto_otr_pd_broken;
                     tipKey = R.string.plugin_otr_menu_OTR_TIMEOUT;
                     break;
                 default:

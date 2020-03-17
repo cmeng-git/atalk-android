@@ -5,11 +5,12 @@
  */
 package net.java.sip.communicator.impl.globaldisplaydetails;
 
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.globaldisplaydetails.event.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.AvatarCacheUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
@@ -76,11 +77,10 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      */
     public GlobalDisplayDetailsImpl()
     {
-        provisionedDisplayName = GlobalDisplayDetailsActivator.getConfigurationService()
-                .getString(GLOBAL_DISPLAY_NAME_PROP, null);
+        provisionedDisplayName
+                = GlobalDisplayDetailsActivator.getConfigurationService().getString(GLOBAL_DISPLAY_NAME_PROP, null);
 
-        for (ProtocolProviderService protocolProviderService :
-                AccountUtils.getRegisteredProviders()) {
+        for (ProtocolProviderService protocolProviderService : AccountUtils.getRegisteredProviders()) {
             protocolProviderService.addRegistrationStateChangeListener(this);
         }
     }
@@ -159,8 +159,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     public void removeGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l)
     {
         synchronized (displayDetailsListeners) {
-            if (displayDetailsListeners.contains(l))
-                displayDetailsListeners.remove(l);
+            displayDetailsListeners.remove(l);
         }
     }
 
@@ -228,10 +227,13 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         globalAvatar = event.getNewAvatar();
         // If there is no avatar image set, then displays the default one.
         if (globalAvatar == null) {
-            globalAvatar = GlobalDisplayDetailsActivator.getResources().getImageInBytes(
-                    aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
+            globalAvatar = GlobalDisplayDetailsActivator.getResources()
+                    .getImageInBytes(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
         }
-        AvatarCacheUtils.cacheAvatar(event.getSourceProvider(), globalAvatar);
+
+        // AvatarCacheUtils.cacheAvatar(event.getSourceProvider(), globalAvatar);
+        BareJid userId = event.getSourceProvider().getAccountID().getBareJid();
+        AvatarManager.addAvatarImage(userId, globalAvatar, false);
         fireGlobalAvatarEvent(globalAvatar);
     }
 
@@ -260,8 +262,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     }
 
     /**
-     * Queries the operations sets to obtain names and display info. Queries are done in separate
-     * thread.
+     * Queries the operations sets to obtain names and display info. Queries are done in separate thread.
      */
     private class UpdateAccountInfo extends Thread
     {
@@ -300,21 +301,24 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         @Override
         public void run()
         {
-            globalAvatar = AvatarCacheUtils.getCachedAvatar(protocolProvider);
+            // globalAvatar = AvatarCacheUtils.getCachedAvatar(protocolProvider);
+            BareJid userId = protocolProvider.getAccountID().getBareJid();
+            globalAvatar = AvatarManager.getAvatarImageByJid(userId);
             if ((isUpdate) || (globalAvatar == null)) {
                 byte[] accountImage = AccountInfoUtils.getImage(accountInfoOpSet);
                 if ((accountImage != null) && (accountImage.length > 0)) {
                     globalAvatar = accountImage;
+                    // AvatarCacheUtils.cacheAvatar(protocolProvider, globalAvatar);
+                    AvatarManager.addAvatarImage(userId, globalAvatar, false);
                 }
                 else {
                     globalAvatar = new byte[0];
                 }
+                fireGlobalAvatarEvent(globalAvatar);
             }
-            AvatarCacheUtils.cacheAvatar(protocolProvider, globalAvatar);
-            fireGlobalAvatarEvent(globalAvatar);
 
-            if (!StringUtils.isNullOrEmpty(provisionedDisplayName)
-                    || (!StringUtils.isNullOrEmpty(globalDisplayName) && !isUpdate))
+            if (!isUpdate || (!TextUtils.isEmpty(provisionedDisplayName)
+                    && !StringUtils.isNullOrEmpty(globalDisplayName)))
                 return;
 
             if (currentFirstName == null) {

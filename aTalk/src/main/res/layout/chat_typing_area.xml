@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:layout_alignEnd="@+id/chatWriteTextBg"
-        android:src="@drawable/ic_action_cancel_light" />
+        android:src="@drawable/ic_cancel_light" />
 
     <ImageView
         android:id="@+id/chatWriteTextBg"

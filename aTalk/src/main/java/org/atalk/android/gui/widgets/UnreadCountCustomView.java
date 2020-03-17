@@ -31,7 +31,7 @@ public class UnreadCountCustomView extends View {
     // Currently not support in aTalk
     private void initXMLAttrs(Context context, AttributeSet attrs) {
         // TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.UnreadCountCustomView);
-        // setBackgroundColor(a.getColor(a.getIndex(0), ContextCompat.getColor(context, R.color.green700_desaturated)));
+        // setBackgroundColor(a.getColor(a.getIndex(0), ContextCompat.getColor(context, R.color.green700)));
         // a.recycle();
     }
 

@@ -340,7 +340,6 @@ public final class HttpFileUploadManager extends Manager {
         CipherInputStream cis = new CipherInputStream(fis, cipher);
 
         uploadFile(cis, cipherFileLength, slot, listener);
-
         return new AesgcmUrl(slotUrl, key, iv);
     }
 

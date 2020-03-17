@@ -20,10 +20,11 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.AvatarCacheUtils;
 import net.java.sip.communicator.util.DataObject;
 
+import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.json.*;
+import org.jxmpp.jid.BareJid;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -553,7 +554,10 @@ public class MetaContactImpl extends DataObject implements MetaContact
             if (protoContact == null)
                 continue;
 
-            mCachedAvatar = AvatarCacheUtils.getCachedAvatar(protoContact);
+            // mCachedAvatar = AvatarCacheUtils.getCachedAvatar(protoContact);
+            BareJid bareJid = protoContact.getJid().asBareJid();
+            mCachedAvatar = AvatarManager.getAvatarImageByJid(bareJid);
+
             /*
              * Caching a zero-length avatar happens but such an avatar isn't very useful.
              */
@@ -964,7 +968,9 @@ public class MetaContactImpl extends DataObject implements MetaContact
         this.mCachedAvatar = avatarBytes;
         this.avatarFileCacheAlreadyQueried = true;
 
-        AvatarCacheUtils.cacheAvatar(protoContact, avatarBytes);
+        // AvatarCacheUtils.cacheAvatar(protoContact, avatarBytes);
+        BareJid userId = protoContact.getJid().asBareJid();
+        AvatarManager.addAvatarImage(userId, avatarBytes, false);
     }
 
     /**

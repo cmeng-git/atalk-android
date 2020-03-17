@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="@dimen/status_spin_height_small"
+    style="@style/SpinnerItem.DropDownItem"
     android:orientation="horizontal">
 
     <ImageView

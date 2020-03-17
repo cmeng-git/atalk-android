@@ -36,6 +36,7 @@
         android:layout_marginTop="@dimen/between_padding"
         android:padding="@dimen/between_padding"
         style="@style/LargeFont"
+        android:textColor="@color/textColorWhite"
         android:text="@string/service_gui_WAITING" />
 
     <ProgressBar

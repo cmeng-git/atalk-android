@@ -33,6 +33,7 @@ import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class SecurityActivity extends OSGiActivity implements SecurityProtocolsDialogFragment.DialogClosedListener
 {
@@ -70,7 +71,6 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_32,
             SrtpCryptoSuite.F8_128_HMAC_SHA1_80
     };
-
 
     /**
      * Fragment implementing {@link Preference} support in this activity.

@@ -46,12 +46,11 @@ public class StatusListAdapter extends ArrayAdapter<PresenceStatus>
             statusItemView = convertView;
         }
 
-        TextView statusNameView = statusItemView.findViewById(R.id.presenceStatusNameView);
         statusIconView = statusItemView.findViewById(R.id.presenceStatusIconView);
-
-        PresenceStatus presenceStatus = getItem(position);
+        TextView statusNameView = statusItemView.findViewById(R.id.presenceStatusNameView);
 
         // Set status name
+        PresenceStatus presenceStatus = getItem(position);
         String statusName = presenceStatus.getStatusName();
         statusNameView.setText(statusName);
 

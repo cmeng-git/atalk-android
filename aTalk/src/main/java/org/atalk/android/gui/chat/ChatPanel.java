@@ -110,6 +110,12 @@ public class ChatPanel implements Chat, MessageListener
     private boolean cacheRefresh = false;
 
     /**
+     * Blocked caching of the next new message if it is sent via sendMessage().
+     * Else there will have duplicated display messages
+     */
+    private boolean cacheBlocked = false;
+
+    /**
      * Registered chatFragment to be informed of any messageReceived event
      */
     private final List<ChatSessionListener> msgListeners = new ArrayList<>();
@@ -566,20 +572,24 @@ public class ChatPanel implements Chat, MessageListener
     public void setMessage(String message)
     {
         throw new RuntimeException("Not supported yet");
+        //??? chatController.msgEdit.setText(message);
     }
 
-    public static void sendMessage(Object descriptor, String message, int encType)
-    {
-    }
+//    public static void sendMessage(Object descriptor, String message, int encType)
+//    {
+//    }
 
     /**
-     * Sends the chat message or corrects the last message if the chatPanel has correction UID set.
+     * Sends the message and blocked message caching for this message; otherwise the single send message
+     * will appear twice in the chat fragment i.e. inserted and cached e.g. from share link
      *
      * @param message the text string to be sent
      * @param encType The encType of the message to be sent: RemoteOnly | 1=text/html or 0=text/plain.
      */
     public void sendMessage(String message, int encType)
     {
+        cacheBlocked = true;
+
         int encryption = IMessage.ENCRYPTION_NONE;
         if (isOmemoChat())
             encryption = IMessage.ENCRYPTION_OMEMO;
@@ -734,13 +744,18 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Caches next message.
+     * Caches next message when chat is not in focus and it is not being blocked via sendMessage().
+     * Otherwise duplicated messages when share link
      *
      * @param newMsg the next message to cache.
      */
     private void cacheNextMsg(ChatMessageImpl newMsg)
     {
-        msgCache.add(newMsg);
+        // Timber.d("Cache blocked is %s for: %s", cacheBlocked, newMsg.getMessage());
+        if (!cacheBlocked) {
+            msgCache.add(newMsg);
+        }
+        cacheBlocked = false;
     }
 
     /**
@@ -1005,7 +1020,7 @@ public class ChatPanel implements Chat, MessageListener
                 try {
                     mCurrentChatTransport.inviteChatContact(JidCreate.entityBareFrom(contactAddress), reason);
                 } catch (XmppStringprepException e) {
-                    e.printStackTrace();
+                    Timber.w("Group chat invitees Jid create error: %s, %s", contactAddress, e.getMessage());
                 }
             }
         }

@@ -68,6 +68,7 @@ public class About extends Activity implements OnClickListener
             new String[]{"libvpx", "https://github.com/webmproject/libvpx"},
             new String[]{"Mime4j", "https://james.apache.org/mime4j/"},
             new String[]{"miniDNS", "https://github.com/MiniDNS/minidns"},
+            new String[]{"Noembed", "https://noembed.com/"},
             new String[]{"otr4j", "https://github.com/jitsi/otr4j"},
             new String[]{"opensles", "https://github.com/openssl/openssl "},
             new String[]{"osgi.core", "http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0"},
@@ -151,8 +152,8 @@ public class About extends Activity implements OnClickListener
 
     public void onCreate(Bundle savedInstanceState)
     {
+        setTheme(aTalkApp.getAppThemeResourceId());
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_LEFT_ICON);
         setContentView(R.layout.about);
 
@@ -162,7 +163,7 @@ public class About extends Activity implements OnClickListener
         TextView atalkHelp = findViewById(R.id.atalk_help);
 //        atalkHelp.setText(Html.fromHtml(getString(R.string.AboutDialog_help)));
 //        atalkHelp.setMovementMethod(LinkMovementMethod.getInstance());
-        atalkHelp.setTextColor(getResources().getColor(R.color.light_blue));
+        atalkHelp.setTextColor(getResources().getColor(R.color.blue50));
         atalkHelp.setOnClickListener(this);
 
         findViewById(R.id.ok_button).setOnClickListener(this);
@@ -182,7 +183,7 @@ public class About extends Activity implements OnClickListener
         wv.loadDataWithBaseURL("file:///android_res/drawable/", aboutInfo, "text/html", "utf-8", null);
 
         setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
-        this.setTitle(getString(R.string.AboutDialog_title));
+        setTitle(getString(R.string.AboutDialog_title));
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
 

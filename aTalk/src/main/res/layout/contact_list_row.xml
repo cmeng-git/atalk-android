@@ -133,7 +133,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/chatarrow_dark"
+        android:src="@drawable/chat_arrow_dark"
         android:visibility="invisible" />
 
     <LinearLayout
@@ -142,7 +142,7 @@
         android:layout_height="fill_parent"
         android:layout_above="@id/selectedBackgroundIcon"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/chatseparator"
+        android:background="@drawable/chat_separator"
         android:orientation="horizontal"
         android:visibility="invisible" />
 
@@ -152,7 +152,7 @@
         android:layout_height="fill_parent"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/selectedBackgroundIcon"
-        android:background="@drawable/chatseparator"
+        android:background="@drawable/chat_separator"
         android:orientation="horizontal"
         android:visibility="invisible" />
 

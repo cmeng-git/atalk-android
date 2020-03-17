@@ -5,6 +5,8 @@
  */
 package org.atalk.android.gui.settings;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
@@ -17,6 +19,7 @@ import net.java.sip.communicator.util.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.aTalkApp.Theme;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
@@ -48,70 +51,71 @@ import timber.log.Timber;
 public class SettingsActivity extends OSGiActivity
 {
     // PreferenceScreen and PreferenceCategories
-    static private final String PC_KEY_MEDIA_CALL = aTalkApp.getResString(R.string.pref_cat_settings_media_call);
-    static private final String PC_KEY_CALL = aTalkApp.getResString(R.string.pref_cat_settings_call);
+    private static final String PC_KEY_MEDIA_CALL = aTalkApp.getResString(R.string.pref_cat_settings_media_call);
+    private static final String PC_KEY_CALL = aTalkApp.getResString(R.string.pref_cat_settings_call);
 
     // Advance video/audio settings
-    static private final String PC_KEY_VIDEO = aTalkApp.getResString(R.string.pref_cat_settings_video);
-    static private final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
-    static private final String PC_KEY_ADVANCED = aTalkApp.getResString(R.string.pref_cat_settings_advanced);
+    private static final String PC_KEY_VIDEO = aTalkApp.getResString(R.string.pref_cat_settings_video);
+    private static final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
+    private static final String PC_KEY_ADVANCED = aTalkApp.getResString(R.string.pref_cat_settings_advanced);
 
 
     // Interface Display settings
-    static private final String P_KEY_LOCALE = aTalkApp.getResString(R.string.pref_key_locale);
-    static public final String P_KEY_THEME = aTalkApp.getResString(R.string.pref_key_theme);
+    private static final String P_KEY_LOCALE = aTalkApp.getResString(R.string.pref_key_locale);
+    public static final String P_KEY_THEME = aTalkApp.getResString(R.string.pref_key_theme);
 
-    static private final String P_KEY_WEB_PAGE = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
+    private static final String P_KEY_WEB_PAGE = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
 
     // Message section
-    static private final String P_KEY_AUTO_START = aTalkApp.getResString(R.string.pref_key_atalk_auto_start);
-    static private final String P_KEY_LOG_CHAT_HISTORY = aTalkApp.getResString(R.string.pref_key_history_logging);
-    static private final String P_KEY_SHOW_HISTORY = aTalkApp.getResString(R.string.pref_key_show_history);
-    static private final String P_KEY_HISTORY_SIZE = aTalkApp.getResString(R.string.pref_key_chat_history_size);
-    static private final String P_KEY_MESSAGE_DELIVERY_RECEIPT = aTalkApp.getResString(R.string.pref_key_message_delivery_receipt);
-    static private final String P_KEY_CHAT_STATE_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_chat_state_notifications);
-    static private final String P_KEY_XFER_THUMBNAIL_PREVIEW = aTalkApp.getResString(R.string.pref_key_send_thumbnail);
-    static private final String P_KEY_AUTO_ACCEPT_FILE = aTalkApp.getResString(R.string.pref_key_auto_accept_file);
-    static private final String P_KEY_PRESENCE_SUBSCRIBE_MODE = aTalkApp.getResString(R.string.pref_key_presence_subscribe_mode);
+    private static final String P_KEY_AUTO_START = aTalkApp.getResString(R.string.pref_key_atalk_auto_start);
+    private static final String P_KEY_LOG_CHAT_HISTORY = aTalkApp.getResString(R.string.pref_key_history_logging);
+    private static final String P_KEY_SHOW_HISTORY = aTalkApp.getResString(R.string.pref_key_show_history);
+    private static final String P_KEY_HISTORY_SIZE = aTalkApp.getResString(R.string.pref_key_chat_history_size);
+    private static final String P_KEY_MESSAGE_DELIVERY_RECEIPT = aTalkApp.getResString(R.string.pref_key_message_delivery_receipt);
+    private static final String P_KEY_CHAT_STATE_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_chat_state_notifications);
+    private static final String P_KEY_XFER_THUMBNAIL_PREVIEW = aTalkApp.getResString(R.string.pref_key_send_thumbnail);
+    private static final String P_KEY_AUTO_ACCEPT_FILE = aTalkApp.getResString(R.string.pref_key_auto_accept_file);
+    private static final String P_KEY_PRESENCE_SUBSCRIBE_MODE = aTalkApp.getResString(R.string.pref_key_presence_subscribe_mode);
 
-    // static private final String P_KEY_AUTO_UPDATE_CHECK_ENABLE
+    // private static final String P_KEY_AUTO_UPDATE_CHECK_ENABLE
     //      = aTalkApp.getResString(R.string.pref_key_auto_update_check_enable);
 
     /*
      * Chat alerter is not implemented on Android
-     * static private final String P_KEY_CHAT_ALERTS = aTalkApp.getResString(R.string.pref_key_chat_alerts);
+     * private static final String P_KEY_CHAT_ALERTS = aTalkApp.getResString(R.string.pref_key_chat_alerts);
      */
 
     // Notifications
-    static private final String P_KEY_POPUP_HANDLER = aTalkApp.getResString(R.string.pref_key_popup_handler);
-    static private final String P_KEY_QUIET_HOURS_ENABLE = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
-    static private final String P_KEY_QUIET_HOURS_START = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
-    static private final String P_KEY_QUIET_HOURS_END = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
+    private static final String P_KEY_POPUP_HANDLER = aTalkApp.getResString(R.string.pref_key_popup_handler);
+    private static final String P_KEY_QUIET_HOURS_ENABLE = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
+    private static final String P_KEY_QUIET_HOURS_START = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
+    private static final String P_KEY_QUIET_HOURS_END = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
+    private static final String P_KEY_HEADS_UP_ENABLE = aTalkApp.getResString(R.string.pref_key_heads_up_enable);
 
     // Call section
-    static private final String P_KEY_NORMALIZE_PNUMBER = aTalkApp.getResString(R.string.pref_key_normalize_pnumber);
-    static private final String P_KEY_ACCEPT_ALPHA_PNUMBERS = aTalkApp.getResString(R.string.pref_key_accept_alpha_pnumbers);
+    private static final String P_KEY_NORMALIZE_PNUMBER = aTalkApp.getResString(R.string.pref_key_normalize_pnumber);
+    private static final String P_KEY_ACCEPT_ALPHA_PNUMBERS = aTalkApp.getResString(R.string.pref_key_accept_alpha_pnumbers);
 
     // Audio settings
-    static private final String P_KEY_AUDIO_ECHO_CANCEL = aTalkApp.getResString(R.string.pref_key_audio_echo_cancel);
-    static private final String P_KEY_AUDIO_AGC = aTalkApp.getResString(R.string.pref_key_audio_agc);
-    static private final String P_KEY_AUDIO_DENOISE = aTalkApp.getResString(R.string.pref_key_audio_denoise);
+    private static final String P_KEY_AUDIO_ECHO_CANCEL = aTalkApp.getResString(R.string.pref_key_audio_echo_cancel);
+    private static final String P_KEY_AUDIO_AGC = aTalkApp.getResString(R.string.pref_key_audio_agc);
+    private static final String P_KEY_AUDIO_DENOISE = aTalkApp.getResString(R.string.pref_key_audio_denoise);
 
     // Video settings
-    static private final String P_KEY_VIDEO_CAMERA = aTalkApp.getResString(R.string.pref_key_video_camera);
+    private static final String P_KEY_VIDEO_CAMERA = aTalkApp.getResString(R.string.pref_key_video_camera);
     // Hardware encoding(API16)
-    static private final String P_KEY_VIDEO_HW_ENCODE = aTalkApp.getResString(R.string.pref_key_video_hw_encode);
+    private static final String P_KEY_VIDEO_HW_ENCODE = aTalkApp.getResString(R.string.pref_key_video_hw_encode);
     // Direct surface encoding(hw encoding required and API18)
-    static private final String P_KEY_VIDEO_ENC_DIRECT_SURFACE = aTalkApp.getResString(R.string.pref_key_video_surface_encode);
+    private static final String P_KEY_VIDEO_ENC_DIRECT_SURFACE = aTalkApp.getResString(R.string.pref_key_video_surface_encode);
     // Hardware decoding(API16)
-    static private final String P_KEY_VIDEO_HW_DECODE = aTalkApp.getResString(R.string.pref_key_video_hw_decode);
+    private static final String P_KEY_VIDEO_HW_DECODE = aTalkApp.getResString(R.string.pref_key_video_hw_decode);
     // Video resolutions
-    static private final String P_KEY_VIDEO_RES = aTalkApp.getResString(R.string.pref_key_video_resolution);
+    private static final String P_KEY_VIDEO_RES = aTalkApp.getResString(R.string.pref_key_video_resolution);
     // Video advanced settings
-    static private final String P_KEY_VIDEO_LIMIT_FPS = aTalkApp.getResString(R.string.pref_key_video_limit_fps);
-    static private final String P_KEY_VIDEO_TARGET_FPS = aTalkApp.getResString(R.string.pref_key_video_target_fps);
-    static private final String P_KEY_VIDEO_MAX_BANDWIDTH = aTalkApp.getResString(R.string.pref_key_video_max_bandwidth);
-    static private final String P_KEY_VIDEO_BITRATE = aTalkApp.getResString(R.string.pref_key_video_bitrate);
+    private static final String P_KEY_VIDEO_LIMIT_FPS = aTalkApp.getResString(R.string.pref_key_video_limit_fps);
+    private static final String P_KEY_VIDEO_TARGET_FPS = aTalkApp.getResString(R.string.pref_key_video_target_fps);
+    private static final String P_KEY_VIDEO_MAX_BANDWIDTH = aTalkApp.getResString(R.string.pref_key_video_max_bandwidth);
+    private static final String P_KEY_VIDEO_BITRATE = aTalkApp.getResString(R.string.pref_key_video_bitrate);
 
     // User option property names
     public static final String AUTO_UPDATE_CHECK_ENABLE = "user.AUTO_UPDATE_CHECK_ENABLE";
@@ -135,7 +139,7 @@ public class SettingsActivity extends OSGiActivity
     }
 
     /**
-     * The preferences fragment implements Jitsi settings.
+     * The preferences fragment implements aTalk settings.
      */
     public static class SettingsFragment extends OSGiPreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener
@@ -175,12 +179,11 @@ public class SettingsActivity extends OSGiActivity
             // FFR: v2.1.5 NPE; use UtilActivator instead of AndroidGUIActivator which was initialize much later
             mConfigService = UtilActivator.getConfigurationService();
 
-            // init display locale
+            // init display locale and theme (not implemented)
             initLocale();
+            initTheme();
 
             initWebPagePreference();
-            // Init display theme - not implemented
-            // aTalkApp.initTheme();
 
             // Messages section
             initMessagesPreferences();
@@ -223,29 +226,31 @@ public class SettingsActivity extends OSGiActivity
         /**
          * Initialize web default access page
          */
-        private void initWebPagePreference() {
+        private void initWebPagePreference()
+        {
             // Updates displayed history size summary.
             EditTextPreference webPagePref = (EditTextPreference) findPreference(P_KEY_WEB_PAGE);
             webPagePref.setText(ConfigurationUtils.getWebPage());
             updateWebPageSummary();
         }
 
-        private void updateWebPageSummary() {
+        private void updateWebPageSummary()
+        {
             EditTextPreference webPagePref = (EditTextPreference) findPreference(P_KEY_WEB_PAGE);
             webPagePref.setSummary(ConfigurationUtils.getWebPage());
         }
 
         /**
-         * Initialize interface locale
+         * Initialize interface Locale
          */
         protected void initLocale()
         {
             // Immutable empty {@link CharSequence} array
             CharSequence[] EMPTY_CHAR_SEQUENCE_ARRAY = new CharSequence[0];
-            final ListPreference localePreference = (ListPreference) findPreference(P_KEY_LOCALE);
+            final ListPreference pLocale = (ListPreference) findPreference(P_KEY_LOCALE);
 
-            List<CharSequence> entryVector = new ArrayList<>(Arrays.asList(localePreference.getEntries()));
-            List<CharSequence> entryValueVector = new ArrayList<>(Arrays.asList(localePreference.getEntryValues()));
+            List<CharSequence> entryVector = new ArrayList<>(Arrays.asList(pLocale.getEntries()));
+            List<CharSequence> entryValueVector = new ArrayList<>(Arrays.asList(pLocale.getEntryValues()));
             String[] supportedLanguages = getResources().getStringArray(R.array.supported_languages);
             Set<String> supportedLanguageSet = new HashSet<>(Arrays.asList(supportedLanguages));
             for (int i = entryVector.size() - 1; i > -1; --i) {
@@ -257,23 +262,61 @@ public class SettingsActivity extends OSGiActivity
 
             CharSequence[] entries = entryVector.toArray(EMPTY_CHAR_SEQUENCE_ARRAY);
             CharSequence[] entryValues = entryValueVector.toArray(EMPTY_CHAR_SEQUENCE_ARRAY);
-            String language = aTalk.getATLanguage();
+            String language = aTalkApp.getATLanguage();
 
-            localePreference.setEntries(entries);
-            localePreference.setEntryValues(entryValues);
-            localePreference.setValue(language);
-            localePreference.setSummary(localePreference.getEntry());
+            pLocale.setEntries(entries);
+            pLocale.setEntryValues(entryValues);
+            pLocale.setValue(language);
+            pLocale.setSummary(pLocale.getEntry());
 
-            // summaryMapper not working for initLocal ?? so use this instead
-            localePreference.setOnPreferenceChangeListener((preference, value) -> {
+            // summaryMapper not working for Locale, so use this instead
+            pLocale.setOnPreferenceChangeListener((preference, value) -> {
                 String language1 = value.toString();
-                localePreference.setValue(language1);
-                localePreference.setSummary(localePreference.getEntry());
+                pLocale.setValue(language1);
+                pLocale.setSummary(pLocale.getEntry());
 
                 mConfigService.setProperty(P_KEY_LOCALE, language1);
-                aTalk.setATLanguage(language1);
-                aTalk.setLanguage(aTalkApp.getGlobalContext(), language1);
-                aTalk.setPrefChange(true);
+                aTalkApp.setATLanguage(language1);
+
+                // Need to destroy and restart to set new Theme if there is a change
+                if (!language.equals(value)) {
+                    Activity activity = getActivity();
+                    aTalk.setPrefChange(true);
+                    aTalkApp.setLanguage(activity);
+                    activity.finish();
+                    activity.startActivity(new Intent(activity, SettingsActivity.class));
+                }
+                return true;
+            });
+        }
+
+        /**
+         * Initialize interface Theme
+         */
+        protected void initTheme()
+        {
+            final ListPreference pTheme = (ListPreference) findPreference(P_KEY_THEME);
+            String nTheme = (aTalkApp.getAppTheme() == Theme.LIGHT) ? "light" : "dark";
+            pTheme.setValue(nTheme);
+            pTheme.setSummary(pTheme.getEntry());
+
+            // summaryMapper not working for Theme. so use this instead
+            pTheme.setOnPreferenceChangeListener((preference, value) -> {
+                pTheme.setValue((String) value);
+                pTheme.setSummary(pTheme.getEntry());
+
+                // Save Display Theme to DB
+                Theme vTheme = value.equals("light") ? Theme.LIGHT : Theme.DARK;
+                mConfigService.setProperty(P_KEY_THEME, vTheme.ordinal());
+                aTalkApp.setAppTheme(vTheme);
+
+                // Need to destroy and restart to set new Theme if there is a change
+                if (!nTheme.equals(value)) {
+                    Activity activity = getActivity();
+                    aTalk.setPrefChange(true);
+                    activity.finish();
+                    activity.startActivity(new Intent(activity, SettingsActivity.class));
+                }
                 return true;
             });
         }
@@ -425,6 +468,9 @@ public class SettingsActivity extends OSGiActivity
             SharedPreferences.Editor editor = getPreferenceScreen().getEditor();
             editor.putLong(P_KEY_QUIET_HOURS_START, ConfigurationUtils.getQuiteHoursStart());
             editor.putLong(P_KEY_QUIET_HOURS_END, ConfigurationUtils.getQuiteHoursEnd());
+
+            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_HEADS_UP_ENABLE,
+                    ConfigurationUtils.isHeadsUpEnable());
         }
 
         /**
@@ -707,6 +753,9 @@ public class SettingsActivity extends OSGiActivity
             else if (key.equals(P_KEY_QUIET_HOURS_END)) {
                 ConfigurationUtils.setQuiteHoursEnd(shPreferences.getLong(P_KEY_QUIET_HOURS_END, TimePreference.DEFAULT_VALUE));
             }
+            else if (key.equals(P_KEY_HEADS_UP_ENABLE)) {
+                ConfigurationUtils.setHeadsUp(shPreferences.getBoolean(P_KEY_HEADS_UP_ENABLE, true));
+            }
             // Normalize phone number
             else if (key.equals(P_KEY_NORMALIZE_PNUMBER)) {
                 ConfigurationUtils.setNormalizePhoneNumber(shPreferences.getBoolean(P_KEY_NORMALIZE_PNUMBER, true));
@@ -793,12 +842,6 @@ public class SettingsActivity extends OSGiActivity
                 }
                 deviceConfig.setVideoBitrate(bitrate);
                 ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
-            }
-            // Interface Display Theme
-            else if (key.equals(P_KEY_THEME)) {
-                int theme = shPreferences.getInt(P_KEY_THEME, aTalkApp.mTheme.ordinal());
-                mConfigService.setProperty(P_KEY_THEME, theme);
-                aTalkApp.initTheme();
             }
         }
     }

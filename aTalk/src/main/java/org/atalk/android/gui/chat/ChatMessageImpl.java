@@ -33,14 +33,22 @@ import timber.log.Timber;
 public class ChatMessageImpl implements ChatMessage
 {
     /**
-     * The name of the contact sending the message.
+     * The string Id of the message sender. The value is used in quoted messages.
+     * Actual value pending message type i.e.:
+     * userId: delivered chat message e.g. swordfish@atalk.org
+     * contactId: received chat message e.g. leopoard@atalk.org
+     * chatRoom: delivered group chat message e.g. conference@atalk.org
+     * nickName: received group chat message e.g. leopard
+     *
+     * Exception as recipient:
+     * contactId: ChatMessage.MESSAGE_FILE_TRANSFER_SEND & ChatMessage.MESSAGE_STICKER_SEND:
      */
-    private String contactName;
+    private String mSender;
 
     /**
-     * The display name of the contact sending the message.
+     * The display name of the message sender. It may be the same as sender
      */
-    private String contactDisplayName;
+    private String mSenderName;
 
     /**
      * The date and time of the message.
@@ -78,12 +86,19 @@ public class ChatMessageImpl implements ChatMessage
     private String messageUID;
 
     /**
-     * The unique identifier of the message that this message should replace, or <tt>null</tt> if
-     * this is a new message.
+     * The unique identifier of the last message that this message should replace,
+     * or <tt>null</tt> if this is a new message.
      */
     private String correctedMessageUID;
 
+    /**
+     * The sent message stanza Id.
+     */
     private String mServerMsgId;
+
+    /**
+     * The received message stanza Id.
+     */
     private String mRemoteMsgId;
 
     /**
@@ -109,39 +124,34 @@ public class ChatMessageImpl implements ChatMessage
      */
     private FileRecord fileRecord;
 
-    public ChatMessageImpl(String contactName, String displayName, Date date, int messageType, int mimeType,
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType,
             String content, String messageUID)
     {
-        this(contactName, displayName, date, messageType, mimeType, content,
-                IMessage.ENCRYPTION_NONE, messageUID, null,
-                ChatMessage.MESSAGE_DELIVERY_NONE, "", "",
-                null, null, null);
+        this(sender, senderName, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null,
+                ChatMessage.MESSAGE_DELIVERY_NONE, "", "", null, null, null);
     }
 
-
-    public ChatMessageImpl(String contactName, String displayName, Date date, int messageType, IMessage msg,
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg,
             String correctedMessageUID)
     {
-        this(contactName, displayName, date, messageType, msg.getMimeType(), msg.getContent(),
+        this(sender, senderName, date, messageType, msg.getMimeType(), msg.getContent(),
                 msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUID,
                 msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(),
                 null, null, null);
     }
 
-    public ChatMessageImpl(String contactName, Date date, int messageType, int mimeType, String content,
+    public ChatMessageImpl(String sender, Date date, int messageType, int mimeType, String content,
             String messageUID, OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
-        this(contactName, contactName, date, messageType, mimeType, content,
-                IMessage.ENCRYPTION_NONE, messageUID, null,
-                ChatMessage.MESSAGE_DELIVERY_NONE, null, null,
-                opSet, request, fileRecord);
+        this(sender, sender, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null,
+                ChatMessage.MESSAGE_DELIVERY_NONE, null, null, opSet, request, fileRecord);
     }
 
     /**
      * Creates a <tt>ChatMessageImpl</tt> by specifying all parameters of the message.
      *
-     * @param contactName the name of the contact
-     * @param contactDisplayName the contact display name
+     * @param sender The string Id of the message sender.
+     * @param senderName the sender display name
      * @param date the DateTimeStamp
      * @param messageType the type (INCOMING, OUTGOING, SYSTEM etc)
      * @param mimeType the content type of the message
@@ -156,14 +166,13 @@ public class ChatMessageImpl implements ChatMessage
      * @param request IncomingFileTransferRequest or HttpFileDownloadJabberImpl
      * @param fileRecord The history file record.
      */
-
-    public ChatMessageImpl(String contactName, String contactDisplayName, Date date, int messageType, int mimeType,
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType,
             String content, int encryptionType, String messageUID, String correctedMessageUID,
             int receiptStatus, String serverMsgId, String remoteMsgId,
             OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
-        this.contactName = contactName;
-        this.contactDisplayName = contactDisplayName;
+        this.mSender = sender;
+        this.mSenderName = senderName;
         this.date = date;
         this.messageType = messageType;
         this.mimeType = mimeType;
@@ -195,25 +204,25 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Returns the name of the contact sending the message.
+     * Returns the name of the entity sending the message.
      *
-     * @return the name of the contact sending the message.
+     * @return the name of the entity sending the message.
      */
     @Override
-    public String getContactName()
+    public String getSender()
     {
-        return contactName;
+        return mSender;
     }
 
     /**
-     * Returns the display name of the contact sending the message.
+     * Returns the display name of the entity sending the message.
      *
-     * @return the display name of the contact sending the message
+     * @return the display name of the entity sending the message
      */
     @Override
-    public String getContactDisplayName()
+    public String getSenderName()
     {
-        return contactDisplayName;
+        return mSenderName;
     }
 
     /**
@@ -470,9 +479,9 @@ public class ChatMessageImpl implements ChatMessage
         // New LatLng message always treated as non-consecutiveMessage
         boolean nonLatLng = (!TextUtils.isEmpty(message) && !message.contains("LatLng:"));
         // Same message type and from the same contactName
-        boolean mTypeJidEqual = ((contactName != null)
+        boolean mTypeJidEqual = ((mSender != null)
                 && (messageType == nextMsg.getMessageType())
-                && contactName.equals(nextMsg.getContactName()));
+                && mSender.equals(nextMsg.getSender()));
         // same message encryption type
         boolean encTypeSame = (encryptionType == nextMsg.getEncryptionType());
         // true if the new message is within a minute from the last one
@@ -485,31 +494,30 @@ public class ChatMessageImpl implements ChatMessage
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)
     {
-        final Contact contact = evt.getDestinationContact();
+        final String sender = evt.getDestinationContact().getProtocolProvider().getAccountID().getAccountJid();
         final IMessage message = evt.getSourceMessage();
 
-        return new ChatMessageImpl(contact.getProtocolProvider().getAccountID().getAccountJid(),
-                getAccountDisplayName(contact.getProtocolProvider()), evt.getTimestamp(),
+        return new ChatMessageImpl(sender, sender, evt.getTimestamp(),
                 ChatMessage.MESSAGE_OUT, message, evt.getCorrectedMessageUID());
     }
 
     static public ChatMessageImpl getMsgForEvent(final MessageReceivedEvent evt)
     {
         final IMessage message = evt.getSourceMessage();
-        final Contact protocolContact = evt.getSourceContact();
+        final Contact contact = evt.getSourceContact();
         final MetaContact metaContact
-                = AndroidGUIActivator.getContactListService().findMetaContactByContact(protocolContact);
+                = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
 
-        return new ChatMessageImpl(protocolContact.getAddress(), metaContact.getDisplayName(),
+        return new ChatMessageImpl(contact.getAddress(), metaContact.getDisplayName(),
                 evt.getTimestamp(), evt.getEventType(), message, evt.getCorrectedMessageUID());
     }
 
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageDeliveredEvent evt)
     {
         final IMessage message = evt.getMessage();
-        ChatRoom chatRoom = evt.getSourceChatRoom();
+        String chatRoom = evt.getSourceChatRoom().getName();
 
-        return new ChatMessageImpl(chatRoom.toString(), chatRoom.getName(), evt.getTimestamp(),
+        return new ChatMessageImpl(chatRoom, chatRoom, evt.getTimestamp(),
                 ChatMessage.MESSAGE_MUC_OUT, message, null);
     }
 
@@ -520,7 +528,7 @@ public class ChatMessageImpl implements ChatMessage
         // Extract the contact with the resource part
         String contact = evt.getSourceChatRoomMember().getContactAddress(); //.split("/")[0];
 
-        return new ChatMessageImpl(contact, nickName, evt.getTimestamp(), evt.getEventType(), message, null);
+        return new ChatMessageImpl(nickName, nickName, evt.getTimestamp(), evt.getEventType(), message, null);
     }
 
     static public ChatMessageImpl getMsgForEvent(final FileRecord fileRecord)

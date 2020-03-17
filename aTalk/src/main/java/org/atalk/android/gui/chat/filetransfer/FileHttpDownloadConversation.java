@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.*;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
@@ -76,9 +77,9 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     private DownloadReceiver downloadReceiver = null;
     private FileHistoryServiceImpl mFHS;
 
-    private FileHttpDownloadConversation(ChatFragment cPanel)
+    private FileHttpDownloadConversation(ChatFragment cPanel, String dir)
     {
-        super(cPanel);
+        super(cPanel, dir);
     }
 
     /**
@@ -92,7 +93,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     public static FileHttpDownloadConversation newInstance(ChatFragment cPanel, String sender,
             HttpFileDownloadJabberImpl httpFileTransferJabber, final Date date)
     {
-        FileHttpDownloadConversation fragmentRFC = new FileHttpDownloadConversation(cPanel);
+        FileHttpDownloadConversation fragmentRFC = new FileHttpDownloadConversation(cPanel, FileRecord.IN);
         fragmentRFC.mSender = sender;
         fragmentRFC.httpFileTransferJabber = httpFileTransferJabber;
         fragmentRFC.mDate = GuiUtils.formatDateTime(date);
@@ -108,7 +109,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     {
         msgViewId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
-        messageViewHolder.arrowDir.setImageResource(R.drawable.filexferarrowin);
+        // messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_in);
         messageViewHolder.stickerView.setImageDrawable(null);
 
         messageViewHolder.timeView.setText(mDate);
@@ -135,10 +136,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 initHttpFileDownload();
             });
 
-            boolean isAutoAccept = ((fileSize == -1)
-                    || (fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize()));
-            if (isAutoAccept)
+            if ((fileSize == -1)
+                    || ((fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize()))) {
                 initHttpFileDownload();
+            }
 
             messageViewHolder.retryButton.setOnClickListener(v -> initHttpFileDownload());
 
@@ -207,7 +208,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
             case FileTransferStatusChangeEvent.FAILED:
                 // hideProgressRelatedComponents(); keep the status info for user view
+                messageViewHolder.acceptButton.setVisibility(View.GONE);
+                messageViewHolder.rejectButton.setVisibility(View.GONE);
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
+
                 messageViewHolder.retryButton.setVisibility(View.VISIBLE);
 
                 String errMessage = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mSender);
@@ -245,10 +249,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 bgAlert = true;
                 break;
         }
-        messageViewHolder.timeView.setText(mDate);
         if (bgAlert) {
             messageViewHolder.fileStatus.setTextColor(UtilActivator.getResources().getColor("red"));
         }
+        messageViewHolder.timeView.setText(mDate);
 
         // Must clean up all Download Manager parameters if passed IN_PROGRESS stage
         if ((FileTransferStatusChangeEvent.IN_PROGRESS != status) && (FileTransferStatusChangeEvent.PREPARING != status)) {
@@ -514,6 +518,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 else if (lastJobStatus == DownloadManager.STATUS_FAILED) {
                     updateView(FileTransferStatusChangeEvent.FAILED, null);
                 }
+            } else if (DownloadManager.STATUS_FAILED == lastJobStatus) {
+                updateView(FileTransferStatusChangeEvent.FAILED, dnLink);
             }
         }
     }

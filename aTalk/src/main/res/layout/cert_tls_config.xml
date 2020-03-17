@@ -3,8 +3,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/theme_background"
+    android:background="?attr/colorBackground"
     android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
     android:padding="@dimen/screen_padding">
 
     <TextView
@@ -46,8 +48,7 @@
 
     <Spinner
         android:id="@+id/cboCert"
-        style="@style/SpinnerView"
-        android:layout_width="match_parent" />
+        style="@style/SpinnerView" />
 
     <LinearLayout
         android:layout_width="match_parent"

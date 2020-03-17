@@ -6,10 +6,12 @@
         android:title="@string/service_gui_JBR_USER_CATEGORY">
         <EditTextPreference
             android:enabled="true"
+            android:dialogMessage="\n"
             android:key="@string/pref_key_user_id"
             android:title="@string/service_gui_JBR_USER" />
         <EditTextPreference
             android:inputType="textPassword"
+            android:dialogMessage="\n"
             android:key="@string/pref_key_password"
             android:title="@string/service_gui_JBR_PASSWORD" />
         <CheckBoxPreference
@@ -61,6 +63,7 @@
                     android:defaultValue="240"
                     android:dependency="@string/pref_key_is_keep_alive_enable"
                     android:inputType="number"
+                    android:dialogMessage="\n"
                     android:key="@string/pref_key_ping_interval"
                     android:title="@string/service_gui_JBR_PING_INTERVAL" />
                 <CheckBoxPreference
@@ -79,11 +82,13 @@
                     android:title="@string/service_gui_JBR_OVERRIDE_SERVER" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_is_server_overridden"
+                    android:dialogMessage="\n"
                     android:key="@string/pref_key_server_address"
                     android:title="@string/service_gui_JBR_SERVER" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_is_server_overridden"
                     android:inputType="number"
+                    android:dialogMessage="\n"
                     android:key="@string/pref_key_server_port"
                     android:title="@string/service_gui_JBR_PORT" />
                 <ListPreference
@@ -106,10 +111,12 @@
                     android:title="@string/service_gui_JBR_RES_AUTO_GEN" />
                 <EditTextPreference
                     android:dependency="@string/pref_key_auto_gen_resource"
+                    android:dialogMessage="\n"
                     android:key="@string/pref_key_resource_name"
                     android:title="@string/service_gui_JBR_RESURCE_NAME" />
                 <EditTextPreference
                     android:inputType="number"
+                    android:dialogMessage="\n"
                     android:key="@string/pref_key_resource_priority"
                     android:title="@string/service_gui_JBR_PRIORITY" />
             </PreferenceCategory>
@@ -165,9 +172,11 @@
                 android:summary="@string/service_gui_JBR_DISABLE_JINGLE_SUMMARY"
                 android:title="@string/service_gui_JBR_DISABLE_JINGLE" />
             <EditTextPreference
+                android:dialogMessage="\n"
                 android:key="@string/pref_key_override_phone_suffix"
                 android:title="@string/service_gui_JBR_TELE_DOMAIN" />
             <EditTextPreference
+                android:dialogMessage="\n"
                 android:key="@string/pref_key_tele_bypass_gtalk_caps"
                 android:title="@string/service_gui_JBR_GTALK_DOMAIN" />
         </PreferenceScreen>

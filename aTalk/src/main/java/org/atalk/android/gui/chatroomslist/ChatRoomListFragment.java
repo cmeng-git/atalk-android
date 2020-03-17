@@ -206,7 +206,9 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         if (chatRoomListView != null) {
             scrollPosition = chatRoomListView.getFirstVisiblePosition();
             View itemView = chatRoomListView.getChildAt(0);
-            scrollTopPosition = itemView == null ? 0 : itemView.getTop();
+            scrollTopPosition = (itemView == null)? 0 : itemView.getTop();
+
+            chatRoomListView.setAdapter((ExpandableListAdapter) null);
         }
 
         // Dispose of group expand memory
@@ -215,11 +217,11 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
             listExpandHandler = null;
         }
 
-        chatRoomListView.setAdapter((ExpandableListAdapter) null);
         if (chatRoomListAdapter != null) {
             chatRoomListAdapter.dispose();
             chatRoomListAdapter = null;
         }
+
         disposeSourcesAdapter();
         super.onDestroy();
     }

@@ -753,7 +753,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             avatarView.setImageBitmap(bitmap);
         }
         else {
-            avatarView.setImageResource(R.drawable.personphoto);
+            avatarView.setImageResource(R.drawable.person_photo);
         }
     }
 
@@ -1146,7 +1146,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 return true;
             case R.id.avatar_RemovePicture:
                 imageUrlField.setText(AVATAR_ICON_REMOVE);
-                avatarView.setImageResource(R.drawable.personphoto);
+                avatarView.setImageResource(R.drawable.person_photo);
                 hasChanges = true;
                 return true;
             case R.id.avatar_Cancel:
@@ -1169,11 +1169,11 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
         }
         // Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-        Intent gallIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        gallIntent.setType("image/*");
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
         // Intent camIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-        gallIntent.putExtra(Intent.EXTRA_TITLE, R.string.service_gui_SELECT_AVATAR);
-        startActivityForResult(gallIntent, SELECT_IMAGE);
+        intent.putExtra(Intent.EXTRA_TITLE, R.string.service_gui_SELECT_AVATAR);
+        startActivityForResult(intent, SELECT_IMAGE);
     }
 
     /**

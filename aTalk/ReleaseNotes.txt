@@ -1,7 +1,40 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.2.1 (1121)
+Author:         cmeng / MilanKral
+Upload Date:	03/17/2020
+- Add user selectable Themes support
+- Implement user selectable option for heads-up notification
+- Support download and display of url image in src tag embedded in xhtml message
+- Share of youtube and other social media links are tagged with thumbnail and title
+  see https://noembed.com/#supported-sites
+- New features support for group chat: Erase chatRoom history and GPS location sending
+- Execute ChatActivity.getLastSeen() in new thread to avoid ANR
+- Upgrade glide library to v4.11.0 for better control of loadImage preview sizes for history and new medias
+- Refresh Setting... immediately when user changes Language or Theme options
+
+- Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES-256 & TWOFISH-256, and enable elliptic curve crypto using Curve 25519
+- Enhance SDES encryption with AES 256 and AES 192
+- Enhance AES-256 acceleration using OpenSSL
+
+- SetTheme() in parent class OSGIActivity for all inherited class
+- Must always call setTheme() method before super.onCreate(savedInstanceState), otherwise not working
+- Top fragment must set android:clickable="true" and android:focusable="true" to prevent touch action falls through to underlying fragment
+  e.g. telephone.xml and cert_tls_config.xml
+
+- Do not resend last message if it is a system error. Add MessageDeliveryFailedEvent.MessageDeliveryFailedEvent (e.g invitation not allowed)
+- Change GeoLocation to use callback for returning the result.
+- Remove AvatarCacheUtils class, seems cache avatars may contain partial image; fallback all getAvatar to use AvatarManager instead.
+- Remove unnecessary access to fetch vCard from server with large amount of avatar data on first login.
+- Update MessageDeliveredEvent class to include sender EntityJid/Nick (string)
+- Remove resources support for ldpi resolution
+- Preference popMenu dialog layout not override due to too many private attributes (dialog is framed with a boundary overlay)
+  Need to move to API-21 and use Theme.AppCompat in next release
+- Fixed aTalk v2.2.0 FFR
+
+=========================================================================
 Version:		2.2.0 (1120)
-Author:         cmeng
+Author:         cmeng / MilanKral
 Upload Date:	02/28/2020
 - Implement XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates
 - Fix incorrect implementation in MessageSourceService#saveRecentMessageToHistory()
@@ -1103,6 +1136,7 @@ util.AvatarCacheUtils.cacheAvatar().340 Failed to store avatar. java.io.IOExcept
 /data/data/org.atalk.android/files/avatarcache/Jabber&_coxyz123@atalk.org/hawk@atalk.org
 at net.java.sip.communicator.util.AvatarCacheUtils.cacheAvatar(AvatarCacheUtils.java:319)
 TODO: actually cacheAvatar() is not necessary as it is already handled and stored by AvatarManager???
+Update 2020031: Removed AvatarCacheUtils and fall back to use AvatarManager
 
 =========================================================================
 Version:		1.0.1 (1001)

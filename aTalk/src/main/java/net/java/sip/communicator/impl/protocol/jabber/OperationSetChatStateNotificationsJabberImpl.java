@@ -375,7 +375,6 @@ public class OperationSetChatStateNotificationsJabberImpl extends
                 sourceContact = opSetPeersPresence.createVolatileContact(bareFrom);
             }
 
-
             ChatStateNotificationEvent event = new ChatStateNotificationEvent(sourceContact, ChatState.inactive, null);
             fireChatStateNotificationsEvent(event);
         }
@@ -422,11 +421,15 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         // In private messaging we can receive errors when we left room while
         // trying to send some message (isPrivateMessagingAddress == false)
         if ((chatDescriptor == null) && (message.getError() != null)) {
-
             // create the volatile contact from new source contact
             if (message.getType() != Message.Type.groupchat) {
                 chatDescriptor = opSetPeersPresence.createVolatileContact(bareJid, false);
             }
+        }
+
+        // Must not pass in a null descriptor to ChatStateNotificationEvent() => IllegalArgumentException (FFR)
+        if (chatDescriptor == null)  {
+            chatDescriptor = bareJid;
         }
 
         ChatStateNotificationEvent event = new ChatStateNotificationEvent(chatDescriptor, state, message);

@@ -42,8 +42,8 @@ public class ComboBox extends LinearLayout
     private AutoCompleteTextView _text;
     private int unit = TypedValue.COMPLEX_UNIT_SP;
     private float fontSize = 15;
-    private int fontGrey = getResources().getColor(R.color.grey800);
-    private int fontWhite = getResources().getColor(R.color.white900);
+    private int fontGrey = getResources().getColor(R.color.textColorBlack);
+    private int fontWhite = getResources().getColor(R.color.textColorWhite);
 
     public ComboBox(Context context)
     {

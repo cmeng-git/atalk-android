@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/theme_background"
+    android:background="?attr/colorBackground"
     android:orientation="vertical"
     android:paddingLeft="@dimen/screen_padding_land"
     android:paddingRight="@dimen/screen_padding_land">
@@ -26,8 +26,7 @@
             style="@style/SpinnerView"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:background="@drawable/spinner_dark" />
+            android:layout_marginStart="4dp" />
     </LinearLayout>
 
     <LinearLayout
