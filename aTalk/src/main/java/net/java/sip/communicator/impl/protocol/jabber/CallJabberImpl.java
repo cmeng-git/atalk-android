@@ -928,7 +928,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP)) {
             CallPeerMediaHandlerJabberImpl mediaHandler = peer.getMediaHandler();
             DtlsControl dtlsControl
-                    = (DtlsControl) mediaHandler.getSrtpControls().getOrCreate(mediaType, SrtpControlType.DTLS_SRTP);
+                    = (DtlsControl) mediaHandler.getSrtpControls().getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
 
             if (dtlsControl != null) {
                 IceUdpTransportExtensionElement transport = ensureTransportOnChannel(channel, peer);

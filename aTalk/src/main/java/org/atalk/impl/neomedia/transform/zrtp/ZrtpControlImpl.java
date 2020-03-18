@@ -5,10 +5,18 @@
  */
 package org.atalk.impl.neomedia.transform.zrtp;
 
+import net.java.sip.communicator.util.ConfigurationUtils;
+
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.neomedia.*;
+import org.jxmpp.jid.BareJid;
 
 import java.util.EnumSet;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.MessageDigest;
+
 
 import gnu.java.zrtp.ZrtpCodes;
 import gnu.java.zrtp.utils.ZrtpUtils;
@@ -44,12 +52,15 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      */
     private AbstractRTPConnector zrtpConnector = null;
 
+    byte[] myZid;
+
     /**
      * Creates the control.
      */
-    public ZrtpControlImpl()
+    public ZrtpControlImpl(final byte[] myZid)
     {
         super(SrtpControlType.ZRTP);
+        this.myZid = myZid;
     }
 
     /**
@@ -200,8 +211,11 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     {
         ZRTPTransformEngine transformEngine = new ZRTPTransformEngine();
 
+        final String zidFilename = "GNUZRTP4J_"
+                + new BigInteger(myZid).toString(32) + ".zid";
+
         // NOTE: set paranoid mode before initializing zrtpEngine.setParanoidMode(paranoidMode);
-        transformEngine.initialize("GNUZRTP4J.zid", false, ZrtpConfigureUtils.getZrtpConfiguration());
+        transformEngine.initialize(zidFilename, false, ZrtpConfigureUtils.getZrtpConfiguration(), myZid);
         transformEngine.setUserCallback(new SecurityEventManager(this));
         return transformEngine;
     }
@@ -350,5 +364,27 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     public void setReceivedSignaledZRTPHashValue(final String value)
     {
         getTransformEngine().setReceivedSignaledZRTPHashValue(value);
+    }
+
+    public static byte [] generateMyZid (final BareJid peerJid)
+    {
+        final byte [] zid = new byte[12];
+
+        try {
+            final MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            final String salt = ConfigurationUtils.getInstallationUniqueSalt();
+            md.update(new BigInteger(salt, 32).toByteArray());
+
+            md.update(peerJid.toString().getBytes("UTF-8"));
+            final byte[] result = md.digest();
+
+            System.arraycopy(result, 0, zid, 0, 12);
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("generateMyZid");
+        }
+
+        return zid;
     }
 }

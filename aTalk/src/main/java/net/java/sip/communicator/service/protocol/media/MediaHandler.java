@@ -11,18 +11,22 @@ import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Component;
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.event.*;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.event.*;
+import org.jxmpp.jid.BareJid;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
 import timber.log.Timber;
+
+import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
 /**
  * Implements media control code which allows state sharing among multiple <tt>CallPeerMediaHandler</tt>s.
@@ -754,19 +758,19 @@ public class MediaHandler extends PropertyChangeNotifier
 
             // If a SrtpControl does not exist yet, create a default one.
             if (srtpControl == null) {
+
                 /*
-                 * The default SrtpControl is currently ZRTP without the hello-hash. It is created
-                 * by the MediaStream implementation. Consequently, it needs to be linked to the
-                 * srtpControls Map.
+                 * The default SrtpControl is currently ZRTP without the hello-hash. It needs to
+                 * be linked to the srtpControls Map.
                  */
-                stream = mediaService.createMediaStream(connector, device);
-                srtpControl = stream.getSrtpControl();
-                if (srtpControl != null)
-                    srtpControls.set(mediaType, srtpControl);
+
+                final byte [] myZid = generateMyZid(callPeerMediaHandler.getPeer().getPeerJid().asBareJid());
+                srtpControl = NeomediaServiceUtils.getMediaServiceImpl().createSrtpControl(SrtpControlType.ZRTP, myZid);
+
+                srtpControls.set(mediaType, srtpControl);
             }
-            else {
-                stream = mediaService.createMediaStream(connector, device, srtpControl);
-            }
+
+            stream = mediaService.createMediaStream(connector, device, srtpControl);
         }
         else {
             Timber.log(TimberLog.FINER, "Reinitializing stream: " + stream);

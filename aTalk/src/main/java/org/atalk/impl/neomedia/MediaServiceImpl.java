@@ -618,7 +618,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * {@inheritDoc}
      */
-    public SrtpControl createSrtpControl(SrtpControlType srtpControlType)
+    public SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte[] myZid)
     {
         switch (srtpControlType) {
             case DTLS_SRTP:
@@ -626,7 +626,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             case SDES:
                 return new SDesControlImpl();
             case ZRTP:
-                return new ZrtpControlImpl();
+                return new ZrtpControlImpl(myZid);
             default:
                 return null;
         }
