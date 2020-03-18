@@ -52,14 +52,14 @@ public class SrtpControls
 		return elements[mediaType.ordinal()][srtpControlType.ordinal()];
 	}
 
-	public SrtpControl getOrCreate(MediaType mediaType, SrtpControlType srtpControlType)
+	public SrtpControl getOrCreate(MediaType mediaType, SrtpControlType srtpControlType, final byte [] myZid)
 	{
 		SrtpControl[] elements = this.elements[mediaType.ordinal()];
 		int index = srtpControlType.ordinal();
 		SrtpControl element = elements[index];
 
 		if (element == null) {
-			element = ProtocolMediaActivator.getMediaService().createSrtpControl(srtpControlType);
+			element = ProtocolMediaActivator.getMediaService().createSrtpControl(srtpControlType, myZid);
 			if (element != null)
 				elements[index] = element;
 		}
