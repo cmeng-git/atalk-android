@@ -1120,6 +1120,12 @@
     <string name="service_gui_TLS_CERT_PROMPT">Please select TLS certificate</string>
     <string name="service_gui_TLS_CERT_SUMMARY">Certificate use in user authentication with server</string>
 
+    <!-- Reset ZID -->
+    <string name="pref_key_zid_reset">pref.key.zid.reset</string>
+    <string name="reset_ZID_summary">Reset long-lived ZRTP identifier</string>
+    <string name="reset_ZID_title">Reset ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID has been reset</string>
+
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Storing account changes, please wait&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Committing&#8230;"</string>
