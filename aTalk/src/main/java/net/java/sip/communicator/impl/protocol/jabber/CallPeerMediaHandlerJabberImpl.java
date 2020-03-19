@@ -20,6 +20,7 @@ import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
 import org.xmpp.extensions.colibri.SourceExtensionElement;
@@ -33,6 +34,8 @@ import java.util.*;
 
 import ch.imvs.sdes4j.srtp.SrtpCryptoAttribute;
 import timber.log.Timber;
+
+import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
 /**
  * An XMPP specific extension of the generic media handler.
@@ -1790,7 +1793,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                         setup = DtlsControl.Setup.PASSIVE;
                     }
                     else {
-                        dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP);
+                        dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
                         setup = DtlsControl.Setup.ACTIVE;
                     }
                     if (dtlsControl != null) {
@@ -1897,7 +1900,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 addFingerprintToLocalTransport = addDtlsAdvertisedEncryptions(false, remoteContent, mediaType, false);
             }
             if (addFingerprintToLocalTransport) {
-                DtlsControl dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP);
+                DtlsControl dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
                 if (dtlsControl != null) {
                     DtlsControl.Setup setup = (remoteContent == null)
                             ? DtlsControl.Setup.PASSIVE : DtlsControl.Setup.ACTIVE;
@@ -2166,7 +2169,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.SDES)) {
                 SrtpControls srtpControls = getSrtpControls();
-                SDesControl sdesControl = (SDesControl) srtpControls.getOrCreate(mediaType, SrtpControlType.SDES);
+                SDesControl sdesControl = (SDesControl) srtpControls.getOrCreate(mediaType, SrtpControlType.SDES, null);
                 SrtpCryptoAttribute selectedSdes
                         = selectSdesCryptoSuite(isInitiator, sdesControl, encryptionPacketExtension);
 
@@ -2268,7 +2271,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP)
                     && call.isSipZrtpAttribute()) {
-                ZrtpControl zrtpControl = (ZrtpControl) getSrtpControls().getOrCreate(mediaType, SrtpControlType.ZRTP);
+                final byte [] myZid = generateMyZid(peer.getPeerJid().asBareJid());
+                ZrtpControl zrtpControl = (ZrtpControl) getSrtpControls().getOrCreate(mediaType, SrtpControlType.ZRTP, myZid);
                 int numberSupportedVersions = zrtpControl.getNumberSupportedVersions();
 
                 // Try to get the remote ZRTP version and hash value
@@ -2336,7 +2340,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 && accountID.isEncryptionProtocolEnabled(SrtpControlType.SDES)) {
             // get or create the control
             SrtpControls srtpControls = getSrtpControls();
-            SDesControl sdesControl = (SDesControl) srtpControls.getOrCreate(mediaType, SrtpControlType.SDES);
+            SDesControl sdesControl = (SDesControl) srtpControls.getOrCreate(mediaType, SrtpControlType.SDES, null);
             // set the enabled ciphers suites
             String ciphers = accountID.getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES);
 

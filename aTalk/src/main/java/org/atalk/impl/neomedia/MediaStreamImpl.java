@@ -337,7 +337,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         // If you change the default behavior (initiates a ZrtpControlImpl if the srtpControl
         // attribute is null), please accordingly modify the CallPeerMediaHandler.initStream function.
         this.srtpControl = (srtpControl == null)
-                ? NeomediaServiceUtils.getMediaServiceImpl().createSrtpControl(SrtpControlType.ZRTP) : srtpControl;
+                ? NeomediaServiceUtils.getMediaServiceImpl().createSrtpControl(SrtpControlType.ZRTP, null) : srtpControl;
 
         this.srtpControl.registerUser(this);
 
