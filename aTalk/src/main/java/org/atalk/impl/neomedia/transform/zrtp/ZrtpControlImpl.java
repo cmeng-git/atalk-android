@@ -5,6 +5,8 @@
  */
 package org.atalk.impl.neomedia.transform.zrtp;
 
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
@@ -366,15 +368,23 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
         getTransformEngine().setReceivedSignaledZRTPHashValue(value);
     }
 
-    public static byte [] generateMyZid (final BareJid peerJid)
+    /**
+     * Compute own ZID from salt value stored in accountID and peer JID.
+     * @param accountID Use the ZID salt value for this account
+     * @param peerJid peer JID. Muss be a base JID, without resources part, because the
+     *                resource can change too often.
+     * @return computed ZID
+     */
+    public static byte [] generateMyZid (final AccountID accountID, final BareJid peerJid)
     {
+        final String ZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT, "");
+
         final byte [] zid = new byte[12];
 
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-            final String salt = ConfigurationUtils.getInstallationUniqueSalt();
-            md.update(new BigInteger(salt, 32).toByteArray());
+            md.update(new BigInteger(ZIDSalt, 32).toByteArray());
 
             md.update(peerJid.toString().getBytes("UTF-8"));
             final byte[] result = md.digest();

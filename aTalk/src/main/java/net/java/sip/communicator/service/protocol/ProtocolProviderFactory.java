@@ -587,6 +587,11 @@ public abstract class ProtocolProviderFactory
     public static final String IS_CARBON_DISABLED = "CARBON_DISABLED";
 
     /**
+     * The name of the property that stores salt value for ZID computation.
+     */
+    public static final String ZID_SALT = "ZID_SALT";
+
+    /**
      * Creates a new <tt>ProtocolProviderFactory</tt>.
      *
      * @param bundleContext the bundle context reference of the service
