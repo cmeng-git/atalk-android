@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
@@ -121,9 +120,6 @@ public class SettingsActivity extends OSGiActivity
     // User option property names
     public static final String AUTO_UPDATE_CHECK_ENABLE = "user.AUTO_UPDATE_CHECK_ENABLE";
 
-    // Reset ZID
-    public static final String P_KEY_RESET_ZID = aTalkApp.getResString(R.string.pref_key_zid_reset);
-
     /**
      * {@inheritDoc}
      */
@@ -208,8 +204,6 @@ public class SettingsActivity extends OSGiActivity
             else {
                 disableMediaOptions();
             }
-
-            initResetZID();
 
             SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
             shPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -849,16 +843,6 @@ public class SettingsActivity extends OSGiActivity
                 deviceConfig.setVideoBitrate(bitrate);
                 ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
             }
-        }
-
-        private void initResetZID() {
-            findPreference(P_KEY_RESET_ZID).setOnPreferenceClickListener(
-                    preference -> {
-                        ConfigurationUtils.resetInstallationUniqueSalt();
-                        Toast.makeText(getActivity(), R.string.ZID_has_been_reset_toast, Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-            );
         }
     }
 }

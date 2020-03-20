@@ -11,6 +11,8 @@ import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.neomedia.SrtpControlType;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.*;
 
 /**
@@ -64,6 +66,13 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     private Map<String, Boolean> encryptionProtocolStatus;
 
+    private static final SecureRandom secureRandom = new SecureRandom();
+
+    /**
+     * Random salt value used for ZID calculation.
+     */
+    private String ZIDSalt;
+
     /**
      * Initializes the security account registration properties with the default values.
      */
@@ -75,6 +84,7 @@ public abstract class SecurityAccountRegistration implements Serializable
         encryptionProtocolStatus = new HashMap<>(1);
         encryptionProtocolStatus.put("ZRTP", true);
         sdesCipherSuites = UtilActivator.getResources().getSettingsString(SDesControl.SDES_CIPHER_SUITES);
+        randomZIDSalt();
     }
 
     /**
@@ -254,6 +264,7 @@ public abstract class SecurityAccountRegistration implements Serializable
                 Boolean.toString(isSipZrtpAttribute()));
         propertiesMap.put(ProtocolProviderFactory.SAVP_OPTION, Integer.toString(getSavpOption()));
         propertiesMap.put(ProtocolProviderFactory.SDES_CIPHER_SUITES, getSDesCipherSuites());
+        propertiesMap.put(ProtocolProviderFactory.ZID_SALT, getZIDSalt());
     }
 
     /**
@@ -298,6 +309,17 @@ public abstract class SecurityAccountRegistration implements Serializable
                 ProtocolProviderFactory.SAVP_OFF));
         setSDesCipherSuites(accountID
                 .getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES));
+
+        final String storedZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
+        if (storedZIDSalt == null)
+        {
+            randomZIDSalt();
+            accountID.storeAccountProperty(ProtocolProviderFactory.ZID_SALT, getZIDSalt());
+        }
+        else
+        {
+            ZIDSalt = storedZIDSalt;
+        }
     }
 
     /**
@@ -363,5 +385,29 @@ public abstract class SecurityAccountRegistration implements Serializable
     private static boolean isExistingEncryptionProtocol(String protocol)
     {
         return ENCRYPTION_PROTOCOLS.contains(protocol);
+    }
+
+    /**
+     * Returns ZID salt
+     * @return ZID salt
+     */
+    public String getZIDSalt() {
+        return ZIDSalt;
+    }
+
+    /**
+     * Set ZID salt
+     * @param ZIDSalt new ZID salt value
+     */
+    public void setZIDSalt(final String ZIDSalt) {
+        this.ZIDSalt = ZIDSalt;
+    }
+
+    /**
+     * Generate new random value for the ZID salt.
+     */
+    public void randomZIDSalt()
+    {
+        ZIDSalt = new BigInteger(256, secureRandom).toString(32);
     }
 }

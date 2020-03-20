@@ -70,13 +70,6 @@
             <intent android:action=".impl.androidcertdialog.ConnectionInfo" />
         </PreferenceScreen>
 
-        <!-- Reset ZID -->
-        <PreferenceScreen
-            android:key="@string/pref_key_zid_reset"
-            android:summary="@string/reset_ZID_summary"
-            android:title="@string/reset_ZID_title">
-            <!--<intent android:action=".impl.reset_ZID" />-->
-        </PreferenceScreen>
     </PreferenceCategory>
 
     <!-- Message settings -->

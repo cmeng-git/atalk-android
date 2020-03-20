@@ -421,6 +421,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
             myReg.setSipZrtpAttribute(secReg.isSipZrtpAttribute());
             myReg.setSavpOption(secReg.getSavpOption());
             myReg.setSDesCipherSuites(secReg.getSDesCipherSuites());
+            myReg.setZIDSalt(secReg.getZIDSalt());
             uncommittedChanges = true;
         }
     }

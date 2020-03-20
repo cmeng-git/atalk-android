@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.UtilActivator;
@@ -61,6 +62,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     private static final String PREF_KEY_SEC_CIPHER_SUITES = aTalkApp.getResString(R.string.pref_key_enc_cipher_suites);
 
     private static final String PREF_KEY_SEC_SAVP_OPTION = aTalkApp.getResString(R.string.pref_key_enc_savp_option);
+
+    private static final String PREF_KEY_SEC_RESET_ZID = aTalkApp.getResString(R.string.pref_key_zid_reset);
 
     private static final String[] cryptoSuiteEntries = {
             SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80,
@@ -174,6 +177,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             zrtpAttr.setChecked(securityReg.isSipZrtpAttribute());
 
             loadCipherSuites();
+
+            initResetZID();
         }
 
         /**
@@ -200,6 +205,17 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                 }
             }
             cipherList.setValues(selected);
+        }
+
+        private void initResetZID() {
+            findPreference(PREF_KEY_SEC_RESET_ZID).setOnPreferenceClickListener(
+                    preference -> {
+                        securityReg.randomZIDSalt();
+                        hasChanges = true;
+                        Toast.makeText(getActivity(), R.string.ZID_has_been_reset_toast, Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+            );
         }
 
         @Override
