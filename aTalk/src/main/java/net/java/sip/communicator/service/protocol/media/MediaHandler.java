@@ -5,9 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
+import net.java.sip.communicator.impl.protocol.jabber.JabberAccountIDImpl;
+import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.event.DTMFListener;
 import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
+import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Component;
@@ -764,7 +767,8 @@ public class MediaHandler extends PropertyChangeNotifier
                  * be linked to the srtpControls Map.
                  */
 
-                final byte [] myZid = generateMyZid(callPeerMediaHandler.getPeer().getPeerJid().asBareJid());
+                final AccountID accountID = callPeerMediaHandler.getPeer().getProtocolProvider().getAccountID();
+                final byte [] myZid = generateMyZid(accountID, callPeerMediaHandler.getPeer().getPeerJid().asBareJid());
                 srtpControl = NeomediaServiceUtils.getMediaServiceImpl().createSrtpControl(SrtpControlType.ZRTP, myZid);
 
                 srtpControls.set(mediaType, srtpControl);
