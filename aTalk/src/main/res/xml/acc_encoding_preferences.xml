@@ -20,6 +20,12 @@
             android:dependency="@string/pref_key_enable_encryption"
             android:key="@string/pref_key_enc_sipzrtp_attr"
             android:title="@string/service_gui_PREF_SECURITY_ZRTP_SIGNALING" />
+        <!-- Reset ZID -->
+        <PreferenceScreen
+            android:key="@string/pref_key_zid_reset"
+            android:summary="@string/reset_ZID_summary"
+            android:title="@string/reset_ZID_title">
+        </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/pref_cat_security_sdes"

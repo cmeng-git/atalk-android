@@ -43,8 +43,6 @@ import org.osgi.framework.ServiceReference;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.*;
 
 import javax.net.ssl.SSLSocket;
@@ -478,16 +476,6 @@ public class ConfigurationUtils
      * Indicates if window (task bar or dock icon) alerter is enabled.
      */
     private static boolean alerterEnabled;
-
-    /**
-     * Instalation unique salt. Used for ZID computation
-     */
-    private static String installationUniqueSalt;
-
-    /**
-     * Instalation unique salt property name.
-     */
-    private static final String pInstallationUniqueSalt = "INSTALLATION_UNIQUE_SALT";
 
     private static SQLiteDatabase mDB;
     private static ContentValues contentValues = new ContentValues();
@@ -2689,27 +2677,5 @@ public class ConfigurationUtils
                 }
             }
         }
-    }
-
-    public static String getInstallationUniqueSalt() {
-        if (installationUniqueSalt != null)
-        {
-            return installationUniqueSalt;
-        }
-
-        installationUniqueSalt = configService.getString(pInstallationUniqueSalt);
-
-        if (installationUniqueSalt == null)
-        {
-            installationUniqueSalt = new BigInteger(256, new SecureRandom()).toString(32);
-            configService.setProperty(pInstallationUniqueSalt, installationUniqueSalt);
-        }
-
-        return installationUniqueSalt;
-    }
-
-    public static void resetInstallationUniqueSalt() {
-        configService.removeProperty(pInstallationUniqueSalt);
-        installationUniqueSalt = null;
     }
 }
