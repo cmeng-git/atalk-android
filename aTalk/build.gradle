@@ -71,8 +71,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1121
-        versionName "2.2.1"
+        versionCode 1122
+        versionName "2.2.2"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion

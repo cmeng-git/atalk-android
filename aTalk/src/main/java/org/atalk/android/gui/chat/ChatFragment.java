@@ -310,7 +310,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // Remembers scrolling position to restore after new history messages are loaded
                 scrollFirstVisible = firstVisibleItem;
                 View firstVisible = view.getChildAt(0);
-                scrollTopOffset = (firstVisible == null)? 0 : firstVisible.getTop();
+                scrollTopOffset = (firstVisible == null) ? 0 : firstVisible.getTop();
                 // Timber.d("Last scroll position: %s: %s", scrollFirstVisible, scrollTopOffset);
             }
         });
@@ -1997,7 +1997,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         // public ImageView arrowDir = null;
         public ImageView stickerView = null;
         public ImageButton fileIcon = null;
-        public ProgressBar mProgressBar = null;
+        public ProgressBar progressBar = null;
 
         public View playerView = null;
         public ImageView playbackPlay;

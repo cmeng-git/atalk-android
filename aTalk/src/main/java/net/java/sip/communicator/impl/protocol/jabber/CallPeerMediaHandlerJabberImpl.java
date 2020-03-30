@@ -2271,7 +2271,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP)
                     && call.isSipZrtpAttribute()) {
-                final byte [] myZid = generateMyZid(accountID, peer.getPeerJid().asBareJid());
+                final byte[] myZid = generateMyZid(accountID, peer.getPeerJid().asBareJid());
 
                 ZrtpControl zrtpControl = (ZrtpControl) getSrtpControls().getOrCreate(mediaType, SrtpControlType.ZRTP, myZid);
                 int numberSupportedVersions = zrtpControl.getNumberSupportedVersions();

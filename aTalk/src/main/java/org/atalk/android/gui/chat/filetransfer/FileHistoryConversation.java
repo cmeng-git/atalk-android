@@ -16,11 +16,11 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
+import android.graphics.Color;
 import android.view.*;
 
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.util.GuiUtils;
-import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -69,11 +69,6 @@ public class FileHistoryConversation extends FileTransferConversation
         String entityJid = fileRecord.getJidAddress();
         String dir = fileRecord.getDirection();
 
-        // if (FileRecord.IN.equals(dir))
-        //     messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_in);
-        // else
-        //     messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_out);
-
         File filePath = fileRecord.getFile();
         int status = fileRecord.getStatus();
         boolean bgAlert = (FileRecord.STATUS_COMPLETED != status);
@@ -94,7 +89,7 @@ public class FileHistoryConversation extends FileTransferConversation
         messageViewHolder.fileStatus.setText(titleString);
 
         if (bgAlert) {
-            messageViewHolder.fileStatus.setTextColor(UtilActivator.getResources().getColor("red"));
+            messageViewHolder.fileStatus.setTextColor(Color.RED);
         }
         return convertView;
     }

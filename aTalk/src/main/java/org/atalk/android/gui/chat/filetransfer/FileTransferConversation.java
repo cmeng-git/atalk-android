@@ -19,11 +19,11 @@ package org.atalk.android.gui.chat.filetransfer;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.*;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -80,6 +80,8 @@ public abstract class FileTransferConversation extends OSGiFragment
     protected File mXferFile;
 
     protected Uri mUri;
+
+    protected String mDate;
 
     /**
      * The file transfer.
@@ -212,20 +214,17 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.timeView = convertView.findViewById(R.id.xferTimeView);
             messageViewHolder.fileXferSpeed = convertView.findViewById(R.id.file_progressSpeed);
             messageViewHolder.estTimeRemain = convertView.findViewById(R.id.file_estTime);
-            messageViewHolder.mProgressBar = convertView.findViewById(R.id.file_progressbar);
+            messageViewHolder.progressBar = convertView.findViewById(R.id.file_progressbar);
 
             messageViewHolder.cancelButton = convertView.findViewById(R.id.buttonCancel);
             messageViewHolder.retryButton = convertView.findViewById(R.id.button_retry);
             messageViewHolder.acceptButton = convertView.findViewById(R.id.button_accept);
             messageViewHolder.rejectButton = convertView.findViewById(R.id.button_reject);
         }
-        else {
-            messageViewHolder.cancelButton.setVisibility(View.GONE);
-            messageViewHolder.retryButton.setVisibility(View.GONE);
-            messageViewHolder.acceptButton.setVisibility(View.GONE);
-            messageViewHolder.rejectButton.setVisibility(View.GONE);
-            hideProgressRelatedComponents();
-        }
+
+        // Assume history file transfer and completed with all button hidden
+        updateXferFileViewState(FileTransferStatusChangeEvent.COMPLETED, null);
+        hideProgressRelatedComponents();
 
         // Note-5: seek progressBar is not visible and thumb partially clipped with xml default settings.
         // So increase the seekBar height to 16dp i.e. progressBar = 6dp
@@ -253,6 +252,61 @@ public abstract class FileTransferConversation extends OSGiFragment
 
         messageViewHolder.fileStatus.setTextColor(UtilActivator.getResources().getColor("black"));
         return convertView;
+    }
+
+    /**
+     * A common routine to update the file transfer view compoenent states
+     *
+     * @param status FileTransferStatusChangeEvent status
+     * @param statusText the status text for update
+     */
+    protected void updateXferFileViewState(int status, String statusText)
+    {
+        // Timber.w(new Exception(), "Update file transfer button state: %s => %s", status, statusText);
+
+        messageViewHolder.acceptButton.setVisibility(View.GONE);
+        messageViewHolder.rejectButton.setVisibility(View.GONE);
+        messageViewHolder.cancelButton.setVisibility(View.GONE);
+        messageViewHolder.retryButton.setVisibility(View.GONE);
+
+        messageViewHolder.fileStatus.setTextColor(Color.BLACK);
+
+        switch (status) {
+            case FileTransferStatusChangeEvent.WAITING:
+                messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
+                messageViewHolder.rejectButton.setVisibility(View.VISIBLE);
+                break;
+
+            case FileTransferStatusChangeEvent.PREPARING:
+            case FileTransferStatusChangeEvent.IN_PROGRESS:
+                messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
+                break;
+
+            case FileTransferStatusChangeEvent.COMPLETED:
+                if (mXferFile == null)
+                    break;
+
+                // Update file label and image for incoming file
+                if (FileRecord.IN.equals(mDir)) {
+                    updateFileViewInfo(mXferFile, false);
+                }
+                // set to full for progressBar on file transfer completed
+                long fileSize = mXferFile.length();
+                onUploadProgress(fileSize, fileSize);
+                break;
+
+            case FileTransferStatusChangeEvent.FAILED:
+            case FileTransferStatusChangeEvent.CANCELED: // local cancel the file download process
+                messageViewHolder.retryButton.setVisibility(View.VISIBLE);
+            case FileTransferStatusChangeEvent.REFUSED: // user reject the incoming http download
+                messageViewHolder.fileStatus.setTextColor(Color.RED);
+                break;
+        }
+
+        if (!TextUtils.isEmpty(statusText)) {
+            messageViewHolder.fileStatus.setText(statusText);
+        }
+        messageViewHolder.timeView.setText(mDate);
     }
 
     /**
@@ -362,7 +416,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected void hideProgressRelatedComponents()
     {
-        messageViewHolder.mProgressBar.setVisibility(View.GONE);
+        messageViewHolder.progressBar.setVisibility(View.GONE);
         messageViewHolder.fileXferSpeed.setVisibility(View.GONE);
         messageViewHolder.estTimeRemain.setVisibility(View.GONE);
     }
@@ -423,13 +477,13 @@ public abstract class FileTransferConversation extends OSGiFragment
 
         runOnUiThread(() -> {
             // Need to do it here as it was found that Http File Upload completed before the progress Bar is even visible
-            if (!messageViewHolder.mProgressBar.isShown()) {
-                messageViewHolder.mProgressBar.setVisibility(View.VISIBLE);
+            if (!messageViewHolder.progressBar.isShown()) {
+                messageViewHolder.progressBar.setVisibility(View.VISIBLE);
                 if (mXferFile != null)
-                    messageViewHolder.mProgressBar.setMax((int) mXferFile.length());
+                    messageViewHolder.progressBar.setMax((int) mXferFile.length());
             }
             // Note: progress bar can only handle int size (4-bytes: 2,147,483, 647);
-            messageViewHolder.mProgressBar.setProgress((int) transferredBytes);
+            messageViewHolder.progressBar.setProgress((int) transferredBytes);
 
             if (mTransferSpeed > 0) {
                 messageViewHolder.fileXferSpeed.setVisibility(View.VISIBLE);

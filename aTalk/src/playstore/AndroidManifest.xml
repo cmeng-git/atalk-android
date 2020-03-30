@@ -3,6 +3,7 @@
           package="org.atalk.android"
           android:installLocation="internalOnly">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name="org.atalk.android.aTalkApp"

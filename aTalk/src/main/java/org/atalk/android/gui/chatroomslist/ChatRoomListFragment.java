@@ -206,7 +206,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         if (chatRoomListView != null) {
             scrollPosition = chatRoomListView.getFirstVisiblePosition();
             View itemView = chatRoomListView.getChildAt(0);
-            scrollTopPosition = (itemView == null)? 0 : itemView.getTop();
+            scrollTopPosition = (itemView == null) ? 0 : itemView.getTop();
 
             chatRoomListView.setAdapter((ExpandableListAdapter) null);
         }
@@ -376,7 +376,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                     return true;
                 case R.id.chatroom_info:
                     ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(mClickedChatRoom);
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
                     ft.addToBackStack(null);
                     chatRoomInfoDialog.show(ft, "infoDialog");
                     return true;
@@ -426,7 +426,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     public void joinChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
         if (chatRoomWrapper != null) {
-            ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
+            ProtocolProviderService pps = chatRoomWrapper.getProtocolProvider();
             String nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
             MUCActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, null, null);
 

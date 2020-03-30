@@ -22,7 +22,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.view.*;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
@@ -63,7 +62,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     private long fileSize;
     private String fileName;
     private String dnLink;
-    private String mDate;
     private String mSender;
 
     /* previousDownloads <DownloadJobId, Download Link> */
@@ -109,12 +107,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     {
         msgViewId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
-        // messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_in);
         messageViewHolder.stickerView.setImageDrawable(null);
-
-        messageViewHolder.timeView.setText(mDate);
-        messageViewHolder.fileStatus.setText(
-                aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSender));
 
         dnLink = httpFileTransferJabber.getDnLink();
         fileName = httpFileTransferJabber.getFileName();
@@ -136,11 +129,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 initHttpFileDownload();
             });
 
-            if ((fileSize == -1)
-                    || ((fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize()))) {
-                initHttpFileDownload();
-            }
-
             messageViewHolder.retryButton.setOnClickListener(v -> initHttpFileDownload());
 
             messageViewHolder.rejectButton.setOnClickListener(
@@ -148,6 +136,14 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
             messageViewHolder.cancelButton.setOnClickListener(
                     v -> updateView(FileTransferStatusChangeEvent.CANCELED, null));
+
+            updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
+                    aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSender));
+
+            if ((fileSize == -1)
+                    || ((fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize()))) {
+                initHttpFileDownload();
+            }
         }
         else {
             updateView(status, null);
@@ -160,22 +156,16 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      */
     private void updateView(final int status, final String reason)
     {
-        boolean bgAlert = false;
         setXferStatus(status);
+        String statusText = null;
+
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
-                messageViewHolder.fileStatus.setText(
-                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSender));
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSender);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
-                messageViewHolder.acceptButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
-                messageViewHolder.retryButton.setVisibility(View.GONE);
-
-                messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
-                messageViewHolder.fileStatus.setText(
-                        aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSender));
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSender);
                 mChatFragment.addActiveFileTransfer(httpFileTransferJabber.getID(), httpFileTransferJabber, msgViewId);
                 startProgressChecker();
 
@@ -184,19 +174,11 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
-                if (mXferFile == null) { // Android view redraw happen
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSender);
+
+                if (mXferFile == null) { // Android view redraw happen?
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
-
-                updateFileViewInfo(mXferFile, false);
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
-                messageViewHolder.fileStatus.setText(
-                        aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSender));
-
-                // set to complete for progressBar
-                onUploadProgress(fileSize, fileSize);
-
                 // Update the DB record status
                 mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_COMPLETED, mXferFile.toString(),
                         mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
@@ -207,52 +189,32 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
-                // hideProgressRelatedComponents(); keep the status info for user view
-                messageViewHolder.acceptButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-
-                messageViewHolder.retryButton.setVisibility(View.VISIBLE);
-
-                String errMessage = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mSender);
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mSender);
                 if (!TextUtils.isEmpty(reason)) {
-                    errMessage += "\n" + reason;
+                    statusText += "\n" + reason;
                 }
-                messageViewHolder.fileStatus.setText(errMessage);
-
                 mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_FAILED, null, mEncryption,
                         ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
-                bgAlert = true;
                 break;
 
             // local cancel the file download process
             case FileTransferStatusChangeEvent.CANCELED:
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-                messageViewHolder.retryButton.setVisibility(View.VISIBLE);
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_CANCELED);
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
 
                 mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_CANCELED, null, mEncryption,
                         ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
-                bgAlert = true;
                 break;
 
             // user reject the incoming http download
             case FileTransferStatusChangeEvent.REFUSED:
-                // hideProgressRelatedComponents();
-                messageViewHolder.acceptButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_REFUSED);
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED);
                 // need to update status here as chatFragment statusListener is enabled for
                 // fileTransfer and only after accept
                 mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_REFUSED, null, mEncryption,
                         ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
-                bgAlert = true;
                 break;
         }
-        if (bgAlert) {
-            messageViewHolder.fileStatus.setTextColor(UtilActivator.getResources().getColor("red"));
-        }
-        messageViewHolder.timeView.setText(mDate);
+        updateXferFileViewState(status, statusText);
 
         // Must clean up all Download Manager parameters if passed IN_PROGRESS stage
         if ((FileTransferStatusChangeEvent.IN_PROGRESS != status) && (FileTransferStatusChangeEvent.PREPARING != status)) {
@@ -269,7 +231,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 try {
                     aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
                 } catch (IllegalArgumentException ie) {
-                    Timber.w("Unregistration download receiver exception: %s", ie.getMessage());
+                    Timber.w("Unregister download receiver exception: %s", ie.getMessage());
                 }
                 downloadReceiver = null;
             }
@@ -499,6 +461,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                                 outputStream.flush();
                                 cipherOutputStream.close();
                                 inFile.delete();
+
+                                mXferFile = outFile;
                                 updateView(FileTransferStatusChangeEvent.COMPLETED, null);
                             } catch (Exception e) {
                                 updateView(FileTransferStatusChangeEvent.FAILED, "Failed to decrypt OMEMO media file: " + inFile);
@@ -506,8 +470,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                         }
                         else {
                             // Plain media file sharing; rename will move the infile to outfile dir.
-                            if (inFile.renameTo(outFile))
+                            if (inFile.renameTo(outFile)) {
+                                mXferFile = outFile;
                                 updateView(FileTransferStatusChangeEvent.COMPLETED, null);
+                            }
                         }
 
                         // Timber.d("Downloaded fileSize: %s (%s)", outFile.length(), fileSize);
@@ -584,9 +550,9 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             fileSize = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
             long progress = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
 
-            if (messageViewHolder.mProgressBar.isShown()) {
+            if (messageViewHolder.progressBar.isShown()) {
                 messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));
-                messageViewHolder.mProgressBar.setMax((int) fileSize);
+                messageViewHolder.progressBar.setMax((int) fileSize);
             }
 
             if (progress <= previousProgress)

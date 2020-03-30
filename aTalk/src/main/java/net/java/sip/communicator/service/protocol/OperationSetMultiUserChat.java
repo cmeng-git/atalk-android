@@ -80,8 +80,13 @@ public interface OperationSetMultiUserChat extends OperationSet
      * @throws OperationNotSupportedException if the server does not support multi-user chat
      */
     ChatRoom findRoom(String roomName)
-            throws OperationFailedException, OperationNotSupportedException,
-            XmppStringprepException;
+            throws OperationFailedException, OperationNotSupportedException, XmppStringprepException;
+
+    /**
+     * @param entityBareJid ChatRoom EntityBareJid
+     * @return ChatRoom
+     */
+    ChatRoom findRoom(EntityBareJid entityBareJid);
 
     /**
      * Informs the sender of an invitation that we decline their invitation.

@@ -45,7 +45,6 @@ public class FileReceiveConversation extends FileTransferConversation
 {
     private IncomingFileTransferRequest fileTransferRequest;
     private OperationSetFileTransfer fileTransferOpSet;
-    private String mDate;
     private String mSendTo;
 
     private FileReceiveConversation(ChatFragment cPanel, String dir)
@@ -81,12 +80,7 @@ public class FileReceiveConversation extends FileTransferConversation
     {
         msgViewId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
-        // messageViewHolder.arrowDir.setImageResource(R.drawable.file_xfer_arrow_in);
         messageViewHolder.stickerView.setImageDrawable(null);
-
-        messageViewHolder.timeView.setText(mDate);
-        messageViewHolder.fileStatus.setText(
-                aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSendTo));
 
         long downloadFileSize = fileTransferRequest.getFileSize();
         String fileLabel = getFileLabel(fileTransferRequest.getFileName(), downloadFileSize);
@@ -101,29 +95,20 @@ public class FileReceiveConversation extends FileTransferConversation
                 showThumbnail(thumbnail);
             }
 
-            mXferFile = createOutFile(fileTransferRequest);
-            messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
             messageViewHolder.acceptButton.setOnClickListener(v -> {
-                messageViewHolder.fileStatus.setText(
+                updateXferFileViewState(FileTransferStatusChangeEvent.PREPARING,
                         aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo));
-                messageViewHolder.acceptButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
 
                 // set the download for global display parameter
                 mChatFragment.getChatListAdapter().setFileName(msgViewId, mXferFile);
-                (new acceptFile(mXferFile)).execute();
+                new acceptFile(mXferFile).execute();
             });
 
-            boolean isAutoAccept = (downloadFileSize <= ConfigurationUtils.getAutoAcceptFileSize());
-            if (isAutoAccept)
-                messageViewHolder.acceptButton.performClick();
-
-            messageViewHolder.rejectButton.setVisibility(View.VISIBLE);
             messageViewHolder.rejectButton.setOnClickListener(v -> {
+                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
+                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED));
                 hideProgressRelatedComponents();
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_REFUSED);
-                messageViewHolder.acceptButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
+
                 try {
                     fileTransferRequest.rejectFile();
                 } catch (OperationFailedException e) {
@@ -133,6 +118,15 @@ public class FileReceiveConversation extends FileTransferConversation
                 // fileTransfer and only after accept
                 setXferStatus(FileTransferStatusChangeEvent.CANCELED);
             });
+
+            mXferFile = createOutFile(fileTransferRequest);
+            updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
+                    aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSendTo));
+
+            boolean isAutoAccept = (downloadFileSize <= ConfigurationUtils.getAutoAcceptFileSize());
+            if (isAutoAccept) {
+                messageViewHolder.acceptButton.performClick();
+            }
         }
         else {
             updateView(status, null);
@@ -146,13 +140,12 @@ public class FileReceiveConversation extends FileTransferConversation
     private void updateView(final int status, final String reason)
     {
         setEncState(mEncryption);
+        String statusText = null;
 
-        boolean bgAlert = false;
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
                 // hideProgressRelatedComponents();
-                messageViewHolder.fileStatus.setText(
-                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo));
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
@@ -162,9 +155,7 @@ public class FileReceiveConversation extends FileTransferConversation
 //                    messageViewHolder.mProgressBar.setMax((int) fileTransferRequest.getFileSize());
 //                    // setFileTransfer(fileTransfer, fileTransferRequest.getFileSize());
 //                }
-                messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
-                messageViewHolder.fileStatus.setText(
-                        aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSendTo));
+                statusText =  aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSendTo);
                 mChatFragment.getChatPanel().setCacheRefresh(true);
                 break;
 
@@ -172,46 +163,27 @@ public class FileReceiveConversation extends FileTransferConversation
                 if (mXferFile == null) { // Android view redraw happen
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
-
-                // set to full for progressBar and update file label
-                long fileSize = mXferFile.length();
-                onUploadProgress(fileSize, fileSize);
-
-                updateFileViewInfo(mXferFile, false);
-                messageViewHolder.fileStatus.setText(
-                        aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSendTo));
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
+                statusText =  aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSendTo);
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
                 // hideProgressRelatedComponents(); keep the status info for user view
-                String errMessage = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mSendTo);
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, mSendTo);
                 if (!TextUtils.isEmpty(reason)) {
-                    errMessage += "\n" + reason;
+                    statusText += "\n" + reason;
                 }
-                messageViewHolder.fileStatus.setText(errMessage);
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-                bgAlert = true;
                 break;
 
             case FileTransferStatusChangeEvent.CANCELED:
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_CANCELED);
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-                bgAlert = true;
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                 break;
 
             case FileTransferStatusChangeEvent.REFUSED:
                 // hideProgressRelatedComponents();
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_REFUSED);
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
-                bgAlert = true;
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED);
                 break;
         }
-        messageViewHolder.timeView.setText(mDate);
-        if (bgAlert) {
-            messageViewHolder.fileStatus.setTextColor(UtilActivator.getResources().getColor("red"));
-        }
+        updateXferFileViewState(status, statusText);
     }
 
     /**
@@ -307,21 +279,20 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who sent it.
+     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who send it.
+     * Note: This is not a standard XMPP FileTransfer protocol - aTalk not implemented yet
      *
      * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
      */
     public void fileTransferRequestCanceled(FileTransferRequestEvent event)
     {
         final IncomingFileTransferRequest request = event.getRequest();
-        // Different thread - Must execute in UiThread to Update UI information
+        // Event triggered - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
             if (request.equals(fileTransferRequest)) {
-                messageViewHolder.acceptButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
+                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
+                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED));
                 fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
-                messageViewHolder.timeView.setText(mDate);
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_CANCELED);
             }
         });
     }
@@ -345,17 +316,13 @@ public class FileReceiveConversation extends FileTransferConversation
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
         final IncomingFileTransferRequest request = event.getRequest();
-        // Different thread - Must execute in UiThread to Update UI information
+        // Event triggered - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
             if (request.equals(fileTransferRequest)) {
-                messageViewHolder.acceptButton.setVisibility(View.GONE);
-                messageViewHolder.rejectButton.setVisibility(View.GONE);
+                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
+                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED));
                 fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
-
                 hideProgressRelatedComponents();
-                // delete created mXferFile???
-                messageViewHolder.timeView.setText(mDate);
-                messageViewHolder.fileStatus.setText(R.string.xFile_FILE_TRANSFER_REFUSED);
             }
         });
     }

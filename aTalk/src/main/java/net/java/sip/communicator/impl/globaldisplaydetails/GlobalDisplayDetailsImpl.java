@@ -102,17 +102,17 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         }
 
         // proceed only if account has registered
-        if (pps.isRegistered()) {
-            final OperationSetServerStoredAccountInfo accountInfoOpSet
-                    = pps.getOperationSet(OperationSetServerStoredAccountInfo.class);
-            if (accountInfoOpSet != null) {
-                String displayName = AccountInfoUtils.getDisplayName(accountInfoOpSet);
-                if (StringUtils.isNullOrEmpty(displayName)) {
-                    displayName = pps.getAccountID().getUserID();
-                }
-                return displayName;
-            }
-        }
+        // cmeng (20200327) - vcard contains no fullName field so skip as it always returns null;
+//        if (pps.isRegistered()) {
+//            final OperationSetServerStoredAccountInfo accountInfoOpSet
+//                    = pps.getOperationSet(OperationSetServerStoredAccountInfo.class);
+//            if (accountInfoOpSet != null) {
+//                String displayName = AccountInfoUtils.getDisplayName(accountInfoOpSet);
+//                if (!StringUtils.isNullOrEmpty(displayName)) {
+//                    return displayName;
+//                }
+//            }
+//        }
         return pps.getAccountID().getUserID();
     }
 

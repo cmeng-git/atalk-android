@@ -155,14 +155,12 @@
     <string name="service_gui_CHANGE_NICKNAME_LABEL">Pada bidang di bawah ini, Anda dapat memasukkan nama panggilan baru Anda.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Konten bidang Nama Nick tidak boleh nol</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Ubah Info Ruang obrolan</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT">Ubah ruang subjek&#8230;</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Pada bidang di bawah ini, Anda dapat memasukkan subjek baru untuk ruangan ini.</string>
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Ubah kualitas video jarak jauh</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">konferensi %1$s \</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Konferensi</string>
     <string name="service_gui_CHATROOM">Ruang Chat</string>
     <string name="service_gui_CHATROOM_ALREADY_JOINED">Anda telah bergabung dengan ruang obrolan %1$s.</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION">%1$s konfigurasi ruang obrolan</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">konfigurasi ruang obrolan</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Gagal mendapatkan %1$s formulir konfigurasi ruang obrolan.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Tidak dapat memperoleh %1$s formulir konfigurasi ruang obrolan. Hanya pemilik ruang obrolan yang dapat melihat dan mengubah formulir konfigurasi.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Daftar di sebelah kanan berisi pengguna yang memiliki peran anggota di ruang obrolan ini. Ketika ruang obrolan adalah \'Anggota-hanya\' mereka akan menjadi pengguna yang diizinkan untuk bergabung.</string>
@@ -371,6 +369,7 @@
 
     <string name="service_gui_CHATROOM_CREATE">Bikin ruang obrolan&#8230;</string>
     <string name="service_gui_CHATROOM_CREATE_ERROR">Gagal membuat ruang obrolan:\n%1$s.</string>
+    <string name="service_gui_CHATROOM_CREATE_JOIN">Buah / Bergabung ruang obrolan</string>
     <string name="service_gui_CHATROOM_CREATE_WIZARD">Bikin wizard ruang chat</string>
 
     <string name="service_gui_CHATROOM_DESTROY">Hancurkan chatRoom ini</string>
@@ -383,8 +382,7 @@
         <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\'telah dihapus Berhasil!</string>
     <string name="service_gui_CHATROOM_DESTROY_TITLE">Hancurkan chatRoom</string>
 
-    <string name="service_gui_CHATROOM_JOIN">Bergabung dengan ruang obrolan</string>
-    <string name="service_gui_CHATROOM_JOIN_FAILED">Gagal bergabung ke kamar:\n%1$s dengan nama panggilan: %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Gagal bergabung ke kamar dengan nama panggilan: %1$s\n%2$s.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Gagal bergabung ke ruang obrolan %1$s:\n%2$s</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Ruang obrolan meminta kata sandi.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Ruang obrolan membutuhkan registrasi.</string>
@@ -1055,12 +1053,16 @@
     <string name="service_gui_TLS_CERT_PROMPT">Harap pilih sertifikat TLS</string>
     <string name="service_gui_TLS_CERT_SUMMARY">Penggunaan sertifikat dalam otentikasi pengguna dengan server</string>
 
+    <!-- Reset ZID -->
+    <string name="reset_ZID_summary">Setel ulang pengidentifikasi ZRTP berumur panjang</string>
+    <string name="reset_ZID_title">Setel ulang ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID telah diatur ulang</string>
+
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Menyimpan perubahan akun, harap tunggu&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Berkomitmen&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(Tidak ditentukan)</string>
     
-
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Enkode audio</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Ganti global</string>

@@ -388,6 +388,26 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
+     * Delivers the specified event to all registered file transfer listeners.
+     * Note: this is not standard XMPP FileTransfer protocol
+     *
+     * @param event the <tt>EventObject</tt> that we'd like delivered to all
+     * registered file transfer listeners.
+     */
+    void fireFileTransferRequestCanceled(FileTransferRequestEvent event)
+    {
+        Iterator<ScFileTransferListener> listeners;
+        synchronized (fileTransferListeners) {
+            listeners = new ArrayList<>(fileTransferListeners).iterator();
+        }
+
+        while (listeners.hasNext()) {
+            ScFileTransferListener listener = listeners.next();
+            listener.fileTransferRequestCanceled(event);
+        }
+    }
+
+    /**
      * Delivers the file transfer to all registered listeners.
      *
      * @param event the <tt>FileTransferEvent</tt> that we'd like delivered to all registered file

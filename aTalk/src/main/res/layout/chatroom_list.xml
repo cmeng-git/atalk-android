@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white">
+    android:background="@color/background_light">
 
     <ExpandableListView
         android:id="@+id/chatRoomListView"
@@ -13,5 +13,5 @@
         android:dividerHeight="0dp"
         android:divider="@null"
         android:groupIndicator="@null"
-        android:cacheColorHint="@color/white"/>
+        android:cacheColorHint="@color/textColorWhite"/>
 </LinearLayout>

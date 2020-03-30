@@ -260,6 +260,16 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
+     * Returns the protocol provider service.
+     *
+     * @return the protocol provider service
+     */
+    public ProtocolProviderService getProtocolProvider()
+    {
+        return mPPS;
+    }
+
+    /**
      * Returns {@code true} if the chat room is persistent, otherwise - returns {@code false}.
      *
      * @return {@code true} if the chat room is persistent, otherwise - returns {@code false}.

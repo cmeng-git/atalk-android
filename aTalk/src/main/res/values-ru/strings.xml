@@ -155,14 +155,11 @@
     <string name="service_gui_CHANGE_NICKNAME_LABEL">В поле ниже вы можете ввести новый псевдоним.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Псевдоним Имя поля не может быть пустым</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Изменить информацию комнаты чата</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT">Изменить тему помещения&#8230;</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">В поле ниже вы можете ввести новый объект для этой комнаты.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Изменить качество удаленного видео</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s конференция</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Конференции</string>
     <string name="service_gui_CHATROOM">Чат</string>
     <string name="service_gui_CHATROOM_ALREADY_JOINED">Вы уже вошли в чат-комнату %1$s.</string>
-	<string name="service_gui_CHATROOM_CONFIGURATION">%1$s настройка чата</string>
 	<string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Не удалось получить конфигурационную форму в чате %1$s.</string>
 	<string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Не удалось получить форму конфигурации комнаты чата %1$s. Только владельцы чата могут видеть и изменять конфигурационную форму.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Список справа содержит пользователей, которые имеют роль участника в этом чате. Когда в чате есть «Только члены», это будут пользователи, которым разрешено присоединиться.</string>
@@ -374,6 +371,7 @@
 
     <string name="service_gui_CHATROOM_CREATE">Создать чат-комнату&#8230;</string>
     <string name="service_gui_CHATROOM_CREATE_ERROR">Не удалось создать чат-комнату:\n%1$s.</string>
+    <string name="service_gui_CHATROOM_CREATE_JOIN">Создать / Вступить в чат</string>
     <string name="service_gui_CHATROOM_CREATE_WIZARD">Создать мастер чата</string>
 
     <string name="service_gui_CHATROOM_DESTROY">Уничтожить этот chatRoom</string>
@@ -386,8 +384,7 @@
     <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\' удалено успешно!</string>
     <string name="service_gui_CHATROOM_DESTROY_TITLE">Уничтожить chatRoom</string>
 
-    <string name="service_gui_CHATROOM_JOIN">Вступить в чат</string>
-    <string name="service_gui_CHATROOM_JOIN_FAILED">Не удалось присоединиться к комнате:\n%1$s с псевдонимом: %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Не удалось присоединиться к комнате с псевдонимом: %1$s\n%2$s.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Не удалось присоединиться к чату %1$s:\n%2$s</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Комната чата запрашивает пароль.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Требуется регистрация в чате.</string>
@@ -1058,6 +1055,11 @@
     <string name="service_gui_TLS_CERT">Клиентский сертификат TLS</string>
     <string name="service_gui_TLS_CERT_PROMPT">Выберите сертификат TLS</string>
     <string name="service_gui_TLS_CERT_SUMMARY">Использование сертификата при аутентификации пользователя на сервере</string>
+
+    <!-- Reset ZID -->
+    <string name="reset_ZID_summary">Сброс долгоживущего идентификатора ZRTP</string>
+    <string name="reset_ZID_title">Сброс настроек ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID был сброшен</string>
 
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Сохранение изменений учетной записи, подождите&#8230;</string>

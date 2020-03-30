@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="?attr/colorBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="@dimen/screen_padding"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/config_title"
+        style="@style/MediumFont"
+        android:background="@drawable/alpha_blue_01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginBottom="@dimen/label_padding" />
+
+    <ListView
+        android:id="@+id/formListView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:transcriptMode="normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/between_padding"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/rcb_Cancel"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_CANCEL" />
+
+        <Button
+            android:id="@+id/rcb_Submit"
+            style="@style/ButtonTop"
+            android:layout_marginStart="4dp"
+            android:text="@string/service_gui_SUBMIT" />
+    </LinearLayout>
+
+</LinearLayout>

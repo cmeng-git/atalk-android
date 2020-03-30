@@ -375,11 +375,11 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      *                resource can change too often.
      * @return computed ZID
      */
-    public static byte [] generateMyZid (final AccountID accountID, final BareJid peerJid)
+    public static byte[] generateMyZid (final AccountID accountID, final BareJid peerJid)
     {
         final String ZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT, "");
 
-        final byte [] zid = new byte[12];
+        final byte[] zid = new byte[12];
 
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-256");

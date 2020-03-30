@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.2.2 (03/30/2020)" versioncode="1122">
+        <change>Enhance create/join chat room UI: refresh field contents and allow user password entry</change>
+        <change>Allow saving and retrieving of the chat room protected password for later room auto-join or rejoin</change>
+        <change>Support joining room on cross domain server, and default new room creation with OMEMO chat support</change>
+        <change>Support room configuration by owner. Update OMEMO encrypt option after the changes</change>
+        <change>Display an error message in chat instead of a pop-up alert dialog when user canceled Captcha challenge on joining room</change>
+        <change>Fix CaptchaDialog race condition when user canceled challenge but still triggering a retry popup</change>
+        <change>Make fingerprinting of ZRTP connections harder with different ZID per user callee</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.2.1 (03/17/2020)" versioncode="1121">
         <change>Add user selectable Themes support</change>
         <change>Implement user selectable option for heads-up notification</change>
@@ -15,8 +26,8 @@
         <change>Upgrade glide library to v4.11.0 for better control of image preview sizes for history and new medias</change>
         <change>Execute getLastSeen for contacts in new thread to avoid ANR</change>
         <change>Refresh Setting... immediately when user changes Language or Theme options</change>
-        <change>Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES-256 &amp; TWOFISH-256, and enable elliptic curve crypto using Curve 25519</change>
-        <change>Enhance SDES encryption with AES 256 and AES 192</change>
+        <change>Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES256 &amp; TWOFISH-256, and enable elliptic curve crypto using Curve 25519</change>
+        <change>Enhance SDES encryption with AES256 and AES192</change>
         <change>Enhance AES-256 acceleration using OpenSSL</change>
         <change>Bug fixes and enhancements</change>
     </release>

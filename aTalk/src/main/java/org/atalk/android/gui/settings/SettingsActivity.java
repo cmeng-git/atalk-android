@@ -47,6 +47,7 @@ import timber.log.Timber;
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public class SettingsActivity extends OSGiActivity
 {

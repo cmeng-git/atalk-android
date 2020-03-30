@@ -204,11 +204,6 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         BookmarkConference bookmarkConference;
 
         @Override
-        protected void onPreExecute()
-        {
-        }
-
-        @Override
         protected Void doInBackground(Void... params)
         {
             List<ChatRoomProviderWrapper> crpWrappers = mucService.getChatRoomProviders();

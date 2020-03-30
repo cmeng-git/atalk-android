@@ -70,7 +70,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class AccountInfoPresenceActivity extends OSGiActivity
-        implements EventListener<AccountEvent>, AdapterView.OnItemSelectedListener, DialogActivity.DialogListener,
+        implements EventListener<AccountEvent>, DialogActivity.DialogListener,
         SoftKeyboard.SoftKeyboardChanged, CalendarDatePickerDialogFragment.OnDateSetListener
 {
     /**
@@ -117,8 +117,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * Flag indicates if there were any uncommitted status changes that shall be applied on exit
      */
     private boolean hasStatusChanges = false;
-
-    private boolean firstInit = true;
 
     /**
      * Mapping between all supported by this plugin <tt>ServerStoredDetails</tt> and their
@@ -285,7 +283,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
         }
 
-        firstInit = true;
         // Account properties
         String title = mAccount.getAccountName();
         ActionBarUtil.setTitle(this, title);
@@ -303,8 +300,20 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         PresenceStatus presenceStatus = accountPresence.getPresenceStatus();
         ActionBarUtil.setStatus(this, presenceStatus.getStatusIcon());
 
-        statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus));
-        statusSpinner.setOnItemSelectedListener(this);
+        statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus), false);
+        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
+            {
+                hasStatusChanges = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView)
+            {
+            }
+        });
 
         // Sets current status message
         EditText statusMessageEdit = findViewById(R.id.statusMessage);
@@ -1319,28 +1328,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             // Publish status in new thread
             publishStatus(selectedStatus, statusMessageText);
         }
-    }
-
-    /**
-     * Fired when new presence status is selected
-     *
-     * @param adapterView clicked adapter's View
-     * @param view selected item's View
-     * @param i items position
-     * @param l item's id
-     */
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-    {
-        // Need to ignore the first trigger when adapter is being first init
-        if (!firstInit)
-            hasStatusChanges = true;
-        else
-            firstInit = false;
-    }
-
-    public void onNothingSelected(AdapterView<?> adapterView)
-    {
-        // Should not happen in single selection mode
     }
 
     /**

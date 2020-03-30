@@ -28,6 +28,7 @@ import timber.log.Timber;
  * @author Emil Ivov
  * @author Lubomir Marinov
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public abstract class ProtocolProviderFactory
 {

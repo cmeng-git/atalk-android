@@ -443,7 +443,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
 
                     // Continue to update server BookMarkConference data if bookmark is checked
                     if (mViewHolder.bookmark.isChecked()) {
-                        ProtocolProviderService pps = chatRoomWrapper.getParentProvider().getProtocolProvider();
+                        ProtocolProviderService pps = chatRoomWrapper.getProtocolProvider();
                         BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
                         EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
                         chatRoomWrapper.setBookmark(mViewHolder.bookmark.isChecked());

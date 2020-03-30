@@ -343,7 +343,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      */
     private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoomWrapper chatRoomWrapper)
     {
-        return contact.getProvider() == chatRoomWrapper.getParentProvider().getProtocolProvider()
+        return contact.getProvider() == chatRoomWrapper.getProtocolProvider()
                 && contact.getContactAddress().equals(chatRoomWrapper.getChatRoomID());
     }
 

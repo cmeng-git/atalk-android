@@ -289,7 +289,7 @@ public class VCardAvatarManager extends AvatarManager
                 if (mAutoDownload) {
                     mVCard = downloadVCard(jidFrom.asBareJid());
 
-                    if (mVCard.getAvatar() != null) {
+                    if ((mVCard != null) && (mVCard.getAvatar() != null)) {
                         LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
                                 + jidFrom + "\n" + currentAvatarHash + "\n" + avatarHash);
                         fireListeners(jidFrom, avatarHash);

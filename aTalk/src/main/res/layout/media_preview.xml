@@ -10,7 +10,7 @@
             android:layout_height="@dimen/media_preview_size"
             android:layout_centerInParent="true"
             android:layout_margin="5dp"
-            android:background="@color/white"
+            android:background="@color/background_light"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_logo" />
 

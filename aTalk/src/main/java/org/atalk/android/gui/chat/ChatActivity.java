@@ -59,8 +59,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,7 +77,7 @@ import static org.atalk.persistance.FileBackend.getMimeType;
  * @author Eng Chong Meng
  */
 public class ChatActivity extends OSGiActivity
-        implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener
+        implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener, ChatRoomConfiguration.ChatRoomConfigListener
 {
     private static final int REQUEST_CODE_SELECT_PHOTO = 100;
     private static final int REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY = 101;
@@ -133,7 +132,8 @@ public class ChatActivity extends OSGiActivity
     private MenuItem mDestroyChatRoom;
     private MenuItem mChatRoomInfo;
     private MenuItem mChatRoomMember;
-    private MenuItem mChatRoomSubject;
+    private MenuItem mChatRoomConfig;
+    private MenuItem mChatRoomNickSubject;
     private MenuItem mOtr_Session;
 
     /**
@@ -147,6 +147,9 @@ public class ChatActivity extends OSGiActivity
 
     private ChatPanel selectedChatPanel;
     private static Contact mRecipient;
+
+    private ChatRoomConfiguration chatRoomConfig;
+    private CryptoFragment cryptoFragment;
 
     /**
      * file for camera picture or video capture
@@ -178,7 +181,8 @@ public class ChatActivity extends OSGiActivity
             return;
         }
         // Add fragment for crypto padLock for OTR and OMEMO before start pager
-        getSupportFragmentManager().beginTransaction().add(new CryptoFragment(), CRYPTO_FRAGMENT).commit();
+        cryptoFragment = new CryptoFragment();
+        getSupportFragmentManager().beginTransaction().add(cryptoFragment, CRYPTO_FRAGMENT).commit();
 
         // Instantiate a ViewPager and a PagerAdapter.
         chatPager = findViewById(R.id.chatPager);
@@ -356,15 +360,23 @@ public class ChatActivity extends OSGiActivity
     {
         // Close the activity when back button is pressed
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
+            if (chatRoomConfig != null) {
+                chatRoomConfig.onBackPressed();
+            } else {
+                finish();
+            }
             return true;
         }
         else {
-            // Pass to ChatController to handle
+            // Pass to ChatController to handle; reference may be null on event triggered => NPE. so must check
             ChatFragment chatFragment;
+            ChatController chatController;
+
             if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null) {
-                if (chatFragment.getChatController().onKeyUp(keyCode, event))
-                    return true;
+                if ((chatController = chatFragment.getChatController()) != null) {
+                    if (chatController.onKeyUp(keyCode, event))
+                        return true;
+                }
             }
         }
         return super.onKeyUp(keyCode, event);
@@ -392,7 +404,8 @@ public class ChatActivity extends OSGiActivity
         mDestroyChatRoom = mMenu.findItem(R.id.destroy_chat_room);
         mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
         mChatRoomMember = mMenu.findItem(R.id.show_chatroom_occupant);
-        mChatRoomSubject = mMenu.findItem(R.id.change_chatroom_attr);
+        mChatRoomConfig = mMenu.findItem(R.id.chatroom_config);
+        mChatRoomNickSubject = mMenu.findItem(R.id.chatroom_info_change);
         mOtr_Session = menu.findItem(R.id.otr_session);
 
         if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
@@ -438,7 +451,8 @@ public class ChatActivity extends OSGiActivity
                 mRoomInvite.setVisible(!isDomainJid);
                 mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
-                mChatRoomSubject.setVisible(false);
+                mChatRoomConfig.setVisible(false);
+                mChatRoomNickSubject.setVisible(false);
                 // Also let CryptoFragment handles this to take care Omemo and OTR
                 mOtr_Session.setVisible(!isDomainJid);
             }
@@ -446,13 +460,15 @@ public class ChatActivity extends OSGiActivity
                 // Only room owner is allowed to destroy chatRoom - role should not be null for joined room
                 ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) chatSession.getDescriptor();
                 ChatRoomMemberRole role = chatRoomWrapper.getChatRoom().getUserRole();
+
                 mDestroyChatRoom.setVisible(ChatRoomMemberRole.OWNER.equals(role));
+                mChatRoomConfig.setVisible(ChatRoomMemberRole.OWNER.equals(role));
 
                 boolean isJoined = chatRoomWrapper.getChatRoom().isJoined();
                 mLeaveChatRoom.setVisible(isJoined);
                 mSendFile.setVisible(isJoined && hasUploadService);
                 mSendLocation.setVisible(isJoined);
-                mChatRoomSubject.setVisible(isJoined);
+                mChatRoomNickSubject.setVisible(isJoined);
 
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
                 mChatRoomInfo.setVisible(true);
@@ -511,6 +527,8 @@ public class ChatActivity extends OSGiActivity
         if (descriptor instanceof ChatRoomWrapper) {
             ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.addToBackStack(null);
 
             switch (item.getItemId()) {
                 case R.id.leave_chat_room:
@@ -534,13 +552,16 @@ public class ChatActivity extends OSGiActivity
 
                 case R.id.chatroom_info:
                     ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(chatRoomWrapper);
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.addToBackStack(null);
                     chatRoomInfoDialog.show(ft, "infoDialog");
                     return true;
 
-                case R.id.change_chatroom_attr:
+                case R.id.chatroom_info_change:
                     new ChatRoomInfoChangeDialog().show(this, chatRoomWrapper);
+                    return true;
+
+                case R.id.chatroom_config:
+                    chatRoomConfig = ChatRoomConfiguration.getInstance(this, chatRoomWrapper, this);
+                    ft.replace(android.R.id.content, chatRoomConfig).commit();
                     return true;
 
                 case R.id.show_chatroom_occupant:
@@ -561,7 +582,7 @@ public class ChatActivity extends OSGiActivity
                     else {
                         memberList.append(getString(R.string.service_gui_LIST_NONE));
                     }
-                    String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
+                    String user = chatRoomWrapper.getProtocolProvider().getAccountID().getUserID();
                     selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
                             memberList.toString());
                     return true;
@@ -955,6 +976,20 @@ public class ChatActivity extends OSGiActivity
         } catch (ActivityNotFoundException e) {
             showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
         }
+    }
+
+    /**
+     * Call back from ChatRoomConfiguration when it has completed the task.
+     * 1. Stop all future onBackPressed call to ChatRoomConfiguration
+     * 2. Re-init OMEMO support option after room properties changed.
+     *
+     * @param configUpdates room configuration user selected fields for update
+     */
+    @Override
+    public void onConfigComplete(Map<String, Object> configUpdates)
+    {
+        chatRoomConfig = null;
+        cryptoFragment.updateOmemoSupport();
     }
 
     /**

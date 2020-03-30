@@ -163,8 +163,7 @@
     <string name="service_gui_CHANGE_NICKNAME_ERROR">Error changing nickname for %1$s: %2$s</string>
     <string name="service_gui_CHANGE_NICKNAME_LABEL">In the field below, you can enter your new nickname.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Nick Name field content cannot be null</string>
-    <string name="service_gui_CHANGE_ROOM_INFO">Change chatRoom\'s Info</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT">Change room\'s subject&#8230;</string>
+    <string name="service_gui_CHANGE_ROOM_INFO">ChatRoom info change</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">In the field below, you can enter the new subject for this room.</string>
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s conference</string>
@@ -176,7 +175,7 @@
     <string name="service_gui_CHAT_LINK">&lt;a href="%1$s">%2$s&lt;/a></string>
     <string name="service_gui_CHATROOM">Chat Room</string>
     <string name="service_gui_CHATROOM_ALREADY_JOINED">You have already joined the %1$s chat room.</string>
-    <string name="service_gui_CHATROOM_CONFIGURATION">%1$s chat room configuration</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">ChatRoom configuration</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Failed to obtain the %1$s chat room configuration form.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Could not obtain the %1$s chat room configuration form. Only owners of the chat room can see and change the configuration form.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">List on the right contains users that have member role in this chat room. When chat room is \'Members-only\' those will be the users that are allowed to join.</string>
@@ -404,6 +403,7 @@
 
     <string name="service_gui_CHATROOM_CREATE">Create chat room&#8230;</string>
     <string name="service_gui_CHATROOM_CREATE_ERROR">Failed to create chat room for:\n%1$s</string>
+    <string name="service_gui_CHATROOM_CREATE_JOIN">Create / Join chat room</string>
     <string name="service_gui_CHATROOM_CREATE_WIZARD">Create chat room wizard</string>
 
     <string name="service_gui_CHATROOM_DESTROY">Destroy this chatRoom</string>
@@ -416,8 +416,7 @@
     <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\' has been removed Successfully!</string>
     <string name="service_gui_CHATROOM_DESTROY_TITLE">Destroy chatRoom</string>
 
-    <string name="service_gui_CHATROOM_JOIN">Join chat room</string>
-    <string name="service_gui_CHATROOM_JOIN_FAILED">Failed to join room:\n%1$s with nickname: %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Failed to join room with nickname: %1$s\n%2$s.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Failed to join chat room %1$s:\n%2$s</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD"> The chat room requests a password.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION"> The chat room requires registration.</string>

@@ -453,7 +453,8 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Indicates if given <tt>nextMsg</tt> is a consecutive message.
+     * Indicates if the given <tt>nextMsg</tt> should be considered as consecutive message;
+     * checking it against the previous message type and the next message.
      *
      * @param nextMsg the next message to check
      * @return <tt>true</tt> if the given message is a consecutive message, <tt>false</tt> - otherwise
@@ -463,33 +464,70 @@ public class ChatMessageImpl implements ChatMessage
         if (nextMsg == null)
             return false;
 
-        String bodyText = nextMsg.getMessage();
+        boolean isNonEmpty = !TextUtils.isEmpty(message);
 
         // Same UID specified i.e. corrected message
-        boolean uidEqual = ((messageUID != null)
-                && messageUID.equals(nextMsg.getCorrectedMessageUID()));
+        boolean isCorrectionMessage = ((messageUID != null) && messageUID.equals(nextMsg.getCorrectedMessageUID()));
 
-        // New FTRequest message always treated as non-consecutiveMessage
-        boolean nonFTMsg = ((messageType != MESSAGE_FILE_TRANSFER_RECEIVE)
-                && (messageType != MESSAGE_FILE_TRANSFER_SEND) && (messageType != MESSAGE_STICKER_SEND));
-        // system message always treated as non-consecutiveMessage
-        boolean nonHttpFTMsg = (bodyText == null)
-                || !bodyText.matches("(?s)^aesgcm:.*|^http[s].*");
-        boolean nonSystemMsg = (messageType != MESSAGE_SYSTEM);
+        // FTRequest message always treated as non-consecutiveMessage
+        boolean isFTMsg = (messageType == MESSAGE_FILE_TRANSFER_RECEIVE)
+                || (messageType == MESSAGE_FILE_TRANSFER_SEND)
+                || (messageType == MESSAGE_STICKER_SEND);
+
+        boolean isHttpFTMsg = isNonEmpty && message.matches("(?s)^aesgcm:.*|^http[s].*");
+
+        boolean isMarkUpText = isNonEmpty && message.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
+
         // New LatLng message always treated as non-consecutiveMessage
-        boolean nonLatLng = (!TextUtils.isEmpty(message) && !message.contains("LatLng:"));
+        boolean isLatLng = isNonEmpty && message.contains("LatLng:");
+
+        // system message always treated as non-consecutiveMessage
+        boolean isSystemMsg = (messageType == MESSAGE_SYSTEM) || (messageType == MESSAGE_ERROR);
+
         // Same message type and from the same contactName
-        boolean mTypeJidEqual = ((mSender != null)
+        boolean isJidSame = ((mSender != null)
                 && (messageType == nextMsg.getMessageType())
                 && mSender.equals(nextMsg.getSender()));
+
         // same message encryption type
-        boolean encTypeSame = (encryptionType == nextMsg.getEncryptionType());
+        boolean isEncTypeSame = (encryptionType == nextMsg.getEncryptionType());
+
         // true if the new message is within a minute from the last one
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
-        boolean isMarkUpText = (bodyText != null) && bodyText.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
 
-        return uidEqual || (nonFTMsg && nonSystemMsg && nonLatLng && encTypeSame && nonHttpFTMsg && !isMarkUpText
-                && mTypeJidEqual && inElapseTime);
+        return isCorrectionMessage
+                || (!(isNonMerge(nextMsg) || isFTMsg  || isHttpFTMsg || isMarkUpText || isLatLng || isSystemMsg)
+                && (isEncTypeSame && isJidSame && inElapseTime));
+    }
+
+    /**
+     * Check the given ChatMessage to ascertain if it should always be treated as non-consecutiveMessage
+     *
+     * @param chatMessage ChatMessage to check
+     * @return true if non-consecutiveMessage
+     */
+    private boolean isNonMerge(ChatMessage chatMessage)
+    {
+        int msgType = chatMessage.getMessageType();
+        String bodyText = chatMessage.getMessage();
+        boolean isNonEmpty = !TextUtils.isEmpty(bodyText);
+
+        // FT  messages always treated as non-consecutiveMessage
+        boolean isFTMsg = ((msgType == MESSAGE_FILE_TRANSFER_RECEIVE)
+                || (msgType == MESSAGE_FILE_TRANSFER_SEND) || (msgType == MESSAGE_STICKER_SEND));
+
+        boolean isHttpFTMsg = isNonEmpty && bodyText.matches("(?s)^aesgcm:.*|^http[s].*");
+
+        // XHTML markup message always treated as non-consecutiveMessage
+        boolean isMarkUpText = isNonEmpty && bodyText.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
+
+        // LatLng message always treated as non-consecutiveMessage
+        boolean isLatLng = isNonEmpty && bodyText.contains("LatLng:");
+
+        // system message always treated as non-consecutiveMessage
+        boolean isSystemMsg = (msgType == MESSAGE_SYSTEM) || (msgType == MESSAGE_ERROR);
+
+        return (isFTMsg || isHttpFTMsg || isMarkUpText || isLatLng || isSystemMsg);
     }
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)

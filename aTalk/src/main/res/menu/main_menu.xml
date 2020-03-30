@@ -10,7 +10,7 @@
         android:id="@+id/add_chat_room"
         android:icon="@drawable/ic_chat_room_add_dark"
         android:showAsAction="ifRoom"
-        android:title="@string/service_gui_CHATROOM_JOIN" />
+        android:title="@string/service_gui_CHATROOM_CREATE_JOIN" />
     <item
         android:id="@+id/show_location"
         android:icon="@drawable/ic_location_dark"

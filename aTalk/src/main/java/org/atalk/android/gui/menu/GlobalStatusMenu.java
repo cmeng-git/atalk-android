@@ -64,9 +64,6 @@ public class GlobalStatusMenu extends OSGiActivity
     public static final int ANIM_REFLECT = 4;
     private static final int ANIM_AUTO = 5;
 
-    // Spinner onItemSelected will get triggered on first status menu access - need to ignore
-    private boolean menuFirstInit = true;
-
     public GlobalStatusMenu(FragmentActivity activity)
     {
         mActivity = activity;
@@ -339,18 +336,13 @@ public class GlobalStatusMenu extends OSGiActivity
 
         // Default state to offline
         PresenceStatus offline = accountPresence.getPresenceStatus(JabberStatusEnum.OFFLINE);
-        statusSpinner.setSelection(presenceStatuses.indexOf(offline));
+        statusSpinner.setSelection(presenceStatuses.indexOf(offline), false);
 
         // Setup adapter listener for onItemSelected
         statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
-                if (menuFirstInit) {
-                    menuFirstInit = false;
-                    return;
-                }
-
                 final PresenceStatus selectedStatus = (PresenceStatus) statusSpinner.getSelectedItem();
                 final String statusMessage = selectedStatus.getStatusName();
 

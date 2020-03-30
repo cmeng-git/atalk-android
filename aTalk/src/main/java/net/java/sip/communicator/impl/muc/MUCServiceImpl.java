@@ -146,9 +146,7 @@ public class MUCServiceImpl extends MUCService
     public void joinChatRoom(ChatRoomWrapper chatRoomWrapper, String nickName, byte[] password)
     {
         if (chatRoomWrapper.getChatRoom() == null) {
-            chatRoomWrapper = createChatRoom(chatRoomWrapper.getChatRoomName(),
-                    chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                    new ArrayList<>(), "", false, false, true);
+            chatRoomWrapper = createChatRoom(chatRoomWrapper, "", false, false, true);
         }
 
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -158,7 +156,7 @@ public class MUCServiceImpl extends MUCService
                             chatRoomWrapper.getChatRoomName()));
             return;
         }
-        new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password).start();
+        new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, nickName, password, null).start();
     }
 
     /**
@@ -172,17 +170,18 @@ public class MUCServiceImpl extends MUCService
      */
     public void joinChatRoom(ChatRoomWrapper chatRoomWrapper, String nickName, byte[] password, String subject)
     {
-        if (chatRoomWrapper.getChatRoom() == null) {
-            chatRoomWrapper = createChatRoom(chatRoomWrapper.getChatRoomName(),
-                    chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                    new ArrayList<>(), "", false, false, true);
-        }
-
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom == null) {
+            chatRoomWrapper = createChatRoom(chatRoomWrapper, "", false, false, true);
+
+            if (chatRoomWrapper != null)
+                chatRoom = chatRoomWrapper.getChatRoom();
+        }
+
+        if (chatRoom == null) {
             MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_CHATROOM_NOT_CONNECTED,
-                            chatRoomWrapper.getChatRoomName()));
+                    aTalkApp.getResString(R.string.service_gui_CHATROOM_NOT_CONNECTED, chatRoom));
+            return;
         }
 
         // join from add chat room dialog
@@ -197,9 +196,7 @@ public class MUCServiceImpl extends MUCService
     public void joinChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
         if (chatRoomWrapper.getChatRoom() == null) {
-            chatRoomWrapper = createChatRoom(chatRoomWrapper.getChatRoomName(),
-                    chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                    new ArrayList<>(), "", false, false, true);
+            chatRoomWrapper = createChatRoom(chatRoomWrapper, "", false, false, true);
         }
 
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
@@ -209,7 +206,7 @@ public class MUCServiceImpl extends MUCService
                             chatRoomWrapper.getChatRoomName()));
             return;
         }
-        new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, null, null).start();
+        new JoinChatRoomTask((ChatRoomWrapperImpl) chatRoomWrapper, null, null, null).start();
     }
 
     /**
@@ -264,38 +261,22 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Creates a chat room, by specifying the chat room name, the parent protocol provider and
+     * Creates a chat room, by specifying the chatRoomWrapper and
      * eventually, the contacts invited to participate in this chat room.
      *
-     * @param roomName the name of the room
-     * @param protocolProvider the parent protocol provider.
-     * @param contacts the contacts invited when creating the chat room.
+     * @param chatRoomWrapper the chat room to join.
      * @param reason the reason for room creation
      * @param persistent is the room persistent
      * @param isPrivate whether the room will be private or public.
-     * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room
-     */
-    public ChatRoomWrapper createChatRoom(String roomName, ProtocolProviderService protocolProvider,
-            Collection<String> contacts, String reason, boolean persistent, boolean isPrivate)
-    {
-        return createChatRoom(roomName, protocolProvider, contacts, reason, true, persistent, isPrivate);
-    }
-
-    /**
-     * Creates a chat room, by specifying the chat room name, the parent protocol provider and
-     * eventually, the contacts invited to participate in this chat room.
      *
-     * @param roomName the name of the room
-     * @param protocolProvider the parent protocol provider.
-     * @param contacts the contacts invited when creating the chat room.
-     * @param reason the reason for room creation
-     * @param persistent is the room persistent
      * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room
      */
-    public ChatRoomWrapper createChatRoom(String roomName, ProtocolProviderService protocolProvider,
-            Collection<String> contacts, String reason, boolean persistent)
+    public ChatRoomWrapper createChatRoom(ChatRoomWrapper chatRoomWrapper,
+            String reason, boolean join, boolean persistent, boolean isPrivate)
     {
-        return createChatRoom(roomName, protocolProvider, contacts, reason, true, persistent, false);
+        boolean onServerRoom = (chatRoomWrapper.getChatRoom() != null);
+        return createChatRoom(chatRoomWrapper.getChatRoomName(), chatRoomWrapper.getProtocolProvider(),
+                new ArrayList<>(), reason, join, persistent, isPrivate, onServerRoom);
     }
 
     /**
@@ -309,24 +290,27 @@ public class MUCServiceImpl extends MUCService
      * @param join whether we should join the room after creating it.
      * @param persistent whether the newly created room will be persistent.
      * @param isPrivate whether the room will be private or public.
+     * @param onServerRoom whether the room is already in the server room list.
      * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room or <tt>null</tt> if
      * the protocol fails to create the chat room.
      */
     public ChatRoomWrapper createChatRoom(String roomName, ProtocolProviderService protocolProvider,
-            Collection<String> contacts, String reason, boolean join, boolean persistent, boolean isPrivate)
+            Collection<String> contacts, String reason, boolean join, boolean persistent, boolean isPrivate,
+            boolean onServerRoom)
     {
-        ChatRoomWrapper chatRoomWrapper = null;
-        OperationSetMultiUserChat groupChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
-
         // If there's no group chat operation set we have nothing to do here.
+        OperationSetMultiUserChat groupChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
         if (groupChatOpSet == null)
             return null;
 
+        ChatRoomWrapper chatRoomWrapper = null;
         ChatRoom chatRoom = null;
         try {
             HashMap<String, Object> roomProperties = new HashMap<>();
-            roomProperties.put("isPrivate", isPrivate);
+            roomProperties.put(ChatRoom.IS_PRIVATE, isPrivate);
+            roomProperties.put(ChatRoom.ON_SERVER_ROOM, onServerRoom);
             chatRoom = groupChatOpSet.createChatRoom(roomName, roomProperties);
+
             // server may reject chatRoom creation and timeout on reply
             if ((chatRoom != null) && join) {
                 chatRoom.join();
@@ -368,7 +352,7 @@ public class MUCServiceImpl extends MUCService
     public ChatRoomWrapper createPrivateChatRoom(ProtocolProviderService protocolProvider,
             Collection<String> contacts, String reason, boolean persistent)
     {
-        return this.createChatRoom(null, protocolProvider, contacts, reason, persistent, true);
+        return this.createChatRoom(null, protocolProvider, contacts, reason, true, persistent, true, false);
     }
 
     /**
@@ -449,7 +433,7 @@ public class MUCServiceImpl extends MUCService
 
         // We save the choice of the user, before the chat room is really joined, because even the
         // join fails we want the next time when we login to join this chat room automatically.
-        ConfigurationUtils.updateChatRoomStatus(chatRoomWrapper.getParentProvider().getProtocolProvider(),
+        ConfigurationUtils.updateChatRoomStatus(chatRoomWrapper.getProtocolProvider(),
                 chatRoomWrapper.getChatRoomID(), GlobalStatusEnum.OFFLINE_STATUS);
         return existChatRoomWrapper;
     }
@@ -489,11 +473,6 @@ public class MUCServiceImpl extends MUCService
                 this.password = password;
             }
             this.rememberPassword = rememberPassword;
-        }
-
-        JoinChatRoomTask(ChatRoomWrapperImpl chatRoomWrapper, String nickName, byte[] password)
-        {
-            this(chatRoomWrapper, nickName, password, false, true, null);
         }
 
         JoinChatRoomTask(ChatRoomWrapperImpl chatRoomWrapper, String nickName, byte[] password, String subject)
@@ -592,7 +571,7 @@ public class MUCServiceImpl extends MUCService
          */
         private void done(String returnCode, String msg)
         {
-            ConfigurationUtils.updateChatRoomStatus(chatRoomWrapper.getParentProvider().getProtocolProvider(),
+            ConfigurationUtils.updateChatRoomStatus(chatRoomWrapper.getProtocolProvider(),
                     chatRoomWrapper.getChatRoomID(), GlobalStatusEnum.ONLINE_STATUS);
 
             String errMsg = null;
@@ -604,8 +583,8 @@ public class MUCServiceImpl extends MUCService
 
                     // cmeng - icon not implemented in Android
                     // AuthenticationWindow.getAuthenticationWindowIcon(chatRoomWrapper.getParentProvider().getProtocolProvider()),
-                    AuthenticationWindow authWindow = authWindowsService.create(null, null, null,
-                            false, chatRoomWrapper.isPersistent(), null,
+                    AuthenticationWindow authWindow = authWindowsService.create(chatRoomWrapper.getNickName(),
+                            null, null,false, chatRoomWrapper.isPersistent(), null,
                             aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_WINDOW_TITLE,
                                     chatRoomWrapper.getParentProvider().getName()),
                             aTalkApp.getResString(R.string.service_gui_CHATROOM_REQUIRES_PASSWORD, chatRoomId), "", null,
@@ -841,37 +820,36 @@ public class MUCServiceImpl extends MUCService
     /**
      * Opens a chat window for the chat room.
      *
-     * @param room the chat room.
+     * @param chatRoomWrapper the chat room.
      */
-    public void openChatRoom(ChatRoomWrapper room)
+    public void openChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
-        if (room.getChatRoom() == null) {
-            room = createChatRoom(room.getChatRoomName(), room.getParentProvider().getProtocolProvider(),
-                    new ArrayList<>(), "", false, false, true);
+        if (chatRoomWrapper.getChatRoom() == null) {
+            chatRoomWrapper = createChatRoom(chatRoomWrapper, "", false, false, true);
 
             // leave the chatRoom because getChatRoom().isJoined() returns true otherwise
-            if (room.getChatRoom().isJoined())
-                room.getChatRoom().leave();
+            if (chatRoomWrapper.getChatRoom().isJoined())
+                chatRoomWrapper.getChatRoom().leave();
         }
 
-        if (!room.getChatRoom().isJoined()) {
-            String savedNick = room.getNickName();
+        if (!chatRoomWrapper.getChatRoom().isJoined()) {
+            String savedNick = chatRoomWrapper.getNickName();
             String subject = null;
 
             if (savedNick == null) {
-                // String[] joinOptions = ChatRoomJoinOptionsDialog.getJoinOptions(room.getParentProvider().getProtocolProvider(),
+                // String[] joinOptions = ChatRoomJoinOptionsDialog.getJoinOptions(room.getProtocolProvider(),
                 // room.getChatRoomID(), MUCActivator.getGlobalDisplayDetailsService()
                 // .getDisplayName(room.getParentProvider().getProtocolProvider()));
                 // savedNick = joinOptions[0];
                 // subject = joinOptions[1];
             }
             if (savedNick != null) {
-                joinChatRoom(room, savedNick, null, subject);
+                joinChatRoom(chatRoomWrapper, savedNick, null, subject);
             }
             else
                 return;
         }
-        MUCActivator.getUIService().openChatRoomWindow(room);
+        MUCActivator.getUIService().openChatRoomWindow(chatRoomWrapper);
     }
 
     /**

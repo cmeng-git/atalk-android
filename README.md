@@ -23,38 +23,44 @@
 aTalk is an xmpp client designed for android and supports the following features:
 * Instant messaging in plain text and End-to-End encryption with [OMEMO](https://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
 * SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
-* Use of the SASL EXTERNAL mechanism with PKIX certificates for client-server authentication and login
-* OMEMO encryption in multi-user-chat session, give users' maximum privacy and security
+* OMEMO encryption in group chat session enhancing privacy and security
 * OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
-* Support http file upload for file sharing with offline contact and members in conference room
-* Support downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
-* Send and receive files for all document types and images, with thumbnail preview before file is sent 
-* Auto accept file transfer request with max file size option
-* Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
+* Support http file upload for file sharing with offline contact and in group chat
+* Support Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
+* Send and receive files for all document types and images with thumbnail preview and gif animation
+* Auto accept file transfer with max file size option
+* Implement fault-tolerance file transfer to ease and enhance file sharing reliability
 * Enhance and harmonize UI for file sharing in chat and chatRoom
-* Support share, quote and forward of messages and media files with preview before sending
-* Embedded audio media player with functions: Play, Pause, Resume, Stop and Seek
+* Support share, quote and forward of messages and medias with previews prior to sending
+* Support multi-instances of audio media player with functions: Play, Pause, Resume, Stop and Seek
 * Support unread message badges in contact and chatRoom list views
-* XEP-0012: Last Activity to show the time of the last activity associated with a contact
+* User selectable option for heads-up notification and quite hours
+* Share of social media links are tagged with thumbnail and title
+* XEP-0012: Last Activity time associated with contacts
 * XEP-0048: Bookmarks for conference room and autoJoin on login
-* XEP-0070: Verifying HTTP Requests via XMPP entity to confirm it made the request
-* XEP-0071: Support send and receive of instant messages that contain lightweight text markup
+* XEP-0070: Verifying HTTP Requests via XMPP entity for user authentication without password entry
+* XEP-0071: XHTML-IM Support chat messages containing lightweight text markup
 * XEP-0085: Chat State Notifications
 * XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
+* XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication
 * XEP-0184: Message Delivery Receipts with user enable/disable option
-* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
-* Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
+* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
+* Join or create room with full room configuration support for owner
+* Integrated captcha protected room user interface with retry on failure
 * Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
+* ZRTP crypto algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
+* SDES encryption with AES256 and AES192, acceleration using OpenSSL
 * Support simultaneous media call and message chat sessions
-* Unique GPS-Location implementation standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
-* A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
+* Unique GPS-Location implementation as standalone tool, send locations to your desired buddy for real-time tracking or playback animation
+* A 360° street view of your current location use for self-guided tour. The street view tracks and follows your direction of sight
 * Built-in demo for GPS-Location features
 * Integrated photo editor with zooming and cropping, user can update the avatar with ease
 * Last message correction, message carbons and offline messages (OMEMO)
 * Stream Management and mobile network ping interval self-tune optimization support
 * In-Band Registration with captcha option support
 * Multiple accounts creation
-* Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish).
+* User selectable Themes support
+* Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish)
 
 ## XMPP Standards Implemented
 

@@ -48,8 +48,7 @@ public class FileTransferStatusChangeEvent extends EventObject
     public static final int IN_PROGRESS = 4;
 
     /**
-     * Indicates that the file transfer waits for the recipient to accept the file.
-     * Seems this flas is not use at all
+     * Indicates that the file transfer waits for the user/recipient to accept the file.
      */
     public static final int WAITING = 5;
 

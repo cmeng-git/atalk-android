@@ -907,7 +907,7 @@ public class CryptoFragment extends OSGiFragment
     /**
      * Check and cache result of OMEMO is supported by current chatTransport;
      */
-    private void updateOmemoSupport()
+    public void updateOmemoSupport()
     {
         // Following few parameters must get initialized while in updateOmemoSupport()
         // Do not proceed if account is not log in, otherwise system crash
@@ -962,11 +962,13 @@ public class CryptoFragment extends OSGiFragment
                 } catch (PubSubException.NotALeafNodeException e) {
                     Timber.w("Exception in checking entity omemo support: %s", e.getMessage());
                 }
+
                 // update omemoSupported in cache; revert to MSGTYPE_NORMAL if Default OMEMO not supported by session
                 boolean omemoSupported = serverCan && entityCan;
+                omemoCapable.put(mDescriptor, omemoSupported);
+
                 if (!omemoSupported && (MSGTYPE_OMEMO == mChatType))
                     setChatType(MSGTYPE_NORMAL);
-                omemoCapable.put(mDescriptor, omemoSupported);
             }
         }.start();
     }
