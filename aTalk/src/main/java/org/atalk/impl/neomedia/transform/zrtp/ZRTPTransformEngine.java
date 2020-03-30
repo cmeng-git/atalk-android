@@ -412,7 +412,47 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         return this;
     }
 
-      /**
+//    /**
+//     * Engine initialization method. Calling this for engine initialization and start it with
+//     * auto-sensing and a given configuration setting.
+//     *
+//     * @param zidFilename The ZID file name
+//     * @param config The configuration data
+//     * @return true if initialization fails, false if succeeds
+//     */
+//    public boolean initialize(String zidFilename, ZrtpConfigure config)
+//    {
+//        return initialize(zidFilename, true, config);
+//    }
+//
+//    /**
+//     * Engine initialization method. Calling this for engine initialization and start it with
+//     * defined auto-sensing and a default configuration setting.
+//     *
+//     * @param zidFilename The ZID file name
+//     * @param autoEnable If true start with auto-sensing mode.
+//     * @return true if initialization fails, false if succeeds
+//     */
+//    public boolean initialize(String zidFilename, boolean autoEnable)
+//    {
+//        return initialize(zidFilename, autoEnable, null);
+//    }
+//
+//    /**
+//     * Default engine initialization method.
+//     *
+//     * Calling this for engine initialization and start it with auto-sensing and default
+//     * configuration setting.
+//     *
+//     * @param zidFilename The ZID file name
+//     * @return true if initialization fails, false if succeeds
+//     */
+//    public boolean initialize(String zidFilename)
+//    {
+//        return initialize(zidFilename, true, null);
+//    }
+
+    /**
      * Custom engine initialization method. This allows to explicit specify if the engine starts
      * with auto-sensing or not.
      *

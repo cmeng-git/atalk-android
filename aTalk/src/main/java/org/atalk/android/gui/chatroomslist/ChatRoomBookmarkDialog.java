@@ -127,7 +127,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
      */
     private void initBookmarkedConference()
     {
-        ProtocolProviderService pps = mChatRoomWrapper.getParentProvider().getProtocolProvider();
+        ProtocolProviderService pps = mChatRoomWrapper.getProtocolProvider();
         String accountId = pps.getAccountID().getAccountJid();
         // getNickName() always returns a valid or default nickname string
         String nickName = mChatRoomWrapper.getNickName();
@@ -157,7 +157,7 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
         List<EntityBareJid> bookmarkedEntityList = new ArrayList<>();
         boolean success = true;
 
-        ProtocolProviderService pps = mChatRoomWrapper.getParentProvider().getProtocolProvider();
+        ProtocolProviderService pps = mChatRoomWrapper.getProtocolProvider();
         BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
 
         try {

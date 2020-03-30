@@ -247,7 +247,7 @@ public class MultiUserChat {
                         case unavailable:
                             occupantsMap.remove(from);
                             MUCUser mucUser = MUCUser.from(packet);
-                            if (mucUser != null) {
+                            if (mucUser != null && mucUser.hasStatus()) {
                                 // Fire events according to the received presence code
                                 checkPresenceCode(
                                     mucUser.getStatus(),
@@ -255,8 +255,19 @@ public class MultiUserChat {
                                     mucUser,
                                     from);
                             } else {
+                                // The room has been destroyed.
+                                if (mucUser != null && mucUser.getDestroy() != null) {
+                                    // Reset occupant information.
+                                    userHasLeft();
+                                    myRoomJid = null;
+
+                                    MultiUserChat alternateMUC = multiUserChatManager.getMultiUserChat(mucUser.getDestroy().getJid());
+                                    for (UserStatusListener listener : userStatusListeners) {
+                                        listener.roomDestroyed(alternateMUC, mucUser.getDestroy().getReason());
+                                    }
+                                }
                                 // An occupant has left the room
-                                if (!isUserStatusModification) {
+                                else if (!isUserStatusModification) {
                                     for (ParticipantStatusListener listener : participantStatusListeners) {
                                         listener.left(from);
                                     }
@@ -2377,21 +2388,6 @@ public class MultiUserChat {
         boolean isUserModification,
         MUCUser mucUser,
         EntityFullJid from) {
-
-         if(!mucUser.hasStatus()) {
-             // The room has been destroyed.
-             if (mucUser.getDestroy() != null) {
-                 // Reset occupant information.
-                 userHasLeft();
-                 myRoomJid = null;
-
-                 MultiUserChat alternateMUC = multiUserChatManager.getMultiUserChat(mucUser.getDestroy().getJid());
-                 for (UserStatusListener listener : userStatusListeners) {
-                     listener.roomDestroyed(alternateMUC, mucUser.getDestroy().getReason());
-                 }
-             }
-             return;
-         }
 
         // Check if an occupant was kicked from the room
         if (statusCodes.contains(Status.KICKED_307)) {

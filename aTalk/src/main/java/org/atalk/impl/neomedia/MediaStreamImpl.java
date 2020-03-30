@@ -60,6 +60,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author George Politis
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public class MediaStreamImpl extends AbstractMediaStream
         implements ReceiveStreamListener, SendStreamListener, SessionListener, RemoteListener

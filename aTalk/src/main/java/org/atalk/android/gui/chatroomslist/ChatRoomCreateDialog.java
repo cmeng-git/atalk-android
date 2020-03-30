@@ -30,6 +30,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
@@ -38,7 +39,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.android.util.ComboBox;
+import org.atalk.android.gui.util.ComboBox;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
@@ -54,7 +55,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListener
+public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListener, AdapterView.OnItemClickListener
 {
     private static final String CHATROOM = "chatroom";
 
@@ -69,12 +70,18 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
 
     private EditText subjectField;
     private EditText nicknameField;
+    private EditText passwordField;
+    private CheckBox mSavePasswordCheckBox;
     private Button mJoinButton;
 
     /**
      * A map of <JID, ChatRoomProviderWrapper>
      */
-    private Map<String, ChatRoomProviderWrapper> mucRoomWrapperList = new LinkedHashMap<>();
+    private Map<String, ChatRoomProviderWrapper> mucRCProviderList = new LinkedHashMap<>();
+
+    private List<String> chatRoomList = new ArrayList<>();
+
+    private Map<String, ChatRoomWrapper> chatRoomWrapperList = new LinkedHashMap<>();
 
     /**
      * Constructs the <tt>ChatInviteDialog</tt>.
@@ -92,26 +99,33 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.service_gui_CHATROOM_JOIN);
+        setTitle(R.string.service_gui_CHATROOM_CREATE_JOIN);
         this.setContentView(R.layout.muc_room_create_dialog);
 
-        accountsSpinner = this.findViewById(R.id.jid_Accounts_Spinner);
+        accountsSpinner = findViewById(R.id.jid_Accounts_Spinner);
         initAccountSpinner();
 
-        nicknameField = this.findViewById(R.id.NickName_Edit);
-        subjectField = this.findViewById(R.id.chatRoom_Subject_Edit);
+        nicknameField = findViewById(R.id.NickName_Edit);
+        subjectField = findViewById(R.id.chatRoom_Subject_Edit);
         subjectField.setText("");
 
-        chatRoomComboBox = this.findViewById(R.id.chatRoom_Combo);
+        passwordField = findViewById(R.id.passwordField);
+        CheckBox showPasswordCB = findViewById(R.id.show_password);
+        showPasswordCB.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(passwordField, isChecked));
+        mSavePasswordCheckBox = findViewById(R.id.store_password);
+
+        chatRoomComboBox = findViewById(R.id.chatRoom_Combo);
+        chatRoomComboBox.setOnItemClickListener(this);
         new initComboBox().execute();
 
-        mJoinButton = this.findViewById(R.id.button_Join);
+        mJoinButton = findViewById(R.id.button_Join);
         mJoinButton.setOnClickListener(v -> {
             if (createOrJoinChatRoom())
                 closeDialog();
         });
 
-        Button mCancelButton = this.findViewById(R.id.button_Cancel);
+        Button mCancelButton = findViewById(R.id.button_Cancel);
         mCancelButton.setOnClickListener(v -> closeDialog());
         setCanceledOnTouchOutside(false);
     }
@@ -125,7 +139,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         List<ChatRoomProviderWrapper> providers = mucService.getChatRoomProviders();
         for (ChatRoomProviderWrapper provider : providers) {
             mAccount = provider.getProtocolProvider().getAccountID().getDisplayName();
-            mucRoomWrapperList.put(mAccount, provider);
+            mucRCProviderList.put(mAccount, provider);
             ppsList.add(mAccount);
         }
 
@@ -142,47 +156,50 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      * Creates the providers comboBox and filling its content with the current available chatRooms
      * Add available server chatRooms to the chatRoomList when providers changes
      */
-    private class initComboBox extends AsyncTask<Void, Void, Void>
+    private class initComboBox extends AsyncTask<Void, Void, List<String>>
     {
-        List<String> chatRoomList = new ArrayList<>();
-
         @Override
-        protected void onPreExecute()
+        protected List<String> doInBackground(Void... params)
         {
-            chatRoomComboBox.setText(CHATROOM);
-            chatRoomComboBox.setSuggestionSource(chatRoomList);
-        }
+            chatRoomList.clear();
+            chatRoomWrapperList.clear();
 
-        @Override
-        protected Void doInBackground(Void... params)
-        {
             ChatRoomProviderWrapper crpWrapper = getSelectedProvider();
             if (crpWrapper != null) {
-                // local chatRooms
                 ProtocolProviderService pps = crpWrapper.getProtocolProvider();
+
+                // local chatRooms
                 chatRoomList = mucService.getExistingChatRooms(pps);
 
                 // server chatRooms
                 List<String> sChatRoomList = mucService.getExistingChatRooms(crpWrapper);
                 for (String sRoom : sChatRoomList) {
-                    if (!chatRoomList.contains(sRoom))
+                    if (!chatRoomList.contains(sRoom)) {
                         chatRoomList.add(sRoom);
+                    }
+                }
+
+                // populate the chatRoomWrapperList for all the chatRooms
+                for (String room : chatRoomList) {
+                    chatRoomWrapperList.put(room, mucService.findChatRoomWrapperFromChatRoomID(room, pps));
                 }
             }
-            return null;
+            return chatRoomList;
         }
 
         @Override
-        protected void onPostExecute(Void result)
+        protected void onPostExecute(List<String> result)
         {
             super.onPostExecute(result);
             if (chatRoomList.size() == 0)
                 chatRoomList.add(CHATROOM);
 
-            String chatRoomID = chatRoomList.get(0);
-            chatRoomComboBox.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-            chatRoomComboBox.setText(chatRoomID);
+            chatRoomComboBox.setText(chatRoomList.get(0));
+            // Must do this after setText; otherwise only first item in the list
             chatRoomComboBox.setSuggestionSource(chatRoomList);
+
+            // Update the dialog form fields with all the relevant values
+            onItemClick(null, chatRoomComboBox, 0, 0);
         }
     }
 
@@ -213,11 +230,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     @Override
     public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
     {
-        String userId = (String) adapter.getItemAtPosition(pos);
-        ChatRoomProviderWrapper protocol = mucRoomWrapperList.get(userId);
-        setDefaultNickname(protocol.getProtocolProvider());
         new initComboBox().execute();
-
     }
 
     @Override
@@ -227,19 +240,56 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     }
 
     /**
-     * Sets the default value in the nickname field based on pps.
+     * Callback method to be invoked when an item in this AdapterView i.e. comboBox has been clicked.
      *
-     * @param pps the ProtocolProviderService
+     * @param parent The AdapterView where the click happened.
+     * @param view The view within the AdapterView that was clicked (this will be a view provided by the adapter)
+     * @param position The position of the view in the adapter.
+     * @param id The row id of the item that was clicked.
      */
-    private void setDefaultNickname(ProtocolProviderService pps)
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        if (pps != null) {
-            String nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
-            if ((nickName == null) || nickName.contains("@"))
-                nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
-            nicknameField.setText(nickName);
-            updateJoinButtonEnableState();
+        ChatRoomWrapper chatRoomWrapper = chatRoomWrapperList.get(chatRoomList.get(position));
+        if (chatRoomWrapper != null) {
+            // Timber.d("ComboBox Item clicked: %s; %s", position, chatRoomWrapper.getChatRoomName());
+
+            String pwd = chatRoomWrapper.loadPassword();
+            passwordField.setText(pwd);
+            mSavePasswordCheckBox.setChecked(!TextUtils.isEmpty(pwd));
+
+            ChatRoom chatroom = chatRoomWrapper.getChatRoom();
+            if (chatroom != null) {
+                subjectField.setText(chatroom.getSubject());
+            }
         }
+        // chatRoomWrapper can be null, so always setDefaultNickname()
+        setDefaultNickname();
+    }
+
+    /**
+     * Sets the default value in the nickname field based on selected chatRoomWrapper stored value of PPS
+     */
+    private void setDefaultNickname()
+    {
+        String chatRoom = chatRoomComboBox.getText().replaceAll("\\s", "");
+        ChatRoomWrapper chatRoomWrapper = chatRoomWrapperList.get(chatRoom);
+
+        String nickName = null;
+        if (chatRoomWrapper != null) {
+            nickName = chatRoomWrapper.getNickName();
+        }
+
+        if (TextUtils.isEmpty(nickName)) {
+            ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
+            if (pps != null) {
+                nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
+                if ((nickName == null) || nickName.contains("@"))
+                    nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
+            }
+        }
+        nicknameField.setText(nickName);
+        updateJoinButtonEnableState();
     }
 
     /**
@@ -260,7 +310,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     private ChatRoomProviderWrapper getSelectedProvider()
     {
         String key = (String) accountsSpinner.getSelectedItem();
-        return mucRoomWrapperList.get(key);
+        return mucRCProviderList.get(key);
     }
 
     /**
@@ -281,8 +331,11 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     {
         // allow nickName to contain spaces
         String nickName = ViewUtil.toString(nicknameField);
+        String password = ViewUtil.toString(passwordField);
         String subject = ViewUtil.toString(subjectField);
         String chatRoomID = chatRoomComboBox.getText().replaceAll("\\s", "");
+        boolean savePassword = mSavePasswordCheckBox.isChecked();
+
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
 
@@ -292,12 +345,12 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             // create new if chatRoom does not exist
             ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoomID(chatRoomID, pps);
             if (chatRoomWrapper == null) {
-                // Just create chatRoomWrapper without joining
+                // Just create chatRoomWrapper without joining as nick and password options are not available
                 chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
-                        reason, false, false, true);
+                        reason, false, false, true, chatRoomList.contains(chatRoomID));
 
                 // Return without open the chat room, the protocol failed to create a chat room (null)
-                if (chatRoomWrapper == null) {
+                if ((chatRoomWrapper == null) || (chatRoomWrapper.getChatRoom() == null)) {
                     aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_CREATE_ERROR, chatRoomID);
                     return false;
                 }
@@ -307,19 +360,19 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 // ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
 
                 /*
-                 * Save to server bookmark with autojoin option for newly created chatroom
+                 * Save to server bookmark with autojoin option only for newly created chatRoom;
+                 * Otherwise risk of overridden user previous settings
                  */
-                // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
                 chatRoomWrapper.setAutoJoin(true);
                 chatRoomWrapper.setBookmark(true);
-                chatRoomWrapper.setNickName(nickName); // save for later ResourcePart retrieval
+                chatRoomWrapper.setNickName(nickName); // saved for later ResourcePart retrieval in addBookmarkedConference
                 EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
 
                 BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
                 try {
                     // Use subject for bookmark name
                     bookmarkManager.addBookmarkedConference(subject, entityBareJid, true,
-                            chatRoomWrapper.getNickResource(), "");
+                            chatRoomWrapper.getNickResource(), password);
                 } catch (SmackException.NoResponseException | SmackException.NotConnectedException
                         | XMPPException.XMPPErrorException | InterruptedException e) {
                     Timber.w("Failed to add new Bookmarks: %s", e.getMessage());
@@ -340,21 +393,27 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                     });
                 }
             }
-
             // Set chatRoom openAutomatically on_activity
             // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
 
             chatRoomWrapper.setNickName(nickName);
-            mucService.joinChatRoom(chatRoomWrapper, nickName, null, subject);
+            if (savePassword)
+                chatRoomWrapper.savePassword(password);
+            else
+                chatRoomWrapper.savePassword(null);
+
+            byte[] pwdByte = TextUtils.isEmpty(password) ? null : password.getBytes();
+            mucService.joinChatRoom(chatRoomWrapper, nickName, pwdByte, subject);
+
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
             mParent.startActivity(chatIntent);
             return true;
         }
-        else if (TextUtils.isEmpty(chatRoomID)) {
+        else if (TextUtils.isEmpty(chatRoomID) || (nickName == null)) {
             aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_NAME);
         }
         else {
-            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_FAILED, chatRoomID, nickName);
+            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_FAILED, nickName, chatRoomID);
         }
         return false;
     }

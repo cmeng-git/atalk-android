@@ -1,5 +1,33 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.2.2 (1122)
+Author:         cmeng / MilanKral
+Upload Date:	03/30/2020
+- Enhance create/join chat room UI: refresh all fields content and allow user password entry for the selected chatRoom
+- Allow saving and retrieving of the chat room protected password for later room auto-join or rejoin
+- Support joining room on cross domain server, and default new room creation with OMEMO chat support
+- Add support for room configuration by owner; re-init CryptoFragment OMEMO options after the room properties changed
+  Note: configured properties for no persistent room will be reset to default when last participant left
+- Display an error message in chat instead of a pop-up alert dialog when user canceled Captcha challenge on joining room
+- Fix CaptchaDialog race condition (~10ms) when user canceled challenge but still triggering a retry popup
+  Change execution order to ensure ChatRoomJabberImpl.mCaptchaState is updated before <presence/> exception is processed
+  Server sends <presence/> exception immediately after captcha error is sent.
+- Make fingerprinting of ZRTP connections harder by using a different ZID for each user callee
+
+- Implement MultiSelectionSpinner class
+- Checking of ChatMessageImpl#isConsecutiveMessage must consider both the previous and current new messages
+- Clear up all file transfer classes to use common updateXferFileViewState(), a view update for buttons and info state
+- Send a remote message when local user canceled file transfer (non-standard protocol support)
+- Update ComboBox class to support onItemClick() call back to update room field values
+- Update ComboBox per selected theme color for background and text
+- Use Spinner.setSelection(index, false) to avoid onSelectedItem get triggered on first init
+- Change aTalkApp.waitForFocus() to return current activity.
+- fixed NPE: 'boolean org.jxmpp.jid.parts.Resourcepart.equals(java.lang.Object)' on a null object reference
+          at ChatRoomJabberImpl$MemberListener.joined(ChatRoomJabberImpl.java:1287)
+- Patch in v2.1.7 for smack#MultiUserChat to fix chatRoom destroy update etc, but creates problem participant leave
+  state not being broadcast.
+
+=========================================================================
 Version:		2.2.1 (1121)
 Author:         cmeng / MilanKral
 Upload Date:	03/17/2020
@@ -7,7 +35,7 @@ Upload Date:	03/17/2020
 - Implement user selectable option for heads-up notification
 - Support download and display of url image in src tag embedded in xhtml message
 - Share of youtube and other social media links are tagged with thumbnail and title
-  see https://noembed.com/#supported-sites
+  see https://noembed.com
 - New features support for group chat: Erase chatRoom history and GPS location sending
 - Execute ChatActivity.getLastSeen() in new thread to avoid ANR
 - Upgrade glide library to v4.11.0 for better control of loadImage preview sizes for history and new medias

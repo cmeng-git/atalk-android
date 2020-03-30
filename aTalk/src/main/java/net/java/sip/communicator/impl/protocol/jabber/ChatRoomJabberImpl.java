@@ -5,6 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
@@ -137,7 +138,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private final Hashtable<Resourcepart, ChatRoomMember> banList = new Hashtable<>();
 
     /**
-     * The Resouce Part of this chat room local user participant i.e.NickName.
+     * The Resource Part of this chat room local user participant i.e. NickName.
      */
     private Resourcepart mNickName;
 
@@ -269,11 +270,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         aTalkApp.waitForFocus();
         new Handler(Looper.getMainLooper()).post(() -> {
-            // Already timeout on default smack reply time, so not required (server gives 60s timeout)
-            // mPPS.getConnection().setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_CAPTCHA_TIMEOUT);
-            CaptchaDialog captchaDialog = new CaptchaDialog(aTalkApp.getCurrentActivity(),
-                    mMultiUserChat, message, ChatRoomJabberImpl.this);
-            captchaDialog.show();
+            // Must use activity (may be null at time); Otherwise token null is not valid; is your activity running?
+            Activity activity = aTalkApp.getCurrentActivity();
+            if (activity != null) {
+                CaptchaDialog captchaDialog = new CaptchaDialog(activity,
+                        mMultiUserChat, message, ChatRoomJabberImpl.this);
+                captchaDialog.show();
+            }
         });
     }
 
@@ -312,8 +315,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 break;
 
             case CaptchaDialog.cancel:
-                String errMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, getName(), mNickName);
-                MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR), errMsg);
+                // Show in chat instead of launching an alert dialog
+                String errMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, mNickName, getName());
+                addMessage(errMsg, ChatMessage.MESSAGE_ERROR);
+                Timber.d("User cancel: %s", errMsg);
+                // MUCActivator.getAlertUIService().showAlertDialog(aTalkApp.getResString(R.string.service_gui_ERROR), errMsg);
                 break;
             default:
                 break;
@@ -671,7 +677,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     {
         assertConnected();
         boolean retry = true;
-        String errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, getName(), nickname);
+        String errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, nickname, getName());
 
         mPassword = password;
         // parseLocalPart or take nickname as it to join chatRoom
@@ -698,7 +704,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 throw new OperationFailedException(errorMessage, OperationFailedException.GENERAL_ERROR, ex);
             }
             else if (xmppError.getCondition().equals(Condition.not_authorized)) {
-                Timber.e("Join room exception:\n%s", errorMessage);
+                Timber.e("Join room exception: %s (state)\n%s", mCaptchaState, errorMessage);
                 if (mCaptchaState == CaptchaDialog.unknown) {
                     errorMessage += "\n" + aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_PASSWORD);
                     throw new OperationFailedException(errorMessage, OperationFailedException.AUTHENTICATION_FAILED, ex);
@@ -1278,7 +1284,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // when somebody changes its nickname we first receive event for its nickname changed
             // and after that that has joined we check if this already joined and if so we skip it
-            if (!mNickName.equals(participantNick) && !members.containsKey(participantNick)) {
+            // Note: mNickName may be null so order of equals is important
+            if (!participantNick.equals(mNickName) && !members.containsKey(participantNick)) {
                 String reason = mucOwnPresenceReceived ? ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED
                         : ChatRoomMemberPresenceChangeEvent.REASON_USER_LIST;
 
@@ -1288,7 +1295,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, occupant.getNick(), occupant.getJid());
 
                 members.put(participantNick, member);
-                // REASON_USER_LIST reason will not show in chat window
+                // REASON_USER_LIST reason will not show participant 'has joined' in chat window
                 fireMemberPresenceEvent(member, ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED, reason);
             }
         }

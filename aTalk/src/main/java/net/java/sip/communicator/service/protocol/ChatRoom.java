@@ -35,6 +35,17 @@ public interface ChatRoom
     String CHATROOM_NAME = "chatRoomName";
     String USER_NICK_NAME = "userNickName";
     String USER_ROLE = "userRole";
+
+    /**
+     * Proceed to create room if isPrivate
+     */
+    String IS_PRIVATE = "isPrivate";
+
+    /**
+     * indicate if the room is already on the server - persistent
+     */
+    String ON_SERVER_ROOM = "onServerRoom";
+
     String CHATROOM_LAST_STATUS = "lastChatRoomStatus";
 
     /**

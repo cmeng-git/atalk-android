@@ -539,33 +539,33 @@ public class aTalkApp extends Application implements LifecycleObserver
     /**
      * If OSGi has not started, then wait for the <tt>LauncherActivity</tt> etc to complete before
      * showing any dialog. Dialog should only be shown while <tt>NOT in LaunchActivity</tt> etc
-     * Otherwise the dialog will be obscured by these activities; max wait = 5 seconds
+     * Otherwise the dialog will be obscured by these activities; max wait = 5 waits of 1000ms each
      */
-    public static void waitForFocus()
+    public static Activity waitForFocus()
     {
         // if (AndroidGUIActivator.bundleContext == null) { #false on first application installation
-        final Object currentActivityMonitor = aTalkApp.getCurrentActivityMonitor();
         synchronized (currentActivityMonitor) {
-            int wait = 5; // 5 x 1 seconds
-            while ((wait > 0)) {
+            int wait = 6; // 5 waits each lasting max of 1000ms
+            while (wait-- > 0) {
+                try {
+                    currentActivityMonitor.wait(1000);
+                } catch (InterruptedException e) {
+                    Timber.e("%s", e.getMessage());
+                }
+
                 Activity activity = aTalkApp.getCurrentActivity();
                 if (activity != null) {
                     if (!(activity instanceof LauncherActivity
                             || activity instanceof Splash
                             || activity instanceof PermissionsActivity)) {
-                        break;
+                        return activity;
                     }
                     else {
-                        Timber.d("Display login status waiting for Activity to exit: %s", activity);
+                        Timber.d("Wait %s sec for aTalk focus on activity: %s", wait, activity);
                     }
                 }
-                try {
-                    wait--;
-                    currentActivityMonitor.wait(1000);
-                } catch (InterruptedException e) {
-                    Timber.e(e, "%s", e.getMessage());
-                }
             }
+            return null;
         }
     }
 }

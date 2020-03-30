@@ -197,7 +197,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
             // Save scroll position
             scrollPosition = contactListView.getFirstVisiblePosition();
             View itemView = contactListView.getChildAt(0);
-            scrollTopPosition = (itemView == null)? 0 : itemView.getTop();
+            scrollTopPosition = (itemView == null) ? 0 : itemView.getTop();
 
             // Dispose of group expand memory
             if (listExpandHandler != null) {
@@ -406,7 +406,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     return true;
                 case R.id.rename_contact:
                     // Show rename contact dialog
-                    ft = getFragmentManager().beginTransaction();
+                    ft = getParentFragmentManager().beginTransaction();
                     ft.addToBackStack(null);
                     DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
                     renameFragment.show(ft, "renameDialog");
@@ -416,7 +416,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     return true;
                 case R.id.move_contact:
                     // Show move contact dialog
-                    ft = getFragmentManager().beginTransaction();
+                    ft = getParentFragmentManager().beginTransaction();
                     ft.addToBackStack(null);
                     DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
                     newFragment.show(ft, "moveDialog");

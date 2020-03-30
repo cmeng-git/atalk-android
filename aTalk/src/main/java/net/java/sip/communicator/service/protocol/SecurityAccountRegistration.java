@@ -24,6 +24,7 @@ import java.util.*;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public abstract class SecurityAccountRegistration implements Serializable
 {

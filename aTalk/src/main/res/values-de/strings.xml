@@ -155,14 +155,12 @@
     <string name="service_gui_CHANGE_NICKNAME_LABEL">Untenstehend kannst du deinen Spitznamen ändern.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Der Feldinhalt für den Spitznamen darf nicht null sein</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Informationen zum Chatraum ändern</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT">Chatraum Thema ändern&#8230;</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Untenstehend kannst du ein neues Thema für diesen Chatraum eingeben.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Ändern der Videoauflösung auf der Gegenseite.</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s Konferenz</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Konferenzen</string>
     <string name="service_gui_CHATROOM">Chatraum</string>
     <string name="service_gui_CHATROOM_ALREADY_JOINED">Du befindest dich bereits im %1$s Chatraum.</string>
-	<string name="service_gui_CHATROOM_CONFIGURATION">%1$s Chatraum Konfiguration</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">Chatraum Konfiguration</string>
 	<string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Fehler beim Abrufen des Chatraum-Konfigurationsformulars %1$s.</string>
 	<string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Das Chatraum-Konfigurationsformular %1$s konnte nicht abgerufen werden. Nur Besitzer des Chatraums können das Konfigurationsformular sehen und ändern.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Die Liste auf der rechten Seite enthält Benutzer mit einer Mitgliedsrolle in diesem Chatraum. Wenn der Chatraum\'Nur für Mitglieder\'  ist, sind dies die Benutzer, die sich anmelden dürfen.</string>
@@ -371,6 +369,7 @@
 
     <string name="service_gui_CHATROOM_CREATE">Chatraum erstellen&#8230;</string>
     <string name="service_gui_CHATROOM_CREATE_ERROR">Kann Chatraum nicht erstellen:\n%1$s</string>
+    <string name="service_gui_CHATROOM_CREATE_JOIN">Chatraum beitreten / beitreten</string>
     <string name="service_gui_CHATROOM_CREATE_WIZARD">Chatraum Erstellen Assistent</string>
 
     <string name="service_gui_CHATROOM_DESTROY">Diesen Chatraum löschen</string>
@@ -383,8 +382,7 @@
     <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\' wurde erfolgreich gelöscht!</string>
     <string name="service_gui_CHATROOM_DESTROY_TITLE">Chatraum löschen</string>
 
-    <string name="service_gui_CHATROOM_JOIN">Chatraum beitreten</string>
-    <string name="service_gui_CHATROOM_JOIN_FAILED">Kann Chatraum:\n%1$s mit Benutzernamen %2$s nicht beitreten.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Kann Chatraum mit Benutzernamen nicht beitreten. %1$s\n%2$s </string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Kann Chatraum %1$s:\n%2$s</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Dieser Chatraum verlangt ein Passwort.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Dieser Chatraum benötigt eine Registrierung.</string>
@@ -966,7 +964,7 @@
     <string name="omemo_rebuild_session">Erstelle eine neue Sitzung für fehlenden %1$s</string>
     <string name="omemo_purge_inactive_device_error">Fehler beim Entfernen des inaktiven OMEMO-Geräts für:%1$s.</string>
 
-    <!-- Account proxy plugin -->
+    <!-- Account proxy settings -->
     <string name="service_gui_settings_BOSH_PROXY">BOSH/Proxy konfiguration</string>
     <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Richten Sie die Verbindung über BOSH/Proxy für das Konto ein</string>
     <string name="plugin_proxy_BOSHURL_NULL">Der Inhalt des BOSH-URL-Felds darf nicht leer sein</string>
@@ -1033,16 +1031,21 @@
     <string name="pref_remove_trusted_certificates_title">Zertifikat entfernen</string>
     <string name="pref_remove_trusted_certificates_summary">Lösche manuell genehmigte Zertifikate</string>
 
-    <!-- Settings -->
-    <string name="service_gui_COMMIT_PROGRESS_MSG">Speichern von Kontoänderungen, bitte warten&#8230;</string>
-    <string name="service_gui_COMMIT_PROGRESS_TITLE">"Übertrage Daten&#8230;"</string>
-    <string name="service_gui_SETTINGS_NOT_SET">(Nicht definiert)</string>
-    
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Client-TLS-Zertifikat</string>
     <string name="service_gui_TLS_CERT_PROMPT">TLS-Zertifikat wählen</string>
     <string name="service_gui_TLS_CERT_SUMMARY">Verwendung des Zertifikats bei der Benutzerauthentifizierung mit dem Server</string>
 
+    <!-- Reset ZID -->
+    <string name="reset_ZID_summary">Setzen Sie die langlebige ZRTP-Kennung zurück</string>
+    <string name="reset_ZID_title">Zurücksetzen ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID wurde zurückgesetzt</string>
+
+    <!-- Settings -->
+    <string name="service_gui_COMMIT_PROGRESS_MSG">Speichern von Kontoänderungen, bitte warten&#8230;</string>
+    <string name="service_gui_COMMIT_PROGRESS_TITLE">"Übertrage Daten&#8230;"</string>
+    <string name="service_gui_SETTINGS_NOT_SET">(Nicht definiert)</string>
+        
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Audiocodierung</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Globale Einstellungen überschreiben</string>

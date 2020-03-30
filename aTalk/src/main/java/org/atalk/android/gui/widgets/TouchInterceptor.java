@@ -173,8 +173,8 @@ public class TouchInterceptor extends ListView
                         break;
                     }
                     View item = getChildAt(itemnum - getFirstVisiblePosition());
-                    dragPointX = x - ((item == null)? 0 : item.getLeft());
-                    dragPointY = y - ((item == null)? 0 : item.getTop());
+                    dragPointX = x - ((item == null) ? 0 : item.getLeft());
+                    dragPointY = y - ((item == null) ? 0 : item.getTop());
                     xOffset = ((int) ev.getRawX()) - x;
                     yOffset = ((int) ev.getRawY()) - y;
                     Timber.d("Dragging %s, %s sxy: %s, %s", x, y, dragRegionStartX, dragRegionEndX);
@@ -260,7 +260,7 @@ public class TouchInterceptor extends ListView
      */
     private void unExpandViews(boolean deletion)
     {
-        int y0 = (getChildAt(0) == null)? 0: getChildAt(0).getTop();
+        int y0 = (getChildAt(0) == null) ? 0: getChildAt(0).getTop();
 
         for (int i = 0; ; i++) {
             View v = getChildAt(i);

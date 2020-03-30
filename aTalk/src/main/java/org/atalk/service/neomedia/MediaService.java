@@ -22,6 +22,7 @@ import java.util.*;
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author MilanKral 
  */
 public interface MediaService
 {
@@ -224,7 +225,7 @@ public interface MediaService
 	 *        the <tt>SrtpControlType</tt> of the new instance
 	 * @return a new <tt>SrtpControl</tt> instance with the specified <tt>srtpControlType</tt>
 	 */
-	public SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte [] myZid);
+	public SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte[] myZid);
 
 	/**
 	 * Get available <tt>ScreenDevice</tt>s.

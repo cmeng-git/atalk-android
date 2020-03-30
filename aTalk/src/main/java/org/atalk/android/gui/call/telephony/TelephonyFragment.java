@@ -124,7 +124,6 @@ public class TelephonyFragment extends OSGiFragment
 
         accountsSpinner = content.findViewById(R.id.selectAccountSpinner);
         accountsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-
         {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
@@ -253,7 +252,7 @@ public class TelephonyFragment extends OSGiFragment
 
     private void closeFragment()
     {
-        Fragment phoneFragment = getFragmentManager().findFragmentById(android.R.id.content);
+        Fragment phoneFragment = getParentFragmentManager().findFragmentById(android.R.id.content);
         getActivity().getSupportFragmentManager().beginTransaction().remove(phoneFragment).commit();
     }
 }

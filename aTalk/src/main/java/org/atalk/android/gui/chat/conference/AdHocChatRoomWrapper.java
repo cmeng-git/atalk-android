@@ -6,6 +6,7 @@
 package org.atalk.android.gui.chat.conference;
 
 import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 /**
  * The <tt>AdHocChatRoomWrapper</tt> is the representation of the <tt>AdHocChatRoom</tt> in the GUI. It stores the information for the
@@ -103,4 +104,14 @@ public class AdHocChatRoomWrapper
 	{
 		return this.parentProvider;
 	}
+
+    /**
+     * Returns the protocol provider service.
+     *
+     * @return the protocol provider service
+     */
+    public ProtocolProviderService getProtocolProvider()
+    {
+        return parentProvider.getProtocolProvider();
+    }
 }

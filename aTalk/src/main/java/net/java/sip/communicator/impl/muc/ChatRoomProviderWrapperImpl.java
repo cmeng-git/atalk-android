@@ -15,16 +15,13 @@
  */
 package net.java.sip.communicator.impl.muc;
 
-import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJabberImpl;
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 
-import org.jxmpp.stringprep.XmppStringprepException;
-
 import java.util.*;
-
-import timber.log.Timber;
 
 /**
  * @author Yana Stamcheva
@@ -296,59 +293,31 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
     /**
      * Goes through the locally stored chat rooms list and for each {@link ChatRoomWrapper}
      * tries to find the corresponding server stored {@link ChatRoom} in the specified operation set.
-     * Joins automatically all found chat rooms.
+     * Joins automatically if enabled for all found chat rooms.
      */
     public void synchronizeProvider()
     {
         final OperationSetMultiUserChat groupChatOpSet = protocolProvider.getOperationSet(OperationSetMultiUserChat.class);
 
-        for (final ChatRoomWrapper chatRoomWrapper : chatRoomsOrderedCopy) {
-            // Proceed only if the protocol is still registered (system test indicates must check again)
-            // if (!protocolProvider.isRegistered()) {
-            //    Timber.w("The Protocol is not registered to autoJoin chatRoom: %s", protocolProvider);
-            //    continue;
-            // }
+        for (ChatRoomWrapper chatRoomWrapper : chatRoomsOrderedCopy) {
+            ChatRoom chatRoom = groupChatOpSet.findRoom(chatRoomWrapper.getEntityBareJid());
+            if (chatRoom != null) {
+                chatRoomWrapper.setChatRoom(chatRoom);
+            }
 
-            new Thread()
-            {
-                @Override
-                public void run()
-                {
-                    ChatRoom chatRoom = ((OperationSetMultiUserChatJabberImpl) groupChatOpSet)
-                            .findRoom(chatRoomWrapper.getEntityBareJid());
-
-                    if (chatRoom != null) {
-                        chatRoomWrapper.setChatRoom(chatRoom);
-
-                        if (chatRoomWrapper.isAutoJoin()) {
-                            String nickName = chatRoomWrapper.getNickName();
-                            if (nickName != null) {
-                                MUCActivator.getMUCService().joinChatRoom(chatRoom, nickName, null);
-                            }
-                            else {
-                                MUCActivator.getMUCService().joinChatRoom(chatRoomWrapper);
-                            }
-                        }
-                    }
-                    else {
-                        if (chatRoomWrapper.isAutoJoin()) {
-                            // For non-existent chat room, we must create it and join
-                            ChatRoomWrapper roomWrapper
-                                    = MUCActivator.getMUCService().createChatRoom(chatRoomWrapper.getChatRoomName(),
-                                    chatRoomWrapper.getParentProvider().getProtocolProvider(),
-                                    new ArrayList<>(), "", false, false, true);
-
-                            String nickName = chatRoomWrapper.getNickName();
-                            if (nickName != null) {
-                                MUCActivator.getMUCService().joinChatRoom(roomWrapper.getChatRoom(), nickName, null);
-                            }
-                            else {
-                                MUCActivator.getMUCService().joinChatRoom(roomWrapper);
-                            }
-                        }
-                    }
+            if (chatRoomWrapper.isAutoJoin()) {
+                // For non-existent chat room, we must create it before joining
+                if (chatRoom == null) {
+                    chatRoomWrapper = MUCActivator.getMUCService().createChatRoom(chatRoomWrapper,
+                            "auto joined", false, false, true);
                 }
-            }.start();
+
+                String nickName = chatRoomWrapper.getNickName();
+                String pwd = chatRoomWrapper.loadPassword();
+                byte[] password = TextUtils.isEmpty(pwd) ? null : pwd.getBytes();
+
+                MUCActivator.getMUCService().joinChatRoom(chatRoomWrapper, nickName, password);
+            }
         }
     }
 }

@@ -65,7 +65,7 @@
                     android:layout_toEndOf="@+id/security_group"
                     android:gravity="center_vertical"
                     android:text="{call status}"
-                    android:textColor="@color/white"
+                    android:textColor="@color/textColorWhite"
                     android:textSize="@dimen/label_text_size" />
 
                 <RelativeLayout
@@ -79,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:textColor="@color/white"
+                        android:textColor="@color/textColorWhite"
                         android:textSize="@dimen/label_text_size" />
 
                     <ImageView
@@ -98,7 +98,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_toEndOf="@+id/callStatus"
                     android:text="00:00:00"
-                    android:textColor="@color/white"
+                    android:textColor="@color/textColorWhite"
                     android:textSize="@dimen/label_text_size" />
             </RelativeLayout>
         </LinearLayout>

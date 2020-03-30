@@ -16,6 +16,7 @@
 package net.java.sip.communicator.service.muc;
 
 import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -138,6 +139,13 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     ChatRoomProviderWrapper getParentProvider();
 
     /**
+     * Returns the protocol provider service corresponding to this  wrapper.
+     *
+     * @return the protocol provider service corresponding to this server wrapper.
+     */
+    ProtocolProviderService getProtocolProvider();
+
+    /**
      * Returns <code>true</code> if the chat room is persistent, otherwise - returns <code>false </code>.
      *
      * @return <code>true</code> if the chat room is persistent, otherwise - returns <code>false</code>.
@@ -168,7 +176,7 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     /**
      * Stores the nickName for the user.
      *
-     * @param nickName the nickName to store
+     * @param nickName the nickName to save
      */
     void setNickName(String nickName);
 

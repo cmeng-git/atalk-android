@@ -12,6 +12,7 @@ import android.os.*;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.*;
@@ -36,7 +37,6 @@ import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
 
-import static org.atalk.android.aTalkApp.getCurrentActivity;
 
 /**
  * The <tt>ConferenceChatManager</tt> is the one that manages both chat room and ad-hoc chat rooms invitations.
@@ -99,19 +99,18 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         // Wake aTalk to show invitation dialog
         if (!aTalkApp.isForeground) {
-            Timber.d("Receive invitation while aTalk is in background");
-            NotificationManager.fireNotification(NotificationManager.INCOMING_INVITATION);
-
             Context context = aTalkApp.getGlobalContext();
             Intent i = new Intent(context, LauncherActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
-            aTalkApp.waitForFocus();
+
+            Timber.d("Receive invitation while aTalk is in background");
+            NotificationManager.fireNotification(NotificationManager.INCOMING_INVITATION);
         }
 
         // Event thread - Must execute in UiThread for dialog
         new Handler(Looper.getMainLooper()).post(() -> {
-            Activity activity = aTalkApp.getCurrentActivity();
+            Activity activity =  aTalkApp.waitForFocus();
             if (activity != null) {
                 InvitationReceivedDialog dialog
                         = new InvitationReceivedDialog(activity, multiUserChatManager, multiUserChatOpSet, invitation);
@@ -119,12 +118,16 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             }
             else {
                 // cmeng - auto accept and join room.
-                // Set setCurrentChatId to null so incomingMessage pop-message is active
+                // Set setCurrentChatId to null after joined, so incomingMessage pop-message is active
                 try {
-                    invitation.getTargetChatRoom().join();
+                    Timber.d("Receive invitation with waitForFocus failed, so auto-joined!");
+                    ChatRoomJabberImpl chatRoom = (ChatRoomJabberImpl) invitation.getTargetChatRoom();
+                    chatRoom.join();
                     ChatSessionManager.setCurrentChatId(null);
+                    chatRoom.addMessage(aTalkApp.getResString(R.string.service_gui_JOIN_AUTOMATICALLY),
+                            ChatMessage.MESSAGE_SYSTEM);
                 } catch (OperationFailedException e) {
-                    Timber.w("Join group chat failed!");
+                    Timber.w("Auto join group chat failed!");
                 }
             }
         });
@@ -758,7 +761,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             } catch (InterruptedException | ExecutionException ignore) {
             }
 
-            ConfigurationUtils.updateChatRoomStatus(adHocChatRoomWrapper.getParentProvider().getProtocolProvider(),
+            ConfigurationUtils.updateChatRoomStatus(adHocChatRoomWrapper.getProtocolProvider(),
                     adHocChatRoomWrapper.getAdHocChatRoomID(), GlobalStatusEnum.ONLINE_STATUS);
 
             String errorMessage;
@@ -795,9 +798,12 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         // Event thread - Must execute in UiThread for dialog
         new Handler(Looper.getMainLooper()).post(() -> {
-            InvitationReceivedDialog dialog = new InvitationReceivedDialog(
-                    getCurrentActivity(), multiUserChatManager, multiUserChatOpSet, invitationAdHoc);
-            dialog.show();
+            Activity activity =  aTalkApp.waitForFocus();
+            if (activity != null) {
+                InvitationReceivedDialog dialog = new InvitationReceivedDialog(
+                        activity, multiUserChatManager, multiUserChatOpSet, invitationAdHoc);
+                dialog.show();
+            }
         });
     }
 

@@ -204,18 +204,25 @@ public class CaptchaDialog extends Dialog
             addField(Captcha.OCR, rc.toString());
         }
 
+        /*
+         * Must immediately inform caller before sending reply; otherwise may have race condition
+         * i.e. <presence/> exception get process before mCaptchaState is update
+         */
+        if (isCancel)
+            callBack.onResult(cancel);
+
         CaptchaIQ iqCaptcha = new CaptchaIQ(formSubmit);
         iqCaptcha.setType(IQ.Type.set);
         iqCaptcha.setTo(mMessage.getFrom());
         try {
             createStanzaCollectorAndSend(iqCaptcha).nextResultOrThrow();
-            mReasonText = mContext.getString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID);
             callBack.onResult(validated);
+
+            mReasonText = mContext.getString(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID);
             callBack.addMessage(mReasonText, ChatMessage.MESSAGE_SYSTEM);
             return true;
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
                 | SmackException.NotConnectedException | InterruptedException ex) {
-            String errMsg = ex.getMessage();
 
             // Not required. The return error message will contain the descriptive text
             // if (ex instanceof XMPPException.XMPPErrorException) {
@@ -223,16 +230,15 @@ public class CaptchaDialog extends Dialog
             //    errMsg += "\n: " + xmppError.getDescriptiveText();
             // }
 
-            Timber.e("Captcha Exception: %s", errMsg);
-            mReasonText = errMsg;
+            mReasonText = ex.getMessage();
             if (isCancel) {
-                callBack.addMessage(errMsg, ChatMessage.MESSAGE_ERROR);
-                callBack.onResult(cancel);
+                callBack.addMessage(mReasonText, ChatMessage.MESSAGE_ERROR);
             }
             else {
                 // caller will retry, so do not show error.
                 callBack.onResult(failed);
             }
+            Timber.e("Captcha Exception: %s => %s", isCancel, mReasonText);
         }
         return false;
     }

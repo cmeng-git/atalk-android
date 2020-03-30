@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playerView"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:padding="5dp"
+    android:background="@drawable/border_grey"
+    android:visibility="visible"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/filename_audio"
+        style="@style/SmallFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="start"
+        android:text="{Voice File Name}"
+        android:textColor="@color/textColorBlack" />
+
+    <SeekBar
+        android:id="@+id/playback_seekbar"
+        style="@android:style/Widget.SeekBar"
+        android:thumb="@drawable/seekbar_thumb_dark"
+        android:thumbOffset="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_below="@+id/filename_audio"
+        android:layout_toStartOf="@+id/playback_play"
+        android:layout_marginTop="18dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="5dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/playback_position"
+        style="@style/SmallFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playback_seekbar"
+        android:layout_alignStart="@id/playback_seekbar"
+        android:text="00:00"
+        android:textColor="@color/grey"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/playback_duration"
+        style="@style/SmallFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playback_seekbar"
+        android:layout_alignEnd="@id/playback_seekbar"
+        android:text="00:00"
+        android:textColor="@color/grey"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/playback_play"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_below="@+id/filename_audio"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ic_player_play"
+        android:src="@drawable/player_start" />
+
+</RelativeLayout>

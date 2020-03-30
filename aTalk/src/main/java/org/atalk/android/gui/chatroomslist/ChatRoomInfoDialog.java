@@ -16,6 +16,8 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.*;
@@ -47,7 +49,7 @@ import timber.log.Timber;
 public class ChatRoomInfoDialog extends OSGiDialogFragment
 {
     private View contentView;
-    private static ChatRoomWrapper mChatRoomWrapper;
+    private ChatRoomWrapper mChatRoomWrapper;
 
     public ChatRoomInfoDialog()
     {
@@ -55,36 +57,33 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
 
     public static ChatRoomInfoDialog newInstance(ChatRoomWrapper chatRoomWrapper)
     {
-        mChatRoomWrapper = chatRoomWrapper;
-
-        Bundle args = new Bundle();
         ChatRoomInfoDialog dialog = new ChatRoomInfoDialog();
-        dialog.setArguments(args);
+        dialog.mChatRoomWrapper = chatRoomWrapper;
         return dialog;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getDialog().setTitle(R.string.service_gui_CHATROOM_INFO);
-        contentView = inflater.inflate(R.layout.chatroom_info, container, false);
+        if (getDialog() != null)
+            getDialog().setTitle(R.string.service_gui_CHATROOM_INFO);
 
+        contentView = inflater.inflate(R.layout.chatroom_info, container, false);
         final Button buttonOk = contentView.findViewById(R.id.button_ok);
         buttonOk.setOnClickListener(v -> dismiss());
 
         new getRoomInfo().execute();
-        setCancelable(false);
+
+        // setCancelable(false);
         return contentView;
     }
 
     /**
      * Retrieve the chatRoom info from server and populate the fragment with the available information
      */
-    private class getRoomInfo extends AsyncTask<Void, Void, Void>
+    private class getRoomInfo extends AsyncTask<Void, Void, RoomInfo>
     {
-        RoomInfo chatRoomInfo = null;
         String errMsg;
-        String EMPTY = "";
 
         @Override
         protected void onPreExecute()
@@ -92,7 +91,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
         }
 
         @Override
-        protected Void doInBackground(Void... params)
+        protected RoomInfo doInBackground(Void... params)
         {
             ChatRoomProviderWrapper crpWrapper = mChatRoomWrapper.getParentProvider();
             if (crpWrapper != null) {
@@ -101,7 +100,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
 
                 MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(pps.getConnection());
                 try {
-                    chatRoomInfo = mucManager.getRoomInfo(entityBareJid);
+                    return mucManager.getRoomInfo(entityBareJid);
                 } catch (SmackException.NoResponseException | SmackException.NotConnectedException
                         | InterruptedException e) {
                     errMsg = e.getMessage();
@@ -114,10 +113,11 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
         }
 
         @Override
-        protected void onPostExecute(Void result)
+        protected void onPostExecute(RoomInfo chatRoomInfo)
         {
-            super.onPostExecute(result);
+            String EMPTY = "";
 
+            super.onPostExecute(chatRoomInfo);
             if (chatRoomInfo != null) {
                 TextView textView = contentView.findViewById(R.id.roominfo_name);
                 textView.setText(chatRoomInfo.getName());
@@ -178,7 +178,8 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
                 textView.setText(XmppStringUtils.parseLocalpart(mChatRoomWrapper.getChatRoomID()));
 
                 textView = contentView.findViewById(R.id.roominfo_subject);
-                textView.setTextColor(getResources().getColor(R.color.red));
+                // Must not use getResources.getColor()
+                textView.setTextColor(Color.RED);
                 textView.setText(errMsg);
             }
         }
@@ -197,6 +198,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
 
         /**
          * Return string if not null or default
+         *
          * @param text test String
          * @param defaultValue return default string
          * @return text if not null else defaultValue

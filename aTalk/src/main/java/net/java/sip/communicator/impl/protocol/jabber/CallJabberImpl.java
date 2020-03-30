@@ -36,6 +36,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Boris Grozev
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         OperationSetBasicTelephonyJabberImpl, ProtocolProviderServiceJabberImpl>

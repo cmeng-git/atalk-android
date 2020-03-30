@@ -29,24 +29,22 @@
         android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT" />
     <item
         android:id="@+id/leave_chat_room"
-        android:title="@string/service_gui_LEAVE_ROOM"
-        android:visible="false" />
+        android:title="@string/service_gui_LEAVE_ROOM" />
     <item
         android:id="@+id/destroy_chat_room"
-        android:title="@string/service_gui_CHATROOM_DESTROY_TITLE"
-        android:visible="false" />
-    <item
-        android:id="@+id/change_chatroom_attr"
-        android:title="@string/service_gui_CHANGE_ROOM_INFO"
-        android:visible="false" />
+        android:title="@string/service_gui_CHATROOM_DESTROY_TITLE" />
     <item
         android:id="@+id/chatroom_info"
-        android:title="@string/service_gui_CHATROOM_INFO"
-        android:visible="false" />
+        android:title="@string/service_gui_CHATROOM_INFO" />
+    <item
+        android:id="@+id/chatroom_info_change"
+        android:title="@string/service_gui_CHANGE_ROOM_INFO" />
+    <item
+        android:id="@+id/chatroom_config"
+        android:title="@string/service_gui_CHATROOM_CONFIGURATION" />
     <item
         android:id="@+id/show_chatroom_occupant"
-        android:title="@string/service_gui_CHATROOM_OCCUPANT"
-        android:visible="false" />
+        android:title="@string/service_gui_CHATROOM_OCCUPANT" />
     <item
         android:id="@+id/otr_session"
         android:icon="@drawable/crypto_otr_dark"

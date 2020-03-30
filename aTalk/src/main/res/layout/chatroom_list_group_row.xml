@@ -13,7 +13,7 @@
         android:layout_marginStart="30dp"
         android:gravity="center"
         android:text="CHATROOMS"
-        android:textColor="@color/white"
+        android:textColor="@color/textColorWhite"
         android:textStyle="bold" />
 
     <LinearLayout

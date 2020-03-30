@@ -14,20 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.atalk.android.util;
+package org.atalk.android.gui.util;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Point;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.android.aTalkApp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -39,11 +40,16 @@ import androidx.annotation.NonNull;
  */
 public class ComboBox extends LinearLayout
 {
-    private AutoCompleteTextView _text;
+    protected AutoCompleteTextView _text;
     private int unit = TypedValue.COMPLEX_UNIT_SP;
     private float fontSize = 15;
-    private int fontGrey = getResources().getColor(R.color.textColorBlack);
+    private int fontBlack = getResources().getColor(R.color.textColorBlack);
     private int fontWhite = getResources().getColor(R.color.textColorWhite);
+    private int textColor;
+    private int backgroundColor;
+
+    private Context mContext;
+    private LayoutInflater inflater;
 
     public ComboBox(Context context)
     {
@@ -59,28 +65,30 @@ public class ComboBox extends LinearLayout
 
     private void createChildControls(Context context)
     {
+        mContext = context;
+        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        backgroundColor = getResources().getColor((aTalkApp.Theme.DARK == aTalkApp.getAppTheme())
+                ? R.color.background_dark : R.color.background_light);
+        textColor = (aTalkApp.Theme.DARK == aTalkApp.getAppTheme()) ? fontWhite : fontBlack;
+
         this.setOrientation(HORIZONTAL);
         this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         _text = new AutoCompleteTextView(context);
         _text.setTextSize(unit, fontSize);
-        _text.setTextColor(fontGrey);
+        _text.setTextColor(fontBlack);
         _text.setSingleLine();
-        _text.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
+        _text.setInputType(InputType.TYPE_CLASS_TEXT
+                | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
+                | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
         _text.setRawInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
         this.addView(_text, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1));
 
         ImageButton _button = new ImageButton(context);
         _button.setImageResource(android.R.drawable.arrow_down_float);
-        _button.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                _text.showDropDown();
-            }
-        });
+        _button.setOnClickListener(v -> _text.showDropDown());
         this.addView(_button, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
@@ -95,7 +103,8 @@ public class ComboBox extends LinearLayout
         String[] from = new String[]{column};
         int[] to = new int[]{android.R.id.text1};
         SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this.getContext(),
-                android.R.layout.simple_dropdown_item_1line, source, from, to);
+                R.layout.simple_spinner_dropdown_item, source, from, to);
+
         // this is to ensure that when suggestion is selected it provides the value to the textBox
         cursorAdapter.setStringConversionColumn(source.getColumnIndex(column));
         _text.setAdapter(cursorAdapter);
@@ -103,17 +112,39 @@ public class ComboBox extends LinearLayout
 
     public void setSuggestionSource(List<String> list)
     {
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(),
-                R.layout.simple_spinner_item, list)
+        // Create an ArrayAdapter using the string array and aTalk default spinner layout
+//        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(), R.layout.simple_spinner_item, list)
+//        {
+//            // Allow to change font style in dropdown vew
+//            public View getView(int position, View convertView, @NonNull ViewGroup parent)
+//            {
+//                TextView v = (TextView) super.getView(position, convertView, parent);
+//                v.setTextSize(unit, fontSize);
+//                v.setTextColor(textColor);
+//                v.setBackgroundColor(backgroundColor);
+//                return v;
+//            }
+//        };
+
+        // Create an ArrayAdapter using the string array and custom spinner item with radio button
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(), R.layout.simple_spinner_item, list)
         {
             // Allow to change font style in dropdown vew
             public View getView(int position, View convertView, @NonNull ViewGroup parent)
             {
-                TextView v = (TextView) super.getView(position, convertView, parent);
-                v.setTextSize(unit, fontSize);
-                v.setTextColor(fontWhite);
-                return v;
+                if (convertView == null) {
+                    convertView = inflater.inflate(R.layout.adapter_radio_item, null);
+                }
+                TextView name = convertView.findViewById(R.id.item_name);
+                RadioButton radio = convertView.findViewById(R.id.item_radio);
+
+                final String variation = list.get(position);
+                name.setText(variation);
+
+                int mSelected = list.indexOf(getText());
+                radio.setChecked(position == mSelected);
+
+                return convertView;
             }
         };
 
@@ -156,5 +187,14 @@ public class ComboBox extends LinearLayout
     public void setTextSize(int unit, float size)
     {
         _text.setTextSize(unit, size);
+    }
+
+    /**
+     * Set the call back when an item in the combo box dropdown list item is selected
+     * @param l AdapterView OnItemClickListener
+     */
+    public void setOnItemClickListener(AdapterView.OnItemClickListener l)
+    {
+        _text.setOnItemClickListener(l);
     }
 }

@@ -36,6 +36,7 @@ import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZ
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public class MediaHandler extends PropertyChangeNotifier
 {
@@ -768,7 +769,7 @@ public class MediaHandler extends PropertyChangeNotifier
                  */
 
                 final AccountID accountID = callPeerMediaHandler.getPeer().getProtocolProvider().getAccountID();
-                final byte [] myZid = generateMyZid(accountID, callPeerMediaHandler.getPeer().getPeerJid().asBareJid());
+                final byte[] myZid = generateMyZid(accountID, callPeerMediaHandler.getPeer().getPeerJid().asBareJid());
                 srtpControl = NeomediaServiceUtils.getMediaServiceImpl().createSrtpControl(SrtpControlType.ZRTP, myZid);
 
                 srtpControls.set(mediaType, srtpControl);

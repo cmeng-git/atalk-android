@@ -123,20 +123,6 @@ public abstract class MUCService
     public abstract void joinChatRoom(ChatRoomWrapper chatRoomWrapper, String nickName, byte[] password, String subject);
 
     /**
-     * Creates a chat room, by specifying the chat room name, the parent protocol provider and
-     * eventually, the contacts invited to participate in this chat room.
-     *
-     * @param roomName the name of the room
-     * @param protocolProvider the parent protocol provider.
-     * @param contacts the contacts invited when creating the chat room.
-     * @param reason the reason to create
-     * @param persistent is the room persistent
-     * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room
-     */
-    public abstract ChatRoomWrapper createChatRoom(String roomName, ProtocolProviderService protocolProvider,
-            Collection<String> contacts, String reason, boolean persistent);
-
-    /**
      * Creates a private chat room, by specifying the parent protocol provider and eventually,
      * the contacts invited to participate in this chat room.
      *
@@ -160,11 +146,13 @@ public abstract class MUCService
      * @param join whether we should join the room after creating it.
      * @param persistent whether the newly created room will be persistent.
      * @param isPrivate whether the room will be private or public.
+     * @param onServerRoom whether the room is already in the server room list.
      * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room or
      * <tt>null</tt> if the protocol failed to create the chat room
      */
     public abstract ChatRoomWrapper createChatRoom(String roomName, ProtocolProviderService protocolProvider,
-            Collection<String> contacts, String reason, boolean join, boolean persistent, boolean isPrivate);
+            Collection<String> contacts, String reason, boolean join, boolean persistent, boolean isPrivate,
+            boolean onServerRoom);
 
     /**
      * Joins the room with the given name though the given chat room provider.

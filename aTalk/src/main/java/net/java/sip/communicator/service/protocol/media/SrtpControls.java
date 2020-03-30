@@ -13,6 +13,7 @@ import org.atalk.service.neomedia.SrtpControlType;
  * Represents a sorted set of <tt>SrtpControl</tt> implementations.
  *
  * @author Lyubomir Marinov
+ * @author MilanKral 
  */
 public class SrtpControls
 {
@@ -52,7 +53,7 @@ public class SrtpControls
 		return elements[mediaType.ordinal()][srtpControlType.ordinal()];
 	}
 
-	public SrtpControl getOrCreate(MediaType mediaType, SrtpControlType srtpControlType, final byte [] myZid)
+	public SrtpControl getOrCreate(MediaType mediaType, SrtpControlType srtpControlType, final byte[] myZid)
 	{
 		SrtpControl[] elements = this.elements[mediaType.ordinal()];
 		int index = srtpControlType.ordinal();
