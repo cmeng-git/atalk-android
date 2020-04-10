@@ -443,7 +443,6 @@
     <string name="service_gui_LAST_SEEN">Harini: %s</string>
 	<string name="service_gui_LEAVE">Tinggalkan</string>
     <string name="service_gui_LEAVE_ROOM">Tinggalkan chatRoom</string>
-    <string name="service_gui_LOADING">Memuat</string>
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Lokal ditahan</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Login Kredensial Pengguna</string>
     <string name="service_gui_LOGIN_FAILED">Login gagal</string>
@@ -1324,6 +1323,16 @@
     <string name="settings_theme_dark">Gelap</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_label">Tema</string>
+
+    <!-- TTS Language -->
+    <string name="service_gui_TTS_DELAY">Pesan Teks ke Speech delay (ms)</string>
+    <string name="service_gui_TTS_SETTINGS">Pengaturan TTS umum&#8230;</string>
+    <string name="service_gui_TTS_DISABLE">Nonaktifkan Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_ENABLE">Aktifkan Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_SYNTHESIS">Isikan teks untuk berbicara atau disintesis dan simpan ke file:</string>
+    <string name="service_gui_TTS_VOICE">Suara TTS default:</string>
+
+    <string name="service_gui_LOADING">Sedang memuat, harap tunggu…</string>
 
     <!-- Remove special characters from phone number -->
     <string name="service_gui_settings_NORMALIZE_NUMBER">Simbol khusus dalam nomor telepon</string>

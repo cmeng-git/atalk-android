@@ -18,7 +18,6 @@ package org.atalk.android.gui.util;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Point;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -26,9 +25,7 @@ import android.view.*;
 import android.widget.*;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -41,12 +38,11 @@ import androidx.annotation.NonNull;
 public class ComboBox extends LinearLayout
 {
     protected AutoCompleteTextView _text;
+    protected List<String> spinnerList;
+
     private int unit = TypedValue.COMPLEX_UNIT_SP;
     private float fontSize = 15;
     private int fontBlack = getResources().getColor(R.color.textColorBlack);
-    private int fontWhite = getResources().getColor(R.color.textColorWhite);
-    private int textColor;
-    private int backgroundColor;
 
     private Context mContext;
     private LayoutInflater inflater;
@@ -68,14 +64,11 @@ public class ComboBox extends LinearLayout
         mContext = context;
         inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        backgroundColor = getResources().getColor((aTalkApp.Theme.DARK == aTalkApp.getAppTheme())
-                ? R.color.background_dark : R.color.background_light);
-        textColor = (aTalkApp.Theme.DARK == aTalkApp.getAppTheme()) ? fontWhite : fontBlack;
-
         this.setOrientation(HORIZONTAL);
         this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         _text = new AutoCompleteTextView(context);
+        _text.setDropDownWidth(-1); // set the dropdown width to match screen
         _text.setTextSize(unit, fontSize);
         _text.setTextColor(fontBlack);
         _text.setSingleLine();
@@ -88,7 +81,13 @@ public class ComboBox extends LinearLayout
 
         ImageButton _button = new ImageButton(context);
         _button.setImageResource(android.R.drawable.arrow_down_float);
-        _button.setOnClickListener(v -> _text.showDropDown());
+        _button.setOnClickListener(v -> {
+            if (!spinnerList.contains(getText())) {
+                ViewUtil.hideKeyboard(mContext, _text);
+                setSuggestionSource(spinnerList); // rest to user supplied list
+            }
+            _text.showDropDown();
+        });
         this.addView(_button, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
@@ -112,19 +111,7 @@ public class ComboBox extends LinearLayout
 
     public void setSuggestionSource(List<String> list)
     {
-        // Create an ArrayAdapter using the string array and aTalk default spinner layout
-//        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(), R.layout.simple_spinner_item, list)
-//        {
-//            // Allow to change font style in dropdown vew
-//            public View getView(int position, View convertView, @NonNull ViewGroup parent)
-//            {
-//                TextView v = (TextView) super.getView(position, convertView, parent);
-//                v.setTextSize(unit, fontSize);
-//                v.setTextColor(textColor);
-//                v.setBackgroundColor(backgroundColor);
-//                return v;
-//            }
-//        };
+        spinnerList = list;
 
         // Create an ArrayAdapter using the string array and custom spinner item with radio button
         ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(this.getContext(), R.layout.simple_spinner_item, list)
@@ -151,7 +138,7 @@ public class ComboBox extends LinearLayout
         // Specify the layout to use when the list of choices appears
         mAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
 
-        // Apply the adapter to the spinner
+        // Apply the adapter to the ComboBox
         _text.setAdapter(mAdapter);
     }
 
@@ -191,6 +178,7 @@ public class ComboBox extends LinearLayout
 
     /**
      * Set the call back when an item in the combo box dropdown list item is selected
+     *
      * @param l AdapterView OnItemClickListener
      */
     public void setOnItemClickListener(AdapterView.OnItemClickListener l)

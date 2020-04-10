@@ -528,7 +528,7 @@ public class ColibriStatsExtensionElement extends AbstractExtensionElement
         }
 
         @Override
-        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
+        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
         {
             XmlStringBuilder xml = new XmlStringBuilder();
             String name = getName();

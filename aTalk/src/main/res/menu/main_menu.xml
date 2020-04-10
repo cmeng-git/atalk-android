@@ -40,6 +40,9 @@
         android:id="@+id/account_settings"
         android:title="@string/service_gui_ACCOUNT_SETTINGS" />
     <item
+        android:id="@+id/tts_settings"
+        android:title="@string/service_gui_TTS_SETTINGS" />
+    <item
         android:id="@+id/notification_setting"
         android:title="@string/notification_setting"
         android:visible="false" />

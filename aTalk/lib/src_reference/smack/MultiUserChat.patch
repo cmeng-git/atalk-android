@@ -1,33 +1,33 @@
---- ./Smack-4.4.0-alpha3-20190916/smack-extensions/src/main/java/org/jivesoftware/smackx/muc/MultiUserChat.java	2019-09-18 15:59:57.000000000 
-+++ ./src/main/java/org/jivesoftware/smackx/muc/MultiUserChat.java	2020-03-21 17:45:43.000000000 
-@@ -252,14 +252,25 @@
-                                 checkPresenceCode(
-                                     mucUser.getStatus(),
-                                     presence.getFrom().equals(myRoomJID),
-                                     mucUser,
-                                     from);
-                             } else {
-+                                // The room has been destroyed.
-+                                if (mucUser != null && mucUser.getDestroy() != null) {
-+                                    // Reset occupant information.
-+                                    userHasLeft();
-+                                    myRoomJid = null;
+--- ./source/smack/Smack-4.4.0-alpha3-20200404/org/jivesoftware/smackx/muc/MultiUserChat.java	2020-03-24 09:16:12.000000000
++++ ./workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smackx/muc/MultiUserChat.java	2020-04-05 16:03:00.000000000
+@@ -237,14 +237,25 @@
+                         checkPresenceCode(
+                             mucUser.getStatus(),
+                             presence.getFrom().equals(myRoomJID),
+                             mucUser,
+                             from);
+                     } else {
++                        // The room has been destroyed.
++                        if (mucUser != null && mucUser.getDestroy() != null) {
++                            // Reset occupant information.
++                            userHasLeft();
++                            myRoomJid = null;
 +
-+                                    MultiUserChat alternateMUC = multiUserChatManager.getMultiUserChat(mucUser.getDestroy().getJid());
-+                                    for (UserStatusListener listener : userStatusListeners) {
-+                                        listener.roomDestroyed(alternateMUC, mucUser.getDestroy().getReason());
-+                                    }
-+                                }
-                                 // An occupant has left the room
--                                if (!isUserStatusModification) {
-+                                else if (!isUserStatusModification) {
-                                     for (ParticipantStatusListener listener : participantStatusListeners) {
-                                         listener.left(from);
-                                     }
-                                 }
++                            MultiUserChat alternateMUC = multiUserChatManager.getMultiUserChat(mucUser.getDestroy().getJid());
++                            for (UserStatusListener listener : userStatusListeners) {
++                                listener.roomDestroyed(alternateMUC, mucUser.getDestroy().getReason());
++                            }
++                        }
+                         // An occupant has left the room
+-                        if (!isUserStatusModification) {
++                        else if (!isUserStatusModification) {
+                             for (ParticipantStatusListener listener : participantStatusListeners) {
+                                 listener.left(from);
                              }
-                             break;
-@@ -979,14 +990,14 @@
+                         }
+                     }
+                     break;
+@@ -995,14 +1006,14 @@
          return invitationRejectionListeners.remove(listener);
      }
  
@@ -44,21 +44,7 @@
          String reason = rejection.getReason();
          InvitationRejectionListener[] listeners;
          synchronized (invitationRejectionListeners) {
-@@ -2374,12 +2385,13 @@
-      */
-     private void checkPresenceCode(
-         Set<Status> statusCodes,
-         boolean isUserModification,
-         MUCUser mucUser,
-         EntityFullJid from) {
-+
-         // Check if an occupant was kicked from the room
-         if (statusCodes.contains(Status.KICKED_307)) {
-             // Check if this occupant was kicked
-             if (isUserModification) {
-                 // Reset occupant information.
-                 userHasLeft();
-@@ -2395,60 +2407,46 @@
+@@ -2451,60 +2462,44 @@
              }
          }
          // A user was banned from the room
@@ -73,7 +59,7 @@
                  for (UserStatusListener listener : userStatusListeners) {
                      listener.banned(mucUser.getItem().getActor(), mucUser.getItem().getReason());
                  }
- 
+-
 -                // Reset occupant information.
 -                occupantsMap.clear();
 -                myRoomJid = null;
@@ -97,7 +83,7 @@
                  for (UserStatusListener listener : userStatusListeners) {
                      listener.membershipRevoked();
                  }
- 
+-
 -                // Reset occupant information.
 -                occupantsMap.clear();
 -                myRoomJid = null;

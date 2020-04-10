@@ -24,7 +24,6 @@ repositories {
 
 apply plugin: 'org.anarres.jarjar'
 
-// def smackVersion = '4.4.0-alpha2'
 def smackVersion = '4.4.0-alpha3-SNAPSHOT'
 
 def jarJarDeps = task("jarJarDeps") {
@@ -49,26 +48,9 @@ jarJarDeps.dependsOn(
         destinationName "smack-core-jarjar-${smackVersion}.jar"
 
         // smack-core
-        classDelete 'org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection**'
-        classDelete 'org.jivesoftware.smack.fsm.StateDescriptorGraph**'
-        classDelete 'org.jivesoftware.smack.packet.Stanza'
-        classDelete 'org.jivesoftware.smack.packet.XmlEnvironment**'
-        classDelete 'org.jivesoftware.smack.provider.Provider'
-        classDelete 'org.jivesoftware.smack.sasl.packet.SaslStreamElements**'
-        classDelete 'org.jivesoftware.smack.sasl.SASLErrorException'
-        classDelete 'org.jivesoftware.smack.sasl.SASLMechanism'
-        classDelete 'org.jivesoftware.smack.util.CollectionUtil**'
-        classDelete 'org.jivesoftware.smack.util.PacketParseUtils**'
+        classDelete 'org.jivesoftware.smack.provider.AbstractProvider'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
-        classDelete 'org.jivesoftware.smack.util.XmlStringBuilder**'
-
         classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
-        classDelete 'org.jivesoftware.smack.GenericElementListener'
-        classDelete 'org.jivesoftware.smack.NonzaCallback**'
-        classDelete 'org.jivesoftware.smack.SASLAuthentication'
-        classDelete 'org.jivesoftware.smack.SmackConfiguration**'
-        classDelete 'org.jivesoftware.smack.SmackInitialization'
-        classDelete 'org.jivesoftware.smack.SmackReactor**'
     },
 
     jarjar.repackage {
@@ -95,10 +77,10 @@ jarJarDeps.dependsOn(
         classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
         classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
-        classDelete 'org.jivesoftware.smackx.si.packet.StreamInitiation**'
         classDelete 'org.jivesoftware.smackx.muc.MultiUserChat**'
-    },
+    }
 
+/*
     jarjar.repackage {
         from("org.igniterealtime.smack:smack-tcp:$smackVersion") {
             transitive = false
@@ -110,6 +92,6 @@ jarJarDeps.dependsOn(
         classDelete 'org.jivesoftware.smack.tcp.XmppNioTcpConnection**'
         classDelete 'org.jivesoftware.smack.tcp.XMPPTCPConnection**'
     }
+*/
 )
-
 tasks.getByName("build").dependsOn(jarJarDeps)

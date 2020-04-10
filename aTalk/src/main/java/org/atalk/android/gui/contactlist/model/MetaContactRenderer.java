@@ -146,7 +146,7 @@ public class MetaContactRenderer implements UIContactRenderer
 
     private static boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
     {
-        return metaContact.getDefaultContact(opSetClass) != null;
+        return metaContact.getOpSetSupportedContact(opSetClass) != null;
     }
 
     /**

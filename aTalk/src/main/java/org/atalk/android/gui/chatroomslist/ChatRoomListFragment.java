@@ -32,6 +32,7 @@ import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -63,6 +64,11 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
      * Search options menu items.
      */
     private MenuItem mSearchItem;
+
+    /**
+     * ChatRoom TTS option item
+     */
+    private MenuItem mChatRoomTtsEnable;
 
     /**
      * ChatRoom list data model.
@@ -166,7 +172,8 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
             String filter = ViewUtil.toString(searchView.findViewById(id));
             filterChatRoomWrapperList(filter);
             bindSearchListener();
-        } else {
+        }
+        else {
             chatRoomListAdapter.filterData("");
         }
 
@@ -320,6 +327,13 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         // Remember clicked chatRoomWrapper
         mClickedChatRoom = crWrapper;
 
+        // update contact TTS enable option title
+        String tts_option = aTalkApp.getResString(crWrapper.isTtsEnable()
+                ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+        mChatRoomTtsEnable = menu.findItem(R.id.chatroom_tts_enable);
+        mChatRoomTtsEnable.setTitle(tts_option);
+        mChatRoomTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
+
         // Only room owner is allowed to destroy chatRoom, or non-joined room (un-deterministic)
         ChatRoomMemberRole role = mClickedChatRoom.getChatRoom().getUserRole();
         boolean allowDestroy = ((role == null) || ChatRoomMemberRole.OWNER.equals(role));
@@ -357,31 +371,48 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         {
             ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID());
             switch (item.getItemId()) {
+                case R.id.chatroom_tts_enable:
+                    if (mClickedChatRoom.isTtsEnable()) {
+                        mClickedChatRoom.setTtsEnable(false);
+                        mChatRoomTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                    }
+                    else {
+                        mClickedChatRoom.setTtsEnable(true);
+                        mChatRoomTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                    }
+                    return true;
+
                 case R.id.close_chatroom:
                     if (chatPanel != null)
                         onCloseChat(chatPanel);
                     return true;
+
                 case R.id.close_all_chatrooms:
                     onCloseAllChats();
                     return true;
+
                 case R.id.erase_chatroom_history:
                     EntityListHelper.eraseEntityChatHistory(mActivity, mClickedChatRoom, null, null);
                     return true;
+
                 case R.id.erase_all_chatroom_history:
                     EntityListHelper.eraseAllContactHistory(mActivity);
                     return true;
+
                 case R.id.destroy_chatroom:
-                    // mClickedChatRoom.
                     new ChatRoomDestroyDialog().show(mActivity, mClickedChatRoom, chatPanel);
                     return true;
+
                 case R.id.chatroom_info:
                     ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(mClickedChatRoom);
                     FragmentTransaction ft = getParentFragmentManager().beginTransaction();
                     ft.addToBackStack(null);
                     chatRoomInfoDialog.show(ft, "infoDialog");
                     return true;
+
                 case R.id.chatroom_ctx_menu_exit:
                     return true;
+
                 default:
                     return false;
             }

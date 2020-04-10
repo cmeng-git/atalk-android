@@ -36,7 +36,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Boris Grozev
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         OperationSetBasicTelephonyJabberImpl, ProtocolProviderServiceJabberImpl>
@@ -701,8 +701,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
          * of an attended transfer, we have to hang up on the attendant.
          */
         try {
-            TransferExtensionElement transfer = jingle.getExtension(
-                    TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
+            TransferExtensionElement transfer
+                    = jingle.getExtension(TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
 
             if (transfer != null) {
                 String sid = transfer.getSid();

@@ -1027,6 +1027,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         String msgBody = mProperties.get(ChatMessage.MSG_BODY);
         int encType = Integer.parseInt(mProperties.get(ChatMessage.ENC_TYPE));
+        int xferStatus = Integer.parseInt(mProperties.get(ChatMessage.STATUS));
         int receiptStatus = Integer.parseInt(mProperties.get(ChatMessage.READ));
         String serverMsgId = mProperties.get(ChatMessage.SERVER_MSG_ID);
         String remoteMsgId = mProperties.get(ChatMessage.REMOTE_MSG_ID);
@@ -1037,8 +1038,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         if ((msgType == ChatMessage.MESSAGE_SMS_OUT) || (msgType == ChatMessage.MESSAGE_SMS_IN))
             msgSubType = msgType;
 
-        return new MessageImpl(msgBody, encType, "", messageUID,
-                receiptStatus, serverMsgId, remoteMsgId, isOutgoing, messageReceivedDate, msgSubType);
+        return new MessageImpl(msgBody, encType, "", messageUID, xferStatus, receiptStatus,
+                serverMsgId, remoteMsgId, isOutgoing, messageReceivedDate, msgSubType);
     }
 
     /**
@@ -1096,7 +1097,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         // return if logging is switched off for this particular contact or not a Http File Transfer message
         int msgType = evt.getEventType();
         if ((metaContact != null) && !isHistoryLoggingEnabled(metaContact.getMetaUID())
-                && !(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == msgType)) {
+                && (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD != msgType)) {
             return;
         }
 
@@ -1155,7 +1156,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         // return if logging is switched off for this particular chatRoom or not a Http File Transfer message
         if (!isHistoryLoggingEnabled(evt.getSourceChatRoom().getName())
-                && !(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == msgType)) {
+                && (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD != msgType)) {
             return;
         }
 
@@ -1259,7 +1260,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         // return if logging is switched off for this particular chatRoom or not a Http File Transfer message
         // Must save Http File Transfer message record for transfer status
         if (!isHistoryLoggingEnabled(evt.getSourceChatRoom().getName())
-                && !(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == msgType)) {
+                && (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD != msgType)) {
             return;
         }
 
@@ -2213,10 +2214,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         private final Date messageReceivedDate;
         private int msgSubType;
 
-        MessageImpl(String content, int encType, String subject, String messageUID, int receiptStatus,
+        MessageImpl(String content, int encType, String subject, String messageUID, int xferStatus, int receiptStatus,
                 String serverMsgId, String remoteMsgId, boolean isOutgoing, Date messageReceivedDate, int msgSubType)
         {
-            super(content, encType, subject, messageUID, receiptStatus, serverMsgId, remoteMsgId);
+            super(content, encType, subject, messageUID, xferStatus, receiptStatus, serverMsgId, remoteMsgId);
             this.isOutgoing = isOutgoing;
             this.messageReceivedDate = messageReceivedDate;
             this.msgSubType = msgSubType;

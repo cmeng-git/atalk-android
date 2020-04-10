@@ -175,7 +175,7 @@ public class Registration extends IQ {
         }
 
         @Override
-        public CharSequence toXML(XmlEnvironment xmlEnvironment) {
+        public CharSequence toXML(XmlEnvironment enclosingNamespace) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 

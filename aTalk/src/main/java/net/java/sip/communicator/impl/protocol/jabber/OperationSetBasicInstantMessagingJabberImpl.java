@@ -135,7 +135,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * The provider that created us.
      */
-    private final ProtocolProviderServiceJabberImpl jabberProvider;
+    private final ProtocolProviderServiceJabberImpl mPPS;
 
     private OmemoManager mOmemoManager;
 
@@ -173,7 +173,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     OperationSetBasicInstantMessagingJabberImpl(ProtocolProviderServiceJabberImpl provider)
     {
-        this.jabberProvider = provider;
+        this.mPPS = provider;
         opSetBIMessaging = this;
         provider.addRegistrationStateChangeListener(new RegistrationStateListener());
     }
@@ -262,7 +262,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
         else if (IMessage.ENCODE_HTML == mimeType) {
             Jid toJid = getRecentFullJidForContactIfPossible(contact);
-            return jabberProvider.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE);
+            return mPPS.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE);
         }
         return false;
     }
@@ -440,10 +440,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             String threadID = getThreadIDForAddress(toJid, true);
             msg.setThread(threadID);
             msg.setType(Message.Type.chat);
-            msg.setFrom(jabberProvider.getConnection().getUser());
+            msg.setFrom(mPPS.getConnection().getUser());
 
             try {
-                jabberProvider.getConnection().sendStanza(msg);
+                mPPS.getConnection().sendStanza(msg);
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -506,13 +506,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
             OmemoManager omemoManager)
     {
-        EntityBareJid entityBareJid = to.getJid().asEntityBareJidIfPossible();
+        Jid jid = to.getJid();
         String msgContent = message.getContent();
         String errMessage = null;
 
         try {
-            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(entityBareJid, msgContent);
-            Message sendMessage = encryptedMessage.asMessage(entityBareJid);
+            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(jid.asBareJid(), msgContent);
+
+            MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
+            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, jid);
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
                 String xhtmlBody = encryptedMessage.getElement().toXML().toString();
@@ -520,8 +522,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
                 // OMEMO body message content will strip off any html tags info
                 msgContent = Html.fromHtml(msgContent).toString();
-                encryptedMessage = omemoManager.encrypt(entityBareJid, msgContent);
-                sendMessage = encryptedMessage.asMessage(entityBareJid);
+                encryptedMessage = omemoManager.encrypt(jid.asBareJid(), msgContent);
+                sendMessage = encryptedMessage.buildMessage(messageBuilder, jid);
 
                 // Add the XHTML text to the message
                 XHTMLManager.addBody(sendMessage, htmlBody);
@@ -531,7 +533,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             if (correctedMessageUID != null)
                 sendMessage.addExtension(new MessageCorrectExtension(correctedMessageUID));
             sendMessage.setStanzaId(message.getMessageUID());
-            mChat = mChatManager.chatWith(entityBareJid);
+            mChat = mChatManager.chatWith(jid.asEntityBareJidIfPossible());
             mChat.send(sendMessage);
 
             message.setServerMsgId(sendMessage.getStanzaId());
@@ -628,18 +630,17 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
          */
         public void registrationStateChanged(RegistrationStateChangeEvent evt)
         {
-            XMPPConnection connection = jabberProvider.getConnection();
-            OmemoManager omemoManager;
+            XMPPConnection connection = mPPS.getConnection();
 
             if (evt.getNewState() == RegistrationState.REGISTERING) {
                 opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
-                        jabberProvider.getOperationSet(OperationSetPersistentPresence.class);
+                        mPPS.getOperationSet(OperationSetPersistentPresence.class);
                 /*
                  * HashSet<OmemoMessageListener> omemoMessageListeners;
                  * Cannot just add here, has problem as jid is not known to omemoManager yet
                  * See AndroidOmemoService implementation for fix
                  */
-                // omemoManager = OmemoManager.getInstanceFor(xmppConnection);
+                // OmemoManager omemoManager = OmemoManager.getInstanceFor(xmppConnection);
                 // registerOmemoMucListener(omemoManager);
 
                 mChatManager = ChatManager.getInstanceFor(connection);
@@ -725,11 +726,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     private void enableDisableCarbon()
     {
         boolean enableCarbon = false;
-        EntityFullJid userJid = jabberProvider.getOurJID();
-        mCarbonManager = CarbonManager.getInstanceFor(jabberProvider.getConnection());
+        EntityFullJid userJid = mPPS.getOurJID();
+        mCarbonManager = CarbonManager.getInstanceFor(mPPS.getConnection());
         try {
             enableCarbon = mCarbonManager.isSupportedByServer()
-                    && !jabberProvider.getAccountID().getAccountPropertyBoolean(
+                    && !mPPS.getAccountID().getAccountPropertyBoolean(
                     ProtocolProviderFactory.IS_CARBON_DISABLED, false);
 
             if (enableCarbon) {
@@ -788,7 +789,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         boolean isPrivateMessaging = false;
         ChatRoomJabberImpl privateContactRoom = null;
         OperationSetMultiUserChatJabberImpl mucOpSet
-                = (OperationSetMultiUserChatJabberImpl) jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
+                = (OperationSetMultiUserChatJabberImpl) mPPS.getOperationSet(OperationSetMultiUserChat.class);
         if (mucOpSet != null) {
             privateContactRoom = mucOpSet.getChatRoom(userBareID);
             if (privateContactRoom != null) {

@@ -35,9 +35,9 @@ import timber.log.Timber;
  */
 public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
 {
+    private BroadcastReceiver downloadReceiver = null;
     private final String msgUuid;
     private final Contact mSender;
-    private BroadcastReceiver downloadReceiver = null;
 
     private final File mFile;
     private final String mFileName;
@@ -55,9 +55,10 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
      * @param id the message Uuid uniquely identify  record in DB
      * @param dnLinkDescription the download link may contains other options e.g. file.length()
      */
-    public HttpFileDownloadJabberImpl(Contact sender, String id, String dnLinkDescription)
+    public HttpFileDownloadJabberImpl(Contact sender, String id, String dnLinkDescription, int xferStatus)
     {
         mSender = sender;
+        mStatus = xferStatus;
 
         // Create a new msg Uuid if none provided
         msgUuid = (id == null) ? String.valueOf(System.currentTimeMillis()) + hashCode() : id;

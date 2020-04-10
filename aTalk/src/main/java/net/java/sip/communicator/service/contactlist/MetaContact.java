@@ -55,6 +55,16 @@ public interface MetaContact extends Comparable<MetaContact>
     Contact getDefaultContact(Class<? extends OperationSet> operationSet);
 
     /**
+     * Returns the first found protocol specific <tt>Contact</tt> of the <tt>MetaContact</tt>
+     * that support a precise operation (IM, call, ...).
+     * Currently the main use is to display the call button for user access
+     *
+     * @param operationSet the operation for which the metacontact is supported
+     * @return the first contact for the specified operation supported.
+     */
+    Contact getOpSetSupportedContact(Class<? extends OperationSet> operationSet);
+
+    /**
      * Returns a <tt>java.util.Iterator</tt> with all protocol specific
      * <tt>Contacts</tt> encapsulated by this <tt>MetaContact</tt>.
      * <p>

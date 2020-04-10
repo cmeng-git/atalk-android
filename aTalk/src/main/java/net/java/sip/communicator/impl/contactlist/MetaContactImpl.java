@@ -322,22 +322,20 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
         // if the current default contact supports the requested operationSet we use it
         if (defaultContact != null) {
-            ProtocolProviderService contactProvider = defaultContact.getProtocolProvider();
+            ProtocolProviderService pps = defaultContact.getProtocolProvider();
 
             // First try to ask the capabilities operation set if such is available.
-            OperationSetContactCapabilities capOpSet = contactProvider.getOperationSet(
-                    OperationSetContactCapabilities.class);
+            OperationSetContactCapabilities capOpSet  = pps.getOperationSet(OperationSetContactCapabilities.class);
 
             if (capOpSet != null) {
                 synchronized (capabilities) {
                     List<Contact> capContacts = capabilities.get(operationSet.getName());
-
                     if (capContacts != null && capContacts.contains(defaultContact)) {
                         defaultOpSetContact = defaultContact;
                     }
                 }
             }
-            else if (contactProvider.getOperationSet(operationSet) != null) {
+            else if (pps.getOperationSet(operationSet) != null) {
                 defaultOpSetContact = defaultContact;
             }
         }
@@ -381,6 +379,77 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
+     * Returns a default contact for a specific operation (call, file transfer, IM ...)
+     *
+     * @param operationSet the operation for which the default contact is needed
+     * @return the default contact for the specified operation.
+     */
+    public Contact getOpSetSupportedContact(Class<? extends OperationSet> operationSet)
+    {
+        ProtocolProviderService pps;
+        Contact opSetContact = null;
+        Iterator<Contact> contacts = getContacts();
+
+        while (contacts.hasNext()) {
+            Contact contact = contacts.next();
+            pps = contact.getProtocolProvider();
+
+            // First try to ask the capabilities operation set if such is available.
+            OperationSetContactCapabilities capOpSet = pps.getOperationSet(OperationSetContactCapabilities.class);
+            if (capOpSet != null) {
+                synchronized (capabilities) {
+                    List<Contact> capContacts = capabilities.get(operationSet.getName());
+                    if (capContacts != null && capContacts.contains(contact)) {
+                        opSetContact = contact;
+                        break;
+                    }
+                }
+            }
+            else if (pps.getOperationSet(operationSet) != null) {
+                opSetContact = contact;
+                break;
+            }
+        }
+
+//        if (opSetContact == null) {
+//            PresenceStatus currentStatus = null;
+//
+//            for (Contact protoContact : protoContacts) {
+//                pps = protoContact.getProtocolProvider();
+//
+//                // First try to ask the capabilities operation set if such is available.
+//                OperationSetContactCapabilities capOpSet = pps.getOperationSet(OperationSetContactCapabilities.class);
+//
+//                // We filter to care only about contact which support the needed opset.
+//                if (capOpSet != null) {
+//                    synchronized (capabilities) {
+//                        List<Contact> capContacts = capabilities.get(operationSet.getName());
+//                        if (capContacts == null || !capContacts.contains(protoContact)) {
+//                            continue;
+//                        }
+//                    }
+//                }
+//                else if (pps.getOperationSet(operationSet) == null)
+//                    continue;
+//
+//                PresenceStatus contactStatus = protoContact.getPresenceStatus();
+//                if (currentStatus != null) {
+//                    if (currentStatus.getStatus() < contactStatus.getStatus()) {
+//                        currentStatus = contactStatus;
+//                        opSetContact = protoContact;
+//                    }
+//                }
+//                else {
+//                    currentStatus = contactStatus;
+//                    opSetContact = protoContact;
+//                }
+//            }
+//        }
+        return opSetContact;
+    }
+
+
+    /**
      * Returns a String identifier (the actual contents is left to implementations) this
      * <tt>MetaContact</tt> in that uniquely represents the containing <tt>MetaContactList</tt>
      *
@@ -396,7 +465,8 @@ public class MetaContactImpl extends DataObject implements MetaContact
      *
      * @param count unread message count
      */
-    public void setUnreadCount(int count) {
+    public void setUnreadCount(int count)
+    {
         unreadCount = count;
     }
 
@@ -405,7 +475,8 @@ public class MetaContactImpl extends DataObject implements MetaContact
      *
      * @return the unread message count
      */
-    public int getUnreadCount() {
+    public int getUnreadCount()
+    {
         return unreadCount;
     }
 

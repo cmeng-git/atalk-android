@@ -30,7 +30,7 @@ public interface ChatMessage
     String ENC_TYPE = "encType";     // see IMessage for the ENCRYPTION_xxx & MASK definitions
     String MSG_TYPE = "msgType";     // as defined in below * message type *
     String DIRECTION = "direction";  // in or out
-    String STATUS = "status";        // see STATUS_xxx
+    String STATUS = "status";        // Use by FileTransferStatusChangeEvent and FileRecord STATUS_xxx
     String FILE_PATH = "filePath";   // filepath
     String FINGERPRINT = "OmemoFingerprint"; // rx fingerPrint
     String STEALTH_TIMER = "stealthTimer";   // stealth timer
@@ -183,9 +183,7 @@ public interface ChatMessage
 
     /**
      * The display name of the message sender.
-     */
-
-    /**
+     *
      * Returns the string Id of the message sender.
      * Actual value is pending on message type i.e.:
      * a. userId: swordfish@atalk.org
@@ -241,6 +239,13 @@ public interface ChatMessage
      * @return the encryption Type
      */
     int getEncryptionType();
+
+    /**
+     * Returns the HttpFileDownload file xfer status
+     *
+     * @return the HttpFileDownload file transfer status
+     */
+    int getXferStatus();
 
     /**
      * Returns the message delivery receipt status

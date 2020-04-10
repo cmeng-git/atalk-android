@@ -5,9 +5,11 @@
  */
 package org.atalk.android.gui.util;
 
+import android.content.Context;
 import android.os.Handler;
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import org.atalk.android.aTalkApp;
@@ -212,5 +214,17 @@ public class ViewUtil
             view.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
         view.setSelection(cursorPosition);
+    }
+
+    /**
+     * Hide soft keyboard
+     *
+     * @param context context
+     * @param view the reference view
+     */
+    public static void hideKeyboard(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

@@ -1,5 +1,25 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.2.3 (1123)
+Author:         cmeng
+Upload Date:	04/10/2020
+- Implement Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
+- Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection:
+  popup dropdown together with the user edited text in selector and hide softKeyboard
+  set dropdown width to match parent
+- Improve FileBackend.isHttpFileDnLink checking mechanism to minimize incorrect classification
+- Ensure ChatRoomConfiguration does not crash on screen rotation
+- aTalk minimum android OS support is API-21 (android 5.0 Lollipop)
+
+- FileHttpDownloadConversation, do not attempt to auto download if stored status is
+  FileRecord.STATUS_FAILED. Show Retry and let user decide; otherwise ANR
+
+- Add static method to hidKeyboard() in ViewUtil.java
+- Ported smack library to smack-4.4.0-alpha-20204040 release; obsoleted classes or affected methods:
+  HostAddress, OmemoMessage.send#asMessage, Message => Message.Builder,
+- ConfirmIQ.appendErrorIfExists => final class in 4.4.0-alpha3 20200404: iqChildElement no logger supported
+
+=========================================================================
 Version:		2.2.2 (1122)
 Author:         cmeng / MilanKral
 Upload Date:	03/30/2020

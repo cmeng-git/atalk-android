@@ -280,34 +280,30 @@ public class FileBackend
     }
 
     /**
-     * To guess if a given link is a file link address
+     * To guess if a given link string is a file link address
      *
      * @param link a string to be checked for file link
-     * @return true if the string is likely to be a link
+     * @return true if the string is likely to be a Http File Download link
      */
     public static boolean isHttpFileDnLink(String link)
     {
-        boolean isFileLink = false;
-        Context context = aTalkApp.getGlobalContext();
-
         if (link != null) {
             if (link.matches("(?s)^aesgcm:.*")) {
-                isFileLink = true;
+                return true;
             }
             else if (link.matches("(?s)^http[s]:.*") && !link.contains("\\s")) {
-                Uri uri = Uri.parse(link);
-                String mimeType = getMimeType(context, uri);
-                if (mimeType == null) {
-                    isFileLink = true;
-                }
-                // web common extensions: asp, cgi, [s]htm[l], js, php, pl
-                // android asp, cgi shtm, shtml, js, php, pl => mimeType == null
-                else if (!mimeType.matches("(?s)^text/s*[achjp][sgthl][pim]*[l]*$")) {
-                    isFileLink = true;
+                // return false if there is no ext or 2 < ext.length() > 5
+                String ext = link.replaceAll("(?s)^.+/\\w+\\.(\\w{2,5})$", "$1");
+                if (ext.length() > 5) {
+                    return false;
+                } else {
+                    // web common extensions: asp, cgi, [s]htm[l], js, php, pl
+                    // android asp, cgi shtm, shtml, js, php, pl => (mimeType == null)
+                    return !ext.matches("s*[achjp][sgthl][pim]*[l]*");
                 }
             }
         }
-        return isFileLink;
+        return false;
     }
 
     /**

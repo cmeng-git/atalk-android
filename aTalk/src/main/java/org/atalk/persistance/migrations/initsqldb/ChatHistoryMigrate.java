@@ -288,8 +288,7 @@ public class ChatHistoryMigrate extends Activity
                     else if (chatType == Type_Muc) {
                         if (direction.equals(ChatMessage.DIR_IN)) {
                             msgType = ChatMessage.MESSAGE_MUC_IN;
-                            nick = XMLUtils.findChild((Element) recordNode, ATTR_SUB)
-                                    .getTextContent();
+                            nick = XMLUtils.findChild((Element) recordNode, ATTR_SUB).getTextContent();
                             // old database does not contain the info for muc messages
                             // msgValues.putNull(ChatMessage.CONTACT_JID);
                         }

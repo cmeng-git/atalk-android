@@ -59,6 +59,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         implements FileTransferStatusListener
 {
     private HttpFileDownloadJabberImpl httpFileTransferJabber;
+    private int xferStatus;
     private long fileSize;
     private String fileName;
     private String dnLink;
@@ -96,6 +97,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         fragmentRFC.httpFileTransferJabber = httpFileTransferJabber;
         fragmentRFC.mDate = GuiUtils.formatDateTime(date);
         fragmentRFC.msgUuid = httpFileTransferJabber.getID();
+        fragmentRFC.xferStatus = httpFileTransferJabber.getStatus();
         fragmentRFC.downloadManager = aTalkApp.getDownloadManager();
         fragmentRFC.mFHS = (FileHistoryServiceImpl) AndroidGUIActivator.getFileHistoryService();
 
@@ -140,7 +142,11 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
                     aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSender));
 
-            if ((fileSize == -1)
+            // Do not auto retry if it had failed previously; otherwise ANR if multiple such items exist
+            if (FileRecord.STATUS_FAILED == xferStatus) {
+                updateView(FileTransferStatusChangeEvent.FAILED, dnLink);
+            }
+            else if ((fileSize == -1)
                     || ((fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize()))) {
                 initHttpFileDownload();
             }
@@ -235,7 +241,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 }
                 downloadReceiver = null;
             }
-            Timber.d("Cleaning up Download Manager for JobId: %s; Received file size: %s ", jobId, fileSize);
+            // Timber.d("Download Manager for JobId: %s; File: %s (status: %s)", jobId, dnLink, status);
         }
     }
 
@@ -482,7 +488,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                     }
                 }
                 else if (lastJobStatus == DownloadManager.STATUS_FAILED) {
-                    updateView(FileTransferStatusChangeEvent.FAILED, null);
+                    updateView(FileTransferStatusChangeEvent.FAILED, dnLink);
                 }
             } else if (DownloadManager.STATUS_FAILED == lastJobStatus) {
                 updateView(FileTransferStatusChangeEvent.FAILED, dnLink);

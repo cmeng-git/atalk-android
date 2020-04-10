@@ -31,6 +31,7 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.menu.ExitMenuActivity;
+import org.atalk.android.gui.util.DepthPageTransformer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class ShareActivity extends ExitMenuActivity
         ViewPager mPager = findViewById(R.id.shareViewPager);
         PagerAdapter mPagerAdapter = new SharePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
-        mPager.setPageTransformer(true, (new aTalk()).new DepthPageTransformer());
+        mPager.setPageTransformer(true, new DepthPageTransformer());
         mShare = new Share();
 
         handleIntent(getIntent());

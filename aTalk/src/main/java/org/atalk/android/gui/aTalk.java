@@ -21,21 +21,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.view.ViewGroup;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
+import org.atalk.android.gui.util.DepthPageTransformer;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
+import org.atalk.android.plugin.textspeech.TTSActivity;
+import org.atalk.android.plugin.textspeech.TTSActivity.State;
 import org.atalk.persistance.migrations.MigrateDir;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
@@ -131,7 +134,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         mPager.setPageTransformer(true, new DepthPageTransformer());
 
         handleIntent(getIntent(), savedInstanceState);
-        
+
         // Migrate aTalk to new directory structure 2.1.4 (2019/12/18) - may be removed in future release
         MigrateDir.aTalkDirMigrate();
 
@@ -141,6 +144,15 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
         runOnUiThread(() -> new Handler().postDelayed(() -> {
+            // Must re-init TTS voice on every start up? disable for now as it seems no necessary
+            if (ConfigurationUtils.isTtsEnable()) {
+                State ttState = TTSActivity.getState();
+                if (ttState == State.UNKNOWN) {
+                    Intent ttsIntent = new Intent(this, TTSActivity.class);
+                    // startActivity(ttsIntent);
+                }
+            }
+
             ChangeLog cl = new ChangeLog(mContext);
             if (cl.isFirstRun() && !isFinishing()) {
                 cl.getLogDialog().show();
@@ -338,44 +350,5 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     {
         String tag = mFragmentTags.get(position);
         return (mFragmentManager != null) ? mFragmentManager.findFragmentByTag(tag) : null;
-    }
-
-    public class DepthPageTransformer implements ViewPager.PageTransformer
-    {
-        private static final float MIN_SCALE = 0.75f;
-
-        public void transformPage(View view, float position)
-        {
-            int pageWidth = view.getWidth();
-
-            if (position < -1) { // [-Infinity,-1)
-                // This page is way off-screen to the left.
-                view.setAlpha(0);
-            }
-            else if (position <= 0) { // [-1,0]
-                // Use the default slide transition when moving to the left page
-                view.setAlpha(1);
-                view.setTranslationX(0);
-                view.setScaleX(1);
-                view.setScaleY(1);
-            }
-            else if (position <= 1) { // (0,1]
-                // Fade the page out.
-                view.setAlpha(1 - position);
-
-                // Counteract the default slide transition
-                view.setTranslationX(pageWidth * -position);
-
-                // Scale the page down (between MIN_SCALE and 1)
-                float scaleFactor = MIN_SCALE + (1 - MIN_SCALE) * (1 - Math.abs(position));
-                view.setScaleX(scaleFactor);
-                view.setScaleY(scaleFactor);
-
-            }
-            else { // (1,+Infinity]
-                // This page is way off-screen to the right.
-                view.setAlpha(0);
-            }
-        }
     }
 }

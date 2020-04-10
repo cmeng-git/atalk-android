@@ -41,6 +41,7 @@
             android:entries="@array/settings_theme_entries"
             android:entryValues="@array/settings_theme_values"
             android:dialogTitle="@string/settings_theme_label" />
+
     </PreferenceCategory>
 
     <!-- Chat Security Settings -->

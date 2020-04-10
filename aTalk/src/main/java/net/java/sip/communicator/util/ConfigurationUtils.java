@@ -38,6 +38,7 @@ import org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jxmpp.jid.Jid;
 import org.osgi.framework.ServiceReference;
 
 import java.beans.PropertyChangeEvent;
@@ -115,6 +116,11 @@ public class ConfigurationUtils
     private static boolean isAutoStartOnBoot = true;
 
     /**
+     * Indicates if TTS is enable.
+     */
+    private static boolean isTtsEnable = false;
+
+    /**
      * Indicates if message delivery receipt should be sent.
      */
     private static boolean isSendMessageDeliveryReceipt = true;
@@ -163,6 +169,12 @@ public class ConfigurationUtils
      * Indicates if the recent messages should be shown.
      */
     private static boolean isRecentMessagesShown = true;
+
+
+    /**
+     * Initial default wait time for incoming message alert to end before start TTS
+     */
+    private static int ttsDelay = 1200;
 
     /**
      * The size of the chat history to show in chat window.
@@ -417,6 +429,8 @@ public class ConfigurationUtils
      * The names of the configuration properties.
      */
     public static String pAutoStart = "gui.AUTO_START_ON_REBOOT";
+    public static String pTTSEnable = "gui.TTS_ENABLE";
+    public static String pTTSDelay = "gui.TTS_DELAY";
     public static String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
     private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
     private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
@@ -526,6 +540,10 @@ public class ConfigurationUtils
 
         // Load the "isAutoStartOnBoot" property.
         isAutoStartOnBoot = configService.getBoolean(pAutoStart, isAutoStartOnBoot);
+
+        // Load the "isTtsEnable" and delay property.
+        isTtsEnable = configService.getBoolean(pTTSEnable, isTtsEnable());
+        ttsDelay = configService.getInt(pTTSDelay, ttsDelay);
 
         // Load the "showOffline" property.
         isShowOffline = configService.getBoolean("gui.showOffline", isShowOffline);
@@ -929,6 +947,45 @@ public class ConfigurationUtils
     {
         isAutoStartOnBoot = autoStart;
         configService.setProperty(pAutoStart, Boolean.toString(autoStart));
+    }
+
+
+    /**
+     * Return TRUE if "isTtsEnable" property is true, otherwise - return FALSE.
+     * Indicates if TTS is enabled.
+     *
+     * @return TRUE if "isTtsEnable" property is true, otherwise - return FALSE.
+     */
+    public static boolean isTtsEnable()
+    {
+        return isTtsEnable;
+    }
+
+    /**
+     * Updates the "isTtsEnable" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param ttsEnable {@code true} to enable tts option
+     */
+    public static void setTtsEnable(boolean ttsEnable)
+    {
+        isTtsEnable = ttsEnable;
+        configService.setProperty(pTTSEnable, Boolean.toString(ttsEnable));
+    }
+
+    public static int getTtsDelay()
+    {
+        return ttsDelay;
+    }
+
+    /**
+     * Updates the "isTtsEnable" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param ttsEnable {@code true} to enable tts option
+     */
+    public static void setTtsDelay(int delay)
+    {
+        ttsDelay = delay;
+        configService.setProperty(pTTSDelay, delay);
     }
 
     /**
@@ -2105,31 +2162,6 @@ public class ConfigurationUtils
         configService.setProperty("gui.chat.DEFAULT_FONT_COLOR", defaultFontColor);
     }
 
-      // Not use in aTalk
-//    /**
-//     * Returns the current language configuration.
-//     *
-//     * @return the current locale
-//     */
-//    public static Locale getCurrentLanguage()
-//    {
-//        String localeId = configService.getString(ResourceManagementService.DEFAULT_LOCALE_CONFIG);
-//        return (localeId != null) ? ResourceManagementServiceUtils.getLocale(localeId) : Locale.getDefault();
-//    }
-//
-//    /**
-//     * Sets the current language configuration.
-//     *
-//     * @param locale the locale to set
-//     */
-//    public static void setLanguage(Locale locale)
-//    {
-//        String language = locale.getLanguage();
-//        String country = locale.getCountry();
-//        configService.setProperty(ResourceManagementService.DEFAULT_LOCALE_CONFIG,
-//                (country.length() > 0) ? (language + '_' + country) : language);
-//    }
-
     /**
      * Initialize aTalk app Theme;default to Theme.DARK if not defined
      */
@@ -2144,6 +2176,82 @@ public class ConfigurationUtils
             theme = Theme.LIGHT;
         }
         aTalkApp.setAppTheme(theme);
+    }
+
+    /**
+     * Updates the value of a contact option property through the <tt>ConfigurationService</tt>.
+     * The property-value pair is stored a JSONObject element in contact options
+     *
+     * @param contactJid the identifier/BareJid of the contact table to update
+     * @param property the property name in the contact options
+     * @param value the value of the contact options property if null, property will be removed
+     */
+    public static void updateContactProperty(Jid contactJid, String property, String value)
+    {
+        JSONObject options = getContactOptions(contactJid);
+        try {
+            if (value == null)
+                options.remove(property);
+            else
+                options.put(property, value);
+        } catch (JSONException e) {
+            Timber.w("Contact property update failed: %s: %s", contactJid, property);
+        }
+
+        String[] args = {contactJid.toString()};
+        contentValues.clear();
+        contentValues.put(Contact.OPTIONS, options.toString());
+
+        mDB.update(Contact.TABLE_NAME, contentValues, Contact.CONTACT_JID + "=?", args);
+    }
+
+    /**
+     * Returns the contact options, saved via the <tt>ConfigurationService</tt>.
+     *
+     * @param contactJid the identifier/BareJid of the contact table to retrieve
+     * @param property the property name in the contact options
+     * @return the value of the contact options property, saved via the <tt>ConfigurationService</tt>.
+     */
+    public static String getContactProperty(Jid contactJid,  String property)
+    {
+        JSONObject options = getContactOptions(contactJid);
+        try {
+            return options.getString(property);
+        } catch (JSONException e) {
+            // Timber.w("ChatRoom property not found for: " + chatRoomId + ": " + property);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the options saved in <tt>ConfigurationService</tt> associated with the <tt>Contact</tt>.
+     *
+     * @param contactJid the identifier/BareJid of the contact table to update
+     * @return the contact options saved in <tt>ConfigurationService</tt>.
+     */
+    private static JSONObject getContactOptions(Jid contactJid)
+    {
+        // mDB is null when access during restoring process
+        if (mDB == null)
+            mDB = DatabaseBackend.getWritableDB();
+
+        String[] columns = {Contact.OPTIONS};
+        String[] args = {contactJid.asBareJid().toString()};
+
+        Cursor cursor = mDB.query(Contact.TABLE_NAME, columns, Contact.CONTACT_JID + "=?", args,
+                null, null, null);
+
+        JSONObject options = new JSONObject();
+        while (cursor.moveToNext()) {
+            String value = cursor.getString(0);
+            try {
+                options = new JSONObject(value == null ? "" : value);
+            } catch (JSONException e) {
+                options = new JSONObject();
+            }
+        }
+        cursor.close();
+        return options;
     }
 
     /**

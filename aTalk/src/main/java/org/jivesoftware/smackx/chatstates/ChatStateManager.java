@@ -34,21 +34,22 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.MessageTypeFilter;
-import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.OrFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.filter.ToTypeFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -58,7 +59,7 @@ import org.jxmpp.jid.EntityFullJid;
 /**
  * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
  * stanza extensions and the disco response necessary for compliance with
- * <a href="https://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
+ * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
  * NOTE: {@link org.jivesoftware.smackx.chatstates.ChatStateManager#getInstance(org.jivesoftware.smack.XMPPConnection)}
  * needs to be called in order for the listeners to be registered appropriately with the connection.
@@ -79,17 +80,14 @@ public final class ChatStateManager extends Manager {
 
     private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
     private static final StanzaFilter INCOMING_CHAT_STATE_FILTER =
-            new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(NAMESPACE)
-    );
+            new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(NAMESPACE));
 
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
             new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT),
-            new OrFilter(MessageWithBodiesFilter.INSTANCE, new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE))
-    );
+            new OrFilter(MessageWithBodiesFilter.INSTANCE, new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE)));
 
     private static final StanzaFilter OUTGOING_MESSAGE_FILTER =
-            new AndFilter( MESSAGE_FILTER, ToTypeFilter.ENTITY_FULL_OR_BARE_JID
-    );
+            new AndFilter(MESSAGE_FILTER, ToTypeFilter.ENTITY_FULL_OR_BARE_JID);
 
     /**
      * Registered ChatStateListeners
@@ -111,12 +109,12 @@ public final class ChatStateManager extends Manager {
      * @return the ChatStateManager related the the connection.
      */
     public static synchronized ChatStateManager getInstance(final XMPPConnection connection) {
-            ChatStateManager manager = INSTANCES.get(connection);
-            if (manager == null) {
-                manager = new ChatStateManager(connection);
-                INSTANCES.put(connection, manager);
-            }
-            return manager;
+        ChatStateManager manager = INSTANCES.get(connection);
+        if (manager == null) {
+            manager = new ChatStateManager(connection);
+            INSTANCES.put(connection, manager);
+        }
+        return manager;
     }
 
     /**
@@ -144,7 +142,8 @@ public final class ChatStateManager extends Manager {
                 EntityBareJid entityBareJid = message.getTo().asEntityBareJidIfPossible();
                 if (message.getType() == Message.Type.groupchat) {
                     chat = multiUserChatManager.getMultiUserChat(entityBareJid);
-                } else {
+                }
+                else {
                     chat = chatManager.chatWith(entityBareJid);
                 }
 
@@ -239,7 +238,7 @@ public final class ChatStateManager extends Manager {
         if (!updateChatState(chat, newState)) {
             return;
         }
-        Message message = new Message();
+        Message message = StanzaBuilder.buildMessage().build();
         ChatStateExtension extension = new ChatStateExtension(newState);
         message.addExtension(extension);
 
@@ -263,10 +262,9 @@ public final class ChatStateManager extends Manager {
         if (!updateChatState(mucChat, newState)) {
             return;
         }
-        Message message = new Message();
-        ChatStateExtension extension = new ChatStateExtension(newState);
-        message.addExtension(extension);
 
+        MessageBuilder message = StanzaBuilder.buildMessage()
+                .addExtension(new ChatStateExtension(newState));
         mucChat.sendMessage(message);
     }
 

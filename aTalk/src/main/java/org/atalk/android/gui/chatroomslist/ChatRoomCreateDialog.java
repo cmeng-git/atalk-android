@@ -195,7 +195,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 chatRoomList.add(CHATROOM);
 
             chatRoomComboBox.setText(chatRoomList.get(0));
-            // Must do this after setText; otherwise only first item in the list
+            // Must do this after setText as it clear the list; otherwise only one item in the list
             chatRoomComboBox.setSuggestionSource(chatRoomList);
 
             // Update the dialog form fields with all the relevant values

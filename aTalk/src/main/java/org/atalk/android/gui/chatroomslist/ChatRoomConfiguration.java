@@ -51,12 +51,15 @@ import timber.log.Timber;
  */
 public class ChatRoomConfiguration extends OSGiFragment
 {
+    /**
+     * Declare as static to support rotation, otherwise crash when user rotate
+     * Instead of using save Bundle approach
+     */
+    private static ChatRoomWrapper mChatRoomWrapper;
+    private static ChatRoomConfigListener mCrcListener = null;
+
     private Context mContext;
-    private ChatRoomWrapper mChatRoomWrapper;
-
     private MultiUserChat multiUserChat;
-
-    ChatRoomConfigListener crcListener = null;
 
     /**
      * The list of form fields in the room configuration stanza
@@ -89,12 +92,11 @@ public class ChatRoomConfiguration extends OSGiFragment
      * @param mContext the <tt>ChatActivity</tt> corresponding to the <tt>Chat Session</tt>
      * @param chatRoomWrapper user joined ChatRoomWrapper for the <tt>Chat Session</tt>
      */
-    public static ChatRoomConfiguration getInstance(Context context, ChatRoomWrapper chatRoomWrapper, ChatRoomConfigListener crcListener)
+    public static ChatRoomConfiguration getInstance(ChatRoomWrapper chatRoomWrapper, ChatRoomConfigListener crcListener)
     {
         ChatRoomConfiguration fragment = new ChatRoomConfiguration();
-        fragment.mContext = context;
-        fragment.mChatRoomWrapper = chatRoomWrapper;
-        fragment.crcListener = crcListener;
+        mChatRoomWrapper = chatRoomWrapper;
+        mCrcListener = crcListener;
         return fragment;
     }
 
@@ -104,6 +106,8 @@ public class ChatRoomConfiguration extends OSGiFragment
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        mContext = this.getContext();
+
         View contentView = inflater.inflate(R.layout.chatroom_config, container, false);
         mTitle = contentView.findViewById(R.id.config_title);
 
@@ -133,8 +137,8 @@ public class ChatRoomConfiguration extends OSGiFragment
         if (fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
 
-            if (crcListener != null)
-                crcListener.onConfigComplete(configUpdates);
+            if (mCrcListener != null)
+                mCrcListener.onConfigComplete(configUpdates);
         }
     }
 
@@ -494,6 +498,6 @@ public class ChatRoomConfiguration extends OSGiFragment
 
     public interface ChatRoomConfigListener
     {
-        void  onConfigComplete(Map<String, Object> configUpdates);
+        void onConfigComplete(Map<String, Object> configUpdates);
     }
 }

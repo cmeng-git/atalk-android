@@ -180,7 +180,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
         AudioNotifierService audioNotifService = NotificationActivator.getAudioNotifier();
 
         if (audioNotifService != null) {
-            List<SCAudioClip> clipsToStop = new ArrayList<SCAudioClip>();
+            List<SCAudioClip> clipsToStop = new ArrayList<>();
 
             synchronized (playedClips) {
                 Iterator<Map.Entry<SCAudioClip, NotificationData>> i = playedClips.entrySet().iterator();

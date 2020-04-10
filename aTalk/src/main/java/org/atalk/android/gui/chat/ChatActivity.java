@@ -25,6 +25,7 @@ import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.sf.fmj.utility.IOUtils;
 
 import org.atalk.android.*;
@@ -127,6 +128,7 @@ public class ChatActivity extends OSGiActivity
     private MenuItem mCallVideoContact;
     private MenuItem mSendFile;
     private MenuItem mSendLocation;
+    private MenuItem mTtsEnable;
     private MenuItem mRoomInvite;
     private MenuItem mLeaveChatRoom;
     private MenuItem mDestroyChatRoom;
@@ -135,7 +137,6 @@ public class ChatActivity extends OSGiActivity
     private MenuItem mChatRoomConfig;
     private MenuItem mChatRoomNickSubject;
     private MenuItem mOtr_Session;
-
     /**
      * Holds chatId that is currently handled by this Activity.
      */
@@ -362,7 +363,8 @@ public class ChatActivity extends OSGiActivity
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (chatRoomConfig != null) {
                 chatRoomConfig.onBackPressed();
-            } else {
+            }
+            else {
                 finish();
             }
             return true;
@@ -382,6 +384,13 @@ public class ChatActivity extends OSGiActivity
         return super.onKeyUp(keyCode, event);
     }
 
+    public void updateChatTtsOption() {
+        ChatFragment chatFragment;
+        if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null) {
+            chatFragment.updateChatTtsOption();
+        }
+    }
+
     /**
      * Invoked when the options menu is created. Creates our own options menu from the corresponding xml.
      *
@@ -398,6 +407,7 @@ public class ChatActivity extends OSGiActivity
         mCallVideoContact = mMenu.findItem(R.id.call_contact_video);
         mSendFile = mMenu.findItem(R.id.send_file);
         mSendLocation = mMenu.findItem(R.id.send_location);
+        mTtsEnable = mMenu.findItem(R.id.chat_tts_enable);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
         mRoomInvite = mMenu.findItem(R.id.muc_invite);
         mLeaveChatRoom = mMenu.findItem(R.id.leave_chat_room);
@@ -448,6 +458,11 @@ public class ChatActivity extends OSGiActivity
                         && (contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService);
                 mSendFile.setVisible(isShowFileSend);
                 mSendLocation.setVisible(!isDomainJid);
+
+                mTtsEnable.setVisible(!isDomainJid);
+                mTtsEnable.setTitle(mRecipient.isTtsEnable()
+                        ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+
                 mRoomInvite.setVisible(!isDomainJid);
                 mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
@@ -468,6 +483,11 @@ public class ChatActivity extends OSGiActivity
                 mLeaveChatRoom.setVisible(isJoined);
                 mSendFile.setVisible(isJoined && hasUploadService);
                 mSendLocation.setVisible(isJoined);
+
+                mTtsEnable.setVisible(isJoined);
+                mTtsEnable.setTitle(chatRoomWrapper.isTtsEnable()
+                        ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+
                 mChatRoomNickSubject.setVisible(isJoined);
 
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
@@ -479,6 +499,8 @@ public class ChatActivity extends OSGiActivity
                 mCallVideoContact.setVisible(false);
                 mOtr_Session.setVisible(false);
             }
+            // Show the TTS enable option only if global TTS option is enabled.
+            mTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
 
             MenuItem mPadlock = mMenu.findItem(R.id.otr_padlock);
             if (mPadlock != null) {
@@ -531,6 +553,18 @@ public class ChatActivity extends OSGiActivity
             ft.addToBackStack(null);
 
             switch (item.getItemId()) {
+                case R.id.chat_tts_enable:
+                    if (chatRoomWrapper.isTtsEnable()) {
+                        chatRoomWrapper.setTtsEnable(false);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                    }
+                    else {
+                        chatRoomWrapper.setTtsEnable(true);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                    }
+                    updateChatTtsOption();
+                    return true;
+
                 case R.id.leave_chat_room:
                     if (chatRoom != null) {
                         ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
@@ -560,7 +594,7 @@ public class ChatActivity extends OSGiActivity
                     return true;
 
                 case R.id.chatroom_config:
-                    chatRoomConfig = ChatRoomConfiguration.getInstance(this, chatRoomWrapper, this);
+                    chatRoomConfig = ChatRoomConfiguration.getInstance(chatRoomWrapper, this);
                     ft.replace(android.R.id.content, chatRoomConfig).commit();
                     return true;
 
@@ -588,27 +622,36 @@ public class ChatActivity extends OSGiActivity
                     return true;
             }
         }
-        else {
-            // Handle item selection
+        // Handle item selection for mRecipient if non-null
+        else if (mRecipient != null) {
             switch (item.getItemId()) {
-                case R.id.call_contact_audio: // start audio call
-                    if (mRecipient != null) {
-                        Jid jid = mRecipient.getJid();
-                        if (jid instanceof DomainBareJid) {
-                            TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
-                            getSupportFragmentManager().beginTransaction()
-                                    .replace(android.R.id.content, extPhone).commit();
-                        }
-                        else
-                            AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                                    mRecipient.getProtocolProvider(), false);
+                case R.id.chat_tts_enable:
+                    if (mRecipient.isTtsEnable()) {
+                        mRecipient.setTtsEnable(false);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
                     }
+                    else {
+                        mRecipient.setTtsEnable(true);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                    }
+                    updateChatTtsOption();
+                    return true;
+
+                case R.id.call_contact_audio: // start audio call
+                    Jid jid = mRecipient.getJid();
+                    if (jid instanceof DomainBareJid) {
+                        TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, extPhone).commit();
+                    }
+                    else
+                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                                mRecipient.getProtocolProvider(), false);
                     return true;
 
                 case R.id.call_contact_video: // start video call
-                    if (mRecipient != null)
-                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                                mRecipient.getProtocolProvider(), true);
+                    AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                            mRecipient.getProtocolProvider(), true);
                     return true;
             }
         }
@@ -737,7 +780,7 @@ public class ChatActivity extends OSGiActivity
                             mRecipient.setLastActiveTime(lastActiveTime);
                         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
                                 | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException e) {
-                            Timber.w("Exception in getLastSeen 5s", e.getMessage());
+                            Timber.w("Exception in getLastSeen %s", e.getMessage());
                         }
                     }
 
@@ -765,7 +808,7 @@ public class ChatActivity extends OSGiActivity
         }
 
         // Reset elapse time to fetch new again when contact goes offline again and just update with contact old status
-        mRecipient.setLastActiveTime(-1);
+        // mRecipient.setLastActiveTime(-1);
         ActionBarUtil.setSubtitle(this, status.getStatusName());
     }
 
@@ -1004,7 +1047,6 @@ public class ChatActivity extends OSGiActivity
      */
     private class MediaShareAsynTask extends AsyncTask<String, Void, String>
     {
-        private String URL_EMBBED = "https://noembed.com/embed?url=";
         private String mUrl;
 
         @Override
@@ -1047,8 +1089,11 @@ public class ChatActivity extends OSGiActivity
          * @param urlString url string
          * @return Jason String
          */
-        public String getUrlInfo(String urlString)
+        private String getUrlInfo(String urlString)
         {
+            // Server that provides the media info for the supported services
+            String URL_EMBBED = "https://noembed.com/embed?url=";
+
             try {
                 urlString = URL_EMBBED + urlString.replace("http:", "https:");
                 URL mUrl = new URL(urlString);
@@ -1067,7 +1112,7 @@ public class ChatActivity extends OSGiActivity
                     return IOUtils.readAllToString(inputStream);
                 }
             } catch (IOException e) {
-                Timber.w("Exception in get URL info: ", e.getMessage());
+                Timber.w("Exception in get URL info: %s", e.getMessage());
             }
             return null;
         }

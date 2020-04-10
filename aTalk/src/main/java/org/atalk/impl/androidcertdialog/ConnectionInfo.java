@@ -156,12 +156,12 @@ public class ConnectionInfo extends OSGiActivity
         if (opSetConnectionInfo != null) {
             buff.append(getLineString(
                     getString(R.string.service_gui_settings_ADDRESS),
-                    opSetConnectionInfo.getServerAddress() == null ?
-                            "" : opSetConnectionInfo.getServerAddress().getHost()));
+                    (opSetConnectionInfo.getServerAddress() == null)
+                            ? "" : opSetConnectionInfo.getServerAddress().getHostName()));
             buff.append(getLineString(
                     getString(R.string.service_gui_settings_PORT),
-                    opSetConnectionInfo.getServerAddress() == null ?
-                            "" : String.valueOf(opSetConnectionInfo.getServerAddress().getPort()
+                    (opSetConnectionInfo.getServerAddress() == null)
+                            ? "" : String.valueOf(opSetConnectionInfo.getServerAddress().getPort()
                     )));
         }
 

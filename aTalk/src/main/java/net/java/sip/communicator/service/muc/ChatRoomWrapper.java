@@ -242,6 +242,21 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     void setBookmark(boolean value);
 
     /**
+     * When access on start-up, return ttsEnable may be null.
+     *
+     * @return true if charRoomWrapper tts is enabled.
+     */
+    public boolean isTtsEnable();
+
+    /**
+     * Change charRoomWrapper tts enable value in configuration service.
+     * Null value in DB is considered as false
+     *
+     * @param value change of tts enable property.
+     */
+    public void setTtsEnable(boolean value);
+
+    /**
      * Removes the listeners.
      */
     void removeListeners();

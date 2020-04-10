@@ -201,7 +201,7 @@ public class MessageReceivedEvent extends EventObject
         super(source);
 
         // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
-        // source.getContent() may be null (Omemo key send contains no body content)
+        // source.getContent() may be null (Omemo key message contains no body content)
         if (FileBackend.isHttpFileDnLink(source.getContent())) {
                 eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
         }

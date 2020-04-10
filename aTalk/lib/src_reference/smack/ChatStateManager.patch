@@ -1,6 +1,6 @@
---- /home/cmeng/source/smack/Smack-4.4.0-alpha3-20190916/smack-extensions/src/main/java/org/jivesoftware/smackx/chatstates/ChatStateManager.java	2019-09-18 15:59:57.000000000 
-+++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smackx/chatstates/ChatStateManager.java	2019-11-27 17:53:33.000000000 
-@@ -30,26 +30,31 @@
+--- /home/cmeng/source/smack/Smack-4.4.0-alpha3-20200404/org/jivesoftware/smackx/chatstates/ChatStateManager.java	2020-03-24 09:16:12.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smackx/chatstates/ChatStateManager.java	2020-04-09 11:58:14.000000000 
+@@ -30,27 +30,32 @@
  import org.jivesoftware.smack.Manager;
  import org.jivesoftware.smack.SmackException.NotConnectedException;
  import org.jivesoftware.smack.StanzaListener;
@@ -10,21 +10,23 @@
 -import org.jivesoftware.smack.chat2.OutgoingChatMessageListener;
  import org.jivesoftware.smack.filter.AndFilter;
 -import org.jivesoftware.smack.filter.FromTypeFilter;
++import org.jivesoftware.smack.filter.NotFilter;
++import org.jivesoftware.smack.filter.OrFilter;
  import org.jivesoftware.smack.filter.MessageTypeFilter;
 +import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
- import org.jivesoftware.smack.filter.NotFilter;
-+import org.jivesoftware.smack.filter.OrFilter;
  import org.jivesoftware.smack.filter.StanzaExtensionFilter;
  import org.jivesoftware.smack.filter.StanzaFilter;
 +import org.jivesoftware.smack.filter.StanzaTypeFilter;
- import org.jivesoftware.smack.packet.ExtensionElement;
 +import org.jivesoftware.smack.filter.ToTypeFilter;
+ import org.jivesoftware.smack.packet.ExtensionElement;
  import org.jivesoftware.smack.packet.Message;
+ import org.jivesoftware.smack.packet.MessageBuilder;
  import org.jivesoftware.smack.packet.Stanza;
+ import org.jivesoftware.smack.packet.StanzaBuilder;
  
  import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
  import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
- 
+-
 +import org.jivesoftware.smackx.muc.MultiUserChat;
 +import org.jivesoftware.smackx.muc.MultiUserChatManager;
 +import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -34,28 +36,26 @@
  /**
   * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
   * stanza extensions and the disco response necessary for compliance with
-@@ -70,25 +75,34 @@
+@@ -70,71 +75,87 @@
+     private static final Logger LOGGER = Logger.getLogger(ChatStateManager.class.getName());
  
      public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
  
      private static final Map<XMPPConnection, ChatStateManager> INSTANCES = new WeakHashMap<>();
  
-     private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
 -    private static final StanzaFilter INCOMING_MESSAGE_FILTER =
 -            new AndFilter(MessageTypeFilter.NORMAL_OR_CHAT, FromTypeFilter.ENTITY_FULL_JID);
 -    private static final StanzaFilter INCOMING_CHAT_STATE_FILTER = new AndFilter(INCOMING_MESSAGE_FILTER, new StanzaExtensionFilter(NAMESPACE));
++    private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
 +    private static final StanzaFilter INCOMING_CHAT_STATE_FILTER =
-+            new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(NAMESPACE)
-+    );
++            new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(NAMESPACE));
 +
 +    private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
 +            new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT),
-+            new OrFilter(MessageWithBodiesFilter.INSTANCE, new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE))
-+    );
++            new OrFilter(MessageWithBodiesFilter.INSTANCE, new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE)));
  
 +    private static final StanzaFilter OUTGOING_MESSAGE_FILTER =
-+            new AndFilter( MESSAGE_FILTER, ToTypeFilter.ENTITY_FULL_OR_BARE_JID
-+    );
++            new AndFilter(MESSAGE_FILTER, ToTypeFilter.ENTITY_FULL_OR_BARE_JID);
 +
      /**
       * Registered ChatStateListeners
@@ -74,7 +74,28 @@
      /**
       * Returns the ChatStateManager related to the XMPPConnection and it will create one if it does
       * not yet exist.
-@@ -111,30 +125,38 @@
+      *
+      * @param connection the connection to return the ChatStateManager
+      * @return the ChatStateManager related the the connection.
+      */
+     public static synchronized ChatStateManager getInstance(final XMPPConnection connection) {
+-            ChatStateManager manager = INSTANCES.get(connection);
+-            if (manager == null) {
+-                manager = new ChatStateManager(connection);
+-                INSTANCES.put(connection, manager);
+-            }
+-            return manager;
++        ChatStateManager manager = INSTANCES.get(connection);
++        if (manager == null) {
++            manager = new ChatStateManager(connection);
++            INSTANCES.put(connection, manager);
++        }
++        return manager;
+     }
+ 
+     /**
+      * Private constructor to create a new ChatStateManager.
+      * This adds ChatMessageListeners as interceptors to the connection and adds the namespace to the disco features.
       *
       * @param connection xmpp connection
       */
@@ -86,26 +107,28 @@
 +
 +        connection.addStanzaInterceptor(new StanzaListener() {
              @Override
--            public void newOutgoingMessage(EntityBareJid to, Message message, Chat chat) {
+-            public void newOutgoingMessage(EntityBareJid to, MessageBuilder message, Chat chat) {
 -                if (chat == null) {
--                    return;
--                }
 +            public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
 +                Message message = (Message) stanza;
- 
-                 // if message already has a chatStateExtension, then do nothing,
-                 if (!filter.accept(message)) {
++
++                // if message already has a chatStateExtension, then do nothing,
++                if (!filter.accept(message)) {
                      return;
                  }
  
+-                // if message already has a chatStateExtension, then do nothing,
+-                if (message.hasExtension(ChatStateExtension.NAMESPACE)) {
+-                    return;
 +                Object chat;
 +                EntityBareJid entityBareJid = message.getTo().asEntityBareJidIfPossible();
 +                if (message.getType() == Message.Type.groupchat) {
 +                    chat = multiUserChatManager.getMultiUserChat(entityBareJid);
-+                } else {
-+                    chat = chatManager.chatWith(entityBareJid);
 +                }
-+
++                else {
++                    chat = chatManager.chatWith(entityBareJid);
+                 }
+ 
                  // otherwise add a chatState extension if necessary.
                  if (updateChatState(chat, ChatState.active)) {
                      message.addExtension(new ChatStateExtension(ChatState.active));
@@ -119,7 +142,7 @@
              public void processStanza(Stanza stanza) {
                  final Message message = (Message) stanza;
  
-@@ -197,13 +219,12 @@
+@@ -197,13 +218,12 @@
      public boolean removeChatStateListener(ChatStateListener listener) {
          synchronized (chatStateListeners) {
              return chatStateListeners.remove(listener);
@@ -133,7 +156,7 @@
       * and only if the new chat state is different than the last state.
       *
       * @param newState the new state of the chat
-@@ -222,12 +243,35 @@
+@@ -222,12 +242,34 @@
          ChatStateExtension extension = new ChatStateExtension(newState);
          message.addExtension(extension);
  
@@ -157,10 +180,9 @@
 +        if (!updateChatState(mucChat, newState)) {
 +            return;
 +        }
-+        Message message = new Message();
-+        ChatStateExtension extension = new ChatStateExtension(newState);
-+        message.addExtension(extension);
 +
++        MessageBuilder message = StanzaBuilder.buildMessage()
++                .addExtension(new ChatStateExtension(newState));
 +        mucChat.sendMessage(message);
 +    }
  
@@ -169,7 +191,7 @@
          if (this == o) return true;
          if (o == null || getClass() != o.getClass()) return false;
  
-@@ -239,16 +283,15 @@
+@@ -239,16 +281,15 @@
  
      @Override
      public int hashCode() {

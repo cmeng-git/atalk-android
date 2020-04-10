@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software, 2018-2019 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,6 +86,7 @@ import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.filter.IQReplyFilter;
@@ -100,16 +100,22 @@ import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.MessageOrPresence;
+import org.jivesoftware.smack.packet.MessageOrPresenceBuilder;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.StanzaFactory;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -121,13 +127,15 @@ import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.util.Predicate;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -141,8 +149,6 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-import org.minidns.dnsname.DnsName;
-
 
 /**
  * This abstract class is commonly used as super class for XMPP connection mechanisms like TCP and BOSH. Hence it
@@ -241,7 +247,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final Map<StanzaListener, InterceptorWrapper> interceptors =
             new HashMap<>();
 
-    protected XmlEnvironment incomingStreamXmlEnvironment;
+    private final Map<Consumer<MessageBuilder>, GenericInterceptorWrapper<MessageBuilder, Message>> messageInterceptors = new HashMap<>();
+
+    private final Map<Consumer<PresenceBuilder>, GenericInterceptorWrapper<PresenceBuilder, Presence>> presenceInterceptors = new HashMap<>();
+
+    public XmlEnvironment incomingStreamXmlEnvironment;
 
     protected XmlEnvironment outgoingStreamXmlEnvironment;
 
@@ -381,7 +391,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * The used port to establish the connection to
      */
-    protected int port;
+    protected UInt16 port;
 
     /**
      * Flag that indicates if the user is currently authenticated with the server.
@@ -401,6 +411,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private final Map<QName, IQRequestHandler> setIqRequestHandler = new HashMap<>();
     private final Map<QName, IQRequestHandler> getIqRequestHandler = new HashMap<>();
+
+    private final StanzaFactory stanzaFactory;
 
     /**
      * Create a new XMPPConnection to an XMPP server.
@@ -440,6 +452,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
             listener.connectionCreated(this);
         }
+
+        StanzaIdSource stanzaIdSource = configuration.constructStanzaIdSource();
+        stanzaFactory = new StanzaFactory(stanzaIdSource);
     }
 
     /**
@@ -466,7 +481,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public int getPort() {
-        return port;
+        final UInt16 port = this.port;
+        if (port == null) {
+            return -1;
+        }
+
+        return port.intValue();
     }
 
     @Override
@@ -507,6 +527,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
         tlsHandled.init();
+        closingStreamReceived.init();
     }
 
     /**
@@ -733,7 +754,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // eventually load the roster. And we should load the roster before we
         // send the initial presence.
         if (config.isSendPresence() && !resumed) {
-            sendStanza(new Presence(Presence.Type.available));
+            Presence availablePresence = getStanzaFactory()
+                            .buildPresenceStanza()
+                            .ofType(Presence.Type.available)
+                            .build();
+            sendStanza(availablePresence);
         }
     }
 
@@ -755,38 +780,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     private DomainBareJid xmppServiceDomain;
-
-    protected List<HostAddress> hostAddresses;
-
-    /**
-     * Populates {@link #hostAddresses} with the resolved addresses or with the configured host address. If no host
-     * address was configured and all lookups failed, for example with NX_DOMAIN, then {@link #hostAddresses} will be
-     * populated with the empty list.
-     *
-     * @return a list of host addresses where DNS (SRV) RR resolution failed.
-     */
-    protected List<HostAddress> populateHostAddresses() {
-        List<HostAddress> failedAddresses = new LinkedList<>();
-        if (config.hostAddress != null) {
-            hostAddresses = new ArrayList<>(1);
-            HostAddress hostAddress = new HostAddress(config.port, config.hostAddress);
-            hostAddresses.add(hostAddress);
-        }
-        else if (config.host != null) {
-            hostAddresses = new ArrayList<>(1);
-            HostAddress hostAddress = DNSUtil.getDNSResolver().lookupHostAddress(config.host, config.port, failedAddresses, config.getDnssecMode());
-            if (hostAddress != null) {
-                hostAddresses.add(hostAddress);
-            }
-        } else {
-            // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
-            DnsName dnsName = DnsName.from(config.getXMPPServiceDomain());
-            hostAddresses = DNSUtil.resolveXMPPServiceDomain(dnsName, failedAddresses, config.getDnssecMode());
-        }
-        // Either the populated host addresses are not empty *or* there must be at least one failed address.
-        assert !hostAddresses.isEmpty() || !failedAddresses.isEmpty();
-        return failedAddresses;
-    }
 
     protected Lock getConnectionLock() {
         return connectionLock;
@@ -815,6 +808,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
+    public final StanzaFactory getStanzaFactory() {
+        return stanzaFactory;
+    }
+
+    @Override
     public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
         assert stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ;
@@ -833,8 +831,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
         // Invoke interceptors for the new stanza that is about to be sent. Interceptors may modify
         // the content of the stanza.
-        firePacketInterceptors(stanza);
-        sendStanzaInternal(stanza);
+        Stanza stanzaAfterInterceptors = firePacketInterceptors(stanza);
+        sendStanzaInternal(stanzaAfterInterceptors);
     }
 
     /**
@@ -893,7 +891,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public void disconnect() {
         Presence unavailablePresence = null;
         if (isAuthenticated()) {
-            unavailablePresence = new Presence(Presence.Type.unavailable);
+            unavailablePresence = getStanzaFactory().buildPresenceStanza()
+                            .ofType(Presence.Type.unavailable)
+                            .build();
         }
         try {
             disconnect(unavailablePresence);
@@ -951,6 +951,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             tlsHandled.reportGenericFailure(smackWrappedException);
             saslFeatureReceived.reportGenericFailure(smackWrappedException);
             lastFeaturesReceived.reportGenericFailure(smackWrappedException);
+            closingStreamReceived.reportFailure(smackWrappedException);
             // TODO From XMPPTCPConnection. Was called in Smack 4.3 where notifyConnectionError() was part of
             // XMPPTCPConnection. Create delegation method?
             // maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
@@ -1186,6 +1187,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         });
     }
 
+    @Deprecated
     @Override
     public void addStanzaInterceptor(StanzaListener packetInterceptor,
             StanzaFilter packetFilter) {
@@ -1198,11 +1200,79 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @Deprecated
     @Override
     public void removeStanzaInterceptor(StanzaListener packetInterceptor) {
         synchronized (interceptors) {
             interceptors.remove(packetInterceptor);
         }
+    }
+
+    private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> void addInterceptor(
+                    Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors, Consumer<MPB> interceptor,
+                    Predicate<MP> filter) {
+        Objects.requireNonNull(interceptor, "Interceptor must not be null");
+
+        GenericInterceptorWrapper<MPB, MP> interceptorWrapper = new GenericInterceptorWrapper<>(interceptor, filter);
+
+        synchronized (interceptors) {
+            interceptors.put(interceptor, interceptorWrapper);
+        }
+    }
+
+    private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> void removeInterceptor(
+                    Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors, Consumer<MPB> interceptor) {
+        synchronized (interceptors) {
+            interceptors.remove(interceptor);
+        }
+    }
+
+    @Override
+    public void addMessageInterceptor(Consumer<MessageBuilder> messageInterceptor, Predicate<Message> messageFilter) {
+        addInterceptor(messageInterceptors, messageInterceptor, messageFilter);
+    }
+
+    @Override
+    public void removeMessageInterceptor(Consumer<MessageBuilder> messageInterceptor) {
+        removeInterceptor(messageInterceptors, messageInterceptor);
+    }
+
+    @Override
+    public void addPresenceInterceptor(Consumer<PresenceBuilder> presenceInterceptor,
+                    Predicate<Presence> presenceFilter) {
+        addInterceptor(presenceInterceptors, presenceInterceptor, presenceFilter);
+    }
+
+    @Override
+    public void removePresenceInterceptor(Consumer<PresenceBuilder> presenceInterceptor) {
+        removeInterceptor(presenceInterceptors, presenceInterceptor);
+    }
+
+    private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> MP fireMessageOrPresenceInterceptors(
+                    MP messageOrPresence, Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors) {
+        List<Consumer<MPB>> interceptorsToInvoke = new LinkedList<>();
+        synchronized (interceptors) {
+            for (GenericInterceptorWrapper<MPB, MP> interceptorWrapper : interceptors.values()) {
+                if (interceptorWrapper.filterMatches(messageOrPresence)) {
+                    Consumer<MPB> interceptor = interceptorWrapper.getInterceptor();
+                    interceptorsToInvoke.add(interceptor);
+                }
+            }
+        }
+
+        // Avoid transforming the stanza to a builder if there is no interceptor.
+        if (interceptorsToInvoke.isEmpty()) {
+            return messageOrPresence;
+        }
+
+        MPB builder = messageOrPresence.asBuilder();
+        for (Consumer<MPB> interceptor : interceptorsToInvoke) {
+            interceptor.accept(builder);
+        }
+
+        // Now that the interceptors have (probably) modified the stanza in its builder form, we need to re-assemble it.
+        messageOrPresence = builder.build();
+        return messageOrPresence;
     }
 
     /**
@@ -1211,9 +1281,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * is important that interceptors perform their work as soon as possible so that the
      * thread does not remain blocked for a long period.
      *
-     * @param packet the stanza that is going to be sent to the server
+     * @param packet the stanza that is going to be sent to the server.
+     * @return the, potentially modified stanza, after the interceptors are run.
      */
-    private void firePacketInterceptors(Stanza packet) {
+    private Stanza firePacketInterceptors(Stanza packet) {
         List<StanzaListener> interceptorsToInvoke = new LinkedList<>();
         synchronized (interceptors) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
@@ -1229,6 +1300,22 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 LOGGER.log(Level.SEVERE, "Packet interceptor threw exception", e);
             }
         }
+
+        final Stanza stanzaAfterInterceptors;
+        if (packet instanceof Message) {
+            Message message = (Message) packet;
+            stanzaAfterInterceptors = fireMessageOrPresenceInterceptors(message, messageInterceptors);
+        }
+        else if (packet instanceof Presence) {
+            Presence presence = (Presence) packet;
+            stanzaAfterInterceptors = fireMessageOrPresenceInterceptors(presence, presenceInterceptors);
+        } else {
+            // We do not (yet) support interceptors for IQ stanzas.
+            assert packet instanceof IQ;
+            stanzaAfterInterceptors = packet;
+        }
+
+        return stanzaAfterInterceptors;
     }
 
     /**
@@ -1416,7 +1503,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
                     // IQ of type 'error' with condition 'service-unavailable'.
                     final ErrorIQ errorIQ = IQ.createErrorResponse(iq, StanzaError.getBuilder(
-                                    replyCondition));
+                                    replyCondition).build());
                     // Use async sendStanza() here, since if sendStanza() would block, then some connections, e.g.
                     // XmppNioTcpConnection, would deadlock, as this operation is performed in the same thread that is
                     asyncGo(() -> {
@@ -1656,6 +1743,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * A wrapper class to associate a stanza filter with an interceptor.
      */
+    @Deprecated
+    // TODO: Remove once addStanzaInterceptor is gone.
     protected static class InterceptorWrapper {
 
         private final StanzaListener packetInterceptor;
@@ -1678,6 +1767,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         public StanzaListener getInterceptor() {
             return packetInterceptor;
+        }
+    }
+
+    private static final class GenericInterceptorWrapper<MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> {
+        private final Consumer<MPB> stanzaInterceptor;
+        private final Predicate<MP> stanzaFilter;
+
+        private GenericInterceptorWrapper(Consumer<MPB> stanzaInterceptor, Predicate<MP> stanzaFilter) {
+            this.stanzaInterceptor = stanzaInterceptor;
+            this.stanzaFilter = stanzaFilter;
+        }
+
+        private boolean filterMatches(MP stanza) {
+            return stanzaFilter == null || stanzaFilter.test(stanza);
+        }
+
+        public Consumer<MPB> getInterceptor() {
+            return stanzaInterceptor;
         }
     }
 
@@ -2047,6 +2154,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         CACHED_EXECUTOR_SERVICE.execute(runnable);
     }
 
+    protected final SmackReactor getReactor() {
+        return SMACK_REACTOR;
+    }
+
     protected static ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit) {
         return SMACK_REACTOR.schedule(runnable, delay, unit);
     }
@@ -2169,7 +2280,28 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         ks = null;
                     }
                 } else {
-                    ks.load(null, null);
+                    InputStream stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                    try {
+                        // Note that PKCS12 keystores need a password one some Java platforms. Hence we try the famous
+                        // 'changeit' here. See https://bugs.openjdk.java.net/browse/JDK-8194702
+                        char[] password = "changeit".toCharArray();
+                        try {
+                            ks.load(stream, password);
+                        } finally {
+                            stream.close();
+                        }
+                    } catch (IOException e) {
+                        LOGGER.log(Level.FINE, "KeyStore load() threw, attempting 'jks' fallback", e);
+
+                        ks = KeyStore.getInstance("jks");
+                        // Open the stream again, so that we read it from the beginning.
+                        stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                        try {
+                            ks.load(stream, null);
+                        } finally {
+                            stream.close();
+                        }
+                    }
                 }
             }
 
@@ -2206,16 +2338,16 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             context = SSLContext.getInstance("TLS");
 
             final SecureRandom secureRandom = new java.security.SecureRandom();
-            X509TrustManager customTrustManager = config.getCustomX509TrustManager();
+            X509TrustManager trustManager = config.getCustomX509TrustManager();
+            if (trustManager == null) {
+                trustManager = TLSUtils.getDefaultX509TrustManager(ks);
+            }
 
             if (daneVerifier != null) {
                 // User requested DANE verification.
-                daneVerifier.init(context, kms, customTrustManager, secureRandom);
+                daneVerifier.init(context, kms, trustManager, secureRandom);
             } else {
-                TrustManager[] customTrustManagers = null;
-                if (customTrustManager != null) {
-                    customTrustManagers = new TrustManager[] { customTrustManager };
-                }
+                TrustManager[] customTrustManagers = new TrustManager[] { trustManager };
                 context.init(kms, customTrustManagers, secureRandom);
             }
         }

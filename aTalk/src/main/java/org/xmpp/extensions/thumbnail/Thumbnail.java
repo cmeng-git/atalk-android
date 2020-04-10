@@ -145,7 +145,7 @@ public class Thumbnail implements ExtensionElement
     @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
     {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
 
         // adding thumbnail uri parameters
         xml.attribute(URI, uri);

@@ -1,5 +1,5 @@
---- /home/cmeng/source/smack/Smack/trunk/smack-extensions/src/main/java/org/jivesoftware/smackx/filetransfer/FaultTolerantNegotiator.java	2017-12-25 21:16:43.000000000 
-+++ /home/cmeng/workspace/android/smack/smack-extensions/src/main/java/org/jivesoftware/smackx/filetransfer/FaultTolerantNegotiator.java	2018-12-17 08:57:39.000000000 
+--- /home/cmeng/source/smack/Smack-4.4.0-alpha3-20200404/org/jivesoftware/smackx/filetransfer/FaultTolerantNegotiator.java	2020-02-23 19:05:18.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smackx/filetransfer/FaultTolerantNegotiator.java	2020-04-05 15:28:12.000000000 
 @@ -62,17 +62,26 @@
                  "stream method.");
      }

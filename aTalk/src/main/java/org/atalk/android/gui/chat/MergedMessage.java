@@ -111,6 +111,12 @@ public class MergedMessage implements ChatMessage
         return rootMessage.getEncryptionType();
     }
 
+    @Override
+    public int getXferStatus()
+    {
+        return FileRecord.STATUS_UNKNOWN;
+    }
+
     /**
      * Returns the merged message lowest delivery receipt status
      *

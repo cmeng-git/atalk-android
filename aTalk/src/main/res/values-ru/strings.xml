@@ -445,7 +445,6 @@
     <string name="service_gui_LAST_SEEN">сегодня: %s</string>
 	<string name="service_gui_LEAVE">Оставить</string>
     <string name="service_gui_LEAVE_ROOM">оставить chatRoom</string>
-    <string name="service_gui_LOADING">Загрузка</string>
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Локально в режиме ожидания</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Пользовательские учетные данные пользователя</string>
     <string name="service_gui_LOGIN_FAILED">Ошибка входа</string>
@@ -1327,6 +1326,16 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_light">Свет</string>
     <string name="settings_theme_label">Тема</string>
+
+    <!-- TTS Language -->
+    <string name="service_gui_TTS_DELAY">Текст сообщения в задержку речи (ms)</string>
+    <string name="service_gui_TTS_SETTINGS">Общие настройки TTS&#8230;</string>
+    <string name="service_gui_TTS_DISABLE">Отключить текст в речь</string>
+    <string name="service_gui_TTS_ENABLE">Включить текст в речь</string>
+    <string name="service_gui_TTS_SYNTHESIS">Введите текст, чтобы говорить или синтезировать и сохранить в файл:</string>
+    <string name="service_gui_TTS_VOICE">Голос TTS по умолчанию:</string>
+
+    <string name="service_gui_LOADING">Загрузка, пожалуйста подождите…</string>
 
     <!-- Remove special characters from phone number -->
     <string name="service_gui_settings_NORMALIZE_NUMBER">Специальные символы в телефонных номерах</string>

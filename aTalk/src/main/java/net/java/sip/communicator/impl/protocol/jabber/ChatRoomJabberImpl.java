@@ -1022,7 +1022,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     {
         try {
             assertConnected();
-            mMultiUserChat.sendMessage(message);
+            mMultiUserChat.sendMessage(message.asBuilder());
         } catch (NotConnectedException | InterruptedException e) {
             Timber.e("Failed to send message: %s", e.getMessage());
             throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),
@@ -1038,7 +1038,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         try {
             OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-            Message sendMessage = encryptedMessage.asMessage(entityBareJid);
+
+            MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
+            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
                 String xhtmlBody = encryptedMessage.getElement().toXML().toString();
@@ -1048,7 +1050,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 msgContent = Html.fromHtml(msgContent).toString();
 
                 encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-                sendMessage = encryptedMessage.asMessage(entityBareJid);
+                sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);;
 
                 // Add the XHTML text to the message
                 XHTMLManager.addBody(sendMessage, htmlBody);
@@ -1056,7 +1058,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // proceed to send message if no exceptions.
             // sendMessage.setStanzaId(message.getMessageUID());
-            mMultiUserChat.sendMessage(sendMessage);
+            mMultiUserChat.sendMessage(sendMessage.asBuilder());
 
             // Delivered message for own outgoing message view display
             message.setServerMsgId(sendMessage.getStanzaId());
@@ -2750,7 +2752,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         setLocalUserRole(ChatRoomMemberRole.MODERATOR, true);
                 }
                 else {
-                    // this is the presence for our member initial mRole and affiliation, as
+                    // this is the presence for our own initial mRole and affiliation, as
                     // smack do not fire any initial events lets check it and fire events
                     if (role == MUCRole.moderator
                             || affiliation == MUCAffiliation.owner
