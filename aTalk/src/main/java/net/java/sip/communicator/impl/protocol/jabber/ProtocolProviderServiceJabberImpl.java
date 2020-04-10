@@ -53,7 +53,6 @@ import org.jivesoftware.smack.roster.rosterstore.RosterStore;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.TLSUtils;
-import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.minidns.MiniDnsDane;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
@@ -313,9 +312,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private AbstractXMPPConnection mConnection = null;
 
     /**
-     * The hostAddress of the XMPP server.
+     * The InetSocketAddress of the XMPP server.
      */
-    private HostAddress mHostAddress;
+    private InetSocketAddress mInetSocketAddress;
 
     /**
      * Indicates whether or not the provider is initialized and ready for use.
@@ -542,9 +541,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          * @return The XMPP server hostAddress.
          */
         @Override
-        public HostAddress getServerAddress()
+        public InetSocketAddress getServerAddress()
         {
-            return mHostAddress;
+            return mInetSocketAddress;
         }
     }
 
@@ -946,49 +945,46 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // cmeng - value not defined currently for CUSTOM_XMPP_DOMAIN login
             String customXMPPDomain = mAccountID.getAccountPropertyString(ProtocolProviderFactory.CUSTOM_XMPP_DOMAIN);
-            try {
-                if (customXMPPDomain != null) {
-                    inetAddresses = Arrays.asList(InetAddress.getAllByName(customXMPPDomain));
-                    mHostAddress = new HostAddress(DnsName.from(customXMPPDomain), 5222, inetAddresses);
-                    Timber.i("Connect using custom XMPP domain: %s", mHostAddress);
+//            try {
+            if (customXMPPDomain != null) {
+                mInetSocketAddress = new InetSocketAddress(customXMPPDomain, 5222);
+                Timber.i("Connect using custom XMPP domain: %s", mInetSocketAddress);
 
-                    config.setHostAddress(inetAddresses.get(0));
-                    config.setPort(DEFAULT_PORT);
-                }
-                // connect using overridden server name defined by user
-                else if (isServerOverridden) {
-                    String host = mAccountID.getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS,
-                            serviceName.toString());
-                    int port = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
-                    inetAddresses = Arrays.asList(InetAddress.getAllByName(host));
-                    mHostAddress = new HostAddress(DnsName.from(host), port, inetAddresses);
-                    Timber.i("Connect using server override: %s", mHostAddress);
-
-                    // For host given as ip address, then no DNSSEC authentication support
-                    if (Character.digit(host.charAt(0), 16) != -1) {
-                        config.setHostAddress(inetAddresses.get(0));
-                    }
-                    // setHostAddress will take priority over setHost in smack populateHostAddresses() implementation
-                    config.setHost(host);
-                    config.setPort(port);
-                }
-                // connect using SRV Resource Record for userID service name (host and hostAddress must be null)
-                else {
-                    inetAddresses = Arrays.asList(InetAddress.getAllByName(serviceName.toString()));
-                    mHostAddress = new HostAddress(DnsName.from(serviceName.toString()), DEFAULT_PORT, inetAddresses);
-                    Timber.i("Connect using service SRV Resource Record: %s", mHostAddress);
-
-                    DnsName dnsHost = null;
-                    config.setHost(dnsHost);
-                    config.setHostAddress(null);
-                }
-            } catch (UnknownHostException ex) {
-                String errMsg = ex.getMessage() + "\nYou may need to use 'Override server setting' option if " +
-                        "XMPP service and server hostname is different.";
-                Timber.e("%s", errMsg);
-                StanzaError stanzaError = StanzaError.from(StanzaError.Condition.remote_server_not_found, errMsg).build();
-                throw new XMPPErrorException(null, stanzaError);
+                config.setHostAddress(mInetSocketAddress.getAddress());
+                config.setPort(DEFAULT_PORT);
             }
+            // connect using overridden server name defined by user
+            else if (isServerOverridden) {
+                String host = mAccountID.getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS,
+                        serviceName.toString());
+                int port = mAccountID.getAccountPropertyInt(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
+                mInetSocketAddress = new InetSocketAddress(host, port);
+                Timber.i("Connect using server override: %s", mInetSocketAddress);
+
+                // For host given as ip address, then no DNSSEC authentication support
+                if (Character.digit(host.charAt(0), 16) != -1) {
+                    config.setHostAddress(mInetSocketAddress.getAddress());
+                }
+                // setHostAddress will take priority over setHost in smack populateHostAddresses() implementation
+                config.setHost(host);
+                config.setPort(port);
+            }
+            // connect using SRV Resource Record for userID service name (host and hostAddress must be null)
+            else {
+                mInetSocketAddress = new InetSocketAddress(serviceName.toString(), DEFAULT_PORT);
+                Timber.i("Connect using service SRV Resource Record: %s", mInetSocketAddress);
+
+                DnsName dnsHost = null;
+                config.setHost(dnsHost);
+                config.setHostAddress(null);
+            }
+//            } catch (UnknownHostException ex) {
+//                String errMsg = ex.getMessage() + "\nYou may need to use 'Override server setting' option if " +
+//                        "XMPP service and server hostname is different.";
+//                Timber.e("%s", errMsg);
+//                StanzaError stanzaError = StanzaError.from(StanzaError.Condition.remote_server_not_found, errMsg).build();
+//                throw new XMPPErrorException(null, stanzaError);
+//            }
         }
 
         // if we have OperationSetPersistentPresence to take care of <presence/> sending, then
@@ -1112,7 +1108,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // Init the connection SynchronizedPoints
         xmppConnected = new LoginSynchronizationPoint<>(this, "connection connected");
 
-        Timber.i("Starting XMPP Connection...: %s", mHostAddress);
+        Timber.i("Starting XMPP Connection...: %s", mInetSocketAddress);
         try {
             mConnection.connect();
         } catch (StreamErrorException ex) {
@@ -2320,6 +2316,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             OperationSetConnectionInfo opsetConnectionInfo = new OperationSetConnectionInfoJabberImpl();
             addSupportedOperationSet(OperationSetConnectionInfo.class, opsetConnectionInfo);
+
             isInitialized = true;
         }
     }
@@ -3034,7 +3031,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
         AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
                 aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_TITLE), instruction,
-                aTalkApp.getResString(R.string.service_gui_OK), this);
+                aTalkApp.getResString(R.string.service_gui_ACCEPT), this);
     }
 
     @Override

@@ -35,7 +35,6 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @param src the <tt>AbstractExtensionElement</tt> to be cloned
      * @return a new <tt>AbstractExtensionElement</tt> instance of the run-time type of the specified
      * <tt>src</tt> which has the same attributes, namespace and text
-     * @throws Exception if an error occurs during the cloning of the specified <tt>src</tt>
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressWarnings("unchecked")
@@ -69,7 +68,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * The name space of this packet extension. Should remain <tt>null</tt> if there's no namespace
      * associated with this element.
      */
-    private final String elementName;
+    private final String name;
 
     /**
      * A map of all attributes that this extension is currently using.
@@ -90,11 +89,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Creates an {@link AbstractExtensionElement} instance for the specified <tt>namespace</tt> and <tt>elementName</tt> .
      *
      * @param namespace the XML namespace for this element.
-     * @param elementName the name of the element
+     * @param name the name of the element
      */
-    protected AbstractExtensionElement(String elementName, String namespace)
+    protected AbstractExtensionElement(String name, String namespace)
     {
-        this.elementName = elementName;
+        this.name = name;
         this.namespace = namespace;
     }
 
@@ -106,7 +105,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
     @Override
     public String getElementName()
     {
-        return elementName;
+        return name;
     }
 
     /**
@@ -135,9 +134,10 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return an XML representation of this extension.
      */
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
     {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
 
         // add the rest of the attributes if any
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
@@ -148,7 +148,6 @@ public abstract class AbstractExtensionElement implements ExtensionElement
         List<? extends ExtensionElement> childElements = getChildExtensions();
         String text = getText();
         XmlStringBuilder childBuilder = getChildElementBuilder();
-
 
         if (childElements.isEmpty() && childBuilder.length() == 0) {
             if (StringUtils.isNullOrEmpty(text)) {
@@ -171,11 +170,9 @@ public abstract class AbstractExtensionElement implements ExtensionElement
                 }
             }
         }
-        // text content if any
-        if(!StringUtils.isNullOrEmpty(text))
-            xml.optEscape(text);
+        xml.optEscape(text);
 
-        xml.closeElement(getElementName());
+        xml.closeElement(this);
         return xml;
     }
 

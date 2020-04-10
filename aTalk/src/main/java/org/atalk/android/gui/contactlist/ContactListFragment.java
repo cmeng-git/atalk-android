@@ -19,6 +19,7 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -36,6 +37,7 @@ import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.DomainJid;
+import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
@@ -55,6 +57,11 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * Search options menu items.
      */
     private MenuItem mSearchItem;
+
+    /**
+     * Contact TTS option item
+     */
+    private MenuItem mContactTtsEnable;
 
     /**
      * Contact list data model.
@@ -157,7 +164,8 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
             String filter = ViewUtil.toString(searchView.findViewById(id));
             filterContactList(filter);
             bindSearchListener();
-        } else {
+        }
+        else {
             contactListAdapter.filterData("");
         }
 
@@ -321,7 +329,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      */
     public void showPopupMenuContact(View contactView, MetaContact metaContact)
     {
-        // Inflate chatRoom list popup menu
+        // Inflate contact list popup menu
         PopupMenu popup = new PopupMenu(mActivity, contactView);
         Menu menu = popup.getMenu();
         popup.getMenuInflater().inflate(R.menu.contact_ctx_menu, menu);
@@ -347,6 +355,19 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         if (contact == null) {
             Timber.w("No default contact for: %s", mClickedContact);
             return;
+        }
+
+        // update TTS enable option item title for the contact only if not DomainJid
+        mContactTtsEnable = menu.findItem(R.id.contact_tts_enable);
+        Jid jid = contact.getJid();
+        if ((jid == null) || jid instanceof DomainJid) {
+            mContactTtsEnable.setVisible(false);
+        }
+        else {
+            String tts_option = aTalkApp.getResString(contact.isTtsEnable()
+                    ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+            mContactTtsEnable.setTitle(tts_option);
+            mContactTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
         }
 
         ProtocolProviderService pps = contact.getProtocolProvider();
@@ -390,20 +411,39 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         {
             FragmentTransaction ft;
             ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedContact);
+
             switch (item.getItemId()) {
                 case R.id.close_chat:
                     if (chatPanel != null)
                         onCloseChat(chatPanel);
                     return true;
+
                 case R.id.close_all_chats:
                     onCloseAllChats();
                     return true;
+
                 case R.id.erase_contact_chat_history:
                     EntityListHelper.eraseEntityChatHistory(getContext(), mClickedContact, null, null);
                     return true;
+
                 case R.id.erase_all_contact_chat_history:
                     EntityListHelper.eraseAllContactHistory(getContext());
                     return true;
+
+                case R.id.contact_tts_enable:
+                    if (mClickedContact != null) {
+                        Contact contact = mClickedContact.getDefaultContact();
+                        if (contact.isTtsEnable()) {
+                            contact.setTtsEnable(false);
+                            mContactTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                        }
+                        else {
+                            contact.setTtsEnable(true);
+                            mContactTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                        }
+                    }
+                    return true;
+
                 case R.id.rename_contact:
                     // Show rename contact dialog
                     ft = getParentFragmentManager().beginTransaction();
@@ -411,9 +451,11 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
                     renameFragment.show(ft, "renameDialog");
                     return true;
+
                 case R.id.remove_contact:
                     EntityListHelper.removeEntity(mActivity, mClickedContact, chatPanel);
                     return true;
+
                 case R.id.move_contact:
                     // Show move contact dialog
                     ft = getParentFragmentManager().beginTransaction();
@@ -421,22 +463,27 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     DialogFragment newFragment = MoveToGroupDialog.getInstance(mClickedContact);
                     newFragment.show(ft, "moveDialog");
                     return true;
+
                 case R.id.re_request_auth:
                     if (mClickedContact != null)
                         requestAuthorization(mClickedContact.getDefaultContact());
                     return true;
+
                 case R.id.send_contact_file:
                     // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
                     // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(mActivity,
                     // clickedContact);
                     // attachOptionDialog.show();
                     return true;
+
                 case R.id.remove_group:
                     EntityListHelper.removeMetaContactGroup(mClickedGroup);
                     return true;
+
                 case R.id.contact_info:
                     startContactInfoActivity(mClickedContact);
                     return true;
+
                 case R.id.contact_ctx_menu_exit:
                     return true;
                 default:

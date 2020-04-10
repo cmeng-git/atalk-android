@@ -8,6 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -27,6 +28,20 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ContactJabberImpl extends AbstractContact
 {
+    public static final String OTR_FP = "otr_fingerprints";
+    public static final String OTR_POLICY = "otr_policy";
+    private static final String PGP_KEY_ID = "pgp_keyid";
+
+    private static final String TTS_ENABLE = "tts_Enable";
+    private static final String STT_ENABLE = "stt_Enable";
+
+    private Boolean isTtsEnable = null;
+
+    /**
+     * A reference to the ServerStoredContactListImpl instance that created us.
+     */
+    private final ServerStoredContactListJabberImpl ssclCallback;
+
     /**
      * Contains either the bareJid as retrieved from the Roster Entry, FullJid of ownJid OR
      * the VolatileContact BareJid/FullJid
@@ -42,11 +57,6 @@ public class ContactJabberImpl extends AbstractContact
      * The status of the contact as per the last status update we've received for it.
      */
     private PresenceStatus status;
-
-    /**
-     * A reference to the ServerStoredContactListImpl instance that created us.
-     */
-    private final ServerStoredContactListJabberImpl ssclCallback;
 
     /**
      * Whether or not this contact is being stored by the server.
@@ -89,13 +99,11 @@ public class ContactJabberImpl extends AbstractContact
      */
     private boolean isLocal = false;
 
-    public static final String OTR_FP = "otr_fingerprints";
-    public static final String OTR_POLICY = "otr_policy";
-    private static final String PGP_KEY_ID = "pgp_keyid";
-
-    protected int subscription = 0;
     protected JSONObject keys = new JSONObject();
     protected JSONArray groups = new JSONArray();
+
+    protected int subscription = 0;
+
     private long mLastseen = 0;
     private String photoUri;
     private String mLastPresence = null;
@@ -404,22 +412,6 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Resolve this contact against the given entry
-     *
-     * @param entry the server stored entry
-     */
-    void setResolved(RosterEntry entry)
-    {
-        if (isResolved)
-            return;
-
-        this.isResolved = true;
-        this.isPersistent = true;
-        contactJid = entry.getJid();
-        this.serverDisplayName = entry.getName();
-    }
-
-    /**
      * Returns the persistent data
      *
      * @return the persistent data
@@ -443,12 +435,19 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Not used.
+     * Resolve this contact against the given entry
      *
-     * @param persistentData the persistent data.
+     * @param entry the server stored entry
      */
-    public void setPersistentData(String persistentData)
+    void setResolved(RosterEntry entry)
     {
+        if (isResolved)
+            return;
+
+        this.isResolved = true;
+        this.isPersistent = true;
+        contactJid = entry.getJid();
+        this.serverDisplayName = entry.getName();
     }
 
     /**
@@ -675,6 +674,45 @@ public class ContactJabberImpl extends AbstractContact
         }
     }
 
+    /**
+     * When access on start-up, return ttsEnable may be null.
+     * Use getJid() to ensure unresolved contact (contactJid == null) returns a valid values.
+     *
+     * @return true if contact tts is enabled.
+     */
+    public boolean isTtsEnable()
+    {
+        if (isTtsEnable == null) {
+            String val = ConfigurationUtils.getContactProperty(getJid(), TTS_ENABLE);
+            isTtsEnable = StringUtils.isNullOrEmpty(val) ? false : Boolean.valueOf(val);
+        }
+        return isTtsEnable;
+    }
+
+    /**
+     * Change contact tts enable value in configuration service.
+     * Null value in DB is considered as false
+     *
+     * @param value change of tts enable property.
+     */
+    public void setTtsEnable(boolean value)
+    {
+        if (isTtsEnable() == value)
+            return;
+
+        isTtsEnable = value;
+        if (value) {
+            ConfigurationUtils.updateContactProperty(contactJid, TTS_ENABLE, Boolean.toString(isTtsEnable));
+        }
+        else {
+            ConfigurationUtils.updateContactProperty(contactJid, TTS_ENABLE, null);
+        }
+    }
+
+    /**
+     * Unused method, need to clean up if required
+     * @param option
+     */
     public void setOption(int option)
     {
         this.subscription |= 1 << option;
@@ -697,8 +735,7 @@ public class ContactJabberImpl extends AbstractContact
             try {
                 if (this.keys.has("otr_fingerprints")) {
                     JSONArray newPrints = new JSONArray();
-                    JSONArray oldPrints = this.keys
-                            .getJSONArray("otr_fingerprints");
+                    JSONArray oldPrints = this.keys.getJSONArray("otr_fingerprints");
                     for (int i = 0; i < oldPrints.length(); ++i) {
                         if (!oldPrints.getString(i).equals(fingerprint)) {
                             newPrints.put(oldPrints.getString(i));

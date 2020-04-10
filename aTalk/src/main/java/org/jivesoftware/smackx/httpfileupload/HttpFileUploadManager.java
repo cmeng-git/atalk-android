@@ -69,8 +69,8 @@ import org.jxmpp.jid.DomainBareJid;
  * @author Grigory Fedorov
  * @author Florian Schmaus
  * @author Paul Schaub
- * @see <a href="https://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
- * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+ * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
+ * @see <a href="http://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
  */
 public final class HttpFileUploadManager extends Manager {
 
@@ -464,10 +464,6 @@ public final class HttpFileUploadManager extends Manager {
 
     private void uploadFile(final File file, final Slot slot, UploadProgressListener listener) throws IOException {
         final long fileSize = file.length();
-        // TODO Remove once Smack's minimum Android API level is 19 or higher. See also comment below.
-        if (fileSize >= Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("File size " + fileSize + " must be less than " + Integer.MAX_VALUE);
-        }
 
         // Construct the FileInputStream first to make sure we can actually read the file.
         final FileInputStream fis = new FileInputStream(file);
@@ -483,8 +479,7 @@ public final class HttpFileUploadManager extends Manager {
         urlConnection.setRequestMethod("PUT");
         urlConnection.setUseCaches(false);
         urlConnection.setDoOutput(true);
-        // TODO Change to using fileSize once Smack's minimum Android API level is 19 or higher.
-        urlConnection.setFixedLengthStreamingMode((int) fileSize);
+        urlConnection.setFixedLengthStreamingMode(fileSize);
         urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
         for (Entry<String, String> header : slot.getHeaders().entrySet()) {
             urlConnection.setRequestProperty(header.getKey(), header.getValue());
@@ -524,7 +519,7 @@ public final class HttpFileUploadManager extends Manager {
                 try {
                     inputStream.close();
                 }
-                catch (IllegalStateException | IOException e) {
+                catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing input stream", e);
                 }
                 try {

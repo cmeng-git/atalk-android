@@ -1,6 +1,6 @@
---- /home/cmeng/source/smack/Smack/trunk/smack-extensions/src/main/java/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamManager.java	2018-11-30 05:55:38.000000000 
-+++ /home/cmeng/workspace/android/smack/smack-extensions/src/main/java/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamManager.java	2018-12-17 08:57:39.000000000 
-@@ -297,12 +297,25 @@
+--- /home/cmeng/source/smack/Smack-4.4.0-alpha3-20200404/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamManager.java	2020-03-24 09:16:12.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamManager.java	2020-04-05 09:29:57.000000000 
+@@ -294,12 +294,25 @@
       */
      public void ignoreBytestreamRequestOnce(String sessionID) {
          this.ignoredBytestreamRequests.add(sessionID);

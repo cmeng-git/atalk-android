@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import net.java.sip.communicator.service.filehistory.FileRecord;
+
 import org.atalk.android.gui.chat.ChatMessage;
 
 import java.util.Objects;
@@ -23,9 +25,10 @@ public abstract class AbstractMessage implements IMessage
     private final int mEncryption;
     private final int mMimeType;
     private final boolean mRemoteOnly;
-    private String mMessageUID;
 
+    private int mXferStatus;
     private int mReceiptStatus;
+    private String mMessageUID;
     private String mServerMessageId;
     private String mRemoteMessageId;
 
@@ -43,7 +46,8 @@ public abstract class AbstractMessage implements IMessage
      */
     protected AbstractMessage(String content, int encType, String subject, String messageUID)
     {
-        this(content, encType, subject, messageUID, ChatMessage.MESSAGE_DELIVERY_NONE, null, null);
+        this(content, encType, subject, messageUID, FileRecord.STATUS_UNKNOWN,
+                ChatMessage.MESSAGE_DELIVERY_NONE, null, null);
     }
 
     /**
@@ -52,8 +56,8 @@ public abstract class AbstractMessage implements IMessage
      * @param subject the subject of the message or null for empty.
      * @param messageUID @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */
-    protected AbstractMessage(String content, int encType, String subject, String messageUID, int receiptStatus,
-            String serverMessageId, String remoteMessageId)
+    protected AbstractMessage(String content, int encType, String subject, String messageUID, int xferStatus,
+            int receiptStatus, String serverMessageId, String remoteMessageId)
     {
         mEncType = encType;
         mMimeType = encType & ENCODE_MIME_MASK;
@@ -64,6 +68,7 @@ public abstract class AbstractMessage implements IMessage
         setContent(content);
         mMessageUID = messageUID == null ? createMessageUID() : messageUID;
 
+        mXferStatus = xferStatus;
         mReceiptStatus = receiptStatus;
         mServerMessageId = serverMessageId;
         mRemoteMessageId = remoteMessageId;
@@ -112,6 +117,14 @@ public abstract class AbstractMessage implements IMessage
     public int getEncType()
     {
         return mEncType;
+    }
+
+    /*
+     * @return the file transfer status for HTTP File Download message
+     */
+    public int getXferStatus()
+    {
+        return mXferStatus;
     }
 
     /*

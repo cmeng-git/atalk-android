@@ -63,33 +63,6 @@
             but failed https://community.igniterealtime.org/message/266176#comment-266176
          -->
 
-        <service android:name="org.atalk.service.osgi.OSGiService" />
-        <service
-            android:name="org.atalk.android.gui.account.AccountAuthenticatorService"
-            android:exported="true"
-            android:process=":auth">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
-        <service
-            android:name="org.atalk.android.plugin.audioservice.AudioBgService"
-            android:exported="false" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.files"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
         <activity
             android:name="org.atalk.android.gui.LauncherActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -448,6 +421,41 @@
                 android:name="android.service.chooser.chooser_target_service"
                 android:value=".services.ContactChooserTargetService" />
         </activity>
+
+        <!--Text Speech Features -->
+        <activity
+            android:name="org.atalk.android.plugin.textspeech.TTSActivity"
+            android:label="@string/APPLICATION_NAME" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <service android:name="org.atalk.service.osgi.OSGiService" />
+        <service
+            android:name="org.atalk.android.gui.account.AccountAuthenticatorService"
+            android:exported="true"
+            android:process=":auth">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+        <service
+            android:name="org.atalk.android.plugin.audioservice.AudioBgService"
+            android:exported="false" />
+        <service
+            android:name="org.atalk.android.plugin.textspeech.TTSService"
+            android:exported="false" />
 
         <receiver
             android:name="org.atalk.service.EventReceiver"

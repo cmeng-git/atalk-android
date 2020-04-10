@@ -56,8 +56,8 @@ public class SettingsActivity extends OSGiActivity
     private static final String PC_KEY_CALL = aTalkApp.getResString(R.string.pref_cat_settings_call);
 
     // Advance video/audio settings
-    private static final String PC_KEY_VIDEO = aTalkApp.getResString(R.string.pref_cat_settings_video);
-    private static final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
+    // private static final String PC_KEY_VIDEO = aTalkApp.getResString(R.string.pref_cat_settings_video);
+    // private static final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
     private static final String PC_KEY_ADVANCED = aTalkApp.getResString(R.string.pref_cat_settings_advanced);
 
 
@@ -183,7 +183,6 @@ public class SettingsActivity extends OSGiActivity
             // init display locale and theme (not implemented)
             initLocale();
             initTheme();
-
             initWebPagePreference();
 
             // Messages section

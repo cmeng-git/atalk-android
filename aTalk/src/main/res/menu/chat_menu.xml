@@ -17,6 +17,10 @@
         android:showAsAction="ifRoom"
         android:title="@string/service_gui_GEO_SEND" />
     <item
+        android:id="@+id/chat_tts_enable"
+        android:title="@string/service_gui_TTS_ENABLE">
+    </item>
+    <item
         android:id="@+id/call_contact_audio"
         android:icon="@drawable/chatcall_dark"
         android:title="@string/service_gui_CALL" />

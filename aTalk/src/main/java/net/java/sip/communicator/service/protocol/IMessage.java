@@ -77,6 +77,15 @@ public interface IMessage
     int getEncType();
 
     /**
+     * Returns the Http File Download status
+     *
+     * @return the file xfer status
+     */
+    int getXferStatus();
+
+    // void setXferStatus(int status);
+
+    /**
      * Returns the message delivery receipt status
      *
      * @return the receipt status

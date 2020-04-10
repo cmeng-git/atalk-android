@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.2'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -55,7 +55,7 @@ configurations.all {
     it.resolutionStrategy {
         eachDependency { details ->
             // multiple actions can be specified
-            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-core', 'smack-extensions', 'smack-tcp'].contains(details.requested.name)) {
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-core', 'smack-extensions'].contains(details.requested.name)) {
                 //changing the name reference to smack libraries to its individual jar
                 details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
                 // reference to smack libraries as a single merged jarjar
@@ -71,8 +71,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1122
-        versionName "2.2.2"
+        versionCode 1123
+        versionName "2.2.3"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion

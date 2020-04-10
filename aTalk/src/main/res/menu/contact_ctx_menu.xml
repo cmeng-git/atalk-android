@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    <item
+        android:id="@+id/contact_tts_enable"
+        android:title="@string/service_gui_TTS_ENABLE">
+    </item>
     <item
         android:id="@+id/close_chat"
         android:title="@string/service_gui_CLOSE_CHAT">
@@ -18,6 +21,10 @@
         android:title="@string/service_gui_HISTORY_ERASE_ALL">
     </item>
     <item
+        android:id="@+id/re_request_auth"
+        android:title="@string/service_gui_RE_REQUEST_AUTHORIZATION">
+    </item>
+    <item
         android:id="@+id/rename_contact"
         android:title="@string/service_gui_RENAME_CONTACT">
     </item>
@@ -30,18 +37,13 @@
         android:title="@string/service_gui_MOVE_TO_GROUP">
     </item>
     <item
-        android:id="@+id/re_request_auth"
-        android:title="@string/service_gui_RE_REQUEST_AUTHORIZATION">
-    </item>
-    <item
         android:id="@+id/send_contact_file"
         android:title="@string/service_gui_FILE_SEND_TO"
         android:visible="false">
     </item>
     <item
         android:id="@+id/contact_info"
-        android:title="@string/service_gui_CONTACT_INFO"
-        android:visible="true">
+        android:title="@string/service_gui_CONTACT_INFO">
     </item>
     <item
         android:id="@+id/contact_ctx_menu_exit"

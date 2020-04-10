@@ -12,6 +12,8 @@ import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
+import android.os.Bundle;
+import android.speech.*;
 import android.text.*;
 import android.view.*;
 import android.view.animation.Animation;
@@ -37,8 +39,7 @@ import org.atalk.persistance.FilePathHelper;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.chatstates.ChatState;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
@@ -137,6 +138,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     private ImageView mTrash;
     private SoundMeter mSoundMeter;
 
+    private AnimationDrawable mTtsAnimate;
     private AnimationDrawable mTrashAnimate;
     private Animation animBlink, animZoomOut, animSlideUp;
 
@@ -201,7 +203,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             sendBtn.setOnClickListener(this);
 
             // Gets the send audio button and hooks on click action if permission allowed
-            audioBtn = parent.findViewById(R.id.audioRecordButton);
+            audioBtn = parent.findViewById(R.id.audioMicButton);
             if (isAudioAllowed) {
                 audioBtn.setOnClickListener(this);
                 audioBtn.setOnLongClickListener(this);
@@ -505,8 +507,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     updateSendModeState();
                 break;
 
-            case R.id.audioRecordButton:
-                // No action
+            case R.id.audioMicButton:
+                if (chatFragment.isChatTtsEnable()) {
+                    speechToText();
+                }
                 break;
         }
     }
@@ -518,7 +522,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     @Override
     public boolean onLongClick(View v)
     {
-        if (v.getId() == R.id.audioRecordButton) {
+        if (v.getId() == R.id.audioMicButton) {
             Timber.d("Current Chat Transport for audio: %s", mChatTransport.toString());
             Timber.d("Audio recording started!!!");
             isRecording = true;
@@ -536,8 +540,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             filter.addAction(AudioBgService.ACTION_SMI);
             LocalBroadcastManager.getInstance(parent).registerReceiver(mReceiver, filter);
             startAudioService(AudioBgService.ACTION_RECORDING);
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -670,6 +675,108 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     };
 
     /**
+     * Built-in speech to text recognition without soft keyboard popup.
+     * To use softkeybord mic, click on text entry and then click on mic.
+     */
+    private void speechToText()
+    {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        SpeechRecognizer recognizer = SpeechRecognizer.createSpeechRecognizer(parent);
+
+        RecognitionListener listener = new RecognitionListener()
+        {
+            @Override
+            public void onResults(Bundle results)
+            {
+                ArrayList<String> voiceResults = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                if (voiceResults == null) {
+                    Timber.w("No voice results");
+                    updateSendModeState();
+                }
+                else {
+                    // Contains multiple text strings for selection
+                    // StringBuffer spkText = new StringBuffer();
+                    // for (String match : voiceResults) {
+                    //    spkText.append(match).append("\n");
+                    // }
+                    msgEdit.setText(voiceResults.get(0));
+                }
+            }
+
+            @Override
+            public void onReadyForSpeech(Bundle params)
+            {
+                Timber.d("Ready for speech");
+                audioBtn.setBackgroundResource(R.drawable.ic_tts_mic_play);
+                mTtsAnimate = (AnimationDrawable) audioBtn.getBackground();
+                mTtsAnimate.start();
+            }
+
+            /**
+             * ERROR_NETWORK_TIMEOUT = 1;
+             * ERROR_NETWORK = 2;
+             * ERROR_AUDIO = 3;
+             * ERROR_SERVER = 4;
+             * ERROR_CLIENT = 5;
+             * ERROR_SPEECH_TIMEOUT = 6;
+             * ERROR_NO_MATCH = 7;
+             * ERROR_RECOGNIZER_BUSY = 8;
+             * ERROR_INSUFFICIENT_PERMISSIONS = 9;
+             *
+             * @param error code is defined in
+             * @see SpeechRecognizer()
+             */
+            @Override
+            public void onError(int error)
+            {
+                Timber.e("Error listening for speech: %s ", error);
+                updateSendModeState();
+            }
+
+            @Override
+            public void onBeginningOfSpeech()
+            {
+                Timber.d("Speech starting");
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer)
+            {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onEndOfSpeech()
+            {
+                mTtsAnimate.stop();
+                mTtsAnimate.selectDrawable(0);
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params)
+            {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults)
+            {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB)
+            {
+                // TODO Auto-generated method stub
+            }
+        };
+
+        recognizer.setRecognitionListener(listener);
+        recognizer.startListening(intent);
+    }
+
+    /**
      * Cancels last message correction mode.
      */
     private void cancelCorrection()
@@ -735,8 +842,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public void updateSendModeState()
     {
-        boolean hasAttachments = (mediaPreview.getAdapter() != null) &&
-                ((MediaPreviewAdapter) mediaPreview.getAdapter()).hasAttachments();
+        boolean hasAttachments = (mediaPreview.getAdapter() != null)
+                && ((MediaPreviewAdapter) mediaPreview.getAdapter()).hasAttachments();
         mediaPreview.setVisibility(View.GONE);
         imagePreview.setVisibility(View.GONE);
         imagePreview.setImageDrawable(null);
@@ -762,6 +869,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 callBtn.setVisibility(View.VISIBLE);
             }
             else if (isAudioAllowed) {
+                audioBtn.setBackgroundResource(R.drawable.ic_voice_mic);
                 audioBtn.setVisibility(View.VISIBLE);
             }
             else {

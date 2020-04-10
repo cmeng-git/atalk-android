@@ -135,9 +135,9 @@ public class StateExtensionElement extends AbstractExtensionElement
      * @return XML string representation
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
     {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
 
         // add the rest of the attributes if any
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {

@@ -79,12 +79,16 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      */
     private static final String BOOKMARK_PROPERTY_NAME = "bookmark";
 
+    private static final String TTS_ENABLE = "tts_Enable";
+
     /**
      * The participant nickName.
      */
     private String mNickName = null;
 
     private String bookmarkName = null;
+
+    private Boolean isTtsEnable = null;
 
     /**
      * As isAutoJoin can be called from GUI many times we store its value once retrieved to
@@ -486,6 +490,40 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
         }
         else {
             ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME, null);
+        }
+    }
+
+    /**
+     * When access on start-up, return ttsEnable may be null.
+     *
+     * @return true if chatroom tts is enabled.
+     */
+    public boolean isTtsEnable()
+    {
+        if (isTtsEnable == null) {
+            String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, TTS_ENABLE);
+            isTtsEnable = StringUtils.isNullOrEmpty(val) ? false : Boolean.valueOf(val);
+        }
+        return isTtsEnable;
+    }
+
+    /**
+     * Change chatroom tts enable value in configuration service.
+     * Null value in DB is considered as false
+     *
+     * @param value change of tts enable property.
+     */
+    public void setTtsEnable(boolean value)
+    {
+        if (isTtsEnable() == value)
+            return;
+
+        isTtsEnable = value;
+        if (value) {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, TTS_ENABLE, Boolean.toString(isTtsEnable));
+        }
+        else {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, TTS_ENABLE, null);
         }
     }
 

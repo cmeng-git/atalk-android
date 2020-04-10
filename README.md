@@ -36,6 +36,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * Support unread message badges in contact and chatRoom list views
 * User selectable option for heads-up notification and quite hours
 * Share of social media links are tagged with thumbnail and title
+* Support Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
 * XEP-0012: Last Activity time associated with contacts
 * XEP-0048: Bookmarks for conference room and autoJoin on login
 * XEP-0070: Verifying HTTP Requests via XMPP entity for user authentication without password entry

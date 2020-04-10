@@ -149,6 +149,21 @@ public interface Contact
     String getPersistentData();
 
     /**
+     * When access on start-up, return ttsEnable may be null.
+     *
+     * @return true if Contact tts is enabled.
+     */
+    boolean isTtsEnable();
+
+    /**
+     * Change Contact tts enable value in configuration service.
+     * Null value in DB is considered as false
+     *
+     * @param value change of tts enable property.
+     */
+    void setTtsEnable(boolean value);
+
+    /**
      * Return the current status message of this contact.
      *
      * @return the current status message

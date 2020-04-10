@@ -444,7 +444,6 @@
     <string name="service_gui_LAST_SEEN">Today: %s</string>
     <string name="service_gui_LEAVE">Leave</string>
     <string name="service_gui_LEAVE_ROOM">Leave chatRoom</string>
-    <string name="service_gui_LOADING">Loading</string>
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Locally on hold</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Login User Credentials</string>
     <string name="service_gui_LOGIN_FAILED">Login failed</string>
@@ -1320,6 +1319,16 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_label">Theme</string>
+
+    <!-- TTS Language -->
+    <string name="service_gui_TTS_DELAY">Message Text to Speech delay (ms)</string>
+    <string name="service_gui_TTS_SETTINGS">General TTS settings&#8230;</string>
+    <string name="service_gui_TTS_DISABLE">Disable Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_ENABLE">Enable Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_SYNTHESIS">Enter text to speak or synthesized and save to file:</string>
+    <string name="service_gui_TTS_VOICE">Default TTS voice:</string>
+
+    <string name="service_gui_LOADING">Loading, please wait…</string>
 
     <!-- Remove special characters from phone number -->
     <string name="service_gui_settings_NORMALIZE_NUMBER">Special symbols in phone numbers</string>

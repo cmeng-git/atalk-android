@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
+        android:id="@+id/chatroom_tts_enable"
+        android:title="@string/service_gui_TTS_ENABLE">
+    </item>
+    <item
         android:id="@+id/close_chatroom"
         android:title="@string/service_gui_CLOSE_CHAT">
     </item>

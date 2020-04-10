@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.2.3 (04/10/2020)" versioncode="1123">
+        <change>Implement Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)</change>
+        <change>Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection</change>
+        <change>Do not retry on entry to chat session for Http Download files that have previously failed (ANR)</change>
+        <change>Improve isHttpFileDnLink checking mechanism to minimize incorrect classification</change>
+        <change>Fix ChatRoom Configuration UI crashes on screen rotation</change>
+        <change>Port aTalk source to work with samck-4.4.0-alpha3 (20200404) release</change>
+        <change>aTalk minimum android OS support is API-21 (android 5.0 Lollipop)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.2.2 (03/30/2020)" versioncode="1122">
         <change>Enhance create/join chat room UI: refresh field contents and allow user password entry</change>
         <change>Allow saving and retrieving of the chat room protected password for later room auto-join or rejoin</change>

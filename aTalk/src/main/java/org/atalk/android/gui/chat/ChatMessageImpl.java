@@ -71,6 +71,11 @@ public class ChatMessageImpl implements ChatMessage
     private String message;
 
     /**
+     * The HTTP file download file transfer status
+     */
+    private int mXferStatus;
+
+    /**
      * The encryption type of the message content.
      */
     private int receiptStatus;
@@ -128,23 +133,21 @@ public class ChatMessageImpl implements ChatMessage
             String content, String messageUID)
     {
         this(sender, senderName, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null,
-                ChatMessage.MESSAGE_DELIVERY_NONE, "", "", null, null, null);
+                FileRecord.STATUS_UNKNOWN, ChatMessage.MESSAGE_DELIVERY_NONE, "", "", null, null, null);
     }
 
-    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg,
-            String correctedMessageUID)
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg, String correctedMessageUID)
     {
         this(sender, senderName, date, messageType, msg.getMimeType(), msg.getContent(),
-                msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUID,
-                msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(),
-                null, null, null);
+                msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUID, msg.getXferStatus(),
+                msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(), null, null, null);
     }
 
     public ChatMessageImpl(String sender, Date date, int messageType, int mimeType, String content,
             String messageUID, OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
         this(sender, sender, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null,
-                ChatMessage.MESSAGE_DELIVERY_NONE, null, null, opSet, request, fileRecord);
+                FileRecord.STATUS_UNKNOWN, ChatMessage.MESSAGE_DELIVERY_NONE, null, null, opSet, request, fileRecord);
     }
 
     /**
@@ -159,6 +162,7 @@ public class ChatMessageImpl implements ChatMessage
      * @param encryptionType the message original encryption type
      * @param messageUID The ID of the message.
      * @param correctedMessageUID The ID of the message being replaced.
+     * @param xferStatus The file transfer status.
      * @param receiptStatus The message delivery receipt status.
      * @param serverMsgId The sent message stanza Id.
      * @param remoteMsgId The received message stanza Id.
@@ -168,7 +172,7 @@ public class ChatMessageImpl implements ChatMessage
      */
     public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType,
             String content, int encryptionType, String messageUID, String correctedMessageUID,
-            int receiptStatus, String serverMsgId, String remoteMsgId,
+            int xferStatus, int receiptStatus, String serverMsgId, String remoteMsgId,
             OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
         this.mSender = sender;
@@ -181,6 +185,7 @@ public class ChatMessageImpl implements ChatMessage
         this.messageUID = messageUID;
         this.correctedMessageUID = correctedMessageUID;
 
+        this.mXferStatus = xferStatus;
         this.receiptStatus = receiptStatus;
         this.mServerMsgId = serverMsgId;
         this.mRemoteMsgId = remoteMsgId;
@@ -306,6 +311,12 @@ public class ChatMessageImpl implements ChatMessage
     public int getEncryptionType()
     {
         return encryptionType;
+    }
+
+    @Override
+    public int getXferStatus()
+    {
+        return mXferStatus;
     }
 
     /**

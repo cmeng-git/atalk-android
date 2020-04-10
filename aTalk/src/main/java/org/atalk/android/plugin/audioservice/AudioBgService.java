@@ -103,36 +103,10 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     //private double mAlpha =  0.9 Coefficient of IIR smoothing filter for RMS.
     static final private double EMA_FILTER = 0.4;
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent)
-    {
-        return null;
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        stopTimer();
-        stopRecording();
-
-        if (mHandlerPlayback != null) {
-            mHandlerPlayback.removeCallbacks(playbackStatus);
-            mHandlerPlayback = null;
-        }
-
-        for (Uri uri : uriPlayers.keySet()) {
-            fileUri = uri;
-            playerRelease(uri);
-        }
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         super.onStartCommand(intent, flags, startId);
-
         switch (intent.getAction()) {
             case ACTION_PLAYER_INIT:
                 fileUri = intent.getData();
@@ -192,6 +166,31 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
                 break;
         }
         return START_NOT_STICKY;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        stopTimer();
+        stopRecording();
+
+        if (mHandlerPlayback != null) {
+            mHandlerPlayback.removeCallbacks(playbackStatus);
+            mHandlerPlayback = null;
+        }
+
+        for (Uri uri : uriPlayers.keySet()) {
+            fileUri = uri;
+            playerRelease(uri);
+        }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return null;
     }
 
     /* =============================================================

@@ -1,6 +1,6 @@
---- /home/cmeng/source/smack/Smack/trunk/smack-extensions/src/main/java/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamSession.java	2018-06-14 16:00:37.000000000 
-+++ /home/cmeng/workspace/android/smack/smack-extensions/src/main/java/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamSession.java	2018-12-17 08:57:39.000000000 
-@@ -213,24 +213,27 @@
+--- /home/cmeng/source/smack/Smack-4.4.0-alpha3-20200404/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamSession.java	2020-03-24 09:16:12.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smackx/bytestreams/ibb/InBandBytestreamSession.java	2020-04-06 09:29:14.000000000 
+@@ -214,24 +214,27 @@
              }
          }
  

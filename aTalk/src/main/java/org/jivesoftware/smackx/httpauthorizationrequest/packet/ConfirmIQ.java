@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.httpauthorizationrequest.packet;
 
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -30,7 +29,6 @@ import org.jxmpp.jid.Jid;
  */
 public class ConfirmIQ extends IQ
 {
-
     public static final String ELEMENT = ConfirmExtension.ELEMENT;
     public static final String NAMESPACE = ConfirmExtension.NAMESPACE;
 
@@ -60,16 +58,6 @@ public class ConfirmIQ extends IQ
         return confirmExtension;
     }
 
-    public void initializeAsError(StanzaError stanzaError)
-    {
-        this.stanzaError = stanzaError;
-
-        Jid from = this.getFrom();
-        setFrom(this.getTo());
-        setTo(from);
-        setType(Type.error);
-    }
-
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
@@ -86,25 +74,26 @@ public class ConfirmIQ extends IQ
         return xml;
     }
 
-    /**
-     * Append both iqChildElement and XMPPError if this stanza has one set.
-     * Override to support XEP-0070 cancel reply
-     *
-     * @param xml the XmlStringBuilder to append the error to.
-     */
-    @Override
-    protected void appendErrorIfExists(XmlStringBuilder xml)
-    {
-        IQChildElementXmlStringBuilder iqChildElement
-                = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(confirmExtension));
-
-        if (iqChildElement != null) {
-            xml.append(iqChildElement);
-            xml.closeEmptyElement();
-        }
-
-        if (stanzaError != null) {
-            xml.append(stanzaError.toXML());
-        }
-    }
+    // cmeng 20200405: final class in 4.4.0-alpha3 20200404: iqChildElement is no longer supported
+//    /**
+//     * Append both iqChildElement and XMPPError if this stanza has one set.
+//     * Override to support XEP-0070 cancel reply
+//     *
+//     * @param xml the XmlStringBuilder to append the error to.
+//     */
+//    @Override
+//    protected void appendErrorIfExists(XmlStringBuilder xml)
+//    {
+//        IQChildElementXmlStringBuilder iqChildElement
+//                = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(confirmExtension));
+//
+//        if (iqChildElement != null) {
+//            xml.append(iqChildElement);
+//            xml.closeEmptyElement();
+//        }
+//
+//        if (stanzaError != null) {
+//            xml.append(stanzaError.toXML());
+//        }
+//    }
 }

@@ -44,6 +44,7 @@ import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
+import org.atalk.android.plugin.textspeech.TTSActivity;
 import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
@@ -64,8 +65,7 @@ import androidx.fragment.app.Fragment;
  */
 
 @SuppressLint("Registered")
-public class MainMenuActivity extends ExitMenuActivity
-        implements ServiceListener, ContactPresenceStatusListener
+public class MainMenuActivity extends ExitMenuActivity implements ServiceListener, ContactPresenceStatusListener
 {
     private MenuItem mShowHideOffline;
     private MenuItem mOnOffLine;
@@ -287,6 +287,10 @@ public class MainMenuActivity extends ExitMenuActivity
             case R.id.account_settings:
                 startActivity(AccountsListActivity.class);
                 break;
+            case R.id.tts_settings:
+                Intent ttsIntent = new Intent(this, TTSActivity.class);
+                startActivity(ttsIntent);
+                break;
             case R.id.show_hide_offline:
                 boolean isShowOffline = ConfigurationUtils.isShowOffline();
                 MetaContactListAdapter.presenceFilter.setShowOffline(!isShowOffline);
@@ -320,6 +324,8 @@ public class MainMenuActivity extends ExitMenuActivity
         }
         return true;
     }
+
+    //========================================================
 
     /**
      * The <tt>VideoBridgeProviderMenuItem</tt> for each protocol provider.

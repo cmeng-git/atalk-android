@@ -7,7 +7,7 @@ buildscript {
 
     dependencies {
         // Do not change to 3.5.0 => AbstractMethodException in Note-3 (see gradle.properties)
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -24,7 +24,7 @@ project.ext {
     preDexLibs = !project.hasProperty('disablePreDex')
     testCoverage = project.hasProperty('testCoverage')
 
-    minSdkVersion = 19
+    minSdkVersion = 21
     // SDK-29 has SSL certificate webView problem
     compileSdkVersion = 28
     buildToolsVersion = '29.0.2'

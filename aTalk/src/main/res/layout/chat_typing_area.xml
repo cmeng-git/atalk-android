@@ -74,7 +74,7 @@
         android:id="@+id/recordView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_toStartOf="@+id/audioRecordButton"
+        android:layout_toStartOf="@+id/audioMicButton"
         android:background="@drawable/white_rounded"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -159,7 +159,7 @@
         android:src="@drawable/send_call_dark"/>
 
     <ImageButton
-        android:id="@+id/audioRecordButton"
+        android:id="@+id/audioMicButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/chatWriteText"
@@ -167,8 +167,7 @@
         android:layout_marginStart="5dp"
         android:background="@null"
         android:minHeight="40dp"
-        android:minWidth="40dp"
-        android:src="@drawable/send_audio_dark"/>
+        android:minWidth="40dp" />
 
     <ImageView
         android:id="@+id/cancelCorrectionBtn"
