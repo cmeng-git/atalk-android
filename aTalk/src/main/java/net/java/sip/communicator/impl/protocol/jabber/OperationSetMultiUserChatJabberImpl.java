@@ -778,7 +778,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     {
         Date timeStamp;
         DelayInformation delayInfo
-                = msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+                = (DelayInformation) msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
         if (delayInfo != null) {
             timeStamp = delayInfo.getStamp();
         }

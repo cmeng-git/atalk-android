@@ -89,7 +89,7 @@ public final class HTTPAuthorizationRequestManager extends Manager
             final Jid from = message.getFrom();
             DomainBareJid bareFrom = from.asDomainBareJid();
 
-            Message.Body bodyExt = message.getExtension(Message.Body.ELEMENT, Message.Body.NAMESPACE);
+            Message.Body bodyExt = (Message.Body)message.getExtension(Message.Body.ELEMENT, Message.Body.NAMESPACE);
             if (bodyExt != null)
                 instruction = bodyExt.getMessage();
 

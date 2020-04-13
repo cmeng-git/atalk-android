@@ -537,7 +537,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                 @Override
                 public void processStanza(Stanza packet) {
                     // get data packet extension
-                    DataPacketExtension data = packet.getExtension(
+                    DataPacketExtension data = (DataPacketExtension) packet.getExtension(
                                     DataPacketExtension.ELEMENT,
                                     DataPacketExtension.NAMESPACE);
 
@@ -592,7 +592,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                 data = ((Data) packet).getDataPacketExtension();
             } else {
                 // stanza contains data packet extension
-                data = packet.getExtension(
+                data = (DataPacketExtension) packet.getExtension(
                         DataPacketExtension.ELEMENT,
                         DataPacketExtension.NAMESPACE);
                 if (data == null) {

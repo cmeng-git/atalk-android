@@ -294,7 +294,7 @@ public class CallPeerJabberImpl
 
         if (responseIQ != null) {
             if (reasonOtherExtension != null) {
-                JingleReason reason = responseIQ.getExtension(JingleReason.ELEMENT, JingleReason.NAMESPACE);
+                JingleReason reason = (JingleReason) responseIQ.getExtension(JingleReason.ELEMENT, JingleReason.NAMESPACE);
 
                 if (reason != null) {
                     reason.setOtherExtension(reasonOtherExtension);

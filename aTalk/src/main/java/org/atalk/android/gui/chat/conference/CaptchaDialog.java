@@ -134,7 +134,7 @@ public class CaptchaDialog extends Dialog
                 (int) (mCaptcha.getHeight() * metrics.scaledDensity), false);
         mImageView.setImageBitmap(captcha);
 
-        Body bodyExt = mMessage.getExtension(Body.ELEMENT, Body.NAMESPACE);
+        Body bodyExt = (Body) mMessage.getExtension(Body.ELEMENT, Body.NAMESPACE);
         if (bodyExt != null)
             mReasonText = bodyExt.getMessage();
         else
@@ -277,7 +277,7 @@ public class CaptchaDialog extends Dialog
     {
         try {
             // do not proceed if dataForm is null
-            Captcha captcha = mMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE);
+            Captcha captcha = (Captcha) mMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE);
             DataForm dataForm = captcha.getDataForm();
             if (dataForm == null) {
                 callBack.onResult(failed);
@@ -285,7 +285,7 @@ public class CaptchaDialog extends Dialog
             }
 
             Bitmap bmCaptcha = null;
-            BoBExt bob = mMessage.getExtension(BoBExt.ELEMENT, BoBExt.NAMESPACE);
+            BoBExt bob = (BoBExt) mMessage.getExtension(BoBExt.ELEMENT, BoBExt.NAMESPACE);
             if (bob != null) {
                 byte[] bytData = bob.getBoBData().getContent();
                 InputStream stream = new ByteArrayInputStream(bytData);

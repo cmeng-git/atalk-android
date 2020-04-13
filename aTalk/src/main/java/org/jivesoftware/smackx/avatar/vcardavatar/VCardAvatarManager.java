@@ -270,7 +270,7 @@ public class VCardAvatarManager extends AvatarManager
         String currentAvatarHash = getAvatarHashByJid(jidFrom.asBareJid());
 
         // Get the stanza extension which contains the photo tag.
-        VCardTempXUpdate vCardXExtension = stanza.getExtension(ELEMENT, NAMESPACE);
+        VCardTempXUpdate vCardXExtension = (VCardTempXUpdate) stanza.getExtension(ELEMENT, NAMESPACE);
         if (vCardXExtension != null) {
             /*
              * Retrieved avatarHash info may contains [null | "" | "{avatarHash}"

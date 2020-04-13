@@ -101,7 +101,7 @@ public class ConfirmExtension implements ExtensionElement
      * @return Confirm extension
      */
     public static ConfirmExtension from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return (ConfirmExtension) message.getExtension(ELEMENT, NAMESPACE);
     }
 
     /**

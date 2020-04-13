@@ -702,7 +702,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
          */
         try {
             TransferExtensionElement transfer
-                    = jingle.getExtension(TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
+                    = (TransferExtensionElement) jingle.getExtension(TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
 
             if (transfer != null) {
                 String sid = transfer.getSid();
@@ -731,7 +731,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 throw (ThreadDeath) t;
         }
 
-        CoinExtensionElement coin = jingle.getExtension(CoinExtensionElement.ELEMENT, CoinExtensionElement.NAMESPACE);
+        CoinExtensionElement coin = (CoinExtensionElement) jingle.getExtension(CoinExtensionElement.ELEMENT, CoinExtensionElement.NAMESPACE);
 
         if (coin != null) {
             boolean b = Boolean.parseBoolean((String) coin.getAttribute(CoinExtensionElement.ISFOCUS_ATTR_NAME));

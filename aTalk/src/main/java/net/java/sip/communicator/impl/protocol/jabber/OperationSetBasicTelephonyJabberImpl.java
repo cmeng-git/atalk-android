@@ -777,9 +777,9 @@ public class OperationSetBasicTelephonyJabberImpl
             }
 
             TransferExtensionElement transfer
-                    = jingle.getExtension(TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
+                    = (TransferExtensionElement) jingle.getExtension(TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
             CallIdExtensionElement callidExt
-                    = jingle.getExtension(CallIdExtensionElement.ELEMENT, CallIdExtensionElement.NAMESPACE);
+                    = (CallIdExtensionElement) jingle.getExtension(CallIdExtensionElement.ELEMENT, CallIdExtensionElement.NAMESPACE);
             CallJabberImpl call = null;
 
             if (transfer != null) {

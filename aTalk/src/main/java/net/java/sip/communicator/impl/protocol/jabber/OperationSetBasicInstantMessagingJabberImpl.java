@@ -945,7 +945,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     private Date getTimeStamp(Message msg)
     {
         Date timeStamp;
-        DelayInformation delayInfo = msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+        DelayInformation delayInfo = (DelayInformation) msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
         if (delayInfo != null) {
             timeStamp = delayInfo.getStamp();
         }

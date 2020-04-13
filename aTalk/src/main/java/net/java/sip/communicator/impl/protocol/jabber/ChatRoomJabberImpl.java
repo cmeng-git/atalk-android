@@ -2009,7 +2009,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 return;
 
             Date timeStamp;
-            DelayInformation delayInfo = message.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+            DelayInformation delayInfo = (DelayInformation) message.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
             if (delayInfo != null) {
                 timeStamp = delayInfo.getStamp();
 
@@ -2043,7 +2043,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // for delay message only
             Jid jabberID = message.getFrom();
-            MultipleAddresses mAddress = message.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
+            MultipleAddresses mAddress = (MultipleAddresses) message.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
             if (mAddress != null) {
                 List<MultipleAddresses.Address> addresses = mAddress.getAddressesOfType(MultipleAddresses.Type.ofrom);
                 jabberID = addresses.get(0).getJid().asBareJid();
@@ -2730,7 +2730,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
         private void processOwnPresence(Presence presence)
         {
-            MUCUser mucUser = presence.getExtension(MUCUser.ELEMENT, MUCUser.NAMESPACE);
+            MUCUser mucUser = (MUCUser) presence.getExtension(MUCUser.ELEMENT, MUCUser.NAMESPACE);
             if (mucUser != null) {
                 MUCAffiliation affiliation = mucUser.getItem().getAffiliation();
                 MUCRole role = mucUser.getItem().getRole();
@@ -2827,22 +2827,22 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (member == null) {
                 return;
             }
-            Nick nickExtension = presence.getExtension(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+            Nick nickExtension = (Nick) presence.getExtension(Nick.ELEMENT_NAME, Nick.NAMESPACE);
             if (nickExtension != null) {
                 member.setDisplayName(nickExtension.getName());
             }
 
-            Email emailExtension = presence.getExtension(Email.ELEMENT_NAME, Email.NAMESPACE);
+            Email emailExtension = (Email) presence.getExtension(Email.ELEMENT_NAME, Email.NAMESPACE);
             if (emailExtension != null) {
                 member.setEmail(emailExtension.getAddress());
             }
 
-            AvatarUrl avatarUrl = presence.getExtension(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE);
+            AvatarUrl avatarUrl = (AvatarUrl) presence.getExtension(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE);
             if (avatarUrl != null) {
                 member.setAvatarUrl(avatarUrl.getAvatarUrl());
             }
 
-            StatsId statsId = presence.getExtension(StatsId.ELEMENT_NAME, StatsId.NAMESPACE);
+            StatsId statsId = (StatsId) presence.getExtension(StatsId.ELEMENT_NAME, StatsId.NAMESPACE);
             if (statsId != null) {
                 member.setStatisticsID(statsId.getStatsId());
             }
