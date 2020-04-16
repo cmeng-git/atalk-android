@@ -341,7 +341,7 @@ public class OperationSetPersistentPresenceJabberImpl
         }
     }
 
-    public Contact findContactByID(Jid contactJid)
+    public Contact findContactByJid(Jid contactJid)
     {
         return ssContactList.findContactById(contactJid);
     }
@@ -786,6 +786,7 @@ public class OperationSetPersistentPresenceJabberImpl
             if (updateAllStatus) {
                 PresenceStatus offlineStatus = mPPS.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE);
 
+                // cmeng: The passing jid is bareJid - not used when contact is offline, only contact is used.
                 if (newStatus.equals(offlineStatus)) {
                     // send event notifications saying that all our buddies are offline. The
                     // protocol does not implement top level buddies nor subgroups for top level
@@ -797,14 +798,16 @@ public class OperationSetPersistentPresenceJabberImpl
 
                         while (contactsIter.hasNext()) {
                             ContactJabberImpl contact = (ContactJabberImpl) contactsIter.next();
-                            updateContactStatus(contact, offlineStatus);
+                            Jid jid = contact.getJid();
+                            updateContactStatus(contact, jid, offlineStatus);
                         }
                     }
                     // do the same for all contacts in the root group
                     Iterator<Contact> contactsIter = getServerStoredContactListRoot().contacts();
                     while (contactsIter.hasNext()) {
                         ContactJabberImpl contact = (ContactJabberImpl) contactsIter.next();
-                        updateContactStatus(contact, offlineStatus);
+                        Jid jid = contact.getJid();
+                        updateContactStatus(contact, jid, offlineStatus);
                     }
                 }
             }
@@ -1103,9 +1106,10 @@ public class OperationSetPersistentPresenceJabberImpl
      * Updates contact status and its resources, fires PresenceStatusChange events.
      *
      * @param contact the contact which presence to update if needed.
+     * @param jid the contact FullJid.
      * @param newStatus the new status.
      */
-    private void updateContactStatus(ContactJabberImpl contact, PresenceStatus newStatus)
+    private void updateContactStatus(ContactJabberImpl contact, Jid jid, PresenceStatus newStatus)
     {
         // When status changes this may be related to a change in the available resources.
         boolean oldMobileIndicator = contact.isMobile();
@@ -1119,9 +1123,8 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         contact.updatePresenceStatus(newStatus);
-        Timber.d("Dispatching contact status update event for %s: %s",
-                contact.getJid(), newStatus.getStatusName());
-        fireContactPresenceStatusChangeEvent(contact, contact.getParentContactGroup(),
+        Timber.d("Dispatching contact status update for %s: %s", jid, newStatus.getStatusName());
+        fireContactPresenceStatusChangeEvent(contact, jid, contact.getParentContactGroup(),
                 oldStatus, newStatus, resourceUpdated);
     }
 
@@ -1233,7 +1236,7 @@ public class OperationSetPersistentPresenceJabberImpl
                         }
                     }
                 }
-                Timber.i("Smack presence update for: %s - %s", userJid, presence.getType());
+                Timber.d("Smack presence update for: %s - %s", presence.getFrom(), presence.getType());
 
                 // all contact statuses that are received from all its resources ordered by priority (higher first)
                 // and those with equal priorities order with the one that is most connected as first
@@ -1278,7 +1281,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 if (userStats.size() == 0) {
                     currentPresence = presence;
                     /*
-                     * We no longer have statuses for userID so it doesn't make sense to retain
+                     * We no longer have statuses for userJid so it doesn't make sense to retain
                      * (1) the TreeSet and
                      * (2) its slot in the statuses Map.
                      */
@@ -1295,7 +1298,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
                 // statuses may be the same and only change in status message
                 sourceContact.setStatusMessage(currentPresence.getStatus());
-                updateContactStatus(sourceContact, jabberStatusToPresenceStatus(currentPresence, mPPS));
+                updateContactStatus(sourceContact, presence.getFrom(), jabberStatusToPresenceStatus(currentPresence, mPPS));
             } catch (IllegalStateException | IllegalArgumentException ex) {
                 Timber.e(ex, "Failed changing status");
             }
@@ -1422,11 +1425,11 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         String displayName = null;
-        Nick ext = (Nick) subscribeRequest.getExtension(Nick.NAMESPACE);
+        Nick ext = subscribeRequest.getExtension(Nick.class);
         if (ext != null)
             displayName = ext.getName();
 
-        Timber.i("Subscription authorization request from: %s", fromJid);
+        Timber.d("Subscription authorization request from: %s", fromJid);
         synchronized (this) {
             // keep the request for later process when handler becomes ready
             if (handler == null) {

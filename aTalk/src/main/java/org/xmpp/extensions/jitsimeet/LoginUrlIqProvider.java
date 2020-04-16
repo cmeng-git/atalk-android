@@ -43,7 +43,7 @@ public class LoginUrlIqProvider extends IQProvider<LoginUrlIq>
     {
         // <auth-url>
         ProviderManager.addIQProvider(
-                LoginUrlIq.ELEMENT_NAME, LoginUrlIq.NAMESPACE, this);
+                LoginUrlIq.ELEMENT, LoginUrlIq.NAMESPACE, this);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class LoginUrlIqProvider extends IQProvider<LoginUrlIq>
         String rootElement = parser.getName();
 
         LoginUrlIq authUrlIQ;
-        if (LoginUrlIq.ELEMENT_NAME.equals(rootElement)) {
+        if (LoginUrlIq.ELEMENT.equals(rootElement)) {
             authUrlIQ = new LoginUrlIq();
 
             String url = parser.getAttributeValue("", LoginUrlIq.URL_ATTRIBUTE_NAME);

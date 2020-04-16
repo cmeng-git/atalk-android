@@ -279,8 +279,8 @@ public class SettingsActivity extends OSGiActivity
                 aTalkApp.setATLanguage(language1);
 
                 // Need to destroy and restart to set new Theme if there is a change
-                if (!language.equals(value)) {
-                    Activity activity = getActivity();
+                Activity activity = getActivity();
+                if (!language.equals(value) && (activity != null)) {
                     aTalk.setPrefChange(true);
                     aTalkApp.setLanguage(activity);
                     activity.finish();

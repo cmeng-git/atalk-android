@@ -37,7 +37,7 @@ public class JibriIqProvider extends IQProvider<JibriIq>
         String rootElement = parser.getName();
         JibriIq iq = null;
 
-        if (JibriIq.ELEMENT_NAME.equals(rootElement)) {
+        if (JibriIq.ELEMENT.equals(rootElement)) {
             iq = new JibriIq();
 
             String action = parser.getAttributeValue("", JibriIq.ACTION_ATTR_NAME);

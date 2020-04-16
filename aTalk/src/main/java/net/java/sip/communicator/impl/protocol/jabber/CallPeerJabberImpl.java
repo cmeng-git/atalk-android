@@ -23,12 +23,12 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.SourceExtensionElement;
+import org.xmpp.extensions.colibri.SourceExtension;
 import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.*;
 import org.xmpp.extensions.jingle.element.JingleContent.Senders;
-import org.xmpp.extensions.jitsimeet.MediaPresenceExtensionElement;
-import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
+import org.xmpp.extensions.jitsimeet.MediaPresenceExtension;
+import org.xmpp.extensions.jitsimeet.SSRCInfoExtension;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
@@ -294,7 +294,7 @@ public class CallPeerJabberImpl
 
         if (responseIQ != null) {
             if (reasonOtherExtension != null) {
-                JingleReason reason = responseIQ.getExtension(JingleReason.ELEMENT, JingleReason.NAMESPACE);
+                JingleReason reason = responseIQ.getExtension(JingleReason.class);
 
                 if (reason != null) {
                     reason.setOtherExtension(reasonOtherExtension);
@@ -500,7 +500,7 @@ public class CallPeerJabberImpl
         MediaType mediaType = getMediaType(ext);
 
         try {
-            boolean modify = (ext.getFirstChildOfType(RtpDescriptionExtensionElement.class) != null);
+            boolean modify = (ext.getFirstChildOfType(RtpDescriptionExtension.class) != null);
             getMediaHandler().reinitContent(ext.getName(), ext, modify);
             setSenders(mediaType, ext.getSenders());
 
@@ -636,9 +636,9 @@ public class CallPeerJabberImpl
     /**
      * Handles the specified session <tt>info</tt> packet according to its content.
      *
-     * @param info the {@link SessionInfoExtensionElement} that we just received.
+     * @param info the {@link SessionInfoExtension} that we just received.
      */
-    public void processSessionInfo(SessionInfoExtensionElement info)
+    public void processSessionInfo(SessionInfoExtension info)
             throws NotConnectedException, InterruptedException
     {
         switch (info.getType()) {
@@ -679,11 +679,11 @@ public class CallPeerJabberImpl
         List<JingleContent> offer = sessionInitIQ.getContents();
         try {
             getMediaHandler().processOffer(offer);
-            CoinExtensionElement coin = null;
+            CoinExtension coin = null;
 
             for (ExtensionElement ext : sessionInitIQ.getExtensions()) {
-                if (ext.getElementName().equals(CoinExtensionElement.ELEMENT)) {
-                    coin = (CoinExtensionElement) ext;
+                if (ext.getElementName().equals(CoinExtension.ELEMENT)) {
+                    coin = (CoinExtension) ext;
                     break;
                 }
             }
@@ -769,7 +769,7 @@ public class CallPeerJabberImpl
      * @throws OperationFailedException if anything goes wrong while processing the specified <tt>transfer</tt>
      * packet (extension)
      */
-    public void processTransfer(TransferExtensionElement transfer)
+    public void processTransfer(TransferExtension transfer)
             throws OperationFailedException
     {
         Jid attendantAddress = transfer.getFrom();
@@ -796,7 +796,7 @@ public class CallPeerJabberImpl
         OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
                 mProtocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony);
-        TransferExtensionElement calleeTransfer = new TransferExtensionElement();
+        TransferExtension calleeTransfer = new TransferExtension();
         String sid = transfer.getSid();
 
         calleeTransfer.setFrom(attendantAddress);
@@ -917,7 +917,7 @@ public class CallPeerJabberImpl
     {
         Jingle sessionInfoIQ = JingleUtil.createSessionInfo(mProtocolProvider.getOurJID(),
                 mPeerJid, getSid());
-        CoinExtensionElement coinExt = new CoinExtensionElement(getCall().isConferenceFocus());
+        CoinExtension coinExt = new CoinExtension(getCall().isConferenceFocus());
 
         sessionInfoIQ.addExtension(coinExt);
         mConnection.sendStanza(sessionInfoIQ);
@@ -1192,7 +1192,7 @@ public class CallPeerJabberImpl
         transferSessionInfo.setTo(mPeerJid);
         transferSessionInfo.setType(IQ.Type.set);
 
-        TransferExtensionElement transfer = new TransferExtensionElement();
+        TransferExtension transfer = new TransferExtension();
         // Attended transfer.
         if (sid != null) {
             /*
@@ -1244,7 +1244,7 @@ public class CallPeerJabberImpl
         // Implements the SIP behavior: once the transfer is accepted, the current call is closed.
         try {
             hangup(false, message, new JingleReason(Reason.SUCCESS, message,
-                    new TransferredExtensionElement()));
+                    new TransferredExtension()));
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send transfer", 0, e);
         }
@@ -1373,10 +1373,10 @@ public class CallPeerJabberImpl
                 continue;
             }
 
-            RtpDescriptionExtensionElement rtpDesc = JingleUtils.getRtpDescription(c);
-            for (MediaPresenceExtensionElement.Source src
-                    : rtpDesc.getChildExtensionsOfType(MediaPresenceExtensionElement.Source.class)) {
-                SSRCInfoExtensionElement ssrcInfo = src.getFirstChildOfType(SSRCInfoExtensionElement.class);
+            RtpDescriptionExtension rtpDesc = JingleUtils.getRtpDescription(c);
+            for (MediaPresenceExtension.Source src
+                    : rtpDesc.getChildExtensionsOfType(MediaPresenceExtension.Source.class)) {
+                SSRCInfoExtension ssrcInfo = src.getFirstChildOfType(SSRCInfoExtension.class);
                 if (ssrcInfo == null)
                     continue;
 
@@ -1410,9 +1410,9 @@ public class CallPeerJabberImpl
                 continue;
             }
 
-            RtpDescriptionExtensionElement rtpDesc = JingleUtils.getRtpDescription(c);
-            for (SourceExtensionElement src : rtpDesc.getChildExtensionsOfType(SourceExtensionElement.class)) {
-                SSRCInfoExtensionElement ssrcInfo = src.getFirstChildOfType(SSRCInfoExtensionElement.class);
+            RtpDescriptionExtension rtpDesc = JingleUtils.getRtpDescription(c);
+            for (SourceExtension src : rtpDesc.getChildExtensionsOfType(SourceExtension.class)) {
+                SSRCInfoExtension ssrcInfo = src.getFirstChildOfType(SSRCInfoExtension.class);
 
                 if (ssrcInfo == null)
                     continue;
@@ -1468,7 +1468,7 @@ public class CallPeerJabberImpl
     public Contact getContact()
     {
         OperationSetPresence presence = getProtocolProvider().getOperationSet(OperationSetPresence.class);
-        return (presence == null) ? null : presence.findContactByID(getAddress());
+        return (presence == null) ? null : presence.findContactByJid(mPeerJid);
     }
 
     /**

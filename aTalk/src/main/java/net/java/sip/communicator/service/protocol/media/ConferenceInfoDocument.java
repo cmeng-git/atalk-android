@@ -39,17 +39,17 @@ public class ConferenceInfoDocument
     /**
      * The name of the "conference-info" element.
      */
-    public static final String CONFERENCE_INFO_ELEMENT_NAME = "conference-info";
+    public static final String CONFERENCE_INFO_ELEMENT = "conference-info";
 
     /**
      * The name of the "conference-description" element.
      */
-    public static final String CONFERENCE_DESCRIPTION_ELEMENT_NAME = "conference-description";
+    public static final String CONFERENCE_DESCRIPTION_ELEMENT = "conference-description";
 
     /**
      * The name of the "conference-state" element.
      */
-    public static final String CONFERENCE_STATE_ELEMENT_NAME = "conference-state";
+    public static final String CONFERENCE_STATE_ELEMENT = "conference-state";
 
     /**
      * The name of the "state" attribute.
@@ -69,22 +69,22 @@ public class ConferenceInfoDocument
     /**
      * The name of the "user" element.
      */
-    public static final String USER_ELEMENT_NAME = "user";
+    public static final String USER_ELEMENT = "user";
 
     /**
      * The name of the "users" element.
      */
-    public static final String USERS_ELEMENT_NAME = "users";
+    public static final String USERS_ELEMENT = "users";
 
     /**
      * The name of the "endpoint" element.
      */
-    public static final String ENDPOINT_ELEMENT_NAME = "endpoint";
+    public static final String ENDPOINT_ELEMENT = "endpoint";
 
     /**
      * The name of the "media" element.
      */
-    public static final String MEDIA_ELEMENT_NAME = "media";
+    public static final String MEDIA_ELEMENT = "media";
 
     /**
      * The name of the "id" attribute.
@@ -94,27 +94,27 @@ public class ConferenceInfoDocument
     /**
      * The name of the "status" element.
      */
-    public static final String STATUS_ELEMENT_NAME = "status";
+    public static final String STATUS_ELEMENT = "status";
 
     /**
      * The name of the "src-id" element.
      */
-    public static final String SRC_ID_ELEMENT_NAME = "src-id";
+    public static final String SRC_ID_ELEMENT = "src-id";
 
     /**
      * The name of the "type" element.
      */
-    public static final String TYPE_ELEMENT_NAME = "type";
+    public static final String TYPE_ELEMENT = "type";
 
     /**
      * The name of the "user-count" element.
      */
-    public static final String USER_COUNT_ELEMENT_NAME = "user-count";
+    public static final String USER_COUNT_ELEMENT = "user-count";
 
     /**
      * The mane of the "display-text" element.
      */
-    public static final String DISPLAY_TEXT_ELEMENT_NAME = "display-text";
+    public static final String DISPLAY_TEXT_ELEMENT = "display-text";
 
     /**
      * The <tt>Document</tt> object that we wrap around.
@@ -166,19 +166,19 @@ public class ConferenceInfoDocument
             throw (new XMLException(e.getMessage()));
         }
 
-        conferenceInfo = document.createElementNS(NAMESPACE, CONFERENCE_INFO_ELEMENT_NAME);
+        conferenceInfo = document.createElementNS(NAMESPACE, CONFERENCE_INFO_ELEMENT);
         document.appendChild(conferenceInfo);
 
         setVersion(1);
 
-        conferenceDescription = document.createElement(CONFERENCE_DESCRIPTION_ELEMENT_NAME);
+        conferenceDescription = document.createElement(CONFERENCE_DESCRIPTION_ELEMENT);
         conferenceInfo.appendChild(conferenceDescription);
 
-        conferenceState = document.createElement(CONFERENCE_STATE_ELEMENT_NAME);
+        conferenceState = document.createElement(CONFERENCE_STATE_ELEMENT);
         conferenceInfo.appendChild(conferenceState);
         setUserCount(0);
 
-        users = document.createElement(USERS_ELEMENT_NAME);
+        users = document.createElement(USERS_ELEMENT);
         conferenceInfo.appendChild(users);
     }
 
@@ -215,23 +215,23 @@ public class ConferenceInfoDocument
         }
 
         conferenceDescription = XMLUtils.findChild(conferenceInfo,
-                CONFERENCE_DESCRIPTION_ELEMENT_NAME);
+                CONFERENCE_DESCRIPTION_ELEMENT);
         // conference-description is mandatory
         if (conferenceDescription == null) {
             throw new XMLException("Could not parse conference-info document,"
                     + " conference-description element not found");
         }
 
-        conferenceState = XMLUtils.findChild(conferenceInfo, CONFERENCE_STATE_ELEMENT_NAME);
+        conferenceState = XMLUtils.findChild(conferenceInfo, CONFERENCE_STATE_ELEMENT);
         if (conferenceState != null)
-            userCount = XMLUtils.findChild(conferenceState, USER_COUNT_ELEMENT_NAME);
+            userCount = XMLUtils.findChild(conferenceState, USER_COUNT_ELEMENT);
 
-        users = XMLUtils.findChild(conferenceInfo, USERS_ELEMENT_NAME);
+        users = XMLUtils.findChild(conferenceInfo, USERS_ELEMENT);
         if (users == null) {
             throw new XMLException("Could not parse conference-info document,"
                     + " 'users' element not found");
         }
-        NodeList usersNodeList = users.getElementsByTagName(USER_ELEMENT_NAME);
+        NodeList usersNodeList = users.getElementsByTagName(USER_ELEMENT);
         for (int i = 0; i < usersNodeList.getLength(); i++) {
             User user = new User((Element) usersNodeList.item(i));
             usersList.add(user);
@@ -407,11 +407,11 @@ public class ConferenceInfoDocument
         }
         else {
             if (conferenceState == null) {
-                conferenceState = document.createElement(CONFERENCE_STATE_ELEMENT_NAME);
+                conferenceState = document.createElement(CONFERENCE_STATE_ELEMENT);
                 conferenceInfo.appendChild(conferenceState);
             }
 
-            userCount = document.createElement(USER_COUNT_ELEMENT_NAME);
+            userCount = document.createElement(USER_COUNT_ELEMENT);
             userCount.setTextContent(Integer.toString(count));
             conferenceState.appendChild(userCount);
         }
@@ -509,7 +509,7 @@ public class ConferenceInfoDocument
      */
     public User addNewUser(String entity)
     {
-        Element userElement = document.createElement(USER_ELEMENT_NAME);
+        Element userElement = document.createElement(USER_ELEMENT);
         User user = new User(userElement);
         user.setEntity(entity);
 
@@ -597,14 +597,14 @@ public class ConferenceInfoDocument
      */
     private void setStatus(Element element, String statusString)
     {
-        Element statusElement = XMLUtils.findChild(element, STATUS_ELEMENT_NAME);
+        Element statusElement = XMLUtils.findChild(element, STATUS_ELEMENT);
         if (statusString == null || statusString.equals("")) {
             if (statusElement != null)
                 element.removeChild(statusElement);
         }
         else {
             if (statusElement == null) {
-                statusElement = document.createElement(STATUS_ELEMENT_NAME);
+                statusElement = document.createElement(STATUS_ELEMENT);
                 element.appendChild(statusElement);
             }
             statusElement.setTextContent(statusString);
@@ -701,7 +701,7 @@ public class ConferenceInfoDocument
         private User(Element user)
         {
             this.userElement = user;
-            NodeList endpointsNodeList = user.getElementsByTagName(ENDPOINT_ELEMENT_NAME);
+            NodeList endpointsNodeList = user.getElementsByTagName(ENDPOINT_ELEMENT);
             for (int i = 0; i < endpointsNodeList.getLength(); i++) {
                 Endpoint endpoint = new Endpoint((Element) endpointsNodeList.item(i));
                 endpointsList.add(endpoint);
@@ -758,14 +758,14 @@ public class ConferenceInfoDocument
          */
         public void setDisplayText(String text)
         {
-            Element displayText = XMLUtils.findChild(userElement, DISPLAY_TEXT_ELEMENT_NAME);
+            Element displayText = XMLUtils.findChild(userElement, DISPLAY_TEXT_ELEMENT);
             if (text == null || text.equals("")) {
                 if (displayText != null)
                     userElement.removeChild(displayText);
             }
             else {
                 if (displayText == null) {
-                    displayText = document.createElement(DISPLAY_TEXT_ELEMENT_NAME);
+                    displayText = document.createElement(DISPLAY_TEXT_ELEMENT);
                     userElement.appendChild(displayText);
                 }
                 displayText.setTextContent(text);
@@ -781,7 +781,7 @@ public class ConferenceInfoDocument
          */
         public String getDisplayText()
         {
-            Element displayText = XMLUtils.findChild(userElement, DISPLAY_TEXT_ELEMENT_NAME);
+            Element displayText = XMLUtils.findChild(userElement, DISPLAY_TEXT_ELEMENT);
             if (displayText != null)
                 return displayText.getTextContent();
 
@@ -827,7 +827,7 @@ public class ConferenceInfoDocument
          */
         public Endpoint addNewEndpoint(String entity)
         {
-            Element endpointElement = document.createElement(ENDPOINT_ELEMENT_NAME);
+            Element endpointElement = document.createElement(ENDPOINT_ELEMENT);
             Endpoint endpoint = new Endpoint(endpointElement);
             endpoint.setEntity(entity);
 
@@ -892,7 +892,7 @@ public class ConferenceInfoDocument
         private Endpoint(Element endpoint)
         {
             this.endpointElement = endpoint;
-            NodeList mediaNodeList = endpoint.getElementsByTagName(MEDIA_ELEMENT_NAME);
+            NodeList mediaNodeList = endpoint.getElementsByTagName(MEDIA_ELEMENT);
             for (int i = 0; i < mediaNodeList.getLength(); i++) {
                 Media media = new Media((Element) mediaNodeList.item(i));
                 mediasList.add(media);
@@ -962,7 +962,7 @@ public class ConferenceInfoDocument
          */
         public EndpointStatusType getStatus()
         {
-            Element statusElement = XMLUtils.findChild(endpointElement, STATUS_ELEMENT_NAME);
+            Element statusElement = XMLUtils.findChild(endpointElement, STATUS_ELEMENT);
             return statusElement == null ? null : EndpointStatusType.parseString(statusElement
                     .getTextContent());
         }
@@ -1007,7 +1007,7 @@ public class ConferenceInfoDocument
          */
         public Media addNewMedia(String id)
         {
-            Element mediaElement = document.createElement(MEDIA_ELEMENT_NAME);
+            Element mediaElement = document.createElement(MEDIA_ELEMENT);
             Media media = new Media(mediaElement);
             media.setId(id);
 
@@ -1097,14 +1097,14 @@ public class ConferenceInfoDocument
          */
         public void setSrcId(String srcId)
         {
-            Element srcIdElement = XMLUtils.findChild(mediaElement, SRC_ID_ELEMENT_NAME);
+            Element srcIdElement = XMLUtils.findChild(mediaElement, SRC_ID_ELEMENT);
             if (srcId == null || srcId.equals("")) {
                 if (srcIdElement != null)
                     mediaElement.removeChild(srcIdElement);
             }
             else {
                 if (srcIdElement == null) {
-                    srcIdElement = document.createElement(SRC_ID_ELEMENT_NAME);
+                    srcIdElement = document.createElement(SRC_ID_ELEMENT);
                     mediaElement.appendChild(srcIdElement);
                 }
                 srcIdElement.setTextContent(srcId);
@@ -1120,7 +1120,7 @@ public class ConferenceInfoDocument
          */
         public String getSrcId()
         {
-            Element srcIdElement = XMLUtils.findChild(mediaElement, SRC_ID_ELEMENT_NAME);
+            Element srcIdElement = XMLUtils.findChild(mediaElement, SRC_ID_ELEMENT);
             return srcIdElement == null ? null : srcIdElement.getTextContent();
         }
 
@@ -1131,14 +1131,14 @@ public class ConferenceInfoDocument
          */
         public void setType(String type)
         {
-            Element typeElement = XMLUtils.findChild(mediaElement, TYPE_ELEMENT_NAME);
+            Element typeElement = XMLUtils.findChild(mediaElement, TYPE_ELEMENT);
             if (type == null || type.equals("")) {
                 if (typeElement != null)
                     mediaElement.removeChild(typeElement);
             }
             else {
                 if (typeElement == null) {
-                    typeElement = document.createElement(TYPE_ELEMENT_NAME);
+                    typeElement = document.createElement(TYPE_ELEMENT);
                     mediaElement.appendChild(typeElement);
                 }
                 typeElement.setTextContent(type);
@@ -1154,7 +1154,7 @@ public class ConferenceInfoDocument
          */
         public String getType()
         {
-            Element typeElement = XMLUtils.findChild(mediaElement, TYPE_ELEMENT_NAME);
+            Element typeElement = XMLUtils.findChild(mediaElement, TYPE_ELEMENT);
             return typeElement == null ? null : typeElement.getTextContent();
         }
 
@@ -1177,7 +1177,7 @@ public class ConferenceInfoDocument
          */
         public String getStatus()
         {
-            Element statusElement = XMLUtils.findChild(mediaElement, STATUS_ELEMENT_NAME);
+            Element statusElement = XMLUtils.findChild(mediaElement, STATUS_ELEMENT);
             return statusElement == null ? null : statusElement.getTextContent();
         }
     }

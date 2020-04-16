@@ -673,7 +673,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         EntityBareJid entityBareJid = message.getFrom().asEntityBareJidIfPossible();
         ChatRoomJabberImpl chatRoom = findRoom(entityBareJid);
 
-        if (message.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
+        if (message.getExtensionElement(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
             chatRoom.initCaptchaProcess(message);
         }
         // Handle only error message (currently not supported by smack)
@@ -777,8 +777,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     private Date getTimeStamp(Message msg)
     {
         Date timeStamp;
-        DelayInformation delayInfo
-                = msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+        DelayInformation delayInfo = msg.getExtension(DelayInformation.class);
         if (delayInfo != null) {
             timeStamp = delayInfo.getStamp();
         }

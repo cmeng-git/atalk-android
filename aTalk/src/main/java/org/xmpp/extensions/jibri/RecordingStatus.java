@@ -42,7 +42,7 @@ public class RecordingStatus extends AbstractExtensionElement
     /**
      * XML element name of this packet extension.
      */
-    public static final String ELEMENT_NAME = "jibri-recording-status";
+    public static final String ELEMENT = "jibri-recording-status";
 
     /**
      * The name of XML attribute which holds the recording status.
@@ -61,7 +61,7 @@ public class RecordingStatus extends AbstractExtensionElement
 
     public RecordingStatus()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
+import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
 import java.util.*;
@@ -111,31 +112,31 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * Notifies all registered listeners of the new event.
      *
      * @param source the contact that has caused the event.
+     * @param jid the specific contact FullJid that has caused the event.
      * @param parentGroup the group that contains the source contact.
      * @param oldValue the status that the source contact detained before changing it.
      */
-    protected void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup, PresenceStatus oldValue)
+    protected void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
+            PresenceStatus oldValue)
     {
         PresenceStatus newValue = source.getPresenceStatus();
-
         if (oldValue.equals(newValue)) {
             Timber.d("Ignored prov status change evt. old==new: %s", oldValue);
             return;
         }
-
-        fireContactPresenceStatusChangeEvent(source, parentGroup, oldValue, newValue);
+        fireContactPresenceStatusChangeEvent(source, jid, parentGroup, oldValue, newValue);
     }
 
-    public void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup,
+    public void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
             PresenceStatus oldValue, PresenceStatus newValue)
     {
-        this.fireContactPresenceStatusChangeEvent(source, parentGroup, oldValue, newValue, false);
+        this.fireContactPresenceStatusChangeEvent(source, jid, parentGroup, oldValue, newValue, false);
     }
 
-    public void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup,
+    public void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
             PresenceStatus oldValue, PresenceStatus newValue, boolean isResourceChange)
     {
-        ContactPresenceStatusChangeEvent evt = new ContactPresenceStatusChangeEvent(source,
+        ContactPresenceStatusChangeEvent evt = new ContactPresenceStatusChangeEvent(source, jid,
                 mPPS, parentGroup, oldValue, newValue, isResourceChange);
 
         Collection<ContactPresenceStatusListener> listeners;

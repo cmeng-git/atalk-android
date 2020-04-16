@@ -7,9 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.muc.Occupant;
 import org.jxmpp.jid.EntityFullJid;
@@ -103,7 +101,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
         // jabberID may be null
         if (jabberJid != null) {
             // If we found the mContact we set also its avatar.
-            mContact = presenceOpSet.findContactByID(jabberJid);
+            mContact = presenceOpSet.findContactByJid(jabberJid);
             if (mContact != null) {
                 this.avatar = mContact.getImage();
             }
@@ -256,7 +254,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
     {
         // old history muc message has mContact field = null (not stored);
         if ((mContact == null) && (presenceOpSet != null)) {
-            mContact = presenceOpSet.findContactByID(jabberJid);
+            mContact = presenceOpSet.findContactByJid(jabberJid);
         }
         return mContact;
     }

@@ -81,9 +81,9 @@ public class SctpMapExtension implements ExtensionElement
      * {@inheritDoc}
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         xml.optIntAttribute(PORT_ATTR_NAME, port);
         xml.optAttribute(PROTOCOL_ATTR_NAME, protocol);

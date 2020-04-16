@@ -18,46 +18,46 @@ import java.io.IOException;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class DescriptionProvider extends ExtensionElementProvider<DescriptionExtensionElement>
+public class DescriptionProvider extends ExtensionElementProvider<DescriptionExtension>
 {
     /**
-     * Parses a description extension sub-packet and creates a {@link DescriptionExtensionElement}
+     * Parses a description extension sub-packet and creates a {@link DescriptionExtension}
      * instance. At the beginning of the method call, the xml parser will be positioned on the
      * opening element of the packet extension. As required by the smack API, at the end of the
      * method call, the parser will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>description</tt> element.
-     * @return a new {@link DescriptionExtensionElement} instance.
+     * @return a new {@link DescriptionExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
 
     @Override
-    public DescriptionExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public DescriptionExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
-        DescriptionExtensionElement ext = new DescriptionExtensionElement();
+        DescriptionExtension ext = new DescriptionExtension();
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     switch (elementName) {
-                        case DescriptionExtensionElement.ELEMENT_SUBJECT:
+                        case DescriptionExtension.ELEMENT_SUBJECT:
                             ext.setSubject(CoinIQProvider.parseText(parser));
                             break;
-                        case DescriptionExtensionElement.ELEMENT_FREE_TEXT:
+                        case DescriptionExtension.ELEMENT_FREE_TEXT:
                             ext.setFreeText(CoinIQProvider.parseText(parser));
                             break;
-                        case DescriptionExtensionElement.ELEMENT_DISPLAY_TEXT:
+                        case DescriptionExtension.ELEMENT_DISPLAY_TEXT:
                             ext.setDisplayText(CoinIQProvider.parseText(parser));
                             break;
                     }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(DescriptionExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(DescriptionExtension.ELEMENT)) {
                     done = true;
                 }
             }

@@ -52,8 +52,11 @@ import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import java.io.IOException;
 
 /**
- * An ExtensionElementProvider to parse the VcardTempXUpdate photo data. XML namespace "vcard-temp:x:update"
- * <x xmlns='vcard-temp:x:update'><photo>186f39da130310dbc59002608c56d1bd26abd72d</photo></x>
+ * An ExtensionElementProvider to parse the VcardTempXUpdate photo data.
+ * XML namespace "vcard-temp:x:update". Possible format:
+ * 1. <x xmlns='vcard-temp:x:update'><photo>186f39da130310dbc59002608c56d1bd26abd72d</photo></x>
+ * 2. <x xmlns='vcard-temp:x:update'/>
+ * Smack 4.4.0-alpha3 (20200404) cannot accept null return. must return even with data == null.
  */
 public class VCardTempXUpdateProvider extends ExtensionElementProvider
 {
@@ -61,7 +64,8 @@ public class VCardTempXUpdateProvider extends ExtensionElementProvider
     public VCardTempXUpdate parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
-        VCardTempXUpdate avatar = null;
+        String data = null;
+
         outerloop:
         while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -69,8 +73,7 @@ public class VCardTempXUpdateProvider extends ExtensionElementProvider
                 case START_ELEMENT:
                     String name = parser.getName();
                     if (VCardTempXUpdate.ELEMENT_PHOTO.equals(name)) {
-                        String data = parser.nextText();
-                        avatar = new VCardTempXUpdate(data);
+                        data = parser.nextText();
                     }
                     break;
                 case END_ELEMENT:
@@ -80,6 +83,6 @@ public class VCardTempXUpdateProvider extends ExtensionElementProvider
                     break;
             }
         }
-        return avatar;
+        return new VCardTempXUpdate(data);
     }
 }

@@ -19,7 +19,7 @@ public class JingleInfoQueryIQ extends IQ
 	/**
 	 * The element name.
 	 */
-	public static final String ELEMENT_NAME = "query";
+	public static final String ELEMENT = "query";
 
 	/**
 	 * The namespace.
@@ -28,7 +28,7 @@ public class JingleInfoQueryIQ extends IQ
 
 	public JingleInfoQueryIQ()
 	{
-		super(ELEMENT_NAME, NAMESPACE);
+		super(ELEMENT, NAMESPACE);
 	}
 
 	/**

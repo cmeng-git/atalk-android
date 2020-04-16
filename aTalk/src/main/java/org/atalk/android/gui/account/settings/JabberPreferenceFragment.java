@@ -92,7 +92,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     private static final String P_KEY_MINIMUM_TLS_VERSION = aTalkApp.getResString(R.string.pref_key_minimum_TLS_version);
 
     // Proxy
-    private static final String P_KEY_PROXY_CONFIG = aTalkApp.getResString(R.string.service_gui_settings_BOSH_PROXY);
+    private static final String P_KEY_PROXY_CONFIG = aTalkApp.getResString(R.string.pref_key_bosh_configuration);
 
     // ICE (General)
     private static final String P_KEY_ICE_ENABLED = aTalkApp.getResString(R.string.pref_key_ice_enabled);

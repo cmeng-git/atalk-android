@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.xmpp.extensions.caps.UserCapsNodeListener;
+import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -266,7 +266,7 @@ public class OperationSetContactCapabilitiesJabberImpl
      * Notifies this listener that an <tt>EntityCapsManager</tt> has added a record for a specific
      * user about the caps node the user has.
      *
-     * @param user the user (full JID)
+     * @param user the user (contact full Jid)
      * @param online indicates if the user is currently online
      * @see UserCapsNodeListener#userCapsNodeNotify(Jid, boolean)
      */
@@ -279,7 +279,7 @@ public class OperationSetContactCapabilitiesJabberImpl
         OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
 
         if (opsetPresence != null) {
-            Contact contact = opsetPresence.findContactByID(user);
+            Contact contact = opsetPresence.findContactByJid(user);
 
             // If the contact isn't null and is online we try to discover the new set of
             // operation sets and to notify interested parties. Otherwise we ignore the event.
@@ -287,14 +287,17 @@ public class OperationSetContactCapabilitiesJabberImpl
                 if (online) {
                     // when going online we have received a presence and make sure we discover
                     // this particular jid for getSupportedOperationSets
-                    fireContactCapabilitiesEvent(contact, ContactCapabilitiesEvent.SUPPORTED_OPERATION_SETS_CHANGED,
-                            getSupportedOperationSets(user, online));
+                    fireContactCapabilitiesEvent(contact, user, getSupportedOperationSets(user, online));
                 }
                 else {
-                    // when offline, we use the contact, and selecting the most connected jid for
-                    // getSupportedOperationSets
-                    fireContactCapabilitiesEvent(contact, ContactCapabilitiesEvent.SUPPORTED_OPERATION_SETS_CHANGED,
-                            getSupportedOperationSets(contact));
+                    // Need to wait a while before getSupportedOperationSets(); otherwise non-updated values
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    // when offline, we use the contact to find the most connected jid for SupportedOperationSets
+                    fireContactCapabilitiesEvent(contact, user, getSupportedOperationSets(contact));
                 }
             }
         }
@@ -308,7 +311,7 @@ public class OperationSetContactCapabilitiesJabberImpl
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
     {
         if (evt.getNewStatus().getStatus() < PresenceStatus.ONLINE_THRESHOLD) {
-            userCapsNodeNotify(evt.getSourceContact().getJid(), false);
+            userCapsNodeNotify(evt.getJid(), false);
         }
     }
 
@@ -322,18 +325,17 @@ public class OperationSetContactCapabilitiesJabberImpl
         OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
 
         if (opsetPresence != null) {
-            Contact contact = opsetPresence.findContactByID(user);
+            Contact contact = opsetPresence.findContactByJid(user);
 
             // this called by received discovery info for particular jid so we use its online and
-            // opsets for this particular jid
+            // opSets for this particular jid
             boolean online = false;
             Presence presence = Roster.getInstanceFor(parentProvider.getConnection()).getPresence(user.asBareJid());
             if (presence != null)
                 online = presence.isAvailable();
 
             if (contact != null) {
-                fireContactCapabilitiesEvent(contact, ContactCapabilitiesEvent.SUPPORTED_OPERATION_SETS_CHANGED,
-                        getSupportedOperationSets(user, online));
+                fireContactCapabilitiesEvent(contact, user, getSupportedOperationSets(user, online));
             }
         }
     }

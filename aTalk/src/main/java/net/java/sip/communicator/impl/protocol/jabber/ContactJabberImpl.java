@@ -19,6 +19,8 @@ import org.jxmpp.jid.Jid;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import timber.log.Timber;
+
 /**
  * The Jabber implementation of the service.protocol.Contact interface.
  *
@@ -103,10 +105,7 @@ public class ContactJabberImpl extends AbstractContact
     protected JSONArray groups = new JSONArray();
 
     protected int subscription = 0;
-
-    private long mLastseen = 0;
     private String photoUri;
-    private String mLastPresence = null;
 
     /**
      * Creates an JabberContactImpl
@@ -221,7 +220,8 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Retrieve avatar from server and update the contact avatar image - manual download
+     * Retrieve avatar from server and update the contact avatar image
+     * For user manual download by long click on the avatar
      *
      * @param retrieveOnStart force to download from server if avatar is null
      */
@@ -499,8 +499,10 @@ public class ContactJabberImpl extends AbstractContact
     @Override
     public Collection<ContactResource> getResources()
     {
-        if (resources != null)
+        if (resources != null) {
+            Timber.d("Contact: %s resources %s", getDisplayName(), resources.size());
             return new ArrayList<>(resources.values());
+        }
         return null;
     }
 
@@ -545,16 +547,6 @@ public class ContactJabberImpl extends AbstractContact
         contactJid = fullJid;
         if (resources == null)
             resources = new ConcurrentHashMap<>();
-    }
-
-    public void setLastResource(String resource)
-    {
-        this.mLastPresence = resource;
-    }
-
-    public String getLastResource()
-    {
-        return this.mLastPresence;
     }
 
     /**

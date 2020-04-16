@@ -193,7 +193,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             JingleContent localContent = e.getKey();
             JingleContent remoteContent = e.getValue();
             JingleContent cpe = (remoteContent == null) ? localContent : remoteContent;
-            RtpDescriptionExtensionElement rdpe = cpe.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+            RtpDescriptionExtension rdpe = cpe.getFirstChildOfType(RtpDescriptionExtension.class);
             String media = rdpe.getMedia();
             MediaType mediaType = MediaType.parseString(media);
             String contentName = mediaType.toString();
@@ -214,7 +214,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 localChannelRequest.setEndpoint(protocolProvider.getOurJID().toString());
                 localChannelRequest.setInitiator(peerIsInitiator);
 
-                for (PayloadTypeExtensionElement ptpe : rdpe.getPayloadTypes())
+                for (PayloadTypeExtension ptpe : rdpe.getPayloadTypes())
                     localChannelRequest.addPayloadType(ptpe);
                 setTransportOnChannel(peer, media, localChannelRequest);
                 // DTLS-SRTP
@@ -231,7 +231,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             remoteChannelRequest.setEndpoint(peer.getAddress());
             remoteChannelRequest.setInitiator(!peerIsInitiator);
 
-            for (PayloadTypeExtensionElement ptpe : rdpe.getPayloadTypes())
+            for (PayloadTypeExtension ptpe : rdpe.getPayloadTypes())
                 remoteChannelRequest.addPayloadType(ptpe);
             setTransportOnChannel(media, localContent, remoteContent, peer, remoteChannelRequest);
             // DTLS-SRTP
@@ -701,9 +701,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
          * of an attended transfer, we have to hang up on the attendant.
          */
         try {
-            TransferExtensionElement transfer
-                    = jingle.getExtension(TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
-
+            TransferExtension transfer = jingle.getExtension(TransferExtension.class);
             if (transfer != null) {
                 String sid = transfer.getSid();
 
@@ -731,10 +729,9 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 throw (ThreadDeath) t;
         }
 
-        CoinExtensionElement coin = jingle.getExtension(CoinExtensionElement.ELEMENT, CoinExtensionElement.NAMESPACE);
-
+        CoinExtension coin = jingle.getExtension(CoinExtension.class);
         if (coin != null) {
-            boolean b = Boolean.parseBoolean((String) coin.getAttribute(CoinExtensionElement.ISFOCUS_ATTR_NAME));
+            boolean b = Boolean.parseBoolean((String) coin.getAttribute(CoinExtension.ISFOCUS_ATTR_NAME));
             callPeer.setConferenceFocus(b);
         }
         // before notifying about this call, make sure that it looks alright
@@ -844,7 +841,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         if (dtlsControl != null) {
             dtlsControl.setSetup(peer.isInitiator() ? DtlsControl.Setup.ACTIVE : DtlsControl.Setup.PASSIVE);
         }
-        IceUdpTransportExtensionElement remoteTransport = channel.getTransport();
+        IceUdpTransportExtension remoteTransport = channel.getTransport();
         return peerMediaHandler.addDtlsAdvertisedEncryptions(true, remoteTransport, mediaType, false);
     }
 
@@ -877,22 +874,22 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                 && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)
                 && (remoteContent != null)) {
-            IceUdpTransportExtensionElement remoteTransport
-                    = remoteContent.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+            IceUdpTransportExtension remoteTransport
+                    = remoteContent.getFirstChildOfType(IceUdpTransportExtension.class);
 
             if (remoteTransport != null) {
-                List<DtlsFingerprintExtensionElement> remoteFingerprints
-                        = remoteTransport.getChildExtensionsOfType(DtlsFingerprintExtensionElement.class);
+                List<DtlsFingerprintExtension> remoteFingerprints
+                        = remoteTransport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
 
                 if (!remoteFingerprints.isEmpty()) {
-                    IceUdpTransportExtensionElement localTransport = ensureTransportOnChannel(channel, peer);
+                    IceUdpTransportExtension localTransport = ensureTransportOnChannel(channel, peer);
                     if (localTransport != null) {
-                        List<DtlsFingerprintExtensionElement> localFingerprints
-                                = localTransport.getChildExtensionsOfType(DtlsFingerprintExtensionElement.class);
+                        List<DtlsFingerprintExtension> localFingerprints
+                                = localTransport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
 
                         if (localFingerprints.isEmpty()) {
-                            for (DtlsFingerprintExtensionElement remoteFingerprint : remoteFingerprints) {
-                                DtlsFingerprintExtensionElement localFingerprint = new DtlsFingerprintExtensionElement();
+                            for (DtlsFingerprintExtension remoteFingerprint : remoteFingerprints) {
+                                DtlsFingerprintExtension localFingerprint = new DtlsFingerprintExtension();
                                 localFingerprint.setFingerprint(remoteFingerprint.getFingerprint());
                                 localFingerprint.setHash(remoteFingerprint.getHash());
                                 localTransport.addChildExtension(localFingerprint);
@@ -932,7 +929,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                     = (DtlsControl) mediaHandler.getSrtpControls().getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
 
             if (dtlsControl != null) {
-                IceUdpTransportExtensionElement transport = ensureTransportOnChannel(channel, peer);
+                IceUdpTransportExtension transport = ensureTransportOnChannel(channel, peer);
                 if (transport != null)
                     setDtlsEncryptionOnTransport(dtlsControl, transport);
             }
@@ -948,16 +945,16 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param localTransport the <tt>IceUdpTransportExtensionElement</tt> on which the properties of the specified
      * <tt>dtlsControl</tt> are to be set
      */
-    static void setDtlsEncryptionOnTransport(DtlsControl dtlsControl, IceUdpTransportExtensionElement localTransport)
+    static void setDtlsEncryptionOnTransport(DtlsControl dtlsControl, IceUdpTransportExtension localTransport)
     {
         String fingerprint = dtlsControl.getLocalFingerprint();
         String hash = dtlsControl.getLocalFingerprintHashFunction();
 
-        DtlsFingerprintExtensionElement fingerprintPE
-                = localTransport.getFirstChildOfType(DtlsFingerprintExtensionElement.class);
+        DtlsFingerprintExtension fingerprintPE
+                = localTransport.getFirstChildOfType(DtlsFingerprintExtension.class);
 
         if (fingerprintPE == null) {
-            fingerprintPE = new DtlsFingerprintExtensionElement();
+            fingerprintPE = new DtlsFingerprintExtension();
             localTransport.addChildExtension(fingerprintPE);
         }
         fingerprintPE.setFingerprint(fingerprint);
@@ -968,8 +965,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             throws OperationFailedException
     {
         ExtensionElement transport = peer.getMediaHandler().getTransportManager().createTransport(media);
-        if (transport instanceof IceUdpTransportExtensionElement)
-            channel.setTransport((IceUdpTransportExtensionElement) transport);
+        if (transport instanceof IceUdpTransportExtension)
+            channel.setTransport((IceUdpTransportExtension) transport);
     }
 
     private void setTransportOnChannel(String media, JingleContent localContent,
@@ -978,8 +975,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             throws OperationFailedException
     {
         if (remoteContent != null) {
-            IceUdpTransportExtensionElement transport
-                    = remoteContent.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+            IceUdpTransportExtension transport
+                    = remoteContent.getFirstChildOfType(IceUdpTransportExtension.class);
             channel.setTransport(TransportManagerJabberImpl.cloneTransportAndCandidates(transport));
         }
     }
@@ -996,15 +993,15 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * the specified <tt>channel</tt>
      * @return the <tt>transport</tt> of the specified <tt>channel</tt>
      */
-    private IceUdpTransportExtensionElement ensureTransportOnChannel(
+    private IceUdpTransportExtension ensureTransportOnChannel(
             ColibriConferenceIQ.Channel channel, CallPeerJabberImpl peer)
     {
-        IceUdpTransportExtensionElement transport = channel.getTransport();
+        IceUdpTransportExtension transport = channel.getTransport();
 
         if (transport == null) {
             ExtensionElement pe = peer.getMediaHandler().getTransportManager().createTransportPacketExtension();
-            if (pe instanceof IceUdpTransportExtensionElement) {
-                transport = (IceUdpTransportExtensionElement) pe;
+            if (pe instanceof IceUdpTransportExtension) {
+                transport = (IceUdpTransportExtension) pe;
                 channel.setTransport(transport);
             }
         }

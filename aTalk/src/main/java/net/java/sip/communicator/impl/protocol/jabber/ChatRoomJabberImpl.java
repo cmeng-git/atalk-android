@@ -56,8 +56,8 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
-import org.xmpp.extensions.condesc.TransportExtensionElement;
+import org.xmpp.extensions.condesc.ConferenceDescriptionExtension;
+import org.xmpp.extensions.condesc.TransportExtension;
 import org.xmpp.extensions.jitsimeet.*;
 
 import java.beans.PropertyChangeEvent;
@@ -161,11 +161,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private ChatRoomMemberRole mUserRole = null;
 
     /**
-     * The corresponding configuration form.
-     */
-    private ChatRoomConfigurationFormJabberImpl configForm;
-
-    /**
      * The conference which we have announced in the room in our last sent <tt>Presence</tt> update.
      */
     private ConferenceDescription publishedConference = null;
@@ -174,7 +169,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * The <tt>ConferenceAnnouncementPacketExtension</tt> corresponding to <tt>publishedConference</tt> which we
      * add to all our presence updates. This MUST be kept in sync with <tt>publishedConference</tt>
      */
-    private ConferenceDescriptionExtensionElement publishedConferenceExt = null;
+    private ConferenceDescriptionExtension publishedConferenceExt = null;
 
     /**
      * The last <tt>Presence</tt> packet we sent to the MUC.
@@ -580,7 +575,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             throw new IllegalArgumentException("Invalid XMPP nickname");
         }
 
-        Contact sourceContact = opSetPersPresence.findContactByID(jid);
+        Contact sourceContact = opSetPersPresence.findContactByJid(jid);
         if (sourceContact == null) {
             sourceContact = opSetPersPresence.createVolatileContact(jid, true);
         }
@@ -1007,7 +1002,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             throws OperationFailedException
     {
         Message sendMessage = new Message();
-        sendMessage.addExtension(new JsonMessageExtensionElement(json));
+        sendMessage.addExtension(new JsonMessageExtension(json));
         sendMessage(sendMessage);
     }
 
@@ -1050,7 +1045,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 msgContent = Html.fromHtml(msgContent).toString();
 
                 encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
-                sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);;
+
+                messageBuilder = StanzaBuilder.buildMessage();
+                sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);
 
                 // Add the XHTML text to the message
                 XHTMLManager.addBody(sendMessage, htmlBody);
@@ -1792,10 +1789,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             cd.setDisplayName(displayName);
         }
 
-        ConferenceDescriptionExtensionElement ext
-                = new ConferenceDescriptionExtensionElement(cd.getUri(), cd.getUri(), cd.getPassword());
+        ConferenceDescriptionExtension ext
+                = new ConferenceDescriptionExtension(cd.getUri(), cd.getUri(), cd.getPassword());
         if (lastPresenceSent != null) {
-            setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtensionElement.NAMESPACE);
+            setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtension.NAMESPACE);
             try {
                 mPPS.getConnection().sendStanza(lastPresenceSent);
             } catch (NotConnectedException | InterruptedException e) {
@@ -1839,7 +1836,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         ExtensionElement pe;
         if (matchElementName && extension != null) {
             String element = extension.getElementName();
-            while (null != (pe = packet.getExtension(element, namespace))) {
+            while (null != (pe = packet.getExtensionElement(element, namespace))) {
                 packet.removeExtension(pe);
             }
         }
@@ -2009,7 +2006,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 return;
 
             Date timeStamp;
-            DelayInformation delayInfo = message.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+            DelayInformation delayInfo = message.getExtension(DelayInformation.class);
             if (delayInfo != null) {
                 timeStamp = delayInfo.getStamp();
 
@@ -2043,7 +2040,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             // for delay message only
             Jid jabberID = message.getFrom();
-            MultipleAddresses mAddress = message.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
+            MultipleAddresses mAddress = message.getExtension(MultipleAddresses.class);
             if (mAddress != null) {
                 List<MultipleAddresses.Address> addresses = mAddress.getAddressesOfType(MultipleAddresses.Type.ofrom);
                 jabberID = addresses.get(0).getJid().asBareJid();
@@ -2095,7 +2092,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 }
 
                 // Failed Event error
-                int errorResultCode = (ChatMessage.MESSAGE_SYSTEM == messageReceivedEventType)?
+                int errorResultCode = (ChatMessage.MESSAGE_SYSTEM == messageReceivedEventType) ?
                         MessageDeliveryFailedEvent.SYSTEM_ERROR_MESSAGE : MessageDeliveryFailedEvent.UNKNOWN_ERROR;
 
                 Condition errorCondition = error.getCondition();
@@ -2423,10 +2420,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public ChatRoomConfigurationForm getConfigurationForm()
             throws OperationFailedException, InterruptedException
     {
+        // The corresponding configuration form.
+        ChatRoomConfigurationFormJabberImpl configForm;
         Form smackConfigForm;
         try {
             smackConfigForm = mMultiUserChat.getConfigurationForm();
-            this.configForm = new ChatRoomConfigurationFormJabberImpl(mMultiUserChat, smackConfigForm);
+            configForm = new ChatRoomConfigurationFormJabberImpl(mMultiUserChat, smackConfigForm);
         } catch (XMPPErrorException e) {
             if (e.getStanzaError().getCondition().equals(Condition.forbidden))
                 throw new OperationFailedException(
@@ -2697,7 +2696,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         public void processPresence(Presence presence)
         {
             if (presence != null) {
-                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionExtensionElement.NAMESPACE);
+                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionExtension.NAMESPACE);
                 lastPresenceSent = presence;
             }
         }
@@ -2730,7 +2729,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
         private void processOwnPresence(Presence presence)
         {
-            MUCUser mucUser = presence.getExtension(MUCUser.ELEMENT, MUCUser.NAMESPACE);
+            MUCUser mucUser = presence.getExtension(MUCUser.class);
             if (mucUser != null) {
                 MUCAffiliation affiliation = mucUser.getItem().getAffiliation();
                 MUCRole role = mucUser.getItem().getRole();
@@ -2795,19 +2794,17 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             }
             ChatRoomMemberJabberImpl member = (participantNick == null) ? null : members.get(participantNick);
 
-            ExtensionElement ext = presence.getExtension(ConferenceDescriptionExtensionElement.NAMESPACE);
-            if (presence.isAvailable() && ext != null) {
-                ConferenceDescriptionExtensionElement cdExt = (ConferenceDescriptionExtensionElement) ext;
-
-                ConferenceDescription cd
-                        = new ConferenceDescription(
+            ConferenceDescriptionExtension cdExt
+                    = presence.getExtension(ConferenceDescriptionExtension.class);
+            if (presence.isAvailable() && cdExt != null) {
+                ConferenceDescription cd = new ConferenceDescription(
                         cdExt.getUri(),
                         cdExt.getCallId(),
                         cdExt.getPassword());
                 cd.setAvailable(cdExt.isAvailable());
                 cd.setDisplayName(getName());
-                for (TransportExtensionElement t
-                        : cdExt.getChildExtensionsOfType(TransportExtensionElement.class)) {
+                for (TransportExtension t
+                        : cdExt.getChildExtensionsOfType(TransportExtension.class)) {
                     cd.addTransport(t.getNamespace());
                 }
                 if (!processConferenceDescription(cd, participantNick))
@@ -2827,22 +2824,24 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (member == null) {
                 return;
             }
-            Nick nickExtension = presence.getExtension(Nick.ELEMENT_NAME, Nick.NAMESPACE);
-            if (nickExtension != null) {
-                member.setDisplayName(nickExtension.getName());
+
+            Nick nickExt = (Nick) presence.getExtensionElement(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+            // Nick nickExt = presence.getExtension(Nick.class);
+            if (nickExt != null) {
+                member.setDisplayName(nickExt.getName());
             }
 
-            Email emailExtension = presence.getExtension(Email.ELEMENT_NAME, Email.NAMESPACE);
+            Email emailExtension = presence.getExtension(Email.class);
             if (emailExtension != null) {
                 member.setEmail(emailExtension.getAddress());
             }
 
-            AvatarUrl avatarUrl = presence.getExtension(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE);
+            AvatarUrl avatarUrl = presence.getExtension(AvatarUrl.class);
             if (avatarUrl != null) {
                 member.setAvatarUrl(avatarUrl.getAvatarUrl());
             }
 
-            StatsId statsId = presence.getExtension(StatsId.ELEMENT_NAME, StatsId.NAMESPACE);
+            StatsId statsId = presence.getExtension(StatsId.class);
             if (statsId != null) {
                 member.setStatisticsID(statsId.getStatsId());
             }
@@ -2850,7 +2849,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // tell listeners the member was updated (and new information about it is available)
             member.setLastPresence(presence);
             fireMemberPresenceEvent(member, ChatRoomMemberPresenceChangeEvent.MEMBER_UPDATED, null);
-
         }
     }
 
@@ -2872,7 +2870,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         public void invitationDeclined(EntityBareJid invitee, String reason,
                 Message message, MUCUser.Decline rejection)
         {
-            // MUCUser mucUser = packet.getExtension(MUCUser.ELEMENT, MUCUser.NAMESPACE);
+            // MUCUser mucUser = packet.getExtension(MUCUser.class);
             MUCUser mucUser = MUCUser.from(message);
 
             // Check if the MUCUser informs that the invitee has declined the invitation
@@ -2890,7 +2888,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 //                OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
 //                        mPPS.getOperationSet(OperationSetPersistentPresence.class);
 //                if (presenceOpSet != null) {
-//                    Contact contact = presenceOpSet.findContactByID(invitee);
+//                    Contact contact = presenceOpSet.findContactByJid(invitee);
 //                    if (contact != null) {
 //                        if (invitee.isParentOf(contact.getJid())){
 //                            // if (!from.contains(contact.getDisplayName())) {
@@ -2910,18 +2908,17 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Updates the presence status of private messaging contact.
-     * cmeng: chatroom member always has e.g. conference@conference.atalk.org/swan, so sourceContact == null always
-     * since the search is based on contact List
+     * ChatRoom member always has e.g. conference@conference.atalk.org/swan,
      *
-     * @param nickname the nickname of the contact.
+     * @param chatRoomMember the chatRoomMember of the contact.
      */
-    public void updatePrivateContactPresenceStatus(String nickname)
+    public void updatePrivateContactPresenceStatus(ChatRoomMember chatRoomMember)
     {
         OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
                 mPPS.getOperationSet(OperationSetPersistentPresence.class);
-        ContactJabberImpl sourceContact
-                = (ContactJabberImpl) presenceOpSet.findContactByID(getName() + "/" + nickname);
-        updatePrivateContactPresenceStatus(sourceContact);
+        ContactJabberImpl contact
+                = (ContactJabberImpl) presenceOpSet.findContactByID(getName() + "/" + chatRoomMember.getNickName());
+        updatePrivateContactPresenceStatus(contact);
     }
 
     /**
@@ -2934,8 +2931,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         if (contact == null)
             return;
 
-        OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
-                mPPS.getOperationSet(OperationSetPersistentPresence.class);
+        OperationSetPersistentPresenceJabberImpl presenceOpSet
+                = (OperationSetPersistentPresenceJabberImpl) mPPS.getOperationSet(OperationSetPersistentPresence.class);
 
         PresenceStatus oldContactStatus = contact.getPresenceStatus();
         Resourcepart nickname;
@@ -2952,7 +2949,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         // When status changes this may be related to a change in the available resources.
         ((ContactJabberImpl) contact).updatePresenceStatus(offlineStatus);
-        presenceOpSet.fireContactPresenceStatusChangeEvent(contact,
-                contact.getParentContactGroup(), oldContactStatus, offlineStatus);
+        presenceOpSet.fireContactPresenceStatusChangeEvent(contact, contact.getJid(), contact.getParentContactGroup(),
+                oldContactStatus, offlineStatus);
     }
 }

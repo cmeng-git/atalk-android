@@ -21,6 +21,7 @@ import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 import org.jivesoftware.smackx.httpauthorizationrequest.packet.ConfirmIQ;
 import org.jxmpp.jid.DomainBareJid;
@@ -89,7 +90,7 @@ public final class HTTPAuthorizationRequestManager extends Manager
             final Jid from = message.getFrom();
             DomainBareJid bareFrom = from.asDomainBareJid();
 
-            Message.Body bodyExt = message.getExtension(Message.Body.ELEMENT, Message.Body.NAMESPACE);
+            Body bodyExt = message.getExtension(Body.class);
             if (bodyExt != null)
                 instruction = bodyExt.getMessage();
 

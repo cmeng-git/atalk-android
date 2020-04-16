@@ -35,7 +35,7 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 	public static void registerIQProvider()
 	{
 		// ColibriStatsIQ
-		ProviderManager.addIQProvider(HealthCheckIQ.ELEMENT_NAME, HealthCheckIQ.NAMESPACE, new HealthCheckIQProvider());
+		ProviderManager.addIQProvider(HealthCheckIQ.ELEMENT, HealthCheckIQ.NAMESPACE, new HealthCheckIQProvider());
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 		String namespace = parser.getNamespace();
 		HealthCheckIQ iq = null;
 
-		if (HealthCheckIQ.ELEMENT_NAME.equals(parser.getName())
+		if (HealthCheckIQ.ELEMENT.equals(parser.getName())
 			&& HealthCheckIQ.NAMESPACE.equals(namespace)) {
 			String rootElement = parser.getName();
 

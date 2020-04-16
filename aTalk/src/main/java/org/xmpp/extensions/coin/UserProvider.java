@@ -20,28 +20,28 @@ import java.io.IOException;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class UserProvider extends ExtensionElementProvider<UserExtensionElement>
+public class UserProvider extends ExtensionElementProvider<UserExtension>
 {
     /**
-     * Parses a User extension sub-packet and creates a {@link UserExtensionElement} instance. At the
+     * Parses a User extension sub-packet and creates a {@link UserExtension} instance. At the
      * beginning of the method call, the xml parser will be positioned on the opening element of the
      * packet extension. As required by the smack API, at the end of the method call, the parser
      * will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>User</tt> element.
-     * @return a new {@link UserExtensionElement} instance.
+     * @return a new {@link UserExtension} instance.
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
-    public UserExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public UserExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException, SmackParsingException
     {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
-        String entity = parser.getAttributeValue("", UserExtensionElement.ENTITY_ATTR_NAME);
+        String entity = parser.getAttributeValue("", UserExtension.ENTITY_ATTR_NAME);
         StateType state = StateType.full;
-        String stateStr = parser.getAttributeValue("", UserExtensionElement.STATE_ATTR_NAME);
+        String stateStr = parser.getAttributeValue("", UserExtension.STATE_ATTR_NAME);
 
         if (stateStr != null) {
             state = StateType.fromString(stateStr);
@@ -51,28 +51,28 @@ public class UserProvider extends ExtensionElementProvider<UserExtensionElement>
             throw new XmlPullParserException("Coin user element must contain entity attribute");
         }
 
-        UserExtensionElement ext = new UserExtensionElement(entity);
-        ext.setAttribute(UserExtensionElement.STATE_ATTR_NAME, state);
+        UserExtension ext = new UserExtension(entity);
+        ext.setAttribute(UserExtension.STATE_ATTR_NAME, state);
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                if (elementName.equals(UserExtensionElement.ELEMENT_DISPLAY_TEXT)) {
+                if (elementName.equals(UserExtension.ELEMENT_DISPLAY_TEXT)) {
                     try {
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                else if (elementName.equals(EndpointExtensionElement.ELEMENT_NAME)) {
+                else if (elementName.equals(EndpointExtension.ELEMENT)) {
                     EndpointProvider provider = new EndpointProvider();
                     ExtensionElement childExtension = provider.parse(parser);
                     ext.addChildExtension(childExtension);
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(UserExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(UserExtension.ELEMENT)) {
                     done = true;
                 }
             }

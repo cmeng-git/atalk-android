@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -216,14 +215,14 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         String nickName = ViewUtil.toString(nicknameField);
         String chatRoomField = chatRoomComboBox.getText();
 
-        boolean mEnable = (!TextUtils.isEmpty(chatRoomField) && (nickName != null));
+        boolean mEnable = (!TextUtils.isEmpty(chatRoomField) && (nickName != null) && (getSelectedProvider() != null));
         if (mEnable) {
             mJoinButton.setEnabled(true);
             mJoinButton.setAlpha(1.0f);
         }
         else {
-            mJoinButton.setEnabled(true);
-            mJoinButton.setAlpha(1.0f);
+            mJoinButton.setEnabled(false);
+            mJoinButton.setAlpha(0.5f);
         }
     }
 
@@ -280,7 +279,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             nickName = chatRoomWrapper.getNickName();
         }
 
-        if (TextUtils.isEmpty(nickName)) {
+        if (TextUtils.isEmpty(nickName) && (getSelectedProvider()!= null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
             if (pps != null) {
                 nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
@@ -339,7 +338,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
 
-        if (!TextUtils.isEmpty(chatRoomID) && (nickName != null)) {
+        if (!TextUtils.isEmpty(chatRoomID) && (nickName != null) && (getSelectedProvider() != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
 
             // create new if chatRoom does not exist
@@ -409,8 +408,11 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             mParent.startActivity(chatIntent);
             return true;
         }
-        else if (TextUtils.isEmpty(chatRoomID) || (nickName == null)) {
+        else if (TextUtils.isEmpty(chatRoomID)) {
             aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_NAME);
+        }
+        else if (nickName == null) {
+            aTalkApp.showToastMessage(R.string.service_gui_CHANGE_NICKNAME_NULL);
         }
         else {
             aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_FAILED, nickName, chatRoomID);

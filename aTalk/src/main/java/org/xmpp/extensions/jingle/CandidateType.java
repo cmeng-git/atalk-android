@@ -6,7 +6,7 @@
 package org.xmpp.extensions.jingle;
 
 /**
- * An enumeration containing allowed types for {@link CandidateExtensionElement}s.
+ * An enumeration containing allowed types for {@link CandidateExtension}s.
  *
  * @author Emil Ivov
  */

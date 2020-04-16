@@ -337,7 +337,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         public void composingNotification(Jid from, String packetID)
         {
             BareJid bareFrom = from.asBareJid();
-            Contact sourceContact = opSetPeersPresence.findContactByID(bareFrom);
+            Contact sourceContact = opSetPeersPresence.findContactByJid(bareFrom);
 
             // create the volatile contact if not found
             if (sourceContact == null) {
@@ -368,7 +368,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         public void cancelledNotification(Jid from, String packetID)
         {
             BareJid bareFrom = from.asBareJid();
-            Contact sourceContact = opSetPeersPresence.findContactByID(bareFrom);
+            Contact sourceContact = opSetPeersPresence.findContactByJid(bareFrom);
 
             // create the volatile contact if not found
             if (sourceContact == null) {
@@ -395,7 +395,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             }
         }
         if (chatDescriptor == null) {
-            chatDescriptor = opSetPeersPresence.findContactByID(bareJid);
+            chatDescriptor = opSetPeersPresence.findContactByJid(bareJid);
         }
         return chatDescriptor;
     }
@@ -457,7 +457,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 //        public void processStanza(Stanza packet)
 //        {
 //            Message message = (Message) packet;
-//            ChatStateExtension ext = (ChatStateExtension) message.getExtension(ChatStateManager.NAMESPACE);
+//            ChatStateExtension ext = (ChatStateExtension) message.getExtension(ChatStateExtension.class);
 //            if (ext != null) {
 //                stateChanged(null, ext.getChatState(), message);
 //            }

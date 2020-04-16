@@ -20,6 +20,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import javax.xml.namespace.QName;
+
 /**
  * ExtensionElement <Conform/> for HTTP Request
  * XEP-0070: Verifying HTTP Requests via XMPP
@@ -28,6 +30,8 @@ public class ConfirmExtension implements ExtensionElement
 {
     public static final String NAMESPACE = "http://jabber.org/protocol/http-auth";
     public static final String ELEMENT = "confirm";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public static final String ATTR_ID = "id";
     public static final String ATTR_METHOD = "method";
@@ -101,7 +105,7 @@ public class ConfirmExtension implements ExtensionElement
      * @return Confirm extension
      */
     public static ConfirmExtension from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(ConfirmExtension.class);
     }
 
     /**

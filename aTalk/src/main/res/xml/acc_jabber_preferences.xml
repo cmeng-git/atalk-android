@@ -123,7 +123,7 @@
         </PreferenceScreen>
 
         <Preference
-            android:key="@string/service_gui_settings_BOSH_PROXY"
+            android:key="@string/pref_key_bosh_configuration"
             android:summary="@string/service_gui_settings_BOSH_PROXY_SUMMARY"
             android:title="@string/service_gui_settings_BOSH_PROXY" />
         <PreferenceScreen

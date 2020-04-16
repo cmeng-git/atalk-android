@@ -36,15 +36,15 @@ import timber.log.Timber;
 public class JingleUtils
 {
     /**
-     * Extracts and returns an {@link RtpDescriptionExtensionElement} provided with <tt>content</tt>
+     * Extracts and returns an {@link RtpDescriptionExtension} provided with <tt>content</tt>
      * or <tt>null</tt> if there is none.
      *
-     * @param content the media content that we'd like to extract the {@link RtpDescriptionExtensionElement} from.
-     * @return an {@link RtpDescriptionExtensionElement} provided with <tt>content</tt> or <tt>null</tt> if there is none.
+     * @param content the media content that we'd like to extract the {@link RtpDescriptionExtension} from.
+     * @return an {@link RtpDescriptionExtension} provided with <tt>content</tt> or <tt>null</tt> if there is none.
      */
-    public static RtpDescriptionExtensionElement getRtpDescription(JingleContent content)
+    public static RtpDescriptionExtension getRtpDescription(JingleContent content)
     {
-        return content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+        return content.getFirstChildOfType(RtpDescriptionExtension.class);
     }
 
     /**
@@ -62,7 +62,7 @@ public class JingleUtils
      * @return an ordered list of <tt>MediaFormat</tt>s that are both advertised in the
      * <tt>description</tt> and supported by our <tt>MediaService</tt> implementation.
      */
-    public static List<MediaFormat> extractFormats(RtpDescriptionExtensionElement description,
+    public static List<MediaFormat> extractFormats(RtpDescriptionExtension description,
             DynamicPayloadTypeRegistry ptRegistry)
     {
         List<MediaFormat> mediaFmts = new ArrayList<>();
@@ -70,8 +70,8 @@ public class JingleUtils
             return mediaFmts;
         }
 
-        List<PayloadTypeExtensionElement> payloadTypes = description.getPayloadTypes();
-        for (PayloadTypeExtensionElement ptExt : payloadTypes) {
+        List<PayloadTypeExtension> payloadTypes = description.getPayloadTypes();
+        for (PayloadTypeExtension ptExt : payloadTypes) {
             MediaFormat format = payloadTypeToMediaFormat(ptExt, ptRegistry);
 
             // continue if our media service does not know this format
@@ -88,7 +88,7 @@ public class JingleUtils
      * Returns the {@link MediaFormat} described in the <tt>payloadType</tt> extension or
      * <tt>null</tt> if we don't recognize the format.
      *
-     * @param payloadType the {@link PayloadTypeExtensionElement} which is to be parsed into a
+     * @param payloadType the {@link PayloadTypeExtension} which is to be parsed into a
      * {@link MediaFormat}.
      * @param ptRegistry the {@link DynamicPayloadTypeRegistry} that we would use for the registration of
      * possible dynamic payload types or <tt>null</tt> the returned <tt>MediaFormat</tt> is
@@ -96,7 +96,7 @@ public class JingleUtils
      * @return the {@link MediaFormat} described in the <tt>payloadType</tt> extension or
      * <tt>null</tt> if we don't recognize the format.
      */
-    public static MediaFormat payloadTypeToMediaFormat(PayloadTypeExtensionElement payloadType,
+    public static MediaFormat payloadTypeToMediaFormat(PayloadTypeExtension payloadType,
             DynamicPayloadTypeRegistry ptRegistry)
     {
         return payloadTypeToMediaFormat(payloadType, JabberActivator.getMediaService(), ptRegistry);
@@ -106,7 +106,7 @@ public class JingleUtils
      * Returns the {@link MediaFormat} described in the <tt>payloadType</tt> extension or
      * <tt>null</tt> if we don't recognize the format.
      *
-     * @param payloadType the {@link PayloadTypeExtensionElement} which is to be parsed into a {@link MediaFormat}.
+     * @param payloadType the {@link PayloadTypeExtension} which is to be parsed into a {@link MediaFormat}.
      * @param mediaService the <tt>MediaService</tt> implementation which is to be used for <tt>MediaFormat</tt>
      * -related factory methods
      * @param ptRegistry the {@link DynamicPayloadTypeRegistry} that we would use for the registration of
@@ -115,18 +115,18 @@ public class JingleUtils
      * @return the {@link MediaFormat} described in the <tt>payloadType</tt> extension or
      * <tt>null</tt> if we don't recognize the format.
      */
-    public static MediaFormat payloadTypeToMediaFormat(PayloadTypeExtensionElement payloadType,
+    public static MediaFormat payloadTypeToMediaFormat(PayloadTypeExtension payloadType,
             MediaService mediaService, DynamicPayloadTypeRegistry ptRegistry)
     {
         byte pt = (byte) payloadType.getID();
         boolean unknown = false;
 
         // convert params to a name:value map
-        List<ParameterExtensionElement> params = payloadType.getParameters();
+        List<ParameterExtension> params = payloadType.getParameters();
         Map<String, String> paramsMap = new HashMap<>();
         Map<String, String> advancedMap = new HashMap<>();
 
-        for (ParameterExtensionElement param : params) {
+        for (ParameterExtension param : params) {
             String paramName = param.getName();
             if ("imageattr".equals(paramName))
                 advancedMap.put(paramName, param.getValue());
@@ -140,8 +140,8 @@ public class JingleUtils
                 paramsMap.put(attr, payloadType.getAttributeAsString(attr));
 
             //update ptime with the actual value from the payload
-            if (attr.equals(PayloadTypeExtensionElement.PTIME_ATTR_NAME))
-                advancedMap.put(PayloadTypeExtensionElement.PTIME_ATTR_NAME, Integer.toString(payloadType.getPtime()));
+            if (attr.equals(PayloadTypeExtension.PTIME_ATTR_NAME))
+                advancedMap.put(PayloadTypeExtension.PTIME_ATTR_NAME, Integer.toString(payloadType.getPtime()));
         }
 
         // now create the format.
@@ -183,13 +183,13 @@ public class JingleUtils
      * registers newly encountered ones into the specified <tt>extMap</tt>. The method returns an
      * empty list in case there were no <tt>extmap</tt> advertisements in <tt>desc</tt>.
      *
-     * @param desc the {@link RtpDescriptionExtensionElement} that we'd like to probe for a list of
+     * @param desc the {@link RtpDescriptionExtension} that we'd like to probe for a list of
      * {@link RTPExtension}s
      * @param extMap a reference to the <tt>DynamicRTPExtensionsRegistry</tt> where we should be
      * registering newly added extension mappings.
      * @return a <tt>List</tt> of {@link RTPExtension}s advertised in the <tt>mediaDesc</tt> description.
      */
-    public static List<RTPExtension> extractRTPExtensions(RtpDescriptionExtensionElement desc,
+    public static List<RTPExtension> extractRTPExtensions(RtpDescriptionExtension desc,
             DynamicRTPExtensionsRegistry extMap)
     {
         List<RTPExtension> extensionsList = new ArrayList<>();
@@ -197,8 +197,8 @@ public class JingleUtils
             return extensionsList;
         }
 
-        List<RTPHdrExtExtensionElement> extmapList = desc.getExtmapList();
-        for (RTPHdrExtExtensionElement extmap : extmapList) {
+        List<RTPHdrExtExtension> extmapList = desc.getExtmapList();
+        for (RTPHdrExtExtension extmap : extmapList) {
             RTPExtension rtpExtension = new RTPExtension(extmap.getURI(), getDirection(
                     extmap.getSenders(), false), extmap.getAttributes());
             extensionsList.add(rtpExtension);
@@ -317,14 +317,14 @@ public class JingleUtils
      */
     public static MediaStreamTarget extractDefaultTarget(JingleContent content)
     {
-        IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+        IceUdpTransportExtension transport = content.getFirstChildOfType(IceUdpTransportExtension.class);
         return (transport == null) ? null : extractDefaultTarget(transport);
     }
 
-    public static MediaStreamTarget extractDefaultTarget(IceUdpTransportExtensionElement transport)
+    public static MediaStreamTarget extractDefaultTarget(IceUdpTransportExtension transport)
     {
         // extract the default rtp candidate:
-        CandidateExtensionElement rtpCand = getFirstCandidate(transport, CandidateExtensionElement.RTP_COMPONENT_ID);
+        CandidateExtension rtpCand = getFirstCandidate(transport, CandidateExtension.RTP_COMPONENT_ID);
         if (rtpCand == null)
             return null;
 
@@ -340,7 +340,7 @@ public class JingleUtils
         InetSocketAddress rtpTarget = new InetSocketAddress(rtpAddress, rtpPort);
 
         // extract the RTCP candidate
-        CandidateExtensionElement rtcpCand = getFirstCandidate(transport, CandidateExtensionElement.RTCP_COMPONENT_ID);
+        CandidateExtension rtcpCand = getFirstCandidate(transport, CandidateExtension.RTCP_COMPONENT_ID);
         InetSocketAddress rtcpTarget;
 
         if (rtcpCand == null) {
@@ -367,18 +367,18 @@ public class JingleUtils
      * @param componentID the id of the component that we are looking for (e.g. 1 for RTP, 2 for RTCP);
      * @return the first candidate for the specified <tt>componentID</tt> or null if no such component exists.
      */
-    public static CandidateExtensionElement getFirstCandidate(JingleContent content, int componentID)
+    public static CandidateExtension getFirstCandidate(JingleContent content, int componentID)
     {
         // passing IceUdp would also return RawUdp transports as one extends the other.
-        IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+        IceUdpTransportExtension transport = content.getFirstChildOfType(IceUdpTransportExtension.class);
         return (transport == null) ? null : getFirstCandidate(transport, componentID);
     }
 
-    public static CandidateExtensionElement getFirstCandidate(IceUdpTransportExtensionElement transport, int componentID)
+    public static CandidateExtension getFirstCandidate(IceUdpTransportExtension transport, int componentID)
     {
-        for (CandidateExtensionElement cand : transport.getCandidateList()) {
+        for (CandidateExtension cand : transport.getCandidateList()) {
             // we don't care about remote candidates!
-            if (!(cand instanceof RemoteCandidateExtensionElement) && (cand.getComponent() == componentID)) {
+            if (!(cand instanceof RemoteCandidateExtension) && (cand.getComponent() == componentID)) {
                 return cand;
             }
         }
@@ -411,7 +411,7 @@ public class JingleUtils
             DynamicRTPExtensionsRegistry rtpExtensionsRegistry)
     {
         JingleContent content = new JingleContent();
-        RtpDescriptionExtensionElement description = new RtpDescriptionExtensionElement();
+        RtpDescriptionExtension description = new RtpDescriptionExtension();
 
         content.setCreator(creator);
         content.setName(contentName);
@@ -437,7 +437,7 @@ public class JingleUtils
                 MediaDirection extDirection = extension.getDirection();
                 String attributes = extension.getExtensionAttributes();
                 Senders sendersEnum = getSenders(extDirection, false);
-                RTPHdrExtExtensionElement ext = new RTPHdrExtExtensionElement();
+                RTPHdrExtExtension ext = new RTPHdrExtExtension();
 
                 ext.setURI(uri);
                 ext.setSenders(sendersEnum);
@@ -450,16 +450,16 @@ public class JingleUtils
     }
 
     /**
-     * Converts a specific {@link MediaFormat} into a new {@link PayloadTypeExtensionElement} instance.
+     * Converts a specific {@link MediaFormat} into a new {@link PayloadTypeExtension} instance.
      *
      * @param format the <tt>MediaFormat</tt> we'd like to convert.
      * @param ptRegistry the {@link DynamicPayloadTypeRegistry} to use for formats that don't have a static pt number.
      * @return the new <tt>PayloadTypeExtensionElement</tt> which contains <tt>format</tt>'s parameters.
      */
-    public static PayloadTypeExtensionElement formatToPayloadType(MediaFormat format,
+    public static PayloadTypeExtension formatToPayloadType(MediaFormat format,
             DynamicPayloadTypeRegistry ptRegistry)
     {
-        PayloadTypeExtensionElement ptExt = new PayloadTypeExtensionElement();
+        PayloadTypeExtension ptExt = new PayloadTypeExtension();
 
         int payloadType = format.getRTPPayloadType();
 
@@ -478,13 +478,13 @@ public class JingleUtils
          * Add the format parameters and the advanced attributes (as parameter packet extensions).
          */
         for (Map.Entry<String, String> entry : format.getFormatParameters().entrySet()) {
-            ParameterExtensionElement ext = new ParameterExtensionElement();
+            ParameterExtension ext = new ParameterExtension();
             ext.setName(entry.getKey());
             ext.setValue(entry.getValue());
             ptExt.addParameter(ext);
         }
         for (Map.Entry<String, String> entry : format.getAdvancedAttributes().entrySet()) {
-            ParameterExtensionElement ext = new ParameterExtensionElement();
+            ParameterExtension ext = new ParameterExtension();
             ext.setName(entry.getKey());
             ext.setValue(entry.getValue());
             ptExt.addParameter(ext);
@@ -509,7 +509,7 @@ public class JingleUtils
         // if no RTP description is present(SCTP connection case)
         String mediaTypeName = content.getName();
 
-        RtpDescriptionExtensionElement desc = getRtpDescription(content);
+        RtpDescriptionExtension desc = getRtpDescription(content);
         if (desc != null) {
             String rtpMedia = desc.getMedia().toLowerCase();
             if (!StringUtils.isNullOrEmpty(rtpMedia)) {

@@ -33,7 +33,7 @@ public class LogoutIq extends IQ
     /**
      * XML element name of logout IQ.
      */
-    public static final String ELEMENT_NAME = "logout";
+    public static final String ELEMENT = "logout";
 
     /**
      * XML namespace of logout IQ.
@@ -67,7 +67,7 @@ public class LogoutIq extends IQ
      */
     public LogoutIq()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

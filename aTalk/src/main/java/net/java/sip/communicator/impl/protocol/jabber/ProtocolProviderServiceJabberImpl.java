@@ -72,7 +72,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.caps.provider.CapsExtensionProvider;
-import org.jivesoftware.smackx.captcha.packet.Captcha;
+import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.provider.CaptchaProvider;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
@@ -120,7 +120,7 @@ import org.xmpp.extensions.coin.CoinIQ;
 import org.xmpp.extensions.coin.CoinIQProvider;
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
 import org.xmpp.extensions.colibri.ColibriIQProvider;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
+import org.xmpp.extensions.condesc.ConferenceDescriptionExtension;
 import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionProvider;
 import org.xmpp.extensions.inputevt.InputEvtIQ;
 import org.xmpp.extensions.inputevt.InputEvtIQProvider;
@@ -175,7 +175,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for RTP support.
      */
-    public static final String URN_XMPP_JINGLE_RTP = RtpDescriptionExtensionElement.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RTP = RtpDescriptionExtension.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for RTP support with audio.
@@ -190,17 +190,17 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for ZRTP support with RTP.
      */
-    public static final String URN_XMPP_JINGLE_RTP_ZRTP = ZrtpHashExtensionElement.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RTP_ZRTP = ZrtpHashExtension.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for ICE_UDP transport support.
      */
-    public static final String URN_XMPP_JINGLE_RAW_UDP_0 = RawUdpTransportExtensionElement.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RAW_UDP_0 = RawUdpTransportExtension.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for ICE_UDP transport support.
      */
-    public static final String URN_XMPP_JINGLE_ICE_UDP_1 = IceUdpTransportExtensionElement.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_ICE_UDP_1 = IceUdpTransportExtension.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for Jingle Nodes support.
@@ -210,7 +210,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for "XEP-0251: Jingle Session Transfer" support.
      */
-    public static final String URN_XMPP_JINGLE_TRANSFER_0 = TransferExtensionElement.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_TRANSFER_0 = TransferExtension.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for
@@ -1878,7 +1878,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         supportedFeatures.add(DataPacketExtension.NAMESPACE);
 
         // XEP-0294: Jingle RTP Header Extensions Negotiation
-        supportedFeatures.add(RTPHdrExtExtensionElement.NAMESPACE);
+        supportedFeatures.add(RTPHdrExtExtension.NAMESPACE);
 
         // XEP-0308: Last Message Correction
         supportedFeatures.add(MessageCorrectExtension.NAMESPACE);
@@ -2075,22 +2075,22 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * Tell Smack what are the additional IQProviders that aTalk can support
              */
             // register our coin provider
-            ProviderManager.addIQProvider(CoinIQ.ELEMENT_NAME, CoinIQ.NAMESPACE, new CoinIQProvider());
+            ProviderManager.addIQProvider(CoinIQ.ELEMENT, CoinIQ.NAMESPACE, new CoinIQProvider());
 
             // Jitsi Videobridge IQProvider and PacketExtensionProvider
             ProviderManager.addIQProvider(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE,
                     new ColibriIQProvider());
 
-            ProviderManager.addIQProvider(JibriIq.ELEMENT_NAME, JibriIq.NAMESPACE, new JibriIqProvider());
+            ProviderManager.addIQProvider(JibriIq.ELEMENT, JibriIq.NAMESPACE, new JibriIqProvider());
 
             // register our input event provider
-            ProviderManager.addIQProvider(InputEvtIQ.ELEMENT_NAME, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
+            ProviderManager.addIQProvider(InputEvtIQ.ELEMENT, InputEvtIQ.NAMESPACE, new InputEvtIQProvider());
 
             // register our jingle provider
             ProviderManager.addIQProvider(Jingle.ELEMENT, Jingle.NAMESPACE, new JingleProvider());
 
             // register our JingleInfo provider
-            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT_NAME, JingleInfoQueryIQ.NAMESPACE,
+            ProviderManager.addIQProvider(JingleInfoQueryIQ.ELEMENT, JingleInfoQueryIQ.NAMESPACE,
                     new JingleInfoQueryIQProvider());
 
             // replace the default StreamInitiationProvider with our
@@ -2103,39 +2103,39 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addIQProvider(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, new ConfirmIQProvider());
 
             ProviderManager.addExtensionProvider(
-                    ConferenceDescriptionExtensionElement.ELEMENT_NAME, ConferenceDescriptionExtensionElement.NAMESPACE,
+                    ConferenceDescriptionExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE,
                     new ConferenceDescriptionExtensionProvider());
 
             ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new NickProvider());
 
-            ProviderManager.addExtensionProvider(AvatarUrl.ELEMENT_NAME, AvatarUrl.NAMESPACE, new AvatarUrl.Provider());
+            ProviderManager.addExtensionProvider(AvatarUrl.ELEMENT, AvatarUrl.NAMESPACE, new AvatarUrl.Provider());
 
-            ProviderManager.addExtensionProvider(StatsId.ELEMENT_NAME, StatsId.NAMESPACE, new StatsId.Provider());
+            ProviderManager.addExtensionProvider(StatsId.ELEMENT, StatsId.NAMESPACE, new StatsId.Provider());
 
-            ProviderManager.addExtensionProvider(IdentityExtensionElement.ELEMENT_NAME, IdentityExtensionElement.NAMESPACE,
-                    new IdentityExtensionElement.Provider());
+            ProviderManager.addExtensionProvider(IdentityExtension.ELEMENT, IdentityExtension.NAMESPACE,
+                    new IdentityExtension.Provider());
 
-            ProviderManager.addExtensionProvider(AvatarIdExtensionElement.ELEMENT_NAME, AvatarIdExtensionElement.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(AvatarIdExtensionElement.class));
+            ProviderManager.addExtensionProvider(AvatarIdExtension.ELEMENT, AvatarIdExtension.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(AvatarIdExtension.class));
 
-            ProviderManager.addExtensionProvider(JsonMessageExtensionElement.ELEMENT_NAME, JsonMessageExtensionElement.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(JsonMessageExtensionElement.class));
+            ProviderManager.addExtensionProvider(JsonMessageExtension.ELEMENT, JsonMessageExtension.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(JsonMessageExtension.class));
 
-            ProviderManager.addExtensionProvider(TranslationLanguageExtensionElement.ELEMENT_NAME,
-                    TranslationLanguageExtensionElement.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranslationLanguageExtensionElement.class));
-
-            ProviderManager.addExtensionProvider(
-                    TranscriptionLanguageExtensionElement.ELEMENT_NAME, TranscriptionLanguageExtensionElement.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranscriptionLanguageExtensionElement.class));
+            ProviderManager.addExtensionProvider(TranslationLanguageExtension.ELEMENT,
+                    TranslationLanguageExtension.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranslationLanguageExtension.class));
 
             ProviderManager.addExtensionProvider(
-                    TranscriptionStatusExtensionElement.ELEMENT_NAME, TranscriptionStatusExtensionElement.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranscriptionStatusExtensionElement.class));
+                    TranscriptionLanguageExtension.ELEMENT, TranscriptionLanguageExtension.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranscriptionLanguageExtension.class));
 
             ProviderManager.addExtensionProvider(
-                    TranscriptionRequestExtensionElement.ELEMENT_NAME, TranscriptionRequestExtensionElement.NAMESPACE,
-                    new DefaultExtensionElementProvider<>(TranscriptionRequestExtensionElement.class));
+                    TranscriptionStatusExtension.ELEMENT, TranscriptionStatusExtension.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranscriptionStatusExtension.class));
+
+            ProviderManager.addExtensionProvider(
+                    TranscriptionRequestExtension.ELEMENT, TranscriptionRequestExtension.NAMESPACE,
+                    new DefaultExtensionElementProvider<>(TranscriptionRequestExtension.class));
 
             ProviderManager.addExtensionProvider(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, new ConfirmExtProvider());
 
@@ -2163,7 +2163,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     new VCardTempXUpdateProvider());
 
             // XEP-0158: CAPTCHA Forms
-            ProviderManager.addExtensionProvider(Captcha.ELEMENT, Captcha.NAMESPACE, new CaptchaProvider());
+            ProviderManager.addExtensionProvider(CaptchaExtension.ELEMENT, CaptchaExtension.NAMESPACE, new CaptchaProvider());
 
             // in case of modified account, we clear list of supported features and all state
             // change listeners, otherwise we can have two OperationSet for same feature and it

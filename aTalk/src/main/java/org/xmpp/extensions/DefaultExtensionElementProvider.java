@@ -5,9 +5,6 @@
  */
 package org.xmpp.extensions;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -56,7 +53,6 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
      * @return a new packet extension instance.
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException, SmackParsingException

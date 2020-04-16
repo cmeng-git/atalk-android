@@ -179,7 +179,8 @@ public class StunServerDescriptor implements Serializable
      */
     public void setUsername(String username)
     {
-        this.username = StringUtils.getUTF8Bytes(username);
+        if (username != null)
+            this.username = StringUtils.getUTF8Bytes(username);
     }
 
     /**

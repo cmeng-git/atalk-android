@@ -506,34 +506,39 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
             OmemoManager omemoManager)
     {
-        Jid jid = to.getJid();
+        BareJid bareJid = to.getJid().asBareJid();
         String msgContent = message.getContent();
         String errMessage = null;
 
         try {
-            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(jid.asBareJid(), msgContent);
+            OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
 
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
-            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, jid);
+            Message sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
-                String xhtmlBody = encryptedMessage.getElement().toXML().toString();
-                XHTMLText htmlBody = new XHTMLText("", "us").append(xhtmlBody).appendCloseBodyTag();
+                // Make this into encrypted xhtmlText for inclusion
+                String xhtmlEncrypted = encryptedMessage.getElement().toXML().toString();
+                XHTMLText xhtmlText = new XHTMLText("", "us")
+                        .append(xhtmlEncrypted)
+                        .appendCloseBodyTag();
 
-                // OMEMO body message content will strip off any html tags info
+                // OMEMO body message content will strip off any xhtml tags info
                 msgContent = Html.fromHtml(msgContent).toString();
-                encryptedMessage = omemoManager.encrypt(jid.asBareJid(), msgContent);
-                sendMessage = encryptedMessage.buildMessage(messageBuilder, jid);
+                encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
+
+                messageBuilder = StanzaBuilder.buildMessage();
+                sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
 
                 // Add the XHTML text to the message
-                XHTMLManager.addBody(sendMessage, htmlBody);
+                XHTMLManager.addBody(sendMessage, xhtmlText);
             }
 
             // proceed to send message if no exceptions.
             if (correctedMessageUID != null)
                 sendMessage.addExtension(new MessageCorrectExtension(correctedMessageUID));
             sendMessage.setStanzaId(message.getMessageUID());
-            mChat = mChatManager.chatWith(jid.asEntityBareJidIfPossible());
+            mChat = mChatManager.chatWith(bareJid.asEntityBareJidIfPossible());
             mChat.send(sendMessage);
 
             message.setServerMsgId(sendMessage.getStanzaId());
@@ -823,7 +828,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
         newMessage.setRemoteMsgId(message.getStanzaId());
 
-        Contact sourceContact = opSetPersPresence.findContactByID(isPrivateMessaging ? userFullJId : userBareID);
+        // cmeng: do not really matter if it is fullJid or bareJid. bareJid is used always.
+        Contact sourceContact = opSetPersPresence.findContactByJid(isPrivateMessaging ? userFullJId : userBareID);
         if (message.getType() == Message.Type.error) {
             // error which is multi-chat and we don't know about the contact is a muc message
             // error which is missing muc extension and is coming from the room, when we try
@@ -945,7 +951,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     private Date getTimeStamp(Message msg)
     {
         Date timeStamp;
-        DelayInformation delayInfo = msg.getExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE);
+        DelayInformation delayInfo = msg.getExtension(DelayInformation.class);
         if (delayInfo != null) {
             timeStamp = delayInfo.getStamp();
         }
@@ -1005,7 +1011,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         Jid userFullJid = isForwardedSentOmemoMessage ? message.getTo() : message.getFrom();
         BareJid userBareJid = userFullJid.asBareJid();
         putJidForAddress(userBareJid, message.getThread());
-        Contact sourceContact = opSetPersPresence.findContactByID(userBareJid);
+        Contact sourceContact = opSetPersPresence.findContactByJid(userBareJid);
         if (sourceContact == null) {
             // create new volatile contact
             sourceContact = opSetPersPresence.createVolatileContact(userBareJid);

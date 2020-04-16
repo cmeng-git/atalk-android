@@ -214,6 +214,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Eine Konferenzschaltung erstellen.&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Erstellen eines Konferenz-Chats&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Gruppen erstellen&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Ungültiger Gruppenname: %s</string>
     <string name="service_gui_CREATE_GROUP_NAME">Bitte gebe untenstehend den Namen der zu erstellenden Gruppe ein.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ihre Kontaktliste enthält keine Gruppen. Bitte erstelle zuerst eine Gruppe. (Datei/Gruppe erstellen).</string>
 

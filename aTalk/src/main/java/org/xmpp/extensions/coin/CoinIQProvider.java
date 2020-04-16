@@ -43,14 +43,14 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
     /**
      * Provider for URIs packet extension.
      */
-    private final DefaultExtensionElementProvider<URIsExtensionElement> urisProvider
-            = new DefaultExtensionElementProvider<>(URIsExtensionElement.class);
+    private final DefaultExtensionElementProvider<URIsExtension> urisProvider
+            = new DefaultExtensionElementProvider<>(URIsExtension.class);
 
     /**
      * Provider for sidebars by val packet extension.
      */
-    private final DefaultExtensionElementProvider<SidebarsByValExtensionElement> sidebarsByValProvider
-            = new DefaultExtensionElementProvider<>(SidebarsByValExtensionElement.class);
+    private final DefaultExtensionElementProvider<SidebarsByValExtension> sidebarsByValProvider
+            = new DefaultExtensionElementProvider<>(SidebarsByValExtension.class);
 
     /**
      * Constructor.
@@ -58,28 +58,28 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
     public CoinIQProvider()
     {
         ProviderManager.addExtensionProvider(
-                UserRolesExtensionElement.ELEMENT_NAME, UserRolesExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(UserRolesExtensionElement.class));
+                UserRolesExtension.ELEMENT, UserRolesExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(UserRolesExtension.class));
 
         ProviderManager.addExtensionProvider(
-                URIExtensionElement.ELEMENT_NAME, URIExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(URIExtensionElement.class));
+                URIExtension.ELEMENT, URIExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(URIExtension.class));
 
         ProviderManager.addExtensionProvider(
-                SIPDialogIDExtensionElement.ELEMENT_NAME, SIPDialogIDExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(SIPDialogIDExtensionElement.class));
+                SIPDialogIDExtension.ELEMENT, SIPDialogIDExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(SIPDialogIDExtension.class));
 
         ProviderManager.addExtensionProvider(
-                ConferenceMediumExtensionElement.ELEMENT_NAME, ConferenceMediumExtensionElement.NAMESPACE,
+                ConferenceMediumExtension.ELEMENT, ConferenceMediumExtension.NAMESPACE,
                 new ConferenceMediumProvider());
 
         ProviderManager.addExtensionProvider(
-                ConferenceMediaExtensionElement.ELEMENT_NAME, ConferenceMediaExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ConferenceMediaExtensionElement.class));
+                ConferenceMediaExtension.ELEMENT, ConferenceMediaExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ConferenceMediaExtension.class));
 
         ProviderManager.addExtensionProvider(
-                CallInfoExtensionElement.ELEMENT_NAME, CallInfoExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(CallInfoExtensionElement.class));
+                CallInfoExtension.ELEMENT, CallInfoExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(CallInfoExtension.class));
     }
 
     /**
@@ -122,27 +122,27 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 switch (elementName) {
-                    case DescriptionExtensionElement.ELEMENT_NAME: {
+                    case DescriptionExtension.ELEMENT: {
                         ExtensionElement childExtension = descriptionProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case UsersExtensionElement.ELEMENT_NAME: {
+                    case UsersExtension.ELEMENT: {
                         ExtensionElement childExtension = usersProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case StateExtensionElement.ELEMENT_NAME: {
+                    case StateExtension.ELEMENT: {
                         ExtensionElement childExtension = stateProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case URIsExtensionElement.ELEMENT_NAME: {
+                    case URIsExtension.ELEMENT: {
                         ExtensionElement childExtension = urisProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
                     }
-                    case SidebarsByValExtensionElement.ELEMENT_NAME: {
+                    case SidebarsByValExtension.ELEMENT: {
                         ExtensionElement childExtension = sidebarsByValProvider.parse(parser);
                         coinIQ.addExtension(childExtension);
                         break;
@@ -150,7 +150,7 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
                 }
             }
             if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(CoinIQ.ELEMENT_NAME)) {
+                if (parser.getName().equals(CoinIQ.ELEMENT)) {
                     done = true;
                 }
             }

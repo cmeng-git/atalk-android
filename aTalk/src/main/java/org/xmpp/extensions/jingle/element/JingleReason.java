@@ -9,6 +9,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import javax.xml.namespace.QName;
+
 /**
  * The <tt>reason</tt> element provides human or machine-readable information explaining what
  * prompted the <tt>action</tt> of the encapsulating <tt>jingle</tt> element.
@@ -30,10 +32,12 @@ public class JingleReason implements ExtensionElement
      */
     public static final String ELEMENT = "reason";
 
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
     /**
      * The name of the text element.
      */
-    public static final String TEXT_ELEMENT_NAME = "text";
+    public static final String TEXT_ELEMENT = "text";
 
     /**
      * The reason that this packet extension is transporting.
@@ -164,7 +168,7 @@ public class JingleReason implements ExtensionElement
         xml.closeEmptyElement();
 
         // add reason "text" if we have it
-        xml.optElement(TEXT_ELEMENT_NAME, getText());
+        xml.optElement(TEXT_ELEMENT, getText());
 
         // add the extra element if it has been specified.
         if (getOtherExtension() != null) {

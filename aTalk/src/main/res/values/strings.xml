@@ -229,6 +229,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Create a conference call&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Create a conference chat&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Create group&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Invalid group name: %s</string>
     <string name="service_gui_CREATE_GROUP_NAME">In the field below enter the name of the group you would like to create.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Your contact list does not contain any groups. Please create a group first (File/Create group).</string>
 
@@ -1037,6 +1038,7 @@
     <string name="omemo_purge_inactive_device_error">Failed to remove inactive omemo device for: %1$s.</string>
 
     <!-- Account proxy settings -->
+    <string name="pref_key_bosh_configuration">Bosh_Configuration</string>
     <string name="service_gui_settings_BOSH_PROXY">BOSH-Proxy Configuration</string>
     <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Setup connection via BOSH/Proxy for the account</string>
     <string name="plugin_proxy_BOSHURL_NULL">BOSH URL field content cannot be empty</string>

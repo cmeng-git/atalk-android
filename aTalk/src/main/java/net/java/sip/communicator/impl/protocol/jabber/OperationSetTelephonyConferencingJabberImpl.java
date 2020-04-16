@@ -6,7 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.xmpp.extensions.coin.CoinIQ;
-import org.xmpp.extensions.jingle.CoinExtensionElement;
+import org.xmpp.extensions.jingle.CoinExtension;
 import org.xmpp.extensions.jingle.element.Jingle;
 
 import net.java.sip.communicator.service.protocol.*;
@@ -285,7 +285,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             throws OperationFailedException
     {
         return getBasicTelephony().createOutgoingCall(call, calleeAddress,
-                Arrays.asList(new ExtensionElement[]{new CoinExtensionElement(true)}));
+                Arrays.asList(new ExtensionElement[]{new CoinExtension(true)}));
     }
 
     /**
@@ -353,7 +353,7 @@ public class OperationSetTelephonyConferencingJabberImpl
         // setup for Coin Request Handler
         protected IQRequestHandler()
         {
-            super(CoinIQ.ELEMENT_NAME, CoinIQ.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async);
+            super(CoinIQ.ELEMENT, CoinIQ.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async);
         }
 
         // public void processStanza(Stanza packet) {

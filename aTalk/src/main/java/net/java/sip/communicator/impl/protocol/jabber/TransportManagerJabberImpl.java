@@ -152,20 +152,20 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * transport-related information which has been received from the remote peer and which
      * is to be sent to the associated Jitsi Videobridge
      */
-    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransportExtensionElement> map)
+    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransportExtension> map)
             throws OperationFailedException
     {
         CallPeerJabberImpl peer = getCallPeer();
         boolean initiator = !peer.isInitiator();
         ColibriConferenceIQ conferenceRequest = null;
 
-        for (Map.Entry<String, IceUdpTransportExtensionElement> e : map.entrySet()) {
+        for (Map.Entry<String, IceUdpTransportExtension> e : map.entrySet()) {
             String media = e.getKey();
             MediaType mediaType = MediaType.parseString(media);
             ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, false /* remote */);
 
             if (channel != null) {
-                IceUdpTransportExtensionElement transport;
+                IceUdpTransportExtension transport;
                 try {
                     transport = cloneTransportAndCandidates(e.getValue());
                 } catch (OperationFailedException ofe) {
@@ -339,8 +339,8 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
             if (ourContent != null) {
                 JingleContent theirContent = (theirOffer == null)
                         ? null : findContentByName(theirOffer, contentName);
-                RtpDescriptionExtensionElement rtpDesc
-                        = ourContent.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+                RtpDescriptionExtension rtpDesc
+                        = ourContent.getFirstChildOfType(RtpDescriptionExtension.class);
                 String media = rtpDesc.getMedia();
                 ExtensionElement pe = startCandidateHarvest(theirContent, ourContent, transportInfoSender, media);
 
@@ -428,7 +428,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * do not perform connectivity checks (e.g. raw UDP) should return <tt>true</tt>. The
      * default implementation does not perform connectivity checks and always returns <tt>true</tt>.
      */
-    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtensionElement> remote)
+    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtension> remote)
     {
         return true;
     }
@@ -493,11 +493,11 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * type, attributes, namespace, text and candidates as the specified <tt>src</tt>
      * @throws OperationFailedException if an error occurs during the cloing of the specified <tt>src</tt> and its candidates
      */
-    static IceUdpTransportExtensionElement cloneTransportAndCandidates(IceUdpTransportExtensionElement src)
+    static IceUdpTransportExtension cloneTransportAndCandidates(IceUdpTransportExtension src)
             throws OperationFailedException
     {
         try {
-            return IceUdpTransportExtensionElement.cloneTransportAndCandidates(src);
+            return IceUdpTransportExtension.cloneTransportAndCandidates(src);
         } catch (Exception e) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
                     "Failed to close transport and candidates.", OperationFailedException.GENERAL_ERROR, e);

@@ -2645,26 +2645,23 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     }
 
     /**
-     * Notifies this listener that the list of the <tt>OperationSet</tt> capabilities of a
-     * <tt>Contact</tt> has changed.
+     * Notify the listener that the list of the <tt>OperationSet</tt> capabilities of a <tt>Contact</tt> has changed.
+     *
      * cmeng: need more work here? to handle protocol contact capability changes for
      * MciStorageManager which only taking care of persistent data.
      *
-     * @param event a <tt>ContactCapabilitiesEvent</tt> with ID
-     * {@link ContactCapabilitiesEvent#SUPPORTED_OPERATION_SETS_CHANGED} which specifies
-     * the <tt>Contact</tt> whose list of <tt>OperationSet</tt> capabilities has changed
+     * @param event a <tt>ContactCapabilitiesEvent</tt> which specifies the <tt>Contact</tt>
+     * whose list of <tt>OperationSet</tt> capabilities has changed
      */
     public void supportedOperationSetsChanged(ContactCapabilitiesEvent event)
     {
         // If the source contact not in this meta contact, we have nothing more to do here.
         MetaContactImpl metaContactImpl = (MetaContactImpl) findMetaContactByContact(event.getSourceContact());
-
-        // ignore if we have no meta contact.
         if (metaContactImpl == null)
             return;
 
         Contact contact = event.getSourceContact();
-        metaContactImpl.updateCapabilities(contact, event.getOperationSets());
+        metaContactImpl.updateCapabilities(contact, event.getJid(), event.getOperationSets());
 
         fireProtoContactEvent(contact, ProtoContactEvent.PROTO_CONTACT_MODIFIED, metaContactImpl, metaContactImpl);
     }

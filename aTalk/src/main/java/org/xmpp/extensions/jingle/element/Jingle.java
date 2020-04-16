@@ -89,7 +89,7 @@ public class Jingle extends IQ
     /**
      * Any session info extensions that this packet may contain.
      */
-    private SessionInfoExtensionElement sessionInfo;
+    private SessionInfoExtension sessionInfo;
 
     /**
      * The list of "content" elements included in this IQ.
@@ -278,7 +278,7 @@ public class Jingle extends IQ
      * Determines if this packet contains a <tt>content</tt> with a child matching the specified
      * <tt>contentType</tt>. The method is meant to allow to easily determine the purpose of a
      * jingle IQ. A telephony initiation IQ would for example contain a <tt>content</tt> element of
-     * type {@link RtpDescriptionExtensionElement}.
+     * type {@link RtpDescriptionExtension}.
      *
      * @param contentType the type of the content child we are looking for.
      * @return <tt>true</tt> if one of this IQ's <tt>content</tt> elements contains a child of the
@@ -332,21 +332,21 @@ public class Jingle extends IQ
     /**
      * Sets <tt>si</tt> as the session info extension for this packet.
      *
-     * @param si a {@link SessionInfoExtensionElement} that we'd like to add here.
+     * @param si a {@link SessionInfoExtension} that we'd like to add here.
      */
-    public void setSessionInfo(SessionInfoExtensionElement si)
+    public void setSessionInfo(SessionInfoExtension si)
     {
         this.sessionInfo = si;
     }
 
     /**
-     * Returns a {@link SessionInfoExtensionElement} if this <tt>Jingle</tt> contains one and
+     * Returns a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and
      * <tt>null</tt> otherwise.
      *
-     * @return a {@link SessionInfoExtensionElement} if this <tt>Jingle</tt> contains one and
+     * @return a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and
      * <tt>null</tt> otherwise.
      */
-    public SessionInfoExtensionElement getSessionInfo()
+    public SessionInfoExtension getSessionInfo()
     {
         return this.sessionInfo;
     }

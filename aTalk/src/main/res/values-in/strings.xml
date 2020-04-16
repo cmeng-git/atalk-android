@@ -214,6 +214,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Bikin panggilan konferensi&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Bikin obrolan konferensi&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Bikin grup&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Nama grup tidak betul: %s</string>
     <string name="service_gui_CREATE_GROUP_NAME">Pada bidang di bawah, masukkan nama grup yang ingin Anda buat.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Daftar kontak Anda tidak berisi grup apa pun. Harap buat grup terlebih dahulu (Fail/Buat grup).</string>
 
@@ -299,7 +300,7 @@
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Masukkan nama atau nomor</string>
     <string name="service_gui_ERROR">Kesalahan</string>
     <string name="service_gui_ERROR_WAS">Kesalahannya adalah: %1$s</string>
-    <string name="service_gui_EXIT">Tinggal</string>
+    <string name="service_gui_EXIT">Tamat</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Meninggal lama</string>
     <string name="service_gui_FAILED_STATUS">Panggilan gagal</string>
     <string name="service_gui_FFC_STATUS">Gratis untuk obrolan</string>

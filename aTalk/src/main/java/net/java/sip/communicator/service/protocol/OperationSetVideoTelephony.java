@@ -21,6 +21,7 @@ import java.util.List;
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
+ * @author Eng Chong Meng
  */
 public interface OperationSetVideoTelephony extends OperationSet
 {
@@ -32,7 +33,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @param listener the <tt>VideoListener</tt> to be notified when visual/video <tt>Component</tt>s are
      * being added or removed for <tt>peer</tt>
      */
-    public void addVideoListener(CallPeer peer, VideoListener listener);
+    void addVideoListener(CallPeer peer, VideoListener listener);
 
     /**
      * Gets the visual <tt>Component</tt> which depicts the local video being streamed to a specific <tt>CallPeer</tt>.
@@ -45,7 +46,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * <tt>Component</tt> asynchronously
      * @throws OperationFailedException if creating the component fails for whatever reason.
      */
-    public Component getLocalVisualComponent(CallPeer peer)
+    Component getLocalVisualComponent(CallPeer peer)
             throws OperationFailedException;
 
     /**
@@ -57,7 +58,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * <tt>peer</tt> if any; otherwise, <tt>null</tt>
      */
     @Deprecated
-    public Component getVisualComponent(CallPeer peer);
+    Component getVisualComponent(CallPeer peer);
 
     /**
      * Gets the visual/video <tt>Component</tt>s available in this telephony for a specific <tt>CallPeer</tt>.
@@ -65,7 +66,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @param peer the <tt>CallPeer</tt> whose videos are to be retrieved
      * @return the visual/video <tt>Component</tt>s available in this telephony for the specified <tt>peer</tt>
      */
-    public List<Component> getVisualComponents(CallPeer peer);
+    List<Component> getVisualComponents(CallPeer peer);
 
     /**
      * Removes a specific <tt>VideoListener</tt> from this telephony in order to no longer have it
@@ -76,7 +77,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @param listener the <tt>VideoListener</tt> to no longer be notified when visual/video
      * <tt>Component</tt>s are being added or removed for <tt>peer</tt>
      */
-    public void removeVideoListener(CallPeer peer, VideoListener listener);
+    void removeVideoListener(CallPeer peer, VideoListener listener);
 
     /**
      * Sets the indicator which determines whether the streaming of local video in a specific
@@ -89,7 +90,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * <tt>false</tt> to disallow it
      * @throws OperationFailedException if initializing local video fails.
      */
-    public void setLocalVideoAllowed(Call call, boolean allowed)
+    void setLocalVideoAllowed(Call call, boolean allowed)
             throws OperationFailedException;
 
     /**
@@ -102,13 +103,13 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @return <tt>true</tt> if the streaming of local video for the specified <tt>Call</tt> is
      * allowed; otherwise, <tt>false</tt>
      */
-    public boolean isLocalVideoAllowed(Call call);
+    boolean isLocalVideoAllowed(Call call);
 
     /**
      * The property which indicates whether a specific <tt>Call</tt> is currently streaming the
      * local video (to a remote destination).
      */
-    public static final String LOCAL_VIDEO_STREAMING = "LOCAL_VIDEO_STREAMING";
+    static final String LOCAL_VIDEO_STREAMING = "LOCAL_VIDEO_STREAMING";
 
     /**
      * Gets the indicator which determines whether a specific <tt>Call</tt> is currently streaming
@@ -118,7 +119,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @return <tt>true</tt> if the specified <tt>Call</tt> is currently streaming the local video
      * (to a remote destination); otherwise, <tt>false</tt>
      */
-    public boolean isLocalVideoStreaming(Call call);
+    boolean isLocalVideoStreaming(Call call);
 
     /**
      * Adds a specific <tt>PropertyChangeListener</tt> to the list of listeners which get notified
@@ -129,7 +130,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @param listener the <tt>PropertyChangeListener</tt> to be notified when the properties associated with
      * the specified <tt>Call</tt> change their values
      */
-    public void addPropertyChangeListener(Call call, PropertyChangeListener listener);
+    void addPropertyChangeListener(Call call, PropertyChangeListener listener);
 
     /**
      * Removes a specific <tt>PropertyChangeListener</tt> from the list of listeners which get
@@ -140,7 +141,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @param listener the <tt>PropertyChangeListener</tt> to no longer be notified when the properties
      * associated with the specified <tt>Call</tt> change their values
      */
-    public void removePropertyChangeListener(Call call, PropertyChangeListener listener);
+    void removePropertyChangeListener(Call call, PropertyChangeListener listener);
 
     /**
      * Create a new video call and invite the specified CallPeer to it.
@@ -153,7 +154,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @throws OperationFailedException with the corresponding code if we fail to create the video call.
      * @throws ParseException if <tt>callee</tt> is not a valid sip address string.
      */
-    public Call createVideoCall(String uri)
+    Call createVideoCall(String uri)
             throws OperationFailedException, ParseException;
 
     /**
@@ -166,7 +167,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * corresponding method.
      * @throws OperationFailedException with the corresponding code if we fail to create the video call.
      */
-    public Call createVideoCall(Contact callee)
+    Call createVideoCall(Contact callee)
             throws OperationFailedException;
 
     /**
@@ -183,7 +184,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @throws OperationFailedException with the corresponding code if we fail to create the video call.
      * @throws ParseException if <tt>callee</tt> is not a valid sip address string.
      */
-    public Call createVideoCall(String uri, QualityPreset qualityPreferences)
+    Call createVideoCall(String uri, QualityPreset qualityPreferences)
             throws OperationFailedException, ParseException;
 
     /**
@@ -199,7 +200,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * corresponding method.
      * @throws OperationFailedException with the corresponding code if we fail to create the video call.
      */
-    public Call createVideoCall(Contact callee, QualityPreset qualityPreferences)
+    Call createVideoCall(Contact callee, QualityPreset qualityPreferences)
             throws OperationFailedException;
 
     /**
@@ -208,7 +209,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @param peer the call peer that we'd like to answer.
      * @throws OperationFailedException with the corresponding code if we encounter an error while performing this operation.
      */
-    public void answerVideoCallPeer(CallPeer peer)
+    void answerVideoCallPeer(CallPeer peer)
             throws OperationFailedException;
 
     /**
@@ -218,7 +219,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @param peer the peer which this control operates on.
      * @return the implemented quality control.
      */
-    public QualityControl getQualityControl(CallPeer peer);
+    QualityControl getQualityControl(CallPeer peer);
 
     /**
      * Determines the <tt>ConferenceMember</tt> which is participating in a telephony conference
@@ -233,5 +234,5 @@ public interface OperationSetVideoTelephony extends OperationSet
      * @return the <tt>ConferenceMember</tt>, if any, which is sending the video content/RTP stream
      * displayed in the specific <tt>visualComponent</tt>
      */
-    public ConferenceMember getConferenceMember(CallPeer peer, Component visualComponent);
+    ConferenceMember getConferenceMember(CallPeer peer, Component visualComponent);
 }

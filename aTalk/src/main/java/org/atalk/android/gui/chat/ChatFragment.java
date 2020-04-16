@@ -1683,12 +1683,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 final ChatMessageImpl msg = ChatMessageImpl.getMsgForEvent(evt);
                 addMessageImpl(msg);
 
-                if (ChatMessage.MESSAGE_IN == msg.getMessageType()
-                        || ChatMessage.MESSAGE_MUC_IN == msg.getMessageType()) {
-
+                if (ChatMessage.MESSAGE_IN == msg.getMessageType()) {
                     if (isChatTtsEnable) {
-                        Timber.w("Incoming message tts speaker start");
-                        // allow 1.5 seconds for incoming alert playback before start TTS
+                        // allow ttsDelay seconds for incoming alert playback before start TTS
                         try {
                             Thread.sleep(ttsDelay);
                         } catch (InterruptedException e) {
@@ -1708,6 +1705,19 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public void messageAdded(ChatMessage msg)
         {
             addMessageImpl(msg);
+
+            // ChatRoomMessageReceivedEvent from conference room
+            if (ChatMessage.MESSAGE_MUC_IN == msg.getMessageType()) {
+                if (isChatTtsEnable) {
+                    // allow 2 x ttsDelay seconds for incoming alert playback before start TTS for group chat
+                    try {
+                        Thread.sleep(2 * ttsDelay);
+                    } catch (InterruptedException e) {
+                        Timber.w("TTS speak wait exception: %s", e.getMessage());
+                    }
+                    ttsSpeak(msg, -1);
+                }
+            }
         }
 
         /**

@@ -45,7 +45,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
     public ConferenceIqProvider()
     {
         // <conference>
-        ProviderManager.addIQProvider(ConferenceIq.ELEMENT_NAME, ConferenceIq.NAMESPACE, this);
+        ProviderManager.addIQProvider(ConferenceIq.ELEMENT, ConferenceIq.NAMESPACE, this);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
         String rootElement = parser.getName();
 
         ConferenceIq iq;
-        if (ConferenceIq.ELEMENT_NAME.equals(rootElement)) {
+        if (ConferenceIq.ELEMENT.equals(rootElement)) {
             iq = new ConferenceIq();
             EntityBareJid room = getRoomJid(parser.getAttributeValue("", ConferenceIq.ROOM_ATTR_NAME));
 
@@ -104,7 +104,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
                     if (rootElement.equals(name)) {
                         done = true;
                     }
-                    else if (ConferenceIq.Property.ELEMENT_NAME.equals(name)) {
+                    else if (ConferenceIq.Property.ELEMENT.equals(name)) {
                         if (property != null) {
                             iq.addProperty(property);
                             property = null;
@@ -116,7 +116,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
                 case START_ELEMENT: {
                     String name = parser.getName();
 
-                    if (ConferenceIq.Property.ELEMENT_NAME.equals(name)) {
+                    if (ConferenceIq.Property.ELEMENT.equals(name)) {
                         property = new ConferenceIq.Property();
 
                         // Name

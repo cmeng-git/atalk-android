@@ -39,7 +39,7 @@ public class LogoutIqProvider extends IQProvider<LogoutIq>
     public LogoutIqProvider()
     {
         //<logout>
-        ProviderManager.addIQProvider(LogoutIq.ELEMENT_NAME, LogoutIq.NAMESPACE, this);
+        ProviderManager.addIQProvider(LogoutIq.ELEMENT, LogoutIq.NAMESPACE, this);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class LogoutIqProvider extends IQProvider<LogoutIq>
 
         String rootElement = parser.getName();
         LogoutIq logoutIq;
-        if (LogoutIq.ELEMENT_NAME.endsWith(rootElement)) {
+        if (LogoutIq.ELEMENT.endsWith(rootElement)) {
             logoutIq = new LogoutIq();
 
             String sessionId = parser.getAttributeValue("", LogoutIq.SESSION_ID_ATTR);
