@@ -213,6 +213,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Создать конференцию&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Создать чат конференции&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Создать группу&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Неверное название группы: %s</string>
     <string name="service_gui_CREATE_GROUP_NAME">В поле ниже введите имя группы, которую вы хотите создать.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ваш список контактов не содержит групп. Сначала создайте группу (File/Create group).</string>
 

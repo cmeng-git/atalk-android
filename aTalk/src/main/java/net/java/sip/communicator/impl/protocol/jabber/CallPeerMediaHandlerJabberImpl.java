@@ -20,10 +20,9 @@ import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.SourceExtensionElement;
+import org.xmpp.extensions.colibri.SourceExtension;
 import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.JingleContent;
 import org.xmpp.extensions.jingle.element.JingleContent.Senders;
@@ -240,7 +239,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (direction != MediaDirection.INACTIVE) {
             JingleContent content = createContentForOffer(getLocallySupportedFormats(dev, sendQualityPreset,
                     receiveQualityPreset), direction, dev.getSupportedExtensions());
-            RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+            RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
 
             // DTLS-SRTP
             setDtlsEncryptionOnContent(mediaType, content, null);
@@ -345,7 +344,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 if (direction != MediaDirection.INACTIVE) {
                     JingleContent content = createContentForOffer(getLocallySupportedFormats(dev),
                             direction, dev.getSupportedExtensions());
-                    RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+                    RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
 
                     // DTLS-SRTP
                     setDtlsEncryptionOnContent(mediaType, content, null);
@@ -364,7 +363,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     // we request a desktop sharing session so add the inputevt extension in the
                     // "video" content
                     if (description.getMedia().equals(MediaType.VIDEO.toString()) && getLocalInputEvtAware()) {
-                        content.addChildExtension(new InputEvtExtensionElement());
+                        content.addChildExtension(new InputEvtExtension());
                     }
                     mediaDescs.add(content);
                 }
@@ -446,16 +445,16 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         // initializing and init their corresponding streams
 
         // First parse content so we know how many streams and what type of content we have
-        Map<JingleContent, RtpDescriptionExtensionElement> contents = new HashMap<>();
+        Map<JingleContent, RtpDescriptionExtension> contents = new HashMap<>();
 
         for (JingleContent ourContent : sessionAccept) {
-            RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(ourContent);
+            RtpDescriptionExtension description = JingleUtils.getRtpDescription(ourContent);
             contents.put(ourContent, description);
         }
         boolean masterStreamSet = false;
-        for (Map.Entry<JingleContent, RtpDescriptionExtensionElement> en : contents.entrySet()) {
+        for (Map.Entry<JingleContent, RtpDescriptionExtension> en : contents.entrySet()) {
             JingleContent ourContent = en.getKey();
-            RtpDescriptionExtensionElement description = en.getValue();
+            RtpDescriptionExtension description = en.getValue();
             MediaType type = MediaType.parseString(description.getMedia());
 
             // stream connector
@@ -485,11 +484,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             // let's now see what was the format we announced as first and configure the stream with it.
             String contentName = ourContent.getName();
             JingleContent theirContent = this.remoteContentMap.get(contentName);
-            RtpDescriptionExtensionElement theirDescription = JingleUtils.getRtpDescription(theirContent);
+            RtpDescriptionExtension theirDescription = JingleUtils.getRtpDescription(theirContent);
             MediaFormat format = null;
 
             List<MediaFormat> localFormats = getLocallySupportedFormats(dev);
-            for (PayloadTypeExtensionElement payload : theirDescription.getPayloadTypes()) {
+            for (PayloadTypeExtension payload : theirDescription.getPayloadTypes()) {
                 MediaFormat remoteFormat = JingleUtils.payloadTypeToMediaFormat(payload, getDynamicPayloadTypes());
                 if ((remoteFormat != null) && (format = findMediaFormat(localFormats, remoteFormat)) != null)
                     break;
@@ -545,17 +544,17 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param description the <tt>RtpDescriptionExtensionElement</tt> to which a child element will be added.
      * @param ssrc the SSRC for the <tt>SourceExtensionElement</tt> to use.
      */
-    private void addSourceExtension(RtpDescriptionExtensionElement description, long ssrc)
+    private void addSourceExtension(RtpDescriptionExtension description, long ssrc)
     {
         MediaType type = MediaType.parseString(description.getMedia());
-        SourceExtensionElement sourcePacketExtension = new SourceExtensionElement();
+        SourceExtension sourcePacketExtension = new SourceExtension();
 
         sourcePacketExtension.setSSRC(ssrc);
         sourcePacketExtension.addChildExtension(
-                new ParameterExtensionElement("cname", LibJitsi.getMediaService().getRtpCname()));
-        sourcePacketExtension.addChildExtension(new ParameterExtensionElement("msid", getMsid(type)));
-        sourcePacketExtension.addChildExtension(new ParameterExtensionElement("mslabel", getMsLabel()));
-        sourcePacketExtension.addChildExtension(new ParameterExtensionElement("label", getLabel(type)));
+                new ParameterExtension("cname", LibJitsi.getMediaService().getRtpCname()));
+        sourcePacketExtension.addChildExtension(new ParameterExtension("msid", getMsid(type)));
+        sourcePacketExtension.addChildExtension(new ParameterExtension("mslabel", getMsLabel()));
+        sourcePacketExtension.addChildExtension(new ParameterExtension("label", getLabel(type)));
 
         description.addChildExtension(sourcePacketExtension);
     }
@@ -570,7 +569,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         for (String key : localContentMap.keySet()) {
             JingleContent content = localContentMap.get(key);
-            RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+            RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
             if (description.getMedia().equals(contentType))
                 return content;
         }
@@ -613,7 +612,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         for (String key : remoteContentMap.keySet()) {
             JingleContent content = remoteContentMap.get(key);
-            RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+            RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
 
             if (description.getMedia().equals(contentType))
                 return content;
@@ -903,13 +902,13 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         setDtlsEncryptionOnTransports(remote, local);
         if (transportManager.startConnectivityEstablishmentWithJitsiVideobridge) {
-            Map<String, IceUdpTransportExtensionElement> map = new LinkedHashMap<>();
+            Map<String, IceUdpTransportExtension> map = new LinkedHashMap<>();
 
             for (MediaType mediaType : MediaType.values()) {
                 ColibriConferenceIQ.Channel channel = transportManager.getColibriChannel(mediaType, true /* local */);
 
                 if (channel != null) {
-                    IceUdpTransportExtensionElement transport = channel.getTransport();
+                    IceUdpTransportExtension transport = channel.getTransport();
                     if (transport != null)
                         map.put(mediaType.toString(), transport);
                 }
@@ -1006,7 +1005,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             // if we have more than one stream, let the audio be the master
             if (!masterStreamSet) {
                 if (contentList.size() > 1) {
-                    RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+                    RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
                     if (MediaType.AUDIO.toString().equals(description.getMedia())) {
                         masterStream = true;
                         masterStreamSet = true;
@@ -1098,7 +1097,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     private void processContent(JingleContent content, boolean modify, boolean masterStream)
             throws OperationFailedException, IllegalArgumentException
     {
-        RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+        RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
         MediaType mediaType = JingleUtils.getMediaType(content);
 
         // stream target
@@ -1246,7 +1245,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         for (JingleContent content : offer) {
             remoteContentMap.put(content.getName(), content);
 
-            RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+            RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
             MediaType mediaType = JingleUtils.getMediaType(content);
 
             remoteFormats = JingleUtils.extractFormats(description, getDynamicPayloadTypes());
@@ -1273,7 +1272,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
              * Transport: RawUdpTransportExtensionElement extends IceUdpTransportExtensionElement so
              * getting IceUdpTransportExtensionElement should suffice.
              */
-            IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+            IceUdpTransportExtension transport = content.getFirstChildOfType(IceUdpTransportExtension.class);
 
             // stream target
             MediaStreamTarget target = null;
@@ -1297,7 +1296,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             setTransportManager(transport.getNamespace());
 
             boolean rtcpmux = false;
-            if (!transport.getChildExtensionsOfType(RtcpmuxExtensionElement.class).isEmpty()) {
+            if (!transport.getChildExtensionsOfType(RtcpmuxExtension.class).isEmpty()) {
                 rtcpmux = true;
                 getTransportManager().setRtcpmux(true);
             }
@@ -1324,8 +1323,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
             // Got a content which has inputevt. It means that the peer requests a desktop sharing
             // session so tell it we support inputevt.
-            if (content.getChildExtensionsOfType(InputEvtExtensionElement.class) != null) {
-                ourContent.addChildExtension(new InputEvtExtensionElement());
+            if (content.getChildExtensionsOfType(InputEvtExtension.class) != null) {
+                ourContent.addChildExtension(new InputEvtExtension());
             }
             answer.add(ourContent);
             localContentMap.put(content.getName(), ourContent);
@@ -1409,7 +1408,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             boolean masterStream = false;
             // if we have more than one stream, lets the audio be the master
             if (!masterStreamSet) {
-                RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(ext);
+                RtpDescriptionExtension description = JingleUtils.getRtpDescription(ext);
                 MediaType mediaType = MediaType.parseString(description.getMedia());
 
                 if (remoteContentMap.size() > 1) {
@@ -1472,7 +1471,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         JingleContent content = contentMap.remove(name);
         if (content != null) {
-            RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(content);
+            RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
             String media = description.getMedia();
             if (media != null)
                 closeStream(MediaType.parseString(media));
@@ -1747,7 +1746,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             return false;
         }
         else {
-            IceUdpTransportExtensionElement remoteTransport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+            IceUdpTransportExtension remoteTransport = content.getFirstChildOfType(IceUdpTransportExtension.class);
             return addDtlsAdvertisedEncryptions(isInitiator, remoteTransport, mediaType, rtcpmux);
         }
     }
@@ -1762,14 +1761,14 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @param mediaType The type of media (AUDIO or VIDEO).
      */
     boolean addDtlsAdvertisedEncryptions(boolean isInitiator,
-            IceUdpTransportExtensionElement remoteTransport, MediaType mediaType, boolean rtcpmux)
+            IceUdpTransportExtension remoteTransport, MediaType mediaType, boolean rtcpmux)
     {
         SrtpControls srtpControls = getSrtpControls();
         boolean b = false;
 
         if (remoteTransport != null) {
-            List<DtlsFingerprintExtensionElement> remoteFingerpintPEs
-                    = remoteTransport.getChildExtensionsOfType(DtlsFingerprintExtensionElement.class);
+            List<DtlsFingerprintExtension> remoteFingerpintPEs
+                    = remoteTransport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
 
             if (!remoteFingerpintPEs.isEmpty()) {
                 AccountID accountID = getPeer().getProtocolProvider().getAccountID();
@@ -1779,7 +1778,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                         && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)) {
                     Map<String, String> remoteFingerprints = new LinkedHashMap<>();
 
-                    for (DtlsFingerprintExtensionElement remoteFingerprintPE : remoteFingerpintPEs) {
+                    for (DtlsFingerprintExtension remoteFingerprintPE : remoteFingerpintPEs) {
                         String remoteFingerprint = remoteFingerprintPE.getFingerprint();
                         String remoteHash = remoteFingerprintPE.getHash();
                         remoteFingerprints.put(remoteHash, remoteFingerprint);
@@ -1848,9 +1847,9 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 }
             }
             else {
-                RtpDescriptionExtensionElement localDescription = (localContent == null)
+                RtpDescriptionExtension localDescription = (localContent == null)
                         ? null : JingleUtils.getRtpDescription(localContent);
-                RtpDescriptionExtensionElement remoteDescription = (remoteContent == null)
+                RtpDescriptionExtension remoteDescription = (remoteContent == null)
                         ? null : JingleUtils.getRtpDescription(remoteContent);
 
                 if (setAndAddPreferredEncryptionProtocol(srtpControlType, mediaType, localDescription, remoteDescription)) {
@@ -1934,8 +1933,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     private boolean setDtlsEncryptionOnTransport(MediaType mediaType,
             JingleContent localContent, JingleContent remoteContent)
     {
-        IceUdpTransportExtensionElement localTransport
-                = localContent.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+        IceUdpTransportExtension localTransport
+                = localContent.getFirstChildOfType(IceUdpTransportExtension.class);
         boolean b = false;
         if (localTransport == null)
             return b;
@@ -1949,12 +1948,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     true) && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)) {
                 // Gather the local fingerprints to be sent to the remote peer.
                 ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType);
-                List<DtlsFingerprintExtensionElement> localFingerprints = null;
+                List<DtlsFingerprintExtension> localFingerprints = null;
 
                 if (channel != null) {
-                    IceUdpTransportExtensionElement transport = channel.getTransport();
+                    IceUdpTransportExtension transport = channel.getTransport();
                     if (transport != null) {
-                        localFingerprints = transport.getChildExtensionsOfType(DtlsFingerprintExtensionElement.class);
+                        localFingerprints = transport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
                     }
                 }
                 /*
@@ -1968,26 +1967,26 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                         }
                     }
                     else { // responder
-                        IceUdpTransportExtensionElement transport
-                                = remoteContent.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+                        IceUdpTransportExtension transport
+                                = remoteContent.getFirstChildOfType(IceUdpTransportExtension.class);
                         if (transport == null) {
                             localFingerprints = null;
                         }
                         else {
-                            List<DtlsFingerprintExtensionElement> remoteFingerprints
-                                    = transport.getChildExtensionsOfType(DtlsFingerprintExtensionElement.class);
+                            List<DtlsFingerprintExtension> remoteFingerprints
+                                    = transport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
                             if (remoteFingerprints.isEmpty())
                                 localFingerprints = null;
                         }
                     }
                     // Send the local fingerprints to the remote peer.
                     if (localFingerprints != null) {
-                        List<DtlsFingerprintExtensionElement> fingerprintPEs
-                                = localTransport.getChildExtensionsOfType(DtlsFingerprintExtensionElement.class);
+                        List<DtlsFingerprintExtension> fingerprintPEs
+                                = localTransport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
 
                         if (fingerprintPEs.isEmpty()) {
-                            for (DtlsFingerprintExtensionElement localFingerprint : localFingerprints) {
-                                DtlsFingerprintExtensionElement fingerprintPE = new DtlsFingerprintExtensionElement();
+                            for (DtlsFingerprintExtension localFingerprint : localFingerprints) {
+                                DtlsFingerprintExtension fingerprintPE = new DtlsFingerprintExtension();
 
                                 fingerprintPE.setFingerprint(localFingerprint.getFingerprint());
                                 fingerprintPE.setHash(localFingerprint.getHash());
@@ -2020,7 +2019,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             List<JingleContent> localContents)
     {
         for (JingleContent localContent : localContents) {
-            RtpDescriptionExtensionElement description = JingleUtils.getRtpDescription(localContent);
+            RtpDescriptionExtension description = JingleUtils.getRtpDescription(localContent);
 
             if (description != null) {
                 MediaType mediaType = JingleUtils.getMediaType(localContent);
@@ -2102,7 +2101,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * contains the PAYLOAD-TYPE and (more important here) the ENCRYPTION.
      * @param mediaType The type of media (AUDIO or VIDEO).
      */
-    private void addZrtpAdvertisedEncryptions(boolean isInitiator, RtpDescriptionExtensionElement description,
+    private void addZrtpAdvertisedEncryptions(boolean isInitiator, RtpDescriptionExtension description,
             MediaType mediaType)
     {
         CallPeer peer = getPeer();
@@ -2114,8 +2113,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             return;
 
         // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
-        EncryptionExtensionElement encryptionPacketExtension
-                = description.getFirstChildOfType(EncryptionExtensionElement.class);
+        EncryptionExtension encryptionPacketExtension
+                = description.getFirstChildOfType(EncryptionExtension.class);
 
         if (encryptionPacketExtension != null) {
             AccountID accountID = peer.getProtocolProvider().getAccountID();
@@ -2123,8 +2122,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP) && call.isSipZrtpAttribute()) {
                 // ZRTP
-                ZrtpHashExtensionElement zrtpHashPacketExtension
-                        = encryptionPacketExtension.getFirstChildOfType(ZrtpHashExtensionElement.class);
+                ZrtpHashExtension zrtpHashPacketExtension
+                        = encryptionPacketExtension.getFirstChildOfType(ZrtpHashExtension.class);
 
                 if ((zrtpHashPacketExtension != null) && (zrtpHashPacketExtension.getValue() != null)) {
                     addAdvertisedEncryptionMethod(SrtpControlType.ZRTP);
@@ -2147,7 +2146,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * contains the PAYLOAD-TYPE and (more important here) the ENCRYPTION.
      * @param mediaType The type of media (AUDIO or VIDEO).
      */
-    private void addSDesAdvertisedEncryptions(boolean isInitiator, RtpDescriptionExtensionElement description,
+    private void addSDesAdvertisedEncryptions(boolean isInitiator, RtpDescriptionExtension description,
             MediaType mediaType)
     {
         CallPeer peer = getPeer();
@@ -2159,8 +2158,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for
         // a given DESCRIPTION.
-        EncryptionExtensionElement encryptionPacketExtension
-                = description.getFirstChildOfType(EncryptionExtensionElement.class);
+        EncryptionExtension encryptionPacketExtension
+                = description.getFirstChildOfType(EncryptionExtension.class);
 
         if (encryptionPacketExtension != null) {
             AccountID accountID = peer.getProtocolProvider().getAccountID();
@@ -2210,12 +2209,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * of the peers.
      */
     private SrtpCryptoAttribute selectSdesCryptoSuite(boolean isInitiator, SDesControl sDesControl,
-            EncryptionExtensionElement encryptionPacketExtension)
+            EncryptionExtension encryptionPacketExtension)
     {
-        List<CryptoExtensionElement> cryptoPacketExtensions = encryptionPacketExtension.getCryptoList();
+        List<CryptoExtension> cryptoPacketExtensions = encryptionPacketExtension.getCryptoList();
         List<SrtpCryptoAttribute> peerAttributes = new ArrayList<>(cryptoPacketExtensions.size());
 
-        for (CryptoExtensionElement cpe : cryptoPacketExtensions)
+        for (CryptoExtension cpe : cryptoPacketExtensions)
             peerAttributes.add(SrtpCryptoAttribute.create(cpe.getTag(), cpe.getCryptoSuite(),
                     cpe.getKeyParams(), cpe.getSessionParams()));
 
@@ -2230,9 +2229,9 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * the remote peer. This may contain the ZRTP packet element for the remote peer.
      * @return True if the remote peer supports ZRTP. False, otherwise.
      */
-    private boolean isRemoteZrtpCapable(EncryptionExtensionElement encryptionPacketExtension)
+    private boolean isRemoteZrtpCapable(EncryptionExtension encryptionPacketExtension)
     {
-        return (encryptionPacketExtension.getFirstChildOfType(ZrtpHashExtensionElement.class) != null);
+        return (encryptionPacketExtension.getFirstChildOfType(ZrtpHashExtension.class) != null);
     }
 
     /**
@@ -2244,8 +2243,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * its encryption for the remote peer. Null, if the local peer is the initiator of the call.
      * @return True if the ZRTP element has been added to encryption. False, otherwise.
      */
-    private boolean setZrtpEncryptionOnDescription(MediaType mediaType, RtpDescriptionExtensionElement description,
-            RtpDescriptionExtensionElement remoteDescription)
+    private boolean setZrtpEncryptionOnDescription(MediaType mediaType, RtpDescriptionExtension description,
+            RtpDescriptionExtension remoteDescription)
     {
         CallPeer peer = getPeer();
         Call call = peer.getCall();
@@ -2259,8 +2258,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             isRemoteZrtpCapable = true;
         else {
             // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
-            EncryptionExtensionElement remoteEncryption
-                    = remoteDescription.getFirstChildOfType(EncryptionExtensionElement.class);
+            EncryptionExtension remoteEncryption
+                    = remoteDescription.getFirstChildOfType(EncryptionExtension.class);
             isRemoteZrtpCapable = (remoteEncryption != null) && isRemoteZrtpCapable(remoteEncryption);
         }
 
@@ -2278,12 +2277,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
                 // Try to get the remote ZRTP version and hash value
                 if (remoteDescription != null) {
-                    EncryptionExtensionElement remoteEncryption
-                            = remoteDescription.getFirstChildOfType(EncryptionExtensionElement.class);
+                    EncryptionExtension remoteEncryption
+                            = remoteDescription.getFirstChildOfType(EncryptionExtension.class);
 
                     if (remoteEncryption != null) {
-                        ZrtpHashExtensionElement zrtpHashPacketExtension
-                                = remoteEncryption.getFirstChildOfType(ZrtpHashExtensionElement.class);
+                        ZrtpHashExtension zrtpHashPacketExtension
+                                = remoteEncryption.getFirstChildOfType(ZrtpHashExtension.class);
 
                         if ((zrtpHashPacketExtension != null) && (zrtpHashPacketExtension.getValue() != null)) {
                             zrtpControl.setReceivedSignaledZRTPVersion(zrtpHashPacketExtension.getVersion());
@@ -2296,14 +2295,14 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     String[] helloHash = zrtpControl.getHelloHashSep(i);
 
                     if ((helloHash != null) && (helloHash[1].length() > 0)) {
-                        ZrtpHashExtensionElement hash = new ZrtpHashExtensionElement();
+                        ZrtpHashExtension hash = new ZrtpHashExtension();
                         hash.setVersion(helloHash[0]);
                         hash.setValue(helloHash[1]);
-                        EncryptionExtensionElement encryption
-                                = description.getFirstChildOfType(EncryptionExtensionElement.class);
+                        EncryptionExtension encryption
+                                = description.getFirstChildOfType(EncryptionExtension.class);
 
                         if (encryption == null) {
-                            encryption = new EncryptionExtensionElement();
+                            encryption = new EncryptionExtension();
                             description.addChildExtension(encryption);
                         }
                         encryption.addChildExtension(hash);
@@ -2324,8 +2323,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * its encryption for the remote peer. Null, if the local peer is the initiator of the call.
      * @return True if the crypto element has been added to encryption. False, otherwise.
      */
-    private boolean setSDesEncryptionOnDescription(MediaType mediaType, RtpDescriptionExtensionElement localDescription,
-            RtpDescriptionExtensionElement remoteDescription)
+    private boolean setSDesEncryptionOnDescription(MediaType mediaType, RtpDescriptionExtension localDescription,
+            RtpDescriptionExtension remoteDescription)
     {
         CallPeer peer = getPeer();
         /*
@@ -2352,15 +2351,15 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
             // act as initiator
             if (remoteDescription == null) {
-                EncryptionExtensionElement localEncryption
-                        = localDescription.getFirstChildOfType(EncryptionExtensionElement.class);
+                EncryptionExtension localEncryption
+                        = localDescription.getFirstChildOfType(EncryptionExtension.class);
 
                 if (localEncryption == null) {
-                    localEncryption = new EncryptionExtensionElement();
+                    localEncryption = new EncryptionExtension();
                     localDescription.addChildExtension(localEncryption);
                 }
                 for (SrtpCryptoAttribute ca : sdesControl.getInitiatorCryptoAttributes()) {
-                    CryptoExtensionElement crypto = new CryptoExtensionElement(
+                    CryptoExtension crypto = new CryptoExtension(
                             ca.getTag(), ca.getCryptoSuite().encode(),
                             ca.getKeyParamsString(), ca.getSessionParamsString());
                     localEncryption.addChildExtension(crypto);
@@ -2370,22 +2369,22 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             // act as responder
             else {
                 // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
-                EncryptionExtensionElement remoteEncryption
-                        = remoteDescription.getFirstChildOfType(EncryptionExtensionElement.class);
+                EncryptionExtension remoteEncryption
+                        = remoteDescription.getFirstChildOfType(EncryptionExtension.class);
 
                 if (remoteEncryption != null) {
                     SrtpCryptoAttribute selectedSdes = selectSdesCryptoSuite(false, sdesControl, remoteEncryption);
 
                     if (selectedSdes != null) {
-                        EncryptionExtensionElement localEncryption
-                                = localDescription.getFirstChildOfType(EncryptionExtensionElement.class);
+                        EncryptionExtension localEncryption
+                                = localDescription.getFirstChildOfType(EncryptionExtension.class);
 
                         if (localEncryption == null) {
-                            localEncryption = new EncryptionExtensionElement();
+                            localEncryption = new EncryptionExtension();
                             localDescription.addChildExtension(localEncryption);
                         }
 
-                        CryptoExtensionElement crypto = new CryptoExtensionElement(
+                        CryptoExtension crypto = new CryptoExtension(
                                 selectedSdes.getTag(), selectedSdes.getCryptoSuite().encode(),
                                 selectedSdes.getKeyParamsString(), selectedSdes.getSessionParamsString());
                         localEncryption.addChildExtension(crypto);
@@ -2418,7 +2417,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @return <tt>true</tt> if the specified encryption protocol has been selected; <tt>false</tt>, otherwise
      */
     private boolean setAndAddPreferredEncryptionProtocol(SrtpControlType srtpControlType, MediaType mediaType,
-            RtpDescriptionExtensionElement localDescription, RtpDescriptionExtensionElement remoteDescription)
+            RtpDescriptionExtension localDescription, RtpDescriptionExtension remoteDescription)
     {
         /*
          * Neither SDES nor ZRTP is supported in telephony conferences utilizing

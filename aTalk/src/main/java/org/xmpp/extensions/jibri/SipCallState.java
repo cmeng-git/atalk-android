@@ -37,7 +37,7 @@ public class SipCallState extends AbstractExtensionElement
     /**
      * XML element name of this packet extension.
      */
-    public static final String ELEMENT_NAME = "jibri-sip-call-state";
+    public static final String ELEMENT = "jibri-sip-call-state";
 
     /**
      * The namespace of this packet extension.
@@ -56,7 +56,7 @@ public class SipCallState extends AbstractExtensionElement
 
     public SipCallState()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

@@ -34,7 +34,7 @@ import java.io.IOException;
  */
 public class Email implements ExtensionElement
 {
-    public static final String ELEMENT_NAME = "email";
+    public static final String ELEMENT = "email";
     public static final String NAMESPACE = "jabber:client";
 
     private String address = null;
@@ -71,7 +71,7 @@ public class Email implements ExtensionElement
      */
     public String getElementName()
     {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     /**
@@ -93,7 +93,7 @@ public class Email implements ExtensionElement
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
-        xml.element(ELEMENT_NAME, getAddress());
+        xml.element(ELEMENT, getAddress());
         return xml;
     }
 

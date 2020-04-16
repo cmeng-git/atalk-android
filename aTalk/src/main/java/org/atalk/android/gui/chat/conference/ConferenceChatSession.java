@@ -352,6 +352,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
 
             String eventType = evt.getEventType();
             ChatRoomMember chatRoomMember = evt.getChatRoomMember();
+            Contact protoContact = chatRoomMember.getContact();
             String statusMessage = null;
             if (eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED)) {
                 ConferenceChatContact chatContact = new ConferenceChatContact(chatRoomMember);
@@ -363,7 +364,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                         chatParticipants.add(chatContact);
                 }
                 // cmeng: seems to do nothing for private contact presence in chatRoom
-                room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
+                room.updatePrivateContactPresenceStatus(chatRoomMember);
 
                 /*
                  * When the whole list of members of a given chat room is reported, it doesn't
@@ -398,7 +399,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                 ChatContact<?> contact = null;
                 for (ChatContact<?> chatContact : chatParticipants) {
                     if (chatContact.getDescriptor().equals(chatRoomMember)) {
-                        room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
+                        room.updatePrivateContactPresenceStatus(chatRoomMember);
                         contact = chatContact;
                         break;
                     }

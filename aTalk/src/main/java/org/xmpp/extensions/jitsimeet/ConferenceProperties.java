@@ -39,7 +39,7 @@ public class ConferenceProperties extends AbstractExtensionElement
     /**
      * The XML name of the conference-properties element.
      */
-    public static final String ELEMENT_NAME = "conference-properties";
+    public static final String ELEMENT = "conference-properties";
 
     /**
      * The property key used for the conference creation timestamp (in milliseconds since the Epoch).
@@ -80,7 +80,7 @@ public class ConferenceProperties extends AbstractExtensionElement
      */
     public ConferenceProperties()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -145,7 +145,7 @@ public class ConferenceProperties extends AbstractExtensionElement
         /**
          * The XML name of the conference property element.
          */
-        public static final String ELEMENT_NAME = "property";
+        public static final String ELEMENT = "property";
 
         /**
          * The name of the "key" attribute.
@@ -164,7 +164,7 @@ public class ConferenceProperties extends AbstractExtensionElement
          */
         public ConferenceProperty()
         {
-            super(ELEMENT_NAME, NAMESPACE);
+            super(ELEMENT, NAMESPACE);
         }
 
         /**
@@ -175,7 +175,7 @@ public class ConferenceProperties extends AbstractExtensionElement
          */
         public ConferenceProperty(String key, String value)
         {
-            super(ELEMENT_NAME, NAMESPACE);
+            super(ELEMENT, NAMESPACE);
             setAttribute(KEY_ATTR_NAME, key);
             setAttribute(VALUE_ATTR_NAME, value);
         }

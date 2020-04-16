@@ -218,6 +218,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Crear una conferencia telefónica&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Crear una sala&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Crear un grupo&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Nombre de grupo no válido: %s</string>
     <string name="service_gui_CREATE_GROUP_NAME">En el siguiente campo introducir el nombre del grupo que desea crear.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">La lista de contactos no contiene ningún grupo. Por favor, crear un grupo primero (Archivo/Crear grupo).</string>
 

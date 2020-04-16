@@ -40,7 +40,7 @@ public class InputEvtIQ extends IQ
     /**
      * The name of the element that contains the input event data.
      */
-    public static final String ELEMENT_NAME = "inputevt";
+    public static final String ELEMENT = "inputevt";
 
     /**
      * The name of the argument that contains the input action value.
@@ -62,7 +62,7 @@ public class InputEvtIQ extends IQ
      */
     public InputEvtIQ()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -79,7 +79,7 @@ public class InputEvtIQ extends IQ
             xml.rightAngleBracket();
             for (RemoteControlExtension p : remoteControls)
                 xml.append(p.toXML(XmlEnvironment.EMPTY));
-            xml.closeElement(ELEMENT_NAME);
+            xml.closeElement(ELEMENT);
         }
         else {
             xml.setEmptyElement();

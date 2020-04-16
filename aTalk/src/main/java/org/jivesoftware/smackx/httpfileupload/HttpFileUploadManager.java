@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +50,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
@@ -255,7 +258,7 @@ public final class HttpFileUploadManager extends Manager {
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
      * @param file file to be uploaded
-     * @param listener upload progress listener of null
+     * @param listener Upload progress listener or null
      * @return public URL for sharing uploaded file
      *
      * @throws InterruptedException if the calling thread was interrupted.
@@ -269,9 +272,54 @@ public final class HttpFileUploadManager extends Manager {
             throw new FileNotFoundException("The path " + file.getAbsolutePath() + " is not a file");
         }
         final Slot slot = requestSlot(file.getName(), file.length(), "application/octet-stream");
+        final long fileSize = file.length();
+        // Construct the FileInputStream first to make sure we can actually read the file.
+        final FileInputStream fis = new FileInputStream(file);
+        upload(fis, fileSize, slot, listener);
+        return slot.getGetUrl();
+    }
 
-        uploadFile(file, slot, listener);
+    /**
+     * Request slot and uploaded stream to HTTP upload service.
+     *
+     * You don't need to request slot and upload input stream separately, this method will do both.
+     * Note that this is a synchronous call -- Smack must wait for the server response.
+     *
+     * @param inputStream Input stream used for the upload.
+     * @param fileName Name of the file.
+     * @param fileSize Size of the file.
+     * @return public URL for sharing uploaded file
+     * @throws XMPPErrorException XMPPErrorException if there was an XMPP error returned.
+     * @throws InterruptedException If the calling thread was interrupted.
+     * @throws SmackException If Smack detected an exceptional situation.
+     * @throws IOException If an I/O error occurred.
+     */
+    public URL uploadFile(InputStream inputStream, String fileName, long fileSize) throws XMPPErrorException, InterruptedException, SmackException, IOException {
+        return uploadFile(inputStream, fileName, fileSize, null);
+    }
 
+    /**
+     * Request slot and uploaded stream to HTTP upload service.
+     *
+     * You don't need to request slot and upload input stream separately, this method will do both.
+     * Note that this is a synchronous call -- Smack must wait for the server response.
+     *
+     * @param inputStream Input stream used for the upload.
+     * @param fileName Name of the file.
+     * @param fileSize file size in bytes.
+     * @param listener upload progress listener or null.
+     * @return public URL for sharing uploaded file
+     * @throws XMPPErrorException XMPPErrorException if there was an XMPP error returned.
+     * @throws InterruptedException If the calling thread was interrupted.
+     * @throws SmackException If Smack detected an exceptional situation.
+     * @throws IOException If an I/O error occurred.
+     */
+    public URL uploadFile(InputStream inputStream, String fileName, long fileSize, UploadProgressListener listener) throws XMPPErrorException, InterruptedException, SmackException, IOException {
+        Objects.requireNonNull(inputStream, "Input Stream cannot be null");
+        Objects.requireNonNull(fileName, "Filename Stream cannot be null");
+        Objects.requireNonNull(fileSize, "Filesize Stream cannot be null");
+        final Slot slot = requestSlot(fileName, fileSize, "application/octet-stream");
+        upload(inputStream, fileSize, slot, listener);
         return slot.getGetUrl();
     }
 
@@ -339,7 +387,7 @@ public final class HttpFileUploadManager extends Manager {
         // encrypt the file on the fly - encryption actually happens below in uploadFile()
         CipherInputStream cis = new CipherInputStream(fis, cipher);
 
-        uploadFile(cis, cipherFileLength, slot, listener);
+        upload(cis, cipherFileLength, slot, listener);
         return new AesgcmUrl(slotUrl, key, iv);
     }
 
@@ -462,16 +510,7 @@ public final class HttpFileUploadManager extends Manager {
         setTlsContext(sslContext);
     }
 
-    private void uploadFile(final File file, final Slot slot, UploadProgressListener listener) throws IOException {
-        final long fileSize = file.length();
-
-        // Construct the FileInputStream first to make sure we can actually read the file.
-        final FileInputStream fis = new FileInputStream(file);
-        uploadFile(fis, fileSize, slot, listener);
-    }
-
-    private void uploadFile(final InputStream fis, long fileSize, final Slot slot, UploadProgressListener listener) throws IOException {
-
+    private void upload(InputStream iStream, long fileSize, Slot slot, UploadProgressListener listener) throws IOException {
         final URL putUrl = slot.getPutUrl();
 
         final HttpURLConnection urlConnection = (HttpURLConnection) putUrl.openConnection();
@@ -500,7 +539,7 @@ public final class HttpFileUploadManager extends Manager {
                 listener.onUploadProgress(0, fileSize);
             }
 
-            BufferedInputStream inputStream = new BufferedInputStream(fis);
+            BufferedInputStream inputStream = new BufferedInputStream(iStream);
 
             // TODO Factor in extra static method (and re-use e.g. in bytestream code).
             byte[] buffer = new byte[4096];

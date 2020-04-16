@@ -17,6 +17,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountsListAdapter;
@@ -125,7 +126,16 @@ public class AddContactActivity extends OSGiActivity
             addRenameListener(pps, null, contactAddress, displayName);
         }
         Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
-        ContactListUtils.addContact(pps, (MetaContactGroup) groupSpinner.getSelectedItem(), contactAddress);
+        MetaContactGroup mGroup = null;
+
+        // "Create group .." selected but no entered value
+        try {
+            mGroup = (MetaContactGroup) groupSpinner.getSelectedItem();
+        } catch (Exception e) {
+            aTalkApp.showToastMessage(R.string.service_gui_CREATE_GROUP_INVALID, e.getMessage());
+            return;
+        }
+        ContactListUtils.addContact(pps, mGroup, contactAddress);
         finish();
     }
 

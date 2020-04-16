@@ -57,29 +57,30 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      * Creates an <tt>IncomingFileTransferRequestJabberImpl</tt> based on the given
      * <tt>fileTransferRequest</tt>, coming from the Jabber protocol.
      *
-     * @param jabberProvider the protocol provider
+     * @param pps the protocol provider
      * @param fileTransferOpSet file transfer operation set
      * @param fileTransferRequest the request coming from the Jabber protocol
      */
-    public IncomingFileTransferRequestJabberImpl(ProtocolProviderServiceJabberImpl jabberProvider,
+    public IncomingFileTransferRequestJabberImpl(ProtocolProviderServiceJabberImpl pps,
             OperationSetFileTransferJabberImpl fileTransferOpSet, FileTransferRequest fileTransferRequest)
     {
-        this.jabberProvider = jabberProvider;
+        this.jabberProvider = pps;
         this.fileTransferOpSet = fileTransferOpSet;
         this.fileTransferRequest = fileTransferRequest;
 
         fromJid = fileTransferRequest.getRequestor();
-        OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
-                jabberProvider.getOperationSet(OperationSetPersistentPresence.class);
+        OperationSetPersistentPresenceJabberImpl opSetPersPresence
+                = (OperationSetPersistentPresenceJabberImpl) pps.getOperationSet(OperationSetPersistentPresence.class);
 
-        sender = opSetPersPresence.findContactByID(fromJid);
+        sender = opSetPersPresence.findContactByJid(fromJid);
         if (sender == null) {
             ChatRoom privateContactRoom = null;
-            OperationSetMultiUserChatJabberImpl mucOpSet = (OperationSetMultiUserChatJabberImpl)
-                    jabberProvider.getOperationSet(OperationSetMultiUserChat.class);
+            OperationSetMultiUserChatJabberImpl mucOpSet
+                    = (OperationSetMultiUserChatJabberImpl) pps.getOperationSet(OperationSetMultiUserChat.class);
 
             if (mucOpSet != null)
                 privateContactRoom = mucOpSet.getChatRoom(fromJid.asBareJid());
+
             if (privateContactRoom != null) {
                 sender = opSetPersPresence.createVolatileContact(fromJid, true);
                 privateContactRoom.updatePrivateContactPresenceStatus(sender);

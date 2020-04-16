@@ -34,13 +34,13 @@ public class SessionInvalidPacketExtension extends AbstractExtensionElement
     /**
      * XML element name of this packet extension.
      */
-    public static final String ELEMENT_NAME = "session-invalid";
+    public static final String ELEMENT = "session-invalid";
 
     /**
      * Creates new instance of <tt>SessionInvalidPacketExtension</tt>
      */
     public SessionInvalidPacketExtension()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 }

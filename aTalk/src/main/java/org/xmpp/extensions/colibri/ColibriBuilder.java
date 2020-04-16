@@ -30,7 +30,7 @@ import timber.log.Timber;
  * Add one or multiple requests of the same type by calling
  * {@link #addAllocateChannelsReq(boolean, String, String, boolean, java.util.List)}}
  * or {@link #addExpireChannelsReq(ColibriConferenceIQ)}
- * or {@link #addRtpDescription(RtpDescriptionExtensionElement, String, ColibriConferenceIQ.Channel)}
+ * or {@link #addRtpDescription(RtpDescriptionExtension, String, ColibriConferenceIQ.Channel)}
  * and {@link #addSourceGroupsInfo(Map, ColibriConferenceIQ)}
  * and {@link #addSourceInfo(Map, ColibriConferenceIQ)}.
  * </li>
@@ -65,8 +65,8 @@ public class ColibriBuilder
      */
     private static void copyTransport(JingleContent content, ColibriConferenceIQ.ChannelCommon channel)
     {
-        IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
-        channel.setTransport(IceUdpTransportExtensionElement.cloneTransportAndCandidates(transport, true));
+        IceUdpTransportExtension transport = content.getFirstChildOfType(IceUdpTransportExtension.class);
+        channel.setTransport(IceUdpTransportExtension.cloneTransportAndCandidates(transport, true));
     }
 
     /**
@@ -78,7 +78,7 @@ public class ColibriBuilder
      */
     private static boolean copyDescription(JingleContent content, ColibriConferenceIQ.Channel channel)
     {
-        RtpDescriptionExtensionElement description = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+        RtpDescriptionExtension description = content.getFirstChildOfType(RtpDescriptionExtension.class);
         if (description != null) {
             return copyDescription(description, channel);
         }
@@ -86,46 +86,46 @@ public class ColibriBuilder
     }
 
     /**
-     * Copies the contents of a {@link RtpDescriptionExtensionElement} to a {@link ColibriConferenceIQ.Channel}.
+     * Copies the contents of a {@link RtpDescriptionExtension} to a {@link ColibriConferenceIQ.Channel}.
      *
-     * @param description the {@link RtpDescriptionExtensionElement} from which to copy.
+     * @param description the {@link RtpDescriptionExtension} from which to copy.
      * @param channel the {@link ColibriConferenceIQ.Channel} to which to copy.
      */
-    private static boolean copyDescription(RtpDescriptionExtensionElement description, ColibriConferenceIQ.Channel channel)
+    private static boolean copyDescription(RtpDescriptionExtension description, ColibriConferenceIQ.Channel channel)
     {
         boolean added = false;
-        for (PayloadTypeExtensionElement payloadType : description.getPayloadTypes()) {
-            channel.addPayloadType(PayloadTypeExtensionElement.clone(payloadType));
+        for (PayloadTypeExtension payloadType : description.getPayloadTypes()) {
+            channel.addPayloadType(PayloadTypeExtension.clone(payloadType));
             added = true;
         }
-        for (RTPHdrExtExtensionElement rtpHdrExt : description.getExtmapList()) {
-            channel.addRtpHeaderExtension(RTPHdrExtExtensionElement.clone(rtpHdrExt));
+        for (RTPHdrExtExtension rtpHdrExt : description.getExtmapList()) {
+            channel.addRtpHeaderExtension(RTPHdrExtExtension.clone(rtpHdrExt));
             added = true;
         }
         return added;
     }
 
     /**
-     * Sets the {@link SourceExtensionElement}s of a particular {@link ColibriConferenceIQ.Channel}.
+     * Sets the {@link SourceExtension}s of a particular {@link ColibriConferenceIQ.Channel}.
      *
      * @param channel the channel to which to add sources.
      * @param sources the list of sources to add.
      */
-    private static void addSources(ColibriConferenceIQ.Channel channel, List<SourceExtensionElement> sources)
+    private static void addSources(ColibriConferenceIQ.Channel channel, List<SourceExtension> sources)
     {
-        for (SourceExtensionElement source : sources) {
+        for (SourceExtension source : sources) {
             channel.addSource(source.copy());
         }
         if ((channel.getSources() == null) || channel.getSources().isEmpty()) {
             // Put an empty source to remove all sources
-            SourceExtensionElement emptySource = new SourceExtensionElement();
+            SourceExtension emptySource = new SourceExtension();
             emptySource.setSSRC(-1L);
             channel.addSource(emptySource);
         }
     }
 
     /**
-     * Adds a list of {@link SourceGroupExtensionElement}s to a particular {@link ColibriConferenceIQ.Channel}.
+     * Adds a list of {@link SourceGroupExtension}s to a particular {@link ColibriConferenceIQ.Channel}.
      *
      * @param channel the channel to which to add source groups.
      * @param sourceGroups the source groups to add.
@@ -133,17 +133,17 @@ public class ColibriBuilder
      * @return {@code true} iff any source groups we added to the channel.
      */
     private static boolean addSourceGroups(ColibriConferenceIQ.Channel channel,
-            List<SourceGroupExtensionElement> sourceGroups, boolean video)
+            List<SourceGroupExtension> sourceGroups, boolean video)
     {
         boolean hasAnyChanges = false;
         if (sourceGroups.isEmpty() && video) {
             hasAnyChanges = true;
 
             // Put an empty source group to turn off simulcast layers
-            channel.addSourceGroup(SourceGroupExtensionElement.createSimulcastGroup());
+            channel.addSourceGroup(SourceGroupExtension.createSimulcastGroup());
         }
 
-        for (SourceGroupExtensionElement sourceGroup : sourceGroups) {
+        for (SourceGroupExtension sourceGroup : sourceGroups) {
             hasAnyChanges = true;
             channel.addSourceGroup(sourceGroup);
         }
@@ -253,9 +253,9 @@ public class ColibriBuilder
      * attribute ({@link ColibriConferenceIQ.Channel#initiator}).
      * @param contents the list of {@link JingleContent} describing channels media.
      * @param sourceMap a map of content name to the list of
-     * {@link SourceExtensionElement}s which are to be added to the channel allocation request for this content.
+     * {@link SourceExtension}s which are to be added to the channel allocation request for this content.
      * @param sourceGroupMap a map of content name to the list of
-     * {@link SourceGroupExtensionElement}s which are to be added to the channel allocation request for this content.
+     * {@link SourceGroupExtension}s which are to be added to the channel allocation request for this content.
      * @param octoRelayIds the optional list of Octo relay IDs to be added to
      * the channel. If this parameter is non-null, the allocated channels will be of type Octo.
      * @return {@code true} if the request yields any changes in Colibri
@@ -263,8 +263,8 @@ public class ColibriBuilder
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
     public boolean addAllocateChannelsReq(boolean useBundle, String endpointId, String statsId, boolean peerIsInitiator,
-            List<JingleContent> contents, Map<String, List<SourceExtensionElement>> sourceMap,
-            Map<String, List<SourceGroupExtensionElement>> sourceGroupMap, List<String> octoRelayIds)
+            List<JingleContent> contents, Map<String, List<SourceExtension>> sourceMap,
+            Map<String, List<SourceGroupExtension>> sourceGroupMap, List<String> octoRelayIds)
     {
         ApiLib.requireNonNull(contents, "contents");
         assertRequestType(RequestType.ALLOCATE_CHANNELS);
@@ -341,11 +341,11 @@ public class ColibriBuilder
             ColibriConferenceIQ.ChannelBundle bundle = new ColibriConferenceIQ.ChannelBundle(endpointId);
 
             JingleContent firstContent = contents.get(0);
-            IceUdpTransportExtensionElement transport
-                    = firstContent.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+            IceUdpTransportExtension transport
+                    = firstContent.getFirstChildOfType(IceUdpTransportExtension.class);
             if (transport != null) {
                 hasAnyChanges = true;
-                bundle.setTransport(IceUdpTransportExtensionElement.cloneTransportAndCandidates(transport, true));
+                bundle.setTransport(IceUdpTransportExtension.cloneTransportAndCandidates(transport, true));
             }
             request.addChannelBundle(bundle);
         }
@@ -368,7 +368,7 @@ public class ColibriBuilder
      * channels state on the bridge or {@code false} otherwise. In general when
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
-    public boolean addBundleTransportUpdateReq(IceUdpTransportExtensionElement transport, String channelBundleId)
+    public boolean addBundleTransportUpdateReq(IceUdpTransportExtension transport, String channelBundleId)
             throws IllegalArgumentException
     {
         ApiLib.requireNonNull(transport, "transport");
@@ -385,7 +385,7 @@ public class ColibriBuilder
 
         assertRequestType(RequestType.CHANNEL_INFO_UPDATE);
         ColibriConferenceIQ.ChannelBundle channelBundleRequest = new ColibriConferenceIQ.ChannelBundle(channelBundleId);
-        channelBundleRequest.setTransport(IceUdpTransportExtensionElement.cloneTransportAndCandidates(transport, true));
+        channelBundleRequest.setTransport(IceUdpTransportExtension.cloneTransportAndCandidates(transport, true));
         request.addChannelBundle(channelBundleRequest);
 
         // Note that we don't actually check whether the addition of the bundle
@@ -506,19 +506,19 @@ public class ColibriBuilder
     }
 
     /**
-     * Adds an {@link RtpDescriptionExtensionElement} to a specific channel in
+     * Adds an {@link RtpDescriptionExtension} to a specific channel in
      * the request which is currently being built. The channel in the request
      * is identified by the content name and the ID of {@code channel}.
      *
-     * @param description the {@link RtpDescriptionExtensionElement} to add.
+     * @param description the {@link RtpDescriptionExtension} to add.
      * @param contentName the name of the content to which the channel belongs.
      * @param channel the the channel used to match the channel in the request
-     * to which an {@link RtpDescriptionExtensionElement} will be added.
+     * to which an {@link RtpDescriptionExtension} will be added.
      * @return {@code true} if the request yields any changes in Colibri
      * channels state on the bridge or {@code false} otherwise. In general when
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
-    public boolean addRtpDescription(RtpDescriptionExtensionElement description, String contentName,
+    public boolean addRtpDescription(RtpDescriptionExtension description, String contentName,
             ColibriConferenceIQ.Channel channel)
     {
         ApiLib.requireNonNull(description, "description");
@@ -552,7 +552,7 @@ public class ColibriBuilder
      * channels state on the bridge or <tt>false</tt> otherwise. In general when
      * <tt>false</tt> is returned for all combined requests it makes no sense to send it.
      */
-    public boolean addSourceInfo(Map<String, List<SourceExtensionElement>> sourceMap, ColibriConferenceIQ localChannelsInfo)
+    public boolean addSourceInfo(Map<String, List<SourceExtension>> sourceMap, ColibriConferenceIQ localChannelsInfo)
     {
         ApiLib.requireNonNull(sourceMap, "sourceMap");
         ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
@@ -632,7 +632,7 @@ public class ColibriBuilder
      * bridge or <tt>false</tt> otherwise. In general when <tt>false</tt> is returned for all
      * combined requests it makes no sense to send it.
      */
-    public boolean addSourceGroupsInfo(Map<String, List<SourceGroupExtensionElement>> sourceGroupMap,
+    public boolean addSourceGroupsInfo(Map<String, List<SourceGroupExtension>> sourceGroupMap,
             ColibriConferenceIQ localChannelsInfo)
     {
         ApiLib.requireNonNull(sourceGroupMap, "sourceGroupMap");
@@ -677,7 +677,7 @@ public class ColibriBuilder
      * bridge or <tt>false</tt> otherwise. In general when <tt>false</tt> is returned for all
      * combined requests it makes no sense to send it.
      */
-    public boolean addTransportUpdateReq(Map<String, IceUdpTransportExtensionElement> transportMap,
+    public boolean addTransportUpdateReq(Map<String, IceUdpTransportExtension> transportMap,
             ColibriConferenceIQ localChannelsInfo)
     {
         ApiLib.requireNonNull(transportMap, "transportMap");
@@ -691,13 +691,13 @@ public class ColibriBuilder
         boolean hasAnyChanges = false;
         assertRequestType(RequestType.CHANNEL_INFO_UPDATE);
 
-        for (Map.Entry<String, IceUdpTransportExtensionElement> e : transportMap.entrySet()) {
+        for (Map.Entry<String, IceUdpTransportExtension> e : transportMap.entrySet()) {
             String contentName = e.getKey();
             ColibriConferenceIQ.ChannelCommon channel = getChannelCommon(localChannelsInfo, contentName);
 
             if (channel != null) {
-                IceUdpTransportExtensionElement transport
-                        = IceUdpTransportExtensionElement.cloneTransportAndCandidates(e.getValue(), true);
+                IceUdpTransportExtension transport
+                        = IceUdpTransportExtension.cloneTransportAndCandidates(e.getValue(), true);
 
                 ColibriConferenceIQ.ChannelCommon requestChannel = channel instanceof ColibriConferenceIQ.Channel
                         ? new ColibriConferenceIQ.Channel() : new ColibriConferenceIQ.SctpConnection();

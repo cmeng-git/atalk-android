@@ -7,7 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
-import org.xmpp.extensions.condesc.CallIdExtensionElement;
+import org.xmpp.extensions.condesc.CallIdExtension;
 import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -188,7 +188,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         String callid = cd.getCallId();
         if (callid != null) {
-            sessionInitiateExtensions.add(new CallIdExtensionElement(callid));
+            sessionInitiateExtensions.add(new CallIdExtension(callid));
         }
 
         // String password = cd.getPassword();
@@ -698,7 +698,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         if (jingle.getAction() == JingleAction.SESSION_INITIATE) {
             // we only accept session-initiate-s dealing RTP
-            return jingle.containsContentChildOfType(RtpDescriptionExtensionElement.class);
+            return jingle.containsContentChildOfType(RtpDescriptionExtension.class);
         }
 
         String sid = jingle.getSid();
@@ -776,10 +776,8 @@ public class OperationSetBasicTelephonyJabberImpl
                 jingle.setInitiator(jingle.getFrom().asEntityFullJidIfPossible());
             }
 
-            TransferExtensionElement transfer
-                    = jingle.getExtension(TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
-            CallIdExtensionElement callidExt
-                    = jingle.getExtension(CallIdExtensionElement.ELEMENT, CallIdExtensionElement.NAMESPACE);
+            TransferExtension transfer = jingle.getExtension(TransferExtension.class);
+            CallIdExtension callidExt = jingle.getExtension(CallIdExtension.class);
             CallJabberImpl call = null;
 
             if (transfer != null) {
@@ -829,17 +827,14 @@ public class OperationSetBasicTelephonyJabberImpl
                     callPeer.processSessionAccept(jingle);
                     break;
                 case SESSION_INFO:
-                    SessionInfoExtensionElement info = jingle.getSessionInfo();
+                    SessionInfoExtension info = jingle.getSessionInfo();
                     // change status.
                     if (info != null) {
                         callPeer.processSessionInfo(info);
                     }
                     else {
-                        ExtensionElement packetExtension = jingle.getExtension(
-                                TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
-                        if (packetExtension instanceof TransferExtensionElement) {
-                            TransferExtensionElement transfer = (TransferExtensionElement) packetExtension;
-
+                        TransferExtension transfer = jingle.getExtension(TransferExtension.class);
+                        if (transfer != null) {
                             if (transfer.getFrom() == null)
                                 transfer.setFrom(jingle.getFrom());
                             try {
@@ -849,12 +844,10 @@ public class OperationSetBasicTelephonyJabberImpl
                             }
                         }
 
-                        packetExtension = jingle.getExtension(CoinExtensionElement.ELEMENT,
-                                CoinExtensionElement.NAMESPACE);
-                        if (packetExtension instanceof CoinExtensionElement) {
-                            CoinExtensionElement coinExt = (CoinExtensionElement) packetExtension;
+                        CoinExtension coinExt = jingle.getExtension(CoinExtension.class);
+                        if (coinExt != null) {
                             callPeer.setConferenceFocus(Boolean.parseBoolean(
-                                    coinExt.getAttributeAsString(CoinExtensionElement.ISFOCUS_ATTR_NAME)));
+                                    coinExt.getAttributeAsString(CoinExtension.ISFOCUS_ATTR_NAME)));
                         }
                     }
                     break;

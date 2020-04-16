@@ -72,7 +72,7 @@ public class JingleUtil
     public static Jingle createSessionInfo(FullJid from, FullJid recipient, String sessionId, SessionInfoType type)
     {
         Jingle ringing = createSessionInfo(from, recipient, sessionId);
-        SessionInfoExtensionElement sessionInfoType = new SessionInfoExtensionElement(type);
+        SessionInfoExtension sessionInfoType = new SessionInfoExtension(type);
 
         ringing.setSessionInfo(sessionInfoType);
         return ringing;

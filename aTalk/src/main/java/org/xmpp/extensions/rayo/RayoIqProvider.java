@@ -48,17 +48,17 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
     public void registerRayoIQs(ProviderManager providerManager)
     {
         // <dial>
-        ProviderManager.addIQProvider(DialIq.ELEMENT_NAME, NAMESPACE, this);
+        ProviderManager.addIQProvider(DialIq.ELEMENT, NAMESPACE, this);
         // <ref>
-        ProviderManager.addIQProvider(RefIq.ELEMENT_NAME, NAMESPACE, this);
+        ProviderManager.addIQProvider(RefIq.ELEMENT, NAMESPACE, this);
         // <hangup>
-        ProviderManager.addIQProvider(HangUp.ELEMENT_NAME, NAMESPACE, this);
+        ProviderManager.addIQProvider(HangUp.ELEMENT, NAMESPACE, this);
         // <end> presence extension
-        ProviderManager.addExtensionProvider(EndExtensionElement.ELEMENT_NAME, NAMESPACE,
-                new DefaultExtensionElementProvider<>(EndExtensionElement.class));
+        ProviderManager.addExtensionProvider(EndExtension.ELEMENT, NAMESPACE,
+                new DefaultExtensionElementProvider<>(EndExtension.class));
         // <header> extension
-        ProviderManager.addExtensionProvider(HeaderExtensionElement.ELEMENT_NAME, "",
-                new DefaultExtensionElementProvider<>(HeaderExtensionElement.class));
+        ProviderManager.addExtensionProvider(HeaderExtension.ELEMENT, "",
+                new DefaultExtensionElementProvider<>(HeaderExtension.class));
     }
 
     /**
@@ -81,7 +81,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         RefIq ref;
         // End end = null;
 
-        if (DialIq.ELEMENT_NAME.equals(rootElement)) {
+        if (DialIq.ELEMENT.equals(rootElement)) {
             iq = dial = new DialIq();
             String src = parser.getAttributeValue("", DialIq.SRC_ATTR_NAME);
             String dst = parser.getAttributeValue("", DialIq.DST_ATTR_NAME);
@@ -93,14 +93,14 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
             dial.setSource(src);
             dial.setDestination(dst);
         }
-        else if (RefIq.ELEMENT_NAME.equals(rootElement)) {
+        else if (RefIq.ELEMENT.equals(rootElement)) {
             iq = ref = new RefIq();
             String uri = parser.getAttributeValue("", RefIq.URI_ATTR_NAME);
             if (StringUtils.isNullOrEmpty(uri))
                 return null;
             ref.setUri(uri);
         }
-        else if (HangUp.ELEMENT_NAME.equals(rootElement)) {
+        else if (HangUp.ELEMENT.equals(rootElement)) {
             iq = new HangUp();
         }
         /*
@@ -111,7 +111,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         boolean done = false;
-        HeaderExtensionElement header = null;
+        HeaderExtension header = null;
         // JingleReason reason = null;
 
         while (!done) {
@@ -121,7 +121,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                     if (rootElement.equals(name)) {
                         done = true;
                     }
-                    else if (HeaderExtensionElement.ELEMENT_NAME.equals(name)) {
+                    else if (HeaderExtension.ELEMENT.equals(name)) {
                         if (header != null) {
                             iq.addExtension(header);
                             header = null;
@@ -137,13 +137,13 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                 case START_ELEMENT: {
                     String name = parser.getName();
 
-                    if (HeaderExtensionElement.ELEMENT_NAME.equals(name)) {
-                        header = new HeaderExtensionElement();
+                    if (HeaderExtension.ELEMENT.equals(name)) {
+                        header = new HeaderExtension();
                         String nameAttr = parser.getAttributeValue("",
-                                HeaderExtensionElement.NAME_ATTR_NAME);
+                                HeaderExtension.NAME_ATTR_NAME);
                         header.setName(nameAttr);
                         String valueAttr = parser.getAttributeValue("",
-                                HeaderExtensionElement.VALUE_ATTR_NAME);
+                                HeaderExtension.VALUE_ATTR_NAME);
                         header.setValue(valueAttr);
                     }
                     /*
@@ -202,15 +202,15 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
          */
         public String getHeader(String name)
         {
-            HeaderExtensionElement header = findHeader(name);
+            HeaderExtension header = findHeader(name);
             return header != null ? header.getValue() : null;
         }
 
-        private HeaderExtensionElement findHeader(String name)
+        private HeaderExtension findHeader(String name)
         {
             for (ExtensionElement ext : getExtensions()) {
-                if (ext instanceof HeaderExtensionElement) {
-                    HeaderExtensionElement header = (HeaderExtensionElement) ext;
+                if (ext instanceof HeaderExtension) {
+                    HeaderExtension header = (HeaderExtension) ext;
 
                     if (name.equals(header.getName()))
                         return header;
@@ -227,10 +227,10 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
          */
         public void setHeader(String name, String value)
         {
-            HeaderExtensionElement headerExt = findHeader(name);
+            HeaderExtension headerExt = findHeader(name);
 
             if (headerExt == null) {
-                headerExt = new HeaderExtensionElement();
+                headerExt = new HeaderExtension();
                 headerExt.setName(name);
                 addExtension(headerExt);
             }
@@ -246,7 +246,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         /**
          * The name of XML element for this IQ.
          */
-        public static final String ELEMENT_NAME = "dial";
+        public static final String ELEMENT = "dial";
 
         /**
          * The name of source URI/address attribute. Referred as "source" to avoid confusion with
@@ -275,7 +275,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
          */
         public DialIq()
         {
-            super(DialIq.ELEMENT_NAME);
+            super(DialIq.ELEMENT);
         }
 
         /**
@@ -366,7 +366,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         /**
          * XML element name of <tt>RefIq</tt>.
          */
-        public static final String ELEMENT_NAME = "ref";
+        public static final String ELEMENT = "ref";
 
         /**
          * Name of the URI attribute that stores call resource reference.
@@ -383,7 +383,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
          */
         protected RefIq()
         {
-            super(RefIq.ELEMENT_NAME);
+            super(RefIq.ELEMENT);
         }
 
         /**
@@ -453,21 +453,21 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
      * Rayo hangup IQ is sent by the controlling agent to tell the server that call whose resource
      * is mentioned in IQ's 'to' attribute should be terminated. Server immediately replies with
      * result IQ which means that hangup operation is now scheduled. After it is actually executed
-     * presence indication with {@link EndExtensionElement} is sent through the presence to confirm the operation.
+     * presence indication with {@link EndExtension} is sent through the presence to confirm the operation.
      */
     public static class HangUp extends RayoIq
     {
         /**
          * The name of 'hangup' element.
          */
-        public static final String ELEMENT_NAME = "hangup";
+        public static final String ELEMENT = "hangup";
 
         /**
          * Creates new instance of <tt>HangUp</tt> IQ.
          */
         protected HangUp()
         {
-            super(ELEMENT_NAME);
+            super(ELEMENT);
         }
 
         /**

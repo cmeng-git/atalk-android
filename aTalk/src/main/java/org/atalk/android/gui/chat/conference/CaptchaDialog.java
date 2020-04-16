@@ -26,8 +26,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.*;
 
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-
 import org.atalk.android.R;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.jivesoftware.smack.*;
@@ -35,7 +33,7 @@ import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
-import org.jivesoftware.smackx.captcha.packet.Captcha;
+import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -134,7 +132,7 @@ public class CaptchaDialog extends Dialog
                 (int) (mCaptcha.getHeight() * metrics.scaledDensity), false);
         mImageView.setImageBitmap(captcha);
 
-        Body bodyExt = mMessage.getExtension(Body.ELEMENT, Body.NAMESPACE);
+        Body bodyExt = mMessage.getExtension(Body.class);
         if (bodyExt != null)
             mReasonText = bodyExt.getMessage();
         else
@@ -184,24 +182,24 @@ public class CaptchaDialog extends Dialog
     private boolean onAcceptClicked(boolean isCancel)
     {
         formSubmit = new DataForm(DataForm.Type.submit);
-        addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
+        addField(FormField.FORM_TYPE, CaptchaExtension.NAMESPACE);
 
-        String from = mDataForm.getField(Captcha.FROM).getFirstValue();
-        addField(Captcha.FROM, from);
+        String from = mDataForm.getField(CaptchaExtension.FROM).getFirstValue();
+        addField(CaptchaExtension.FROM, from);
 
-        String cl = mDataForm.getField(Captcha.CHALLENGE).getFirstValue();
-        addField(Captcha.CHALLENGE, cl);
+        String cl = mDataForm.getField(CaptchaExtension.CHALLENGE).getFirstValue();
+        addField(CaptchaExtension.CHALLENGE, cl);
 
-        String sid = mDataForm.getField(Captcha.SID).getFirstValue();
-        addField(Captcha.SID, sid);
+        String sid = mDataForm.getField(CaptchaExtension.SID).getFirstValue();
+        addField(CaptchaExtension.SID, sid);
 
         // Only localPart is required
         String userName = mMessage.getTo().toString();
-        addField(Captcha.USER_NAME, userName);
+        addField(CaptchaExtension.USER_NAME, userName);
 
         Editable rc = mCaptchaText.getText();
         if (rc != null) {
-            addField(Captcha.OCR, rc.toString());
+            addField(CaptchaExtension.OCR, rc.toString());
         }
 
         /*
@@ -277,15 +275,15 @@ public class CaptchaDialog extends Dialog
     {
         try {
             // do not proceed if dataForm is null
-            Captcha captcha = mMessage.getExtension(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE);
-            DataForm dataForm = captcha.getDataForm();
+            CaptchaExtension captchaExt = mMessage.getExtension(CaptchaExtension.class);
+            DataForm dataForm = captchaExt.getDataForm();
             if (dataForm == null) {
                 callBack.onResult(failed);
                 return false;
             }
 
             Bitmap bmCaptcha = null;
-            BoBExt bob = mMessage.getExtension(BoBExt.ELEMENT, BoBExt.NAMESPACE);
+            BoBExt bob = mMessage.getExtension(BoBExt.class);
             if (bob != null) {
                 byte[] bytData = bob.getBoBData().getContent();
                 InputStream stream = new ByteArrayInputStream(bytData);

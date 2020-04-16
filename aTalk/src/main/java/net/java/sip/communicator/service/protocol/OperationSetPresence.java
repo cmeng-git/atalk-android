@@ -121,7 +121,7 @@ public interface OperationSetPresence extends OperationSet
      */
     Contact findContactByID(String contactID);
 
-    Contact findContactByID(Jid contactJid);
+    Contact findContactByJid(Jid contactJid);
 
     /**
      * Handler for incoming authorization requests. An authorization request notifies the user that

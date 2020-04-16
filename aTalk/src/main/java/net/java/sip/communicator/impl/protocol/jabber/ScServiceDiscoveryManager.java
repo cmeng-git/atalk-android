@@ -7,7 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.jivesoftware.smack.*;
 import org.jxmpp.jid.*;
-import org.xmpp.extensions.caps.UserCapsNodeListener;
+import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
 
 import org.atalk.android.aTalkApp;

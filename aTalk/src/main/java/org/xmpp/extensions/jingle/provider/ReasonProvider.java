@@ -54,7 +54,7 @@ public class ReasonProvider extends ExtensionElementProvider<JingleReason>
                     // let the parse exception fly as it would mean we have some weird element first in the list.
                     reason = Reason.fromString(elementName);
                 }
-                else if (elementName.equals(JingleReason.TEXT_ELEMENT_NAME)) {
+                else if (elementName.equals(JingleReason.TEXT_ELEMENT)) {
                         text = parseText(parser);
                 }
                 else {

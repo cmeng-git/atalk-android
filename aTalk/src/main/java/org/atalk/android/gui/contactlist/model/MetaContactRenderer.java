@@ -96,6 +96,11 @@ public class MetaContactRenderer implements UIContactRenderer
         return isShowButton((MetaContact) contactImpl, OperationSetFileTransfer.class);
     }
 
+    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
+    {
+        return (metaContact.getOpSetSupportedContact(opSetClass) != null);
+    }
+
     @Override
     public String getDefaultAddress(Object contactImpl)
     {
@@ -142,11 +147,6 @@ public class MetaContactRenderer implements UIContactRenderer
             displayDetails = subscriptionDetails;
 
         return displayDetails;
-    }
-
-    private static boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
-    {
-        return metaContact.getOpSetSupportedContact(opSetClass) != null;
     }
 
     /**

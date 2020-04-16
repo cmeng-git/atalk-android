@@ -43,7 +43,7 @@ import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
-import org.jivesoftware.smackx.captcha.packet.Captcha;
+import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -274,7 +274,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     });
                 }
                 else {
-                    if (var.equals(Captcha.USER_NAME) || var.equals(Captcha.PASSWORD) || var.equals(Captcha.OCR))
+                    if (var.equals(CaptchaExtension.USER_NAME) || var.equals(CaptchaExtension.PASSWORD) || var.equals(CaptchaExtension.OCR))
                         continue;
 
                     LinearLayout fieldEntry = (LinearLayout) inflater.inflate(R.layout.ibr_field_entry_row, null);
@@ -420,9 +420,9 @@ public class IBRCaptchaProcessDialog extends Dialog
             try {
                 if (mDataForm != null) {
                     submitForm = new DataForm(DataForm.Type.submit);
-                    addField(Captcha.USER_NAME, userName);
+                    addField(CaptchaExtension.USER_NAME, userName);
                     if (pwd != null) {
-                        addField(Captcha.PASSWORD, pwd.toString());
+                        addField(CaptchaExtension.PASSWORD, pwd.toString());
                     }
 
                     // Add extra field if any and its value is not empty
@@ -439,18 +439,18 @@ public class IBRCaptchaProcessDialog extends Dialog
 
                     // set captcha challenge required info
                     if (mCaptcha != null) {
-                        addField(FormField.FORM_TYPE, Captcha.NAMESPACE);
+                        addField(FormField.FORM_TYPE, CaptchaExtension.NAMESPACE);
 
-                        String cl = mDataForm.getField(Captcha.CHALLENGE).getFirstValue();
-                        addField(Captcha.CHALLENGE, cl);
+                        String cl = mDataForm.getField(CaptchaExtension.CHALLENGE).getFirstValue();
+                        addField(CaptchaExtension.CHALLENGE, cl);
 
-                        String sid = mDataForm.getField(Captcha.SID).getFirstValue();
-                        addField(Captcha.SID, sid);
-                        addField(Captcha.ANSWER, "3");
+                        String sid = mDataForm.getField(CaptchaExtension.SID).getFirstValue();
+                        addField(CaptchaExtension.SID, sid);
+                        addField(CaptchaExtension.ANSWER, "3");
 
                         Editable rc = mCaptchaText.getText();
                         if (rc != null) {
-                            addField(Captcha.OCR, rc.toString());
+                            addField(CaptchaExtension.OCR, rc.toString());
                         }
                     }
                     accountManager.createAccount(submitForm);

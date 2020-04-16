@@ -18,10 +18,11 @@ package org.jivesoftware.smackx.bob.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.BoBHash;
+
+import javax.xml.namespace.QName;
 
 /**
  * The <tt>BoBExt</tt> implementing XEP-0231: Bits of Binary is an extension element to
@@ -41,6 +42,8 @@ public class BoBExt implements ExtensionElement
      * The names XMPP space that the thumbnail elements belong to.
      */
     public static final String NAMESPACE = "urn:xmpp:bob";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the bob attribute "cid".

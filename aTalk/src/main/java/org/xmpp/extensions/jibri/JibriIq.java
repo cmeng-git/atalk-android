@@ -46,7 +46,7 @@ public class JibriIq extends IQ
     /**
      * XML element name of the Jibri IQ.
      */
-    public static final String ELEMENT_NAME = "jibri";
+    public static final String ELEMENT = "jibri";
 
     /**
      * XML namespace of the Jibri IQ.
@@ -70,8 +70,7 @@ public class JibriIq extends IQ
 
     /**
      * The name of the XML attribute which stores whether or not
-     * Jicofo should retry this request.  Used when the response
-     * indicates an error.
+     * Jicofo should retry this request.  Used when the response indicates an error.
      */
     static final String SHOULD_RETRY_ATTR_NAME = "should_retry";
 
@@ -81,8 +80,7 @@ public class JibriIq extends IQ
     static final String STREAM_ID_ATTR_NAME = "streamid";
 
     /**
-     * The name of the XML attribute which stores the YouTube
-     * broadcast ID
+     * The name of the XML attribute which stores the YouTube broadcast ID
      */
     static final String YOUTUBE_BROADCAST_ID_ATTR_NAME = "you_tube_broadcast_id";
 
@@ -92,8 +90,7 @@ public class JibriIq extends IQ
     static final String SESSION_ID_ATTR_NAME = "session_id";
 
     /**
-     * The name of the XML attribute which stores the {@link #appData}
-     * field.
+     * The name of the XML attribute which stores the {@link #appData} field.
      */
     static final String APP_DATA_ATTR_NAME = "app_data";
 
@@ -148,8 +145,7 @@ public class JibriIq extends IQ
 
     /**
      * In the event of an error, this field denotes whether or not
-     * Jicofo should retry the request (for which this error response
-     * corresponds) with another Jibri.
+     * Jicofo should retry the request (for which this error response corresponds) with another Jibri.
      */
     private Boolean shouldRetry = null;
 
@@ -191,7 +187,7 @@ public class JibriIq extends IQ
 
     public JibriIq()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

@@ -27,12 +27,12 @@ public class ShutdownIQ extends IQ
     /**
      * Force shutdown IQ element name.
      */
-    final static public String FORCE_ELEMENT_NAME = "force-shutdown";
+    final static public String FORCE_ELEMENT = "force-shutdown";
 
     /**
      * Graceful shutdown IQ element name.
      */
-    final static public String GRACEFUL_ELEMENT_NAME = "graceful-shutdown";
+    final static public String GRACEFUL_ELEMENT = "graceful-shutdown";
 
     /**
      * XML namespace name for shutdown IQs.
@@ -40,10 +40,10 @@ public class ShutdownIQ extends IQ
     final static public String NAMESPACE = ColibriConferenceIQ.NAMESPACE;
 
     /**
-     * The element name of this IQ. Either {@link #FORCE_ELEMENT_NAME} or
-     * {@link #GRACEFUL_ELEMENT_NAME}. Default = GRACEFUL_ELEMENT_NAME
+     * The element name of this IQ. Either {@link #FORCE_ELEMENT} or
+     * {@link #GRACEFUL_ELEMENT}. Default = GRACEFUL_ELEMENT
      */
-    private static String elementName = GRACEFUL_ELEMENT_NAME;
+    private static String elementName = GRACEFUL_ELEMENT;
 
     public ShutdownIQ()
     {
@@ -58,16 +58,16 @@ public class ShutdownIQ extends IQ
      */
     public static boolean isValidElementName(String elementName)
     {
-        return GRACEFUL_ELEMENT_NAME.equals(elementName) || FORCE_ELEMENT_NAME.equals(elementName);
+        return GRACEFUL_ELEMENT.equals(elementName) || FORCE_ELEMENT.equals(elementName);
     }
 
     /**
      * Creates shutdown IQ for given element name.
      *
-     * @param elementName can be {@link #FORCE_ELEMENT_NAME} or {@link #GRACEFUL_ELEMENT_NAME}
+     * @param elementName can be {@link #FORCE_ELEMENT} or {@link #GRACEFUL_ELEMENT}
      * @return new <tt>ShutdownIQ</tt> instance for given element name.
-     * @throws IllegalArgumentException if given element name is neither {@link #FORCE_ELEMENT_NAME} nor
-     * {@link #GRACEFUL_ELEMENT_NAME}.
+     * @throws IllegalArgumentException if given element name is neither {@link #FORCE_ELEMENT} nor
+     * {@link #GRACEFUL_ELEMENT}.
      */
     public static ShutdownIQ createShutdownIQ(String elementName)
     {
@@ -75,7 +75,7 @@ public class ShutdownIQ extends IQ
             throw new IllegalArgumentException("Invalid element name: " + elementName);
         }
 
-        if (GRACEFUL_ELEMENT_NAME.equals(elementName)) {
+        if (GRACEFUL_ELEMENT.equals(elementName)) {
             return createGracefulShutdownIQ();
         }
         else {
@@ -88,7 +88,7 @@ public class ShutdownIQ extends IQ
      */
     public static ShutdownIQ createGracefulShutdownIQ()
     {
-        elementName = GRACEFUL_ELEMENT_NAME;
+        elementName = GRACEFUL_ELEMENT;
         return new ShutdownIQ();
     }
 
@@ -97,7 +97,7 @@ public class ShutdownIQ extends IQ
      */
     public static ShutdownIQ createForceShutdownIQ()
     {
-        elementName = FORCE_ELEMENT_NAME;
+        elementName = FORCE_ELEMENT;
         return new ShutdownIQ();
     }
 
@@ -107,7 +107,7 @@ public class ShutdownIQ extends IQ
      */
     public boolean isGracefulShutdown()
     {
-        return elementName.equals(GRACEFUL_ELEMENT_NAME);
+        return elementName.equals(GRACEFUL_ELEMENT);
     }
 
     /**

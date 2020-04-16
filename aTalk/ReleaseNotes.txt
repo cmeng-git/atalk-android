@@ -2,22 +2,30 @@ Project aTalk-Android Release Notes
 =========================================================================
 Version:		2.2.3 (1123)
 Author:         cmeng
-Upload Date:	04/10/2020
+Upload Date:	04/16/2020
 - Implement Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
 - Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection:
   popup dropdown together with the user edited text in selector and hide softKeyboard
   set dropdown width to match parent
-- Improve FileBackend.isHttpFileDnLink checking mechanism to minimize incorrect classification
+- Improve FileBackend.isHttpFileDnLink checking mechanism to minimize incorrect classification and diplay file download UI
+- Show video/call buttons if supported by any one contact login with multiple resources of different capabilities
 - Ensure ChatRoomConfiguration does not crash on screen rotation
-- aTalk minimum android OS support is API-21 (android 5.0 Lollipop)
-
 - FileHttpDownloadConversation, do not attempt to auto download if stored status is
   FileRecord.STATUS_FAILED. Show Retry and let user decide; otherwise ANR
 
+- Fix problem that translated service_gui_settings_BOSH_PROXY is used as pref_key.
 - Add static method to hidKeyboard() in ViewUtil.java
+- Fix Create ChatRoom crashes when there is no registered user
+- Fix Add contact Create Group... but cancel => java.lang.ClassCastException: MetaGroup cast exception
+- Fix android developer FFR for aTalk ver 2.2.2
 - Ported smack library to smack-4.4.0-alpha-20204040 release; obsoleted classes or affected methods:
   HostAddress, OmemoMessage.send#asMessage, Message => Message.Builder,
+  All ExtensionProvider.parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) must not return null
+  see https://discourse.igniterealtime.org/t/smack-4-4-0-alpha3-20200404-fail-to-parse-capsextension-from-the-received-presence-stanza/87694
+  Add public static final QName QNAME = new QName(NAMESPACE, ELEMENT) to ExtensionElement implementation class
+  MessageBuilder messageBuilder = StanzaBuilder.buildMessage() must not be reused for OMEMO xhtml generation
 - ConfirmIQ.appendErrorIfExists => final class in 4.4.0-alpha3 20200404: iqChildElement no logger supported
+- aTalk minimum android OS support is API-21 (android 5.0 Lollipop)
 
 =========================================================================
 Version:		2.2.2 (1122)

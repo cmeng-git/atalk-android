@@ -67,19 +67,19 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which uses the specified
      * <tt>connector</tt> or <tt>channel</tt>
      * @param connector the <tt>StreamConnector</tt> to be described within the transport element
-     * @return a {@link RawUdpTransportExtensionElement} containing the RTP and RTCP candidates of
+     * @return a {@link RawUdpTransportExtension} containing the RTP and RTCP candidates of
      * the specified <tt>connector</tt>
      */
-    private RawUdpTransportExtensionElement createTransport(MediaType mediaType, StreamConnector connector)
+    private RawUdpTransportExtension createTransport(MediaType mediaType, StreamConnector connector)
     {
-        RawUdpTransportExtensionElement ourTransport = new RawUdpTransportExtensionElement();
+        RawUdpTransportExtension ourTransport = new RawUdpTransportExtension();
         int generation = getCurrentGeneration();
 
         // create and add candidates that correspond to the stream connector
         // RTP
-        CandidateExtensionElement rtpCand = new CandidateExtensionElement();
+        CandidateExtension rtpCand = new CandidateExtension();
 
-        rtpCand.setComponent(CandidateExtensionElement.RTP_COMPONENT_ID);
+        rtpCand.setComponent(CandidateExtension.RTP_COMPONENT_ID);
         rtpCand.setGeneration(generation);
         rtpCand.setID(getNextID());
         rtpCand.setType(CandidateType.host);
@@ -92,9 +92,9 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
         ourTransport.addCandidate(rtpCand);
 
         // RTCP
-        CandidateExtensionElement rtcpCand = new CandidateExtensionElement();
+        CandidateExtension rtcpCand = new CandidateExtension();
 
-        rtcpCand.setComponent(CandidateExtensionElement.RTCP_COMPONENT_ID);
+        rtcpCand.setComponent(CandidateExtension.RTCP_COMPONENT_ID);
         rtcpCand.setGeneration(generation);
         rtcpCand.setID(getNextID());
         rtcpCand.setType(CandidateType.host);
@@ -114,7 +114,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      */
     protected ExtensionElement createTransportPacketExtension()
     {
-        return new RawUdpTransportExtensionElement();
+        return new RawUdpTransportExtension();
     }
 
     /**
@@ -139,8 +139,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
 
             for (Iterable<JingleContent> remote : remotes) {
                 for (JingleContent content : remote) {
-                    RtpDescriptionExtensionElement rtpDescription
-                        = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+                    RtpDescriptionExtension rtpDescription
+                        = content.getFirstChildOfType(RtpDescriptionExtension.class);
 
                     if (media.equals(rtpDescription.getMedia())) {
                         streamTarget = JingleUtils.extractDefaultTarget(content);
@@ -150,7 +150,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
             }
         }
         else {
-            IceUdpTransportExtensionElement transport = channel.getTransport();
+            IceUdpTransportExtension transport = channel.getTransport();
 
             if (transport != null)
                 streamTarget = JingleUtils.extractDefaultTarget(transport);

@@ -286,7 +286,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         ContactViewHolder contactViewHolder;
         Object child = getChild(groupPosition, childPosition);
 
-        if (convertView == null) {
+        if ((convertView == null) || !(convertView.getTag() instanceof ContactViewHolder)) {
             convertView = mInflater.inflate(R.layout.contact_list_row, parent, false);
 
             contactViewHolder = new ContactViewHolder();
@@ -382,6 +382,9 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
         if (isMainContactList && (isShowVideoCall || isShowCall)) {
             contactViewHolder.callButtonLayout.setVisibility(View.VISIBLE);
+            contactViewHolder.callButton.setVisibility(View.VISIBLE);
+            contactViewHolder.callVideoButton.setVisibility(View.VISIBLE);
+
             AndroidUtils.setOnTouchBackgroundEffect(contactViewHolder.callButtonLayout);
 
             if (contactViewHolder.callButton.isSelected()) {

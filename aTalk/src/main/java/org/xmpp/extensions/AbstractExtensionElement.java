@@ -12,6 +12,7 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -36,14 +37,13 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @return a new <tt>AbstractExtensionElement</tt> instance of the run-time type of the specified
      * <tt>src</tt> which has the same attributes, namespace and text
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressWarnings("unchecked")
     public static <T extends AbstractExtensionElement> T clone(T src)
     {
         T dst = null;
         try {
-            dst = (T) src.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            dst = (T) src.getClass().getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
@@ -68,7 +68,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * The name space of this packet extension. Should remain <tt>null</tt> if there's no namespace
      * associated with this element.
      */
-    private final String name;
+    private final String element;
 
     /**
      * A map of all attributes that this extension is currently using.
@@ -89,11 +89,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Creates an {@link AbstractExtensionElement} instance for the specified <tt>namespace</tt> and <tt>elementName</tt> .
      *
      * @param namespace the XML namespace for this element.
-     * @param name the name of the element
+     * @param element the name of the element
      */
-    protected AbstractExtensionElement(String name, String namespace)
+    protected AbstractExtensionElement(String element, String namespace)
     {
-        this.name = name;
+        this.element = element;
         this.namespace = namespace;
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
     @Override
     public String getElementName()
     {
-        return name;
+        return element;
     }
 
     /**
@@ -135,9 +135,9 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @return an XML representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
@@ -172,7 +172,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
         }
         xml.optEscape(text);
 
-        xml.closeElement(this);
+        xml.closeElement(getElementName());
         return xml;
     }
 

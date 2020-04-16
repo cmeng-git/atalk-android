@@ -48,6 +48,8 @@ jarJarDeps.dependsOn(
         destinationName "smack-core-jarjar-${smackVersion}.jar"
 
         // smack-core
+        classDelete 'org.jivesoftware.smack.packet.Stanza'
+        classDelete 'org.jivesoftware.smack.packet.StanzaView'
         classDelete 'org.jivesoftware.smack.provider.AbstractProvider'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
         classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
@@ -79,19 +81,5 @@ jarJarDeps.dependsOn(
         classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
         classDelete 'org.jivesoftware.smackx.muc.MultiUserChat**'
     }
-
-/*
-    jarjar.repackage {
-        from("org.igniterealtime.smack:smack-tcp:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-tcp-jarjar/${smackVersion}")
-        destinationName "smack-tcp-jarjar-${smackVersion}.jar"
-
-        // smack-tcp
-        classDelete 'org.jivesoftware.smack.tcp.XmppNioTcpConnection**'
-        classDelete 'org.jivesoftware.smack.tcp.XMPPTCPConnection**'
-    }
-*/
 )
 tasks.getByName("build").dependsOn(jarJarDeps)

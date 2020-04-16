@@ -34,7 +34,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
@@ -67,6 +66,7 @@ import org.jxmpp.jid.EntityFullJid;
  *
  * @author Alexander Wenckus
  * @author Paul Schaub
+ * @author Eng Chong Meng
  * @see org.jivesoftware.smackx.chatstates.ChatState
  * @see org.jivesoftware.smackx.chatstates.packet.ChatStateExtension
  */
@@ -78,7 +78,6 @@ public final class ChatStateManager extends Manager {
 
     private static final Map<XMPPConnection, ChatStateManager> INSTANCES = new WeakHashMap<>();
 
-    private static final StanzaFilter filter = new NotFilter(new StanzaExtensionFilter(NAMESPACE));
     private static final StanzaFilter INCOMING_CHAT_STATE_FILTER =
             new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(NAMESPACE));
 
@@ -128,31 +127,54 @@ public final class ChatStateManager extends Manager {
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         MultiUserChatManager multiUserChatManager = MultiUserChatManager.getInstanceFor(connection);
 
-        connection.addStanzaInterceptor(new StanzaListener() {
-            @Override
-            public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
-                Message message = (Message) stanza;
+//        connection.addStanzaInterceptor(new StanzaListener() {
+//            @Override
+//            public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+//                Message message = (Message) stanza;
+//
+//                // if message already has a chatStateExtension, then do nothing,
+//                if (message.hasExtension(ChatStateExtension.NAMESPACE)) {
+//                    return;
+//                }
+//
+//                Object chat;
+//                EntityBareJid entityBareJid = message.getTo().asEntityBareJidIfPossible();
+//                if (message.getType() == Message.Type.groupchat) {
+//                    chat = multiUserChatManager.getMultiUserChat(entityBareJid);
+//                }
+//                else {
+//                    chat = chatManager.chatWith(entityBareJid);
+//                }
+//
+//                // otherwise add a chatState extension if necessary.
+//                if (updateChatState(chat, ChatState.active)) {
+//                    message.addExtension(new ChatStateExtension(ChatState.active));
+//                }
+//            }
+//        }, OUTGOING_MESSAGE_FILTER);
 
-                // if message already has a chatStateExtension, then do nothing,
-                if (!filter.accept(message)) {
-                    return;
-                }
+        connection.addMessageInterceptor(messageBuilder -> {
+            Message message = messageBuilder.build();
 
-                Object chat;
-                EntityBareJid entityBareJid = message.getTo().asEntityBareJidIfPossible();
-                if (message.getType() == Message.Type.groupchat) {
-                    chat = multiUserChatManager.getMultiUserChat(entityBareJid);
-                }
-                else {
-                    chat = chatManager.chatWith(entityBareJid);
-                }
-
-                // otherwise add a chatState extension if necessary.
-                if (updateChatState(chat, ChatState.active)) {
-                    message.addExtension(new ChatStateExtension(ChatState.active));
-                }
+            // if message already has a chatStateExtension, then do nothing,
+            if (message.hasExtension(ChatStateExtension.NAMESPACE)) {
+                return;
             }
-        }, OUTGOING_MESSAGE_FILTER);
+
+            Object chat;
+            EntityBareJid entityBareJid = message.getTo().asEntityBareJidIfPossible();
+            if (message.getType() == Message.Type.groupchat) {
+                chat = multiUserChatManager.getMultiUserChat(entityBareJid);
+            }
+            else {
+                chat = chatManager.chatWith(entityBareJid);
+            }
+
+            // otherwise add a chatState extension if necessary.
+            if (updateChatState(chat, ChatState.active)) {
+                messageBuilder.addExtension(new ChatStateExtension(ChatState.active));
+            }
+        }, OUTGOING_MESSAGE_FILTER::accept);
 
         connection.addSyncStanzaListener(new StanzaListener() {
             @Override
@@ -262,7 +284,6 @@ public final class ChatStateManager extends Manager {
         if (!updateChatState(mucChat, newState)) {
             return;
         }
-
         MessageBuilder message = StanzaBuilder.buildMessage()
                 .addExtension(new ChatStateExtension(newState));
         mucChat.sendMessage(message);

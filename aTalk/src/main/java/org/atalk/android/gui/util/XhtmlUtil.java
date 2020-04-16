@@ -39,7 +39,7 @@ public class XhtmlUtil
     {
         String xhtmlString = null;
         if (XHTMLManager.isXHTMLMessage(message)) {
-            XHTMLExtension xhtmlExt = (XHTMLExtension) message.getExtension(XHTMLExtension.NAMESPACE);
+            XHTMLExtension xhtmlExt = message.getExtension(XHTMLExtension.class);
 
             // parse all bodies
             List<CharSequence> bodies = xhtmlExt.getBodies();

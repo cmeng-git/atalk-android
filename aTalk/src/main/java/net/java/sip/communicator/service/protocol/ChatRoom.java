@@ -528,9 +528,9 @@ public interface ChatRoom
     /**
      * Updates the presence status of private messaging contact.
      *
-     * @param nickname the nickname of the contact.
+     * @param chatRoomMember the chatRoom member.
      */
-    void updatePrivateContactPresenceStatus(String nickname);
+    void updatePrivateContactPresenceStatus(ChatRoomMember chatRoomMember);
 
     /**
      * Updates the presence status of private messaging contact.

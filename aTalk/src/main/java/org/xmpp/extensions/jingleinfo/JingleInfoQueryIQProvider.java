@@ -40,8 +40,8 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
      */
     public JingleInfoQueryIQProvider()
     {
-        ProviderManager.addExtensionProvider(ServerExtensionElement.ELEMENT_NAME, ServerExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ServerExtensionElement.class));
+        ProviderManager.addExtensionProvider(ServerExtension.ELEMENT, ServerExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ServerExtension.class));
     }
 
     /**
@@ -64,15 +64,15 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
             String elementName = parser.getName();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                if (elementName.equals(StunExtensionElement.ELEMENT_NAME)) {
-                    iq.addExtension((StunExtensionElement) stunProvider.parse(parser));
+                if (elementName.equals(StunExtension.ELEMENT)) {
+                    iq.addExtension((StunExtension) stunProvider.parse(parser));
                 }
-                else if (elementName.equals(RelayExtensionElement.ELEMENT_NAME)) {
-                    iq.addExtension((RelayExtensionElement) relayProvider.parse(parser));
+                else if (elementName.equals(RelayExtension.ELEMENT)) {
+                    iq.addExtension((RelayExtension) relayProvider.parse(parser));
                 }
             }
             if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(JingleInfoQueryIQ.ELEMENT_NAME)) {
+                if (parser.getName().equals(JingleInfoQueryIQ.ELEMENT)) {
                     done = true;
                 }
             }
