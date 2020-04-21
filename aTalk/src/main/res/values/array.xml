@@ -381,6 +381,7 @@
         <item>en</item>
         <item>es</item>
         <item>ru</item>
+        <item>sk</item>
     </string-array>
 
     <string-array name="TLS_version_name">
