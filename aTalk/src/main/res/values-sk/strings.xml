@@ -1,0 +1,1587 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# aTalk, the OpenSource Java VoIP and Instant Messaging client.
+
+# Distributable under LGPL license.
+# See terms of license at gnu.org.
+#
+# Note to translators:
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by get18NString()
+# - ensure the number of parameters and their designation are correctly specified.
+#
+# Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
+# - with dot joining words xxx.xxx.xxx e.g. pref.cat.settings.notifications
+# - contains underscore e.g. auto_join_on
+# - Words joined without any spaces e.g. connectionProxyAddress
+# - Do not translate any style format string e.g MMM dd, yyyy - otherwise system abort on execution
+# - Omit those require no translation e.g. IP link, OMEMO,  640x480 etc.
+#   Android will always fallback to use the string from main string.xml if not found in other languages files
+#
+# Note: Avoid copy/duplicate the above defined strings in the other languages string.xml files to prevent
+# accidentally values change. Any delta in the parameter will cause system problem when one switch between different languages.
+# string with {0}, {1} means the string is still not being used/implemented in aTalk. They are kept for reference and may use later;
+# you can proceed to translate these string replacing {0}, {1} with %1$s, %2$s etc
+#
+-->
+
+<resources>
+    <string name="accept_call_video">Prijmite hovor s videom</string>
+    <string name="account_setup_basics_show_password">Ukázať heslo</string>
+    <string name="account_override_server">Prestaviť pripojenie servera</string>
+    <string name="account_registration">Zaregistrujte nový účet na serveri</string>
+    <string name="account_server_ip">Meno alebo IP adresa servera</string>
+    <string name="ibr_registration">IB Registrácia</string>
+    <string name="captcha_registration_request">Registračná-Captcha</string>
+    <string name="captcha_registration_fail">Registračná-Captcha zlyhala!\n %1$s</string>
+    <string name="captcha_registration_success">Registračná-Captcha je úspešná. \n Môžete sa teraz pokračovať k prihláseniu!</string>
+    <string name="captcha_registration_reason">Inband registrácia bola vyžiadaná používateľom</string>
+    <string name="captcha_registration_pwd_empty">Chyba: pole pre heslo je prázdne!</string>
+    <string name="captcha_hint">Zadajte text, ktorý vidíte</string>
+    <string name="captcha_retry">Kliknutím na tlačidlo „OK“ skúste znova alebo kliknutím na tlačidlo „Zrušiť“ skončíte</string>
+
+    <string name="choose_network">Vyberte sieť</string>
+    <string name="encryption_TOOLTIP">Šifrovať rozhovor</string>
+    <string name="encryption_choices">Možnosti šifrovania</string>
+    <string name="encryption_choice_unencrypted">nešifrované</string>
+    <string name="enter_name_or_number">Zadajte meno alebo číslo</string>
+    <string name="hang_up">Zaveste hovor</string>
+    <string name="hold">Podržte hovor</string>
+    <string name="in_call_with">V rozhovore s používateľom</string>
+    <string name="network">sieť</string>
+    <string name="notification_setting">Nastavenia upozornení&#8230;</string>
+    <string name="no_application_found_to_open_file">Nenašli sa žiadne aplikácie na otvorenie súboru</string>
+    <string name="password">heslo</string>
+    <string name="service_gui_PASSWORD">Heslo:</string>
+    <string name="send_process_signal">Poslať procesný signál</string>
+    <string name="show_call_info">Informácie o hovore</string>
+    <string name="show_call_zrtp_info">"Informácie o ZRTP</string>
+    <string name="stop_osgi_framework">Zastaviť OSGi knižnicu</string>
+    <string name="store_password">Uložiť heslo</string>
+    <string name="system_settings">Nastavenie&#8230;</string>
+    <string name="username_hint">pouzivatel@napriklad.sk</string>
+    <string name="service_gui_USERNAME">Používateľské meno:</string>
+
+    <string name="attachOptionDialog_picture">Obrázky</string>
+    <string name="attachOptionDialog_camera">Vyfotiť obrázok</string>
+    <string name="attachOptionDialog_Videos">Videá</string>
+    <string name="attachOptionDialog_videoRecord">Zaznamenajte video</string>
+    <string name="attachOptionDialog_shareFile">Zdieľať súbor</string>
+    <string name="service_gui_COPY">Kopírovať</string>
+    <string name="service_gui_DELETE">Vymazať</string>
+    <string name="service_gui_EDIT">Editovať</string>
+    <string name="service_gui_FORWARD">Ďalej…</string>
+    <string name="chat_message_long_press_hint">Vyhnite sa klikaniu v oblasti správ pre výber viacerých položiek</string>
+    <string name="service_gui_QUOTE">Citovať</string>
+    <string name="service_gui_REPLY">Odpovedať</string>
+    <string name="service_gui_SELECT_ALL">Vybrať všetko</string>
+    <string name="chatRoom_Subject">Predmet</string>
+    <string name="choose_file_activity_title">Vyberte súbor</string>
+    <string name="menu_settings">Nastavenie</string>
+    <string name="title_activity_attach_option_dialog">Poslať prílohu</string>
+    <string name="title_activity_activation_view">Aktivácia</string>
+
+    <!-- General -->
+    <string name="service_gui_ACCEPT">Súhlasiť</string>
+    <string name="service_gui_ACCOUNT">Účet</string>
+    <string name="service_gui_ACCOUNT_ME">Ja</string>
+    <string name="service_gui_ACCOUNT_SETTINGS">Nastavenia účtu&#8230;</string>
+    <string name="service_gui_ACCOUNT_UNREGISTERED">%1$s nie je zaregistrovaný</string>
+    <string name="service_gui_ADD">Pridať</string>
+    <string name="service_gui_ADD_CONTACT">Pridať kontakt</string>
+    <string name="service_gui_ADD_AUTHORIZED_CONTACT">Pridajte %1$s do svojho zoznamu kontaktov</string>
+    <string name="service_gui_ADD_CONTACT_TO">Pridajte kontakt do</string>
+    <string name="service_gui_ADD_CONTACT_ERROR">Nepodarilo sa pridať kontakt s ID: %1$s</string>
+    <string name="service_gui_ADD_CONTACT_ERROR_TITLE">Chyba pridávania kontaktu</string>
+    <string name="service_gui_ADD_CONTACT_EXIST_ERROR">Kontakt %1$s už vo vašom zozname kontaktov existuje.</string>
+    <string name="service_gui_ADD_CONTACT_NETWORK_ERROR">Server neodpovedal na našu žiadosť o pridanie kontaktu s používateľom: %1$s .</string>
+    <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">Nepodarilo sa pridať kontakt s ID: %1$s . Operácia nie je podporovaná.</string>
+    <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">Ak chcete pridať kontakt, musíte byť pripojení. Prihláste sa k vybranému poskytovateľovi a skúste to znova.</string>
+    <string name="service_gui_ADD_GROUP_LOCAL_ERROR">Nepodarilo sa pridať skupinu s názvom: %1$s . Chyba sa vyskytla počas miestnej IO operácie.</string>
+    <string name="service_gui_ADD_GROUP_EXIST_ERROR">Skupina %1$s už existuje vo vašom zozname kontaktov. Vyberte iné meno.</string>
+    <string name="service_gui_ADD_GROUP_NET_ERROR">Nepodarilo sa pridať skupinu s názvom: %1$s . Problém nastal kvôli zlyhaniu siete. Skontrolujte sieťové pripojenie a skúste to znova.</string>
+    <string name="service_gui_ADD_GROUP_ERROR">Nepodarilo sa pridať skupinu s názvom: %1$s .</string>
+    <string name="service_gui_ADD_GROUP_EMPTY_NAME">Názov skupiny nesmie byť prázdny.</string>
+    <string name="service_gui_ADD_GROUP">Vytvoriť skupinu</string>
+    <string name="service_gui_ADD_GROUP_HINT">Zadajte názov skupiny</string>
+    <string name="service_gui_AT">na</string>
+    <string name="service_gui_APPLY">Použiť</string>
+    <string name="service_gui_APPLY_CHANGES">Použiť nastavenia účtu (~60S) &#8230;</string>
+    <string name="service_gui_AUTHORIZE">Povoliť</string>
+    <string name="service_gui_AUTHORIZATION_ACCEPTED">Kontakt prijal vašu žiadosť o autorizáciu.</string>
+    <string name="service_gui_AUTHENTICATION_FAILED">Autorizácia zlyhala pre %1$s . Zadané heslo nie je platné.</string>
+    <string name="service_gui_AUTHENTICATION_REQUESTED">Vyžaduje sa overenie</string>
+    <string name="service_gui_AUTHENTICATION_REQUESTED_SERVER">Server %1$s požiadal o vaše prihlásenie.</string>
+    <string name="service_gui_AUTHENTICATION_REJECTED">Kontakt zamietol vašu žiadosť o autorizáciu.</string>
+    <string name="service_gui_AUTHENTICATION_WINDOW_TITLE">Autentifikácia %1$s</string>
+    <string name="service_gui_AUTHORIZATION_REQUESTED">Požiadavka o autorizáciu</string>
+    <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">Kontakt %1$s Vás prosí o vašu autorizáciu.</string>
+    <string name="service_gui_AUTHORIZATION_REQUEST">Žiadosť o autorizáciu</string>
+    <string name="service_gui_AVATAR_HINT">Odporúčaná ikona: 64 * 64 (maximálne 96 * 96 px)</string>
+    <string name="service_gui_AWAY_STATUS">Preč</string>
+    <string name="service_gui_AVATAR_SET_ERROR">Nepodarilo sa nastaviť avatar pre %1$s</string>
+    <string name="service_gui_AVATAR_RETRIEVING">Načítava sa avatar pre %1$s</string>
+
+    <string name="service_gui_BUSY_STATUS">Zaneprázdnený</string>
+    <string name="service_gui_CALL">Zvukový hovor</string>
+    <string name="service_gui_CALL_FAILED">Hovor zlyhal</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">História hovorov</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk sa nepodarilo inicializovať %1$s \n Všetky mediálne hovory/služby budú vypnuté.\n %2$s</string>
+    <string name="service_gui_CALL_WITH">Volajte s</string>
+    <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Nenašli sme žiadne aktívne audio/video zariadenia, a preto sa nemohol uskutočniť hovor.</string>
+    <string name="service_gui_CALL_NO_AUDIO_DEVICE">Nie je nakonfigurované žiadne zvukové zariadenie.</string>
+    <string name="service_gui_CALL_NO_AUDIO_CODEC">Nie je povolený žiadny zvukový kodek.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Zariadenie alebo kodek %1$s nie je úplne nakonfigurované v \'Nastavenia…\'. Skontrolujte a nastavte.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Chcete pokračovať v hovore?</string>
+    <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">V ponuke %1$s sa nenašli žiadne zodpovedajúce formáty médií, ktoré by mohli prijať hovor. Skontrolujte nastavenie zariadenia a kodeku v časti \'Nastavenia…\'.</string>
+    <string name="service_gui_CALL_VIA">Hovor cez: %1$s</string>
+    <string name="service_gui_CALL_VIDEO">Videohovor</string>
+    <string name="service_gui_CANCEL">Zrušiť</string>
+    <string name="service_gui_CONTACT_INVALID">Vybraný kontakt nie je platný: %1$s</string>
+    <string name="service_gui_Contacts">Kontakty</string>
+    <string name="service_gui_DONE">Hotovo</string>
+    <string name="service_gui_MAS">Označiť ako prečítané</string>
+    <string name="service_gui_REASON_LABEL">Dôvod:</string>
+    <string name="service_gui_SET">Nastaviť</string>
+    <string name="service_gui_SHARE">Zdieľam…</string>
+    <string name="service_gui_SHARE_TEXT">Zdieľajte text&#8230;</string>
+    <string name="service_gui_SHARE_FILE">Zdieľajte súbor&#8230;</string>
+    <string name="service_gui_SNOOZE">Zdriemnutie</string>
+
+    <!-- Conference Chat -->
+    <string name="service_gui_AUTOJOIN">Automatické pripojenie</string>
+    <string name="service_gui_CHANGE_NICK">Zmena prezývky</string>
+    <string name="service_gui_CHANGE_NICKNAME">Zmena prezývky&#8230;</string>
+    <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">Prezývka už existuje</string>
+    <string name="service_gui_CHANGE_NICKNAME_ERROR">Chyba pri zmene prezývky pre %1$s: %2$s</string>
+    <string name="service_gui_CHANGE_NICKNAME_LABEL">Do poľa nižšie môžete zadať svoju novú prezývku.</string>
+    <string name="service_gui_CHANGE_NICKNAME_NULL">Obsah poľa Prezývka nemôže byť prázdny</string>
+    <string name="service_gui_CHANGE_ROOM_INFO">Zmeniť informácie o diskusií</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Do poľa nižšie môžete zadať nový predmet pre túto miestnosť.</string>
+    <string name="service_gui_CHANGE_VIDEO_QUALITY">Zmeňte kvalitu vzdialeného videa</string>
+    <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">Konferencia používateľa %1$s</string>
+    <string name="service_gui_CHAT_CONFERENCE_LABEL">Konferencie</string>
+    <string name="service_gui_CHATROOM">Diskusná miestnosť</string>
+    <string name="service_gui_CHATROOM_ALREADY_JOINED">Už ste sa pripojili k diskusnej miestnosti %1$s.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">Konfigurácia diskusnej miestnosti</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Nepodarilo sa získať konfiguračný formulár diskusnej miestnosti %1$s.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Nepodarilo sa získať konfiguračný formulár diskusnej miestnosti %1$s. Konfiguračný formulár môžu vidieť a meniť iba vlastníci diskusnej miestnosti.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Zoznam napravo obsahuje používateľov, ktorí majú v tejto diskusnej miestnosti úlohu člena. Ak je diskusná miestnosť iba pre členov, budú to používatelia, ktorí sa môžu pripojiť.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Upraviť zoznam členov</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">Pri pokuse o odoslanie konfiguračného formulára pre diskusnú miestnosť %1$s sa vyskytla chyba.</string>
+    <string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">Odstráni vybratú miestnosť zo zoznamu uložených miestností</string>
+    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Uloží diskusnú miestnosť pre budúce použitie</string>
+    <string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">Odosielanie správ je zakázané (hlas odvolaný)</string>
+    <string name="service_gui_CHATROOM_USER_JOINED">sa pripojil k %1$s</string>
+    <string name="service_gui_CHATROOM_USER_KICKED">bol vyhodený z %1$s</string>
+    <string name="service_gui_CHATROOM_USER_LEFT">opustil %1$s</string>
+    <string name="service_gui_CHATROOM_USER_QUIT">Používateľ skončil %1$s</string>
+    <string name="service_gui_CHATROOM_NAME">Názov miestnosti na rozhovor</string>
+    <string name="service_gui_CHATROOM_NAME_INFO">Do poľa nižšie zadajte názov miestnosti, ktorú chcete vytvoriť.</string>
+    <string name="service_gui_CHATROOM_NOT_EXIST">Miestnosť %1$s sa nenašla na serveri %2$s. Skontrolujte, či je zadané meno správne.</string>
+    <string name="service_gui_CHATROOM_NOT_CONNECTED">Ak sa chcete pripojiť k diskusnej miestnosti %1$s, musíte byť online.</string>
+    <string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">Aby ste mohli opustiť miestnosť, musíte byť online.</string>
+    <string name="service_gui_CHATROOM_NOT_JOINED">Aby ste s ňou mohli robiť ďalšie operácie, musíte sa pripojiť k diskusnej miestnosti.</string>
+    <string name="service_gui_CHATROOM_OPTIONS">Možnosti diskusnej miestnosti</string>
+    <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Diskusná miestnosť %1$s požiadala o heslo.</string>
+    <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Predmet miestnosti zmenený: \'%1$s \' => \'%2$s \'</string>
+    <string name="service_gui_CHAT_ROOMS">Diskusné miestnosti</string>
+    <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s je teraz známy ako %2$s</string>
+    <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Vymazať vlastné správy</string>
+    <string name="service_gui_CLOSE">Zavrieť</string>
+    <string name="service_gui_CLOSE_ALL_CHATS">Zatvorte všetky aktívne rozhovory</string>
+    <string name="service_gui_CLOSE_CHAT">Zatvorte aktuálnu reláciu rozhovoru</string>
+    <string name="service_gui_CONNECTED_STATUS">Spojený</string>
+    <string name="service_gui_CONNECTING_ACCOUNT">Pripája sa %1$s</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Pripojenie*</string>
+    <string name="service_gui_CONNECTION_FAILED_MSG">Prihlásenie k účtu zlyhalo: Meno používateľa: %1$s \n
+        Názov servera: %2$s \nProsím skontrolujte sieťové pripojenie ALEBO sa obráťte na správcu siete, ktorý vám poskytne ďalšie informácie.</string>
+    <string name="service_gui_CONNECTING_STATUS">Pripájanie</string>
+    <string name="service_gui_CONTACT_ACTIVE">** %1$s je aktívny v relácii rozhovoru</string>
+    <string name="service_gui_CONTACT_COMPOSING">** %1$s píše správu</string>
+    <string name="service_gui_CONTACT_INACTIVE">** %1$s je dočasne preč</string>
+    <string name="service_gui_CONTACT_GONE">** %1$s opustil diskusiu</string>
+    <string name="service_gui_CONTACT_INFO">Kontaktné informácie</string>
+    <string name="service_gui_CONTACT_NAME">Kontakt JID alebo číslo</string>
+    <string name="service_gui_CONTACT_NAME_EMPTY">Zobrazovaný názov kontaktu nesmie byť prázdny.</string>
+    <string name="service_gui_CONTACT_OWNER">Vlastník kontaktu: %1$s</string>
+    <string name="service_gui_CONTACT_PAUSED_TYPING">** %1$s pozastavil písanie</string>
+    <string name="service_gui_CONTACT_RENAME">Kontaktovať nové meno:</string>
+    <string name="service_gui_CONTACT_RENAME_HINT">Zadajte nové meno kontaktu</string>
+    <string name="service_gui_CONTACT_RENAME_TITLE">Zmeniť meno kontaktu</string>
+    <string name="service_gui_CONTACTS">Kontakty</string>
+    <string name="service_gui_COPY_MESSAGE_TEXT">Skopírujte text správy</string>
+
+    <string name="service_gui_CREATE">Vytvoriť</string>
+    <string name="service_gui_CREATE_CALL_FAILED">Hovor sa nepodarilo vytvoriť.</string>
+    <string name="service_gui_CREATE_CONFERENCE_CALL">Vytvorte konferenčný hovor&#8230;</string>
+    <string name="service_gui_CREATE_CONFERENCE_CHAT">Vytvorte konferenčnú diskusiu&#8230;</string>
+    <string name="service_gui_CREATE_GROUP">Vytvoriť skupinu&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_NAME">Do poľa nižšie zadajte názov skupiny, ktorú chcete vytvoriť.</string>
+    <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Váš zoznam kontaktov neobsahuje žiadne skupiny. Najskôr vytvorte skupinu (Súbor/Vytvoriť skupinu).</string>
+
+    <!-- About Dialog -->
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online pomoc</a></string>
+    <string name="AboutDialog_title">O programe</string>
+    <string name="AboutDialog_Version">Verzia %1$s</string>
+    <string name="About_action">O programe</string>
+    <string name="About_help">Pomoc</string>
+    <string name="check_new_version">Skontrolujte aktualizáciu</string>
+    <string name="show_history_log">História</string>
+
+    <!-- HTTP Authorization Request Dialog -->
+    <string name="service_gui_HTTP_REQUEST_TITLE">Žiadosť o autorizáciu HTTP</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) autorizácia pre %2$s\n (ID: %3$s).\nPrijali ste túto žiadosť o účet: \n%4$s? \n\nOverte stránku s identifikáciami ID, ak sú k dispozícii</string>
+
+    <string name="app_authors_fmt">Autori: %1$s</string>
+    <string name="app_libraries">aTalk používa nasledujúce knižnice tretích strán: %1$s</string>
+    <string name="app_revision_fmt">Informácie o revízii: %1$s</string>
+    <string name="app_xeps">aTalk podporuje nasledujúce XEP: %1$s</string>
+    <string name="PoweredBy">Poháňaný atalk.org</string>
+
+    <!-- PTT Chat -->
+    <string name="chat_noaudio_buddyOffline">Zvukový rozhovor s odpojeným príjemcom nie je povolený.</string>
+    <string name="chat_RecordCancel">&lt; posunutím doľava\n zrušíte</string>
+    <string name="chat_soundRecordStartButton">Spustite nahrávanie</string>
+
+    <!-- GPS Location -->
+    <string name="service_gui_GEO_LATITUDE">Zemepisná šírka:</string>
+    <string name="service_gui_GEO_LOCATION">Poloha:</string>
+    <string name="service_gui_GEO_LONGITUDE">Zemepisná dĺžka:</string>
+    <string name="service_gui_GEO_SEND">Poslať GPS-polohu</string>
+    <string name="service_gui_GEO_SHOW">Street View &amp; mapa</string>
+    <string name="service_gui_GPS_TRACK">Nepretržité zobrazenia ulíc &amp; aktualizácia máp</string>
+    <string name="apply_new_interval_setting">Kliknutím na tlačidlo \"Odoslať aktualizáciu polohy\" použite nové nastavenie intervalu</string>
+    <string name="send_cont_location_updates">Kont. obnova polohy (%1$dm) @%2$dsec</string>
+    <string name="send_single_location_fix">Aktualizácia opravy jedného miesta</string>
+    <string name="show_google_map">Pohľad z ulice &amp; mapa</string>
+    <string name="stop_location_updates">Zastavte odosielanie aktualizácií o polohe</string>
+
+    <!-- Google Map -->
+    <string name="gmap_name">GoogleMap</string>
+    <string name="legal_info">Právne informácie</string>
+    <string name="play_services_not_installed">Na tomto zariadení nie sú nainštalované služby Google Play.</string>
+    <string name="split_street_view_panorama_and_map_description">Ukazuje, ako zobraziť panorámu a mapu Street View.</string>
+    <string name="split_street_view_panorama_and_map_label">Panoráma a mapa ulíc</string>
+    <string name="title_activity_maps">Mapa</string>
+
+    <!-- Location Permissions -->
+    <string name="permission_rationale_location">Prístup k službe určovania polohy je potrebný na preukázanie funkcie \'moja poloha\', ktorá zobrazuje vašu aktuálnu polohu na mape.</string>
+    <string name="location_permission_denied">Táto vzorka vyžaduje povolenie polohy na povolenie vrstvy \'moja poloha \'. Skúste to znova a povoľte prístup na používanie miesta. \n Ak bolo povolenie trvalo zamietnuté, je možné ho povoliť v nastaveniach systému; Aplikácie; \'Ukážky rozhrania Google Maps API \'.</string>
+    <string name="permission_required_toast">Pre toto ukážku sa vyžaduje povolenie polohy.</string>
+
+    <!-- Persistent Store -->
+    <string name="service_gui_EXPORT_SQL_DB">Export aTalk SQL databázy</string>
+    <string name="service_gui_PURGE_DEBUG_LOG">Vyčistite Debug súbor</string>
+    <string name="service_gui_PURGE_SQL_DB">Vyčistiť aTalk SQL DataBase - nebezpečné!</string>
+    <string name="service_gui_REFRESH_APPLY">Použiť</string>
+    <string name="service_gui_REFRESH_STORES">Obnoviť trvalé úložiska&#8230;</string>
+    <string name="service_gui_REFRESH_STORES_AVATAR">XEP-0084/XEP-0153: Avatar</string>
+    <string name="service_gui_REFRESH_STORES_CAPS">XEP-0115: Entity Capabilities</string>
+    <string name="service_gui_REFRESH_STORES_DISCINFO">XEP-0030: Service Discovery</string>
+    <string name="service_gui_REFRESH_STORES_HINT">Skontrolujte, či sa položka nedá vyčistiť a obnoviť v jej trvalom úložisku; Vykonajte iba v prípade potreby! \n</string>
+    <string name="service_gui_REFRESH_STORES_ROSTER">XEP-0237: Roster</string>
+    <string name="service_gui_REFRESH_STORES_OMEMO">XEP-0384: OMEMO Encryption</string>
+
+    <string name="service_gui_UNREGISTERED_MESSAGE">Prihlásenie k účtu zlyhalo: \nUžívateľské meno: %1$s \nServer Name: %2$s \nÚčet je odpojený.</string>
+    <string name="service_gui_CREATE_VIDEO_BRIDGE">Vytvoriť video most&#8230;</string>
+    <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Vytvoriť video most</string>
+    <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Vytvoriť / Pripojiť sa k videokonferencii</string>
+    <string name="service_gui_CREATE_VIDEO_CONFERENCE">Vytvorte novú videokonferenciu pre túto diskusnú miestnosť</string>
+    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Nepodarilo sa nastaviť ukážku kamery na: %1$s; Výnimka: %2$s.</string>
+    <string name="service_gui_DISCONNECTED_STATUS">Odpojený</string>
+    <string name="service_gui_DISCONNECTING_ACCOUNT">Odpojuje sa %1$s</string>
+    <string name="service_gui_DENY">Odmietnuť</string>
+    <string name="service_gui_DISPLAY_NAME">Zobraziť meno</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Zobrazovaný názov kontaktu</string>
+    <string name="service_gui_DND_STATUS">Nevyrušovať</string>
+    <string name="service_gui_DURATION">trvanie</string>
+
+    <string name="service_gui_EDIT_STATUS_MSG_TIP">Nastaviť stavovú správu</string>
+    <string name="service_gui_EDITED">upravená</string>
+    <string name="service_gui_ENTER_NAME_OR_NUMBER">Zadajte meno alebo číslo</string>
+    <string name="service_gui_ERROR">Chyba</string>
+    <string name="service_gui_ERROR_WAS">Chyba bola: %1$s</string>
+    <string name="service_gui_EXIT">Ukončiť aplikáciu</string>
+    <string name="service_gui_EXTENDED_AWAY_STATUS">Rozšírené</string>
+    <string name="service_gui_FAILED_STATUS">Hovor zlyhal</string>
+    <string name="service_gui_FFC_STATUS">Dostupný na diskusiu</string>
+
+    <!-- File Transfer (xFile prefix with date) -->
+    <string name="xFile_FILE_BYTE_SENT">Odoslané: %1$s</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">Súbor bol prijatý od %1$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">Pri prenose súboru z %1$s sa vyskytla chyba</string>
+    <string name="xFile_FILE_RECEIVING_FROM">Prijíma sa súbor od %1$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">Súbor bol úspešne odoslaný na %1$s</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s odmietol tento súbor</string>
+    <string name="xFile_FILE_SENDING_TO">Odosiela sa súbor do %1$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">Prenos súboru bol zrušený</string>
+    <string name="xFile_FILE_TRANSFER_PREPARING">Príprava prenosu súboru s %1$s. Prosím čakajte&#8230;</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">Prenos súboru bol zamietnutý</string>
+    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s s vami zdieľa súbor</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">Pri odosielaní súboru do %1$s sa vyskytla chyba</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">Čaká sa na prijatie súboru %1$s</string>
+
+    <string name="service_gui_PURGE">Očistiť</string>
+    <string name="service_gui_ESTIMATED_TIME">Odhadovaný čas: %1$s</string>
+    <string name="service_gui_FILE">Súbor</string>
+    <string name="service_gui_FILE_DELIVERY_ERROR">Vybratý súbor sa nepodarilo odoslať. %1$s</string>
+    <string name="service_gui_FILE_DOES_NOT_EXIST">Zadaný súbor sa nepodarilo nájsť. Bol odstránený alebo presunutý</string>
+    <string name="service_gui_FILE_OPEN_FAILED">Nepodarilo sa otvoriť súbor. Môže sa odstrániť alebo presunúť</string>
+    <string name="service_gui_FILE_OPEN_NO_APPLICATION">Aplikáciu spojenú s týmto typom súboru sa nepodarilo nájsť</string>
+    <string name="service_gui_FILE_OPEN_NO_PERMISSION">Nemáte dostatok povolení na otvorenie tohto súboru. Skontrolujte svoje oprávnenia na čítanie a skúste to znova</string>
+    <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Operácia otvoreného súboru nie je súčasnou platformou zariadenia podporovaná</string>
+    <string name="service_gui_FILE_SEND_FAILED">Nepodarilo sa odoslať súbor: %1$s</string>
+    <string name="service_gui_FILE_SEND_NOT_ALLOW">Počas konferenčného hovoru nie je možné odoslať súbor!</string>
+    <string name="service_gui_FILE_SEND_TO">Odoslať prílohu</string>
+    <string name="service_gui_FILE_TOO_BIG">Veľkosť súboru presahuje maximum povolené pre tento protokol: %1$s</string>
+    <string name="service_gui_FILE_TRANSFER_ACTIVE">Prebieha prenos súborov. Sledovanie stavu @%1$s sa stratilo!</string>
+    <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Obráťte sa na klienta alebo server nepodporuje prenos súborov ani požadované protokoly</string>
+
+    <string name="service_gui_FINISH">Skončiť</string>
+    <string name="service_gui_FOLDER_DOES_NOT_EXIST">Priečinok obsahujúci tento súbor sa nepodarilo nájsť. Bol odstránený alebo presunutý</string>
+    <string name="service_gui_FOLDER_OPEN_FAILED">Nepodarilo sa otvoriť priečinok</string>
+    <string name="service_gui_FOLDER_OPEN_NO_PERMISSION">Na otvorenie tohto priečinka nemáte dostatok povolení. Skontrolujte svoje oprávnenia na čítanie a skúste to znova</string>
+    <string name="service_gui_FOLDER_OPEN_NO_APPLICATION">Nepodarilo sa nájsť aplikáciu na otvorenie tohto priečinka</string>
+    <string name="service_gui_GROUP_CHAT">Skupinová diskusia</string>
+    <string name="service_gui_HIDE">Skryť</string>
+    <string name="service_gui_HIDE_OFFLINE_CONTACTS">Skryť odpojené kontakty</string>
+    <string name="service_gui_HISTORY">História</string>
+    <string name="service_gui_HISTORY_CONTACT">História -%1$s</string>
+    <string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Vypnite históriu pre tento kontakt</string>
+    <string name="service_gui_HISTORY_TOGGLE_ALL">Vypnite históriu pre všetky diskusie a kontakty</string>
+    <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Vymazať históriu pre tento kontakt</string>
+    <string name="service_gui_HISTORY_ERASE_ALL">Vymazať históriu rozhovorov všetkých kontaktov</string>
+    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Naozaj chcete vymazať všetky správy pre %1$s?</string>
+    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Naozaj chcete vymazať všetky správy od všetkých kontaktov?</string>
+    <string name="service_gui_HISTORY_REMOVE_ERROR">Chyba pri odstraňovaní lokálne uložených správ pre %1$s.</string>
+    <string name="service_gui_HISTORY_REMOVE_MEDIA">Odstrániť médiá z môjho telefónu</string>
+
+    <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Miesto konania:</string>
+    <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">V konverzácii môžete pokračovať v nasledujúcej miestnosti: %1$s</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Záložky pre diskusie</string>
+    <string name="service_gui_CHATROOM_BOOKMARK">Aáložka</string>
+    <string name="service_gui_CHATROOM_AUTOJOIN">Automatické pripojenie</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Nepodarilo sa aktualizovať záložky pre %1$s: %2$s</string>
+
+    <string name="service_gui_CHATROOM_OCCUPANT">Účastníci diskusie</string>
+    <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Vymazať history tejto diskusie</string>
+    <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Vymazať históriu všetkých diskusií</string>
+    <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Vypnite históriu pre túto diskusiu</string>
+    <string name="service_gui_CHATROOM_INFO">Info o diskusií</string>
+    <string name="service_gui_CHATROOM_INFO_NAME">Názov</string>
+    <string name="service_gui_CHATROOM_INFO_SUBJECT">Predmet</string>
+    <string name="service_gui_CHATROOM_INFO_DESCRIPTION">Popis</string>
+    <string name="service_gui_CHATROOM_INFO_OCCUPANTS">Účastníci</string>
+    <string name="service_gui_CHATROOM_INFO_MEMBERS_ONLY">Iba pre členov</string>
+    <string name="service_gui_CHATROOM_INFO_MODERATED">Moderovaná</string>
+    <string name="service_gui_CHATROOM_INFO_NON_ANANYMOUS">Neanonymna</string>
+    <string name="service_gui_CHATROOM_INFO_PASSWORD_PROTECTED">Chránené heslom</string>
+    <string name="service_gui_CHATROOM_INFO_PERSISTENT">vytrvalý</string>
+    <string name="service_gui_CHATROOM_INFO_MAX_HISTORY_FETCH">Maximálna história</string>
+    <string name="service_gui_CHATROOM_INFO_CONTACT_JID">Kontakt Jid</string>
+    <string name="service_gui_CHATROOM_INFO_SUBJECT_MODIFIABLE">Predmet je upraviteľný</string>
+    <string name="service_gui_CHATROOM_INFO_LANGUAGE">Jazyk</string>
+    <string name="service_gui_CHATROOM_INFO_LDAP_GROUP">Skupina LDAP</string>
+
+    <string name="service_gui_CHATROOM_CREATE">Vytvorte diskusnú miestnosť&#8230;</string>
+    <string name="service_gui_CHATROOM_CREATE_ERROR">Nepodarilo sa vytvoriť diskusnú miestnosť pre: \n%1$s</string>
+    <string name="service_gui_CHATROOM_CREATE_JOIN">Vytvorte/Pripojte sa k diskusii</string>
+    <string name="service_gui_CHATROOM_CREATE_WIZARD">Vytvorte sprievodcu diskusnou miestnosťou</string>
+
+    <string name="service_gui_CHATROOM_DESTROY">Zrušte diskusnú miestnosť</string>
+    <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">Pri rušení diskusnej miestnosti sa vyskytla chyba: \n%1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_ERROR">Nepodarilo sa odstrániť diskusnú miestnosť na serveri: \n \'%1$s \' \n%2$s \n \nPokračujte v očistení miestneho chatRoom.</string>
+    <string name="service_gui_CHATROOM_DESTROY_MESSAGE">Tento skupinový rozhovor bol zničený! \nDôvod: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_NOTE">Ak chcete informovať ostatných účastníkov, zadajte dôvod a miesto konania alternatívnej diskusie, ku ktorej sa chcete pripojiť.</string>
+    <string name="service_gui_CHATROOM_DESTROY_PROMPT">Vlastník účtu: %1$s. \nNaozaj chcete zničiť \n \'%2$s \' \na celú jeho históriu rozhovorov?</string>
+    <string name="service_gui_CHATROOM_DESTROY_REASON">neaktívny skupinový rozhovor</string>
+    <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s \' bol úspešne odstránený!</string>
+    <string name="service_gui_CHATROOM_DESTROY_TITLE">Zrušiť diskusnú miestnosť</string>
+
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Nepodarilo sa pripojiť k miestnosti s prezývkou: %1$s \n %2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Nepodarilo sa pripojiť k diskusnej miestnosti %1$s: \n%2$s</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Diskusná miestnosť požaduje heslo.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Diskusná miestnosť vyžaduje registráciu.</string>
+    <string name="service_gui_CHATROOM_JOIN_TITLE">Pripojte sa k diskusnej miestnosti</string>
+    <string name="service_gui_CHATROOM_JOIN_NAME">Zadajte názov diskusnej miestnosti, ku ktorej sa chcete pripojiť.</string>
+    <string name="service_gui_CHATROOM_JOIN_WIZARD">Pripojte sa k sprievodcovi diskusnou miestnosťou</string>
+
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha výzva</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Diskusnej miestnosť je chránená výzvou captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Overenie CAPTCHA je platné</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Overenie CAPTCHA zlyhalo</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s CAPTCHA vypršal časový limit výzvy; \nProsim znovu sa pripojte k diskusnej miestnosti a skúste to znova.</string>
+
+    <string name="service_gui_INCOMING_CALL">Prichádzajúci hovor prijatý od: %1$s</string>
+    <string name="service_gui_INCOMING_CALL_STATUS">Prichádzajúci hovor</string>
+    <string name="service_gui_INITIATING_CALL_STATUS">Začatie hovoru</string>
+    <string name="service_gui_INVITATION">Pozvánka:</string>
+    <string name="service_gui_INVITATION_RECEIVED">Pozvánka bola prijatá</string>
+    <string name="service_gui_INVITATION_RECEIVED_MSG">Používateľ %1$s vás pozval do diskusnej miestnosti %2$s. Túto pozvánku môžete prijať, odmietnuť alebo ignorovať.</string>
+    <string name="service_gui_INVITATION_REJECTED">%1$s odmietol vaše pozvanie na pripojenie sa k miestnosti. Dôvod: %2$s.</string>
+    <string name="service_gui_INVITE">Pozvať</string>
+    <string name="service_gui_INVITE_CONTACT_MSG">Vyberte mená kontaktov, ktoré chcete pridať do tejto konverzácie, a potom kliknite na položku Pozvať.</string>
+    <string name="service_gui_INVITE_CONTACT_TO_CALL">Pozvite kontakty na volanie</string>
+    <string name="service_gui_INVITE_CONTACT_TO_CHAT">Pozvite kontakty na rozhovor</string>
+    <string name="service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE">Pozvať kontakty (videobridge)</string>
+    <string name="service_gui_INVITE_REASON">Pozvánka na skupinový rozhovor</string>
+    <string name="service_gui_INVITE_REASON_INVITE">Dôvod pozvania:</string>
+    <string name="service_gui_INVITE_REASON_REJECT">Dôvod (pri zamietnutí):</string>
+    <string name="service_gui_INVITE_REJECT_REASON">Zaneprázdnený</string>
+    <string name="service_gui_IGNORE">Ignorovať</string>
+    <string name="service_gui_INFO">Info</string>
+
+    <string name="service_gui_ADDRESS">Adresa</string>
+    <string name="service_gui_CITY">Mesto</string>
+    <string name="service_gui_COUNTRY">Krajina</string>
+    <string name="service_gui_EMAIL">E-mail</string>
+    <string name="service_gui_EMAILS">E-maily</string>
+    <string name="service_gui_FAX">Fax</string>
+    <string name="service_gui_HOME">Domov</string>
+    <string name="service_gui_HOME_PAGE">Domovská stránka</string>
+    <string name="service_gui_INVALID_ADDRESS">Neplatná adresa: %1$s</string>
+    <string name="service_gui_JOIN">Pripojiť</string>
+    <string name="service_gui_JOIN_AS">Pripojte sa ako</string>
+    <string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Pripojte sa k existujúcej videokonferencii</string>
+    <string name="service_gui_JOIN_VIDEO">Pripojte sa k videu</string>
+    <string name="service_gui_JOB_TITLE">Názov práce</string>
+
+    <string name="service_gui_JOIN_AUTOMATICALLY">Pripojte sa automaticky</string>
+    <string name="service_gui_DONT_JOIN_AUTOMATICALLY">Nepripájajte sa automaticky</string>
+    <string name="service_gui_KICK">Vykopnuť</string>
+    <string name="service_gui_KICK_FAILED">Vykopnutie zlýhalo</string>
+    <string name="service_gui_KICK_FAILED_GENERAL_ERROR">Nepodarilo sa vykopnúť %1$s. Vyskytla sa všeobecná chyba servera.</string>
+    <string name="service_gui_KICK_FAILED_NOT_ALLOWED">Nepodarilo sa vykopnúť %1$s. Majiteľa a správcu miestnosti nebolo možné kopnúť.</string>
+    <string name="service_gui_KICK_FAILED_NOT_ENOUGH_PERMISSIONS">Nepodarilo sa vykopnúť %1$s. Na to nemáte dostatočné privilégiá.</string>
+    <string name="service_gui_LAST">Posledná</string>
+    <string name="service_gui_LAST_MSG_CORRECTION">Oprava poslednej správy</string>
+    <string name="service_gui_LAST_NAME">Priezvisko</string>
+    <string name="service_gui_LAST_SEEN">Dnes: %s</string>
+    <string name="service_gui_LEAVE">Opustiť</string>
+    <string name="service_gui_LEAVE_ROOM">Opustiť diskusnú miestnosť</string>
+    <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Lokálne podržané</string>
+    <string name="service_gui_LOGIN_CREDENTIAL">Prihlasovacie poverenia používateľa</string>
+    <string name="service_gui_LOGIN_FAILED">Prihlásenie zlyhalo</string>
+    <string name="service_gui_LOGIN_GENERAL_ERROR">Pri prihlasovaní pomocou účtu sa vyskytla chyba: Meno používateľa: %1$s, Názov servera: %2$s: %3$s.</string>
+    <string name="service_gui_LOGIN_INTERNAL_ERROR">Pri prihlasovaní pomocou účtu sa vyskytla chyba: Meno používateľa: %1$s, Názov servera: %2$s. Toto je pravdepodobne interná chyba aplikácie. Nahláste problém nášmu mailing listu vývojárom.</string>
+    <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Nedá sa prihlásiť pomocou účtu: Meno používateľa: %1$s, Názov servera: %2$s, kvôli problému s konfiguráciou účtu. Skontrolujte konfiguráciu svojho účtu.</string>
+    <string name="service_gui_LOGIN_NETWORK_ERROR">Nemožno sa prihlásiť pomocou účtu: \nUžívateľské meno: %1$s \nNázov servera: %2$s \nv dôsledku zlyhania siete. Skontrolujte sieťové pripojenie.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Pri odhlásení pomocou nasledujúceho účtu sa vyskytla chyba: Meno používateľa: %1$s, Názov servera: %2$s.</string>
+    <string name="service_gui_MOBILE_PHONE">Mobilné</string>
+    <string name="service_gui_MOVE">Presunúť</string>
+    <string name="service_gui_MOVE_CONTACT">Presunúť kontakt</string>
+    <string name="service_gui_MOVE_CONTACT_ERROR">Kontakt nie je možné presunúť</string>
+    <string name="service_gui_MOVE_SUBCONTACT">Presunúť kontakt</string>
+    <string name="service_gui_MOVE_SUBCONTACT_MSG">Vyberte kontakt alebo skupinu, do ktorej chcete vybraný kontakt presunúť.</string>
+    <string name="service_gui_MOVE_SUBCONTACT_FAILED">Kontakt, ktorý ste si vybrali, je rovnaký ako ten, ktorý ste vybrali ako zdroj. Vyberte iný kontakt!</string>
+    <string name="service_gui_MOVE_SUBCONTACT_QUESTION">Naozaj chcete presunúť %1$s na %2$s?</string>
+    <string name="service_gui_MOVE_TO_GROUP">Presunúť do skupiny</string>
+    <string name="service_gui_NICKNAME_LABEL">Prezývka</string>
+    <string name="service_gui_OPEN_AUTOMATICALLY">Otvorte túto miestnosť automaticky, keď</string>
+    <string name="service_gui_PERSONAL">Osobné</string>
+
+    <string name="service_gui_MSG_DELIVERY_ERROR">Nepodarilo sa doručiť správu.</string>
+    <string name="service_gui_MSG_DELIVERY_FAILURE">Uvedenú správu nebolo možné doručiť</string>
+    <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Vyskytla sa interná chyba. Toto je pravdepodobne chyba. Nahláste to prostredníctvom protokolu ladenia.</string>
+    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Protokol, ktorý používate, nepodporuje správy bez pripojenia. Mohli by ste sa pokúsiť dosiahnuť %1$s pomocou iného protokolu alebo počkať, kým sa nestane online.</string>
+    <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Pri doručovaní správy sa vyskytla neznáma chyba.</string>
+    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Nepodporovaná prevádzka.</string>
+    <string name="service_gui_MSG_NOT_DELIVERED">Vyskytol sa problém so sieťou. Skontrolujte konfiguráciu siete a skúste to znova.</string>
+    <string name="service_gui_MSG_RECEIVED">Napísal (-a) %1$s</string>
+    <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Ak chcete poslať správu, musíte sa najprv prihlásiť.</string>
+
+    <string name="service_gui_MISSED_CALLS_TOOL_TIP">Zmeškané hovory od:</string>
+    <string name="service_gui_MULTIPLE_LOGIN">Nie je povolené viacnásobné prihlásenie. Nasledujúci účet: Meno používateľa: %1$s, Názov servera: %2$s bol odpojený.</string>
+    <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Vzájomne pozastavené</string>
+    <string name="service_gui_NAME">Meno</string>
+    <string name="service_gui_NEW_ACCOUNT">Pridajte nový účet</string>
+    <string name="service_gui_NETOWRK_ASSERTION_ERROR">Pred komunikáciou musí byť poskytovateľ Jabber prihlásený.</string>
+    <string name="service_gui_NICKNAME">prezývka</string>
+    <string name="service_gui_NO">žiadny</string>
+    <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Na uskutočnenie hovoru je potrebný aspoň jeden účet online telefonovania. Prihláste sa do jedného zo svojich telefónnych účtov a skúste to znova.</string>
+    <string name="service_gui_NOT_AUTHORIZED">Nie je povolené</string>
+    <string name="service_gui_NOT_AUTHORIZED_HINT">Nemáte oprávnenie na prístup na server. Skontrolujte nastavenia účtu, heslo alebo povoľte registráciu IB a skúste to znova: \n%s "</string>
+    <string name="service_gui_OFF">preč</string>
+    <string name="service_gui_OFFLINE">Odpojený</string>
+    <string name="service_gui_OK">OK</string>
+    <string name="service_gui_ON">na</string>
+    <string name="service_gui_ONLINE">Pripojený</string>
+    <string name="service_gui_OPEN">Otvorené</string>
+    <string name="service_gui_OPEN_FILE_FROM_IMAGE">Kliknutím otvorte súbor.</string>
+    <string name="service_gui_OPEN_FOLDER">zložka</string>
+    <string name="service_gui_OTHER">ostatné</string>
+    <string name="service_gui_ORGANIZATION">Organizácia</string>
+    <string name="service_gui_PHONE">telefón</string>
+    <string name="service_gui_PHONES">telefóny</string>
+    <string name="service_gui_PLAY">hrať</string>
+    <string name="service_gui_POSTAL_CODE">poštové smerovacie číslo</string>
+    <string name="service_gui_RENAME">premenovanie</string>
+    <string name="service_gui_REGISTRATION_REQUIRED">Chyba pri registrácii účtu na serveri: \n%s "</string>
+    <string name="service_gui_SAVE">Uložiť</string>
+    <string name="service_gui_SHOW_STACK_TRACE">Zobraziť sledovanie stopy</string>
+    <string name="service_gui_STREET">pouličné</string>
+    <string name="service_gui_SUBMIT">Predložiť</string>
+    <string name="service_gui_USER_LOGIN">Prosím prihláste sa</string>
+    <string name="service_gui_VIDEO_PHONE">video</string>
+    <string name="service_gui_WORK_PHONE">Práca</string>
+    <string name="service_gui_XMPP_EXCEPTION">Pri stretnutí s XMPP došlo k problému: \n%s "</string>
+
+    <!-- Call -->
+    <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Prepnúť video</string>
+    <string name="service_gui_MIC_CONTROL_TITLE">Úroveň zisku mikrofónu</string>
+    <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Upravte zvuk mikrofónu</string>
+    <string name="service_gui_OUTGOING_CALL">Odchádzajúci hovor</string>
+    <string name="service_gui_OUTGOING_CALL_MSG">Volanie s %1$s ...</string>
+    <string name="service_gui_PRESENCE_NOT_SUPPORTED">%1$s nepodporuje prítomnosť</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">píše správu</string>
+    <string name="service_gui_RECENT_MESSAGES">Posledné konverzácie</string>
+    <string name="service_gui_RECEIVED">Prijaté: %1$s</string>
+    <string name="service_gui_REFERRED_STATUS">Uvedené</string>
+    <string name="service_gui_RESTORING">obnovenie&#8230;</string>
+
+    <string name="service_gui_RE_REQUEST_AUTHORIZATION">Vyžiadajte si autorizáciu</string>
+    <string name="service_gui_REJECT">Odmietnuť</string>
+    <string name="service_gui_REMOVE">Remove</string>
+    <string name="service_gui_REMOVE_ACCOUNT">Odstrániť účet</string>
+    <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Naozaj chcete odstrániť účet: \n%1$s?</string>
+    <string name="service_gui_REMOVE_CONTACT">Odstrániť kontakt</string>
+    <string name="service_gui_REMOVE_CONTACT_TEXT">Vlastník kontaktov: %1$s. \n \nNaozaj chcete odstrániť kontakt: \'%2$s \' z vášho zoznamu kontaktov?</string>
+    <string name="service_gui_REMOVE_CONTACT_NOT_CONNECTED">Na odstránenie tohto kontaktu musíte byť pripojení. Prihláste sa a skúste to znova.</string>
+    <string name="service_gui_REMOVE_GROUP">Odstrániť skupinu</string>
+    <string name="service_gui_REMOVE_GROUP_TEXT">Naozaj chcete odstrániť skupinu: \'%1$s \' a všetky súvisiace kontakty z vášho zoznamu kontaktov?</string>
+    <string name="service_gui_REMOTELY_ON_HOLD_STATUS">Diaľkovo podržané</string>
+    <string name="service_gui_RENAME_CONTACT">Zmeniť meno kontaktu</string>
+
+    <string name="service_gui_RINGING_STATUS">Zvoním</string>
+    <string name="service_gui_REQUEST">žiadosť</string>
+    <string name="service_gui_REQUEST_AUTHORIZATION">Vyžiadajte si autorizáciu</string>
+    <string name="service_gui_REQUEST_AUTHORIZATION_MSG">Vlastník kontaktov: %1$s \n \nPotrebujete autorizáciu od \'%2$s \' a pridajte ho do svojho zoznamu kontaktov. Zadajte svoju požiadavku znova.</string>
+    <string name="service_gui_RETRY">Skúsiť znova</string>
+    <string name="service_gui_SEARCH">Vyhľadávanie</string>
+    <string name="service_gui_SEARCH_STRING_CONTACT_SOURCE">Vyhľadajte kontakt</string>>
+    <string name="service_gui_PHONEBOOK">Telefónny zoznam</string>
+    <string name="service_gui_settings_SECURITY">zabezpečenia</string>
+    <string name="service_gui_SELECT_ACCOUNT">Vyberte vlastníka účtu</string>
+    <string name="service_gui_SELECT_GROUP">Priradená skupina:</string>
+    <string name="service_gui_SELECT_NO_GROUP">Žiadna skupina</string>
+
+    <!-- Logs -->
+    <string name="service_gui_SEND_LOGS">Nahlásiť chyby</string>
+    <string name="service_gui_SEND_LOGS_QUESTION">aTalk sa práve zotavil po vážnom páde. Chcete nahlásiť chyby vývojárom?</string>
+    <string name="service_gui_SEND_LOGS_SUBJECT">aTalk bug report</string>
+    <string name="service_gui_SEND_LOGS_TITLE">aTalk hlásenia chýb prostredníctvom e-mailu</string>
+    <string name="service_gui_SEND_LOGS_INFO">Informácie uvedené nižšie môžu vývojárom pomôcť vyriešiť problém: \n \n
+        1. Čo bolo posledné, čo ste urobili predtým, ako sa problém vyskytol? \n \n \n
+        2. Aký bol problém, ktorý vidíte, zahrňte snímku obrazovky, ak je k dispozícii? \n \n \n
+        3. Môžete alebo ako problém reprodukovať?</string>
+
+    <string name="service_gui_SEND_MESSAGE">Poslať správu</string>
+    <string name="service_gui_SEND_MESSAGE_FAIL">Nepodarilo sa odoslať správu: %1$s</string>
+    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">Subjekt, ktorý ste vybrali, nepodporuje okamžité diskusné správy: %1$s</string>
+    <string name="service_gui_SEND_AS_SMS">Poslať ako SMS</string>
+    <string name="service_gui_SEND_PRIVATE_MESSAGE">Poslať súkromnú správu</string>
+    <string name="service_gui_SEND_VIA">Poslať cez</string>
+    <string name="service_gui_SENT">Zaslaná</string>
+    <string name="service_gui_SERVER_CHAT_ROOMS">Diskusné miestnosti servera</string>
+    <string name="service_gui_SHOW_OFFLINE_CONTACTS">Zobraziť vypnuté kontakty</string>
+    <string name="service_gui_SHUTDOWN_IN_PROGRESS">Vypínanie&#8230;</string>
+    <string name="service_gui_STATUS">Postavenie</string>
+    <string name="service_gui_TYPE_YOUR_REQUEST">Zadajte dôvod žiadosti</string>
+    <string name="service_gui_UNKNOWN">Neznámy</string>
+    <string name="service_gui_UNKNOWN_USER">Neznámy používateľ</string>
+    <string name="service_gui_UNKNOWN_STATUS">Neznámy stav</string>
+    <string name="service_gui_URL_HINT">https://www.example.com</string>
+    <string name="service_gui_VOLUME_CONTROL_TITLE">Úroveň zosilnenia výstupného objemu</string>
+    <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Nastavte hlasitosť</string>
+    <string name="service_gui_VOLUME_GAIN_LEVEL">Úroveň nárastu objemu: %1$s %%</string>
+    <string name="service_gui_WAITING_AUTHORIZATION">Čaká sa na autorizáciu</string>
+    <string name="service_gui_WARNING">Výstraha</string>
+    <string name="service_gui_WARN_CALL_IN_PROGRESS">Počas hovoru to nie je možné</string>
+    <string name="service_gui_YES">Áno</string>
+
+    <!-- Sign in -->
+    <string name="service_gui_ACCOUNT_CREATION_FAILED">Vytvorenie nového účtu zlyhalo z dôvodu chyby: %1$s</string>
+    <string name="service_gui_CREATE_ACCOUNT">Vytvoriť účet</string>
+    <string name="service_gui_GENERAL_ERROR">Všeobecná chyba</string>
+    <string name="service_gui_NETWORK_FAILURE">Zlyhanie siete</string>
+    <string name="service_gui_SELECT_AVATAR">Vyberte nový obrázok avatar</string>
+    <string name="service_gui_SET_STATUS">Zmeniť stav</string>
+    <string name="service_gui_SIGN_IN">Prihlásiť sa</string>
+    <string name="service_gui_SIGN_OUT">Odhlásiť sa</string>
+    <string name="service_gui_SPECIFY_SERVER">Vyplňte serverovú časť svojho účtu.</string>
+    <string name="service_gui_SPEED">Rýchlosť: %1$s / s (%2$s)</string>
+    <string name="service_gui_STATUS_CHANGE_GENERAL_ERROR">Nepodarilo sa zmeniť stav účtu: Meno používateľa: %1$s, Názov servera: %2$s, kvôli všeobecnej chybe.</string>
+    <string name="service_gui_STATUS_CHANGED_CHAT_MESSAGE">sa stal %1$s</string>
+    <string name="service_gui_STATUS_CHANGE_NETWORK_FAILURE">Stav účtu sa nepodarilo zmeniť: Používateľské meno: %1$s, názov servera: %2$s z dôvodu problému so sieťou.</string>
+    <string name="service_gui_SECURITY_ERROR">Chyba zabezpečenia</string>
+    <string name="service_gui_SECURITY_INFO">Bezpečnostné informácie</string>
+    <string name="service_gui_SECURITY_WARNING">Bezpečnostné varovanie</string>
+    <string name="service_gui_USERNAME_NULL">Zadajte správne používateľské meno alebo heslo.</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Varovanie: Zmena používateľského mena účtu na \'%1$s \' tiež vymaže správy %2$s pre existujúci účet \'%3$s \'. Postupovať?</string>
+    <string name="service_gui_USER_EXISTS_ERROR">Tento používateľ už existuje vo vybranej sieti. Vyberte iného používateľa alebo sieť.</string>
+
+    <string name="service_gui_JANUARY">január</string>
+    <string name="service_gui_FEBRUARY">februára</string>
+    <string name="service_gui_MARCH">Mar</string>
+    <string name="service_gui_APRIL">apríla</string>
+    <string name="service_gui_MAY">Smieť</string>
+    <string name="service_gui_JUNE">júna</string>
+    <string name="service_gui_JULY">júla</string>
+    <string name="service_gui_AUGUST">auguste</string>
+    <string name="service_gui_SEPTEMBER">septembra</string>
+    <string name="service_gui_OCTOBER">október</string>
+    <string name="service_gui_NOVEMBER">november</string>
+    <string name="service_gui_DECEMBER">decembra</string>
+
+    <!-- Call info -->
+    <string name="service_protocol_ICE_FAILED">Nepodarilo sa nadviazať spojenie (ICE zlyhalo a nenašlo sa žiadne relé)</string>
+    <string name="service_gui_callinfo_AUDIO_INFO">Zvukové informácie</string>
+    <string name="service_gui_callinfo_BANDWITH">Šírka pásma:</string>
+    <string name="service_gui_callinfo_CALL_DURATION">Trvanie hovoru:</string>
+    <string name="service_gui_callinfo_CALL_IDENTITY">identita:</string>
+    <string name="service_gui_callinfo_CALL_INFORMATION">Informácie o hovoroch</string>
+    <string name="service_gui_callinfo_CALL_TRANSPORT">Doprava signalizačného hovoru:</string>
+    <string name="service_gui_callinfo_CODEC">Codec / Frekvencia:</string>
+    <string name="service_gui_callinfo_IS_CONFERENCE_FOCUS">Zameranie konferencie:</string>
+    <string name="service_gui_callinfo_IS_DEFAULT_ENCRYPTED">Šifrovanie povolené:</string>
+    <string name="service_gui_callinfo_JITTER">jitter:</string>
+    <string name="service_gui_callinfo_KEY_EXCHANGE_PROTOCOL">Protokol výmeny kľúčov</string>
+    <string name="service_gui_callinfo_LOCAL_IP">Miestna IP / Port:</string>
+    <string name="service_gui_callinfo_LOSS_RATE">Miera straty:</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_RTP">RTP:</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_SRTP">SRTP:</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_TRANSPORT_PROTOCOL">Protokol prenosu mediálneho toku:</string>
+    <string name="service_gui_callinfo_NA">N. A.</string>
+    <string name="service_gui_callinfo_PEER_COUNT">Počet účastníkov:</string>
+    <string name="service_gui_callinfo_REMOTE_IP">Vzdialená IP adresa / port:</string>
+    <string name="service_gui_callinfo_RTT">RTT:</string>
+    <string name="service_gui_callinfo_TECHNICAL_CALL_INFO">Podrobnosti o telefonických informáciách</string>
+    <string name="service_gui_callinfo_TLS_CIPHER_SUITE">Šifrovací balík TLS:</string>
+    <string name="service_gui_callinfo_TLS_CERTIFICATE_CONTENT">Obsah certifikátu servera TLS je uvedený nižšie.</string>
+    <string name="service_gui_callinfo_TLS_PROTOCOL">Protokol TLS:</string>
+    <string name="service_gui_callinfo_VIEW_CERTIFICATE">Zobraziť certifikát</string>
+    <string name="service_gui_callinfo_VIDEO_SIZE">Veľkosť videa</string>
+    <string name="service_gui_callinfo_VIDEO_INFO">Informácie o videu</string>
+
+    <string name="service_gui_callinfo_ADAPTIVE_JITTER_BUFFER">Adaptívny jitter buffer:</string>
+    <string name="service_gui_callinfo_DECODED_WITH_FEC">Pakety dekódované pomocou FEC:</string>
+    <string name="service_gui_callinfo_DISCARDED_PERCENT">Balíky, ktoré sa momentálne vyraďujú:</string>
+    <string name="service_gui_callinfo_DISCARDED_TOTAL">Počet vyradených paketov:</string>
+
+    <!-- ICE info -->
+    <string name="service_gui_callinfo_HARVESTING_DATA">%1$d ms (pre zber úrody %2$d)</string>
+    <string name="service_gui_callinfo_HARVESTING_TIME">Čas zberu:</string>
+    <string name="service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE">Rozšírený typ kandidáta na ICE:</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_HOST_ADDRESS">IP / Port lokálneho hostiteľa:</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_REFLEXIVE_ADDRESS">Lokálny reflexný IP / port:</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_RELAYED_ADDRESS">Lokálne prenášané IP / Port:</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_HOST_ADDRESS">IP / Port vzdialeného hostiteľa:</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_REFLEXIVE_ADDRESS">Diaľkové reflexné IP / Port:</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_RELAYED_ADDRESS">Vzdialene prenášané IP / Port:</string>
+    <string name="service_gui_callinfo_ICE_STATE">Spracovateľský štát ICE:</string>
+    <string name="service_gui_callinfo_ICE_STATE_COMPLETED">dokončený</string>
+    <string name="service_gui_callinfo_ICE_STATE_FAILED">neúspešný</string>
+    <string name="service_gui_callinfo_ICE_STATE_RUNNING">Kontroly pripojenia</string>
+    <string name="service_gui_callinfo_ICE_STATE_WAITING">Zhromaždite kandidátov</string>
+    <string name="service_gui_callinfo_JITTER_BUFFER_DELAY">Jitter buffer:</string>
+    <string name="service_gui_callinfo_TOTAL_HARVESTING_TIME">Celková doba zberu:</string>
+
+    <!-- Security certificates -->
+    <string name="service_gui_ALWAYS_TRUST">Vždy dôverujte tomuto certifikátu</string>
+    <string name="service_gui_CERT_DIALOG_TITLE">Overenie certifikátu</string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the identity of the server when connecting to&lt;br/>&lt;b>%2$s&lt;/b>&lt;br/>&lt;br/>The certificate is not trusted (a self-signed certificate), which means that the server\'\'s identity cannot be automatically verified.&lt;br/>&lt;br/>Proceed with connection for this instance only?&lt;br/>For more option and info, click Show Certificate.&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s cannot verify the
+        identity of the server\'\'s certificate.&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the server\'\'s
+        identity cannot be automatically verified.&lt;br/>&lt;br/>
+        Proceed with connection for this instance only?&lt;br/>
+        For more option and info, click "Show Certificate".&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the
+        identity of the connecting client.&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the client\'\'s
+        identity cannot be automatically verified.&lt;br/>&lt;br/>
+        Proceed with connection for this instance only?&lt;br/>
+        For more option and info, click "Show Certificate".&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the
+        identity of the peer %2$s.&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the peer\'\'s
+        identity cannot be automatically verified.&lt;br/>&lt;br/>
+        Proceed with connection for this instance only?&lt;br/>
+        For more option and info, click "Show Certificate".&lt;/html></string>
+    <string name="service_gui_PROCEED">pokračovať</string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Vydané pre&lt;/b></string>
+    <string name="service_gui_CERT_INFO_CHAIN">Reťaz certifikátu:</string>
+    <string name="service_gui_CERT_INFO_CN">Spoločný názov:</string>
+    <string name="service_gui_CERT_INFO_O">Organizácia:</string>
+    <string name="service_gui_CERT_INFO_C">Názov krajiny:</string>
+    <string name="service_gui_CERT_INFO_ST">Názov štátu alebo provincie:</string>
+    <string name="service_gui_CERT_INFO_L">Názov lokality:</string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>Vydal:&lt;b></string>
+    <string name="service_gui_CERT_INFO_OU">Organizačná jednotka:</string>
+    <string name="service_gui_CERT_INFO_VALIDITY">platnosť</string>
+    <string name="service_gui_CERT_INFO_ISSUED_ON">Dátum vydania:</string>
+    <string name="service_gui_CERT_INFO_EXPIRES_ON">Vyprší:</string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">odtlačky prstov</string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">Informácie o certifikáte</string>
+    <string name="service_gui_CERT_INFO_SER_NUM">Sériové číslo:</string>
+    <string name="service_gui_CERT_INFO_VER">verzia:</string>
+    <string name="service_gui_CERT_INFO_SIGN_ALG">Algoritmus podpisu:</string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">Informácie o verejnom kľúči</string>
+    <string name="service_gui_CERT_INFO_ALG">algoritmus:</string>
+    <string name="service_gui_CERT_INFO_PUB_KEY">Verejný kľúč:</string>
+    <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">Bajty: %1$s:%2$s</string>
+    <string name="service_gui_CERT_INFO_KEY_BITS_PRINT">Bity %1$s</string>
+    <string name="service_gui_CERT_INFO_EXP">exponent:</string>
+    <string name="service_gui_CERT_INFO_KEY_SIZE">Veľkosť kľúča:</string>
+    <string name="service_gui_CERT_INFO_SIGN">podpis:</string>
+    <string name="service_gui_CONTINUE">ďalej</string>
+    <string name="service_gui_SHOW_CERT">Zobraziť certifikát</string>
+    <string name="service_gui_HIDE_CERT">Skryť certifikát</string>
+    <string name="service_gui_UNSAVED_CHANGES">Máte neuložené zmeny. Uloženie alebo zrušenie a ukončenie.</string>
+    <string name="service_gui_UNSAVED_CHANGES_TITLE">Neuložené zmeny</string>
+    <string name="service_gui_WAITING">Prosím čakajte&#8230;</string>
+    <string name="service_gui_SERVER_INFO_FETCH">Načítavajú sa funkcie a informácie oznamované serverom&#8230;</string>
+
+    <!-- Security info -->
+    <string name="service_gui_security_AUDIO_NOT_SECURED">Zvuk nie je zabezpečený</string>
+    <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Hovor nie je zabezpečený.</string>
+    <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Stlačením tu môžete porovnať bezpečnostné tajomstvo s vaším partnerom.</string>
+    <string name="service_gui_security_CALL_SECURED_TOOLTIP">Hovor je zabezpečený. Viac informácií nájdete tu.</string>
+    <string name="service_gui_security_CIPHER">Šifra: %1$s</string>
+    <string name="service_gui_security_CLEAR">jasný</string>
+    <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Porovnať s partnerom:</string>
+    <string name="service_gui_security_CONFIRM">potvrdiť</string>
+    <string name="service_gui_security_ENCRYPTION_REQUIRED">Vyžaduje sa šifrovanie!</string>
+    <string name="service_gui_security_NO_VIDEO">Žiadne video</string>
+    <string name="service_gui_security_SECURE_AUDIO">Zabezpečený zvuk</string>
+    <string name="service_gui_security_SECURE_VIDEO">Zabezpečené video</string>
+    <string name="service_gui_security_SECURITY_ALERT">Pokúšam sa zabezpečiť hovor. Odpojí sa</string>
+    <string name="service_gui_security_STRING_COMPARED">Porovnanie reťazcov:</string>
+    <string name="service_gui_security_VERIFY_TOAST">Zabezpečenie hovorov povolené! Klepnutím porovnajte bezpečnostný reťazec teraz alebo použite ponuku neskôr.</string>
+    <string name="service_gui_security_VIDEO_NOT_SECURED">Video nie je zabezpečené</string>
+    <string name="service_gui_avatar_CHOOSE_ICON">Vyberte obrázok</string>
+    <string name="service_gui_avatar_REMOVE_ICON">Odstráňte aktuálny obrázok</string>
+
+    <!-- Update checker -->
+    <string name="plugin_updatechecker_BUTTON_DOWNLOAD">Stiahnuť</string>
+    <string name="plugin_updatechecker_BUTTON_INSTALL">Inštalácia</string>
+    <string name="plugin_updatechecker_DIALOG_DOWNLOADED_TITLE">Sťahovanie bolo dokončené</string>
+    <string name="plugin_updatechecker_DIALOG_DOWNLOADED">Aktualizácia sa stiahne a je pripravená na inštaláciu.</string>
+    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE">Prebieha</string>
+    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS">Prebieha sťahovanie aktualizácií.</string>
+    <string name="plugin_updatechecker_DIALOG_MESSAGE">Nová vydaná verzia (%1$s-%2$s) pre %3$s je k dispozícii na stiahnutie.</string>
+    <string name="plugin_updatechecker_DIALOG_NOUPDATE">Vaša aktuálna nainštalovaná verzia: (%1$s-%2$s) je aktuálna.</string>
+    <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">Žiadna nová verzia</string>
+    <string name="plugin_updatechecker_DIALOG_TITLE">Nainštalujte aktualizácie</string>
+    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Nepodarilo sa stiahnuť novú aktualizáciu!</string>
+    <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Skontroluj aktualizácie</string>
+    <string name="plugin_newsoftware_DIALOG_MESSAGE">K dispozícii je nová verzia softvéru (%1$s).</string>
+
+    <!-- account info -->
+    <string name="plugin_accountinfo_ABOUT_ME">O mne:</string>
+    <string name="plugin_accountinfo_ABOUT_ME_HINT">Do tohto poľa zadajte stručný popis svojej osoby</string>
+    <string name="plugin_accountinfo_AGE">Vek:</string>
+    <string name="plugin_accountinfo_BDAY">Dátum narodenia:</string>
+    <string name="plugin_accountinfo_CHANGE">zmena</string>
+    <string name="plugin_accountinfo_CITY">mesto:</string>
+    <string name="plugin_accountinfo_COUNTRY">Krajina:</string>
+    <string name="plugin_accountinfo_DISCARD_CHANGE">Používateľ sa prepne do odpojeného režimu - zahodí všetky zmeny informácií o účte.</string>
+    <string name="plugin_accountinfo_DISPLAY_NAME">Zobraziť meno:</string>
+    <string name="plugin_accountinfo_EMAIL">E-mail:</string>
+    <string name="plugin_accountinfo_EXTENDED">predĺžený</string>
+    <string name="plugin_accountinfo_FIRST_NAME">Krstné meno:</string>
+    <string name="plugin_accountinfo_GENDER">Rod:</string>
+    <string name="plugin_accountinfo_GLOBAL_ICON">Použiť globálnu ikonu</string>
+    <string name="plugin_accountinfo_JOB_TITLE">Názov práce:</string>
+    <string name="plugin_accountinfo_LAST_NAME">Priezvisko:</string>
+    <string name="plugin_accountinfo_LOCAL_ICON">Použite túto ikonu:</string>
+    <string name="plugin_accountinfo_MIDDLE_NAME">Stredné meno:</string>
+    <string name="plugin_accountinfo_MOBILE_PHONE">Mobilný telefón:</string>
+    <string name="plugin_accountinfo_NICKNAME">prezývka:</string>
+    <string name="plugin_accountinfo_NO_REGISTERED_MESSAGE">Účet je odpojený - ak chcete zmeniť informácie o účte, musíte byť pripojený.</string>
+    <string name="plugin_accountinfo_NOT_SUPPORTED">Informácie o účte nie sú k dispozícii.</string>
+    <string name="plugin_accountinfo_ONLY_MESSAGE">Iba správy</string>
+    <string name="plugin_accountinfo_ORGANIZATION">Názov organizácie:</string>
+    <string name="plugin_accountinfo_PHONE">telefón:</string>
+    <string name="plugin_accountinfo_POST">Poštové smerovacie číslo:</string>
+    <string name="plugin_accountinfo_REGION">región:</string>
+    <string name="plugin_accountinfo_SELECT_ACCOUNT">Vyberte účet:</string>
+    <string name="plugin_accountinfo_STREET">Ulica:</string>
+    <string name="plugin_accountinfo_TITLE">Informácie o účte</string>
+    <string name="plugin_accountinfo_USER_PICTURES">Obrázky používateľov</string>
+    <string name="plugin_accountinfo_WORK_EMAIL">Pracovný e-mail:</string>
+    <string name="plugin_accountinfo_WORK_PHONE">Pracovný telefón:</string>
+
+    <!-- Certificate configuration plugin -->
+    <string name="plugin_certconfig_TITLE">Konfigurácia TLS</string>
+    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Zdroj dôveryhodných koreňových certifikátov</string>
+    <string name="plugin_certconfig_CERT_LIST_TITLE">Konfigurácie autentifikácie klienta TLS</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">Tu spravované konfigurácie môžu byť vybrané ako klientske TLS certifikáty v konfiguráciách účtu (napr. Na overenie certifikátom proti poskytovateľovi SIP namiesto užívateľského mena a hesla).</string>
+    <string name="plugin_certconfig_ALIAS">Názov aliasu v KeyStore</string>
+    <string name="plugin_certconfig_KEYSTORE_TYPE">typ</string>
+    <string name="plugin_certconfig_CERT_ENTRY_TITLE">Certifikát klienta TLS</string>
+    <string name="plugin_certconfig_KEYSTORE">súbor</string>
+    <string name="plugin_certconfig_KEYSTORE_PASSWORD">heslo</string>
+    <string name="plugin_certconfig_INCOMPLETE">Zadajte hodnotu pre všetky polia</string>
+    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">Certifikát sa nedá zobraziť (%1$s).</string>
+    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">Nemožno načítať úložisko kľúčov (%1$s).</string>
+    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">Sklady certifikátov (modul PKCS # 11, súbory PKCS # 12, úložisko kľúčov Java ks)</string>
+    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">Nie je možné získať aliasy z úložiska kľúčov (%1$s).</string>
+    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">Vybraný typ skladu kľúčov sa zdá byť neplatný (%1$s).</string>
+    <string name="plugin_certconfig_REVOCATION_TITLE">Možnosti zrušenia certifikátu</string>
+    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">Kontrola CRL (Zoznam zrušených certifikátov) je povolená</string>
+    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">Kontrola OCSP (Online Certificate Status Protocol) je povolená</string>
+
+    <!-- connection info -->
+    <string name="plugin_connectioninfo_TITLE">Informácie o pripojení</string>
+
+    <!-- contact info -->
+    <string name="plugin_contactinfo_TITLE">Kontaktné údaje</string>
+    <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Zhrnutie kontaktných informácií pre</string>
+    <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Rozšírené kontaktné informácie pre</string>
+    <string name="service_gui_INFO_NOT_SPECIFIED">[Nešpecifikované]</string>
+    <string name="plugin_contactinfo_USER_PICTURES">Obrázky používateľov</string>
+    <string name="plugin_contactinfo_USER_STATUS_MESSAGE">Správa o stave</string>
+
+    <!-- Notification strings -->
+    <string name="plugin_notificationconfig_event_BusyCall">Obsadené volanie</string>
+    <string name="plugin_notificationconfig_event_BusyCall_description">Popis obsadeného hovoru</string>
+    <string name="plugin_notificationconfig_event_CallSaved">Hovor bol uložený</string>
+    <string name="plugin_notificationconfig_event_CallSecurityError">Chyba zabezpečenia hovoru</string>
+    <string name="plugin_notificationconfig_event_CallSecurityError_description">Popis chyby volania hovoru</string>
+    <string name="plugin_notificationconfig_event_CallSecurityOn">Zavolajte na Zabezpečenie</string>
+    <string name="plugin_notificationconfig_event_CallSecurityOn_description">Zavolajte bezpečnosť na popis</string>
+    <string name="plugin_notificationconfig_event_Dialing">vytáčanie</string>
+    <string name="plugin_notificationconfig_event_Dialing_description">Opis vytáčania</string>
+    <string name="plugin_notificationconfig_event_HangUp">Zložiť</string>
+    <string name="plugin_notificationconfig_event_HangUp_description">Zaveste popis</string>
+    <string name="plugin_notificationconfig_event_IncomingCall">Prichádzajúci hovor</string>
+    <string name="plugin_notificationconfig_event_IncomingCall_description">Popis prichádzajúceho hovoru.</string>
+    <string name="plugin_notificationconfig_event_IncomingFile">Prichádzajúci súbor</string>
+    <string name="plugin_notificationconfig_event_IncomingInvitation">Prichádzajúce pozvanie</string>
+    <string name="plugin_notificationconfig_event_IncomingMessage">Prichádzajúca správa</string>
+    <string name="plugin_notificationconfig_event_IncomingMessage_description">Popis prichádzajúcej správy</string>
+    <string name="plugin_notificationconfig_event_LogFilesArchived">Archivované súbory denníka</string>
+    <string name="plugin_notificationconfig_event_MissedCall">Zmeškaný hovor</string>
+    <string name="plugin_notificationconfig_event_NetworkNotifications">Sieťové upozornenia</string>
+    <string name="plugin_notificationconfig_event_NetworkNotifications_description">Opis sieťového oznámenia</string>
+    <string name="plugin_notificationconfig_event_ProactiveNotification">Oznámenia o písaní</string>
+    <string name="plugin_notificationconfig_event_ProactiveNotification_description">Popis upozornenia na aktívny stav rozhovoru</string>
+    <string name="plugin_notificationconfig_event_OutgoingCall">Odchádzajúci hovor</string>
+    <string name="plugin_notificationconfig_event_OutgoingCall_description">Popis odchádzajúceho hovoru</string>
+    <string name="plugin_notificationconfig_event_SecurityMessage">Bezpečnostná správa</string>
+    <string name="plugin_notificationconfig_event_SecurityMessage_description">Popis bezpečnostnej správy</string>
+    <string name="plugin_notificationconfig_notification_sound">Zvuk na oznamovacom zariadení</string>
+    <string name="plugin_notificationconfig_playback_sound">Zvuk na prehrávacom zariadení</string>
+    <string name="plugin_notificationconfig_popup_notification">Vyskakovacie okno</string>
+    <string name="plugin_notificationconfig_vibration">chvenie</string>
+    <string name="plugin_notificationconfig_sound_file">Zvukový súbor:</string>
+
+    <!-- call recording config -->
+    <string name="plugin_callrecordingconfig_CALL_SAVED">Hovor bol úspešne uložený</string>
+    <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Ušetrite do: %1$s</string>
+
+    <!-- ZRTP Securing -->
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED">Konfigurácia zvukového zariadenia sa zmenila</string>
+    <string name="impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK">Kliknite sem pre správu zariadení</string>
+    <string name="impl_media_configform_NO_PREVIEW">Náhľad</string>
+    <string name="impl_media_security_CHECKSUM_MISMATCH">&lt;html>Internal ZRTP packet checksum mismatch.&lt;br/>If you see this message often this may mean a denial-of-service attack!&lt;/html></string>
+    <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Failed to send encryption data. Internet data connection or peer is down.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_RETRY_RATE_EXCEEDED">&lt;html>Too much retries during security negotiation. This may mean that the other party has internet connection problems.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Internal protocol error occurred.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_SECURITY_OFF">Vypnúť podporu šifrovania</string>
+    <string name="impl_media_security_SECURITY_ON">Zapnúť podporu šifrovania</string>
+    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>A severe security problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>No retained shared secret available.&lt;br/>&lt;b>SAS verification is recommended&lt;/b>&lt;/html></string>
+    <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>An expected retained shared secret is missing.&lt;br/>&lt;b>SAS verification is required&lt;/b>&lt;br/>If SAS codes do not match then hangup and try again&lt;/html></string>
+    <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+
+    <!-- OTR plugin -->
+    <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Autentifikácia kamaráta</string>
+    <string name="plugin_otr_menu_CB_AUTO">Automaticky iniciovať súkromné správy</string>
+    <string name="plugin_otr_menu_CB_ENABLE">Povoliť súkromné správy</string>
+    <string name="plugin_otr_menu_CB_REQUIRE">Vyžadovať súkromné správy</string>
+    <string name="plugin_otr_menu_CB_RESET">Reset</string>
+    <string name="plugin_otr_menu_CRYPTO_AUTHETICATED">CRYPTO overené</string>
+    <string name="plugin_otr_menu_CRYPTO_Finish">CRYPTO je hotové</string>
+    <string name="plugin_otr_menu_CRYPTO_NON_AUTHETICATED">CRYPTO neautentizované</string>
+    <string name="plugin_otr_menu_END_OTR">Ukončenie súkromnej konverzácie</string>
+    <string name="plugin_otr_menu_OTR_AUTHETICATED">OTR Overené</string>
+    <string name="plugin_otr_menu_OTR_Finish">OTR skončilo</string>
+    <string name="plugin_otr_menu_OTR_HANDSHAKE">OTR Handshake</string>
+    <string name="plugin_otr_menu_OTR_NON_AUTHETICATED">OTR neautentizované</string>
+    <string name="plugin_otr_menu_OTR_PLAINTTEXT">Obyčajný text</string>
+    <string name="plugin_otr_menu_OTR_TIMEOUT">OTR Handshake_TimeOut</string>
+    <string name="plugin_otr_menu_OTR_TOOLTIP">Zašifrujte chaty pomocou OTR</string>
+    <string name="plugin_otr_menu_REFRESH_OTR">Obnovte súkromnú konverzáciu</string>
+    <string name="plugin_otr_menu_START_OTR">Začať súkromnú konverzáciu</string>
+    <string name="plugin_otr_menu_TITLE">Zabezpečený chat</string>
+    <string name="plugin_otr_menu_WHATS_THIS">Čo je toto</string>
+
+    <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Overenie kamaráta pomáha
+    uistite sa, že osoba, s ktorou hovoríte, je tým, s kým prehlasuje. Ak chcete overiť odtlačok prsta, kontaktujte svojho priateľa prostredníctvom
+    nejaký iný overený kanál, napríklad telefón alebo e-mail podpísaný GPG. Každý z vás by mal oznámiť svoj odtlačok prsta
+    ostatní. Ak sa všetko zhoduje, v nasledujúcom dialógovom okne by ste mali uviesť, že * overil som odtlačok prsta.</string>
+    <string name="plugin_otr_authbuddydialog_CANCEL">Zrušiť</string>
+    <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Zadajte odtlačok prsta, ktorý ste dostali od %1$s.</string>
+    <string name="plugin_otr_authbuddydialog_HELP">Pomoc</string>
+    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io</string>
+    <string name="plugin_otr_authbuddydialog_I_HAVE">mám</string>
+    <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">nemám</string>
+    <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Môj odtlačok prsta za %1$s:%2$s</string>
+    <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Vzdialený odtlačok prsta pre %1$s:%2$s</string>
+    <string name="plugin_otr_authbuddydialog_TITLE">Autentifikácia Buddy</string>
+    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Overte Buddy</string>
+    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">overil, že toto je v skutočnosti správny odtlačok prsta pre %1$s.</string>
+    <string name="plugin_otr_configform_CB_AUTO">Automaticky iniciovať súkromné správy</string>
+    <string name="plugin_otr_configform_CB_ENABLE">Povoliť súkromné správy</string>
+    <string name="plugin_otr_configform_CB_REQUIRE">Vyžadovať súkromné správy</string>
+    <string name="plugin_otr_configform_COLUMN_NAME_CONTACT">Kontakt</string>
+    <string name="plugin_otr_configform_COLUMN_NAME_VERIFIED_STATUS">Verified</string>
+    <string name="plugin_otr_configform_FINGERPRINT">odtlačok</string>
+    <string name="plugin_otr_configform_GENERATE">generovať</string>
+    <string name="plugin_otr_configform_KNOWN_FINGERPRINTS">Známe odtlačky prstov</string>
+    <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Moje súkromné kľúče</string>
+    <string name="plugin_otr_configform_REGENERATE">znovu generovať</string>
+    <string name="plugin_otr_configform_VERIFY_STATUS">Overené: %1$s</string>
+
+    <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s is trying to initiate an encrypted
+        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        Off-The-Record conversation&lt;/a>with you. However your software does not support
+        Off-The-Record messaging. For more information see &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+    <string name="plugin_otr_activator_historyoff">%1$s is NOT recording this conversation. You can &lt;a href=\"atalk://%2$s/%3$s\">activate chat history here&lt;/a>.</string>
+    <string name="plugin_otr_activator_historyon">%1$s is recording this conversation on your device. You can &lt;a href=\"atalk://%2$s/%3$s\">turn off chat history here&lt;/a>.</string>
+    <string name="plugin_otr_activator_msgfromanotherinstance">Prijatá správa z iných prípadov konverzácie OTR s detekovaným %1$s.</string>
+    <string name="plugin_otr_activator_multipleinstancesdetected">Viaceré súkromné prípady konverzácie OTR s detekovaným %1$s.</string>
+    <string name="plugin_otr_activator_requireencryption">Vaša správa nebola odoslaná. Vyžaduje sa súkromné zasielanie správ.</string>
+    <string name="plugin_otr_activator_sessionfinished">%1$s ukončil svoju súkromnú konverzáciu OTR s vami; mali by ste urobiť to isté.</string>
+    <string name="plugin_otr_activator_sessionfinishederror">Vaša správa nebola odoslaná. Ukončite svoju súkromnú konverzáciu OTR s %1$s.</string>
+    <string name="plugin_otr_activator_sessionlost">Súkromná konverzácia OTR s používateľom %1$s sa skončila.</string>
+    <string name="plugin_otr_activator_sessionstared">Začala sa súkromná konverzácia OTR s používateľom %1$s.</string>
+    <string name="plugin_otr_activator_smpaborted">%1$s prerušil proces autentifikácie OTR.</string>
+    <string name="plugin_otr_activator_smperror">V procese autentifikácie OTR sa vyskytla chyba.</string>
+    <string name="plugin_otr_activator_unencryptedmsgreceived">Správa bola prijatá nezašifrovaná.</string>
+    <string name="plugin_otr_activator_unreadablemsgreceived">Používateľ %1$s vám poslal nečitateľnú šifrovanú správu.</string>
+    <string name="plugin_otr_activator_unreadablemsgreply">Odoslali ste %1$s nečitateľnú šifrovanú správu. Ukončite svoju súkromnú konverzáciu pomocou aplikácie %2$s alebo ju obnovte.</string>
+    <string name="plugin_otr_activator_unverifiedsessionstared">Začala sa neoverená súkromná konverzácia s používateľom %1$s.</string>
+    <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s has not been authenticated yet. You should &lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;b>authenticate&lt;/b>&lt;/a> this buddy.</string>
+
+    <!-- Crypto OMEMO -->
+    <string name="menu_crypto_plain_text">Nešifrovaný text</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Autentifikácia Buddy</string>
+    <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Máte neoverených kamarátov. Neoverení kamaráti nemôžu prijímať správu OMEMO. Začiarknite na overenie.</string>
+    <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Môj odtlačok prsta %1$s: \n%2$s</string>
+    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs chýba pre: %1$s</string>
+    <string name="omemo_identity_key_invalid">Neplatné IdentityKey pre omemoDevice: %1$s. \nVýnimka:%2$s.</string>
+    <string name="omemo_identity_key_missing">Chýba OMEMO IdentityKey pre %1$s. \nPokračujte v sťahovaní zo servera.</string>
+    <string name="omemo_identity_keypairs_invalid">Neplatné IdentityKeyPairs pre omemoDevice: %1$s. \nVýnimka:%2$s.</string>
+    <string name="omemo_init_failed_CorruptedOmemoKeyException">Inicializácia aplikácie OmemoManager zlyhala a správy Omemo nefungujú. Ak problém pretrváva po reštarte prosím pokračujte do časti „Regenerovať identity OMEMO“ pre zlyhané omomoDevice: %1$s. \n \nVýnimka: %2$s.</string>
+    <string name="omemo_init_failed_noresponse">Inicializácia aplikácie OmemoManager zlyhala a správy Omemo nemusia fungovať správne: %1$s</string>
+    <string name="omemo_init_failed_title">Inicializácia OmemoManageru zlyhala</string>
+    <string name="omemo_menu_authenticated">OMEMO overené</string>
+    <string name="omemo_send_error">Odoslanie správy zlyhalo. Skúste znova po odstránení všetkých chýb: %1$s</string>
+    <string name="omemo_menu_unauthenticated">OMEMO neautentizované</string>
+    <string name="omemo_menu_untrusted">OMEMO nedôveryhodné</string>
+    <string name="omemo_rebuild_session">Znovu vytvorte novú reláciu pre chýbajúce: %1$s</string>
+    <string name="omemo_purge_inactive_device_error">Nepodarilo sa odstrániť neaktívne OMEMO zariadenie pre: %1$s.</string>
+
+    <!-- Account proxy settings -->
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Nastaviť pripojenie cez BOSH / Proxy pre účet</string>
+    <string name="plugin_proxy_BOSHURL_NULL">Obsah poľa adresy URL BOSH nemôže byť prázdny</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">Obsah polí Proxy Host a Port nemôže byť prázdny</string>
+
+    <string name="plugin_bosh_proxy_TYPE">Proxy-typ:</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">Adresa URL BOSH:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Použite HTTP Proxy</string>
+    <string name="plugin_proxy_PROXY_HOST">Host proxy:</string>
+    <string name="plugin_proxy_PROXY_PORT">Proxy Port:</string>
+
+    <!-- Provisioning Plugin-->
+    <string name="plugin_provisioning_AUTO">Automaticky objaví URI provizórnych služieb</string>
+    <string name="plugin_provisioning_CLIPBOARD_FAILED">Nepodarilo sa skopírovať UUID do schránky</string>
+    <string name="plugin_provisioning_COPYTOCLIPBOARD">Skopírovať UUID do schránky</string>
+    <string name="plugin_provisioning_CREDENTIALS">Posledné uložené poverovacie oprávnenia</string>
+    <string name="plugin_provisioning_ENABLE_DISABLE">Povoliť tvorbu rezerv</string>
+    <string name="plugin_provisioning_EXIT_ON_FAIL">Ak dotácia zlyhá, aplikáciu ukončite</string>
+    <string name="plugin_provisioning_FORGET_PASSWORD">Zabudnuté heslo</string>
+    <string name="plugin_provisioning_MANUAL">Ručne určte URI dotácie</string>
+    <string name="plugin_provisioning_METHOD">Spôsob poskytovania</string>
+    <string name="plugin_provisioning_PROV_FAILED">Poskytovanie zlyhalo</string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>Provisioning failed. %1$s!&lt;br/>Please, try again later or contact your administrator.&lt;/html></string>
+    <string name="plugin_provisioning_PROVISIONING">provisioning</string>
+    <string name="plugin_provisioning_PROVISIONING_SUMMARY">Nakonfigurujte nastavenia poskytovania</string>
+    <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Naozaj chcete odstrániť heslo na spravovanie účtu?</string>
+    <string name="plugin_provisioning_RESTART_WARNING">Upozorňujeme, že vaše zmeny sa prejavia až pri ďalšom spustení aTalk!</string>
+
+    <!-- DNS config -->
+    <string name="service_gui_settings_DNSSEC_DANE">Zabezpečenie SSL / DNSSEC / DANE</string>
+    <string name="service_gui_settings_DNS">DNS</string>
+    <string name="service_gui_settings_DNS_SUMMARY">Nakonfigurujte nastavenia DNS</string>
+    <string name="plugin_dnsconfig_DNSSEC">Zabezpečenie DNS (DNSSEC)</string>
+    <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">doména</string>
+    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Zmena stavu zlyhala</string>
+    <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Zmena stavu povoleného DNSSEC zlyhala.</string>
+    <string name="plugin_dnsconfig_dnssec_MODE">Správanie</string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>Note that enabling or disabling DNSSEC disables the parallel resolver and will only take effect the next time you start aTalk.&lt;/html></string>
+    <string name="plugin_dnsconfig_border_TITLE">Zálohovací prekladač</string>
+    <string name="plugin_dnsconfig_dnssec_chkAbsolute">Zaobchádzajte so všetkými názvami domén ako s absolútnymi</string>
+    <string name="plugin_dnsconfig_dnssec_chkEnabled">Povoliť prekladač DNSSEC</string>
+    <string name="plugin_dnsconfig_dnssec_lblDefault">Predvolené správanie</string>
+    <string name="plugin_dnsconfig_dnssec_lblNameservers">Vlastné menové servery</string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Multiple servers can be delimited with a comma, e.g. 149.20.64.20, 149.20.64.21 (OARC\'s Open DNSSEC Validating Resolver)&lt;/html></string>
+
+    <string name="util_dns_INSECURE_ANSWER_TITLE">Zlyhanie DNSSEC</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">Odpoveď DNS pre %1$s je neistá.</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">Odpoveď DNS pre %1$s je neistá. \n Dôvod: %2$s</string>
+    <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Zobraziť rozšírené možnosti</string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>DNSSEC signed zone %1$s returned invalid data.&lt;br/>%2$s&lt;/html></string>
+    <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">Dopyt %1$s pre %2$s nie je podpísaný.</string>
+    <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s has tried to connect to the server at &lt;b>%2$s&lt;&lt;/b>,
+        which is a domain that carries a strong protection called DNSSEC. The information that %1$s has obtained
+        from the DNS server is not in accordance with the information DNSSEC provides about this domain.&lt;br/>&lt;br/>&lt;b>
+        This should not happen unless very serious mistakes were made at %2$s. It therefore is a very strong indication that something is
+        seriously wrong with the trustworthiness of your network connection.&lt;/b>&lt;br/>&lt;br/>
+        If you are on someone else\'s internet connection (like a WiFi hotspot) or if there are special circumstances that make you distrust
+        your regular internet provider, we strongly advise you to stop using it immediately and look for an alternative internet access point.
+        When you are safely connected to another network, the problem should be resolved automatically. If this is not the case, contact your
+        service provider to inform them about the issue. &lt;/div>&lt;/html></string>
+
+    <!-- SSL Certificates -->
+    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Odstráňte certifikát</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Potvrďte odstránenie certifikátu pre: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Správca certifikátov SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Správa certifikátov SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Certifikát SSL</string>
+
+    <string name="pref_remove_trusted_certificates_title">Odstráňte certifikát</string>
+    <string name="pref_remove_trusted_certificates_summary">Odstrániť manuálne schválené certifikáty</string>
+
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Certifikát TLS klienta</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Vyberte certifikát TLS</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Použitie certifikátu pri autentifikácii užívateľa so serverom</string>
+
+    <!-- Reset ZID -->
+    <string name="reset_ZID_summary">Vygenerovať nový dlhodobý identifikátor ZRTP</string>
+    <string name="reset_ZID_title">Vygenerovať nový ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID bol generovaný nanovo</string>
+
+    <!-- Settings -->
+    <string name="service_gui_COMMIT_PROGRESS_MSG">Na ukladanie zmien účtu čakajte&#8230;</string>
+    <string name="service_gui_COMMIT_PROGRESS_TITLE">"Záväzok&#8230;"</string>
+    <string name="service_gui_SETTINGS_NOT_SET">(Nie je nastavené)</string>
+
+    <!-- Encoding settings -->
+    <string name="service_gui_ENC_AUDIO_TITLE">Audio kódovanie</string>
+    <string name="service_gui_ENC_OVERRIDE_GLOBAL">Prepísať globálne</string>
+    <string name="service_gui_ENC_VIDEO_TITLE">Kódovanie videa</string>
+
+    <!-- Security protocols dialog -->
+    <string name="service_gui_LIST_NONE">nikto</string>
+    <string name="service_gui_SEC_ENABLE_ENCRYPTION">Šifrovanie</string>
+    <string name="service_gui_SEC_PROTOCOLS_TITLE">Bezpečnostné protokoly</string>
+    <string name="service_gui_SEC_PROTOCOLS_MSG">Vyberte požadované protokoly v poradí</string>
+    <string name="service_gui_SEC_PROTOCOLS_OK">Uložiť</string>
+    <string name="service_gui_SEC_PROTOCOLS_CANCEL">Zrušiť</string>
+    <string name="service_gui_SEC_ZRTP_SIGNALING_ON">Oznamovať ZRTP pomocou signalizačného protokolu</string>
+    <string name="service_gui_SEC_ZRTP_SIGNALING_OFF">Neoznamovať ZRTP</string>
+
+    <!-- STUN/Jingle Nodes list -->
+    <string name="service_gui_SERVERS_LIST_ADD_SERVER">Pridať server</string>
+    <string name="service_gui_SERVERS_LIST_CANCEL">Zrušiť</string>
+    <string name="service_gui_SERVERS_LIST_EMPTY">Zoznam je prázdny. Kliknutím pridajte nový záznam&#8230;</string>
+    <string name="service_gui_SERVERS_LIST_REMOVE">Odstrániť</string>
+
+    <!-- Jingle Nodes edit -->
+    <string name="service_gui_JINGLE_EDIT_JID">Adresa JID</string>
+    <string name="service_gui_JINGLE_EDIT_SUPPORT_RELAY">Podporné relé</string>
+
+    <!-- STUN edit -->
+    <string name="service_gui_STUN_TURN_SERVER">STUN / TURN Server</string>
+    <string name="service_gui_STUN_EDIT_ADDRESS">IP adresa</string>
+    <string name="service_gui_STUN_EDIT_PASSWORD">heslo</string>
+    <string name="service_gui_STUN_EDIT_PORT">Port servera</string>
+    <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Podpora TURN</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">TURN užívateľské meno</string>
+
+    <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_ENCRYPTION">Povoliť šifrovanie hovorov</string>
+    <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Šifrovacie protokoly</string>
+    <string name="service_gui_PREF_SECURITY_GENERAL">všeobecný</string>
+    <string name="service_gui_PREF_SECURITY_RTP_SAVP">Indikácia RTP / SAVP</string>
+    <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">Metóda indikácie RTP / SAVP</string>
+    <string name="service_gui_PREF_SECURITY_SDES">Možnosti SDes</string>
+    <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Vyberte požadované sady šifry</string>
+    <string name="service_gui_PREF_SECURITY_SDES_TITLE">Šifrovacie sady SDES</string>
+    <string name="service_gui_PREF_SECURITY_ZRTP">Možnosti ZRTP</string>
+    <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">Signalizácia ZRTP</string>
+
+    <!-- SIP preferences -->
+    <string name="service_gui_CRYPTOSIP_REGISTRAR">Krypto registrátor</string>
+    <string name="service_gui_SIP_ADVANCED">Pokročilé</string>
+    <string name="service_gui_SIP_AUTH_NAME">Názov autorizácie</string>
+    <string name="service_gui_SIP_AUTO_SIGNIN">Pripojiť pri spustení</string>
+    <string name="service_gui_SIP_CLIST_PASS">Heslo</string>
+    <string name="service_gui_SIP_CLIST_TYPE">Typ</string>
+    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Výber typu zoznamu kontaktov</string>
+    <string name="service_gui_SIP_CLIST_URI">URI / adresa servera so zoznamom kontaktov</string>
+    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Použite poverenia SIP</string>
+    <string name="service_gui_SIP_CLIST_USER">Užívateľ</string>
+    <string name="service_gui_SIP_CONNECTION">Pripojenie</string>
+    <string name="service_gui_SIP_CONNECTION_DESC">Nastavte podrobnosti pripojenia&#8230;</string>
+    <string name="service_gui_SIP_CONN_GENERAL">Všeobecný</string>
+    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Možnosti zoznamu kontaktov</string>
+    <string name="service_gui_SIP_CONTACTS_POLLING">Obdobie hlasovania kontaktov offline (v s.)</string>
+    <string name="service_gui_SIP_DISPLAYNAME">Zobraziť meno</string>
+    <string name="service_gui_SIP_DTMF">Metóda DTMF</string>
+    <string name="service_gui_SIP_DTMF_TITLE">Výber metódy DTMF</string>
+    <string name="service_gui_SIP_ENABLE_SIMPLE">Povoliť prítomnosť (SIMPLE)</string>
+    <string name="service_gui_SIP_FORCE_P2P">Vynútiť režim prítomnosti typu peer-to-peer</string>
+    <string name="service_gui_SIP_GENERAL">Používateľské meno a heslo</string>
+    <string name="service_gui_SIP_KEEP_ALIVE">Udržujte nažive metódu</string>
+    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Udržať nažive</string>
+    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Ponechajte nažive výber metódy</string>
+    <string name="service_gui_SIP_PING_INTERVAL">Interval pingu</string>
+    <string name="service_gui_SIP_PASSWORD">Zadajte heslo</string>
+    <string name="service_gui_SIP_PORT">Port servera</string>
+    <string name="service_gui_SIP_PREF_TRANSPORT">Preferovaná preprava</string>
+    <string name="service_gui_SIP_PREF_TRANS_TITLE">Proxy preferovaný výber prepravy</string>
+    <string name="service_gui_SIP_PRESENCE">Prítomnosť</string>
+    <string name="service_gui_SIP_PRESENCE_DESC">Nakonfigurujte možnosti účasti&#8230;</string>
+    <string name="service_gui_SIP_PRESENCE_OPTIONS">Možnosti prítomnosti</string>
+    <string name="service_gui_SIP_PROXY">Možnosti servera proxy</string>
+    <string name="service_gui_SIP_PROXY_AUTO">Konfigurujte proxy automaticky</string>
+    <string name="service_gui_SIP_PROXY_ADDR">Proxy adresa</string>
+    <string name="service_gui_SIP_PROXY_PORT">Proxy port</string>
+    <string name="service_gui_SIP_REGISTRAR">registrátor</string>
+    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Predvolené trvanie predplatného (v s.)</string>
+    <string name="service_gui_SIP_USER">ID CRYPTO</string>
+    <string name="service_gui_SIP_VOICEMAIL">Hlasová schránka</string>
+    <string name="service_gui_SIP_VMAIL_URI">URI predplatného hlasovej schránky</string>
+    <string name="service_gui_SIP_VMAIL_CHECK_URI">URI kontroly hlasovej schránky</string>
+    <string name="service_gui_SIP_WMI">Čakanie správ (MWI)</string>
+
+    <!-- Common preferences -->
+    <string name="service_gui_PREF_AUDIO_ENCODING">Audio kódovanie</string>
+    <string name="service_gui_PREF_AUDIO_ENC_SUMMARY">Prepíše globálne definované zvukové formáty pre tento účet</string>
+    <string name="service_gui_PREF_ENCRYPTION">Zavolajte nastavenia šifrovania</string>
+    <string name="service_gui_PREF_VIDEO_ENCODING">Kódovanie videa</string>
+    <string name="service_gui_PREF_VIDEO_ENC_SUMMARY">Prepísať globálne definované formáty videa pre tento účet</string>
+
+    <!-- Jabber preferences -->
+    <string name="service_gui_JBR_ADVANCED">Pokročilé</string>
+    <string name="service_gui_JBR_AUTO_SIGNIN">Pripojiť pri spustení</string>
+    <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Automatické zistenie serverov STUN / TURN</string>
+    <string name="service_gui_JBR_CONN_GENERAL">všeobecný</string>
+    <string name="service_gui_JBR_CONN_SUMMARY">Nastavte podrobnosti pripojenia&#8230;</string>
+    <string name="service_gui_JBR_CONNECTION">Nastavenia pripojenia</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE">Zakázať mediálne hovory (Jingle)</string>
+    <string name="service_gui_JBR_DISABLE_JINGLE_SUMMARY">(zvukové a videohovory s XMPP)</string>
+    <string name="service_gui_JBR_DTMF_METHOD">Metóda DTMF</string>
+    <string name="service_gui_JBR_DTMF_SUMMARY">Výber metódy DTMF</string>
+    <string name="service_gui_JBR_GMAIL_NOTIFICATIONS">Upozornenia služby Gmail týkajúce sa nových správ</string>
+    <string name="service_gui_JBR_GOOGLE_CONTACTS_SEARCH">Vyhľadávanie kontaktov Google</string>
+    <string name="service_gui_JBR_GTALK_DOMAIN">Doména, ktorá bude používať hovor GTalk</string>
+    <string name="service_gui_JBR_ICE_GENERAL">všeobecný</string>
+    <string name="service_gui_JBR_ICE_SUMMARY">Konfigurovať možnosti ICE&#8230;</string>
+    <string name="service_gui_JBR_JINGLE_AUTO">Automatické zistenie relé Jingle Nodes</string>
+    <string name="service_gui_JBR_JINGLE_LIST">Dodatočné uzlové uzly&#8230;</string>
+    <string name="service_gui_JBR_JINGLE_LIST_SUMMARY">Užívateľ definoval ďalšie uzly spojenia na použitie</string>
+    <string name="service_gui_JBR_JINGLE_NODES">Uzly jingle</string>
+    <string name="service_gui_JBR_JINGLE_SUMMARY">Použite uzlové uzly</string>
+    <string name="service_gui_JBR_KEEP_ALIVE">Udržať nažive</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Povoliť možnosť Ponechať nažive</string>
+    <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Povoliť, ak dochádza k častému odpojeniu mobilnej siete</string>
+    <string name="service_gui_JBR_MINIMUM_TLS">Minimálna verzia TLS</string>
+    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">Pripojte sa pomocou tejto alebo vyššej verzie protokolu TLS</string>
+    <string name="service_gui_JBR_NON_SECURE_ALLOW">Povoliť nezabezpečené pripojenia</string>
+    <string name="service_gui_JBR_NON_SSL_SUMMARY">Zakázať šifrovanie pripojenia k serveru SSL / TLS</string>
+    <string name="service_gui_JBR_OVERRIDE_SERVER">Prepíše predvolené možnosti servera</string>
+    <string name="service_gui_JBR_PASSWORD">Zadajte heslo</string>
+    <string name="service_gui_JBR_PING_INTERVAL">Interval pingu (1 ~ 3600 sekúnd)</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Povoliť optimalizáciu intervalu Ping</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">Nevykonávajte optimalizáciu intervalu ping pre pripojenie k mobilnej sieti</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Vykonajte optimalizáciu intervalu ping pre pripojenie k mobilnej sieti</string>
+    <string name="service_gui_JBR_PORT">Port servera</string>
+    <string name="service_gui_JBR_PRIORITY">Priorita (rozsah: -128 ~ 127)</string>
+    <string name="service_gui_JBR_RES_AUTO_GEN">Automatické generovanie zdrojov</string>
+    <string name="service_gui_JBR_RESOURCE">Zdroj Jabber ID</string>
+    <string name="service_gui_JBR_RESURCE_NAME">Názov zdroja</string>
+    <string name="service_gui_JBR_SERVER">Pripojte IP servera</string>
+    <string name="service_gui_JBR_SERVER_OPTIONS">Možnosti servera</string>
+    <string name="service_gui_JBR_STORE_PASSWORD">Zapamätať heslo</string>
+    <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Uložte heslo pre automatické prihlásenie pri spustení aplikácie</string>
+    <string name="service_gui_JBR_STUN_LIST">Ďalšie servery STUN / TURN&#8230;</string>
+    <string name="service_gui_JBR_STUN_LIST_SUMMARY">Užívateľ definoval ďalšie servery STUN / TURN na použitie</string>
+    <string name="service_gui_JBR_TELE_DOMAIN">Telefónna doména</string>
+    <string name="service_gui_JBR_TELEPHONY">Telefonovanie (experimentálne)</string>
+    <string name="service_gui_JBR_TELEPHONY_SUMMARY">Nakonfigurujte možnosti telefonovania&#8230;</string>
+    <string name="service_gui_JBR_USE_DEFAULT_STUN">Použite server Jitsi STUN (záložný server)</string>
+    <string name="service_gui_JBR_USE_ICE">Použite ICE</string>
+    <string name="service_gui_JBR_USE_GOOGLE_ICE">Použite Jingle / ICE spoločnosti Google (experimentálne)</string>
+    <string name="service_gui_JBR_USE_UPNP">Použite UPnP</string>
+    <string name="service_gui_JBR_USER">ID POUŽÍVATEĽA</string>
+    <string name="service_gui_JBR_USER_CATEGORY">Používateľské meno a heslo</string>
+
+    <!-- Telephony -->
+    <string name="service_gui_CONTACT_PHONE_NUMBER">Meno kontaktu / Telefón / Jid:</string>
+    <string name="service_gui_EXT_CALL_VIA">Volať prostredníctvom:</string>
+    <string name="service_gui_NO_CONTACT_PHONE">Kontaktné telefónne číslo nemôže byť prázdne!</string>
+    <string name="recipient_error_non_ascii">Špeciálne znaky momentálne nie sú podporované!</string>
+    <string name="service_gui_NOT_IN_ROSTER">Zadaná telefónna doména \'%1$s \' nie je členom zoznamu kontaktov</string>
+    <string name="service_gui_NOT_IN_CALLGROUP">%1$s nepatrí do definovanej skupiny hovorov</string>
+    <string name="service_gui_NO_JINGLE_SUPPORT">%1$s \n nepodporuje protokol Jingle</string>
+    <string name="recipient_error_parse_failed">Chyba pri analýze adresy!</string>
+    <string name="unknown_recipient"><![CDATA[<Neznámy príjemca>]]></string>
+
+    <!-- General settings -->
+    <string name="service_gui_settings_DISABLED_STR">Deaktivované</string>
+    <string name="service_gui_settings_ENABLED_STR">Aktivované</string>
+    <string name="service_gui_settings_GENERAL">Všeobecné</string>
+
+    <!-- WebView default Page -->
+    <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Zadajte predvolenú prístupovú stránku webView:</string>
+    <string name="service_gui_settings_WEBVIEW_TITLE">Stránka prístupu na web</string>
+
+    <!-- Messaging settings -->
+    <string name="service_gui_settings_MSG">správy</string>
+
+    <!-- Group messages in one window -->
+    <string name="service_gui_settings_MULTICHAT_OFF">Samostatné okno pre konverzáciu ech</string>
+    <string name="service_gui_settings_MULTICHAT_ON">Zoskupte správy z chatu do jedného okna</string>
+    <string name="service_gui_settings_MULTICHAT_WINDOW">Multidiskusné okno</string>
+
+    <!-- Log chat history -->
+    <string name="service_gui_settings_HISTORY_LOG_OFF">História rozhovoru je zakázaná</string>
+    <string name="service_gui_settings_HISTORY_LOG_ON">Zaznamenávať históriu rozhovorov</string>
+    <string name="service_gui_settings_HISTORY_LOGGING">Protokolovanie histórie rozhovorov</string>
+
+    <!-- Show x recent messages in new chats -->
+    <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Koľko posledných správ by sa malo zobraziť?</string>
+    <string name="service_gui_settings_CHAT_HISTORY_SIZE">Zobraziť posledné správy</string>
+    <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d nedávnych správ v nových diskusiach</string>
+    <string name="service_gui_settings_SHOW_HISTORY">Zobraziť históriu</string>
+
+    <!-- Tell others when we have received and read the messages -->
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Prijatie správy</string>
+    <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">Dajte svojim kontaktom vedieť, kedy ste dostali a prečítali si ich správy</string>
+
+    <!-- Tell others when we are writing to them -->
+    <string name="service_gui_settings_TYPING_NOTIFICATIONS">Odosielajte upozornenia na stav rozhovoru</string>
+
+    <!-- Enable option to send thumbnail preview for image file sending -->
+    <string name="service_gui_settings_THUMBNAIL_OPTION">Odoslať / prijať náhľad miniatúry</string>
+
+    <!-- Auto accept downloadable max file size -->
+    <string name="service_gui_settings_ACCEPT_FILE">Automaticky prijať maximálnu veľkosť súboru</string>
+
+    <!-- Setup subscription Mode: auto or manual approval -->
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Schválenie na odber prítomnosti</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Prihlásiť sa na odber - automatické akceptovanie všetkých</string>
+    <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Predplatiť schválenie - manuál</string>
+
+    <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
+    <!-- Use task bar/dock alerts on incoming calls and chats -->
+    <string name="service_gui_settings_CHAT_ALERTS">Zobraziť upozornenia na stavovom riadku</string>
+
+    <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+    <!-- Auto away -->
+    <!-- Not sure how to implement it on android - leave for now -->
+
+    <!-- Notifications -->
+    <string name="service_gui_settings_NOTIFICATIONS">oznámenia</string>
+
+    <!-- Popup notifications type -->
+    <string name="service_gui_settings_auto_update_check_status">Povoliť kontrolu automatickej aktualizácie SW</string>
+
+    <string name="service_gui_settings_POPUP_HANDLER">Typ upozornení automaticky otváraných okien</string>
+
+    <string name="pref_headsup_notifications">Upozornenia na heads-up</string>
+    <string name="pref_headsup_notifications_summary">Zobraziť oznámenia o heads-up</string>
+
+    <!-- Status bar notifications handler -->
+    <string name="impl_popup_auto">auto</string>
+    <string name="impl_popup_status_bar">Upozornenia na stavovom riadku</string>
+
+    <!-- Events -->
+    <string name="service_gui_settings_EVENTS_SUMMARY">Konfigurovať jednotlivé oznámenia</string>
+    <string name="service_gui_settings_EVENTS_TITLE">Diania</string>
+
+    <!-- Quite hour settings -->
+    <string name="title_pref_quiet_hours">Pokojné hodiny</string>
+    <string name="title_pref_quiet_hours_start_time">Čas začatia</string>
+    <string name="title_pref_quiet_hours_end_time">Čas skončenia</string>
+    <string name="title_pref_enable_quiet_hours">Umožnite tiché hodiny</string>
+    <string name="pref_quiet_hours_summary">Upozornenia sa stíšia v tichých hodinách</string>
+
+    <!-- aTalk icon -->
+    <string name="service_gui_settings_SHOW_ICON">Zobraziť ikonu aTalk</string>
+    <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Skryť aTalk aktívny indikátor v upozornení</string>
+    <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Zobraziť aTalk aktívny indikátor v upozornení</string>
+
+    <!-- aTalk auto start -->
+    <string name="service_gui_settings_AUTO_START">Spustenie aTalk pri reštarte</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Vypnite  aTalk  pri ďalšom reštarte zariadenia</string>
+    <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Povoľte automatické spustenie aTalk pri ďalšom reštarte zariadenia</string>
+
+    <!-- Locale -->
+    <string name="service_gui_settings_LOCALE">Jazyk</string>
+    <string name="settings_language_system">Predvolený systém</string>
+
+    <!-- Theme -->
+    <string name="settings_theme_dark">Tmavá</string>
+    <string name="settings_theme_light">Svetlá</string>
+    <string name="settings_theme_label">Téma</string>
+
+    <!-- TTS Language -->
+    <string name="service_gui_TTS_DELAY">Oneskorenie textu na reč (ms)</string>
+    <string name="service_gui_TTS_SETTINGS">Všeobecné nastavenia TTS&#8230;</string>
+    <string name="service_gui_TTS_DISABLE">Disable Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_ENABLE">Enable Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_SYNTHESIS">Zadajte text, ktorý chcete vysloviť alebo syntetizovať, a uložte ho do súboru:</string>
+    <string name="service_gui_TTS_VOICE">Predvolený hlas TTS:</string>
+
+    <string name="service_gui_LOADING">Načitáva sa, prosím čakajte…</string>
+
+    <!-- Remove special characters from phone number -->
+    <string name="service_gui_settings_NORMALIZE_NUMBER">Špeciálne symboly v telefónnych číslach</string>
+    <string name="service_gui_settings_NORMALIZE_OFF">Žiadne úpravy telefónneho čísla</string>
+    <string name="service_gui_settings_NORMALIZE_ON">Z tohto čísla budú odstránené špeciálne symboly</string>
+    <!-- Convert letters in phone numbers -->
+    <string name="service_gui_settings_ALLOW_ALPHA_OFF">Žiadne úpravy telefónneho čísla</string>
+    <string name="service_gui_settings_ALLOW_ALPHA_PNUMBER">Písmená v telefónnych číslach</string>
+
+    <!-- Call settings -->
+    <string name="service_gui_settings_CALL">volanie</string>
+    <string name="service_gui_settings_MEDIA_CALL">Mediálny hovor</string>
+
+    <!-- Audio settings -->
+    <string name="service_gui_settings_AUDIO">audio</string>
+    <!-- Echo cancellation -->
+    <string name="service_gui_settings_ECHO_CANCEL">Zrušenie ozveny</string>
+    <string name="service_gui_settings_ECHO_CANCEL_OFF">invalidný</string>
+    <string name="service_gui_settings_ECHO_CANCEL_ON">povolené</string>
+    <!-- Auto gain control -->
+    <string name="service_gui_settings_AGC">Automatické riadenie hlasitosti</string>
+    <string name="service_gui_settings_AGC_OFF">Deaktivované</string>
+    <string name="service_gui_settings_AGC_ON">Aktivované</string>
+    <!-- Denoise -->
+    <string name="service_gui_settings_DENOISE">Potlačenie hluku</string>
+    <string name="service_gui_settings_DENOISE_OFF">Deaktivované</string>
+    <string name="service_gui_settings_DENOISE_ON">Aktivované</string>
+    <!-- Audio encodings -->
+    <string name="service_gui_settings_AUDIO_CODECS_SUMMARY">Vyberte a definujte prioritu zvukových kodekov</string>
+    <string name="service_gui_settings_AUDIO_CODECS_TITLE">Zvukové kodeky</string>
+
+    <!-- Video settings -->
+    <string name="service_gui_settings_VIDEO">Video</string>
+
+    <!-- Video system -->
+    <string name="service_gui_settings_SYSTEM_ANDROIDCAMERA">AndroidCamera</string>
+    <string name="service_gui_settings_SYSTEM_MEDIARECORDER">MediaRecorder</string>
+
+    <!-- Camera used -->
+    <string name="service_gui_settings_BACK_CAMERA">Zadná kamera</string>
+    <string name="service_gui_settings_CAMERA">fotoaparát</string>
+    <string name="service_gui_settings_FRONT_CAMERA">Predná kamera</string>
+    <string name="service_gui_settings_NO_CAMERA">Nenašli sa žiadne kamerové zariadenia</string>
+    <string name="service_gui_settings_USE_BACK_CAMERA">Použite zadnú kameru</string>
+    <string name="service_gui_settings_USE_FRONT_CAMERA">Používajte prednú kameru</string>
+
+    <!-- Video codecs -->
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Použiť priame dekódovanie povrchu (vyžaduje sa reštart)</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Použiť priame kódovanie povrchu (vyžaduje sa reštart)</string>
+    <string name="service_gui_settings_HW_DECODE">Použiť hardvérové dekódovanie (vyžaduje sa reštart)</string>
+    <string name="service_gui_settings_HW_ENCODE">Použite hardvérové kódovanie</string>
+    <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
+    <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">Zoznam vstavaných kodérov / dekodérov médií</string>
+    <string name="service_gui_settings_Restart_Hint">Vyžadovať reštartovanie aTalk</string>
+    <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Vyberte a definujte prioritu videokodekov</string>
+    <string name="service_gui_settings_VIDEO_CODECS_TITLE">Videokodeky</string>
+    <!-- Video resolution -->
+    <string name="service_gui_settings_VIDEO_RESOLUTION">Rozlíšenie videa</string>
+    <!-- Frame rate -->
+    <string name="service_gui_settings_LIMIT_FPS_OFF">neobmedzený</string>
+    <string name="service_gui_settings_LIMIT_FPS_ON">Upravená snímková frekvencia</string>
+    <string name="service_gui_settings_VIDEO_BITRATE">Prenosová rýchlosť videa (kilobitov / s)</string>
+    <string name="service_gui_settings_VIDEO_FRAME_RATE">Snímková frekvencia videa</string>
+    <string name="service_gui_settings_VIDEO_FPS_DESC">Hodnoty akceptované medzi 5 a 30 fps</string>
+    <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">Prah pre RTP tempo (kBytes / s)</string>
+    <string name="service_gui_settings_VIDEO_TARGET_FPS">Cieľová rýchlosť snímok (za sekundu)</string>
+
+    <!-- Security settings -->
+    <!-- Chat security -->
+    <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Nastavenia zabezpečenia šifrovania správ</string>
+    <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Zabezpečenie správ</string>
+
+    <!-- Messaging security options -->
+    <string name="pref_cat_MESSAGING_SECURITY_OPTIONS">Zabezpečenie správ OTR</string>
+    <!-- Crypto Messaging Enable -->
+    <string name="service_gui_settings_CRYPTO_ENABLE_OFF">Žiadne šifrovanie správ</string>
+    <string name="service_gui_settings_CRYPTO_ENABLE_ON">Šifrovanie správ povolené</string>
+    <string name="service_gui_settings_CRYPTO_ENABLE_TITLE">Súkromné správy</string>
+    <!-- Crypto Messaging Auto -->
+    <string name="service_gui_settings_CRYPTO_AUTO_OFF">Ručné spustenie šifrovacej relácie správy</string>
+    <string name="service_gui_settings_CRTOTI_AUTO_ON">Automaticky spustiť reláciu šifrovania správ</string>
+    <string name="service_gui_settings_CRYPTO_AUTO_TITLE">Automaticky iniciovať súkromné správy</string>
+    <!-- Crypto Messaging Required -->
+    <string name="service_gui_settings_CRYPTO_REQUIRE_OFF">Ak to bude podporované, použije sa zabezpečené zasielanie správ</string>
+    <string name="service_gui_settings_CRYPTO_REQUIRE_ON">Prijímajú sa iba bezpečné relácie</string>
+    <string name="service_gui_settings_CRYPTO_REQUIRE_TITLE">Vyžadovať súkromné správy</string>
+
+    <!-- OMEMO security category-->
+    <string name="pref_cat_OMEMO_SECURITY_SETTINGS">Bezpečnosť správ OMEMO</string>
+    <!-- OMEMO device screen -->
+    <string name="pref_omemo_blind_trust_before_verification">Slepá dôvera pred overením</string>
+    <string name="pref_omemo_blind_trust_before_verification_summary">Automaticky veriť všetkým novým zariadeniam kontaktov, ktoré ešte neboli overené; výzva na manuálne potvrdenie, keď overený kontakt pridá nové zariadenia.</string>
+    <!-- OMEMO regenerate screen -->
+    <string name="pref_omemo_regenerate_identities_summary">Po regenerácii vašej identity OMEMO dostanú všetky vaše kontakty nový odtlačok prsta a musíte ich znova overiť. Po regenerácii znova spustite aalk. Vykonajte iba v prípade problémov s nastavením relácie Omemo.</string>
+    <string name="pref_omemo_regenerate_identities_title">Regenerujte identity OMEMO</string>
+    <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Obnovenie identity OMEMO</string>
+    <!-- OMEMO purge device screen -->
+    <string name="pref_omemo_purge_devices_summary">Odstráňte všetky neaktívne zariadenia; publikovať iba aktuálne aktívne zariadenie, ktoré používate.</string>
+    <string name="pref_omemo_purge_devices_title">Vymažte nepoužívané identity</string>
+    <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">OMEMO Zariadenia odstrániť</string>
+
+    <!-- Key & FingerPrint security category -->
+    <string name="pref_cat_KEY_FINGERPRINT_SECURITY">Kľúč &amp; zabezpečenie odtlačkov prstov</string>
+    <!-- Crypto private Keys screen -->
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY">Bol nájdený nulový registrovaný užívateľ</string>
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Správa kryptografických súkromných odtlačkov prstov</string>
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Krypto súkromné kľúče</string>
+    <!-- Crypto fingerprints screen -->
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY">Spravujte všetky známe odtlačky prstov všetkých známych zariadení \ncolor: cyan = ownDevice; šedá = neaktívny</string>
+    <string name="service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">Odtlačky prstov šifrovacích zariadení</string>
+
+    <!-- Crypto contextMenu, dialog, message and toast -->
+    <string name="crypto_dialog_KEY_GENERATE_QUESTION">Chcete vygenerovať nový kľúč pre %1$s%2$s</string>
+    <string name="crypto_dialog_KEY_GENERATE_TITLE">Generovanie súkromného kľúča</string>
+    <string name="crypto_dialog_KEY_REGENERATE_QUESTION">Chcete regenerovať kľúč pre %1$s \n \n%2$s</string>
+
+    <string name="crypto_dialog_button_DELETE">Zmaž označené</string>
+    <string name="crypto_dialog_button_OMEMO_REGENERATE">Regenerovať vybraté</string>
+
+    <string name="crypto_menu_KEY_GENERATE">Vygenerujte nový kľúč</string>
+    <string name="crypto_menu_KEY_REGENERATE">Regenerovať kľúč</string>
+
+    <string name="crypto_menu_COPY_FINGERPRINT">Kopírovanie odtlačkov klúčov</string>
+    <string name="crypto_menu_DISTRUST_FINGERPRINT">Nedôverovať odtlačku klúča</string>
+    <string name="crypto_menu_TRUST_FINGERPRINT">Dôverovať odtlačku klúča</string>
+
+    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW">Žiadosť o reláciu OTR od vášho priateľa bola počas relácie OMEMO zamietnutá. Reláciu OTR môžete povoliť manuálne!</string>
+    <string name="crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER">Vaša žiadosť o reláciu OTR bola počas prebiehajúcej relácie Omemo zamietnutá!</string>
+    <string name="crypto_msg_OMEMO_SESSION_SETUP_FAILED">Nastavenie relácie OMEMO nebolo úspešné! %1$s</string>
+    <string name="crypto_msg_OMEMO_SESSION_UNTRUSTED">Našlo sa nula dôveryhodných kamarátov na prijímanie OMEMO správ!</string>
+    <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED">Posielajte správy OMEMO niektorým neznámym kamarátom s neoverenými odtlačkami prstov!</string>
+    <string name="crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED">Viacosobová diskusia s niektorými kamarátmi nedôveryhodnými alebo s neoverenými odtlačkami prstov!</string>
+    <string name="crypto_msg_OMEMO_SESSION_VERIFIED">*** Všetci kamaráti boli overení! ***</string>
+
+    <string name="crypto_FINGERPRINT_NOT_VERIFIED">žiadny</string>
+    <string name="crypto_FINGERPRINT_STATUS">Overené: %1$s</string>
+    <string name="crypto_FINGERPRINT_VERIFIED">Áno</string>
+    <string name="crypto_NO_KEY_PRESENT">Nie je prítomný žiadny kľúč</string>
+
+    <string name="crypto_toast_FINGERPRINT_COPY">Odtlačok prsta bol skopírovaný do schránky!</string>
+    <string name="crypto_toast_OMEMO_DISTRUST_MESSAGE_STOP">Prestaňte ďalej posielať správu OMEMO kamarátovi: %1$s</string>
+    <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">Pokračujte v odosielaní správy OMEMO kamarátovi: %1$s</string>
+
+    <!-- Advanced settings category -->
+    <string name="service_gui_settings_ADVANCED">Pokročilé</string>
+    <string name="service_gui_settings_EXPERT">Expertné nastavenia</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Prosím buďte opatrní</string>
+    <string name="service_gui_settings_OTHER">ostatné</string>
+
+    <!-- Protocol category -->
+    <string name="service_gui_settings_ADDRESS">Adresa</string>
+    <string name="service_gui_settings_PORT">Port</string>
+    <string name="service_gui_settings_PROTOCOL">Protokol</string>
+
+    <!-- Opus -->
+    <string name="service_gui_settings_OPUS">Opus</string>
+    <string name="service_gui_settings_OPUS_AUDIO_BANDWIDTH">Vzorkovacia frekvencia</string>
+    <string name="service_gui_settings_OPUS_BITRATE">Priemerný dátový tok enkodéra (kb/s)</string>
+    <string name="service_gui_settings_OPUS_COMPLEXITY">Zložitosť kódovania</string>
+    <string name="service_gui_settings_OPUS_MIN_EXPECTED_PACKET_LOSS">Minimálna očakávaná strata paketov (%%)</string>
+    <string name="service_gui_settings_OPUS_SUMMARY">Konfigurácia nastavení enkodéra Opus</string>
+    <string name="service_gui_settings_OPUS_USE_DTX">Použite DTX</string>
+    <string name="service_gui_settings_OPUS_USE_FEC">Použite inband FEC</string>
+
+    <!-- Silk -->
+    <string name="service_gui_settings_SILK">Silk</string>
+    <string name="service_gui_settings_SILK_SUMMARY">Konfigurujte nastavenia kódovača Silk</string>
+    <string name="service_gui_settings_SILK_FEC">Použite inband FEC</string>
+    <string name="service_gui_settings_SILK_ASSUME_PL">Vždy predpokladajte stratu paketu</string>
+    <string name="service_gui_settings_SILK_FEC_SAT">Prahová hodnota reči (0–1)</string>
+    <string name="service_gui_settings_SILK_ADVERTISE_FEC">Propagujte podporu FEC v SDP</string>
+
+    <!-- SIP config -->
+    <string name="plugin_generalconfig_SIP_CLIENT_PORT">Port klienta SIP</string>
+    <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">Zabezpečený port klienta SIP</string>
+    <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Povolené protokoly SSL/TLS</string>
+    <string name="service_gui_settings_SIP">SIP</string>
+    <string name="service_gui_settings_SIP_SUMMARY">Konfigurácia nastavení protokolu SIP</string>
+
+    <!-- group chat menu -->
+    <string name="menu_invite">Pozvať</string>
+    <string name="profile_child_camera">Odfoť</string>
+    <string name="profile_child_delete">Odstrániť fotografiu</string>
+    <string name="profile_child_gallery">Vyberte si z galérie</string>
+
+    <!-- Android Battery Usage Optimization -->
+    <string name="battery_optimizations">Optimalizácia batérie</string>
+    <string name="battery_optimizations_dialog">Vaše zariadenie má zapnutú optimalizáciu využitia batérie; to môže viesť k oneskoreným správam.\n\nOdporúča sa deaktivovať túto optimalizáciu pre aTalk.</string>
+    <string name="battery_optimization_on">Keď sa vaše zariadenie uspí, nebude aTalk prijímať správy. Budete musieť aTalk znovu spustiť, aby ste dostali nové správy.</string>
+    <string name="device_does_not_support_battery_op">Vaše zariadenie nepodporuje deaktiváciu optimalizácie batérie</string>
+    <string name="disable">Zakázať</string>
+    <string name="next">Ďalšie</string>
+
+    <!-- Android Permissions -->
+    <string name="app_info_permissions_button">Info o aplikácii</string>
+    <string name="ask_for_all_permissions_button">Vyžiadať všetky</string>
+    <string name="ask_for_audio_permission_button">Mikrofón</string>
+    <string name="ask_for_camera_permission_button">Kamera</string>
+    <string name="ask_for_contacts_permission_button">Kontakty</string>
+    <string name="ask_for_location_permission_button">Poloha</string>
+    <string name="ask_for_phone_permission_button">Telefonovanie</string>
+    <string name="ask_for_storage_permission_button">Ukladovanie</string>
+    <string name="permission_hint">Na podporu všetkých funkcií aTalk sa vyžaduje, aby ste udelili povolenia pre nasledujúce služby. Bez nich nemusia funkcie aTalk fungovať alebo môžu mať neočakávané správanie!</string>
+
+    <string name="permission_denied_feedback">NEPOVOLENÉ</string>
+    <string name="permission_granted_feedback">POVOLENÉ</string>
+    <string name="permission_permanently_denied_feedback">TRVALO ZAMIETNUTÉ</string>
+    <string name="permission_unknown_feedback">NEZNÁMY STAV</string>
+
+    <string name="audio_permission_denied_dialog_title">Žiadosť o povolenie zvuku</string>
+    <string name="audio_permission_denied_feedback">Zvukový hovor nebude k dispozícii, kým nevyhoviete žiadosti o povolenie</string>
+
+    <string name="camera_permission_denied_dialog_title">Žiadosť o povolenie kamery</string>
+    <string name="camera_permission_denied_feedback">Na začatie videohovoru je potrebné povolenie kamery. Videohovor nebude k dispozícii, kým nevyhoviete žiadosti o povolenie</string>
+
+    <string name="contacts_permission_denied_dialog_title">Žiadosť o povolenie kontaktov</string>
+    <string name="contacts_permission_denied_feedback">Na prístup do stavu telefónu a nastavenie hovoru je potrebné povolenie kontaktov</string>
+
+    <string name="location_permission_denied_dialog_title">Žiadosť o povolenie polohy</string>
+    <string name="location_permission_denied_feedback">Funkcie GPS-Polohy nebudú k dispozícii, kým neudelíte žiadosť o povolenie</string>
+
+    <string name="phone_permission_denied_dialog_title">Prečítajte si žiadosť o povolenie štátneho telefónu</string>
+    <string name="phone_permission_denied_feedback">Telefónne funkcie nebudú k dispozícii, kým neudelíte žiadosť o povolenie</string>
+
+    <string name="storage_permission_denied_dialog_title">Žiadosť o povolenie na ukladanie</string>
+    <string name="storage_permission_denied_feedback">Ukladanie odoslaného a prijatého obsahu do úložiska nebude povolené, kým nevyhoviete žiadosti o povolenie</string>
+
+    <string name="all_permission_denied_dialog_title">Žiadosť o všetky povolenia</string>
+    <string name="all_permissions_denied_feedback">aTalk nemusí fungovať správne alebo môže mať neočakávané správanie, pretože niektoré služby boli odmietnuté! \nAk ste vybrali možnosť „Nepýtať sa znova“, musíte prejsť na Nastavenia systému Android -> INFORMÁCIE O aplikácii pre aplikáciu aTalk, čím povolíte povolenie na prístup k zdrojom</string>
+    <string name="permission_denied_all_alert">aTalk nebude fungovať správne. Odmietli ste aTalk všetkých povolení! \nPotrebujete prejsť na Nastavenia Android -> APP INFO pre aTalk, aby ste povolili povolenie na prístup k prostriedkom.</string>
+
+    <string name="permission_rationale_message">Zobrazí sa vám každá služba, ktorú aTalk potrebuje; povolte aTalk prístup k týmto službám, aby boli podporované všetky funkcie</string>
+    <string name="permission_rationale_settings_button_text">NASTAVENIE</string>
+    <string name="permission_rationale_title">aTalk potrebuje povolenie</string>
+
+	<!--Location string constant -->
+    <string name="location_permission_dialog_title">Povolenie pre určenie polohy</string>
+    <string name="location_permission_dialog_message">Povoliť zisťovanie polohy?</string>
+    <string name="location_services_off">Služba určovania polohy je VYPNUTÁ</string>
+    <string name="open_location_settings">Povoliť služby určovania polohy?</string>
+
+</resources>
