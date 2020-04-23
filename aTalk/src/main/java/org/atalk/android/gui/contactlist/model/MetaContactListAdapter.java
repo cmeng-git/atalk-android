@@ -434,6 +434,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     private void updateStatus(MetaContact metaContact)
     {
+        if (!presenceFilter.isShowOffline())
+        {
+            filterData("");
+        }
         int groupIndex = groups.indexOf(metaContact.getParentMetaContactGroup());
         if (groupIndex >= 0) {
             int contactIndex = getChildIndex(getContactList(groupIndex), metaContact);
