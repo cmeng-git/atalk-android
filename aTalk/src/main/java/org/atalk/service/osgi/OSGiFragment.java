@@ -5,7 +5,7 @@
  */
 package org.atalk.service.osgi;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Looper;
 
 import org.osgi.framework.BundleContext;
@@ -24,10 +24,10 @@ public class OSGiFragment extends Fragment implements OSGiUiPart
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-        OSGiActivity osGiActivity = (OSGiActivity) activity;
+        super.onAttach(context);
+        OSGiActivity osGiActivity = (OSGiActivity) context;
         osGiActivity.registerOSGiFragment(this);
     }
 

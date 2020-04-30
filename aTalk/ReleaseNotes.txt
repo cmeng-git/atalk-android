@@ -1,5 +1,44 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:		2.2.4 (1124)
+Author:         cmeng / MilanKral
+Upload Date:	04/30/2020
+- Display contacts sorted according to contacts' presence status in main contact list window.
+  When contact list is displayed for user multiple selection e.g. group chat invite dialog,
+  do not sort, as items selected by user is tracked by their list positions
+  see MetaContactListAdapter#contactPresenceStatusChanged()
+- Ensure hide offline contact list get updated when a contact presence status changes
+  see MetaContactListAdapter#refreshModelData()
+- Ensure Text to Speech when enabled remains active even when the chatSession is not in focus.
+- TTSActivity must check and blocked TTS access if TTS voice is not available on device
+- Display android device cameras sorted by name for user selection in Settings...
+  Camera nmae changed (Front Camera => Front): Must force valie in DeviceConfiguration#extractConfiguredVideoCaptureDevice to a valid value
+- Add new call history records display UI in main pager selection
+- Add new UI language support for Slovak
+
+- Ensure consistency in UI text display as per user selected language.
+  Implement LocaleHelper and ensure aTalkApp ContextWrapper mInstance is properly updated on startup and when UI language has changed
+- Fix user selected Language reset by WebView for android-N and above.
+  Must add new WebView(this).destroy(); in aTalkApp#onCreate(); prevents WebView changing UI back to system default
+  Android - WebView language changes abruptly on Android 7.0 and above:
+  https://stackoverflow.com/questions/40398528/android-webview-language-changes-abruptly-on-android-7-0-and-above
+
+- Fix ConfigurationUtils init aTalkApp#mLanguage to null => system crashes on user language selection
+- ProtocolContactSourceServiceImpl & MetaContactListServiceImpl: must not use R.string.service_gui_CONTACTS translated string in rootMetaGroup assignment.
+- FileBackend.isHttpFileDnLink checking mechanism must use [\\w-] in word character search i.e. include '-' as valid character for file path/name
+
+- Need to ignore FileHttpDownloadConversation#queryFileSize returns file size == 0 and continue to check further.
+- Implement ThemeHelper to hide implementation details and for easy maintenance
+- Change all class extends Activity/FragmentActivity to OsgiActivity to ease and ensure consistent in Theme
+- Fix TLS_Configuration and CertConfigEntryDialog crash on screen rotation
+
+- Cleanup and ensure proper call to smack Stanza#genExtension() and alike for Captcha and Nick etc
+  For 4.4.3-master (20200416), cannot use: presence.getExtension(Nick.class); => IllegalArgumentException
+  Instead must use Nick nickExt = (Nick) presence.getExtensionElement(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+  Add static QName QNAME = new QName(NAMESPACE, ELEMENT); for all aTalk extension classes
+- HttpFileUploadManager#upload(): inputStream.close() throws IllegalStateException on Note-5. Must include in catch
+
+=========================================================================
 Version:		2.2.3 (1123)
 Author:         cmeng
 Upload Date:	04/16/2020
@@ -7,7 +46,7 @@ Upload Date:	04/16/2020
 - Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection:
   popup dropdown together with the user edited text in selector and hide softKeyboard
   set dropdown width to match parent
-- Improve FileBackend.isHttpFileDnLink checking mechanism to minimize incorrect classification and diplay file download UI
+- Improve FileBackend.isHttpFileDnLink checking mechanism to minimize incorrect classification and display file download UI
 - Show video/call buttons if supported by any one contact login with multiple resources of different capabilities
 - Ensure ChatRoomConfiguration does not crash on screen rotation
 - FileHttpDownloadConversation, do not attempt to auto download if stored status is

@@ -23,7 +23,6 @@ import net.java.sip.communicator.util.StatusUtil;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.menu.GlobalStatusMenu;
@@ -246,7 +245,7 @@ public class ActionBarStatusFragment extends OSGiFragment
                 int itemId = isOffline
                         ? R.string.service_gui_SIGN_IN
                         : R.string.service_gui_SIGN_OUT;
-                mOnOffLine.setTitle(aTalkApp.getResString(itemId));
+                mOnOffLine.setTitle(itemId);
             }
         });
     }

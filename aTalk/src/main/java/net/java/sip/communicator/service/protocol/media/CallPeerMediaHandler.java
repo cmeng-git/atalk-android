@@ -1276,7 +1276,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         packet.setSSRC((int) stream.getLocalSourceID());
 
         // cmeng (20181008): sending the defined HOLE_PUNCH_PACKET causing problem in transmit mic data being muted???
-        // Disable it for aTalk always i.e. not using defined packet
+        // Disable it for aTalk always i.e. not using defined packet i.e. packet => null
         getTransportManager().sendHolePunchPacket(stream.getTarget(), mediaType, null);
     }
 
@@ -1370,8 +1370,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * If the local <tt>AudioMediaStream</tt> has already been created, sets <tt>listener</tt> as
      * the <tt>SimpleAudioLevelListener</tt> that it should notify for local user level events.
-     * Otherwise stores a reference to <tt>listener</tt> so that we could add it once we create the
-     * stream.
+     * Otherwise stores a reference to <tt>listener</tt> so that we could add it once we create the stream.
      *
      * @param listener the <tt>SimpleAudioLevelListener</tt> to add or <tt>null</tt> if we are trying to
      * remove it.
@@ -1397,8 +1396,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * Specifies whether this media handler should be allowed to transmit local video.
      *
-     * @param enabled <tt>true</tt> if the media handler should transmit local video and <tt>false</tt>
-     * otherwise.
+     * @param enabled <tt>true</tt> if the media handler should transmit local video and <tt>false</tt> otherwise.
      */
     public void setLocalVideoTransmissionEnabled(boolean enabled)
     {

@@ -15,8 +15,9 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-
 import org.xmpp.extensions.AbstractExtensionElement;
+
+import javax.xml.namespace.QName;
 
 /**
  * Audio muted extension that is included in users presence in Jitsi-meet
@@ -37,6 +38,8 @@ public class AudioMutedExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "audiomuted";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates new instance of <tt>AudioMutedExtension</tt>.

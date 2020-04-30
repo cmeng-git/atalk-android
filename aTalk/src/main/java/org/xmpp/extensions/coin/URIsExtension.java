@@ -7,6 +7,8 @@ package org.xmpp.extensions.coin;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * URIs packet extension.
  *
@@ -24,6 +26,8 @@ public class URIsExtension extends AbstractExtensionElement
      * The namespace that URIs belongs to.
      */
     public static final String NAMESPACE = "";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Constructor.

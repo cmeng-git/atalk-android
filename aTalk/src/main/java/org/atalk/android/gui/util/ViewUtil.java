@@ -222,7 +222,8 @@ public class ViewUtil
      * @param context context
      * @param view the reference view
      */
-    public static void hideKeyboard(Context context, View view) {
+    public static void hideKeyboard(Context context, View view)
+    {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null)
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);

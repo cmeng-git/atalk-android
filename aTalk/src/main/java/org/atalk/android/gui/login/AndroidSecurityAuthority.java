@@ -171,12 +171,13 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                         credentials.setDnssecMode(selectedDnssecMode);
 
                         if (isShowServerOption) {
-                            boolean isServerOverridden = ViewUtil.isCompoundChecked(dialogContent,
-                                    R.id.serverOverridden);
-                            String serverAddress = ViewUtil.getTextViewValue(dialogContent,
-                                    R.id.serverIpField).replaceAll("\\s", "");
-                            String serverPort = ViewUtil.getTextViewValue(dialogContent,
-                                    R.id.serverPortField).replaceAll("\\s", "");
+                            boolean isServerOverridden = ViewUtil.isCompoundChecked(dialogContent, R.id.serverOverridden);
+                            String serverAddress = ViewUtil.getTextViewValue(dialogContent, R.id.serverIpField);
+                            String serverPort = ViewUtil.getTextViewValue(dialogContent, R.id.serverPortField);
+                            if (serverAddress == null || serverPort == null) {
+                                aTalkApp.showToastMessage(R.string.plugin_certconfig_INCOMPLETE);
+                                return false;
+                            }
 
                             credentials.setIsServerOverridden(isServerOverridden);
                             credentials.setServerAddress(serverAddress);

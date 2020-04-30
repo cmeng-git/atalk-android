@@ -32,7 +32,7 @@ import timber.log.Timber;
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener

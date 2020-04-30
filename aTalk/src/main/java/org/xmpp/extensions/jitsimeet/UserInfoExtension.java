@@ -18,6 +18,8 @@ package org.xmpp.extensions.jitsimeet;
 import org.atalk.util.StringUtils;
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Packet extension included in Jitsi-Meet MUC presence to signal extra
  * information about the participant.
@@ -35,6 +37,8 @@ public class UserInfoExtension extends AbstractExtensionElement
      * Name space of start muted packet extension.
      */
     public static final String NAMESPACE = "http://jitsi.org/jitmeet/userinfo";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the "robot" attribute which indicates whether or not given

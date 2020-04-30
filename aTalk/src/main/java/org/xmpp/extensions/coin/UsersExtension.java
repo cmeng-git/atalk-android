@@ -7,6 +7,8 @@ package org.xmpp.extensions.coin;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Users packet extension.
  *
@@ -24,6 +26,8 @@ public class UsersExtension extends AbstractExtensionElement
      * The namespace that users belongs to.
      */
     public static final String NAMESPACE = null;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Entity attribute name.

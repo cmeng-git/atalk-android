@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * SIP Dialog ID packet extension.
  *
@@ -30,6 +32,8 @@ public class SIPDialogIDExtension extends AbstractExtensionElement
      * The namespace that SIP Dialog ID belongs to.
      */
     public static final String NAMESPACE = "sip";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Display text element name.

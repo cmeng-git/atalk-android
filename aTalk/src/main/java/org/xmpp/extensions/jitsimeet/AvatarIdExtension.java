@@ -19,6 +19,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * An extension of the presence which stores an ID of the avatar. The extension looks like follows:
  *
@@ -37,6 +39,8 @@ public class AvatarIdExtension extends AbstractExtensionElement
      * The element name of this avatar-id presence element
      */
     public static final String ELEMENT = "avatar-id";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Default constructor.

@@ -17,6 +17,8 @@ import org.jxmpp.jid.parts.Localpart;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.namespace.QName;
+
 import timber.log.Timber;
 
 /**
@@ -2318,6 +2320,8 @@ public class ColibriConferenceIQ extends IQ
         public static final String ELEMENT = "graceful-shutdown";
 
         public static final String NAMESPACE = ColibriConferenceIQ.NAMESPACE;
+
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         public GracefulShutdown()
         {

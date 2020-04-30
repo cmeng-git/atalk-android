@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * Conference medium packet extension.
  *
@@ -30,6 +32,9 @@ public class ConferenceMediumExtension extends AbstractExtensionElement
      * The namespace that conference medium belongs to.
      */
     public static final String NAMESPACE = CoinIQ.NAMESPACE;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
     /**
      * Display text element name.
      */

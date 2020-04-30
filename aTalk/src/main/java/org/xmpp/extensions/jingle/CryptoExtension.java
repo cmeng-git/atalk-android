@@ -8,6 +8,8 @@ package org.xmpp.extensions.jingle;
 import org.atalk.android.util.ApiLib;
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * The element containing details about an encryption algorithm that could be used during a jingle
  * session.
@@ -28,6 +30,8 @@ public class CryptoExtension extends AbstractExtensionElement
      * (may be set to null once gtalk supports jingle).
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:1";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the 'crypto-suite' argument.

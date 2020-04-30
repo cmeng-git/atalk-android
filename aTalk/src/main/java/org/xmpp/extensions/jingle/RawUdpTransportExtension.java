@@ -11,6 +11,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 /**
  * An {@link AbstractExtensionElement} implementation for transport elements.
  *
@@ -28,6 +30,8 @@ public class RawUdpTransportExtension extends IceUdpTransportExtension
      * The name of the "transport" element.
      */
     public static final String ELEMENT = "transport";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates a new {@link RawUdpTransportExtension} instance.

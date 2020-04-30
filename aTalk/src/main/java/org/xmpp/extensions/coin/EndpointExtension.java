@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * Endpoint packet extension.
  *
@@ -30,6 +32,8 @@ public class EndpointExtension extends AbstractExtensionElement
      * The namespace that endpoint belongs to.
      */
     public static final String NAMESPACE = null;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Entity attribute name.

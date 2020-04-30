@@ -24,7 +24,6 @@ import android.widget.*;
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.Arrays;

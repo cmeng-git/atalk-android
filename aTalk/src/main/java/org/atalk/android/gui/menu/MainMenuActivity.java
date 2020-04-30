@@ -144,15 +144,15 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
 
         mShowHideOffline = menu.findItem(R.id.show_hide_offline);
         int itemId = ConfigurationUtils.isShowOffline()
-                ? R.string.service_gui_HIDE_OFFLINE_CONTACTS
-                : R.string.service_gui_SHOW_OFFLINE_CONTACTS;
-        mShowHideOffline.setTitle(getString(itemId));
+                ? R.string.service_gui_CONTACTS_OFFLINE_HIDE
+                : R.string.service_gui_CONTACTS_OFFLINE_SHOW;
+        mShowHideOffline.setTitle(itemId);
 
         mOnOffLine = menu.findItem(R.id.sign_in_off);
         itemId = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this))
                 ? R.string.service_gui_SIGN_IN
                 : R.string.service_gui_SIGN_OUT;
-        mOnOffLine.setTitle(getString(itemId));
+        mOnOffLine.setTitle(itemId);
 
         // Adds exit option from super class
         super.onCreateOptionsMenu(menu);
@@ -292,16 +292,18 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 startActivity(ttsIntent);
                 break;
             case R.id.show_hide_offline:
-                boolean isShowOffline = ConfigurationUtils.isShowOffline();
-                MetaContactListAdapter.presenceFilter.setShowOffline(!isShowOffline);
+                boolean isShowOffline = !ConfigurationUtils.isShowOffline(); // toggle
+                MetaContactListAdapter.presenceFilter.setShowOffline(isShowOffline);
                 Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
                 if (clf instanceof ContactListFragment) {
                     MetaContactListAdapter contactListAdapter = ((ContactListFragment) clf).getContactListAdapter();
                     contactListAdapter.filterData("");
                 }
-                String onOffLine = aTalkApp.getResString(!isShowOffline
-                        ? R.string.service_gui_HIDE_OFFLINE_CONTACTS : R.string.service_gui_SHOW_OFFLINE_CONTACTS);
-                mShowHideOffline.setTitle(onOffLine);
+                int itemId = isShowOffline
+                        ? R.string.service_gui_CONTACTS_OFFLINE_HIDE
+                        : R.string.service_gui_CONTACTS_OFFLINE_SHOW;
+                mShowHideOffline.setTitle(itemId);
+
                 break;
             case R.id.notification_setting:
                 openNotificationSettings();

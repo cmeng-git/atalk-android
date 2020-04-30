@@ -36,6 +36,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.menu.MainMenuActivity;
+import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
@@ -114,7 +115,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        mParent.setTheme(aTalkApp.getAppThemeResourceId());
+        ThemeHelper.setTheme(mParent);
         super.onCreate(savedInstanceState);
 
         setTitle(R.string.service_gui_CHATROOM_BOOKMARK_TITLE);
@@ -148,9 +149,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         mCancelButton.setOnClickListener(v -> {
             if (hasChanges) {
                 DialogActivity.showConfirmDialog(mParent,
-                        aTalkApp.getResString(R.string.service_gui_CHATROOM_BOOKMARK_TITLE),
-                        aTalkApp.getResString(R.string.service_gui_UNSAVED_CHANGES),
-                        aTalkApp.getResString(R.string.service_gui_EXIT), this);
+                        R.string.service_gui_CHATROOM_BOOKMARK_TITLE,
+                        R.string.service_gui_UNSAVED_CHANGES,
+                        R.string.service_gui_EXIT, this);
             }
             else
                 closeDialog();
@@ -424,7 +425,6 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
      *
      * @param oldStr exiting string value
      * @param newStr newly edited string
-
      * @return true is both are equal
      */
     private boolean isEqual(String oldStr, String newStr)

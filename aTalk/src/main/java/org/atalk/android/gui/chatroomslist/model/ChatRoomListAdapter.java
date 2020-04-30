@@ -17,7 +17,6 @@
 package org.atalk.android.gui.chatroomslist.model;
 
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.*;
 import net.java.sip.communicator.service.muc.*;
@@ -674,9 +673,8 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
                 break;
             case ChatRoomListChangeEvent.CHAT_ROOM_REMOVED:
                 removeChatRoom(chatRoomWrapper.getParentProvider(), chatRoomWrapper);
-                String msg = aTalkApp.getResString(R.string.service_gui_CHATROOM_DESTROY_SUCCESSFUL,
+                aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_DESTROY_SUCCESSFUL,
                         chatRoomWrapper.getChatRoomID());
-                Toast.makeText(aTalkApp.getGlobalContext(), msg, Toast.LENGTH_SHORT).show();
                 break;
             case ChatRoomListChangeEvent.CHAT_ROOM_CHANGED:
                 break;

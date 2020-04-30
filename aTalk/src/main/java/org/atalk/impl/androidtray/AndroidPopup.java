@@ -278,7 +278,8 @@ public class AndroidPopup
         // Do not show head-up notification when user has put the id notification in snooze
         if (isSnooze(nId) || !ConfigurationUtils.isHeadsUpEnable()) {
             builder = new NotificationCompat.Builder(mContext, AndroidNotifications.SILENT_GROUP);
-        } else {
+        }
+        else {
             builder = new NotificationCompat.Builder(mContext, group);
         }
 
@@ -412,10 +413,12 @@ public class AndroidPopup
 
     /**
      * Check if the given notification ID is still in snooze period
+     *
      * @param nId Notification id
      * @return true if it is still in snooze
      */
-    protected boolean isSnooze(int nId) {
+    protected boolean isSnooze(int nId)
+    {
         muteEndTime = snoozeEndTimes.get(nId);
         return (muteEndTime != null) && (System.currentTimeMillis() < muteEndTime);
 
@@ -423,9 +426,11 @@ public class AndroidPopup
 
     /**
      * Check if the android head-up notification allowed
+     *
      * @return true if the group is MESSAGE_GROUP
      */
-    public boolean isHeadUpNotificationAllow() {
+    public boolean isHeadUpNotificationAllow()
+    {
         return ConfigurationUtils.isHeadsUpEnable() && AndroidNotifications.MESSAGE_GROUP.equals(group);
     }
 

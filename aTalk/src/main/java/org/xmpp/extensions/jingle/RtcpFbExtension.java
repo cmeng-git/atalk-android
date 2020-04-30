@@ -7,6 +7,8 @@ package org.xmpp.extensions.jingle;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Packet extension that holds RTCP feedback types of the {@link PayloadTypeExtension}.
  * Defined in XEP-0293.
@@ -25,6 +27,8 @@ public class RtcpFbExtension extends AbstractExtensionElement
      * The name of the RTCP feedback element.
      */
     public static final String ELEMENT = "rtcp-fb";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name the attribute that holds the feedback type.

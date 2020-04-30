@@ -49,7 +49,7 @@
     <item
         android:id="@+id/show_hide_offline"
         android:icon="@drawable/show_hide_offline_light"
-        android:title="@string/service_gui_HIDE_OFFLINE_CONTACTS" />
+        android:title="@string/service_gui_CONTACTS_OFFLINE_HIDE" />
     <item
         android:id="@+id/sign_in_off"
         android:title="@string/service_gui_SIGN_OUT" />

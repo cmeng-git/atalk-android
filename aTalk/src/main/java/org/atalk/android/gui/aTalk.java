@@ -24,11 +24,11 @@ import android.os.Handler;
 import android.view.ViewGroup;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
+import org.atalk.android.gui.call.CallHistoryFragment;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
@@ -37,8 +37,6 @@ import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
-import org.atalk.android.plugin.textspeech.TTSActivity;
-import org.atalk.android.plugin.textspeech.TTSActivity.State;
 import org.atalk.persistance.migrations.MigrateDir;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
@@ -67,7 +65,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
     public final static int CL_FRAGMENT = 0;
     public final static int CRL_FRAGMENT = 1;
-    // public final static int WP_FRAGMENT = 2;
+    public final static int CH_FRAGMENT = 2;
+    // public final static int WP_FRAGMENT = 3;
 
     /**
      * The action that will show contacts.
@@ -91,7 +90,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     /**
      * The number of pages (wizard steps) to show.
      */
-    private static final int NUM_PAGES = 3;
+    private static final int NUM_PAGES = 4;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -110,9 +109,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        // Must use aTalk context
-        aTalkApp.setLanguage(mContext);
 
         // Checks if OSGi has been started and if not starts LauncherActivity which will restore this Activity from its Intent.
         if (postRestoreIntent()) {
@@ -145,15 +141,15 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
         runOnUiThread(() -> new Handler().postDelayed(() -> {
             // Must re-init TTS voice on every start up? disable for now as it seems no necessary
-            if (ConfigurationUtils.isTtsEnable()) {
-                State ttState = TTSActivity.getState();
-                if (ttState == State.UNKNOWN) {
-                    Intent ttsIntent = new Intent(this, TTSActivity.class);
-                    // startActivity(ttsIntent);
-                }
-            }
+            // if (ConfigurationUtils.isTtsEnable()) {
+            // State ttState = TTSActivity.getState();
+            // if (ttState == State.UNKNOWN) {
+            //    Intent ttsIntent = new Intent(this, TTSActivity.class);
+            //    startActivity(ttsIntent);
+            // }
+            // }
 
-            ChangeLog cl = new ChangeLog(mContext);
+            ChangeLog cl = new ChangeLog(this);
             if (cl.isFirstRun() && !isFinishing()) {
                 cl.getLogDialog().show();
             }
@@ -279,7 +275,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
             contactListFragment.onCloseAllChats();
         }
         else { // failed
-            String errMsg = aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_ERROR,
+            String errMsg = getString(R.string.service_gui_HISTORY_REMOVE_ERROR,
                     contactListFragment.getClickedContact().getDisplayName());
             aTalkApp.showToastMessage(errMsg);
         }
@@ -307,6 +303,9 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
             }
             else if (position == CRL_FRAGMENT) {
                 return new ChatRoomListFragment();
+            }
+            else if (position == CH_FRAGMENT) {
+                return new CallHistoryFragment();
             }
             else { // if (position == WP_FRAGMENT){
                 return new WebViewFragment();

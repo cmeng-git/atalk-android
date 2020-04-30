@@ -34,8 +34,8 @@ public class SmackServiceNode implements ConnectionListener
     private final AtomicInteger ids = new AtomicInteger(0);
 
     static {
-        ProviderManager.addIQProvider(JingleChannelIQ.NAME, JingleChannelIQ.NAMESPACE, new JingleNodesProvider());
-        ProviderManager.addIQProvider(JingleTrackerIQ.NAME, JingleTrackerIQ.NAMESPACE, new JingleTrackerProvider());
+        ProviderManager.addIQProvider(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, new JingleNodesProvider());
+        ProviderManager.addIQProvider(JingleTrackerIQ.ELEMENT, JingleTrackerIQ.NAMESPACE, new JingleTrackerProvider());
     }
 
     public SmackServiceNode(final AbstractXMPPConnection connection, final long timeout)
@@ -94,7 +94,7 @@ public class SmackServiceNode implements ConnectionListener
     {
         protected JingleChannelIqRequestHandler()
         {
-            super(JingleChannelIQ.NAME, JingleChannelIQ.NAMESPACE, IQ.Type.get, Mode.sync);
+            super(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, IQ.Type.get, Mode.sync);
         }
 
         @Override
@@ -108,7 +108,7 @@ public class SmackServiceNode implements ConnectionListener
     {
         protected JingleTrackerIqRequestHandler()
         {
-            super(JingleTrackerIQ.NAME, JingleTrackerIQ.NAMESPACE, IQ.Type.get, Mode.sync);
+            super(JingleTrackerIQ.ELEMENT, JingleTrackerIQ.NAMESPACE, IQ.Type.get, Mode.sync);
         }
 
         @Override

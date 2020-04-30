@@ -413,9 +413,10 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
                     for (Jid jidx : capJids) {
                         if (jid.isParentOf(jidx)) {
-                            if (opSetContact.getAddress().contains("hawk")) {
-                                Timber.d("opSetContact check for %s: %s => %s", operationSet.getName(), displayName, opSetContact);
-                            }
+                            // For testing only
+                            // if (opSetContact.getAddress().contains("hawk")) {
+                            //     Timber.d("opSetContact check for %s: %s => %s", operationSet.getName(), displayName, opSetContact);
+                            // }
                             return opSetContact;
                         }
                     }

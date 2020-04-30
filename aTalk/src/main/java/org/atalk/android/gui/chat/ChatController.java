@@ -509,7 +509,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 break;
 
             case R.id.audioMicButton:
-                if (chatFragment.isChatTtsEnable()) {
+                if (chatPanel.isChatTtsEnable()) {
                     speechToText();
                 }
                 break;

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/cr_delete"
+        android:icon="@drawable/ic_delete_dark"
+        android:title="@string/service_gui_DELETE"
+        android:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/cr_select_all"
+        android:icon="@drawable/ic_select_all_dark"
+        android:title="@string/service_gui_SELECT_ALL"
+        android:showAsAction="always">
+    </item>
+
+</menu>

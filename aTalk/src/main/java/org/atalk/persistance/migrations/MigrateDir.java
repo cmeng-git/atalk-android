@@ -30,16 +30,12 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.persistance.FileBackend;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import androidx.core.content.ContextCompat;
 import timber.log.Timber;
@@ -67,7 +63,7 @@ public class MigrateDir
         if (!srcPath.exists())
             return;
 
-        if (ContextCompat.checkSelfPermission(aTalkApp.getInstance(),
+        if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Context ctx = aTalkApp.getGlobalContext();
             DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.storage_permission_denied_dialog_title),

@@ -5,8 +5,6 @@
  */
 package org.atalk.android.gui;
 
-import android.content.Context;
-
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.contactsource.DemuxContactSourceService;

@@ -10,6 +10,8 @@ import org.xmpp.extensions.DefaultExtensionElementProvider;
 
 import org.jivesoftware.smack.provider.ProviderManager;
 
+import javax.xml.namespace.QName;
+
 /**
  * Packet extension used by Jitsi Meet to advertise local media SSRCs in MUC presence.
  *
@@ -27,6 +29,8 @@ public class MediaPresenceExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "media";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates an <tt>MediaPresenceExtensionElement</tt> instance.

@@ -411,7 +411,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
         }
         // Hide message from user to avoid confusion
         // if (identityKey == null) {
-            // aTalkApp.showToastMessage(R.string.omemo_identity_key_missing, contactDevice);
+        // aTalkApp.showToastMessage(R.string.omemo_identity_key_missing, contactDevice);
         // }
         return identityKey;
     }
@@ -461,12 +461,12 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
             trustCache.remove(fingerprint);
         }
         // else {
-            // Code for testing only
-            // if (contactDevice.getJid().toString().contains("atalkuser1")) {
-            //     contactDevice = new OmemoDevice(contactDevice.getJid(),1367773246);
-            //     removeOmemoIdentityKey(null, contactDevice);
-            // }
-            // Timber.d("Skip Update duplicated identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
+        // Code for testing only
+        // if (contactDevice.getJid().toString().contains("atalkuser1")) {
+        //     contactDevice = new OmemoDevice(contactDevice.getJid(),1367773246);
+        //     removeOmemoIdentityKey(null, contactDevice);
+        // }
+        // Timber.d("Skip Update duplicated identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
         //}
     }
 
@@ -861,11 +861,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore implements OmemoManager.I
                 // Update the default OmemoDevice in database omemo_devices table
                 setDefaultDeviceId(userJid, defaultDeviceId);
 
-               /*
-                * (201908024) must perform the omemo initialization with the current active omemoManager.
-                * Do not create new, otherwise subsequent omemo message will still use the old omemoDevice
-                * and result to many omemo error messages
-                */
+                /*
+                 * (201908024) must perform the omemo initialization with the current active omemoManager.
+                 * Do not create new, otherwise subsequent omemo message will still use the old omemoDevice
+                 * and result to many omemo error messages
+                 */
                 mOmemoManager = OmemoManager.getInstanceFor(connection);
                 // Init and publish to server
                 mOmemoManager.initializeAsync(this);

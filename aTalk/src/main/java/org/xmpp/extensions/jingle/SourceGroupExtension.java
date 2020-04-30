@@ -11,6 +11,8 @@ import org.xmpp.extensions.colibri.SourceExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 /**
  * Represents <tt>ssrc-group</tt> elements described in XEP-0339.
  *
@@ -31,6 +33,8 @@ public class SourceGroupExtension extends AbstractExtensionElement
      * The namespace for the "ssrc-group" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:ssma:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the payload <tt>id</tt> SDP argument.

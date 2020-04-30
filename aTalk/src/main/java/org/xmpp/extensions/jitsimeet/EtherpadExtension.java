@@ -17,6 +17,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.*;
 
+import javax.xml.namespace.QName;
+
 /**
  * A packet extension used to advertise the name for shared Etherpad document
  * in Jitsi Meet conference.
@@ -35,6 +37,8 @@ public class EtherpadExtension extends AbstractExtensionElement
      * XML element name of this packets extension.
      */
     public static final String ELEMENT = "etherpad";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates new instance of <tt>EtherpadExtensionElement</tt>.

@@ -17,7 +17,6 @@
 
 package org.atalk.android.gui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
@@ -26,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import org.atalk.android.R;
+import org.atalk.service.osgi.OSGiActivity;
 
 import timber.log.Timber;
 
@@ -34,7 +34,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class Splash extends Activity
+public class Splash extends OSGiActivity
 {
     private static boolean mFirstRun = true;
     private ProgressBar mActionBarProgress;

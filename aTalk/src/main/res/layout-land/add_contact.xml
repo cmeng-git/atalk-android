@@ -1,110 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding_land">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/selectAccountTxt"
             style="@style/MediumFont"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/label_padding"
+            android:layout_gravity="center_vertical"
             android:text="@string/service_gui_SELECT_ACCOUNT" />
 
         <Spinner
             android:id="@+id/selectAccountSpinner"
             style="@style/SpinnerView"
-            android:layout_marginBottom="@dimen/between_padding" />
+            android:layout_width="0dp"
+            android:layout_weight="5" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/contactNameTxt"
             style="@style/MediumFont"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/label_padding"
+            android:layout_gravity="center_vertical"
             android:text="@string/service_gui_CONTACT_NAME" />
 
-        <RelativeLayout
-            android:id="@+id/pwdTypingArea"
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/editContactName"
+            style="@style/EntryTextView"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:inputType="textNoSuggestions" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_SELECT_GROUP" />
 
-            <EditText
-                android:id="@+id/editContactName"
-                style="@style/EntryTextView"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/item_height"
-                android:layout_marginBottom="@dimen/between_padding"
-                android:inputType="textNoSuggestions"
-                android:padding="8dp" />
+        <Spinner
+            android:id="@+id/selectGroupSpinner"
+            style="@style/SpinnerView"
+            android:layout_width="0dp"
+            android:layout_weight="5" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/selectGroupTxt"
-                style="@style/MediumFont"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/editContactName"
-                android:layout_below="@id/editContactName"
-                android:layout_marginBottom="@dimen/label_padding"
-                android:text="@string/service_gui_SELECT_GROUP" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
 
-            <Spinner
-                android:id="@+id/selectGroupSpinner"
-                style="@style/SpinnerView"
-                android:layout_width="280dp"
-                android:layout_alignStart="@id/editContactName"
-                android:layout_below="@id/selectGroupTxt" />
-
-            <TextView
-                android:id="@+id/displayNameText"
-                style="@style/MediumFont"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/editDisplayName"
-                android:layout_below="@id/editContactName"
-                android:layout_marginBottom="@dimen/label_padding"
-                android:text="@string/service_gui_CONTACT_DISPLAY_NAME" />
-
-            <EditText
-                android:id="@+id/editDisplayName"
-                style="@style/EntryTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/item_height"
-                android:layout_alignEnd="@id/editContactName"
-                android:layout_below="@id/displayNameText"
-                android:layout_marginStart="@dimen/between_padding"
-                android:layout_toEndOf="@id/selectGroupSpinner"
-                android:inputType="textNoSuggestions"
-                android:padding="8dp" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/between_padding"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_CONTACT_DISPLAY_NAME" />
 
-            <Button
-                android:id="@+id/button_cancel"
-                style="@style/ButtonTop"
-                android:onClick="onCancelClicked"
-                android:text="@string/service_gui_CANCEL" />
+        <EditText
+            android:id="@+id/editDisplayName"
+            style="@style/EntryTextView"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:inputType="textNoSuggestions" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button_add"
-                style="@style/ButtonTop"
-                android:layout_marginStart="10dp"
-                android:onClick="onAddClicked"
-                android:text="@string/service_gui_ADD" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/button_cancel"
+            style="@style/ButtonTop"
+            android:onClick="onCancelClicked"
+            android:text="@string/service_gui_CANCEL" />
+
+        <Button
+            android:id="@+id/button_add"
+            style="@style/ButtonTop"
+            android:layout_marginStart="2dp"
+            android:onClick="onAddClicked"
+            android:text="@string/service_gui_ADD" />
     </LinearLayout>
 </LinearLayout>

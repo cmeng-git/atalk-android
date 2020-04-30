@@ -397,4 +397,11 @@
         <item>TLSv1</item>
     </string-array>
 
+    <string-array name="TURN_protocol">
+        <item>UDP</item>
+        <item>TCP</item>
+        <item>DTLS</item>
+        <item>TLS</item>
+    </string-array>
+
 </resources>

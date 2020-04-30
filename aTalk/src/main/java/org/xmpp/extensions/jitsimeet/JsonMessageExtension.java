@@ -19,6 +19,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * An extension of the message stanza for sending json messages.
  * The extension looks like follows:
@@ -38,6 +40,8 @@ public class JsonMessageExtension extends AbstractExtensionElement
      * The element name of this json-message packet.
      */
     public static final String ELEMENT = "json-message";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates a {@link JsonMessageExtension} instance.

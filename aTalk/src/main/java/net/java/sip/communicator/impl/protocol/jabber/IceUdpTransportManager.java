@@ -42,6 +42,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class IceUdpTransportManager extends TransportManagerJabberImpl implements PropertyChangeListener
 {
@@ -203,7 +204,27 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         }
         // now create stun server descriptors for whatever other STUN/TURN servers the user may have set.
         for (StunServerDescriptor desc : accID.getStunServers()) {
-            TransportAddress addr = new TransportAddress(desc.getAddress(), desc.getPort(), Transport.UDP);
+            final String protocol = desc.getProtocol();
+            Transport transport;
+            switch (protocol) {
+                case StunServerDescriptor.PROTOCOL_UDP:
+                    transport = Transport.UDP;
+                    break;
+                case StunServerDescriptor.PROTOCOL_TCP:
+                    transport = Transport.TCP;
+                    break;
+                case StunServerDescriptor.PROTOCOL_DTLS:
+                    transport = Transport.DTLS;
+                    break;
+                case StunServerDescriptor.PROTOCOL_TLS:
+                    transport = Transport.TLS;
+                    break;
+                default:
+                    Timber.w("Unknown protocol %s", protocol);
+                    transport = Transport.UDP;
+                    break;
+            }
+            TransportAddress addr = new TransportAddress(desc.getAddress(), desc.getPort(), transport);
 
             // if we get STUN server from automatic discovery, it may just be server name (i.e.
             // stun.domain.org) and it may be possible that it cannot be resolved

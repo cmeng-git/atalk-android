@@ -17,6 +17,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.*;
 
+import javax.xml.namespace.QName;
+
 /**
  * A packet extension which contains the information about the current
  * bridge session.
@@ -41,6 +43,8 @@ public class BridgeSessionExtension extends AbstractExtensionElement
      * The namespace for the {@code bridge-session} element.
      */
     public static final String NAMESPACE = ConferenceIq.NAMESPACE;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the "region" attribute.

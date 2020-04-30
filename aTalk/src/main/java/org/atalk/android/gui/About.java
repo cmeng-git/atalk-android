@@ -17,15 +17,12 @@
 
 package org.atalk.android.gui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -33,6 +30,7 @@ import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.*;
+import org.atalk.service.osgi.OSGiActivity;
 
 import de.cketti.library.changelog.ChangeLog;
 
@@ -41,7 +39,7 @@ import de.cketti.library.changelog.ChangeLog;
  *
  * @author Eng Chong Meng
  */
-public class About extends Activity implements OnClickListener
+public class About extends OSGiActivity implements View.OnClickListener
 {
     private static String[][] USED_LIBRARIES = new String[][]{
             new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
@@ -152,17 +150,17 @@ public class About extends Activity implements OnClickListener
 
     public void onCreate(Bundle savedInstanceState)
     {
-        setTheme(aTalkApp.getAppThemeResourceId());
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_LEFT_ICON);
         setContentView(R.layout.about);
+        // crash if enabled under FragmentActivity
+        // requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        // setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
+        setTitle(getString(R.string.AboutDialog_title));
 
         View atakUrl = findViewById(R.id.atalk_link);
         atakUrl.setOnClickListener(this);
 
         TextView atalkHelp = findViewById(R.id.atalk_help);
-//        atalkHelp.setText(Html.fromHtml(getString(R.string.AboutDialog_help)));
-//        atalkHelp.setMovementMethod(LinkMovementMethod.getInstance());
         atalkHelp.setTextColor(getResources().getColor(R.color.blue50));
         atalkHelp.setOnClickListener(this);
 
@@ -182,8 +180,6 @@ public class About extends Activity implements OnClickListener
         WebView wv = findViewById(R.id.AboutDialog_Info);
         wv.loadDataWithBaseURL("file:///android_res/drawable/", aboutInfo, "text/html", "utf-8", null);
 
-        setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
-        setTitle(getString(R.string.AboutDialog_title));
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
 

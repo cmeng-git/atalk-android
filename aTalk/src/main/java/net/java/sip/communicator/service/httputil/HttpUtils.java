@@ -17,7 +17,6 @@ package net.java.sip.communicator.service.httputil;
 
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 
-import org.apache.http.Header;
 import org.apache.http.ProtocolException;
 import org.apache.http.*;
 import org.apache.http.auth.*;
@@ -29,7 +28,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.*;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
@@ -744,7 +743,7 @@ public class HttpUtils
                                 .setProperty(usernamePropertyName, authWindow.getUserName());
                         HttpUtilActivator.getCredentialsService()
                                 .storePassword(passwordPropertyName, new String(authWindow.getPassword())
-                        );
+                                );
                     }
 
                     return cred;

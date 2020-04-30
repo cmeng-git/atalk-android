@@ -56,7 +56,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Dmitri Melnikov
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public class MediaServiceImpl extends PropertyChangeNotifier implements MediaService
 {

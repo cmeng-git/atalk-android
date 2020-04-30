@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * Description packet extension.
  *
@@ -30,6 +32,8 @@ public class DescriptionExtension extends AbstractExtensionElement
      * The namespace that description belongs to.
      */
     public static final String NAMESPACE = null;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Subject element name.

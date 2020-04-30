@@ -13,6 +13,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 /**
  * An {@link AbstractExtensionElement} implementation for transport elements.
  *
@@ -31,6 +33,8 @@ public class IceUdpTransportExtension extends AbstractExtensionElement
      * The name of the "transport" element.
      */
     public static final String ELEMENT = "transport";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the <tt>pwd</tt> ICE attribute.

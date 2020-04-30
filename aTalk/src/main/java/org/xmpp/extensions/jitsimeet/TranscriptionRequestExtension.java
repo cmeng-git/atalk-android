@@ -19,6 +19,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * This extension provides the capability to a participant to indicate that they
  * want a transcriber in the conference.
@@ -35,6 +37,8 @@ public class TranscriptionRequestExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "jitsi_participant_requestingTranscription";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Default constructor for this extension.

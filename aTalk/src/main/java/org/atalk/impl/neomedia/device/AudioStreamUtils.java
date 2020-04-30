@@ -10,7 +10,6 @@ import android.net.Uri;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidresources.AndroidResourceServiceImpl;
-import org.atalk.impl.neomedia.device.WaveHeader;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;

@@ -42,7 +42,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     @Override
     public String getDisplayName(Object chatRoomWrapper)
     {
-		return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
+        return ((ChatRoomWrapper) chatRoomWrapper).getChatRoomID();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     {
         String displayDetail = getDisplayDetail(chatRoomWrapper);
         if (StringUtils.isNullOrEmpty(displayDetail))
-            displayDetail =  getChatRoomID(chatRoomWrapper).split("@")[0];
+            displayDetail = getChatRoomID(chatRoomWrapper).split("@")[0];
         return displayDetail;
     }
 
@@ -60,7 +60,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
         ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) crWrapper;
         ChatPanel chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID());
 
-        if (chatPanel != null){
+        if (chatPanel != null) {
             if (chatRoomWrapper.getChatRoom().isJoined())
                 return true;
             else {

@@ -12,7 +12,7 @@ import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.MediaUseCase;
 
-import java.util.List;
+import java.util.*;
 
 import javax.media.*;
 
@@ -115,6 +115,7 @@ public class AndroidCamera extends CaptureDeviceInfo
     {
         DeviceConfiguration devConfig = NeomediaActivator.getMediaServiceImpl().getDeviceConfiguration();
         List<CaptureDeviceInfo> videoDevices = devConfig.getAvailableVideoCaptureDevices(MediaUseCase.CALL);
+        Collections.sort(videoDevices, new SortByName());
 
         AndroidCamera[] cameras = new AndroidCamera[videoDevices.size()];
         for (int i = 0; i < videoDevices.size(); i++) {
@@ -123,6 +124,15 @@ public class AndroidCamera extends CaptureDeviceInfo
             cameras[i] = (AndroidCamera) device;
         }
         return cameras;
+    }
+
+    // Used for sorting in ascending order CaptureDeviceInfo by name
+    static class SortByName implements Comparator<CaptureDeviceInfo>
+    {
+        public int compare(CaptureDeviceInfo a, CaptureDeviceInfo b)
+        {
+            return a.getName().compareTo(b.getName());
+        }
     }
 
     /**

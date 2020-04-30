@@ -22,6 +22,8 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmpp.extensions.AbstractExtensionElement;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 
+import javax.xml.namespace.QName;
+
 /**
  * Status extension included in MUC presence by Jibri to indicate it's status.
  * One of:
@@ -40,6 +42,8 @@ public class JibriBusyStatusExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "busy-status";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private static final String STATUS_ATTRIBUTE = "status";
 

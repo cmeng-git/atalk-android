@@ -30,7 +30,8 @@ import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -128,10 +129,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             messageViewHolder.acceptButton.setOnClickListener(v -> {
                 // set the download for global display parameter
                 // mChatFragment.getChatListAdapter().setFileName(msgId, fileName);
-                initHttpFileDownload();
+                initHttpFileDownload(false);
             });
 
-            messageViewHolder.retryButton.setOnClickListener(v -> initHttpFileDownload());
+            messageViewHolder.retryButton.setOnClickListener(v -> initHttpFileDownload(false));
 
             messageViewHolder.rejectButton.setOnClickListener(
                     v -> updateView(FileTransferStatusChangeEvent.REFUSED, null));
@@ -146,9 +147,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             if (FileRecord.STATUS_FAILED == xferStatus) {
                 updateView(FileTransferStatusChangeEvent.FAILED, dnLink);
             }
-            else if ((fileSize == -1)
-                    || ((fileSize > 0) && (fileSize < ConfigurationUtils.getAutoAcceptFileSize()))) {
-                initHttpFileDownload();
+            else if ((fileSize == -1) || ConfigurationUtils.isAutoAcceptFile(fileSize)) {
+                initHttpFileDownload(true);
             }
         }
         else {
@@ -305,8 +305,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     /**
      * Method fired when the chat message is clicked. {@inheritDoc}
      * Trigger from @see ChatFragment#
+     *
+     * @param checkFileSize check acceptable file Size limit before download if true
      */
-    private void initHttpFileDownload()
+    private void initHttpFileDownload(boolean checkFileSize)
     {
         String url;
         if (previousDownloads.contains(dnLink))
@@ -333,7 +335,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         if (fileSize == -1) {
             fileSize = queryFileSize(uri);
             messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));
-            if ((fileSize == -1) || (fileSize > ConfigurationUtils.getAutoAcceptFileSize())) {
+            if (checkFileSize && !ConfigurationUtils.isAutoAcceptFile(fileSize)) {
                 return;
             }
         }
@@ -382,9 +384,9 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(id);
 
-        // allow loop for 3 seconds for slow server
+        // allow loop for 3 seconds for slow server. Server can return size == 0 ?
         int wait = 3;
-        while ((wait-- > 0) && (size == -1)) {
+        while ((wait-- > 0) && (size <= 0)) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -490,7 +492,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 else if (lastJobStatus == DownloadManager.STATUS_FAILED) {
                     updateView(FileTransferStatusChangeEvent.FAILED, dnLink);
                 }
-            } else if (DownloadManager.STATUS_FAILED == lastJobStatus) {
+            }
+            else if (DownloadManager.STATUS_FAILED == lastJobStatus) {
                 updateView(FileTransferStatusChangeEvent.FAILED, dnLink);
             }
         }

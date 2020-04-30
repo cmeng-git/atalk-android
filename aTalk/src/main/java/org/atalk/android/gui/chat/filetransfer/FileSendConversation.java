@@ -222,7 +222,8 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      *
      * @return true if sending sticker
      */
-    public boolean isStickerMode() {
+    public boolean isStickerMode()
+    {
         return mStickerMode;
     }
 }

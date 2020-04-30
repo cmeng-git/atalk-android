@@ -2825,8 +2825,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 return;
             }
 
+            // For 4.4.3-master (20200416): presence.getExtension(Nick.class); => IllegalArgumentException
             Nick nickExt = (Nick) presence.getExtensionElement(Nick.ELEMENT_NAME, Nick.NAMESPACE);
-            // Nick nickExt = presence.getExtension(Nick.class);
             if (nickExt != null) {
                 member.setDisplayName(nickExt.getName());
             }

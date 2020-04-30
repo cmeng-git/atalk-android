@@ -268,7 +268,6 @@ public class MUCServiceImpl extends MUCService
      * @param reason the reason for room creation
      * @param persistent is the room persistent
      * @param isPrivate whether the room will be private or public.
-     *
      * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room
      */
     public ChatRoomWrapper createChatRoom(ChatRoomWrapper chatRoomWrapper,
@@ -584,7 +583,7 @@ public class MUCServiceImpl extends MUCService
                     // cmeng - icon not implemented in Android
                     // AuthenticationWindow.getAuthenticationWindowIcon(chatRoomWrapper.getParentProvider().getProtocolProvider()),
                     AuthenticationWindow authWindow = authWindowsService.create(chatRoomWrapper.getNickName(),
-                            null, null,false, chatRoomWrapper.isPersistent(), null,
+                            null, null, false, chatRoomWrapper.isPersistent(), null,
                             aTalkApp.getResString(R.string.service_gui_AUTHENTICATION_WINDOW_TITLE,
                                     chatRoomWrapper.getParentProvider().getName()),
                             aTalkApp.getResString(R.string.service_gui_CHATROOM_REQUIRES_PASSWORD, chatRoomId), "", null,

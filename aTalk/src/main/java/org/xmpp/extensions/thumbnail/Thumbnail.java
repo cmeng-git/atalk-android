@@ -12,6 +12,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.bob.BoBHash;
 
+import javax.xml.namespace.QName;
+
 /**
  * The <tt>Thumbnail</tt> represents a "thumbnail" XML element, that is contained in the file
  * element, we're sending to notify for a file transfer. The <tt>Thumbnail</tt>'s role is to
@@ -33,6 +35,8 @@ public class Thumbnail implements ExtensionElement
      * The names XMPP space that the thumbnail elements belong to.
      */
     public static final String NAMESPACE = "urn:xmpp:thumbs:1";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the thumbnail attribute "cid".

@@ -86,11 +86,8 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
 
-        if (Build.VERSION.SDK_INT >= 17) {
-            webview.addJavascriptInterface(aTalkApp.getGlobalContext(), "Android");
-        }
-
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 19) {
+        webview.addJavascriptInterface(aTalkApp.getGlobalContext(), "Android");
+        if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 

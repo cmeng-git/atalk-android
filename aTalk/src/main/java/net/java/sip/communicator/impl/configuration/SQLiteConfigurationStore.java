@@ -53,6 +53,11 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
         openHelper = DatabaseBackend.getInstance(context);
     }
 
+    public SQLiteConfigurationStore(Context context)
+    {
+        openHelper = DatabaseBackend.getInstance(context);
+    }
+
     /**
      * Overrides {@link HashtableConfigurationStore#getProperty(String)}. If this
      * <tt>ConfigurationStore</tt> contains a value associated with the specified property name,

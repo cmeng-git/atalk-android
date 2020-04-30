@@ -56,8 +56,8 @@ public class StringContactSourceServiceImpl implements ContactSourceService
      * @param opSet the operation set supported by this string contact source
      */
     public StringContactSourceServiceImpl(
-        ProtocolProviderService protocolProvider,
-        Class<? extends OperationSet> opSet)
+            ProtocolProviderService protocolProvider,
+            Class<? extends OperationSet> opSet)
     {
         this.protocolProvider = protocolProvider;
         this.opSetClass = opSet;
@@ -101,13 +101,14 @@ public class StringContactSourceServiceImpl implements ContactSourceService
      * @param contactCount the maximum count of result contacts
      * @return the created query
      */
-    public ContactQuery createContactQuery( String queryString, int contactCount)
+    public ContactQuery createContactQuery(String queryString, int contactCount)
     {
         return new StringQuery(queryString);
     }
 
     /**
      * Changes whether to add display details for contact sources.
+     *
      * @param disableDisplayDetails
      */
     public void setDisableDisplayDetails(boolean disableDisplayDetails)
@@ -132,16 +133,15 @@ public class StringContactSourceServiceImpl implements ContactSourceService
         contactDetail.setSupportedOpSets(supportedOpSets);
 
         // Init preferred protocol providers.
-        Map<Class<? extends OperationSet>,ProtocolProviderService> providers = new HashMap<>();
+        Map<Class<? extends OperationSet>, ProtocolProviderService> providers = new HashMap<>();
 
         providers.put(opSetClass, protocolProvider);
         contactDetail.setPreferredProviders(providers);
         contactDetails.add(contactDetail);
         GenericSourceContact sourceContact
-            = new GenericSourceContact( StringContactSourceServiceImpl.this, queryString, contactDetails);
+                = new GenericSourceContact(StringContactSourceServiceImpl.this, queryString, contactDetails);
 
-        if(disableDisplayDetails)
-        {
+        if (disableDisplayDetails) {
             sourceContact.setDisplayDetails(aTalkApp.getResString(
                     R.string.service_gui_CALL_VIA, protocolProvider.getAccountID().getDisplayName()));
         }
@@ -153,7 +153,7 @@ public class StringContactSourceServiceImpl implements ContactSourceService
      * The query implementation.
      */
     private class StringQuery
-        extends AbstractContactQuery<ContactSourceService>
+            extends AbstractContactQuery<ContactSourceService>
     {
         /**
          * The query string.
@@ -203,7 +203,7 @@ public class StringContactSourceServiceImpl implements ContactSourceService
         {
             SourceContact contact = createSourceContact(queryString);
             results.add(contact);
-            
+
             fireContactReceived(contact);
             if (getStatus() != QUERY_CANCELED)
                 setStatus(QUERY_COMPLETED);

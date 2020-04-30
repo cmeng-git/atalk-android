@@ -17,6 +17,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.*;
 
+import javax.xml.namespace.QName;
+
 /**
  * A packet extension which contains an id of a region.
  *
@@ -33,6 +35,8 @@ public class RegionExtension extends AbstractExtensionElement
      * XML namespace of this packet extension.
      */
     public static final String NAMESPACE = "http://jitsi.org/jitsi-meet";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates new instance of <tt>EtherpadExtensionElement</tt>.

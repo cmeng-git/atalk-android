@@ -207,7 +207,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             cipherList.setValues(selected);
         }
 
-        private void initResetZID() {
+        private void initResetZID()
+        {
             findPreference(PREF_KEY_SEC_RESET_ZID).setOnPreferenceClickListener(
                     preference -> {
                         securityReg.randomZIDSalt();
@@ -350,12 +351,12 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
             boolean firstElem = true;
             for (String entry : cryptoSuiteEntries) {
-                if (selected.contains(entry))
-                {
+                if (selected.contains(entry)) {
                     if (firstElem) {
                         sb.append(entry);
                         firstElem = false;
-                    } else {
+                    }
+                    else {
                         sb.append(", ");
                         sb.append(entry);
                     }

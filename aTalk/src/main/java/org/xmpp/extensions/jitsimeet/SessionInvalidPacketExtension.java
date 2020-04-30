@@ -17,6 +17,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.*;
 
+import javax.xml.namespace.QName;
+
 /**
  * Packet extension used to indicate application specific error
  * 'session-invalid' which means that the session ID passed in {@link
@@ -35,6 +37,8 @@ public class SessionInvalidPacketExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "session-invalid";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates new instance of <tt>SessionInvalidPacketExtension</tt>

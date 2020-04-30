@@ -16,7 +16,6 @@ import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.log.LogUploadService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 

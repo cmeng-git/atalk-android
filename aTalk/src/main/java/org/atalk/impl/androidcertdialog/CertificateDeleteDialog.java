@@ -123,7 +123,7 @@ public class CertificateDeleteDialog extends OSGiActivity implements DialogInter
     private void showCertificateDeleteAlert(final String trustFor)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE))
+        builder.setTitle(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE)
                 .setMessage(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DELETE, trustFor))
                 .setPositiveButton(R.string.service_gui_PROCEED, (dialog, which) -> {
                     cvs.removeCertificateEntry(certificateMap.get(trustFor));

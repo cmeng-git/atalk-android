@@ -393,7 +393,8 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     @Override
     public String toString()
     {
-        return aTalkApp.getResString(R.string.impl_popup_status_bar);
+        // return aTalkApp.getResString(R.string.impl_popup_status_bar);
+        return getClass().getName();
     }
 
     /**

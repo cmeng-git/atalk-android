@@ -507,7 +507,7 @@ public class ChatMessageImpl implements ChatMessage
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
 
         return isCorrectionMessage
-                || (!(isNonMerge(nextMsg) || isFTMsg  || isHttpFTMsg || isMarkUpText || isLatLng || isSystemMsg)
+                || (!(isNonMerge(nextMsg) || isFTMsg || isHttpFTMsg || isMarkUpText || isLatLng || isSystemMsg)
                 && (isEncTypeSame && isJidSame && inElapseTime));
     }
 

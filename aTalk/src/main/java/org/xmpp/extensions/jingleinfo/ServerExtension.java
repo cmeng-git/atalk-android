@@ -7,6 +7,8 @@ package org.xmpp.extensions.jingleinfo;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Server packet extension.
  *
@@ -24,6 +26,8 @@ public class ServerExtension extends AbstractExtensionElement
      * The element name.
      */
     public static final String ELEMENT = "server";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Host attribute name.

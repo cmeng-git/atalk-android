@@ -51,7 +51,6 @@ public class GeoLocation extends EasyLocationActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        setTheme(aTalkApp.getAppThemeResourceId());
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             sendContinuous = savedInstanceState.getBoolean(SEND_CONT);

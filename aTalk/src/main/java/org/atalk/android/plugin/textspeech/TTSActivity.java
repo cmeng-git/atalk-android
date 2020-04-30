@@ -16,6 +16,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.persistance.FileBackend;
+import org.atalk.service.osgi.OSGiActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,10 +24,9 @@ import java.util.Locale;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
-public class TTSActivity extends FragmentActivity implements TextToSpeech.OnInitListener, View.OnClickListener,
+public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitListener, View.OnClickListener,
         CompoundButton.OnCheckedChangeListener
 {
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
@@ -45,6 +45,7 @@ public class TTSActivity extends FragmentActivity implements TextToSpeech.OnInit
     private EditText mTtsDelay;
     Button btnPlay;
     Button btnSave;
+    CheckBox cbTts;
 
     private TextToSpeech mTTS;
     private static State mState = State.UNKNOWN;
@@ -62,14 +63,13 @@ public class TTSActivity extends FragmentActivity implements TextToSpeech.OnInit
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.tts_main);
         mTtsText = findViewById(R.id.tts_text);
         mTtsText.addTextChangedListener(mTextWatcher);
 
-        CheckBox cbTtsEnable = findViewById(R.id.tts_enable);
-        cbTtsEnable.setChecked(ConfigurationUtils.isTtsEnable());
-        cbTtsEnable.setOnCheckedChangeListener(this);
+        cbTts = findViewById(R.id.tts_enable);
+        cbTts.setChecked(ConfigurationUtils.isTtsEnable());
+        cbTts.setOnCheckedChangeListener(this);
 
         mTtsLocale = findViewById(R.id.tts_locale);
         mTtsDelay = findViewById(R.id.tts_delay);
@@ -109,16 +109,23 @@ public class TTSActivity extends FragmentActivity implements TextToSpeech.OnInit
         super.onStop();
         String tmp = ViewUtil.toString(mTtsDelay);
         if ((tmp != null) && !ttsDelay.equals(tmp)) {
-            ConfigurationUtils.setTtsDelay(Integer.valueOf(tmp));
+            ConfigurationUtils.setTtsDelay(Integer.parseInt(tmp));
         }
     }
 
     private Locale getTtsLanguage()
     {
         if (mTTS != null) {
-            Voice voice = mTTS.getVoice();
-            if (voice != null) {
-                return voice.getLocale();
+            try {
+                Voice voice = mTTS.getVoice();
+                if (voice != null) {
+                    return voice.getLocale();
+                }
+            } catch (Exception e) {
+                cbTts.setEnabled(false);
+                String errMsg = "TTS get voice exception: " + e.getMessage();
+                mTtsLocale.setText(errMsg);
+                Timber.e(errMsg);
             }
         }
         return null;
@@ -149,6 +156,9 @@ public class TTSActivity extends FragmentActivity implements TextToSpeech.OnInit
                     // mTtsText.setText("Text to Speech is ready");
                     // btnPlay.performClick();
                 }
+            }
+            else {
+                setState(State.ERROR);
             }
         }
         else {
@@ -255,7 +265,6 @@ public class TTSActivity extends FragmentActivity implements TextToSpeech.OnInit
     {
         if (mTTS != null)
             mTTS = null;
-
         mTTS = new TextToSpeech(this, this);
     }
 
@@ -314,7 +323,7 @@ public class TTSActivity extends FragmentActivity implements TextToSpeech.OnInit
 
     private void initButton()
     {
-        boolean enable = (mTtsText.getText().length() > 0);
+        boolean enable = (State.SUCCESS == mState) && (mTtsText.getText().length() > 0);
         btnPlay.setEnabled(enable);
         btnSave.setEnabled(enable);
 

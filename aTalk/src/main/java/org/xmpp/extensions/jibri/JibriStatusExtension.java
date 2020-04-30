@@ -11,6 +11,8 @@ import org.xmpp.extensions.health.HealthStatusExtension;
 
 import org.jivesoftware.smack.provider.ProviderManager;
 
+import javax.xml.namespace.QName;
+
 /**
  * Status extension included in MUC presence by Jibri to indicate it's status. One of: <li>idle</li>
  * - the instance is idle and can be used for recording <li>busy</li> - the instance is currently
@@ -29,6 +31,8 @@ public class JibriStatusExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "jibri-status";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates new instance of <tt>VideoMutedExtensionElement</tt>.

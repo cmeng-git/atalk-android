@@ -6,7 +6,6 @@
 package org.atalk.android.gui;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ProgressBar;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
+import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
 
 /**
@@ -22,7 +22,7 @@ import org.atalk.service.osgi.OSGiService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ShutdownActivity extends Activity
+public class ShutdownActivity extends OSGiActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)

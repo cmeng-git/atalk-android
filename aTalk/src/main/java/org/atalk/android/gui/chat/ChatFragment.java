@@ -37,7 +37,6 @@ import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
-import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
@@ -52,7 +51,6 @@ import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.share.ShareUtil;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.event.EventListener;
-import org.atalk.android.plugin.textspeech.TTSService;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
@@ -157,13 +155,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      */
     private boolean primarySelected = false;
 
-    /**
-     * Current chatSession TTS is allowed if true
-     */
-    private boolean isChatTtsEnable = false;
-
-    public int ttsDelay = 1200;
-
     // Message chatType definitions - persistent storage constants
     public final static int MSGTYPE_UNKNOWN = 0x0;
     public final static int MSGTYPE_NORMAL = 0x1;
@@ -212,7 +203,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      */
     private CryptoFragment mCryptoFragment;
 
-    // private static int COUNTDOWN_INTERVAL = 1000; // ms
+    // private static int COUNTDOWN_INTERVAL = 1000; // ms for stealth
 
     /**
      * Flag indicates that we have loaded the history for the first time.
@@ -386,31 +377,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             chatPanel.addChatStateListener(chatListAdapter);
             ChatSessionManager.addCurrentChatListener(this);
 
-            updateChatTtsOption();
             mSVP_Started = false;
             mSVP = null;
         }
-    }
-
-    public void updateChatTtsOption()
-    {
-        isChatTtsEnable = ConfigurationUtils.isTtsEnable();
-        if (isChatTtsEnable) {
-            Object descriptor = chatPanel.getChatSession().getDescriptor();
-            if (descriptor instanceof MetaContact) {
-                isChatTtsEnable = isChatTtsEnable && ((MetaContact) descriptor).getDefaultContact().isTtsEnable();
-            }
-            else {
-                isChatTtsEnable = isChatTtsEnable && ((ChatRoomWrapper) descriptor).isTtsEnable();
-            }
-        }
-        // refresh the tts delay time
-        ttsDelay = ConfigurationUtils.getTtsDelay();
-    }
-
-    public boolean isChatTtsEnable()
-    {
-        return isChatTtsEnable;
     }
 
     /**
@@ -1303,12 +1272,14 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             public void onClick(View v)
             {
                 if (mChatController != null && v.getTag() instanceof Integer) {
-                    Integer position = (Integer) v.getTag();
-                    if (!isMultiChoiceMode && !checkHttpDownloadLink(position)) {
-                        if (isChatTtsEnable)
-                            ttsSpeak(null, position);
+                    Integer pos = (Integer) v.getTag();
+                    if (!isMultiChoiceMode && !checkHttpDownloadLink(pos)) {
+                        if (chatPanel.isChatTtsEnable()) {
+                            ChatMessage chatMessage = getMessage(pos - chatListView.getHeaderViewsCount());
+                            chatPanel.ttsSpeak(chatMessage);
+                        }
                         else
-                            mChatController.onItemClick(chatListView, v, position, -1 /* id not used */);
+                            mChatController.onItemClick(chatListView, v, pos, -1 /* id not used */);
                     }
                 }
             }
@@ -1317,7 +1288,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         /**
          * Method to check for Http download file link
          */
-        // @Override
         private boolean checkHttpDownloadLink(int position)
         {
             // Position must be aligned to the number of header views included
@@ -1327,44 +1297,14 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
             if (chatMessage != null) {
                 String body = chatMessage.getMessage();
-                if (body.matches("(?s)^aesgcm:.*") && isMsgIn) {
-                    // Update the msgType in DB record
-                    // String msgUuid = chatMessage.getMessageUID();
-                    // MessageHistoryServiceImpl mMHS = (MessageHistoryServiceImpl) AndroidGUIActivator.getMessageHistoryService();
-                    // mMHS.convertToMessageType(msgUuid, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
-
-                    Uri uri = Uri.parse(body);
-                    if (uri.getLastPathSegment() != null) {
-                        // Local cache update
-                        ((ChatMessageImpl) chatMessage).setMessageType(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
-                        this.notifyDataSetChanged();
-                        return true;
-                    }
+                if (isMsgIn && FileBackend.isHttpFileDnLink(body)) {
+                    // Local cache update
+                    ((ChatMessageImpl) chatMessage).setMessageType(ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+                    this.notifyDataSetChanged();
+                    return true;
                 }
             }
             return false;
-        }
-
-        /**
-         * call TTS to speak the text given in chatMessage or retrieve if (pos != -1)
-         *
-         * @param chatMessage ChatMessage
-         * @param pos view holder position in listAdapter
-         */
-        private void ttsSpeak(ChatMessage chatMessage, int pos)
-        {
-            if (pos != -1) {
-                int cPos = pos - chatListView.getHeaderViewsCount();
-                chatMessage = getMessage(cPos);
-            }
-
-            String textBody = chatMessage.getMessage();
-            if (!TextUtils.isEmpty(textBody)) {
-                Intent spkIntent = new Intent(mActivity, TTSService.class);
-                spkIntent.putExtra(TTSService.EXTRA_MESSAGE, textBody);
-                spkIntent.putExtra(TTSService.EXTRA_QMODE, false);
-                mActivity.startService(spkIntent);
-            }
         }
 
         /**
@@ -1456,7 +1396,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         HttpFileDownloadJabberImpl httpFileTransfer = chatMessage.getHttpFileTransfer();
                         if (httpFileTransfer == null) {
                             String dnLink = chatMessage.getMessage();
-                            if ((dnLink != null) && dnLink.matches("(?s)^aesgcm:.*|^http[s]:.*")) {
+                            if (FileBackend.isHttpFileDnLink(dnLink)) {
                                 Contact contact = getContact(sendFrom);
                                 int xferStatus = chatMessage.getXferStatus();
                                 httpFileTransfer = new HttpFileDownloadJabberImpl(contact, msgUuid, dnLink, xferStatus);
@@ -1682,18 +1622,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             if (mChatMetaContact.containsContact(protocolContact)) {
                 final ChatMessageImpl msg = ChatMessageImpl.getMsgForEvent(evt);
                 addMessageImpl(msg);
-
-                if (ChatMessage.MESSAGE_IN == msg.getMessageType()) {
-                    if (isChatTtsEnable) {
-                        // allow ttsDelay seconds for incoming alert playback before start TTS
-                        try {
-                            Thread.sleep(ttsDelay);
-                        } catch (InterruptedException e) {
-                            Timber.w("TTS speak wait exception: %s", e.getMessage());
-                        }
-                        ttsSpeak(msg, -1);
-                    }
-                }
             }
             else {
                 Timber.log(TimberLog.FINER, "MetaContact not found for protocol contact: %s", protocolContact);
@@ -1705,19 +1633,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public void messageAdded(ChatMessage msg)
         {
             addMessageImpl(msg);
-
-            // ChatRoomMessageReceivedEvent from conference room
-            if (ChatMessage.MESSAGE_MUC_IN == msg.getMessageType()) {
-                if (isChatTtsEnable) {
-                    // allow 2 x ttsDelay seconds for incoming alert playback before start TTS for group chat
-                    try {
-                        Thread.sleep(2 * ttsDelay);
-                    } catch (InterruptedException e) {
-                        Timber.w("TTS speak wait exception: %s", e.getMessage());
-                    }
-                    ttsSpeak(msg, -1);
-                }
-            }
         }
 
         /**
@@ -2209,7 +2124,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      * @param avatarView the avatar image view
      * @param avatarDrawable the avatar drawable to set
      */
-    public void setAvatar(ImageView avatarView, Drawable avatarDrawable)
+    public static void setAvatar(ImageView avatarView, Drawable avatarDrawable)
     {
         if (avatarDrawable == null) {
             // avatarDrawable = aTalkApp.getAppResources().getDrawable(R.drawable.contact_avatar);

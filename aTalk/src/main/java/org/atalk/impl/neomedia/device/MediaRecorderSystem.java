@@ -7,7 +7,6 @@ package org.atalk.impl.neomedia.device;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.hardware.Camera;
 
 import net.java.sip.communicator.util.UtilActivator;
@@ -155,8 +154,8 @@ public class MediaRecorderSystem extends DeviceSystem
             // Create display name
             Camera.getCameraInfo(cameraId, cameraInfo);
             String name = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT
-                    ? aTalkApp.getResString(R.string.service_gui_settings_FRONT_CAMERA)
-                    : aTalkApp.getResString(R.string.service_gui_settings_BACK_CAMERA);
+                    ? aTalkApp.getResString(R.string.service_gui_settings_CAMERA_FRONT)
+                    : aTalkApp.getResString(R.string.service_gui_settings_CAMERA_BACK);
             name += " (MediaRecoder#" + cameraId + ")";
 
             AndroidCamera device = new AndroidCamera(name, locator, formats);

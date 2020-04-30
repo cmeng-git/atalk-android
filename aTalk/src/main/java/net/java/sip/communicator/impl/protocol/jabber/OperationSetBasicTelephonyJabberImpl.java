@@ -7,8 +7,6 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
-import org.xmpp.extensions.condesc.CallIdExtension;
-import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
@@ -31,6 +29,8 @@ import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
+import org.xmpp.extensions.condesc.CallIdExtension;
+import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.*;
 
 import java.util.*;
@@ -771,8 +771,7 @@ public class OperationSetBasicTelephonyJabberImpl
             // Jingle action is "session-initiate".
             // When Initiator attribute is not present copy the value from IQ "from" attribute.
             // This is allowed according to XEP-0166
-            if (jingle.getInitiator() == null)
-            {
+            if (jingle.getInitiator() == null) {
                 jingle.setInitiator(jingle.getFrom().asEntityFullJidIfPossible());
             }
 

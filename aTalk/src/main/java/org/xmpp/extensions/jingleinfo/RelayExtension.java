@@ -11,6 +11,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import javax.xml.namespace.QName;
+
 /**
  * Relay packet extension.
  *
@@ -28,6 +30,8 @@ public class RelayExtension extends AbstractExtensionElement
      * The element name.
      */
     public static final String ELEMENT = "relay";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The token.

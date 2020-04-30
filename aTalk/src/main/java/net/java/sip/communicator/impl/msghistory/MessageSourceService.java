@@ -96,10 +96,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      */
     private static String RECENT_MSGS_VER = "2";
     /**
-     * The display name of this contact source.
-     */
-    private final String MESSAGE_HISTORY_NAME;
-    /**
      * List of recent messages.
      */
     private final List<ComparableEvtObj> recentMessages = new LinkedList<>();
@@ -145,7 +141,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             sourceServiceType = HISTORY_TYPE;
         }
 
-        MESSAGE_HISTORY_NAME = aTalkApp.getResString(R.string.service_gui_RECENT_MESSAGES);
         numberOfMessages = conf.getInt(NUMBER_OF_RECENT_MSGS_PROP, numberOfMessages);
         isSMSEnabled = conf.getBoolean(IS_MESSAGE_SUBTYPE_SMS_PROP, isSMSEnabled);
         RECENT_MSGS_VER = conf.getString(VER_OF_RECENT_MSGS_PROP, RECENT_MSGS_VER);
@@ -440,7 +435,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         // trim
         List<ComparableEvtObj> removedItems = null;
         if (recentMessages.size() > numberOfMessages) {
-            removedItems = new ArrayList<> (recentMessages.subList(numberOfMessages, recentMessages.size()));
+            removedItems = new ArrayList<>(recentMessages.subList(numberOfMessages, recentMessages.size()));
             recentMessages.removeAll(removedItems);
         }
         if (recentQuery != null) {
@@ -571,7 +566,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     *
      * @param evt the <tt>MessageFailedEvent</tt>
      */
     @Override
@@ -602,7 +596,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     *
      * @param evt the <tt>ChatRoomMessageDeliveryFailedEvent</tt>
      */
     @Override
@@ -623,7 +616,6 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     *
      * @param evt the <tt>AdHocChatRoomMessageDeliveryFailedEvent</tt>
      */
     @Override
@@ -818,7 +810,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     @Override
     public String getDisplayName()
     {
-        return MESSAGE_HISTORY_NAME;
+        return aTalkApp.getResString(R.string.service_gui_RECENT_MESSAGES);
     }
 
     /**
@@ -1072,7 +1064,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
             if (o instanceof ComparableEvtObj) {
                 ComparableEvtObj that = (ComparableEvtObj) o;
-                return (address.equals(that.address) &&  ppService.equals(that.ppService));
+                return (address.equals(that.address) && ppService.equals(that.ppService));
             }
             else if (o instanceof MessageSourceContact) {
                 MessageSourceContact that = (MessageSourceContact) o;

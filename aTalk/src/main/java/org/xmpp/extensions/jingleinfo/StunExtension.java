@@ -7,6 +7,8 @@ package org.xmpp.extensions.jingleinfo;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Stun packet extension.
  *
@@ -25,7 +27,9 @@ public class StunExtension extends AbstractExtensionElement
 	 */
 	public static final String ELEMENT = "stun";
 
-	/**
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
+    /**
 	 * Constructor.
 	 */
 	public StunExtension()

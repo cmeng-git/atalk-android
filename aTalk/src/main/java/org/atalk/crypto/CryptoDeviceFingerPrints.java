@@ -32,8 +32,9 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.util.ThemeHelper;
+import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
@@ -384,8 +385,8 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
             ViewUtil.setTextViewValue(rowView, fingerprint, CryptoHelper.prettifyFingerprint(remoteFingerprint));
 
             // Color for active fingerPrints
-            ViewUtil.setTextViewColor(rowView, fingerprint, (aTalkApp.Theme.DARK == aTalkApp.getAppTheme())
-                    ? R.color.textColorWhite : R.color.textColorBlack);
+            ViewUtil.setTextViewColor(rowView, fingerprint,
+                    ThemeHelper.isAppTheme(Theme.DARK) ? R.color.textColorWhite : R.color.textColorBlack);
 
             if (bareJid.startsWith(OMEMO)) {
                 if (isOwnOmemoDevice(bareJid))
@@ -404,7 +405,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
             String verifyStatus = getString(R.string.crypto_FINGERPRINT_STATUS, getString(status));
             ViewUtil.setTextViewValue(rowView, R.id.fingerprint_status, verifyStatus);
             ViewUtil.setTextViewColor(rowView, R.id.fingerprint_status, isVerified ?
-                    ((aTalkApp.Theme.DARK == aTalkApp.getAppTheme()) ? R.color.textColorWhite : R.color.textColorBlack)
+                    (ThemeHelper.isAppTheme(Theme.DARK) ? R.color.textColorWhite : R.color.textColorBlack)
                     : R.color.orange500);
             return rowView;
         }

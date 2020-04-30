@@ -558,7 +558,8 @@ public final class HttpFileUploadManager extends Manager {
                 try {
                     inputStream.close();
                 }
-                catch (IOException e) {
+                // Must include IllegalStateException: happen on Note-5
+                catch (IOException | IllegalStateException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing input stream", e);
                 }
                 try {

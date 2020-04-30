@@ -7,6 +7,8 @@ package org.xmpp.extensions.coin;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Sidebars by val packet extension.
  *
@@ -24,6 +26,8 @@ public class SidebarsByValExtension extends AbstractExtensionElement
      * The namespace that sidebars by val belongs to.
      */
     public static final String NAMESPACE = "";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Constructor.

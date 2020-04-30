@@ -19,7 +19,7 @@ public class ConfigurationActivator implements BundleActivator
     /**
      * The <tt>BundleContext</tt> in which the configuration bundle has been started and has not been stopped yet.
      */
-    private static BundleContext bundleContext;
+    public static BundleContext bundleContext;
 
     /**
      * Starts the configuration service

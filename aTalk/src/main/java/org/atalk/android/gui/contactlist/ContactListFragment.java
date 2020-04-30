@@ -5,7 +5,6 @@
  */
 package org.atalk.android.gui.contactlist;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -41,8 +40,7 @@ import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.*;
 import timber.log.Timber;
 
 /**
@@ -103,7 +101,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      */
     private static int scrollTopPosition;
 
-    private Activity mActivity = null;
+    private Context mContext = null;
 
     /**
      * Creates new instance of <tt>ContactListFragment</tt>.
@@ -119,10 +117,10 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-        mActivity = activity;
+        super.onAttach(context);
+        mContext = context;
     }
 
     /**
@@ -253,7 +251,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         });
 
         SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(mActivity.getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(((FragmentActivity) mContext).getComponentName()));
 
         int id = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
@@ -310,7 +308,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     public void showPopUpMenuGroup(View groupView, MetaContactGroup group)
     {
         // Inflate chatRoom list popup menu
-        PopupMenu popup = new PopupMenu(mActivity, groupView);
+        PopupMenu popup = new PopupMenu(mContext, groupView);
         Menu menu = popup.getMenu();
         popup.getMenuInflater().inflate(R.menu.group_menu, menu);
         popup.setOnMenuItemClickListener(new PopupMenuItemClick());
@@ -330,7 +328,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     public void showPopupMenuContact(View contactView, MetaContact metaContact)
     {
         // Inflate contact list popup menu
-        PopupMenu popup = new PopupMenu(mActivity, contactView);
+        PopupMenu popup = new PopupMenu(mContext, contactView);
         Menu menu = popup.getMenu();
         popup.getMenuInflater().inflate(R.menu.contact_ctx_menu, menu);
         popup.setOnMenuItemClickListener(new PopupMenuItemClick());
@@ -441,6 +439,8 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                             contact.setTtsEnable(true);
                             mContactTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
                         }
+                        ChatSessionManager.createChatForChatId(mClickedContact.getMetaUID(),
+                                ChatSessionManager.MC_CHAT).updateChatTtsOption();
                     }
                     return true;
 
@@ -453,7 +453,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     return true;
 
                 case R.id.remove_contact:
-                    EntityListHelper.removeEntity(mActivity, mClickedContact, chatPanel);
+                    EntityListHelper.removeEntity(mContext, mClickedContact, chatPanel);
                     return true;
 
                 case R.id.move_contact:
@@ -554,7 +554,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      */
     private void startContactInfoActivity(MetaContact metaContact)
     {
-        Intent statusIntent = new Intent(mActivity, ContactInfoActivity.class);
+        Intent statusIntent = new Intent(mContext, ContactInfoActivity.class);
         statusIntent.putExtra(ContactInfoActivity.INTENT_CONTACT_ID, metaContact.getDisplayName());
         startActivity(statusIntent);
     }

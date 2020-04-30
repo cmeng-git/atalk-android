@@ -100,7 +100,7 @@ public class AuthWindowActivity extends OSGiActivity
             aTalkApp.showToastMessage(R.string.plugin_certconfig_INCOMPLETE);
         }
         else {
-      		cancelled = false;
+            cancelled = false;
             mAuthWindow.setUsername(userName);
             mAuthWindow.setPassword(password);
             mAuthWindow.setRememberPassword(ViewUtil.isCompoundChecked(contentView, R.id.store_password));
@@ -115,7 +115,7 @@ public class AuthWindowActivity extends OSGiActivity
      */
     public void onCancelClicked(View v)
     {
-    	cancelled = true;
+        cancelled = true;
         finish();
     }
 

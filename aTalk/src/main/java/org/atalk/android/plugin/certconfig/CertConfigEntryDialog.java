@@ -85,23 +85,23 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
 
     private Context mContext;
     private CertificateService cs;
-    private CertificateConfigEntry mEntry;
 
-    // Stop cboKeyStoreType from triggering on first entry
-    private boolean newInstall = false;
+    // Use Static scope to prevent crash on screen rotation
+    private static CertificateConfigEntry mEntry;
 
     /**
      * callback to caller with status and entry value
      */
-    private OnFinishedCallback finishedCallback = null;
+    private static OnFinishedCallback finishedCallback = null;
 
-    public static CertConfigEntryDialog getInstance(Context context, CertificateConfigEntry entry,
-            OnFinishedCallback callback)
+    // Stop cboKeyStoreType from triggering on first entry
+    private boolean newInstall = false;
+
+    public static CertConfigEntryDialog getInstance(CertificateConfigEntry entry, OnFinishedCallback callback)
     {
         CertConfigEntryDialog dialog = new CertConfigEntryDialog();
-        dialog.mContext = context;
-        dialog.mEntry = entry;
-        dialog.finishedCallback = callback;
+        mEntry = entry;
+        finishedCallback = callback;
         return dialog;
     }
 
@@ -109,6 +109,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         cs = CertConfigActivator.getCertService();
+        mContext = getContext();
         View contentView = inflater.inflate(R.layout.cert_tls_entry_config, container, false);
 
         if (getDialog() != null) {
@@ -207,7 +208,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
                 mKeyStore = loadKeyStore();
                 runOnUiThread(this::loadAliases);
             } catch (KeyStoreException | UnrecoverableEntryException ex) {
-                Timber.e(ex,"Load KeyStore Exception");
+                Timber.e(ex, "Load KeyStore Exception");
                 aTalkApp.showGenericError(R.string.plugin_certconfig_INVALID_KEYSTORE_TYPE, ex.getMessage());
             }
         }).start();
@@ -240,7 +241,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
                 Provider p = (Provider) c.newInstance(new ByteArrayInputStream(config.getBytes()));
                 Security.insertProviderAt(p, 0);
             } catch (Exception e) {
-                Timber.e("Tried to access the PKCS11 provider on an unsupported platform or the load failed", e.getMessage());
+                Timber.e("Tried to access the PKCS11 provider on an unsupported platform or the load : %s", e.getMessage());
             }
         }
 

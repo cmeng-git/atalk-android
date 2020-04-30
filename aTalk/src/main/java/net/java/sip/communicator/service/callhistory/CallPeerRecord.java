@@ -17,6 +17,11 @@ package net.java.sip.communicator.service.callhistory;
 
 import net.java.sip.communicator.service.protocol.CallPeerState;
 
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
+
 import java.util.Date;
 
 /**
@@ -101,6 +106,17 @@ public class CallPeerRecord
     public String getDisplayName()
     {
         return displayName;
+    }
+
+    public BareJid getPeerJid()
+    {
+        String peer = peerAddress.split("/")[0];
+        try {
+            return JidCreate.bareFrom(peer);
+        } catch (XmppStringprepException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

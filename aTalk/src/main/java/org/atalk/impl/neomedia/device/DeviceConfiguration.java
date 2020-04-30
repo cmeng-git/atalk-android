@@ -428,6 +428,10 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             }
             if (videoCaptureDevice != null) {
                 Timber.i("Found %s; format: %s video capture device.", videoCaptureDevice.getName(), format);
+            } else if (cfg != null){
+                // incorrect value specified in DB, so force and save to use first videoCaptureDevice
+                videoCaptureDevice = videoCaptureDevices.get(0);
+                cfg.setProperty(PROP_VIDEO_DEVICE, videoCaptureDevice.getName());
             }
         }
         return videoCaptureDevice;

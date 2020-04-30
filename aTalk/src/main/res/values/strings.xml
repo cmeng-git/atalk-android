@@ -25,13 +25,11 @@
 -->
 
 <resources>
-    <string name="APPLICATION_NAME">aTalk</string>
     <string name="accept_call_video">Answer call with video</string>
     <string name="account_setup_basics_show_password">Show password</string>
     <string name="account_override_server">Override server setting</string>
     <string name="account_registration">Register new account on server</string>
     <string name="account_server_ip">Connect server IP</string>
-    <string name="account_server_port">5222</string>
     <string name="ibr_registration">IB Registration</string>
     <string name="captcha_registration_request">Registration-Captcha</string>
     <string name="captcha_registration_fail">Registration-Captcha has failed!\n%1$s</string>
@@ -41,14 +39,10 @@
     <string name="captcha_hint">Enter the text you see</string>
     <string name="captcha_retry">Click \'OK\' to retry or \'Cancel\' to end</string>
 
-    <string name="chatroom_hint">chatroom@example.com</string>
     <string name="choose_network">Choose a network</string>
     <string name="encryption_TOOLTIP">Encrypt chat</string>
     <string name="encryption_choices">Encrypt Choices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
-    <string name="encryption_choice_omemo">OMEMO</string>
-    <string name="encryption_choice_otr">OTR</string>
-    <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="enter_name_or_number">Enter name or number</string>
     <string name="hang_up">Hang up call</string>
     <string name="hold">Put call on hold</string>
@@ -66,7 +60,6 @@
     <string name="system_settings">Settings&#8230;</string>
     <string name="username_hint">username@example.com</string>
     <string name="service_gui_USERNAME">Username:</string>
-    <string name="ACCOUNT_TYPE">org.atalk.android.account</string>
 
     <string name="attachOptionDialog_picture">Pictures</string>
     <string name="attachOptionDialog_camera">Take picture</string>
@@ -110,9 +103,9 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">The group name must not be empty.</string>
     <string name="service_gui_ADD_GROUP">Create group</string>
     <string name="service_gui_ADD_GROUP_HINT">Enter group name</string>
-    <string name="service_gui_AT">at</string>
     <string name="service_gui_APPLY">Apply</string>
     <string name="service_gui_APPLY_CHANGES">Applying account changes (~60S) &#8230;</string>
+    <string name="service_gui_AT">at</string>
     <string name="service_gui_AUTHORIZE">Authorize</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">contact has accepted your authorization request.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Authentication failed for %1$s. The password you entered is not valid.</string>
@@ -131,7 +124,8 @@
     <string name="service_gui_BUSY_STATUS">Busy</string>
     <string name="service_gui_CALL">Audio call</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
-    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call history</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call History</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Are you sure you want to purge all selected call records?</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk has failed to initialize %1$s\nAll media calls/services will be disabled.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Call with</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">We could not find any active Audio/Video devices hence unable to create the call.</string>
@@ -144,7 +138,6 @@
     <string name="service_gui_CALL_VIDEO">Video call</string>
     <string name="service_gui_CANCEL">Cancel</string>
     <string name="service_gui_CONTACT_INVALID">The selected contact is not valid: %1$s</string>
-    <string name="service_gui_Contacts">Contacts</string>
     <string name="service_gui_DONE">Done</string>
     <string name="service_gui_MAS">Mark as read</string>
     <string name="service_gui_REASON_LABEL">Reason:</string>
@@ -153,7 +146,6 @@
     <string name="service_gui_SHARE_TEXT">Share text&#8230;</string>
     <string name="service_gui_SHARE_FILE">Share file&#8230;</string>
     <string name="service_gui_SNOOZE">Snooze</string>
-    <string name="service_gui_URL_MEDIA_SHARE">&lt;html>&lt;a href=\'%3$s\'>&lt;img src=\'%1$s\' alt=\'url image\'/>&lt;/a>&lt;br/>%2$s&lt;br/>&lt;a href=\'%3$s\'>%3$s&lt;/a>&lt;/html></string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
@@ -168,11 +160,6 @@
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Change remote video quality</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s conference</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Conferences</string>
-    <string name="service_gui_CHAT_REPLY">&lt;blockquote>&lt;small>
-        &lt;span style="color:purple">%1$s&lt;/span>&lt;br/>
-        &lt;span style="color:grey">&lt;em>%2$s&lt;/em>&lt;/span>
-        &lt;/small>&lt;/blockquote></string>
-    <string name="service_gui_CHAT_LINK">&lt;a href="%1$s">%2$s&lt;/a></string>
     <string name="service_gui_CHATROOM">Chat Room</string>
     <string name="service_gui_CHATROOM_ALREADY_JOINED">You have already joined the %1$s chat room.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION">ChatRoom configuration</string>
@@ -222,6 +209,8 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Enter new contact Name</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Change Contact Name</string>
     <string name="service_gui_CONTACTS">Contacts</string>
+    <string name="service_gui_CONTACTS_OFFLINE_HIDE">Hide offline contacts</string>
+    <string name="service_gui_CONTACTS_OFFLINE_SHOW">Show offline contacts</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Copy message text</string>
 
     <string name="service_gui_CREATE">Create</string>
@@ -229,14 +218,12 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Create a conference call&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Create a conference chat&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Create group&#8230;</string>
-    <string name="service_gui_CREATE_GROUP_INVALID">Invalid group name: %s</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Invalid group name: %1$s</string>
     <string name="service_gui_CREATE_GROUP_NAME">In the field below enter the name of the group you would like to create.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Your contact list does not contain any groups. Please create a group first (File/Create group).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
     <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online Help</a></string>
-    <string name="AboutDialog_Link">https://cmeng-git.github.io</string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">About</string>
@@ -255,11 +242,9 @@
     <string name="PoweredBy">Powered By atalk.org</string>
 
     <!-- PTT Chat -->
-    <string name="chat_dbZero">00.00dB</string>
     <string name="chat_noaudio_buddyOffline">Audio chat with an offline recipient is not allowed.</string>
     <string name="chat_RecordCancel">&lt; slide left\nto cancel</string>
     <string name="chat_soundRecordStartButton">Start Recording</string>
-    <string name="chat_timeZero">00:00</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitude:</string>
@@ -308,7 +293,6 @@
     <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Failed to set device camera preview to: %1$s; Exception: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
-    <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
     <string name="service_gui_DENY">Deny</string>
     <string name="service_gui_DISPLAY_NAME">Display Name</string>
     <string name="service_gui_CONTACT_DISPLAY_NAME">Contact Display Name</string>
@@ -363,7 +347,6 @@
     <string name="service_gui_FOLDER_OPEN_NO_APPLICATION">We couldn\'t find an application to open this folder</string>
     <string name="service_gui_GROUP_CHAT">Group Chat</string>
     <string name="service_gui_HIDE">Hide</string>
-    <string name="service_gui_HIDE_OFFLINE_CONTACTS">Hide offline contacts</string>
     <string name="service_gui_HISTORY">History</string>
     <string name="service_gui_HISTORY_CONTACT">History - %1$s</string>
     <string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Turn off history for this contact</string>
@@ -430,9 +413,6 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">The CAPTCHA verification is valid</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">The CAPTCHA verification has failed</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA challenge timeout;\nplease rejoin chatRoom and try again.</string>
-
-    <string name="service_gui_IM">IM</string>
-    <string name="service_gui_INSTANT_MESSAGINGS">IMs</string>
 
     <string name="service_gui_INCOMING_CALL">Incoming call received from: %1$s</string>
     <string name="service_gui_INCOMING_CALL_STATUS">Incoming call</string>
@@ -505,8 +485,7 @@
     <string name="service_gui_MSG_DELIVERY_ERROR">Failed to deliver message.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">The above message could not be delivered</string>
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">An internal error occurred. This is most probably a bug. Please report it via debug log.</string>
-    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">The protocol you are using does not support offline messages.
-        You could try to reach %1$s through another protocol or wait until he/she becomes online.</string>
+    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">The protocol you are using does not support offline messages. You could try to reach %1$s through another protocol or wait until he/she becomes online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Unknown error has occurred while delivering your message.</string>
     <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Unsupported operation.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">A network problem occurred. Please check your network configuration and try again.</string>
@@ -606,7 +585,6 @@
     <string name="service_gui_SEND_VIA">Send via</string>
     <string name="service_gui_SENT">sent</string>
     <string name="service_gui_SERVER_CHAT_ROOMS">Server Chat Rooms</string>
-    <string name="service_gui_SHOW_OFFLINE_CONTACTS">Show offline contacts</string>
     <string name="service_gui_SHUTDOWN_IN_PROGRESS">shuting down&#8230;</string>
     <string name="service_gui_STATUS">Status</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Type your request reason</string>
@@ -621,32 +599,6 @@
     <string name="service_gui_WARNING">Warning</string>
     <string name="service_gui_WARN_CALL_IN_PROGRESS">Can\'t do this during a call</string>
     <string name="service_gui_YES">Yes</string>
-
-    <!-- Conference constants - no translation -->
-    <string name="service_gui_icons_AUTOJOIN">auto_join_on</string>
-    <string name="service_gui_icons_AUTOJOIN_OFF_ICON_BUTTON">auto_join_off</string>
-    <string name="service_gui_icons_AUTOJOIN_OFF_ICON_PRESSED_BUTTON">auto_join_off_pressed</string>
-    <string name="service_gui_icons_AUTOJOIN_OFF_ICON_ROLLOVER_BUTTON">auto_join_off_over</string>
-    <string name="service_gui_icons_AUTOJOIN_ON_ICON_BUTTON">auto_join_on</string>
-    <string name="service_gui_icons_AUTOJOIN_ON_ICON_PRESSED_BUTTON">auto_join_on_pressed</string>
-    <string name="service_gui_icons_AUTOJOIN_ON_ICON_ROLLOVER_BUTTON">auto_join_on_over</string>
-    <string name="service_gui_icons_CHATROOM_16x16_ICON">chat_room_16x16</string>
-    <string name="service_gui_icons_DESTROY_ICON_BUTTON">destroy_chat</string>
-    <string name="service_gui_icons_DESTROY_ICON_PRESSED_BUTTON">destroy_chat_pressed</string>
-    <string name="service_gui_icons_DESTROY_ICON_ROLLOVER_BUTTON">auto_join_off_over</string>
-    <string name="service_gui_icons_JOIN_AS_ICON">join_as</string>
-    <string name="service_gui_icons_JOIN_ICON">join</string>
-    <string name="service_gui_icons_JOIN_ICON_BUTTON">join_room</string>
-    <string name="service_gui_icons_JOIN_ICON_PRESSED_BUTTON">join_room_pressed</string>
-    <string name="service_gui_icons_JOIN_ICON_ROLLOVER_BUTTON">join_room_over</string>
-    <string name="service_gui_icons_LEAVE_ICON">leave</string>
-    <string name="service_gui_icons_LEAVE_ICON_BUTTON">leave_room</string>
-    <string name="service_gui_icons_LEAVE_ICON_PRESSED_BUTTON">leave_room_pressed</string>
-    <string name="service_gui_icons_LEAVE_ICON_ROLLOVER_BUTTON">leave_room_over</string>
-    <string name="service_gui_icons_OPEN_AUTOMATICALLY">opening_chatroom_settings</string>
-    <string name="service_gui_icons_REMOVE_CHAT_ICON">remove_chat</string>
-    <string name="service_gui_icons_RENAME_ICON">rename</string>
-    <string name="service_gui_icons_SMS_STATUS_ICON">sms_status_icon</string>
 
     <!-- Sign in -->
     <string name="service_gui_ACCOUNT_CREATION_FAILED">Failed to create new account due to error: %1$s</string>
@@ -745,7 +697,7 @@
         identity cannot be automatically verified.&lt;br/>&lt;br/>
         Proceed with connection for this instance only?&lt;br/>
         For more option and info, click "Show Certificate".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} cannot verify the
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the
         identity of the connecting client.&lt;br/>&lt;br/>
         The certificate is not trusted (a self-signed certificate), which means that the client\'\'s
         identity cannot be automatically verified.&lt;br/>&lt;br/>
@@ -857,7 +809,6 @@
     <string name="plugin_accountinfo_SELECT_ACCOUNT">Please select an account:</string>
     <string name="plugin_accountinfo_STREET">Street Address:</string>
     <string name="plugin_accountinfo_TITLE">Account Info</string>
-    <string name="plugin_accountinfo_URL">URL:</string>
     <string name="plugin_accountinfo_USER_PICTURES">User Pictures</string>
     <string name="plugin_accountinfo_WORK_EMAIL">Work E-mail:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Work Phone:</string>
@@ -975,7 +926,6 @@
     <string name="plugin_otr_authbuddydialog_CANCEL">Cancel</string>
     <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Please enter the fingerprint you received from %1$s.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Help</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">I have</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">I have not</string>
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint for %1$s: %2$s</string>
@@ -1038,7 +988,6 @@
     <string name="omemo_purge_inactive_device_error">Failed to remove inactive omemo device for: %1$s.</string>
 
     <!-- Account proxy settings -->
-    <string name="pref_key_bosh_configuration">Bosh_Configuration</string>
     <string name="service_gui_settings_BOSH_PROXY">BOSH-Proxy Configuration</string>
     <string name="service_gui_settings_BOSH_PROXY_SUMMARY">Setup connection via BOSH/Proxy for the account</string>
     <string name="plugin_proxy_BOSHURL_NULL">BOSH URL field content cannot be empty</string>
@@ -1047,7 +996,6 @@
     <string name="plugin_bosh_proxy_TYPE">Type:</string>
     <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
     <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Use HTTP Proxy</string>
-    <string name="service_gui_PROXY_BOSH_URL_HINT">https://example.org:4443/http-bind</string>
     <string name="plugin_proxy_PROXY_HOST">Proxy Host:</string>
     <string name="plugin_proxy_PROXY_PORT">Proxy Port:</string>
 
@@ -1057,8 +1005,6 @@
     <string name="plugin_provisioning_CLIPBOARD_FAILED">Failed to copy UUID to clipboard</string>
     <string name="plugin_provisioning_COPYTOCLIPBOARD">Copy UUID to clipboard</string>
     <string name="plugin_provisioning_CREDENTIALS">Last stored provisioning credentials</string>
-    <string name="plugin_provisioning_DHCP">DHCP</string>
-    <string name="plugin_provisioning_DNS">DNS</string>
     <string name="plugin_provisioning_ENABLE_DISABLE">Enable provisioning</string>
     <string name="plugin_provisioning_EXIT_ON_FAIL">Exit the application if the provisioning fails</string>
     <string name="plugin_provisioning_FORGET_PASSWORD">Forget password</string>
@@ -1070,8 +1016,6 @@
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Configure provisioning settings</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Are you sure you want to remove provisioning password?</string>
     <string name="plugin_provisioning_RESTART_WARNING">Note that your changes will only take effect next time you start aTalk!</string>
-    <string name="plugin_provisioning_URI">URI</string>
-    <string name="plugin_provisioning_UUID">UUID</string>
 
     <!-- DNS config -->
     <string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE Security</string>
@@ -1122,7 +1066,6 @@
     <string name="service_gui_TLS_CERT_SUMMARY">Certificate use in user authentication with server</string>
 
     <!-- Reset ZID -->
-    <string name="pref_key_zid_reset">pref.key.zid.reset</string>
     <string name="reset_ZID_summary">Reset long-lived ZRTP identifier</string>
     <string name="reset_ZID_title">Reset ZID</string>
     <string name="ZID_has_been_reset_toast">ZID has been reset</string>
@@ -1152,7 +1095,6 @@
     <string name="service_gui_SERVERS_LIST_CANCEL">Cancel</string>
     <string name="service_gui_SERVERS_LIST_EMPTY">The list is empty. Click to add new entry&#8230;</string>
     <string name="service_gui_SERVERS_LIST_REMOVE">Remove</string>
-    <string name="service_gui_SERVERS_STUN_DESCRIPTOR">%1$s:%2$s %3$s</string>
 
     <!-- Jingle Nodes edit -->
     <string name="service_gui_JINGLE_EDIT_JID">JID Address</string>
@@ -1164,7 +1106,7 @@
     <string name="service_gui_STUN_EDIT_PASSWORD">Password</string>
     <string name="service_gui_STUN_EDIT_PORT">Server port</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Support TURN</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">TURN username</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">Username</string>
 
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Enable call encryption</string>
@@ -1244,7 +1186,6 @@
     <string name="service_gui_JBR_GMAIL_NOTIFICATIONS">Gmail notifications for new messages</string>
     <string name="service_gui_JBR_GOOGLE_CONTACTS_SEARCH">Google Contacts search</string>
     <string name="service_gui_JBR_GTALK_DOMAIN">Domain that will use GTalk call</string>
-    <string name="service_gui_JBR_ICE">ICE</string>
     <string name="service_gui_JBR_ICE_GENERAL">General</string>
     <string name="service_gui_JBR_ICE_SUMMARY">Configure ICE options&#8230;</string>
     <string name="service_gui_JBR_JINGLE_AUTO">Auto discover Jingle Nodes relays</string>
@@ -1297,187 +1238,68 @@
     <string name="recipient_error_parse_failed">Error parsing address!</string>
     <string name="unknown_recipient"><![CDATA[<Unknown Recipient>]]></string>
 
-    <!-- Account preference categories -->
-    <string name="pref_cat_account">pref_cat_account</string>
-    <string name="pref_cat_audio_encoding">pref_cat_enc_audio</string>
-    <string name="pref_cat_video_encoding">pref_cat_enc_video</string>
-
-    <!-- SIP preferences -->
-    <string name="pref_cat_sip_advanced">pref.cat.sip.advanced</string>
-    <string name="pref_cat_sip_connection">pref.cat.sip.connection</string>
-    <string name="pref_cat_sip_conn_general">pref.cat.sip.conn.general</string>
-    <string name="pref_cat_sip_contactlist">pref.cat.sip.contactlist</string>
-    <string name="pref_cat_sip_keep_alive">pref.cat.sip.keep_alive</string>
-    <string name="pref_cat_sip_proxy">pref.cat.sip.proxy</string>
-    <string name="pref_cat_sip_voicemail">pref.cat.sip.voicemail</string>
-    <string name="pref_cat_sip_presence_opt">pref.sip.cat.presence_options</string>
-    <string name="pref_screen_sip_connection">pref.screen.sip.connection</string>
-    <string name="pref_screen_sip_presence">pref.screen.sip.presence</string>
-
-    <!-- Jabber preferences -->
-    <string name="pref_cat_jbr_advanced">pref.cat.jbr.advanced</string>
-    <string name="pref_cat_jbr_conn_general">pref.cat.jbr.conn.general</string>
-    <string name="pref_cat_jbr_ice_general">pref.cat.jbr.ice.general</string>
-    <string name="pref_cat_jbr_jnodes">pref.cat.jbr.jinglenodes</string>
-    <string name="pref_cat_jbr_resource">pref.cat.jbr.resource</string>
-    <string name="pref_cat_jbr_server_opts">pref.cat.jbr.server.options</string>
-    <string name="pref_screen_jbr_conn">pref.screen.jbr.connection</string>
-    <string name="pref_screen_jbr_ice">pref.screen.jbr.ice</string>
-    <string name="pref_screen_jbr_tele">pref.screen.jbr.telephony</string>
-
-    <!-- Account preferences -->
-    <string name="pref_key_auth_name">pref_key_auth_name</string>
-    <string name="pref_key_client_tls_cert">pref_key_client_tls_cert</string>
-    <!--string name="pref_key_client_tls_cert_enabled">pref_key_client_cert_enabled</string-->
-    <string name="pref_key_default_domain">pref_key_default_domain</string>
-    <string name="pref_key_display_name">pref_key_display_name</string>
-    <string name="pref_key_dtmf_method">pref_key_dtmf_method</string>
-    <string name="pref_key_force_p2p">pref_key_force_p2p</string>
-    <string name="pref_key_is_keep_alive_enable">pref_key_is_keep_alive_enable</string>
-    <string name="pref_key_ping_auto_tune_enable">pref_key_ping_auto_tune_enable</string>
-    <string name="pref_key_is_presence_enabled">pref_key_is_presence_enabled</string>
-    <string name="pref_key_keep_alive_method">pref_key_keep_alive_method</string>
-    <string name="pref_key_password">pref_key_password</string>
-    <string name="pref_key_ping_interval">pref_key_ping_interval</string>
-    <string name="pref_key_polling_period">pref_key_polling_period</string>
-    <string name="pref_key_preferred_transport">pref_key_preferred_transport</string>
-    <string name="pref_key_is_server_overridden">pref_key_is_server_overridden</string>
-    <string name="pref_key_server_address">pref_key_server_address</string>
-    <string name="pref_key_server_port">pref_key_server_port</string>
-    <string name="pref_key_store_password">pref_key_store_password</string>
-    <string name="pref_key_subscription_period">pref_key_subscription_period</string>
-    <string name="pref_key_user_id">pref_key_user_id</string>
-    <string name="pref_key_voicemail_uri">pref_key_voicemail_uri</string>
-    <string name="pref_key_voicemail_check_uri">pref_key_voicemail_check_uri</string>
-    <string name="pref_key_mwi_enabled">pref_key_mwi_enabled</string>
-
-    <!-- Contact list -->
-    <string name="pref_key_contact_list_type">pref_key_contact_list_type</string>
-    <string name="pref_key_clist_password">pref_key_clist_password</string>
-    <string name="pref_key_clist_server_uri">pref_key_clist_server_uri</string>
-    <string name="pref_key_clist_use_sip_credentials">pref_key_clist_use_sip_credentials</string>
-    <string name="pref_key_clist_user">pref_key_clist_user</string>
-
-    <!-- Not present int SIP, but new in XMPP -->
-    <string name="pref_key_minimum_TLS_version">pref_key_minimum_TLS_version</string>
-    <string name="pref_key_allow_non_secure_conn">pref_key_allow_non_secure_conn</string>
-    <string name="pref_key_auto_gen_resource">pref_key_auto_gen_resource</string>
-    <string name="pref_key_gmail_notifications">pref_key_gmail_notifications</string>
-    <string name="pref_key_google_contact_enabled">pref_key_google_contact_enabled</string>
-    <string name="pref_key_resource_name">pref_key_resource_name</string>
-    <string name="pref_key_resource_priority">pref_key_resource_priority</string>
-
-    <!-- Account proxy -->
-    <string name="pref_key_proxy_auto_config">pref_key_proxy_auto_config</string>
-    <string name="pref_key_proxy_address">pref_key_ProxyAddress</string>
-    <string name="pref_key_proxy_port">pref_key_ProxyPort</string>
-
-    <!-- XMPP ICE -->
-    <string name="pref_key_auto_discover_stun">pref_key_auto_discover_stun</string>
-    <string name="pref_key_auto_relay_dicovery">pref_key_auto_relay_discovery</string>
-    <string name="pref_key_ice_enabled">pref_key_ice_enabled</string>
-    <string name="pref_key_jingle_node_list">pref_key_jingle_node_list</string>
-    <string name="pref_key_google_ice_enabled">pref_key_google_ice_enabled</string>
-    <string name="pref_key_stun_turn_servers">pref_key_stun_turn_servers</string>
-    <string name="pref_key_upnp_enabled">pref_key_upnp_enabled</string>
-    <string name="pref_key_use_jingle_nodes">pref_key_use_jingle_nodes</string>
-
-    <!-- XMPP telephony -->
-    <string name="pref_key_calling_disabled">pref_key_calling_disabled</string>
-    <string name="pref_key_tele_bypass_gtalk_caps">pref_key_tele_bypass_gtalk_caps</string>
-    <string name="pref_key_override_phone_suffix">pref_key_override_phone_suffix</string>
-
-    <!-- Security preferences -->
-    <string name="pref_key_enable_encryption">pref_key_enable_encryption</string>
-    <string name="pref_key_enc_cipher_suites">pref_key_ecn_cipher_suites</string>
-    <string name="pref_key_enc_protocols_dialog">pref_key_enc_protos_dialog</string>
-    <string name="pref_key_enc_savp_option">pref_key_enc_savp_option</string>
-    <string name="pref_key_enc_sipzrtp_attr">pref_key_enc_sipzrtp_attr</string>
-    <string name="pref_cat_security_general">pref.cat.security.general</string>
-    <string name="pref_cat_security_sdes">pref.cat.security.sdes</string>
-    <string name="pref_cat_security_zrtp">pref.cat.security.zrtp</string>
-
     <!-- General settings -->
-    <string name="pref_cat_settings_general">pref.cat.settings.general</string>
     <string name="service_gui_settings_DISABLED_STR">Disabled</string>
     <string name="service_gui_settings_ENABLED_STR">Enabled</string>
     <string name="service_gui_settings_GENERAL">General</string>
 
     <!-- WebView default Page -->
-    <string name="pref_key_webview_PAGE">gui.WEB_PAGE_ACCESS</string>
     <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Enter webView default access page:</string>
     <string name="service_gui_settings_WEBVIEW_TITLE">Web Access Page</string>
-    <string name="service_gui_settings_WEBVIEW_SUMMARY">file:///android_asset/movim/index.html</string>
 
     <!-- Messaging settings -->
-    <string name="pref_cat_settings_msg">pref.cat.settings.msg</string>
     <string name="service_gui_settings_MSG">Messaging</string>
 
     <!-- Group messages in one window -->
-    <string name="pref_key_multichat_window">pref.key.msg.multichat_window</string>
     <string name="service_gui_settings_MULTICHAT_OFF">Separate window for ech conversation</string>
     <string name="service_gui_settings_MULTICHAT_ON">Group chat messages in one window</string>
     <string name="service_gui_settings_MULTICHAT_WINDOW">Multichat window</string>
 
     <!-- Log chat history -->
-    <string name="pref_key_history_logging">pref.key.msg.history_logging</string>
     <string name="service_gui_settings_HISTORY_LOG_OFF">Chat history disabled</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Log chat history</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Chat history logging</string>
 
     <!-- Show x recent messages in new chats -->
-    <string name="pref_key_chat_history_size">pref.key.msg.chat_history_size</string>
-    <string name="pref_key_show_history">pref.key.msg.show_history</string>
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">How many recent messages should be displayed?</string>
     <string name="service_gui_settings_CHAT_HISTORY_SIZE">Show recent messages</string>
     <string name="service_gui_settings_CHAT_HISTORY_SUMMARY">%d recent messages in new chats</string>
     <string name="service_gui_settings_SHOW_HISTORY">Show history</string>
 
     <!-- Tell others when we have received and read the messages -->
-    <string name="pref_key_message_delivery_receipt">pref.key.message_delivery_receipt</string>
     <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT">Message delivery receipt</string>
     <string name="service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY">Let your contacts know when you have received and read their messages</string>
 
     <!-- Tell others when we are writing to them -->
-    <string name="pref_key_chat_state_notifications">pref.key.msg.chat_state_notifications</string>
     <string name="service_gui_settings_TYPING_NOTIFICATIONS">Send chat state notifications</string>
 
     <!-- Enable option to send thumbnail preview for image file sending -->
-    <string name="pref_key_send_thumbnail">pref.key.send_thumbnail</string>
     <string name="service_gui_settings_THUMBNAIL_OPTION">Send/Receive thumbnail preview</string>
 
     <!-- Auto accept downloadable max file size -->
-    <string name="pref_key_auto_accept_file">pref.key.auto_accept_file</string>
-    <string name="auto_accept_filesize">524288</string>
     <string name="service_gui_settings_ACCEPT_FILE">Auto accept max file size</string>
 
     <!-- Setup subscription Mode: auto or manual approval -->
-    <string name="pref_key_presence_subscribe_mode">pref.key.presence_subscribe_mode</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE">Presence subscribe approval</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_AUTO">Subscribe approval - auto accept all</string>
     <string name="service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL">Subscribe approval - manual</string>
 
     <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
     <!-- Use task bar/dock alerts on incoming calls and chats -->
-    <string name="pref_key_chat_alerts">pref.key.msg.chat_alerts</string>
     <string name="service_gui_settings_CHAT_ALERTS">Show status bar notifications</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
 
     <!-- Notifications -->
-    <string name="pref_cat_settings_notifications">pref.cat.settings.notifications</string>
     <string name="service_gui_settings_NOTIFICATIONS">Notifications</string>
 
     <!-- Popup notifications type -->
-    <string name="pref_key_auto_update_check_enable">pref.key.notification.auto_update_check_enable</string>
     <string name="service_gui_settings_auto_update_check_status">Enable auto SW update check</string>
-
-    <string name="pref_key_popup_handler">pref.key.notification.popup_handler</string>
     <string name="service_gui_settings_POPUP_HANDLER">Popup notifications type</string>
 
-    <string name="pref_key_heads_up_enable">pref.key.notification.heads_up_enable</string>
     <string name="pref_headsup_notifications">Heads-up Notifications</string>
     <string name="pref_headsup_notifications_summary">Show Heads-up Notifications</string>
 
@@ -1490,10 +1312,6 @@
     <string name="service_gui_settings_EVENTS_TITLE">Events</string>
 
     <!-- Quite hour settings -->
-    <string name="pref_key_quiet_hours_enable">pref.key.quiet_hours_enable</string>
-    <string name="pref_key_quiet_hours_start">pref.key.quiet_hours_start</string>
-    <string name="pref_key_quiet_hours_end">pref.key.quiet_hours_end</string>
-
     <string name="title_pref_quiet_hours">Quiet Hours</string>
     <string name="title_pref_quiet_hours_start_time">Start time</string>
     <string name="title_pref_quiet_hours_end_time">End time</string>
@@ -1501,24 +1319,20 @@
     <string name="pref_quiet_hours_summary">Notifications will be silenced during quiet hours</string>
 
     <!-- aTalk icon -->
-    <string name="pref_key_show_atalk_icon">org.atalk.android.show_icon</string>
     <string name="service_gui_settings_SHOW_ICON">Display aTalk icon</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_OFF">Hide aTalk active indicator in notification</string>
     <string name="service_gui_settings_SHOW_ICON_SUMMARY_ON">Show aTalk active indicator in notification</string>
 
     <!-- aTalk auto start -->
-    <string name="pref_key_atalk_auto_start">org.atalk.android.auto_start</string>
     <string name="service_gui_settings_AUTO_START">Auto start aTalk on reboot</string>
     <string name="service_gui_settings_AUTO_START_SUMMARY_DISABLE">Disable aTalk auto start on next reboot</string>
     <string name="service_gui_settings_AUTO_START_SUMMARY_ENABLE">Enable aTalk auto start on next reboot</string>
 
     <!-- Locale -->
-    <string name="pref_key_locale">pref.key.locale</string>
     <string name="service_gui_settings_LOCALE">Language</string>
     <string name="settings_language_system">System default</string>
 
     <!-- Theme -->
-    <string name="pref_key_theme">pref.key.theme</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_label">Theme</string>
@@ -1534,36 +1348,28 @@
     <string name="service_gui_LOADING">Loading, please wait…</string>
 
     <!-- Remove special characters from phone number -->
-    <string name="pref_key_normalize_pnumber">pref.key.call.remove.special</string>
     <string name="service_gui_settings_NORMALIZE_NUMBER">Special symbols in phone numbers</string>
     <string name="service_gui_settings_NORMALIZE_OFF">No phone number modifications</string>
     <string name="service_gui_settings_NORMALIZE_ON">Special symbols will be removed from the number</string>
     <!-- Convert letters in phone numbers -->
-    <string name="pref_key_accept_alpha_pnumbers">pref.key.call.convert.letters</string>
     <string name="service_gui_settings_ALLOW_ALPHA_OFF">No phone number modifications</string>
-    <string name="service_gui_settings_ALLOW_ALPHA_ON"><![CDATA[*e.g. +1–800–MYPHONE –>+1–800–694663]]></string>
     <string name="service_gui_settings_ALLOW_ALPHA_PNUMBER">Letters in phone numbers</string>
 
     <!-- Call settings -->
-    <string name="pref_cat_settings_call">pref.cat.settings.call</string>
     <string name="service_gui_settings_CALL">Call</string>
     <string name="service_gui_settings_MEDIA_CALL">Media call</string>
 
     <!-- Audio settings -->
-    <string name="pref_cat_settings_audio">pref.cat.settings.audio</string>
     <string name="service_gui_settings_AUDIO">Audio</string>
     <!-- Echo cancellation -->
-    <string name="pref_key_audio_echo_cancel">pref.key.audio.echo_cancel</string>
     <string name="service_gui_settings_ECHO_CANCEL">Echo cancellation</string>
     <string name="service_gui_settings_ECHO_CANCEL_OFF">Disabled</string>
     <string name="service_gui_settings_ECHO_CANCEL_ON">Enabled</string>
     <!-- Auto gain control -->
-    <string name="pref_key_audio_agc">pref.key.audio.agc</string>
     <string name="service_gui_settings_AGC">Automatic gain control</string>
     <string name="service_gui_settings_AGC_OFF">Disabled</string>
     <string name="service_gui_settings_AGC_ON">Enabled</string>
     <!-- Denoise -->
-    <string name="pref_key_audio_denoise">pref.key.audio.denoise</string>
     <string name="service_gui_settings_DENOISE">Noise suppression</string>
     <string name="service_gui_settings_DENOISE_OFF">Disabled</string>
     <string name="service_gui_settings_DENOISE_ON">Enabled</string>
@@ -1572,30 +1378,19 @@
     <string name="service_gui_settings_AUDIO_CODECS_TITLE">Audio codecs</string>
 
     <!-- Video settings -->
-    <string name="pref_cat_settings_media_call">pref.cat.settings.media_call</string>
-    <string name="pref_cat_settings_video">pref.cat.settings.video</string>
     <string name="service_gui_settings_VIDEO">Video</string>
 
     <!-- Video system -->
-    <string name="pref_key_video_system">pref.key.video.video_system</string>
     <string name="service_gui_settings_SYSTEM_ANDROIDCAMERA">AndroidCamera</string>
     <string name="service_gui_settings_SYSTEM_MEDIARECORDER">MediaRecorder</string>
 
     <!-- Camera used -->
-    <string name="pref_key_video_camera">pref.key.video.camera</string>
-    <string name="service_gui_settings_BACK_CAMERA">Back camera</string>
     <string name="service_gui_settings_CAMERA">Camera</string>
-    <string name="service_gui_settings_FRONT_CAMERA">Front camera</string>
     <string name="service_gui_settings_NO_CAMERA">No camera device found</string>
     <string name="service_gui_settings_USE_BACK_CAMERA">Use back camera</string>
     <string name="service_gui_settings_USE_FRONT_CAMERA">Use front camera</string>
 
     <!-- Video codecs -->
-    <string name="pref_key_video_media_codec_list">pref.key.video.media_codec_list</string>
-    <string name="pref_key_video_hw_decode">neomedia.android.hw_decode</string>
-    <string name="pref_key_video_hw_encode">neomedia.android.hw_encode</string>
-    <string name="pref_key_video_surface_decode">neomedia.android.surface_decode</string>
-    <string name="pref_key_video_surface_encode">neomedia.android.surface_encode</string>
     <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Use direct surface decoding (restart required)</string>
     <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Use direct surface encoding (restart required)</string>
     <string name="service_gui_settings_HW_DECODE">Use hardware decoding (restart required)</string>
@@ -1606,13 +1401,8 @@
     <string name="service_gui_settings_VIDEO_CODECS_SUMMARY">Select and define priority for video codecs</string>
     <string name="service_gui_settings_VIDEO_CODECS_TITLE">Video codecs</string>
     <!-- Video resolution -->
-    <string name="pref_key_video_resolution">pref.key.video.resolution</string>
     <string name="service_gui_settings_VIDEO_RESOLUTION">Video resolution</string>
     <!-- Frame rate -->
-    <string name="pref_key_video_bitrate">pref.key.video.bitrate</string>
-    <string name="pref_key_video_limit_fps">pref.key.video.limit_fps</string>
-    <string name="pref_key_video_max_bandwidth">pref.key.video.max_bandwidth</string>
-    <string name="pref_key_video_target_fps">pref.key.video.frame_rate</string>
     <string name="service_gui_settings_LIMIT_FPS_OFF">Unlimited</string>
     <string name="service_gui_settings_LIMIT_FPS_ON">Adjusted frame rate</string>
     <string name="service_gui_settings_VIDEO_BITRATE">Video bitrate (kilobits/s)</string>
@@ -1622,7 +1412,6 @@
     <string name="service_gui_settings_VIDEO_TARGET_FPS">Target frame rate (per sec.)</string>
 
     <!-- Security settings -->
-    <string name="pref_cat_settings_security">pref.cat.settings.security</string>
     <!-- Chat security -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Message encryption security settings</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Messaging Security</string>
@@ -1630,17 +1419,14 @@
     <!-- Messaging security options -->
     <string name="pref_cat_MESSAGING_SECURITY_OPTIONS">OTR Messaging Security</string>
     <!-- Crypto Messaging Enable -->
-    <string name="pref_key_crypto_enable">pref.key.crypto.enable</string>
     <string name="service_gui_settings_CRYPTO_ENABLE_OFF">No messaging encryption</string>
     <string name="service_gui_settings_CRYPTO_ENABLE_ON">Messaging encryption enabled</string>
     <string name="service_gui_settings_CRYPTO_ENABLE_TITLE">Private messaging</string>
     <!-- Crypto Messaging Auto -->
-    <string name="pref_key_otr_auto">pref.key.crypto.auto</string>
     <string name="service_gui_settings_CRYPTO_AUTO_OFF">Start message  encryption session manually</string>
     <string name="service_gui_settings_CRTOTI_AUTO_ON">Start message encryption session automatically</string>
     <string name="service_gui_settings_CRYPTO_AUTO_TITLE">Auto initiate private messaging</string>
     <!-- Crypto Messaging Required -->
-    <string name="pref_key_crypto_require">pref.key.crypto.require</string>
     <string name="service_gui_settings_CRYPTO_REQUIRE_OFF">Secure messaging will be used if supported</string>
     <string name="service_gui_settings_CRYPTO_REQUIRE_ON">Only secure sessions will be accepted</string>
     <string name="service_gui_settings_CRYPTO_REQUIRE_TITLE">Require private messaging</string>
@@ -1648,7 +1434,6 @@
     <!-- OMEMO security category-->
     <string name="pref_cat_OMEMO_SECURITY_SETTINGS">OMEMO Messaging Security</string>
     <!-- OMEMO device screen -->
-    <string name="pref_key_omemo_key_blind_trust">pref.key.omemo.key.blind.trust</string>
     <string name="pref_omemo_blind_trust_before_verification">Blind trust before verification</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Auto-trust all new devices of contacts that haven’t been verified before; prompt for manual confirmation when a verified contact adds new devices.</string>
     <!-- OMEMO regenerate screen -->
@@ -1703,7 +1488,6 @@
     <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">Resume sending OMEMO message to buddy: %1$s</string>
 
     <!-- Advanced settings category -->
-    <string name="pref_cat_settings_advanced">pref.cat.settings.advanced</string>
     <string name="service_gui_settings_ADVANCED">Advanced</string>
     <string name="service_gui_settings_EXPERT">Expert settings</string>
     <string name="service_gui_settings_EXPERT_SUMMARY">Please be careful with these</string>
@@ -1715,12 +1499,6 @@
     <string name="service_gui_settings_PROTOCOL">Protocol</string>
 
     <!-- Opus -->
-    <string name="pref_key_opus_audio_bandwidth">neomedia.codec.audio.opus.encoder.AUDIO_BANDWIDTH</string>
-    <string name="pref_key_opus_bitrate">neomedia.codec.audio.opus.encoder.BITRATE</string>
-    <string name="pref_key_opus_complexity">neomedia.codec.audio.opus.encoder.COMPLEXITY</string>
-    <string name="pref_key_opus_min_expected_packet_loss">neomedia.codec.audio.opus.encoder.MIN_EXPECTED_PACKET_LOSS</string>
-    <string name="pref_key_opus_use_dtx">neomedia.codec.audio.opus.encoder.DTX</string>
-    <string name="pref_key_opus_use_fec">neomedia.codec.audio.opus.encoder.FEC</string>
     <string name="service_gui_settings_OPUS">Opus</string>
     <string name="service_gui_settings_OPUS_AUDIO_BANDWIDTH">Sampling rate</string>
     <string name="service_gui_settings_OPUS_BITRATE">Encoder average bitrate (kbps)</string>
@@ -1731,10 +1509,6 @@
     <string name="service_gui_settings_OPUS_USE_FEC">Use inband FEC</string>
 
     <!-- Silk -->
-    <string name="pref_key_silk_fec">neomedia.codec.audio.silk.encoder.USE_FEC</string>
-    <string name="pref_key_silk_assume_pl">neomedia.codec.audio.silk.encoder.AWLAYS_ASSUME_PACKET_LOSS</string>
-    <string name="pref_key_silk_fec_sat">neomedia.codec.audio.silk.encoder.SPEECH_ACTIVITY_THRESHOLD</string>
-    <string name="pref_key_silk_advertise_FEC">neomedia.codec.audio.silk.ADVERTISE_FEC</string>
     <string name="service_gui_settings_SILK">Silk</string>
     <string name="service_gui_settings_SILK_SUMMARY">Configure Silk encoder settings</string>
     <string name="service_gui_settings_SILK_FEC">Use inband FEC</string>
@@ -1743,34 +1517,11 @@
     <string name="service_gui_settings_SILK_ADVERTISE_FEC">Advertise FEC support in SDP</string>
 
     <!-- SIP config -->
-    <string name="pref_key_sip_client_port">SIP_PREFERRED_CLEAR_PORT</string>
-    <string name="pref_key_sip_client_secure_port">SIP_PREFERRED_SECURE_PORT</string>
-    <string name="pref_cat_sip_ssl_protocols">pref.cat.sip.ssl_protocols</string>
     <string name="plugin_generalconfig_SIP_CLIENT_PORT">SIP client port</string>
     <string name="plugin_generalconfig_SIP_CLIENT_SECURE_PORT">SIP client secure port</string>
     <string name="plugin_generalconfig_SIP_SSL_PROTOCOLS">Enabled SSL/TLS protocols</string>
     <string name="service_gui_settings_SIP">SIP</string>
     <string name="service_gui_settings_SIP_SUMMARY">Configure SIP protocol settings</string>
-
-    <!-- DNS config -->
-    <string name="pref_cat_dns_dnssec">pref.cat.dns.dnssec</string>
-    <string name="pref_key_dns_dnssec_absolute">dns.DNSSEC_ALWAYS_ABSOLUTE</string>
-    <string name="pref_key_dns_dnssec_default_behaviour">dns.DNSSEC_VALIDATION_MODE</string>
-    <string name="pref_key_dns_dnssec_enabled">dns.DNSSEC_ENABLED</string>
-    <string name="pref_key_dns_dnssec_nameservers">dns.DNSSEC_NAMESERVERS</string>
-
-    <string name="pref_key_dnssec_mode">dns.DNSSEC_MODE</string>
-
-    <!-- Provisioning -->
-    <string name="pref_cat_provisioning_CREDENTIALS">pref.cat.provisioning.credentials</string>
-    <string name="pref_cat_provisioning_METHOD">pref.cat.provisioning.method</string>
-    <string name="pref_key_provisioning_ENABLED">pref.key.provisioning.enabled</string>
-    <string name="pref_key_provisioning_FORGET_PASSWORD">pref.key.provisioning.forget_password</string>
-    <string name="pref_key_provisioning_METHOD">plugin.provisioning.METHOD</string>
-    <string name="pref_key_provisioning_PASSWORD">plugin.provisioning.auth</string>
-    <string name="pref_key_provisioning_URL">plugin.provisioning.URL</string>
-    <string name="pref_key_provisioning_USERNAME">plugin.provisioning.auth.USERNAME</string>
-    <string name="pref_key_provisioning_UUID">net.java.sip.communicator.UUID</string>
 
     <!-- group chat menu -->
     <string name="menu_invite">Invite</string>
@@ -1788,7 +1539,6 @@
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">App Info</string>
-    <string name="app_name2">Dexter</string>
     <string name="ask_for_all_permissions_button">Request all</string>
     <string name="ask_for_audio_permission_button">Audio</string>
     <string name="ask_for_camera_permission_button">Camera</string>
@@ -1834,13 +1584,5 @@
     <string name="location_permission_dialog_message">Enable Location permission now?</string>
     <string name="location_services_off">Location services OFF</string>
     <string name="open_location_settings">Enable location services now?</string>
-
-    <!-- Android Notification Channels -->
-    <string name="noti_channel_MESSAGE_GROUP">Chat Message Notification</string>
-    <string name="noti_channel_FILE_GROUP">File Transfer Notification</string>
-    <string name="noti_channel_CALL_GROUP">Call Notification</string>
-    <string name="noti_channel_MISSED_CALL">Miss Call Notification</string>
-    <string name="noti_channel_DEFAULT_GROUP">General Notification</string>
-    <string name="noti_channel_SILENT_GROUP">Silent Notification</string>
 
 </resources>

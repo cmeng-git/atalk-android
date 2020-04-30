@@ -6,6 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.2.4 (04/30/2020)" versioncode="1124">
+        <change>Display contacts sorted according to contacts' presence status in main contact list window</change>
+        <change>Ensure hide offline contact list get updated when a contact presence status changes</change>
+        <change>Ensure Text to Speech when enabled remains active even when the chatSession is not in focus</change>
+        <change>TTS setup must check and block TTS access if TTS voice is not available on device</change>
+        <change>Ensure consistency in UI text display as per user selected language</change>
+        <change>Fix user selected Language reset by WebView for android-N and above</change>
+        <change>Display android device cameras sorted by name for user selection in Settings...</change>
+        <change>Add new call history records display UI in main pager selection</change>
+        <change>Add new UI language support for Slovak</change>
+        <change>Cleanup and ensure proper call to smack Stanza#genExtension() and alike for Captcha and Nick etc</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.2.3 (04/16/2020)" versioncode="1123">
         <change>Implement Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)</change>
         <change>Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection</change>

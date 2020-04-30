@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * Host Information packet extension.
  *
@@ -30,6 +32,8 @@ public class HostInfoExtension extends AbstractExtensionElement
      * The namespace that media belongs to.
      */
     public static final String NAMESPACE = null;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Display text element name.
