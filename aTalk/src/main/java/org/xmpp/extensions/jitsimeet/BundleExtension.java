@@ -7,6 +7,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Jitsi Meet specifics bundle packet extension.
  *
@@ -25,7 +27,9 @@ public class BundleExtension extends AbstractExtensionElement
 	 */
 	public static final String NAMESPACE = "http://estos.de/ns/bundle";
 
-	/**
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
+    /**
 	 * Creates an {@link BundleExtension} instance for the specified <tt>namespace</tt> and <tt>elementName</tt>.
 	 *
 	 */

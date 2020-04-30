@@ -150,7 +150,7 @@ public class MetaContactRenderer implements UIContactRenderer
     }
 
     /**
-     * Returns the status <tt>Drawable</tt> for the given <tt>MetaContact</tt>.
+     * Returns the avatar <tt>Drawable</tt> for the given <tt>MetaContact</tt>.
      *
      * @param metaContact the <tt>MetaContact</tt>, which status drawable we're looking for
      * @return a <tt>BitmapDrawable</tt> object representing the status of the given <tt>MetaContact</tt>

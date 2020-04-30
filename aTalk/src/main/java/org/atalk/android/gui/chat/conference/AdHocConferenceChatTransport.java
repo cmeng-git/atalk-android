@@ -146,7 +146,8 @@ public class AdHocConferenceChatTransport implements ChatTransport
      * @return {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}
      */
-    public boolean allowsMessageDeliveryReceipt() {
+    public boolean allowsMessageDeliveryReceipt()
+    {
         return false;
     }
 
@@ -241,7 +242,6 @@ public class AdHocConferenceChatTransport implements ChatTransport
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon and instance of #FileSendConversation
-
      * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
@@ -274,7 +274,6 @@ public class AdHocConferenceChatTransport implements ChatTransport
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon and instance of #FileSendConversation
-
      * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */

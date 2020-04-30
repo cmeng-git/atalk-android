@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Looper;
-import androidx.core.app.NotificationCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -20,12 +19,13 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.impl.androidnotification.AndroidNotifications;
 import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.androidnotification.AndroidNotifications;
 import org.atalk.service.osgi.OSGiService;
 
 import java.util.List;
 
+import androidx.core.app.NotificationCompat;
 import timber.log.Timber;
 
 /**

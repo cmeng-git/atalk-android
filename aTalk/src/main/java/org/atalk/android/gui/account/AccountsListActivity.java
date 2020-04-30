@@ -133,7 +133,7 @@ public class AccountsListActivity extends OSGiActivity
                 return true;
 
             case R.id.TLS_Configuration:
-                TLS_Configuration tlsConfiguration = new TLS_Configuration(getBaseContext());
+                TLS_Configuration tlsConfiguration = new TLS_Configuration();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 ft.replace(android.R.id.content, tlsConfiguration).commit();

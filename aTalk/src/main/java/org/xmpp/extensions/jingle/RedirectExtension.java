@@ -7,6 +7,8 @@ package org.xmpp.extensions.jingle;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * The redirect <tt>ExtensionElement</tt>.
  *
@@ -24,6 +26,8 @@ public class RedirectExtension extends AbstractExtensionElement
      * The namespace.
      */
     public static final String NAMESPACE = "http://www.google.com/session";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The redirect text.

@@ -91,6 +91,7 @@ public class ChatActivity extends OSGiActivity
     private static final int REQUEST_CODE_FORWARD = 201;
 
     public final static String CRYPTO_FRAGMENT = "crypto_fragment";
+
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access
      * previous and next wizard steps.
@@ -384,13 +385,6 @@ public class ChatActivity extends OSGiActivity
         return super.onKeyUp(keyCode, event);
     }
 
-    public void updateChatTtsOption() {
-        ChatFragment chatFragment;
-        if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null) {
-            chatFragment.updateChatTtsOption();
-        }
-    }
-
     /**
      * Invoked when the options menu is created. Creates our own options menu from the corresponding xml.
      *
@@ -562,7 +556,7 @@ public class ChatActivity extends OSGiActivity
                         chatRoomWrapper.setTtsEnable(true);
                         mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
                     }
-                    updateChatTtsOption();
+                    selectedChatPanel.updateChatTtsOption();
                     return true;
 
                 case R.id.leave_chat_room:
@@ -634,7 +628,7 @@ public class ChatActivity extends OSGiActivity
                         mRecipient.setTtsEnable(true);
                         mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
                     }
-                    updateChatTtsOption();
+                    selectedChatPanel.updateChatTtsOption();
                     return true;
 
                 case R.id.call_contact_audio: // start audio call
@@ -1067,7 +1061,7 @@ public class ChatActivity extends OSGiActivity
                     String title = attributes.getString("title");
                     String imageUrl = attributes.getString("thumbnail_url");
 
-                    urlInfo = aTalkApp.getResString(R.string.service_gui_URL_MEDIA_SHARE, imageUrl, title, mUrl);
+                    urlInfo = getString(R.string.service_gui_URL_MEDIA_SHARE, imageUrl, title, mUrl);
                     selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
                 } catch (JSONException e) {
                     Timber.w("Exception in JSONObject access: %s", result);

@@ -12,6 +12,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 /**
  * Represents the content <tt>description</tt> elements described in XEP-0167.
  *
@@ -29,6 +31,8 @@ public class RtpDescriptionExtension extends AbstractExtensionElement
      * The name of the "description" element.
      */
     public static final String ELEMENT = "description";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the <tt>media</tt> description argument.

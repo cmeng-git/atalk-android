@@ -15,6 +15,7 @@ import android.view.View;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
+import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.plugin.errorhandler.ExceptionHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -99,7 +100,7 @@ public class OSGiPreferenceActivity extends PreferenceActivity
     protected void onCreate(android.os.Bundle savedInstanceState)
     {
         // Always call setTheme() method before super.onCreate(savedInstanceState)
-        setTheme(aTalkApp.getAppThemeResourceId());
+        ThemeHelper.setTheme(this);
 
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();

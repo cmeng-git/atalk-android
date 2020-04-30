@@ -7,6 +7,8 @@ package org.xmpp.extensions.coin;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Call information packet extension.
  *
@@ -25,7 +27,9 @@ public class CallInfoExtension extends AbstractExtensionElement
 	 */
     public static final String NAMESPACE = CoinIQ.NAMESPACE;
 
-	/**
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
+    /**
 	 * Constructor.
 	 */
 	public CallInfoExtension()

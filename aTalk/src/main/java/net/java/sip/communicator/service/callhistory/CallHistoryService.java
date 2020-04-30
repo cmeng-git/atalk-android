@@ -19,8 +19,7 @@ import net.java.sip.communicator.service.callhistory.event.CallHistoryPeerRecord
 import net.java.sip.communicator.service.callhistory.event.CallHistorySearchProgressListener;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 /**
  * The Call History Service stores info about calls made from various protocols
@@ -94,6 +93,8 @@ public interface CallHistoryService
      * @return Collection of CallRecords with CallPeerRecord
      */
     Collection<CallRecord> findByEndDate(Date endDate);
+
+    Collection<CallRecord> findByEndDate(String accountUuid, Date endDate);
 
     /**
      * Returns all the calls made between the given dates.
@@ -171,5 +172,5 @@ public interface CallHistoryService
     /**
      * Permanently removes all locally stored call history.
      */
-    void eraseLocallyStoredHistory();
+    void eraseLocallyStoredHistory(List<String> callUUIDs);
 }

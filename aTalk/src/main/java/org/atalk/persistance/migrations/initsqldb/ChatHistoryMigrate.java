@@ -16,7 +16,6 @@
  */
 package org.atalk.persistance.migrations.initsqldb;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -24,9 +23,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
 import org.atalk.util.xml.XMLUtils;
 import org.json.JSONObject;
@@ -40,11 +42,10 @@ import javax.xml.parsers.DocumentBuilder;
 
 import timber.log.Timber;
 
-import net.java.sip.communicator.service.protocol.IMessage;
 import static org.atalk.android.gui.chat.ChatMessage.STATUS_RECEIVED;
 import static org.atalk.android.gui.chat.ChatMessage.STATUS_SEND;
 
-public class ChatHistoryMigrate extends Activity
+public class ChatHistoryMigrate extends OSGiActivity
 {
     private static String ATTR_DIR = "dir";
     private static String ATTR_MSG = "msg";

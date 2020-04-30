@@ -331,7 +331,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             boolean isThumbnailFile = false;
             if ((si != null) && (file = si.getFile()) instanceof ThumbnailFile) {
                 // Proceed to request for the available thumbnail if auto accept file not permitted
-                boolean isAutoAccept = (request.getFileSize() <= ConfigurationUtils.getAutoAcceptFileSize());
+                boolean isAutoAccept = ConfigurationUtils.isAutoAcceptFile(request.getFileSize());
                 Thumbnail thumbnail = ((ThumbnailFile) file).getThumbnail();
                 if (!isAutoAccept && FileTransferConversation.FT_THUMBNAIL_ENABLE && (thumbnail != null)) {
                     isThumbnailFile = true;

@@ -9,13 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 // XEP-0278: Jingle Relay Nodes
 public class JingleTrackerIQ extends IQ
 {
-    public static final String NAME = "services";
+    public static final String ELEMENT = "services";
     public static final String NAMESPACE = "http://jabber.org/protocol/jinglenodes";
+
     private final ConcurrentHashMap<Jid, TrackerEntry> entries = new ConcurrentHashMap<>();
 
     public JingleTrackerIQ()
     {
-        super(NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
         this.setType(Type.get);
         // this.setStanzaId(IQ.nextID());
     }

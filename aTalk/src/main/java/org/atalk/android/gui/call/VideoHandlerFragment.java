@@ -350,6 +350,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
 
     /**
      * Long press camera icon change to alternate camera availab on the device.
+     *
      * @param v the clicked view
      * @return return true is activation is from R.id.button_call_video
      */

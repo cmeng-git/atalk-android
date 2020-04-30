@@ -12,6 +12,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import timber.log.Timber;
 
 /**
@@ -33,6 +35,8 @@ public class SourceExtension extends AbstractExtensionElement
      * The XML namespace of the <tt>setup</tt> element defined by Source-Specific Media Attributes in Jingle.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:ssma:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The XML name of the <tt>setup</tt> element's attribute which corresponds to the <tt>ssrc</tt>

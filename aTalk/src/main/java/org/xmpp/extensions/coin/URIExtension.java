@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * URI packet extension.
  *
@@ -30,6 +32,8 @@ public class URIExtension extends AbstractExtensionElement
      * The namespace that URI belongs to. (cmeng added 20180618)
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:http:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Display text element name.

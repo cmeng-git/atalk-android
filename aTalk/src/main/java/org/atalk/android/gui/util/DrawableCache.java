@@ -5,12 +5,10 @@
  */
 package org.atalk.android.gui.util;
 
-import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 
 import org.atalk.android.aTalkApp;
 

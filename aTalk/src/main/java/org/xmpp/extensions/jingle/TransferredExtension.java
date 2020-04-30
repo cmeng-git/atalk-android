@@ -7,6 +7,8 @@ package org.xmpp.extensions.jingle;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Implements <tt>AbstractExtensionElement</tt> for the "transferred" element defined by XEP-0251:
  * Jingle Session Transfer.
@@ -25,6 +27,8 @@ public class TransferredExtension extends AbstractExtensionElement
      * The namespace of the "transfer" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:transfer:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Initializes a new <tt>TransferredExtensionElement</tt> instance.

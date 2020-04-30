@@ -160,10 +160,10 @@ public class UpdateServiceImpl implements UpdateService
      */
     private void askInstallDownloadedApk(Uri fileUri)
     {
-        AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
-                aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_DOWNLOADED_TITLE),
-                aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_DOWNLOADED),
-                aTalkApp.getResString(R.string.plugin_updatechecker_BUTTON_INSTALL),
+        DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                R.string.plugin_updatechecker_DIALOG_DOWNLOADED_TITLE,
+                R.string.plugin_updatechecker_DIALOG_DOWNLOADED,
+                R.string.plugin_updatechecker_BUTTON_INSTALL,
                 new DialogActivity.DialogListener()
                 {
                     @Override

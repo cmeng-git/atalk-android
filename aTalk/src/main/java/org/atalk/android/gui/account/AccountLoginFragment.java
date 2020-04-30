@@ -135,7 +135,6 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
         mIBRegistrationCheckBox = content.findViewById(R.id.ibRegistration);
 
         mClientCertCheckBox = content.findViewById(R.id.clientCertEnable);
-
         spinnerCert = content.findViewById(R.id.clientCertEntry);
         initCertList();
 
@@ -171,8 +170,10 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     {
         List<String> certList = new ArrayList<>();
 
+        List<CertificateConfigEntry> certEntries = new ArrayList<>();
         CertificateService cvs = CertConfigActivator.getCertService();
-        List<CertificateConfigEntry> certEntries = cvs.getClientAuthCertificateConfigs();
+        if (cvs != null)
+            certEntries = cvs.getClientAuthCertificateConfigs();
         certEntries.add(0, CertificateConfigEntry.CERT_NONE);
 
         for (int idx = 0; idx < certEntries.size(); idx++) {

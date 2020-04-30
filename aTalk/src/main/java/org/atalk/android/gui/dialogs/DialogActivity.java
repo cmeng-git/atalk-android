@@ -6,6 +6,7 @@
 package org.atalk.android.gui.dialogs;
 
 import android.content.*;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -424,10 +425,8 @@ public class DialogActivity extends OSGiActivity
     public static void showConfirmDialog(Context context, int title, int message,
             int confirmTxt, DialogListener listener)
     {
-        showConfirmDialog(context,
-                aTalkApp.getResString(title),
-                aTalkApp.getResString(message),
-                aTalkApp.getResString(confirmTxt), listener);
+        Resources res = aTalkApp.getAppResources();
+        showConfirmDialog(context, res.getString(title), res.getString(message), res.getString(confirmTxt), listener);
     }
 
     /**

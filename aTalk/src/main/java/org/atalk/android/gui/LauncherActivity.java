@@ -15,7 +15,6 @@ import android.widget.*;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidnotification.NotificationHelper;
-import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.EventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
@@ -51,11 +50,6 @@ public class LauncherActivity extends OSGiActivity
 
     private boolean startOnReboot = false;
 
-    /**
-     * aTalk SQLite database
-     */
-    public static DatabaseBackend databaseBackend;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,13 +67,6 @@ public class LauncherActivity extends OSGiActivity
 
         // Must initialize Notification channels before any notification is being issued.
         new NotificationHelper(this);
-
-        // force delete in case system locked during testing
-        // ServerPersistentStoresRefreshDialog.deleteDB();  // purge sql database
-
-        // Trigger the database upgrade or creation if none exist
-        databaseBackend = DatabaseBackend.getInstance(getApplicationContext());
-        databaseBackend.getReadableDatabase();
 
         // Get restore Intent and display "Restoring..." label
         Intent intent = getIntent();

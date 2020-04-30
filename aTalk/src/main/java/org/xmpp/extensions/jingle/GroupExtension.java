@@ -15,6 +15,8 @@ import org.xmpp.extensions.jingle.element.JingleContent;
 import java.io.IOException;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import static org.jivesoftware.smack.xml.XmlPullParser.Event.END_ELEMENT;
 
 /**
@@ -34,6 +36,8 @@ public class GroupExtension extends AbstractExtensionElement
      * The namespace for the "group" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:grouping:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the payload <tt>id</tt> SDP argument.

@@ -37,8 +37,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.menu.MainMenuActivity;
-import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.util.ComboBox;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
@@ -279,7 +279,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             nickName = chatRoomWrapper.getNickName();
         }
 
-        if (TextUtils.isEmpty(nickName) && (getSelectedProvider()!= null)) {
+        if (TextUtils.isEmpty(nickName) && (getSelectedProvider() != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
             if (pps != null) {
                 nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);

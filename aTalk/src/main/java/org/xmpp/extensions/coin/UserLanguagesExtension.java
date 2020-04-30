@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * User languages packet extension.
  *
@@ -30,6 +32,8 @@ public class UserLanguagesExtension extends AbstractExtensionElement
      * The namespace that user languages belongs to.
      */
     public static final String NAMESPACE = "";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the element that contains the media data.

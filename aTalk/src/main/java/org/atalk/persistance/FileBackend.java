@@ -293,7 +293,7 @@ public class FileBackend
             }
             else if (link.matches("(?s)^http[s]:.*") && !link.contains("\\s")) {
                 // return false if there is no ext or 2 < ext.length() > 5
-                String ext = link.replaceAll("(?s)^.+/\\w+\\.(\\w{2,5})$", "$1");
+                String ext = link.replaceAll("(?s)^.+/[\\w-]+\\.([\\w-]{2,5})$", "$1");
                 if (ext.length() > 5) {
                     return false;
                 } else {

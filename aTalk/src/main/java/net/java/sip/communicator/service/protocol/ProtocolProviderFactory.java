@@ -400,6 +400,11 @@ public abstract class ProtocolProviderFactory
     public static final String STUN_PASSWORD = "PASSWORD";
 
     /**
+     * The base property name for protocol of additional STUN servers specified.
+     */
+    public static final String STUN_TURN_PROTOCOL = "TURN_PROTOCOL";
+
+    /**
      * The base property name for the turn supported property of additional STUN servers specified.
      */
     public static final String STUN_IS_TURN_SUPPORTED = "IS_TURN_SUPPORTED";

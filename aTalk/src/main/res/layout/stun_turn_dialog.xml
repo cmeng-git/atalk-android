@@ -1,93 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
     android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:weightSum="1.0">
+    android:padding="@dimen/screen_padding">
 
-    <TableRow>
-
-        <TextView
-            style="@style/MediumFont"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/service_gui_STUN_EDIT_SUPPORT_TURN" />
-
-        <CheckBox
-            android:id="@+id/useTurnCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp" />
-    </TableRow>
-
-    <TableRow>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
 
         <TextView
             style="@style/MediumFont"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
+            android:layout_gravity="center_vertical"
             android:text="@string/service_gui_STUN_EDIT_ADDRESS" />
 
         <EditText
             android:id="@+id/ipAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="text" />
-    </TableRow>
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
+    </LinearLayout>
 
-    <TableRow>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
 
         <TextView
             style="@style/MediumFont"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
+            android:layout_gravity="center_vertical"
             android:text="@string/service_gui_STUN_EDIT_PORT" />
 
         <EditText
             android:id="@+id/serverPort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
             android:inputType="number" />
-    </TableRow>
+    </LinearLayout>
 
-    <TableRow>
+    <CheckBox
+        android:id="@+id/useTurnCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_STUN_EDIT_SUPPORT_TURN" />
 
-        <TextView
-            style="@style/MediumFont"
-            android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/turnSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="@string/service_gui_STUN_EDIT_TURN_USER" />
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
 
-        <EditText
-            android:id="@id/usernameField"
-            android:layout_width="wrap_content"
+            <TextView
+                style="@style/MediumFont"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/service_gui_settings_PROTOCOL" />
+
+            <Spinner
+                android:id="@+id/TURNProtocol"
+                style="@style/SpinnerView"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="text" />
-    </TableRow>
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
 
-    <TableRow>
+            <TextView
+                style="@style/MediumFont"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/service_gui_STUN_EDIT_TURN_USER" />
 
-        <TextView
-            style="@style/MediumFont"
-            android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/usernameField"
+                style="@style/EntryTextView"
+                android:layout_width="match_parent"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="@string/service_gui_STUN_EDIT_PASSWORD" />
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
 
-        <EditText
-            android:id="@id/passwordField"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="textPassword" />
-    </TableRow>
-</TableLayout>
+            <TextView
+                style="@style/MediumFont"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/service_gui_STUN_EDIT_PASSWORD" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/passwordField"
+                    style="@style/EntryTextView"
+                    android:layout_width="match_parent"
+                    android:hint="@string/password"
+                    android:inputType="textPassword" />
+
+                <CheckBox
+                    android:id="@+id/show_password"
+                    android:button="@drawable/checkbox_password_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/passwordField"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="5dp" />
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

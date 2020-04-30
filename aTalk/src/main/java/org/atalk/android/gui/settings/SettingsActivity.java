@@ -6,8 +6,7 @@
 package org.atalk.android.gui.settings;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.os.Bundle;
 import android.preference.*;
 import android.text.TextUtils;
@@ -19,11 +18,11 @@ import net.java.sip.communicator.util.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.aTalkApp.Theme;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
@@ -47,7 +46,7 @@ import timber.log.Timber;
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public class SettingsActivity extends OSGiActivity
 {
@@ -262,7 +261,7 @@ public class SettingsActivity extends OSGiActivity
 
             CharSequence[] entries = entryVector.toArray(EMPTY_CHAR_SEQUENCE_ARRAY);
             CharSequence[] entryValues = entryValueVector.toArray(EMPTY_CHAR_SEQUENCE_ARRAY);
-            String language = aTalkApp.getATLanguage();
+            String language = LocaleHelper.getLanguage();
 
             pLocale.setEntries(entries);
             pLocale.setEntryValues(entryValues);
@@ -275,14 +274,16 @@ public class SettingsActivity extends OSGiActivity
                 pLocale.setValue(language1);
                 pLocale.setSummary(pLocale.getEntry());
 
+                // Save selected language in DB
                 mConfigService.setProperty(P_KEY_LOCALE, language1);
-                aTalkApp.setATLanguage(language1);
 
-                // Need to destroy and restart to set new Theme if there is a change
+                // Need to destroy and restart to set new language if there is a change
                 Activity activity = getActivity();
                 if (!language.equals(value) && (activity != null)) {
+                    // must get aTalk to restart onResume to show correct UI for preference menu
                     aTalk.setPrefChange(true);
-                    aTalkApp.setLanguage(activity);
+                    // All language setting changes must call via aTalkApp so its contextWrapper is updated
+                    aTalkApp.setLocale(language1);
                     activity.finish();
                     activity.startActivity(new Intent(activity, SettingsActivity.class));
                 }
@@ -296,7 +297,7 @@ public class SettingsActivity extends OSGiActivity
         protected void initTheme()
         {
             final ListPreference pTheme = (ListPreference) findPreference(P_KEY_THEME);
-            String nTheme = (aTalkApp.getAppTheme() == Theme.LIGHT) ? "light" : "dark";
+            String nTheme = ThemeHelper.isAppTheme(Theme.LIGHT) ? "light" : "dark";
             pTheme.setValue(nTheme);
             pTheme.setSummary(pTheme.getEntry());
 
@@ -308,12 +309,13 @@ public class SettingsActivity extends OSGiActivity
                 // Save Display Theme to DB
                 Theme vTheme = value.equals("light") ? Theme.LIGHT : Theme.DARK;
                 mConfigService.setProperty(P_KEY_THEME, vTheme.ordinal());
-                aTalkApp.setAppTheme(vTheme);
 
                 // Need to destroy and restart to set new Theme if there is a change
-                if (!nTheme.equals(value)) {
-                    Activity activity = getActivity();
+                Activity activity = getActivity();
+                if (!nTheme.equals(value) && (activity != null)) {
+                    // must get aTalk to restart onResume to show new Theme
                     aTalk.setPrefChange(true);
+                    ThemeHelper.setTheme(activity, vTheme);
                     activity.finish();
                     activity.startActivity(new Intent(activity, SettingsActivity.class));
                 }
@@ -407,7 +409,7 @@ public class SettingsActivity extends OSGiActivity
             fileSizeList.setValue(String.valueOf(filesSize));
             fileSizeList.setSummary(fileSizeList.getEntry());
 
-            // summaryMapper not working for initLocal ?? so use this instead
+            // summaryMapper not working for auto accept fileSize so use this instead
             fileSizeList.setOnPreferenceChangeListener((preference, value) -> {
                 String fileSize = value.toString();
                 fileSizeList.setValue(fileSize);
@@ -542,7 +544,7 @@ public class SettingsActivity extends OSGiActivity
             int videoMaxBandwith = deviceConfig.getVideoRTPPacingThreshold();
             // Accord the current value with the maximum allowed value. Fixes existing
             // configurations that have been set to a number larger than the advised maximum value.
-            videoMaxBandwith = ((videoMaxBandwith > 999) ? 999 : videoMaxBandwith);
+            videoMaxBandwith = (Math.min(videoMaxBandwith, 999));
 
             EditTextPreference maxBWPref = (EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH);
             maxBWPref.setText(Integer.toString(videoMaxBandwith));

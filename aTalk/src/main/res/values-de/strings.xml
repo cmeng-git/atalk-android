@@ -124,6 +124,7 @@
     <string name="service_gui_CALL">Audioanruf</string>
     <string name="service_gui_CALL_FAILED">Gescheiteter Anruf</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Anrufverlauf</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Möchten Sie wirklich alle ausgewählten Anrufdatensätze löschen?</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk konnte %1$s nicht initialisieren\nAlle Medienanrufe/-dienste werden deaktiviert.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Gespräch mit</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Es steht kein Audio/Video-Gerät zur Verfügung, kann Anruf nicht ausführen.</string>
@@ -136,7 +137,6 @@
     <string name="service_gui_CALL_VIDEO">Videoanruf tätigen</string>
     <string name="service_gui_CANCEL">Zurück</string>
     <string name="service_gui_CONTACT_INVALID">Der ausgewählte Kontakt ist nicht gültig: %1$s</string>
-    <string name="service_gui_Contacts">Kontakte</string>
     <string name="service_gui_DONE">OK</string>
     <string name="service_gui_MAS">als gelesen markieren</string>
     <string name="service_gui_REASON_LABEL">Grund:</string>
@@ -207,6 +207,8 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Neuen Kontaktnamen eingeben</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Kontaktnamen ändern</string>
     <string name="service_gui_CONTACTS">Kontakte</string>
+    <string name="service_gui_CONTACTS_OFFLINE_HIDE">Offline Kontakte verbergen</string>
+    <string name="service_gui_CONTACTS_OFFLINE_SHOW">Offline-Kontakte anzeigen</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Nachrichtentext kopieren</string>
 
     <string name="service_gui_CREATE">Erstellen</string>
@@ -214,7 +216,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Eine Konferenzschaltung erstellen.&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Erstellen eines Konferenz-Chats&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Gruppen erstellen&#8230;</string>
-    <string name="service_gui_CREATE_GROUP_INVALID">Ungültiger Gruppenname: %s</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Ungültiger Gruppenname: %1$s</string>
     <string name="service_gui_CREATE_GROUP_NAME">Bitte gebe untenstehend den Namen der zu erstellenden Gruppe ein.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ihre Kontaktliste enthält keine Gruppen. Bitte erstelle zuerst eine Gruppe. (Datei/Gruppe erstellen).</string>
 
@@ -343,7 +345,6 @@
 	<string name="service_gui_FOLDER_OPEN_NO_APPLICATION">Wir konnten keine Anwendung finden um dieses Verzeichnis zu öffnen.</string>
     <string name="service_gui_GROUP_CHAT">Gruppenchat</string>
 	<string name="service_gui_HIDE">Verbergen</string>
-	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Offline Kontakte verbergen</string>
 	<string name="service_gui_HISTORY">Chatverlauf</string>
 	<string name="service_gui_HISTORY_CONTACT">Chatverlauf - %1$s</string>
 	<string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Den Chatverlauf für diesen Kontakt ausschalten.</string>
@@ -498,6 +499,7 @@
     <string name="service_gui_ORGANIZATION">Organisation</string>
     <string name="service_gui_PHONE">Telefon</string>
     <string name="service_gui_PHONES">Telefone</string>
+    <string name="service_gui_PLAY">Abspielen</string>
     <string name="service_gui_POSTAL_CODE">Postleitzahl</string>
     <string name="service_gui_RENAME">Umbenennen</string>
     <string name="service_gui_REGISTRATION_REQUIRED">Fehler bei der Registrierung des Kontos auf dem Server:\n%s"</string>
@@ -567,7 +569,6 @@
     <string name="service_gui_SEND_VIA">Senden über</string>
     <string name="service_gui_SENT">gesendet</string>
     <string name="service_gui_SERVER_CHAT_ROOMS">Server-Chaträume</string>
-    <string name="service_gui_SHOW_OFFLINE_CONTACTS">Offline-Kontakte anzeigen</string>
     <string name="service_gui_SHUTDOWN_IN_PROGRESS">Herunterfahren&#8230;</string>
     <string name="service_gui_STATUS">Status</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Gebe den Anfragegrund ein</string>
@@ -679,7 +680,7 @@
         Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).&lt;br/>&lt;br/>
         Mit dieser Verbindung fortfahren?&lt;br/>
         Klicke Für weitere Optionen und Informationen auf "Zertifikat anzeigen".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} kann die
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s kann die
         Identität des verbindenden Clients nicht überprüfen.&lt;br/>&lt;br/>
         Das Zertifikat ist nicht vertrauenswürdig (ein selbstsigniertes Zertifikat).&lt;br/>&lt;br/>
         Mit dieser Verbindung fortfahren?&lt;br/>
@@ -1077,7 +1078,7 @@
     <string name="service_gui_STUN_EDIT_PASSWORD">Passwort</string>
     <string name="service_gui_STUN_EDIT_PORT">Server Port</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">TURN unterstützen</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">TURN Benutzername</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">Nutzername</string>
  
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Anrufverschlüsselung einschalten</string>
@@ -1356,9 +1357,7 @@
     <string name="service_gui_settings_SYSTEM_MEDIARECORDER">Medienaufnahmegerät</string>
 
     <!-- Camera used -->
-    <string name="service_gui_settings_BACK_CAMERA">Kamera hinten</string>
     <string name="service_gui_settings_CAMERA">Kamera</string>
-    <string name="service_gui_settings_FRONT_CAMERA">Kamera vorn</string>
     <string name="service_gui_settings_NO_CAMERA">Kein Kameragerät gefunden</string>
     <string name="service_gui_settings_USE_BACK_CAMERA">Rückkamera verwenden</string>
     <string name="service_gui_settings_USE_FRONT_CAMERA">Frontkamera verwenden</string>

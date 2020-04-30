@@ -380,6 +380,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                         mClickedChatRoom.setTtsEnable(true);
                         mChatRoomTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
                     }
+                    ChatSessionManager.getMultiChat(mClickedChatRoom, true).updateChatTtsOption();
                     return true;
 
                 case R.id.close_chatroom:

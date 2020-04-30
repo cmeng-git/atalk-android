@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
@@ -16,13 +17,15 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.aTalkApp.Theme;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.settings.TimePreference;
+import org.atalk.android.gui.util.LocaleHelper;
+import org.atalk.android.gui.util.ThemeHelper;
+import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
@@ -84,11 +87,6 @@ public class ConfigurationUtils
      * The Web View access page
      */
     private static String mWebPage;
-
-    /**
-     * The aTalk UI language
-     */
-    private static String mLanguage;
 
     /**
      * Indicates if the call panel is shown.
@@ -428,36 +426,35 @@ public class ConfigurationUtils
     /**
      * The names of the configuration properties.
      */
-    public static String pAutoStart = "gui.AUTO_START_ON_REBOOT";
-    public static String pTTSEnable = "gui.TTS_ENABLE";
-    public static String pTTSDelay = "gui.TTS_DELAY";
-    public static String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
-    private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
-    private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
-    private static String pMessageDeliveryReceipt = "gui.SEND_MESSAGE_DELIVERY_RECEIPT";
-    private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
-    private static String pSendThumbnail = "gui.sendThumbnail";
-    private static String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
-    private static String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
-    private static String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
-    private static String pMessageHistoryShown = "gui.IS_MESSAGE_HISTORY_SHOWN";
     private static String pAcceptFileSize = "gui.AUTO_ACCEPT_FILE_SIZE";
+    private static String pAutoAnswerDisableSubmenu = "gui.AUTO_ANSWER_DISABLE_SUBMENU";
+    private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
+    public static String pAutoStart = "gui.AUTO_START_ON_REBOOT";
     private static String pChatHistorySize = "gui.MESSAGE_HISTORY_SIZE";
     private static String pChatWriteAreaSize = "gui.CHAT_WRITE_AREA_SIZE";
-    private static String pTransparentWindowEnabled = "gui.IS_TRANSPARENT_WINDOW_ENABLED";
-    private static String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
-    private static String pIsWindowDecorated = "gui.IS_WINDOW_DECORATED";
-    private static String pShowStatusChangedInChat = "gui.SHOW_STATUS_CHANGED_IN_CHAT";
-    private static String pRouteVideoAndDesktopUsingPhoneNumber = "gui.ROUTE_VIDEO_AND_DESKTOP_TO_PNONENUMBER";
     private static String pHideAccountMenu = "gui.HIDE_SELECTION_ON_SINGLE_ACCOUNT";
     private static String pHideAccountStatusSelectors = "gui.HIDE_ACCOUNT_STATUS_SELECTORS";
-    private static String pAutoAnswerDisableSubmenu = "gui.AUTO_ANSWER_DISABLE_SUBMENU";
     private static String pHideExtendedAwayStatus = "protocol.globalstatus.HIDE_EXTENDED_AWAY_STATUS";
-
+    private static String pIsWindowDecorated = "gui.IS_WINDOW_DECORATED";
+    public static String pLanguage = aTalkApp.getResString(R.string.pref_key_locale);
+    private static String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
+    private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
+    private static String pMessageDeliveryReceipt = "gui.SEND_MESSAGE_DELIVERY_RECEIPT";
+    private static String pMessageHistoryShown = "gui.IS_MESSAGE_HISTORY_SHOWN";
+    private static String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
+    private static String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
     public static String pQuiteHoursEnable = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
     public static String pQuiteHoursStart = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
     public static String pQuiteHoursEnd = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
-
+    private static String pRouteVideoAndDesktopUsingPhoneNumber = "gui.ROUTE_VIDEO_AND_DESKTOP_TO_PNONENUMBER";
+    private static String pSendThumbnail = "gui.sendThumbnail";
+    private static String pShowStatusChangedInChat = "gui.SHOW_STATUS_CHANGED_IN_CHAT";
+    private static String pTransparentWindowEnabled = "gui.IS_TRANSPARENT_WINDOW_ENABLED";
+    public static String pTTSEnable = "gui.TTS_ENABLE";
+    public static String pTTSDelay = "gui.TTS_DELAY";
+    private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
+    public static String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
+    private static String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
     private static String pHeadsUpEnable = aTalkApp.getResString(R.string.pref_key_heads_up_enable);
 
     /**
@@ -511,9 +508,9 @@ public class ConfigurationUtils
         initAppTheme();
 
         // Load the UI language last selected by user or default to system language i.e. ""
-        mLanguage = configService.getString(aTalkApp.getResString(R.string.pref_key_locale, ""));
-        aTalkApp.setATLanguage(mLanguage);
-        
+        String language = configService.getString(aTalkApp.getResString(R.string.pref_key_locale), "");
+        LocaleHelper.setLanguage(language);
+
         // Load the "webPage" property.
         mWebPage = configService.getString(pWebPage);
         if (StringUtils.isNullOrEmpty(mWebPage))
@@ -1058,6 +1055,20 @@ public class ConfigurationUtils
         isSendThumbnail = sendThumbnail;
         configService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
         FileTransferConversation.FT_THUMBNAIL_ENABLE = sendThumbnail;
+    }
+
+    /**
+     * Check to see the file size specified is autoAcceptable:
+     * 1. size > 0
+     * 2. acceptFileSize != 0 (never)
+     * 3. size <= acceptFileSize
+     *
+     * @param size current file size
+     * @return true is auto aceept to download
+     */
+    public static boolean isAutoAcceptFile(long size)
+    {
+        return (size > 0) && (acceptFileSize != 0) && (size <= acceptFileSize);
     }
 
     /**
@@ -1673,12 +1684,15 @@ public class ConfigurationUtils
         configService.setProperty(ALERTER_ENABLED_PROP, Boolean.toString(isEnabled));
     }
 
-    public static void setQuiteHour(String property, Object value) {
+    public static void setQuiteHour(String property, Object value)
+    {
         if (value instanceof Boolean) {
             setQuiteHoursEnable(Boolean.valueOf(value.toString()));
-        } else if (pQuiteHoursStart.equals(property)) {
+        }
+        else if (pQuiteHoursStart.equals(property)) {
             setQuiteHoursStart((Long) value);
-        } else {
+        }
+        else {
             setQuiteHoursEnd((Long) value);
         }
     }
@@ -2175,7 +2189,7 @@ public class ConfigurationUtils
         else {
             theme = Theme.LIGHT;
         }
-        aTalkApp.setAppTheme(theme);
+        ThemeHelper.setAppTheme(theme);
     }
 
     /**
@@ -2212,7 +2226,7 @@ public class ConfigurationUtils
      * @param property the property name in the contact options
      * @return the value of the contact options property, saved via the <tt>ConfigurationService</tt>.
      */
-    public static String getContactProperty(Jid contactJid,  String property)
+    public static String getContactProperty(Jid contactJid, String property)
     {
         JSONObject options = getContactOptions(contactJid);
         try {
@@ -2785,5 +2799,25 @@ public class ConfigurationUtils
                 }
             }
         }
+    }
+
+    // ====================== Function use when aTalk app is not fully initialize e.g. init UI language =======================
+    // Note: aTalkApp get initialize much earlier than ConfigurationUtils
+
+    private static SQLiteConfigurationStore sqlStore = new SQLiteConfigurationStore(aTalkApp.getInstance());
+
+    /**
+     * Direct fetching of the property from SQLiteConfigurationStore on system startup
+     *
+     * @param propertyName of the value to retrieve
+     * @param defValue default value to use
+     * @return the retrieve value
+     */
+    public static String getProperty(String propertyName, String defValue)
+    {
+        Object objValue = sqlStore.getProperty(propertyName);
+        return (objValue == null)
+                ? defValue
+                : objValue.toString();
     }
 }

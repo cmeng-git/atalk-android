@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 /**
  * User packet extension.
  *
@@ -30,6 +32,8 @@ public class UserExtension extends AbstractExtensionElement
      * The namespace that user belongs to.
      */
     public static final String NAMESPACE = null;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Entity attribute name.

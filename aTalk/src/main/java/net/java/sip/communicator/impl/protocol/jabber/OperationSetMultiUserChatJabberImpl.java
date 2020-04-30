@@ -22,6 +22,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.muc.*;
@@ -673,7 +674,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         EntityBareJid entityBareJid = message.getFrom().asEntityBareJidIfPossible();
         ChatRoomJabberImpl chatRoom = findRoom(entityBareJid);
 
-        if (message.getExtensionElement(CaptchaIQ.ELEMENT, CaptchaIQ.NAMESPACE) != null) {
+        if (message.getExtension(CaptchaExtension.class) != null) {
             chatRoom.initCaptchaProcess(message);
         }
         // Handle only error message (currently not supported by smack)

@@ -123,7 +123,8 @@
     <string name="service_gui_BUSY_STATUS">Sibuk</string>
     <string name="service_gui_CALL">Panggilan audio</string>
     <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
-    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat panggilan</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat Panggilan</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin membersihkan semua catatan panggilan yang dipilih?</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk gagal menginisialisasi %1$s\nSemua panggilan/layanan media akan dinonaktifkan.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Panggil dengan</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Kami tidak dapat menemukan perangkat Audio/Video yang aktif sehingga tidak dapat membuat panggilan.</string>
@@ -136,7 +137,6 @@
     <string name="service_gui_CALL_VIDEO">Panggilan video</string>
     <string name="service_gui_CANCEL">Tamatkan</string>
     <string name="service_gui_CONTACT_INVALID">Kontak yang dipilih tidak dikenali: %1$s</string>
-    <string name="service_gui_Contacts">Kontak</string>
     <string name="service_gui_DONE">Selesai</string>
     <string name="service_gui_MAS">tandai membaca</string>
     <string name="service_gui_REASON_LABEL">Alasan:</string>
@@ -207,6 +207,8 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Masukkan Nama kontak baru</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Ubah Nama Kontak</string>
     <string name="service_gui_CONTACTS">Kontak</string>
+    <string name="service_gui_CONTACTS_OFFLINE_HIDE">Sembunyikan kontak offline</string>
+    <string name="service_gui_CONTACTS_OFFLINE_SHOW">Tunjukkan kontak offline</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Salin teks pesan</string>
 
     <string name="service_gui_CREATE">Buat</string>
@@ -214,7 +216,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Bikin panggilan konferensi&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Bikin obrolan konferensi&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Bikin grup&#8230;</string>
-    <string name="service_gui_CREATE_GROUP_INVALID">Nama grup tidak betul: %s</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Nama grup tidak betul: %1$s</string>
     <string name="service_gui_CREATE_GROUP_NAME">Pada bidang di bawah, masukkan nama grup yang ingin Anda buat.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Daftar kontak Anda tidak berisi grup apa pun. Harap buat grup terlebih dahulu (Fail/Buat grup).</string>
 
@@ -343,7 +345,6 @@
     <string name="service_gui_FOLDER_OPEN_NO_APPLICATION">Kami tidak dapat menemukan aplikasi untuk membuka folder ini</string>
     <string name="service_gui_GROUP_CHAT">Obrolan Grup</string>
     <string name="service_gui_HIDE">Sembunyikan</string>
-    <string name="service_gui_HIDE_OFFLINE_CONTACTS">Sembunyikan kontak offline</string>
     <string name="service_gui_HISTORY">Riwayat</string>
     <string name="service_gui_HISTORY_CONTACT">Sejarah - %1$s</string>
     <string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Matikan histori untuk kontak ini</string>
@@ -499,6 +500,7 @@
     <string name="service_gui_ORGANIZATION">Organisasi</string>
     <string name="service_gui_PHONE">Telepon</string>
     <string name="service_gui_PHONES">Ponsel</string>
+    <string name="service_gui_PLAY">Main</string>
     <string name="service_gui_POSTAL_CODE">Kode Pos</string>
     <string name="service_gui_RENAME">Nama baru</string>
     <string name="service_gui_REGISTRATION_REQUIRED">Kesalahan dalam pendaftaran akun di server:\n%s"</string>
@@ -568,7 +570,6 @@
     <string name="service_gui_SEND_VIA">Kirim via</string>
     <string name="service_gui_SENT">mengirim</string>
     <string name="service_gui_SERVER_CHAT_ROOMS">Ruang Obrolan Server</string>
-    <string name="service_gui_SHOW_OFFLINE_CONTACTS">Tunjukkan kontak offline</string>
     <string name="service_gui_SHUTDOWN_IN_PROGRESS">mematikan&#8230;</string>
     <string name="service_gui_STATUS">Status</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Ketikkan alasan permintaan Anda</string>
@@ -685,7 +686,7 @@
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} tidak dapat memverifikasi
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s tidak dapat memverifikasi
         identitas klien yang terhubung.&lt;br/>&lt;br/>
         Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa klien\'\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
@@ -1094,7 +1095,7 @@
     <string name="service_gui_STUN_EDIT_PASSWORD">Kata Sandi</string>
     <string name="service_gui_STUN_EDIT_PORT">Port server</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Dukungan TURN</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">TURN nama pengguna</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">Nama</string>
  
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Aktifkan enkripsi panggilan</string>
@@ -1373,9 +1374,7 @@
     <string name="service_gui_settings_SYSTEM_MEDIARECORDER">MediaRecorder</string>
 
     <!-- Camera used -->
-    <string name="service_gui_settings_BACK_CAMERA">Kamera belakang</string>
     <string name="service_gui_settings_CAMERA">Kamera</string>
-    <string name="service_gui_settings_FRONT_CAMERA">Kamera depan</string>
     <string name="service_gui_settings_NO_CAMERA">Tidak ditemukan perangkat kamera</string>
     <string name="service_gui_settings_USE_BACK_CAMERA">Gunakan kamera belakang</string>
     <string name="service_gui_settings_USE_FRONT_CAMERA">Gunakan kamera depan</string>

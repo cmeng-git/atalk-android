@@ -25,7 +25,6 @@ import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.service.osgi.OSGiFragment;
 
 import java.beans.PropertyChangeEvent;
@@ -66,21 +65,15 @@ public class TLS_Configuration extends OSGiFragment
     private Button cmdRemove;
     private Button cmdEdit;
 
-    private final Context mContext;
-
-    /**
-     * Creates a new instance of this class.
-     */
-    public TLS_Configuration(Context context)
-    {
-        mContext = context;
-        cvs = CertConfigActivator.getCertService();
-        CertConfigActivator.getConfigService().addPropertyChangeListener(this);
-    }
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        mContext = getContext();
+        cvs = CertConfigActivator.getCertService();
+        CertConfigActivator.getConfigService().addPropertyChangeListener(this);
+
         View content = inflater.inflate(R.layout.cert_tls_config, container, false);
 
         CheckBox chkEnableRevocationCheck = content.findViewById(R.id.cb_crl);
@@ -133,7 +126,7 @@ public class TLS_Configuration extends OSGiFragment
 
         switch (v.getId()) {
             case R.id.cmd_add:
-                dialog = CertConfigEntryDialog.getInstance(mContext, CertificateConfigEntry.CERT_NONE, this);
+                dialog = CertConfigEntryDialog.getInstance(CertificateConfigEntry.CERT_NONE, this);
                 dialog.show(ft, "CertConfigEntry");
                 break;
 
@@ -146,7 +139,7 @@ public class TLS_Configuration extends OSGiFragment
 
             case R.id.cmd_edit:
                 if (mCertEntry != null) {
-                    dialog = CertConfigEntryDialog.getInstance(mContext, mCertEntry, this);
+                    dialog = CertConfigEntryDialog.getInstance(mCertEntry, this);
                     dialog.show(ft, "CertConfigEntry");
                 }
                 break;

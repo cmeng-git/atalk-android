@@ -19,6 +19,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * The packet extension added to the MUC presence to broadcast current
  * transcription status to all conference participants.
@@ -38,6 +40,8 @@ public class TranscriptionStatusExtension extends AbstractExtensionElement
      * The namespace of this packet extension.
      */
     public static final String NAMESPACE = "jabber:client";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of XML attribute which holds the transcription status.

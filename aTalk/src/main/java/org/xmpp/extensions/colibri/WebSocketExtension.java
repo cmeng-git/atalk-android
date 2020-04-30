@@ -19,6 +19,8 @@ package org.xmpp.extensions.colibri;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * @author Boris Grozev
  * @author Eng Chong Meng
@@ -31,6 +33,8 @@ public class WebSocketExtension extends AbstractExtensionElement
     public static final String ELEMENT = "web-socket";
 
     public static final String NAMESPACE = ColibriConferenceIQ.NAMESPACE;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the "url" attribute.

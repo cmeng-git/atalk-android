@@ -8,15 +8,15 @@ package org.atalk.android;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.*;
-import android.text.TextUtils;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.LauncherActivity;
@@ -24,15 +24,16 @@ import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
+import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
-
-import java.util.Locale;
 
 import androidx.lifecycle.*;
 import androidx.multidex.MultiDex;
@@ -62,22 +63,6 @@ public class aTalkApp extends Application implements LifecycleObserver
     public static boolean isForeground = false;
 
     public static boolean permissionFirstRequest = true;
-
-    // Both mLanguage and mTheme will get initialize by ConfigurationUtils on startup
-    private static String mLanguage = "";           // Default to system locale language
-    private static Theme mTheme = Theme.DARK;
-
-    /**
-     * Possible values for the different theme settings.
-     *
-     * <strong>Important:</strong>
-     * Do not change the order of the items! The ordinal value (position) is used when saving the settings.
-     */
-    public enum Theme
-    {
-        LIGHT,
-        DARK
-    }
 
     /**
      * Static instance holder.
@@ -110,14 +95,34 @@ public class aTalkApp extends Application implements LifecycleObserver
     @Override
     public void onCreate()
     {
+        TimberLogImpl.init();
+
+        // This helps to prevent WebView resets UI back to system default.
+        // Must skip for < N else weired exceptions happen in Note-5
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            new WebView(this).destroy();
+        }
+
+        // force delete in case system locked during testing
+        // ServerPersistentStoresRefreshDialog.deleteDB();  // purge sql database
+
+        // Trigger the aTalk database upgrade or creation if none exist
+        DatabaseBackend.getInstance(this);
+
+        // Do this after WebView(this).destroy(); Set up contextWrapper to use aTalk user selected Language
+        mInstance = this;
+        String language = ConfigurationUtils.getProperty(getString(R.string.pref_key_locale), "");
+        LocaleHelper.setLocale(mInstance, language);
+
         super.onCreate();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-        mInstance = this;
-        TimberLogImpl.init();
     }
 
     /**
-     * {@inheritDoc}
+     * This method is for use in emulated process environments.  It will
+     * never be called on a production Android device, where processes are
+     * removed by simply killing them; no user code (including this callback)
+     * is executed when doing so.
      */
     @Override
     public void onTerminate()
@@ -125,6 +130,8 @@ public class aTalkApp extends Application implements LifecycleObserver
         mInstance = null;
         super.onTerminate();
     }
+
+    // ========= Lifecycle implementations ======= //
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onAppForegrounded()
@@ -144,7 +151,16 @@ public class aTalkApp extends Application implements LifecycleObserver
     protected void attachBaseContext(Context base)
     {
         super.attachBaseContext(base);
-        MultiDex.install(this);
+        MultiDex.install(base);
+    }
+
+    /**
+     * All language setting changes must call via this so aTalkApp contextWrapper is updated
+     *
+     * @param language locale for the aTalkApp
+     */
+    public static void setLocale(String language) {
+        LocaleHelper.setLocale(mInstance, language);
     }
 
     /**
@@ -229,6 +245,15 @@ public class aTalkApp extends Application implements LifecycleObserver
     }
 
     /**
+     * Get aTalkApp application instance
+     * @return aTalkApp mInstance
+     */
+    public static aTalkApp getInstance()
+    {
+        return mInstance;
+    }
+
+    /**
      * Returns global application context.
      *
      * @return Returns global application <tt>Context</tt>.
@@ -249,14 +274,16 @@ public class aTalkApp extends Application implements LifecycleObserver
     }
 
     /**
-     * Returns Android string resource for given <tt>id</tt>.
+     * Returns Android string resource of the user selected language for given <tt>id</tt>
+     * and format arguments that will be used for substitution.
      *
      * @param id the string identifier.
-     * @return Android string resource for given <tt>id</tt>.
+     * @param arg the format arguments that will be used for substitution.
+     * @return Android string resource for given <tt>id</tt> and format arguments.
      */
-    public static String getResString(int id)
+    public static String getResString(int id, Object... arg)
     {
-        return getAppResources().getString(id);
+        return mInstance.getString(id, arg);
     }
 
     /**
@@ -266,10 +293,6 @@ public class aTalkApp extends Application implements LifecycleObserver
      * @param arg the format arguments that will be used for substitution.
      * @return Android string resource for given <tt>id</tt> and format arguments.
      */
-    public static String getResString(int id, Object... arg)
-    {
-        return getAppResources().getString(id, arg);
-    }
 
     public static String getResStringByName(String aString)
     {
@@ -296,20 +319,14 @@ public class aTalkApp extends Application implements LifecycleObserver
 
     public static void showToastMessage(int id, Object... arg)
     {
-        showToastMessage(getAppResources().getString(id, arg));
-    }
-
-    public static void showToastMessageOnUI(final int id, final Object... arg)
-    {
-        currentActivity.runOnUiThread(() -> showToastMessage(getAppResources().getString(id, arg)));
+        showToastMessage(mInstance.getString(id, arg));
     }
 
     public static void showGenericError(final int id, final Object... arg)
     {
-        currentActivity.runOnUiThread(() -> {
-            String msg = getResString(id, arg);
-            DialogActivity.showDialog(getGlobalContext(),
-                    aTalkApp.getResString(R.string.service_gui_ERROR), msg);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            String msg = mInstance.getString(id, arg);
+            DialogActivity.showDialog(mInstance, mInstance.getString(R.string.service_gui_ERROR), msg);
         });
     }
 
@@ -388,61 +405,6 @@ public class aTalkApp extends Application implements LifecycleObserver
     public static boolean isIconEnabled()
     {
         return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, false);
-    }
-
-    public static String getATLanguage()
-    {
-        return mLanguage;
-    }
-
-    public static void setATLanguage(String language)
-    {
-        mLanguage = language;
-    }
-
-    public static void setLanguage(Context context)
-    {
-        Locale locale;
-        if (TextUtils.isEmpty(mLanguage)) {
-            locale = Resources.getSystem().getConfiguration().locale;
-        }
-        else if (mLanguage.length() == 5 && mLanguage.charAt(2) == '_') {
-            // language is in the form: en_US
-            locale = new Locale(mLanguage.substring(0, 2), mLanguage.substring(3));
-        }
-        else {
-            locale = new Locale(mLanguage);
-        }
-        Resources resources = context.getResources();
-        Configuration config = resources.getConfiguration();
-        config.locale = locale;
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-    }
-
-    /**
-     * Get the app specific theme to init android theme for use
-     *
-     * @param theme the current theme
-     * @return app android theme for use
-     */
-    public static int getAppThemeResourceId(Theme theme)
-    {
-        return (theme == Theme.LIGHT) ? R.style.AppTheme_Light : R.style.AppTheme_Dark;
-    }
-
-    public static int getAppThemeResourceId()
-    {
-        return getAppThemeResourceId(mTheme);
-    }
-
-    public static Theme getAppTheme()
-    {
-        return mTheme;
-    }
-
-    public static void setAppTheme(Theme theme)
-    {
-        mTheme = theme;
     }
 
     /**
@@ -524,16 +486,6 @@ public class aTalkApp extends Application implements LifecycleObserver
                     getResString(R.string.service_gui_SEND_LOGS_SUBJECT),
                     getResString(R.string.service_gui_SEND_LOGS_TITLE));
         }
-    }
-
-    public static aTalkApp getApp(Context ctx)
-    {
-        return (aTalkApp) ctx.getApplicationContext();
-    }
-
-    public static aTalkApp getInstance()
-    {
-        return mInstance;
     }
 
     /**

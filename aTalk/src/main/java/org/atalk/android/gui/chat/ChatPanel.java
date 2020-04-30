@@ -26,6 +26,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.chat.conference.*;
+import org.atalk.android.plugin.textspeech.TTSService;
+import org.atalk.persistance.FileBackend;
 import org.atalk.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -59,6 +61,8 @@ public class ChatPanel implements Chat, MessageListener
      * The underlying <tt>MetaContact</tt>, we're chatting with.
      */
     private final MetaContact mMetaContact;
+
+    private final Object mDescriptor;
 
     /**
      * The chatType for which the message will be send for method not using Transform process
@@ -121,6 +125,13 @@ public class ChatPanel implements Chat, MessageListener
     private final List<ChatSessionListener> msgListeners = new ArrayList<>();
 
     /**
+     * Current chatSession TTS is allowed if true
+     */
+    private boolean isChatTtsEnable = false;
+
+    private int ttsDelay = 1200;
+
+    /**
      * Field used by the <tt>ChatController</tt> to keep track of last edited message content.
      */
     private String editedText;
@@ -143,6 +154,8 @@ public class ChatPanel implements Chat, MessageListener
      */
     public ChatPanel(Object descriptor)
     {
+        mDescriptor = descriptor;
+
         if (descriptor instanceof MetaContact) {
             mMetaContact = (MetaContact) descriptor;
         }
@@ -169,6 +182,7 @@ public class ChatPanel implements Chat, MessageListener
         mCurrentChatTransport = mChatSession.getCurrentChatTransport();
         mCurrentChatTransport.addInstantMessageListener(this);
         mCurrentChatTransport.addSmsMessageListener(this);
+        updateChatTtsOption();
     }
 
     /**
@@ -644,10 +658,66 @@ public class ChatPanel implements Chat, MessageListener
             // Must always cache the chatMsg as chatFragment has not registered to handle incoming
             // message on first onAttach or when it is not in focus.
             cacheNextMsg(chatMessage);
+            messageSpeak(chatMessage, 2*ttsDelay);  // for chatRoom
 
             for (ChatSessionListener l : msgListeners) {
                 l.messageAdded(chatMessage);
             }
+        }
+    }
+
+    public boolean isChatTtsEnable()
+    {
+        return isChatTtsEnable;
+    }
+
+    public void updateChatTtsOption()
+    {
+        isChatTtsEnable = ConfigurationUtils.isTtsEnable();
+        if (isChatTtsEnable) {
+            // Object mDescriptor = mChatSession.getDescriptor();
+            if (mDescriptor instanceof MetaContact) {
+                isChatTtsEnable = ((MetaContact) mDescriptor).getDefaultContact().isTtsEnable();
+            }
+            else {
+                isChatTtsEnable = ((ChatRoomWrapper) mDescriptor).isTtsEnable();
+            }
+        }
+        // refresh the tts delay time
+        ttsDelay = ConfigurationUtils.getTtsDelay();
+    }
+
+    private void messageSpeak(ChatMessage msg, int delay)
+    {
+        Timber.d("Chat TTS message speak: %s = %s", isChatTtsEnable, msg.getMessage());
+        if (!isChatTtsEnable)
+            return;
+
+        // ChatRoomMessageReceivedEvent from conference room
+        if (ChatMessage.MESSAGE_IN == msg.getMessageType()
+                || ChatMessage.MESSAGE_MUC_IN == msg.getMessageType()) {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                Timber.w("TTS speak wait exception: %s", e.getMessage());
+            }
+            ttsSpeak(msg);
+        }
+    }
+
+    /**
+     * call TTS to speak the text given in chatMessage if it is not HttpDownloadLink
+     *
+     * @param chatMessage ChatMessage for TTS
+     */
+    public void ttsSpeak(ChatMessage chatMessage)
+    {
+        String textBody = chatMessage.getMessage();
+        if (!TextUtils.isEmpty(textBody) && !FileBackend.isHttpFileDnLink(textBody)) {
+            Intent spkIntent = new Intent(aTalkApp.getInstance(), TTSService.class);
+            spkIntent.putExtra(TTSService.EXTRA_MESSAGE, textBody);
+            spkIntent.putExtra(TTSService.EXTRA_QMODE, false);
+            aTalkApp.getInstance().startService(spkIntent);
         }
     }
 
@@ -734,7 +804,10 @@ public class ChatPanel implements Chat, MessageListener
             synchronized (cacheLock) {
                 // Must cache chatMsg as chatFragment has not registered to handle incoming
                 // message on first onAttach or not in focus
-                cacheNextMsg(ChatMessageImpl.getMsgForEvent(messageReceivedEvent));
+
+                ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
+                cacheNextMsg(chatMessage);
+                messageSpeak(chatMessage, ttsDelay);
 
                 for (MessageListener l : msgListeners) {
                     l.messageReceived(messageReceivedEvent);
@@ -838,7 +911,6 @@ public class ChatPanel implements Chat, MessageListener
         if (!TextUtils.isEmpty(reason) && mergeMessage) {
             errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
         }
-
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(), srcMessage.getContent());
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN, errorMsg);
     }
@@ -869,8 +941,6 @@ public class ChatPanel implements Chat, MessageListener
                     PresenceStatus presenceStatus = chatTransport.getStatus();
                     ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
                     ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
-
-
                 });
             }
         }
@@ -943,7 +1013,6 @@ public class ChatPanel implements Chat, MessageListener
         if (!StringUtils.isNullOrEmpty(statusMessage)) {
             String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
             addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN, statusMessage);
-
         }
     }
 

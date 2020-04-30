@@ -124,6 +124,7 @@
     <string name="service_gui_CALL">Аудиозвонок</string>
     <string name="service_gui_CALL_FAILED">Не удалось выполнить вызов</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Журнал вызовов</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Вы уверены, что хотите удалить все выбранные записи вызовов?</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk не удалось инициализировать %1$s\nВозвраты/службы мультимедиа будут отключены.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Вызов с</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Мы не смогли найти никаких активных аудио/видео устройств, следовательно, не смогли создать вызов.</string>
@@ -136,7 +137,6 @@
     <string name="service_gui_CALL_VIDEO">Видеозвонок</string>
     <string name="service_gui_CANCEL">Отменить</string>
     <string name="service_gui_CONTACT_INVALID">Выбранный контакт недействителен: %1$s</string>
-    <string name="service_gui_Contacts">Контакты</string>
     <string name="service_gui_DONE">Готово</string>
     <string name="service_gui_MAS">пометить, как прочитанное</string>
     <string name="service_gui_REASON_LABEL">Причина:</string>
@@ -206,6 +206,8 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Введите новый контакт Имя</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Изменить имя контакта</string>
     <string name="service_gui_CONTACTS">Контакты</string>
+    <string name="service_gui_CONTACTS_OFFLINE_HIDE">Скрыть отключенных</string>
+    <string name="service_gui_CONTACTS_OFFLINE_SHOW">Показать автономные контакты</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Копировать текст сообщения</string>
 
     <string name="service_gui_CREATE">Создать</string>
@@ -213,7 +215,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Создать конференцию&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Создать чат конференции&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Создать группу&#8230;</string>
-    <string name="service_gui_CREATE_GROUP_INVALID">Неверное название группы: %s</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Неверное название группы: %1$s</string>
     <string name="service_gui_CREATE_GROUP_NAME">В поле ниже введите имя группы, которую вы хотите создать.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ваш список контактов не содержит групп. Сначала создайте группу (File/Create group).</string>
 
@@ -345,7 +347,6 @@
 	<string name="service_gui_FOLDER_OPEN_NO_APPLICATION">Мы не смогли найти приложение для открытия этой папки</string>
     <string name="service_gui_GROUP_CHAT">Групповой чат</string>
 	<string name="service_gui_HIDE">Скрыть</string>
-	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Скрыть отключенных</string>
 	<string name="service_gui_HISTORY">История</string>
 	<string name="service_gui_HISTORY_CONTACT">История - %1$s</string>
 	<string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Отключить историю для этого контакта</string>
@@ -501,6 +502,7 @@
     <string name="service_gui_ORGANIZATION">Организация</string>
     <string name="service_gui_PHONE">Телефон</string>
     <string name="service_gui_PHONES">Телефоны</string>
+    <string name="service_gui_PLAY">Играть</string>
     <string name="service_gui_POSTAL_CODE">Почтовый код</string>
     <string name="service_gui_RENAME">Переименовать</string>
     <string name="service_gui_REGISTRATION_REQUIRED">Ошибка при регистрации аккаунта на сервере:\n%s"</string>
@@ -570,7 +572,6 @@
     <string name="service_gui_SEND_VIA">Отправить через</string>
 	<string name="service_gui_SENT">отправлено</string>
 	<string name="service_gui_SERVER_CHAT_ROOMS">Серверные чаты</string>
-	<string name="service_gui_SHOW_OFFLINE_CONTACTS">Показать автономные контакты</string>
     <string name="service_gui_SHUTDOWN_IN_PROGRESS">shuting down&#8230;</string>
 	<string name="service_gui_STATUS">Статус</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Введите причину запроса</string>
@@ -687,7 +688,7 @@
         идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
         Продолжить подключение только для этого экземпляра? &lt;br/>
         Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} не может проверить идентичность соединительного клиента. &lt;br/>
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s не может проверить идентичность соединительного клиента. &lt;br/>
 		&lt;br/>Сертификату не доверяют (самозаверяющий сертификат), что означает, что клиентский идентификация не может быть автоматически проверена.
 		&lt;br/>&lt;br/> Продолжить подключение только для этого экземпляра? &lt;br/> Для получения дополнительной информации и информации нажмите «Показать сертификат».&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>%1$s не может проверить
@@ -1097,7 +1098,7 @@
     <string name="service_gui_STUN_EDIT_PASSWORD">Пароль</string>
     <string name="service_gui_STUN_EDIT_PORT">Порт сервера</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Поддержка TURN</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">TURN username</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">имя пользователя</string>
 
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Включить шифрование вызовов</string>
@@ -1376,9 +1377,7 @@
     <string name="service_gui_settings_SYSTEM_MEDIARECORDER">MediaRecorder</string>
 
     <!-- Camera used -->
-    <string name="service_gui_settings_BACK_CAMERA">Задняя камера</string>
     <string name="service_gui_settings_CAMERA">Камера</string>
-    <string name="service_gui_settings_FRONT_CAMERA">Передняя камера</string>
     <string name="service_gui_settings_NO_CAMERA">Не найдено ни одного устройства камеры</string>
     <string name="service_gui_settings_USE_BACK_CAMERA">Использовать обратную камеру</string>
     <string name="service_gui_settings_USE_FRONT_CAMERA">Использовать переднюю камеру</string>

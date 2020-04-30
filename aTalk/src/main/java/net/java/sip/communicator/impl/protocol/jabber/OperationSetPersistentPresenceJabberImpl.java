@@ -1425,9 +1425,10 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         String displayName = null;
-        Nick ext = subscribeRequest.getExtension(Nick.class);
-        if (ext != null)
-            displayName = ext.getName();
+        // For 4.4.3-master (20200416): subscribeRequest.getExtension(Nick.class); => IllegalArgumentException
+        Nick nickExt = (Nick) subscribeRequest.getExtensionElement(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+        if (nickExt != null)
+            displayName = nickExt.getName();
 
         Timber.d("Subscription authorization request from: %s", fromJid);
         synchronized (this) {

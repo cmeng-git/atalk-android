@@ -537,7 +537,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-
      * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
@@ -583,7 +582,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-
      * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
@@ -599,7 +597,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-
      * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
@@ -654,7 +651,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-     *
      * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */

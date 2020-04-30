@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+# aTalk, the OpenSource Java VoIP and Instant Messaging client.
+
+# Distributable under LGPL license.
+# See terms of license at gnu.org.
+#
+# Note to translators:
+# aTalk has migrated to use android resource getString() hence use %1$s, %2$s instead of {0}, {1} used by get18NString()
+# - ensure the number of parameters and their designation are correctly specified.
+#
+# Do Not translate string values containing the patterns below. They are used internally only by code/source as key index etc
+# - with dot joining words xxx.xxx.xxx e.g. pref.cat.settings.notifications
+# - contains underscore e.g. auto_join_on
+# - Words joined without any spaces e.g. connectionProxyAddress
+# - Do not translate any style format string e.g MMM dd, yyyy - otherwise system abort on execution
+# - Omit those require no translation e.g. IP link, OMEMO,  640x480 etc.
+#   Android will always fallback to use the string from main string.xml if not found in other languages files
+#
+# Note: Avoid copy/duplicate the above defined strings in the other languages string.xml files to prevent
+# accidentally values change. Any delta in the parameter will cause system problem when one switch between different languages.
+# string with {0}, {1} means the string is still not being used/implemented in aTalk. They are kept for reference and may use later;
+# you can proceed to translate these string replacing {0}, {1} with %1$s, %2$s etc
+#
+-->
+
+<resources>
+    <string name="APPLICATION_NAME">aTalk</string>
+    <string name="account_server_port">5222</string>
+    <string name="chatroom_hint">chatroom@example.com</string>
+    <string name="encryption_choice_omemo">OMEMO</string>
+    <string name="encryption_choice_otr">OTR</string>
+    <string name="encryption_choice_pgp">OpenPGP</string>
+    <string name="ACCOUNT_TYPE">org.atalk.android.account</string>
+    <string name="service_gui_URL_MEDIA_SHARE">&lt;html>&lt;a href=\'%3$s\'>&lt;img src=\'%1$s\' alt=\'url image\'/>&lt;/a>&lt;br/>%2$s&lt;br/>&lt;a href=\'%3$s\'>%3$s&lt;/a>&lt;/html></string>
+
+    <!-- Conference Chat -->
+    <string name="service_gui_CHAT_REPLY">&lt;blockquote>&lt;small>
+        &lt;span style="color:purple">%1$s&lt;/span>&lt;br/>
+        &lt;span style="color:grey">&lt;em>%2$s&lt;/em>&lt;/span>
+        &lt;/small>&lt;/blockquote></string>
+    <string name="service_gui_CHAT_LINK">&lt;a href="%1$s">%2$s&lt;/a></string>
+    <!-- About Dialog -->
+    <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
+    <string name="AboutDialog_Link">https://cmeng-git.github.io</string>
+
+    <!-- PTT Chat -->
+    <string name="chat_dbZero">00.00dB</string>
+    <string name="chat_timeZero">00:00</string>
+    <!-- Persistent Store -->
+    <string name="service_gui_DEFAULT_USER_PHOTO">personphoto</string>
+
+    <string name="service_gui_IM">IM</string>
+    <string name="service_gui_INSTANT_MESSAGINGS">IMs</string>
+    <!-- Conference constants - no translation -->
+    <string name="service_gui_icons_AUTOJOIN">auto_join_on</string>
+    <string name="service_gui_icons_AUTOJOIN_OFF_ICON_BUTTON">auto_join_off</string>
+    <string name="service_gui_icons_AUTOJOIN_OFF_ICON_PRESSED_BUTTON">auto_join_off_pressed</string>
+    <string name="service_gui_icons_AUTOJOIN_OFF_ICON_ROLLOVER_BUTTON">auto_join_off_over</string>
+    <string name="service_gui_icons_AUTOJOIN_ON_ICON_BUTTON">auto_join_on</string>
+    <string name="service_gui_icons_AUTOJOIN_ON_ICON_PRESSED_BUTTON">auto_join_on_pressed</string>
+    <string name="service_gui_icons_AUTOJOIN_ON_ICON_ROLLOVER_BUTTON">auto_join_on_over</string>
+    <string name="service_gui_icons_CHATROOM_16x16_ICON">chat_room_16x16</string>
+    <string name="service_gui_icons_DESTROY_ICON_BUTTON">destroy_chat</string>
+    <string name="service_gui_icons_DESTROY_ICON_PRESSED_BUTTON">destroy_chat_pressed</string>
+    <string name="service_gui_icons_DESTROY_ICON_ROLLOVER_BUTTON">auto_join_off_over</string>
+    <string name="service_gui_icons_JOIN_AS_ICON">join_as</string>
+    <string name="service_gui_icons_JOIN_ICON">join</string>
+    <string name="service_gui_icons_JOIN_ICON_BUTTON">join_room</string>
+    <string name="service_gui_icons_JOIN_ICON_PRESSED_BUTTON">join_room_pressed</string>
+    <string name="service_gui_icons_JOIN_ICON_ROLLOVER_BUTTON">join_room_over</string>
+    <string name="service_gui_icons_LEAVE_ICON">leave</string>
+    <string name="service_gui_icons_LEAVE_ICON_BUTTON">leave_room</string>
+    <string name="service_gui_icons_LEAVE_ICON_PRESSED_BUTTON">leave_room_pressed</string>
+    <string name="service_gui_icons_LEAVE_ICON_ROLLOVER_BUTTON">leave_room_over</string>
+    <string name="service_gui_icons_OPEN_AUTOMATICALLY">opening_chatroom_settings</string>
+    <string name="service_gui_icons_REMOVE_CHAT_ICON">remove_chat</string>
+    <string name="service_gui_icons_RENAME_ICON">rename</string>
+    <string name="service_gui_icons_SMS_STATUS_ICON">sms_status_icon</string>
+
+
+    <!-- account info -->
+    <string name="plugin_accountinfo_URL">URL:</string>
+    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io</string>
+
+    <!-- Account proxy settings -->
+    <string name="pref_key_bosh_configuration">Bosh_Configuration</string>
+    <string name="service_gui_PROXY_BOSH_URL_HINT">https://example.org:4443/http-bind</string>
+
+    <!-- Provisioning Plugin-->
+    <string name="plugin_provisioning_DHCP">DHCP</string>
+    <string name="plugin_provisioning_DNS">DNS</string>
+    <string name="plugin_provisioning_URI">URI</string>
+    <string name="plugin_provisioning_UUID">UUID</string>
+
+    <!-- Reset ZID -->
+    <string name="pref_key_zid_reset">pref.key.zid.reset</string>
+
+    <!-- STUN/Jingle Nodes list -->
+    <string name="service_gui_SERVERS_STUN_DESCRIPTOR">%1$s:%2$s %3$s</string>
+
+    <!-- Jabber preferences -->
+    <string name="service_gui_JBR_ICE">ICE</string>
+    <!-- Account preference categories -->
+    <string name="pref_cat_account">pref_cat_account</string>
+    <string name="pref_cat_audio_encoding">pref_cat_enc_audio</string>
+    <string name="pref_cat_video_encoding">pref_cat_enc_video</string>
+
+    <!-- SIP preferences -->
+    <string name="pref_cat_sip_advanced">pref.cat.sip.advanced</string>
+    <string name="pref_cat_sip_connection">pref.cat.sip.connection</string>
+    <string name="pref_cat_sip_conn_general">pref.cat.sip.conn.general</string>
+    <string name="pref_cat_sip_contactlist">pref.cat.sip.contactlist</string>
+    <string name="pref_cat_sip_keep_alive">pref.cat.sip.keep_alive</string>
+    <string name="pref_cat_sip_proxy">pref.cat.sip.proxy</string>
+    <string name="pref_cat_sip_voicemail">pref.cat.sip.voicemail</string>
+    <string name="pref_cat_sip_presence_opt">pref.sip.cat.presence_options</string>
+    <string name="pref_screen_sip_connection">pref.screen.sip.connection</string>
+    <string name="pref_screen_sip_presence">pref.screen.sip.presence</string>
+
+    <!-- Jabber preferences -->
+    <string name="pref_cat_jbr_advanced">pref.cat.jbr.advanced</string>
+    <string name="pref_cat_jbr_conn_general">pref.cat.jbr.conn.general</string>
+    <string name="pref_cat_jbr_ice_general">pref.cat.jbr.ice.general</string>
+    <string name="pref_cat_jbr_jnodes">pref.cat.jbr.jinglenodes</string>
+    <string name="pref_cat_jbr_resource">pref.cat.jbr.resource</string>
+    <string name="pref_cat_jbr_server_opts">pref.cat.jbr.server.options</string>
+    <string name="pref_screen_jbr_conn">pref.screen.jbr.connection</string>
+    <string name="pref_screen_jbr_ice">pref.screen.jbr.ice</string>
+    <string name="pref_screen_jbr_tele">pref.screen.jbr.telephony</string>
+
+    <!-- Account preferences -->
+    <string name="pref_key_auth_name">pref_key_auth_name</string>
+    <string name="pref_key_client_tls_cert">pref_key_client_tls_cert</string>
+    <!--string name="pref_key_client_tls_cert_enabled">pref_key_client_cert_enabled</string-->
+    <string name="pref_key_default_domain">pref_key_default_domain</string>
+    <string name="pref_key_display_name">pref_key_display_name</string>
+    <string name="pref_key_dtmf_method">pref_key_dtmf_method</string>
+    <string name="pref_key_force_p2p">pref_key_force_p2p</string>
+    <string name="pref_key_is_keep_alive_enable">pref_key_is_keep_alive_enable</string>
+    <string name="pref_key_ping_auto_tune_enable">pref_key_ping_auto_tune_enable</string>
+    <string name="pref_key_is_presence_enabled">pref_key_is_presence_enabled</string>
+    <string name="pref_key_keep_alive_method">pref_key_keep_alive_method</string>
+    <string name="pref_key_password">pref_key_password</string>
+    <string name="pref_key_ping_interval">pref_key_ping_interval</string>
+    <string name="pref_key_polling_period">pref_key_polling_period</string>
+    <string name="pref_key_preferred_transport">pref_key_preferred_transport</string>
+    <string name="pref_key_is_server_overridden">pref_key_is_server_overridden</string>
+    <string name="pref_key_server_address">pref_key_server_address</string>
+    <string name="pref_key_server_port">pref_key_server_port</string>
+    <string name="pref_key_store_password">pref_key_store_password</string>
+    <string name="pref_key_subscription_period">pref_key_subscription_period</string>
+    <string name="pref_key_user_id">pref_key_user_id</string>
+    <string name="pref_key_voicemail_uri">pref_key_voicemail_uri</string>
+    <string name="pref_key_voicemail_check_uri">pref_key_voicemail_check_uri</string>
+    <string name="pref_key_mwi_enabled">pref_key_mwi_enabled</string>
+
+    <!-- Contact list -->
+    <string name="pref_key_contact_list_type">pref_key_contact_list_type</string>
+    <string name="pref_key_clist_password">pref_key_clist_password</string>
+    <string name="pref_key_clist_server_uri">pref_key_clist_server_uri</string>
+    <string name="pref_key_clist_use_sip_credentials">pref_key_clist_use_sip_credentials</string>
+    <string name="pref_key_clist_user">pref_key_clist_user</string>
+
+    <!-- Not present int SIP, but new in XMPP -->
+    <string name="pref_key_minimum_TLS_version">pref_key_minimum_TLS_version</string>
+    <string name="pref_key_allow_non_secure_conn">pref_key_allow_non_secure_conn</string>
+    <string name="pref_key_auto_gen_resource">pref_key_auto_gen_resource</string>
+    <string name="pref_key_gmail_notifications">pref_key_gmail_notifications</string>
+    <string name="pref_key_google_contact_enabled">pref_key_google_contact_enabled</string>
+    <string name="pref_key_resource_name">pref_key_resource_name</string>
+    <string name="pref_key_resource_priority">pref_key_resource_priority</string>
+
+    <!-- Account proxy -->
+    <string name="pref_key_proxy_auto_config">pref_key_proxy_auto_config</string>
+    <string name="pref_key_proxy_address">pref_key_ProxyAddress</string>
+    <string name="pref_key_proxy_port">pref_key_ProxyPort</string>
+
+    <!-- XMPP ICE -->
+    <string name="pref_key_auto_discover_stun">pref_key_auto_discover_stun</string>
+    <string name="pref_key_auto_relay_dicovery">pref_key_auto_relay_discovery</string>
+    <string name="pref_key_ice_enabled">pref_key_ice_enabled</string>
+    <string name="pref_key_jingle_node_list">pref_key_jingle_node_list</string>
+    <string name="pref_key_google_ice_enabled">pref_key_google_ice_enabled</string>
+    <string name="pref_key_stun_turn_servers">pref_key_stun_turn_servers</string>
+    <string name="pref_key_upnp_enabled">pref_key_upnp_enabled</string>
+    <string name="pref_key_use_jingle_nodes">pref_key_use_jingle_nodes</string>
+
+    <!-- XMPP telephony -->
+    <string name="pref_key_calling_disabled">pref_key_calling_disabled</string>
+    <string name="pref_key_tele_bypass_gtalk_caps">pref_key_tele_bypass_gtalk_caps</string>
+    <string name="pref_key_override_phone_suffix">pref_key_override_phone_suffix</string>
+
+    <!-- Security preferences -->
+    <string name="pref_key_enable_encryption">pref_key_enable_encryption</string>
+    <string name="pref_key_enc_cipher_suites">pref_key_ecn_cipher_suites</string>
+    <string name="pref_key_enc_protocols_dialog">pref_key_enc_protos_dialog</string>
+    <string name="pref_key_enc_savp_option">pref_key_enc_savp_option</string>
+    <string name="pref_key_enc_sipzrtp_attr">pref_key_enc_sipzrtp_attr</string>
+    <string name="pref_cat_security_general">pref.cat.security.general</string>
+    <string name="pref_cat_security_sdes">pref.cat.security.sdes</string>
+    <string name="pref_cat_security_zrtp">pref.cat.security.zrtp</string>
+
+    <!-- General settings -->
+    <string name="pref_cat_settings_general">pref.cat.settings.general</string>
+
+    <!-- WebView default Page -->
+    <string name="pref_key_webview_PAGE">gui.WEB_PAGE_ACCESS</string>
+    <string name="service_gui_settings_WEBVIEW_SUMMARY">file:///android_asset/movim/index.html</string>
+
+    <!-- Messaging settings -->
+    <string name="pref_cat_settings_msg">pref.cat.settings.msg</string>
+
+    <!-- Group messages in one window -->
+    <string name="pref_key_multichat_window">pref.key.msg.multichat_window</string>
+
+    <!-- Log chat history -->
+    <string name="pref_key_history_logging">pref.key.msg.history_logging</string>
+
+    <!-- Show x recent messages in new chats -->
+    <string name="pref_key_chat_history_size">pref.key.msg.chat_history_size</string>
+    <string name="pref_key_show_history">pref.key.msg.show_history</string>
+
+    <!-- Tell others when we have received and read the messages -->
+    <string name="pref_key_message_delivery_receipt">pref.key.message_delivery_receipt</string>
+
+    <!-- Tell others when we are writing to them -->
+    <string name="pref_key_chat_state_notifications">pref.key.msg.chat_state_notifications</string>
+
+    <!-- Enable option to send thumbnail preview for image file sending -->
+    <string name="pref_key_send_thumbnail">pref.key.send_thumbnail</string>
+
+    <!-- Auto accept downloadable max file size -->
+    <string name="pref_key_auto_accept_file">pref.key.auto_accept_file</string>
+    <string name="auto_accept_filesize">524288</string>
+
+    <!-- Setup subscription Mode: auto or manual approval -->
+    <string name="pref_key_presence_subscribe_mode">pref.key.presence_subscribe_mode</string>
+
+    <!-- Bring chat window to front(not sure if this makes sense on Android, so omitted) -->
+    <!-- Use task bar/dock alerts on incoming calls and chats -->
+    <string name="pref_key_chat_alerts">pref.key.msg.chat_alerts</string>
+
+    <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+    <!-- Auto away -->
+    <!-- Not sure how to implement it on android - leave for now -->
+
+    <!-- Notifications -->
+    <string name="pref_cat_settings_notifications">pref.cat.settings.notifications</string>
+
+    <!-- Popup notifications type -->
+    <string name="pref_key_auto_update_check_enable">pref.key.notification.auto_update_check_enable</string>
+
+    <string name="pref_key_popup_handler">pref.key.notification.popup_handler</string>
+    <string name="pref_key_heads_up_enable">pref.key.notification.heads_up_enable</string>
+
+    <!-- Quite hour settings -->
+    <string name="pref_key_quiet_hours_enable">pref.key.quiet_hours_enable</string>
+    <string name="pref_key_quiet_hours_start">pref.key.quiet_hours_start</string>
+    <string name="pref_key_quiet_hours_end">pref.key.quiet_hours_end</string>
+
+
+    <!-- aTalk icon -->
+    <string name="pref_key_show_atalk_icon">org.atalk.android.show_icon</string>
+
+    <!-- aTalk auto start -->
+    <string name="pref_key_atalk_auto_start">org.atalk.android.auto_start</string>
+
+    <!-- Locale -->
+    <string name="pref_key_locale">pref.key.locale</string>
+
+    <!-- Theme -->
+    <string name="pref_key_theme">pref.key.theme</string>
+
+    <!-- Remove special characters from phone number -->
+    <string name="pref_key_normalize_pnumber">pref.key.call.remove.special</string>
+    <!-- Convert letters in phone numbers -->
+    <string name="pref_key_accept_alpha_pnumbers">pref.key.call.convert.letters</string>
+    <string name="service_gui_settings_ALLOW_ALPHA_ON"><![CDATA[*e.g. +1–800–MYPHONE –>+1–800–694663]]></string>
+
+    <!-- Call settings -->
+    <string name="pref_cat_settings_call">pref.cat.settings.call</string>
+
+    <!-- Audio settings -->
+    <string name="pref_cat_settings_audio">pref.cat.settings.audio</string>
+    <!-- Echo cancellation -->
+    <string name="pref_key_audio_echo_cancel">pref.key.audio.echo_cancel</string>
+    <!-- Auto gain control -->
+    <string name="pref_key_audio_agc">pref.key.audio.agc</string>
+    <!-- Denoise -->
+    <string name="pref_key_audio_denoise">pref.key.audio.denoise</string>
+
+    <!-- Video settings -->
+    <string name="pref_cat_settings_media_call">pref.cat.settings.media_call</string>
+    <string name="pref_cat_settings_video">pref.cat.settings.video</string>
+
+    <!-- Video system -->
+    <string name="pref_key_video_system">pref.key.video.video_system</string>
+
+    <!-- Camera used -->
+    <string name="pref_key_video_camera">pref.key.video.camera</string>
+    <string name="service_gui_settings_CAMERA_BACK">Back</string>
+    <string name="service_gui_settings_CAMERA_FRONT">Front</string>
+
+    <!-- Video codecs -->
+    <string name="pref_key_video_media_codec_list">pref.key.video.media_codec_list</string>
+    <string name="pref_key_video_hw_decode">neomedia.android.hw_decode</string>
+    <string name="pref_key_video_hw_encode">neomedia.android.hw_encode</string>
+    <string name="pref_key_video_surface_decode">neomedia.android.surface_decode</string>
+    <string name="pref_key_video_surface_encode">neomedia.android.surface_encode</string>
+    <!-- Video resolution -->
+    <string name="pref_key_video_resolution">pref.key.video.resolution</string>
+    <!-- Frame rate -->
+    <string name="pref_key_video_bitrate">pref.key.video.bitrate</string>
+    <string name="pref_key_video_limit_fps">pref.key.video.limit_fps</string>
+    <string name="pref_key_video_max_bandwidth">pref.key.video.max_bandwidth</string>
+    <string name="pref_key_video_target_fps">pref.key.video.frame_rate</string>
+
+    <!-- Security settings -->
+    <string name="pref_cat_settings_security">pref.cat.settings.security</string>
+    <!-- Crypto Messaging Enable -->
+    <string name="pref_key_crypto_enable">pref.key.crypto.enable</string>
+    <!-- Crypto Messaging Auto -->
+    <string name="pref_key_otr_auto">pref.key.crypto.auto</string>
+    <!-- Crypto Messaging Required -->
+    <string name="pref_key_crypto_require">pref.key.crypto.require</string>
+    <!-- OMEMO device screen -->
+    <string name="pref_key_omemo_key_blind_trust">pref.key.omemo.key.blind.trust</string>
+
+    <!-- Advanced settings category -->
+    <string name="pref_cat_settings_advanced">pref.cat.settings.advanced</string>
+
+    <!-- Opus -->
+    <string name="pref_key_opus_audio_bandwidth">neomedia.codec.audio.opus.encoder.AUDIO_BANDWIDTH</string>
+    <string name="pref_key_opus_bitrate">neomedia.codec.audio.opus.encoder.BITRATE</string>
+    <string name="pref_key_opus_complexity">neomedia.codec.audio.opus.encoder.COMPLEXITY</string>
+    <string name="pref_key_opus_min_expected_packet_loss">neomedia.codec.audio.opus.encoder.MIN_EXPECTED_PACKET_LOSS</string>
+    <string name="pref_key_opus_use_dtx">neomedia.codec.audio.opus.encoder.DTX</string>
+    <string name="pref_key_opus_use_fec">neomedia.codec.audio.opus.encoder.FEC</string>
+
+    <!-- Silk -->
+    <string name="pref_key_silk_fec">neomedia.codec.audio.silk.encoder.USE_FEC</string>
+    <string name="pref_key_silk_assume_pl">neomedia.codec.audio.silk.encoder.AWLAYS_ASSUME_PACKET_LOSS</string>
+    <string name="pref_key_silk_fec_sat">neomedia.codec.audio.silk.encoder.SPEECH_ACTIVITY_THRESHOLD</string>
+    <string name="pref_key_silk_advertise_FEC">neomedia.codec.audio.silk.ADVERTISE_FEC</string>
+
+    <!-- SIP config -->
+    <string name="pref_key_sip_client_port">SIP_PREFERRED_CLEAR_PORT</string>
+    <string name="pref_key_sip_client_secure_port">SIP_PREFERRED_SECURE_PORT</string>
+    <string name="pref_cat_sip_ssl_protocols">pref.cat.sip.ssl_protocols</string>
+
+    <!-- DNS config -->
+    <string name="pref_cat_dns_dnssec">pref.cat.dns.dnssec</string>
+    <string name="pref_key_dns_dnssec_absolute">dns.DNSSEC_ALWAYS_ABSOLUTE</string>
+    <string name="pref_key_dns_dnssec_default_behaviour">dns.DNSSEC_VALIDATION_MODE</string>
+    <string name="pref_key_dns_dnssec_enabled">dns.DNSSEC_ENABLED</string>
+    <string name="pref_key_dns_dnssec_nameservers">dns.DNSSEC_NAMESERVERS</string>
+
+    <string name="pref_key_dnssec_mode">dns.DNSSEC_MODE</string>
+
+    <!-- Provisioning -->
+    <string name="pref_cat_provisioning_CREDENTIALS">pref.cat.provisioning.credentials</string>
+    <string name="pref_cat_provisioning_METHOD">pref.cat.provisioning.method</string>
+    <string name="pref_key_provisioning_ENABLED">pref.key.provisioning.enabled</string>
+    <string name="pref_key_provisioning_FORGET_PASSWORD">pref.key.provisioning.forget_password</string>
+    <string name="pref_key_provisioning_METHOD">plugin.provisioning.METHOD</string>
+    <string name="pref_key_provisioning_PASSWORD">plugin.provisioning.auth</string>
+    <string name="pref_key_provisioning_URL">plugin.provisioning.URL</string>
+    <string name="pref_key_provisioning_USERNAME">plugin.provisioning.auth.USERNAME</string>
+    <string name="pref_key_provisioning_UUID">net.java.sip.communicator.UUID</string>
+
+    <!-- Android Permissions -->
+    <string name="app_name2">Dexter</string>
+
+
+    <!-- Android Notification Channels -->
+    <string name="noti_channel_MESSAGE_GROUP">Chat Message Notification</string>
+    <string name="noti_channel_FILE_GROUP">File Transfer Notification</string>
+    <string name="noti_channel_CALL_GROUP">Call Notification</string>
+    <string name="noti_channel_MISSED_CALL">Miss Call Notification</string>
+    <string name="noti_channel_DEFAULT_GROUP">General Notification</string>
+    <string name="noti_channel_SILENT_GROUP">Silent Notification</string>
+
+</resources>

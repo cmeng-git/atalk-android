@@ -17,6 +17,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.*;
 
+import javax.xml.namespace.QName;
+
 /**
  * A packet extension which carries the ICE connection state signaled by
  * the Jitsi Meet's Jingle session in a 'session-info' message.
@@ -35,6 +37,8 @@ public class IceStateExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "ice-state";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates new instance of <tt>IceStateExtensionElement</tt>

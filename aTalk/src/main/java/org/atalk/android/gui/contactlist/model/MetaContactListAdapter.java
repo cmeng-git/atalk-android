@@ -10,14 +10,11 @@ import android.text.TextUtils;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.contactlist.event.*;
 import net.java.sip.communicator.service.gui.ContactListFilter;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.contactlist.ContactListFragment;
@@ -437,8 +434,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         int groupIndex = groups.indexOf(metaContact.getParentMetaContactGroup());
         if (groupIndex >= 0) {
             int contactIndex = getChildIndex(getContactList(groupIndex), metaContact);
-            if (contactIndex >= 0)
+            if (contactIndex >= 0) {
                 updateStatus(groupIndex, contactIndex, metaContact);
+            }
         }
     }
 
@@ -872,26 +870,51 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     /**
      * Indicates that a contact Presence Status Change has been received.
      *
+     * mDialog true indicates the contact list is shown for user multiple selection e.g. invite;
+     * in this case do not refreshModelData() to sort, as items selected is tracked by their position
+     *
      * @param event the <tt>ContactPresenceStatusChangeEvent</tt> that notified us
      */
     @Override
     public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent event)
     {
         uiHandler.post(() -> {
-            Contact sourceContact = event.getSourceContact();
-            Timber.d("Contact presence status changed: %s", sourceContact.getAddress());
+            //  mDialogMode: just update the status icon without sorting
+            if (mDialogMode) {
+                Contact sourceContact = event.getSourceContact();
+                Timber.d("Contact presence status changed: %s", sourceContact.getAddress());
 
-            MetaContact metaContact = contactListService.findMetaContactByContact(sourceContact);
-            // metaContact is already existing, just update it
-            if (metaContact != null) {
-                // if (mDialogMode || presenceFilter.isShowOffline())
-                updateStatus(metaContact);
+                MetaContact metaContact = contactListService.findMetaContactByContact(sourceContact);
+                // metaContact is already existing, just update it
+                if (metaContact != null) {
+                    updateStatus(metaContact);
+                }
+            }
+            else {
+                refreshModelData();
             }
         });
     }
 
     /**
-     * Adds the given <tt>MessageListener</tt> to listen for message events in this chat session.
+     * Refresh the contact list from contactListService, with contact presence status sorted esp originalContacts
+     * Then perform filterData if showOffline contacts is disabled, other newly online contacts are not included
+     */
+    private void refreshModelData()
+    {
+        originalGroups.clear();
+        originalContacts.clear();
+        groups.clear();
+        contacts.clear();
+        addContacts(contactListService.getRoot());
+
+        if (!presenceFilter.isShowOffline()) {
+            filterData("");
+        }
+    }
+
+    /**
+     * Adds the given <tt>ContactPresenceStatusListener</tt> to listen for contact presence status change.
      *
      * @param metaContact the <tt>MetaContact</tt> for which we add the listener
      * @param l the <tt>MessageListener</tt> to add
@@ -911,7 +934,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Removes the given <tt>MessageListener</tt> from this chat session.
+     * Remove the given <tt>ContactPresenceStatusListener</tt> to listen for contact presence status change.
      *
      * @param metaContact the <tt>MetaContact</tt> for which we remove the listener
      * @param l the <tt>MessageListener</tt> to remove
@@ -953,7 +976,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     {
         MetaContactGroup metaGroup = (MetaContactGroup) groupImpl;
         if (metaGroup.equals(contactListService.getRoot()))
-            return aTalkApp.getResString(R.string.service_gui_CONTACTS);
+            return ContactGroup.ROOT_GROUP_NAME;
         else
             return metaGroup.getGroupName();
     }

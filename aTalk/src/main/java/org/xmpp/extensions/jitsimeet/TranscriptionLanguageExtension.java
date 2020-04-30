@@ -19,6 +19,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * An extension of the presence stanza for sending the source language for
  * transcription to Jigasi.
@@ -44,6 +46,8 @@ public class TranscriptionLanguageExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "jitsi_participant_transcription_language";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates a {@link TranscriptionLanguageExtension} instance.

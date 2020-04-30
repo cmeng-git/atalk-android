@@ -21,8 +21,6 @@ import net.java.sip.communicator.service.contactlist.event.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.json.JSONObject;
 import org.osgi.framework.*;
@@ -111,7 +109,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     public MetaContactListServiceImpl()
     {
         rootMetaGroup = new MetaContactGroupImpl(this,
-                aTalkApp.getResString(R.string.service_gui_CONTACTS), ContactGroup.ROOT_GROUP_UID);
+                ContactGroup.ROOT_GROUP_NAME, ContactGroup.ROOT_GROUP_UID);
     }
 
     /**

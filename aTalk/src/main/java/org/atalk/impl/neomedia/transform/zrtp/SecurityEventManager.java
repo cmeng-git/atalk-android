@@ -295,7 +295,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void confirmGoClear()
     {
-            Timber.d("%s: GoClear confirmation requested.", sessionTypeToString(sessionType));
+        Timber.d("%s: GoClear confirmation requested.", sessionTypeToString(sessionType));
     }
 
     /**

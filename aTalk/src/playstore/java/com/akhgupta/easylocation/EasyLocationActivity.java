@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+
+import org.atalk.service.osgi.OSGiActivity;
+
 import androidx.annotation.NonNull;
 
 
-public abstract class EasyLocationActivity extends Activity implements EasyLocationListener {
+public abstract class EasyLocationActivity extends OSGiActivity implements EasyLocationListener {
     private EasyLocationDelegate easyLocationDelegate;
 
     protected Location getLastKnownLocation() {

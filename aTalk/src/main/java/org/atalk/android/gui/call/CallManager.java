@@ -8,7 +8,8 @@ package org.atalk.android.gui.call;
 import net.java.sip.communicator.impl.phonenumbers.PhoneNumberI18nServiceImpl;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.NetworkUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;

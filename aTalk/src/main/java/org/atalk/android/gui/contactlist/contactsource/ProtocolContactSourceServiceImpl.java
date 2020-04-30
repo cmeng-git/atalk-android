@@ -20,8 +20,6 @@ import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.contactsource.*;
 import net.java.sip.communicator.service.protocol.*;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.util.StringUtils;
 
@@ -86,7 +84,7 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
      */
     public String getDisplayName()
     {
-        return aTalkApp.getResString(R.string.service_gui_CONTACTS) + " " + protocolProvider.getAccountID().getDisplayName();
+        return ContactGroup.ROOT_GROUP_NAME + ":" + protocolProvider.getAccountID().getDisplayName();
     }
 
     /**

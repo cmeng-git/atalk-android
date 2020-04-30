@@ -127,7 +127,8 @@
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
     <string name="service_gui_CALL">Llamada de audio</string>
     <string name="service_gui_CALL_FAILED">Llamada fallida</string>
-    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de llamadas</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de Llamadas</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">¿Está seguro de que desea purgar todos los registros de llamadas seleccionados?</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
     <string name="service_gui_CALL_WITH">Llamar con</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
@@ -140,7 +141,6 @@
     <string name="service_gui_CALL_VIDEO">Video llamada</string>
     <string name="service_gui_CANCEL">Cancelar</string>
     <string name="service_gui_CONTACT_INVALID">El contacto seleccionado no es válido: %1$s</string>
-    <string name="service_gui_Contacts">Contactos</string>
     <string name="service_gui_DONE">¡Hecho!</string>
     <string name="service_gui_MAS">Marcar como leído</string>
     <string name="service_gui_REASON_LABEL">Motivo:</string>
@@ -211,6 +211,8 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Ingresar nuevo nombre de contacto</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Cambiar el nombre del contacto</string>
     <string name="service_gui_CONTACTS">Contactos</string>
+    <string name="service_gui_CONTACTS_OFFLINE_HIDE">Ocultar los contactos fuera de línea</string>
+    <string name="service_gui_CONTACTS_OFFLINE_SHOW">Mostrar los contactos fuera de línea</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Copiar mensaje de texto</string>
 
     <string name="service_gui_CREATE">Crear</string>
@@ -218,7 +220,7 @@
     <string name="service_gui_CREATE_CONFERENCE_CALL">Crear una conferencia telefónica&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Crear una sala&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Crear un grupo&#8230;</string>
-    <string name="service_gui_CREATE_GROUP_INVALID">Nombre de grupo no válido: %s</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Nombre de grupo no válido: %1$s</string>
     <string name="service_gui_CREATE_GROUP_NAME">En el siguiente campo introducir el nombre del grupo que desea crear.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">La lista de contactos no contiene ningún grupo. Por favor, crear un grupo primero (Archivo/Crear grupo).</string>
 
@@ -347,7 +349,6 @@
 	<string name="service_gui_FOLDER_OPEN_NO_APPLICATION">No se ha podido encontrar una aplicación para abrir esta carpeta</string>
     <string name="service_gui_GROUP_CHAT">Charla en grupo</string>
 	<string name="service_gui_HIDE">Ocultar</string>
-	<string name="service_gui_HIDE_OFFLINE_CONTACTS">Ocultar los contactos fuera de línea</string>
 	<string name="service_gui_HISTORY">Historial</string>
 	<string name="service_gui_HISTORY_CONTACT">Historial - %1$s</string>
 	<string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Desactivar el historial de este contacto</string>
@@ -503,6 +504,7 @@
     <string name="service_gui_ORGANIZATION">Organización</string>
     <string name="service_gui_PHONE">Teléfono</string>
     <string name="service_gui_PHONES">Teléfonos</string>
+    <string name="service_gui_PLAY">Jugar</string>
     <string name="service_gui_POSTAL_CODE">Código postal</string>
     <string name="service_gui_RENAME">Renombrar</string>
     <string name="service_gui_REGISTRATION_REQUIRED">Error en el registro de la cuenta en el servidor:\n%s"</string>
@@ -572,7 +574,6 @@
     <string name="service_gui_SEND_VIA">enviar vía</string>
 	<string name="service_gui_SENT">enviado</string>
 	<string name="service_gui_SERVER_CHAT_ROOMS">Servidor de salas de charla</string>
-	<string name="service_gui_SHOW_OFFLINE_CONTACTS">Mostrar los contactos fuera de línea</string>
     <string name="service_gui_SHUTDOWN_IN_PROGRESS">apagando&#8230;</string>
 	<string name="service_gui_STATUS">Estado</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Escribe el motivo de tu solicitud</string>
@@ -1105,7 +1106,7 @@
     <string name="service_gui_STUN_EDIT_PASSWORD">Contraseña</string>
     <string name="service_gui_STUN_EDIT_PORT">Puerto del Servidor</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Soporte TURN</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">Nombre usuario TURN</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">Nombre usuario</string>
 
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Habilitar el cifrado de llamadas</string>
@@ -1384,9 +1385,7 @@
     <string name="service_gui_settings_SYSTEM_MEDIARECORDER">Grabadora de medios</string>
 
     <!-- Camera used -->
-    <string name="service_gui_settings_BACK_CAMERA">Cámara trasera</string>
     <string name="service_gui_settings_CAMERA">Cámara</string>
-    <string name="service_gui_settings_FRONT_CAMERA">Cámara frontal</string>
     <string name="service_gui_settings_NO_CAMERA">No se ha encontrado ningún dispositivo con cámara</string>
     <string name="service_gui_settings_USE_BACK_CAMERA">Usar la cámara trasera</string>
     <string name="service_gui_settings_USE_FRONT_CAMERA">Usar la cámara frontal</string>

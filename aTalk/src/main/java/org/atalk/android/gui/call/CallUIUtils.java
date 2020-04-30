@@ -1,8 +1,6 @@
 package org.atalk.android.gui.call;
 
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
@@ -13,6 +11,7 @@ import java.util.Iterator;
 
 /**
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class CallUIUtils
 {
@@ -25,7 +24,8 @@ public class CallUIUtils
             if (image != null && image.length > 0)
                 return image;
         }
-        return UtilActivator.getResources().getImageInBytes(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
+        return UtilActivator.getResources()
+                .getImageInBytes(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
     }
 
     public static String getCalleeAddress(Call incomingCall)

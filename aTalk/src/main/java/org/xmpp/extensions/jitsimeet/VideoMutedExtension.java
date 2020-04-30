@@ -15,6 +15,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Video muted extension that is included in users presence in Jitsi-meet conferences. It does carry
  * the info about user's video muted status.
@@ -32,6 +34,8 @@ public class VideoMutedExtension extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "videomuted";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates new instance of <tt>VideoMutedExtensionElement</tt>.

@@ -62,7 +62,7 @@ public class ConferenceChatTransport implements ChatTransport
         // mPPS.getConnection() == null from field FER
         if ((mPPS != null) && (mPPS.getConnection() != null))
             isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
-            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
     }
 
     /**
@@ -263,7 +263,6 @@ public class ConferenceChatTransport implements ChatTransport
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon and instance of #FileSendConversation
-
      * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */
@@ -307,7 +306,6 @@ public class ConferenceChatTransport implements ChatTransport
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon and instance of #FileSendConversation
-
      * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
      * @throws Exception if anything goes wrong
      */

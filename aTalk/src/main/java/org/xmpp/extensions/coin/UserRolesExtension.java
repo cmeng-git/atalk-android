@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.util.*;
 
+import javax.xml.namespace.QName;
+
 /**
  * User roles packet extension.
  *
@@ -30,6 +32,8 @@ public class UserRolesExtension extends AbstractExtensionElement
      * The namespace that user roles belongs to.
      */
     public static final String NAMESPACE = CoinIQ.NAMESPACE;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Subject element name.

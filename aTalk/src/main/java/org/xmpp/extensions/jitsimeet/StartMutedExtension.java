@@ -17,13 +17,15 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.*;
 
+import javax.xml.namespace.QName;
+
 /**
  * Packet extension used to indicate whether the peer should start muted or not.
  *
  * @author Hristo Terezov
+ * @author Eng Chong Meng
  */
-public class StartMutedExtension
-    extends AbstractExtensionElement
+public class StartMutedExtension extends AbstractExtensionElement
 {
     /**
      * Name space of start muted packet extension.
@@ -34,6 +36,8 @@ public class StartMutedExtension
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "startmuted";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Attribute name for audio muted.

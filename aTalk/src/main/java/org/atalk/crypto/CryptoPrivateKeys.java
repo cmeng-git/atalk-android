@@ -202,7 +202,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         String message = getString(getResStrId, bareJid, warnMsg);
 
         AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.crypto_dialog_KEY_GENERATE_TITLE))
+        b.setTitle(R.string.crypto_dialog_KEY_GENERATE_TITLE)
                 .setMessage(message)
                 .setPositiveButton(R.string.service_gui_PROCEED, (dialog, which) -> {
                     if (accountId != null) {

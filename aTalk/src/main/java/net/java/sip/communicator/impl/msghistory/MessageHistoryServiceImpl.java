@@ -691,9 +691,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         if (accountID == null)
             return null;
 
-		/*
-		 * Check to ensure account is online (required to fetch room) before proceed. This is to take care in case
-		 * user has exited while muc chatRoom messages fetching is still on going
+        /*
+         * Check to ensure account is online (required to fetch room) before proceed. This is to take care in case
+         * user has exited while muc chatRoom messages fetching is still on going
          */
         ProtocolProviderService pps = accountID.getProtocolProvider();
         if (pps == null || !pps.isRegistered())

@@ -22,6 +22,8 @@ import org.xmpp.extensions.AbstractExtensionElement;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 /**
  * The packet extension added to Jicofo MUC presence to broadcast current
  * recording status to all conference participants.
@@ -43,6 +45,8 @@ public class RecordingStatus extends AbstractExtensionElement
      * XML element name of this packet extension.
      */
     public static final String ELEMENT = "jibri-recording-status";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of XML attribute which holds the recording status.

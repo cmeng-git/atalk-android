@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.menu.ExitMenuActivity;

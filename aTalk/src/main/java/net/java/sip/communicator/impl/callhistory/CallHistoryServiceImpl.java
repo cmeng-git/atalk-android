@@ -335,6 +335,29 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
+     * Returns all the calls made before the given date
+     *
+     * @param endDate Date the end date of the calls
+     * @return Collection of CallRecords with CallPeerRecord
+     */
+    public Collection<CallRecord> findByEndDate(String accountUuid, Date endDate)
+    {
+        TreeSet<CallRecord> result = new TreeSet<>(new CallRecordComparator());
+
+        String endTimeStamp = String.valueOf(endDate.getTime());
+        String[] args = {accountUuid, endTimeStamp};
+
+        Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
+                CallHistoryService.ACCOUNT_UID + "=? AND "
+                        + CallHistoryService.TIME_STAMP + "<?", args, null, null, ORDER_ASC);
+
+        while (cursor.moveToNext()) {
+            result.add(convertHistoryRecordToCallRecord(cursor));
+        }
+        return result;
+    }
+
+    /**
      * Returns all the calls made by all the contacts in the supplied metaContact between the
      * given dates
      *
@@ -467,8 +490,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         //			// the default ones
         //			History history = this.getHistory(null, null);
         //			InteractiveHistoryReader historyReader = history.getInteractiveReader();
-        //			HistoryQuery historyQuery
-        //					= historyReader.findByKeyword(address, "callParticipantIDs", recordCount);
+        //			HistoryQuery historyQuery = historyReader.findByKeyword(address, "callParticipantIDs", recordCount);
         //
         //			callQuery = new CallHistoryQueryImpl(historyQuery);
         //		}
@@ -479,13 +501,10 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     //	/**
-    //	 * Returns the history by specified local and remote contact if one of them is null the
-    //	 * default is used
+    //	 * Returns the history by specified local and remote contact if one of them is null the default is used
     //	 *
-    //	 * @param localContact
-    //	 * 		Contact
-    //	 * @param remoteContact
-    //	 * 		Contact
+    //	 * @param localContact Contact
+    //	 * @param remoteContact Contact
     //	 * @return History
     //	 */
     //	private History getHistory(Contact localContact, Contact remoteContact)
@@ -494,9 +513,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     //		String localId = localContact == null ? "default" : localContact.getAddress();
     //		String remoteId = remoteContact == null ? "default" : remoteContact.getAddress();
     //
-    //		HistoryID historyId = HistoryID.createFromRawID(
-    //				new String[]{"callhistory", localId, remoteId});
-    //
+    //		HistoryID historyId = HistoryID.createFromRawID(new String[]{"callhistory", localId, remoteId});
     //		return this.historyService.createHistory(historyId, recordStructure);
     //	}
 
@@ -525,8 +542,6 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
      */
     public static CallRecord createCallRecordFromProperties(Map<String, String> mProperties)
     {
-        CallRecordImpl result = new CallRecordImpl();
-
         List<String> callPeerIDs;
         List<String> callPeerNames;
         List<String> callPeerStart;
@@ -534,10 +549,12 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         List<CallPeerState> callPeerStates;
         List<String> callPeerSecondaryIDs;
 
+        CallRecordImpl result = new CallRecordImpl(mProperties.get(CallHistoryService.UUID),
+                mProperties.get(CallHistoryService.DIRECTION),
+                new Date(Long.parseLong(mProperties.get(CallHistoryService.CALL_START))),
+                new Date(Long.parseLong(mProperties.get(CallHistoryService.CALL_END))));
+
         result.setProtocolProvider(getProtocolProvider(mProperties.get(CallHistoryService.ACCOUNT_UID)));
-        result.setStartTime(new Date(Long.parseLong(mProperties.get(CallHistoryService.CALL_START))));
-        result.setEndTime(new Date(Long.parseLong(mProperties.get(CallHistoryService.CALL_END))));
-        result.setDirection(mProperties.get(CallHistoryService.DIRECTION));
         result.setEndReason(Integer.parseInt(mProperties.get(CallHistoryService.CALL_END_REASON)));
 
         callPeerIDs = getCSVs(mProperties.get(CallHistoryService.ENTITY_FULL_JID));
@@ -620,7 +637,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
                 }
             }
         } catch (IOException e) {
-            Timber.e(e, "failed to parse %s", str);
+            Timber.e("failed to parse %s: %s", str, e.getMessage());
         }
         return result;
     }
@@ -714,12 +731,9 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
                     ? "" : item.getPeerSecondaryAddress());
         }
 
-        Date date = new Date();
-        Long timeStamp = date.getTime();
-        String Uuid = String.valueOf(timeStamp) + Math.abs(date.hashCode());
-
-        String accountUid = callRecord.getSourceCall().getProtocolProvider().getAccountID()
-                .getAccountUniqueID();
+        Long timeStamp = new Date().getTime();
+        String Uuid = callRecord.getCallUuid();
+        String accountUid = callRecord.getSourceCall().getProtocolProvider().getAccountID().getAccountUniqueID();
 
         contentValues.clear();
         contentValues.put(CallHistoryService.UUID, Uuid);
@@ -871,9 +885,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         });
 
         Date startDate = new Date();
-        CallPeerRecordImpl newRec = new CallPeerRecordImpl(callPeer.getAddress(),
-                startDate, startDate);
-
+        CallPeerRecordImpl newRec = new CallPeerRecordImpl(callPeer.getAddress(), startDate, startDate);
         newRec.setDisplayName(callPeer.getDisplayName());
 
         callRecord.getPeerRecords().add(newRec);
@@ -917,8 +929,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
      * @param peerAddress the address of the peer of the record which will be updated.
      * @param address the value of the secondary address .
      */
-    public void updateCallRecordPeerSecondaryAddress(final Date date, final String peerAddress,
-            final String address)
+    public void updateCallRecordPeerSecondaryAddress(final Date date, final String peerAddress, final String address)
     {
         boolean callRecordFound = false;
         synchronized (currentCallRecords) {
@@ -972,8 +983,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
             contentValues.clear();
             contentValues.put(CallHistoryService.SEC_ENTITY_ID, secEntityID);
 
-            mDB.update(CallHistoryService.TABLE_NAME, contentValues, CallHistoryService.UUID
-                    + "=?", args);
+            mDB.update(CallHistoryService.TABLE_NAME, contentValues, CallHistoryService.UUID + "=?", args);
         }
         cursor.close();
     }
@@ -1004,7 +1014,6 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     private CallPeerRecordImpl findPeerRecord(CallPeer callPeer)
     {
         CallRecord record = findCallRecord(callPeer.getCall());
-
         if (record == null)
             return null;
 
@@ -1027,7 +1036,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
             }
         }
 
-        CallRecordImpl newRecord = new CallRecordImpl(direction, new Date(), null);
+        CallRecordImpl newRecord = new CallRecordImpl(null, direction, new Date(), null);
         newRecord.setSourceCall(sourceCall);
         sourceCall.addCallChangeListener(historyCallChangeListener);
         synchronized (currentCallRecords) {
@@ -1042,8 +1051,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * A wrapper around HistorySearchProgressListener that fires events for
-     * CallHistorySearchProgressListener
+     * A wrapper around HistorySearchProgressListener that fires events for CallHistorySearchProgressListener
      */
     private class SearchProgressWrapper implements HistorySearchProgressListener
     {
@@ -1141,8 +1149,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         /**
          * A dummy implementation of this listener's callStateChanged() method.
          *
-         * @param evt the <tt>CallChangeEvent</tt> instance containing the source calls and its old
-         * and new state.
+         * @param evt the <tt>CallChangeEvent</tt> instance containing the source calls and its old and new state.
          */
         public void callStateChanged(CallChangeEvent evt)
         {
@@ -1159,10 +1166,9 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
                 if (evt.getOldValue().equals(CallState.CALL_INITIALIZATION)) {
                     callRecord.setEndTime(callRecord.getStartTime());
 
-                    // if call was answered elsewhere, add its reason; so we can distinguish it
-                    // from missed
-                    if (evt.getCause() != null && evt.getCause().getReasonCode()
-                            == CallPeerChangeEvent.NORMAL_CALL_CLEARING) {
+                    // if call was answered elsewhere, add its reason; so we can distinguish it from missed
+                    if ((evt.getCause() != null)
+                            && (evt.getCause().getReasonCode() == CallPeerChangeEvent.NORMAL_CALL_CLEARING)) {
                         callRecord.setEndReason(evt.getCause().getReasonCode());
                         if ("Call completed elsewhere".equals(evt.getCause().getReasonString())) {
                             writeRecord = false;
@@ -1190,8 +1196,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
      */
     private static ProtocolProviderService getProtocolProvider(String accountUID)
     {
-        Map<Object, ProtocolProviderFactory> ppsRefs
-                = CallHistoryActivator.getProtocolProviderFactories();
+        Map<Object, ProtocolProviderFactory> ppsRefs = CallHistoryActivator.getProtocolProviderFactories();
 
         if (ppsRefs != null) {
             for (ProtocolProviderFactory providerFactory : ppsRefs.values()) {
@@ -1210,8 +1215,11 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     /**
      * Permanently removes all locally stored call history.
      */
-    public void eraseLocallyStoredHistory()
+    public void eraseLocallyStoredHistory(List<String> callUUIDs)
     {
-        mDB.delete(CallHistoryService.TABLE_NAME, null, null);
+        for (String uuid : callUUIDs) {
+            String[] args = {uuid};
+            mDB.delete(CallHistoryService.TABLE_NAME, CallHistoryService.UUID + "=?", args);
+        }
     }
 }

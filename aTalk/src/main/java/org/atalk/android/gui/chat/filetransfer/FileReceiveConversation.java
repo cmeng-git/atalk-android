@@ -23,7 +23,8 @@ import android.view.*;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -123,8 +124,7 @@ public class FileReceiveConversation extends FileTransferConversation
             updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
                     aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSendTo));
 
-            boolean isAutoAccept = (downloadFileSize <= ConfigurationUtils.getAutoAcceptFileSize());
-            if (isAutoAccept) {
+            if (ConfigurationUtils.isAutoAcceptFile(downloadFileSize)) {
                 messageViewHolder.acceptButton.performClick();
             }
         }
@@ -155,7 +155,7 @@ public class FileReceiveConversation extends FileTransferConversation
 //                    messageViewHolder.mProgressBar.setMax((int) fileTransferRequest.getFileSize());
 //                    // setFileTransfer(fileTransfer, fileTransferRequest.getFileSize());
 //                }
-                statusText =  aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSendTo);
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSendTo);
                 mChatFragment.getChatPanel().setCacheRefresh(true);
                 break;
 
@@ -163,7 +163,7 @@ public class FileReceiveConversation extends FileTransferConversation
                 if (mXferFile == null) { // Android view redraw happen
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
-                statusText =  aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSendTo);
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSendTo);
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:

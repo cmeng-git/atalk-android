@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 /**
  * An extension to the Presence used in jitsi-meet when deployed in an
  * authenticated environment (such as Stride),
@@ -59,6 +61,8 @@ public class IdentityExtension implements ExtensionElement
      * The element name of this identity presence element
      */
     public static final String ELEMENT = "identity";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The child element of this identity storing information about the user

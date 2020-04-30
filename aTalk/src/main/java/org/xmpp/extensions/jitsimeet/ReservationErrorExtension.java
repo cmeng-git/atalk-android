@@ -17,6 +17,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Custom packets extension indicates error returned by reservation system.
  *
@@ -34,6 +36,8 @@ public class ReservationErrorExtension extends AbstractExtensionElement
      * XML element name of this packets extension.
      */
     public static final String ELEMENT = "reservation-error";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of XML attribute that holds error code returned by

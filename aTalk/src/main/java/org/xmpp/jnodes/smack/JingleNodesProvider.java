@@ -27,7 +27,7 @@ public class JingleNodesProvider extends IQProvider<JingleChannelIQ>
             namespace = parser.getNamespace();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                if (elementName.equals(JingleChannelIQ.NAME)
+                if (elementName.equals(JingleChannelIQ.ELEMENT)
                         && namespace.equals(JingleChannelIQ.NAMESPACE)) {
 
                     final String protocol = parser.getAttributeValue(null, "protocol");

@@ -15,6 +15,8 @@ package org.xmpp.extensions.jitsimeet;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * The packet extension is used by Jicofo to broadcast versions of all video conferencing system
  * components. This packets extension is added to jicofo's MUC presence. It will contain
@@ -54,6 +56,8 @@ public class ComponentVersionsExtension extends AbstractExtensionElement
      * The XML element namespace of {@link ComponentVersionsExtension}.
      */
     public static final String NAMESPACE = "http://jitsi.org/jitmeet";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Creates an {@link AbstractExtensionElement} instance for the specified <tt>namespace</tt> and <tt>elementName</tt>.

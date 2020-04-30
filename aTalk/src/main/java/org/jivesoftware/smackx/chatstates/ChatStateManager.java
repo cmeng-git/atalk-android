@@ -127,32 +127,6 @@ public final class ChatStateManager extends Manager {
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         MultiUserChatManager multiUserChatManager = MultiUserChatManager.getInstanceFor(connection);
 
-//        connection.addStanzaInterceptor(new StanzaListener() {
-//            @Override
-//            public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
-//                Message message = (Message) stanza;
-//
-//                // if message already has a chatStateExtension, then do nothing,
-//                if (message.hasExtension(ChatStateExtension.NAMESPACE)) {
-//                    return;
-//                }
-//
-//                Object chat;
-//                EntityBareJid entityBareJid = message.getTo().asEntityBareJidIfPossible();
-//                if (message.getType() == Message.Type.groupchat) {
-//                    chat = multiUserChatManager.getMultiUserChat(entityBareJid);
-//                }
-//                else {
-//                    chat = chatManager.chatWith(entityBareJid);
-//                }
-//
-//                // otherwise add a chatState extension if necessary.
-//                if (updateChatState(chat, ChatState.active)) {
-//                    message.addExtension(new ChatStateExtension(ChatState.active));
-//                }
-//            }
-//        }, OUTGOING_MESSAGE_FILTER);
-
         connection.addMessageInterceptor(messageBuilder -> {
             Message message = messageBuilder.build();
 

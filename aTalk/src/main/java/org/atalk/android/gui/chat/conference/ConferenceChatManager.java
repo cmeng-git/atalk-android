@@ -110,7 +110,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         // Event thread - Must execute in UiThread for dialog
         new Handler(Looper.getMainLooper()).post(() -> {
-            Activity activity =  aTalkApp.waitForFocus();
+            Activity activity = aTalkApp.waitForFocus();
             if (activity != null) {
                 InvitationReceivedDialog dialog
                         = new InvitationReceivedDialog(activity, multiUserChatManager, multiUserChatOpSet, invitation);
@@ -798,7 +798,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
 
         // Event thread - Must execute in UiThread for dialog
         new Handler(Looper.getMainLooper()).post(() -> {
-            Activity activity =  aTalkApp.waitForFocus();
+            Activity activity = aTalkApp.waitForFocus();
             if (activity != null) {
                 InvitationReceivedDialog dialog = new InvitationReceivedDialog(
                         activity, multiUserChatManager, multiUserChatOpSet, invitationAdHoc);

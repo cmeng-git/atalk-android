@@ -19,7 +19,6 @@ package org.atalk.android.plugin.geolocation;
 import android.hardware.*;
 import android.location.Location;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
 import android.view.Surface;
 
 import com.google.android.gms.maps.*;
@@ -29,6 +28,7 @@ import com.google.android.gms.maps.model.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.service.osgi.OSGiActivity;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ import static org.atalk.android.R.id.map;
 /**
  * This shows how to create a simple activity with streetView and a map
  */
-public class SplitStreetViewPanoramaAndMapActivity extends FragmentActivity
+public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
         implements OnMarkerDragListener, OnStreetViewPanoramaChangeListener, SensorEventListener
 {
     public static final String MARKER_POSITION_KEY = "MarkerPosition";

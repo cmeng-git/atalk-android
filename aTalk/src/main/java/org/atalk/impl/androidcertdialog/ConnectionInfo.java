@@ -99,7 +99,7 @@ public class ConnectionInfo extends OSGiActivity
                 + CertificateServiceImpl.CERT_TRUST_PARAM_SUBFIX + account.getService();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE))
+        builder.setTitle(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE)
                 .setMessage(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DELETE, bareJid))
                 .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
                     CertificateServiceImpl cvs

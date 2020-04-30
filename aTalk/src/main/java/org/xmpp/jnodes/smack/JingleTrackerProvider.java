@@ -52,7 +52,7 @@ public class JingleTrackerProvider extends IQProvider<JingleTrackerIQ>
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (elementName.equals(JingleTrackerIQ.NAME)) {
+                if (elementName.equals(JingleTrackerIQ.ELEMENT)) {
                     done = true;
                 }
             }
