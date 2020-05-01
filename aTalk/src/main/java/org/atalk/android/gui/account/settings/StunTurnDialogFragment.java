@@ -167,6 +167,7 @@ public class StunTurnDialogFragment extends DialogFragment
             aTalkApp.showToastMessage("The ip and port can not be empty");
             return false;
         }
+
         int port = Integer.parseInt(portStr);
 
         // Create descriptor if new entry
