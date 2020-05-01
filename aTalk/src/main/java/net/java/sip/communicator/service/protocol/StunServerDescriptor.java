@@ -185,14 +185,13 @@ public class StunServerDescriptor implements Serializable
     }
 
     /**
-     * Sets the username associated to this server.
+     * Sets the username associated to this server. Empty byte array if null
      *
      * @param username the username to set
      */
     public void setUsername(String username)
     {
-        if (username != null)
-            this.username = StringUtils.getUTF8Bytes(username);
+        this.username = (username != null) ? StringUtils.getUTF8Bytes(username) : new byte[]{};
     }
 
     /**
@@ -206,13 +205,13 @@ public class StunServerDescriptor implements Serializable
     }
 
     /**
-     * Sets the password associated to this server username.
+     * Sets the password associated to this server username. Empty byte array if null
      *
      * @param password the password to set
      */
     public void setPassword(String password)
     {
-        this.password = StringUtils.getUTF8Bytes(password);
+        this.password = (password != null) ? StringUtils.getUTF8Bytes(password) : new byte[]{};
     }
 
     /**
