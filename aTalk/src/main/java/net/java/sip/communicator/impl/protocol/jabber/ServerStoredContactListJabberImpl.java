@@ -17,10 +17,12 @@ import net.java.sip.communicator.service.protocol.event.*;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.jivesoftware.smack.SmackException.*;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.roster.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
@@ -465,23 +467,17 @@ public class ServerStoredContactListJabberImpl
         cursor.close();
 
         // @see <a href="https://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
-        StanzaListener stanzaInterceptor = new StanzaListener()
-        {
-            @Override
-            public void processStanza(Stanza stanza)
-            {
-                Presence presence = (Presence) stanza;
-                if ((presence.getType() == Presence.Type.subscribe) && presence.getTo().isParentOf(contactJid)) {
-                    Nick nicknameExt
-                            = new Nick(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS));
-                    presence.addExtension(nicknameExt);
+        xmppConnection.addPresenceInterceptor(presenceBuilder -> {
+            Presence presence = presenceBuilder.build();
+            if (presence.getTo().isParentOf(contactJid)) {
+                Nick nicknameExt = new Nick(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS));
+                presenceBuilder.addExtension(nicknameExt);
 
-                    // cmeng - End the listener once job is completed - otherwise receive multiple triggers.
-                    xmppConnection.removeStanzaInterceptor(this);
-                }
+                // cmeng - End the listener once job is completed
+                // xmppConnection.removePresenceInterceptor(this);
             }
-        };
-        xmppConnection.addStanzaInterceptor(stanzaInterceptor, PresenceTypeFilter.SUBSCRIBE);
+            Timber.w("Presence subscribe for: %s", contactJid);
+        }, PresenceTypeFilter.SUBSCRIBE::accept);
 
         /* Creates a new roster entry and presence subscription. The server will asynchronously
          * update the roster with the subscription status.
@@ -790,7 +786,7 @@ public class ServerStoredContactListJabberImpl
     void init(ContactChangesListener presenceChangeListener)
     {
         // FFR: v2.1.6 Huawei nova 3i/Y9 prime (HWINE) android-9, xmppConnection == null
-        // even this is called when PPS is registered ? no action taken
+        // This may be called when PPS is not-registered ???? called at RegistrationState.REGISTERED state
         xmppConnection = mPPS.getConnection();
         mRoster = Roster.getInstanceFor(xmppConnection);
 
@@ -812,6 +808,7 @@ public class ServerStoredContactListJabberImpl
         presenceChangeListener.processStoredEvents();
 
         rosterChangeListener = new ChangeListener();
+        // v2.2.2. mRoster => NPE
         mRoster.addRosterListener(rosterChangeListener);
     }
 

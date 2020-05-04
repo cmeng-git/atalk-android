@@ -1319,7 +1319,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Adds auth handler.
      *
-     * @param handler AUthorization handler with UI dialog
+     * @param handler Authorization handler with UI dialog
      */
     private synchronized void setHandler(AuthorizationHandler handler)
     {

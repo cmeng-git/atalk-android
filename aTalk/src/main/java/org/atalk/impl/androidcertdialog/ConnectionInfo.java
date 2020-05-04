@@ -23,6 +23,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.StringUtils;
 
+import java.net.InetSocketAddress;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,8 @@ public class ConnectionInfo extends OSGiActivity
         this.mCIAdapter = new ConnectionInfoAdapter(protocolProviders);
         pProviderKeysList.setAdapter(mCIAdapter);
 
-        pProviderKeysList.setOnItemClickListener(
-                (parent, view, position, id) -> showSslCertificate(position)
+        pProviderKeysList.setOnItemClickListener((parent, view, position, id)
+                -> showSslCertificate(position)
         );
     }
 
@@ -140,47 +141,34 @@ public class ConnectionInfo extends OSGiActivity
     /**
      * Constructs the connection info text.
      */
-    private String loadDetails(ProtocolProviderService protocolProvider)
+    private String loadDetails(ProtocolProviderService pps)
     {
         final StringBuilder buff = new StringBuilder();
         buff.append("<html><body>");
 
         // Protocol name
-        buff.append(getLineString(
-                getString(R.string.service_gui_settings_PROTOCOL),
-                protocolProvider.getProtocolName()));
+        buff.append(getItemString(getString(R.string.service_gui_settings_PROTOCOL), pps.getProtocolName()));
 
         // Server address and port
-        final OperationSetConnectionInfo opSetConnectionInfo = protocolProvider
-                .getOperationSet(OperationSetConnectionInfo.class);
-        if (opSetConnectionInfo != null) {
-            buff.append(getLineString(
-                    getString(R.string.service_gui_settings_ADDRESS),
-                    (opSetConnectionInfo.getServerAddress() == null)
-                            ? "" : opSetConnectionInfo.getServerAddress().getHostName()));
-            buff.append(getLineString(
-                    getString(R.string.service_gui_settings_PORT),
-                    (opSetConnectionInfo.getServerAddress() == null)
-                            ? "" : String.valueOf(opSetConnectionInfo.getServerAddress().getPort()
-                    )));
+        final OperationSetConnectionInfo opSetConnInfo = pps.getOperationSet(OperationSetConnectionInfo.class);
+        if (opSetConnInfo != null) {
+            InetSocketAddress ISAddress = opSetConnInfo.getServerAddress();
+            buff.append(getItemString(getString(R.string.service_gui_settings_ADDRESS),
+                    (ISAddress == null) ? "" : ISAddress.getHostName()));
+            buff.append(getItemString(getString(R.string.service_gui_settings_PORT),
+                    (ISAddress == null) ? "" : String.valueOf(ISAddress.getPort())));
         }
 
         // Transport protocol
-        TransportProtocol preferredTransport = protocolProvider.getTransportProtocol();
+        TransportProtocol preferredTransport = pps.getTransportProtocol();
         if (preferredTransport != TransportProtocol.UNKNOWN)
-            buff.append(getLineString(
-                    getString(R.string.service_gui_callinfo_CALL_TRANSPORT),
-                    preferredTransport.toString()));
+            buff.append(getItemString(getString(R.string.service_gui_callinfo_CALL_TRANSPORT), preferredTransport.toString()));
 
         // TLS information
-        final OperationSetTLS opSetTLS = protocolProvider.getOperationSet(OperationSetTLS.class);
+        final OperationSetTLS opSetTLS = pps.getOperationSet(OperationSetTLS.class);
         if (opSetTLS != null) {
-            buff.append(getLineString(
-                    getString(R.string.service_gui_callinfo_TLS_PROTOCOL),
-                    opSetTLS.getProtocol()));
-            buff.append(getLineString(
-                    getString(R.string.service_gui_callinfo_TLS_CIPHER_SUITE),
-                    opSetTLS.getCipherSuite()));
+            buff.append(getItemString(getString(R.string.service_gui_callinfo_TLS_PROTOCOL), opSetTLS.getProtocol()));
+            buff.append(getItemString(getString(R.string.service_gui_callinfo_TLS_CIPHER_SUITE), opSetTLS.getCipherSuite()));
 
             buff.append("<b><u><font color=\"aqua\">")
                     .append(getString(R.string.service_gui_callinfo_VIEW_CERTIFICATE))
@@ -198,7 +186,7 @@ public class ConnectionInfo extends OSGiActivity
      * @param infoText the info text that would be shown in plain text
      * @return the newly constructed HTML string
      */
-    private String getLineString(String labelText, String infoText)
+    private String getItemString(String labelText, String infoText)
     {
         if (!StringUtils.isNullOrEmpty(infoText)) {
             if (infoText.contains("TLS"))

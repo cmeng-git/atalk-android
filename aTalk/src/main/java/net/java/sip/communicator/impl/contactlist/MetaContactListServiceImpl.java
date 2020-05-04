@@ -44,12 +44,12 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     /**
      * The BundleContext that we got from the OSGI bus.
      */
-    private BundleContext bundleContext = null;
+    private BundleContext mBundleContext = null;
 
     /**
      * The list of AccountUID to protocol providers that we're currently aware of
      */
-    private final Map<String, ProtocolProviderService> currentlyInstalledProviders = new Hashtable<>();
+    private final Map<String, ProtocolProviderService> mCurrentlyInstalledProviders = new Hashtable<>();
 
     /**
      * The root of the meta contact list.
@@ -59,8 +59,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     /**
      * The event handler that will be handling our subscription events.
      */
-    private final ContactListSubscriptionListener clSubscriptionEventHandler
-            = new ContactListSubscriptionListener();
+    private final ContactListSubscriptionListener clSubscriptionEventHandler = new ContactListSubscriptionListener();
 
     /**
      * The event handler that will be handling group events.
@@ -68,15 +67,14 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     private final ContactListGroupListener clGroupEventHandler = new ContactListGroupListener();
 
     /**
-     * The number of milliseconds to wait for confirmations of account modifications before
-     * deciding to drop.
+     * The number of milliseconds to wait for confirmations of account modifications before deciding to drop.
      */
     private static final int CONTACT_LIST_MODIFICATION_TIMEOUT = 10000;
 
     /**
      * Listeners interested in events dispatched upon modification of the meta contact list.
      */
-    private final List<MetaContactListListener> metaContactListListeners = new Vector<>();
+    private final List<MetaContactListListener> mMetaContactListListeners = new Vector<>();
 
     /**
      * Contains (as keys) <tt>MetaContactGroup</tt> names that are currently being resolved
@@ -86,7 +84,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * therefore be ignored by the class group listener if and only if it carries a name present
      * in this table and is issued by one of the providers mapped against this groupName.
      */
-    private final Hashtable<String, List<ProtocolProviderService>> groupEventIgnoreList = new Hashtable<>();
+    private final Hashtable<String, List<ProtocolProviderService>> mGroupEventIgnoreList = new Hashtable<>();
 
     /**
      * Contains (as keys) <tt>Contact</tt> addresses that are currently being resolved against a
@@ -96,7 +94,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * therefore be ignored by the class group listener if and only if it carries a name present
      * in this table and is issued by one of the providers mapped against this groupName.
      */
-    private final Hashtable<String, List<ProtocolProviderService>> contactEventIgnoreList = new Hashtable<>();
+    private final Hashtable<String, List<ProtocolProviderService>> mContactEventIgnoreList = new Hashtable<>();
 
     /**
      * The instance of the storage manager which is handling the local copy of our contact list.
@@ -108,8 +106,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     public MetaContactListServiceImpl()
     {
-        rootMetaGroup = new MetaContactGroupImpl(this,
-                ContactGroup.ROOT_GROUP_NAME, ContactGroup.ROOT_GROUP_UID);
+        rootMetaGroup = new MetaContactGroupImpl(this, ContactGroup.ROOT_GROUP_NAME, ContactGroup.ROOT_GROUP_UID);
     }
 
     /**
@@ -134,11 +131,11 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     public void start(BundleContext bc)
     {
         Timber.d("Starting the meta contact list implementation.");
-        this.bundleContext = bc;
+        mBundleContext = bc;
 
         // initialize the meta contact list from what has been stored locally.
         try {
-            storageManager.start(bundleContext, this);
+            storageManager.start(mBundleContext, this);
         } catch (Exception ex) {
             Timber.e("Failed loading the stored contact list: %s", ex.getMessage());
         }
@@ -148,8 +145,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         ServiceReference[] ppsRefs = null;
         try {
             // first discover the icq service then find the protocol provider service
-            ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(),
-                    null);
+            ppsRefs = mBundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
@@ -157,7 +153,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         // the meta contact list
         if (ppsRefs != null) {
             for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
-                ProtocolProviderService pps = bundleContext.getService(ppsRef);
+                ProtocolProviderService pps = mBundleContext.getService(ppsRef);
                 handleProviderAdded(pps);
             }
         }
@@ -173,7 +169,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         bc.removeServiceListener(this);
 
         // stop listening to all currently installed providers
-        for (ProtocolProviderService pps : currentlyInstalledProviders.values()) {
+        for (ProtocolProviderService pps : mCurrentlyInstalledProviders.values()) {
             OperationSetPersistentPresence opSetPersPresence = pps.getOperationSet(OperationSetPersistentPresence.class);
 
             if (opSetPersPresence != null) {
@@ -191,7 +187,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
                 }
             }
         }
-        currentlyInstalledProviders.clear();
+        mCurrentlyInstalledProviders.clear();
     }
 
     /**
@@ -201,9 +197,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     public void addMetaContactListListener(MetaContactListListener listener)
     {
-        synchronized (metaContactListListeners) {
-            if (!metaContactListListeners.contains(listener))
-                metaContactListListeners.add(listener);
+        synchronized (mMetaContactListListeners) {
+            if (!mMetaContactListListeners.contains(listener))
+                mMetaContactListListeners.add(listener);
         }
     }
 
@@ -314,27 +310,27 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             opSetPersPresence.removeSubscriptionListener(evtRetriever);
         }
         // attach the newly created contact to a meta contact
-        if (evtRetriever.evt == null) {
+        if (evtRetriever.mEvent == null) {
             throw new MetaContactListException("Failed to create a contact with address: "
                     + contactID, null, MetaContactListException.CODE_NETWORK_ERROR);
         }
 
-        if (evtRetriever.evt instanceof SubscriptionEvent
-                && ((SubscriptionEvent) evtRetriever.evt).getEventID() == SubscriptionEvent.SUBSCRIPTION_FAILED) {
+        if (evtRetriever.mEvent instanceof SubscriptionEvent
+                && ((SubscriptionEvent) evtRetriever.mEvent).getEventID() == SubscriptionEvent.SUBSCRIPTION_FAILED) {
             throw new MetaContactListException(
                     "Failed to create a contact with address: " + contactID + " "
-                            + ((SubscriptionEvent) evtRetriever.evt).getErrorReason(), null,
+                            + ((SubscriptionEvent) evtRetriever.mEvent).getErrorReason(), null,
                     MetaContactListException.CODE_UNKNOWN_ERROR);
         }
 
         // now finally - add the contact to the meta contact
-        ((MetaContactImpl) metaContact).addProtoContact(evtRetriever.sourceContact);
+        ((MetaContactImpl) metaContact).addProtoContact(evtRetriever.mSourceContact);
 
         // only fire an event here if the calling method wants us to. in case this is the creation
         // of a new contact and not only addition of a proto contact we should remain silent and
         // the calling method will do the eventing.
         if (fireEvent) {
-            this.fireProtoContactEvent(evtRetriever.sourceContact,
+            fireProtoContactEvent(evtRetriever.mSourceContact,
                     ProtoContactEvent.PROTO_CONTACT_ADDED, null, metaContact);
         }
         ((MetaContactGroupImpl) parentMetaGroup).addMetaContact((MetaContactImpl) metaContact);
@@ -407,18 +403,18 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         }
 
         // something went wrong.
-        if (evtRetriever.evt == null) {
+        if (evtRetriever.mEvent == null) {
             throw new MetaContactListException(
                     "Failed to create a proto group named: " + metaGroup.getGroupName(), null,
                     MetaContactListException.CODE_NETWORK_ERROR);
         }
 
         // now add the proto group to the meta group.
-        metaGroup.addProtoGroup(evtRetriever.evt.getSourceGroup());
+        metaGroup.addProtoGroup(evtRetriever.mEvent.getSourceGroup());
 
-        fireMetaContactGroupEvent(metaGroup, evtRetriever.evt.getSourceProvider(),
-                evtRetriever.evt.getSourceGroup(), MetaContactGroupEvent.CONTACT_GROUP_ADDED_TO_META_GROUP);
-        return evtRetriever.evt.getSourceGroup();
+        fireMetaContactGroupEvent(metaGroup, evtRetriever.mEvent.getSourceProvider(),
+                evtRetriever.mEvent.getSourceGroup(), MetaContactGroupEvent.CONTACT_GROUP_ADDED_TO_META_GROUP);
+        return evtRetriever.mEvent.getSourceGroup();
     }
 
     /**
@@ -427,8 +423,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      *
      * @param child the <tt>MetaContactGroup</tt> whose parent group we're looking for. If no parent is
      * found <tt>null</tt> is returned.
-     * @return the <tt>MetaContactGroup</tt> that contains <tt>child</tt> or null if no parent was
-     * found.
+     * @return the <tt>MetaContactGroup</tt> that contains <tt>child</tt> or null if no parent was found.
      */
     public MetaContactGroup findParentMetaContactGroup(MetaContactGroup child)
     {
@@ -485,11 +480,10 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         }
 
         MetaContactImpl newMetaContact = new MetaContactImpl();
-        this.addNewContactToMetaContact(provider, metaContactGroup, newMetaContact, contactID, false);
+        addNewContactToMetaContact(provider, metaContactGroup, newMetaContact, contactID, false);
 
         // don't fire a PROTO_CONT_ADDED event we'll fire our own event here.
-        fireMetaContactEvent(newMetaContact, findParentMetaContactGroup(newMetaContact),
-                MetaContactEvent.META_CONTACT_ADDED);
+        fireMetaContactEvent(newMetaContact, findParentMetaContactGroup(newMetaContact), MetaContactEvent.META_CONTACT_ADDED);
         return newMetaContact;
     }
 
@@ -720,7 +714,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         if (opSetPresence == null) {
             /* @todo handle non persistent presence operation sets */
         }
-        MetaContactImpl currentParentMetaContact = (MetaContactImpl) this.findMetaContactByContact(contact);
+        MetaContactImpl currentParentMetaContact = (MetaContactImpl) findMetaContactByContact(contact);
         ContactGroup parentProtoGroup = resolveProtoPath(contact.getProtocolProvider(),
                 (MetaContactGroupImpl) newParentMetaGroup);
 
@@ -803,7 +797,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             throw new IllegalArgumentException(newParentMetaContact + " is not a MetaContactImpl instance.");
         }
 
-        MetaContactImpl currentParentMetaContact = (MetaContactImpl) this.findMetaContactByContact(contact);
+        MetaContactImpl currentParentMetaContact = (MetaContactImpl) findMetaContactByContact(contact);
         MetaContactGroup newParentGroup = findParentMetaContactGroup(newParentMetaContact);
         ContactGroup parentProtoGroup = resolveProtoPath(contact.getProtocolProvider(),
                 (MetaContactGroupImpl) newParentGroup);
@@ -952,8 +946,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     public void removeMetaContactListListener(MetaContactListListener listener)
     {
-        synchronized (metaContactListListeners) {
-            this.metaContactListListeners.remove(listener);
+        synchronized (mMetaContactListListeners) {
+            mMetaContactListListeners.remove(listener);
         }
     }
 
@@ -1101,7 +1095,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             while (contactGroups.hasNext()) {
                 protoGroup = contactGroups.next();
                 if (groupToRemove == protoGroup.getParentContactGroup())
-                    this.locallyRemoveAllContactsForProvider(subMetaGroup, protoGroup);
+                    locallyRemoveAllContactsForProvider(subMetaGroup, protoGroup);
             }
 
             // remove the group if there are no children left.
@@ -1196,7 +1190,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     public Iterator<MetaContact> findAllMetaContactsForProvider(ProtocolProviderService protocolProvider)
     {
         List<MetaContact> resultList = new ArrayList<>();
-        this.findAllMetaContactsForProvider(protocolProvider, rootMetaGroup, resultList);
+        findAllMetaContactsForProvider(protocolProvider, rootMetaGroup, resultList);
         return resultList.iterator();
     }
 
@@ -1213,7 +1207,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             ProtocolProviderService protocolProvider, MetaContactGroup metaContactGroup)
     {
         List<MetaContact> resultList = new LinkedList<>();
-        this.findAllMetaContactsForProvider(protocolProvider, metaContactGroup, resultList);
+        findAllMetaContactsForProvider(protocolProvider, metaContactGroup, resultList);
         return resultList.iterator();
     }
 
@@ -1264,7 +1258,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
             Iterator<ContactGroup> protocolSubgroups = subGroup.getContactGroups();
             if (protocolSubgroups.hasNext()) {
-                this.findAllMetaContactsForAddress(subGroup, contactAddress, resultList);
+                findAllMetaContactsForAddress(subGroup, contactAddress, resultList);
             }
         }
     }
@@ -1298,7 +1292,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
             Iterator<ContactGroup> protocolSubgroups = subGroup.getContactGroupsForProvider(protocolProvider);
             if (protocolSubgroups.hasNext()) {
-                this.findAllMetaContactsForProvider(protocolProvider, subGroup, resultList);
+                findAllMetaContactsForProvider(protocolProvider, subGroup, resultList);
             }
         }
     }
@@ -1358,7 +1352,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             addContactGroupToMetaGroup(group, newMetaGroup, false);
 
             if (fireEvents) {
-                this.fireMetaContactGroupEvent(newMetaGroup, group.getProtocolProvider(), group,
+                fireMetaContactGroupEvent(newMetaGroup, group.getProtocolProvider(), group,
                         MetaContactGroupEvent.META_CONTACT_GROUP_ADDED);
             }
         }
@@ -1377,7 +1371,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             newMetaContact.addProtoContact(contact);
             metaGroup.addMetaContact(newMetaContact);
             if (fireEvents) {
-                this.fireMetaContactEvent(newMetaContact, metaGroup, MetaContactEvent.META_CONTACT_ADDED);
+                fireMetaContactEvent(newMetaContact, metaGroup, MetaContactEvent.META_CONTACT_ADDED);
             }
         }
     }
@@ -1397,7 +1391,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         Timber.d("Adding protocol provider %s", accountUid);
 
-        this.currentlyInstalledProviders.put(accountUid, provider);
+        mCurrentlyInstalledProviders.put(accountUid, provider);
 
         // If we have a persistent presence opSet for the provider - then retrieve its contact list
         // and merge it with the local one.
@@ -1442,7 +1436,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         Timber.d("Removing protocol provider %s", pps);
 
         AccountID accountID = pps.getAccountID();
-        this.currentlyInstalledProviders.remove(accountID.getAccountUniqueID());
+        mCurrentlyInstalledProviders.remove(accountID.getAccountUniqueID());
 
         // Check if the capabilities operation set is available for this contact and remove
         // previously added listeners.
@@ -1469,11 +1463,11 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             while (subgroups.hasNext()) {
                 ContactGroup group = subgroups.next();
                 // remove the group
-                this.removeContactGroupFromMetaContactGroup((MetaContactGroupImpl)
+                removeContactGroupFromMetaContactGroup((MetaContactGroupImpl)
                         findMetaContactGroupByContactGroup(group), group, pps);
             }
             // cmeng - not allow to remove the root group
-            // this.removeContactGroupFromMetaContactGroup(this.rootMetaGroup, rootGroup, pps);
+            // removeContactGroupFromMetaContactGroup(rootMetaGroup, rootGroup, pps);
         }
 
     }
@@ -1493,13 +1487,13 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             return;
         }
 
-        List<ProtocolProviderService> existingProvList = this.groupEventIgnoreList.get(group);
+        List<ProtocolProviderService> existingProvList = mGroupEventIgnoreList.get(group);
         if (existingProvList == null) {
             existingProvList = new LinkedList<>();
         }
 
         existingProvList.add(ownerProvider);
-        groupEventIgnoreList.put(group, existingProvList);
+        mGroupEventIgnoreList.put(group, existingProvList);
     }
 
     /**
@@ -1511,7 +1505,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     private boolean isGroupInEventIgnoreList(String group, ProtocolProviderService ownerProvider)
     {
-        List<ProtocolProviderService> existingProvList = this.groupEventIgnoreList.get(group);
+        List<ProtocolProviderService> existingProvList = mGroupEventIgnoreList.get(group);
         return existingProvList != null && existingProvList.contains(ownerProvider);
     }
 
@@ -1530,9 +1524,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             return;
         }
 
-        List<ProtocolProviderService> existingProvList = this.groupEventIgnoreList.get(group);
+        List<ProtocolProviderService> existingProvList = mGroupEventIgnoreList.get(group);
         if (existingProvList.size() < 1) {
-            groupEventIgnoreList.remove(group);
+            mGroupEventIgnoreList.remove(group);
         }
         else {
             existingProvList.remove(ownerProvider);
@@ -1555,12 +1549,12 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             return;
         }
 
-        List<ProtocolProviderService> existingProvList = this.contactEventIgnoreList.get(contact);
+        List<ProtocolProviderService> existingProvList = mContactEventIgnoreList.get(contact);
         if (existingProvList == null) {
             existingProvList = new LinkedList<>();
         }
         existingProvList.add(ownerProvider);
-        contactEventIgnoreList.put(contact, existingProvList);
+        mContactEventIgnoreList.put(contact, existingProvList);
     }
 
     /**
@@ -1572,7 +1566,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     private boolean isContactInEventIgnoreList(String contact, ProtocolProviderService ownerProvider)
     {
-        List<ProtocolProviderService> existingProvList = this.contactEventIgnoreList.get(contact);
+        List<ProtocolProviderService> existingProvList = mContactEventIgnoreList.get(contact);
         return existingProvList != null && existingProvList.contains(ownerProvider);
     }
 
@@ -1591,7 +1585,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     private boolean isContactInEventIgnoreList(Contact contact, ProtocolProviderService ownerProvider)
     {
         for (Map.Entry<String, List<ProtocolProviderService>> contactEventIgnoreEntry :
-                contactEventIgnoreList.entrySet()) {
+                mContactEventIgnoreList.entrySet()) {
             String contactAddress = contactEventIgnoreEntry.getKey();
 
             if (contact.getAddress().equals(contactAddress) || contact.equals(contactAddress)) {
@@ -1618,10 +1612,10 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             return;
         }
 
-        List<ProtocolProviderService> existingProvList = this.contactEventIgnoreList.get(contact);
+        List<ProtocolProviderService> existingProvList = mContactEventIgnoreList.get(contact);
         if (existingProvList != null) {
             if (existingProvList.size() < 1) {
-                groupEventIgnoreList.remove(contact);
+                mGroupEventIgnoreList.remove(contact);
             }
             else {
                 existingProvList.remove(ownerProvider);
@@ -1637,7 +1631,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     public void serviceChanged(ServiceEvent event)
     {
-        Object sService = bundleContext.getService(event.getServiceReference());
+        Object sService = mBundleContext.getService(event.getServiceReference());
         Timber.log(TimberLog.FINER, "Received a service event for: %s", sService.getClass().getName());
 
         // we don't care if the source service is not a protocol provider
@@ -1655,7 +1649,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         ProtocolProviderFactory sourceFactory = null;
         ServiceReference<?>[] allBundleServices = event.getServiceReference().getBundle().getRegisteredServices();
         for (ServiceReference<?> bundleServiceRef : allBundleServices) {
-            Object service = bundleContext.getService(bundleServiceRef);
+            Object service = mBundleContext.getService(bundleServiceRef);
             if (service instanceof ProtocolProviderFactory) {
                 sourceFactory = (ProtocolProviderFactory) service;
                 break;
@@ -1677,7 +1671,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
                 }
             }
 
-            if (sourceFactory != null && currentlyInstalledProviders.containsKey(
+            if (sourceFactory != null && mCurrentlyInstalledProviders.containsKey(
                     pps.getAccountID().getAccountUniqueID())) {
                 Timber.d("Modifying an existing installed account: %s", accountID);
                 // the account is already installed and this event is coming from a modification.
@@ -1688,7 +1682,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
                 // return;
             }
 
-            this.handleProviderAdded(pps);
+            handleProviderAdded(pps);
         }
         else if (event.getType() == ServiceEvent.UNREGISTERING) {
             if (sourceFactory == null) {
@@ -1705,14 +1699,14 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
                 // unresolved contacts will be created which will be resolved from the already
                 // modified account
                 synchronized (this) {
-                    this.removeMetaContactListListener(storageManager);
-                    this.handleProviderRemoved(pps);
-                    this.addMetaContactListListener(storageManager);
+                    removeMetaContactListListener(storageManager);
+                    handleProviderRemoved(pps);
+                    addMetaContactListListener(storageManager);
                 }
                 return;
             }
             Timber.w("Account uninstalled. Removing all its meta contacts: %s", accountID);
-            this.handleProviderRemoved(pps);
+            handleProviderRemoved(pps);
         }
     }
 
@@ -2145,8 +2139,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     {
         MetaContactListListener[] listeners;
 
-        synchronized (metaContactListListeners) {
-            listeners = metaContactListListeners.toArray(new MetaContactListListener[0]);
+        synchronized (mMetaContactListListeners) {
+            listeners = mMetaContactListListeners.toArray(new MetaContactListListener[0]);
         }
         return listeners;
     }
@@ -2289,7 +2283,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             String contactGroupUID, ContactGroup parentProtoGroup, String persistentData, String accountID)
     {
         // get the presence op set
-        ProtocolProviderService sourceProvider = currentlyInstalledProviders.get(accountID);
+        ProtocolProviderService sourceProvider = mCurrentlyInstalledProviders.get(accountID);
         OperationSetPersistentPresence presenceOpSet = sourceProvider.getOperationSet(OperationSetPersistentPresence.class);
 
         ContactGroup newProtoGroup = presenceOpSet.createUnresolvedContactGroup(contactGroupUID, persistentData,
@@ -2325,7 +2319,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         }
 
         // create unresolved contacts for the protoContacts associated with this metaContact
-        ProtocolProviderService sourceProvider = currentlyInstalledProviders.get(accountID);
+        ProtocolProviderService sourceProvider = mCurrentlyInstalledProviders.get(accountID);
         OperationSetPersistentPresence presenceOpSet
                 = sourceProvider.getOperationSet(OperationSetPersistentPresence.class);
 
@@ -2418,9 +2412,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     private static class BlockingGroupEventRetriever implements ServerStoredGroupListener
     {
-        private final String groupName;
+        private final String mGroupName;
 
-        public ServerStoredGroupEvent evt = null;
+        public ServerStoredGroupEvent mEvent = null;
 
         /**
          * Creates an instance of the retriever that will wait for events confirming the creation
@@ -2430,7 +2424,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
          */
         BlockingGroupEventRetriever(String groupName)
         {
-            this.groupName = groupName;
+            mGroupName = groupName;
         }
 
         /**
@@ -2440,9 +2434,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
          */
         public synchronized void groupCreated(ServerStoredGroupEvent event)
         {
-            if (event.getSourceGroup().getGroupName().equals(groupName)) {
-                this.evt = event;
-                this.notifyAll();
+            if (event.getSourceGroup().getGroupName().equals(mGroupName)) {
+                mEvent = event;
+                notifyAll();
             }
         }
 
@@ -2482,9 +2476,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         public synchronized void waitForEvent(long millis)
         {
             // no need to wait if an event is already there.
-            if (evt == null) {
+            if (mEvent == null) {
                 try {
-                    this.wait(millis);
+                    wait(millis);
                 } catch (InterruptedException ex) {
                     Timber.e(ex, "Interrupted while waiting for group creation");
                 }
@@ -2496,13 +2490,12 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * Utility class used for blocking the current thread until an event is delivered confirming
      * the creation of a particular contact.
      */
-    private static class BlockingSubscriptionEventRetriever implements SubscriptionListener,
-            ServerStoredGroupListener
+    private static class BlockingSubscriptionEventRetriever implements SubscriptionListener, ServerStoredGroupListener
     {
-        private final String subscriptionAddress;
+        private final String mSubscriptionAddress;
 
-        public Contact sourceContact = null;
-        public EventObject evt = null;
+        public Contact mSourceContact = null;
+        public EventObject mEvent = null;
 
         /**
          * Events delivered through this method are ignored
@@ -2539,7 +2532,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
          */
         BlockingSubscriptionEventRetriever(String subscriptionAddress)
         {
-            this.subscriptionAddress = subscriptionAddress;
+            mSubscriptionAddress = subscriptionAddress;
         }
 
         /**
@@ -2549,11 +2542,11 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
          */
         public synchronized void groupCreated(ServerStoredGroupEvent event)
         {
-            Contact contact = event.getSourceGroup().getContact(subscriptionAddress);
+            Contact contact = event.getSourceGroup().getContact(mSubscriptionAddress);
             if (contact != null) {
-                this.evt = event;
-                this.sourceContact = contact;
-                this.notifyAll();
+                mEvent = event;
+                mSourceContact = contact;
+                notifyAll();
             }
         }
 
@@ -2564,11 +2557,11 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
          */
         public synchronized void subscriptionCreated(SubscriptionEvent event)
         {
-            if (event.getSourceContact().getAddress().equals(subscriptionAddress)
-                    || event.getSourceContact().equals(subscriptionAddress)) {
-                this.evt = event;
-                this.sourceContact = event.getSourceContact();
-                this.notifyAll();
+            if (event.getSourceContact().getAddress().equals(mSubscriptionAddress)
+                    || event.getSourceContact().equals(mSubscriptionAddress)) {
+                mEvent = event;
+                mSourceContact = event.getSourceContact();
+                notifyAll();
             }
         }
 
@@ -2589,10 +2582,10 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
          */
         public synchronized void subscriptionFailed(SubscriptionEvent event)
         {
-            if (event.getSourceContact().getAddress().equals(subscriptionAddress)) {
-                this.evt = event;
-                this.sourceContact = event.getSourceContact();
-                this.notifyAll();
+            if (event.getSourceContact().getAddress().equals(mSubscriptionAddress)) {
+                mEvent = event;
+                mSourceContact = event.getSourceContact();
+                notifyAll();
             }
         }
 
@@ -2632,9 +2625,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         public synchronized void waitForEvent(long millis)
         {
             // no need to wait if an event is already there.
-            if (evt == null) {
+            if (mEvent == null) {
                 try {
-                    this.wait(millis);
+                    wait(millis);
                 } catch (InterruptedException ex) {
                     Timber.e(ex, "Interrupted while waiting for contact creation");
                 }

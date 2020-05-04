@@ -818,7 +818,8 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public SrtpControls getSrtpControls()
     {
-        return mediaHandler.getSrtpControls(this);
+        return  (mediaHandler != null)  // NPE from field ?
+                ? mediaHandler.getSrtpControls(this) : new SrtpControls();
     }
 
     /**

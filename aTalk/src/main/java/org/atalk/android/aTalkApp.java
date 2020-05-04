@@ -15,6 +15,8 @@ import android.os.*;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
 import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -116,6 +118,7 @@ public class aTalkApp extends Application implements LifecycleObserver
 
         super.onCreate();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        AndroidThreeTen.init(this);
     }
 
     /**
@@ -350,8 +353,8 @@ public class aTalkApp extends Application implements LifecycleObserver
         }
 
         final int accountCount = accountManager.getStoredAccounts().size();
+        // Start new account Activity if none is found
         if (accountCount == 0) {
-            // Start new account Activity if none is found
             return AccountLoginActivity.class;
         }
         else {

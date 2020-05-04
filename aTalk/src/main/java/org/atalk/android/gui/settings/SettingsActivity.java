@@ -280,12 +280,15 @@ public class SettingsActivity extends OSGiActivity
                 // Need to destroy and restart to set new language if there is a change
                 Activity activity = getActivity();
                 if (!language.equals(value) && (activity != null)) {
-                    // must get aTalk to restart onResume to show correct UI for preference menu
-                    aTalk.setPrefChange(true);
                     // All language setting changes must call via aTalkApp so its contextWrapper is updated
                     aTalkApp.setLocale(language1);
-                    activity.finish();
+
+                    // must get aTalk to restart onResume to show correct UI for preference menu
+                    aTalk.setPrefChange(true);
+
+                    // do destroy activity last
                     activity.startActivity(new Intent(activity, SettingsActivity.class));
+                    activity.finish();
                 }
                 return true;
             });
@@ -313,11 +316,14 @@ public class SettingsActivity extends OSGiActivity
                 // Need to destroy and restart to set new Theme if there is a change
                 Activity activity = getActivity();
                 if (!nTheme.equals(value) && (activity != null)) {
+                    ThemeHelper.setTheme(activity, vTheme);
+
                     // must get aTalk to restart onResume to show new Theme
                     aTalk.setPrefChange(true);
-                    ThemeHelper.setTheme(activity, vTheme);
-                    activity.finish();
+
+                    // do destroy activity last
                     activity.startActivity(new Intent(activity, SettingsActivity.class));
+                    activity.finish();
                 }
                 return true;
             });
@@ -431,10 +437,6 @@ public class SettingsActivity extends OSGiActivity
 
             BundleContext bc = AndroidGUIActivator.bundleContext;
             ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
-            if (handlerRefs == null) {
-                Timber.w("No popup handlers found");
-                handlerRefs = new ServiceReference[0]; // Collections.emptyList();
-            }
 
             String[] names = new String[handlerRefs.length + 1]; // +1 Auto
             String[] values = new String[handlerRefs.length + 1];
@@ -442,7 +444,7 @@ public class SettingsActivity extends OSGiActivity
             values[0] = "Auto";
             int selectedIdx = 0; // Auto by default
 
-            String configuredHandler = (String) mConfigService.getProperty("systray.POPUP_HANDLER");
+            String configuredHandler = mConfigService.getString("systray.POPUP_HANDLER");
             int idx = 1;
             for (ServiceReference<PopupMessageHandler> ref : handlerRefs) {
                 PopupMessageHandler handler = bc.getService(ref);
@@ -450,7 +452,7 @@ public class SettingsActivity extends OSGiActivity
                 names[idx] = handler.toString();
                 values[idx] = handler.getClass().getName();
 
-                if (configuredHandler != null && configuredHandler.equals(handler.getClass().getName())) {
+                if ((configuredHandler != null) && configuredHandler.equals(handler.getClass().getName())) {
                     selectedIdx = idx;
                 }
             }
@@ -647,9 +649,6 @@ public class SettingsActivity extends OSGiActivity
         {
             BundleContext bc = AndroidGUIActivator.bundleContext;
             ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
-
-            if (handlerRefs == null)
-                return null;
 
             for (ServiceReference<PopupMessageHandler> sRef : handlerRefs) {
                 PopupMessageHandler handler = bc.getService(sRef);

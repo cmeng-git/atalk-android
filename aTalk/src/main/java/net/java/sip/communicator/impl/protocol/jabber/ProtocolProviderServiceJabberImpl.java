@@ -2845,9 +2845,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public void startJingleNodesDiscovery()
     {
-        // Jingle Nodes Service Initialization
+        // Jingle Nodes Service Initialization;
         final JabberAccountIDImpl accID = (JabberAccountIDImpl) mAccountID;
+
+        // v2.2.2  mConnection == null on FFR ???. Call only on RegistrationState.REGISTERED state?
         final SmackServiceNode service = new SmackServiceNode(mConnection, 60000);
+
         // make sure SmackServiceNode will clean up when connection is closed
         mConnection.addConnectionListener(service);
 

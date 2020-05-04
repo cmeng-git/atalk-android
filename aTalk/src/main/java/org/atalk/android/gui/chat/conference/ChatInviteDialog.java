@@ -36,6 +36,8 @@ import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.*;
 import org.atalk.android.gui.util.ViewUtil;
+import org.jxmpp.jid.DomainJid;
+import org.jxmpp.jid.Jid;
 
 import java.util.*;
 
@@ -275,7 +277,8 @@ public class ChatInviteDialog extends Dialog
         // Obtain selected contacts.
         for (MetaContact uiContact : selectedContacts) {
             // skip server/system account
-            if (uiContact.getDefaultContact().getJid() == null) {
+            Jid jid =  uiContact.getDefaultContact().getJid();
+            if ((jid == null) || (jid instanceof DomainJid)) {
                 aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, uiContact.getDisplayName());
                 continue;
             }

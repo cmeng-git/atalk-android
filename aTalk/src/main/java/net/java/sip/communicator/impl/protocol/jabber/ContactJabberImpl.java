@@ -35,7 +35,6 @@ public class ContactJabberImpl extends AbstractContact
     private static final String PGP_KEY_ID = "pgp_keyid";
 
     private static final String TTS_ENABLE = "tts_Enable";
-    private static final String STT_ENABLE = "stt_Enable";
 
     private Boolean isTtsEnable = null;
 
