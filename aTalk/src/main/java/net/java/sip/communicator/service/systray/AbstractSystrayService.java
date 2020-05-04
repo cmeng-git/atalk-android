@@ -212,14 +212,14 @@ public abstract class AbstractSystrayService implements SystrayService
             bundleContext.addServiceListener(new ServiceListenerImpl(),
                     "(objectclass=" + PopupMessageHandler.class.getName() + ")");
         } catch (Exception e) {
-            Timber.w(e);
+            Timber.w("%s", e.getMessage());
         }
 
         // now we look if some handler has been registered before we start to listen
         ServiceReference<PopupMessageHandler>[] handlerRefs
                 = ServiceUtils.getServiceReferences(bundleContext, PopupMessageHandler.class);
 
-        if ((handlerRefs != null) && (handlerRefs.length != 0)) {
+        if (handlerRefs.length != 0) {
             ConfigurationService config = ServiceUtils.getService(bundleContext, ConfigurationService.class);
             String configuredHandler = config.getString("systray.POPUP_HANDLER");
 

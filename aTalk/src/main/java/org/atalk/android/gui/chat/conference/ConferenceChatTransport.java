@@ -60,9 +60,10 @@ public class ConferenceChatTransport implements ChatTransport
         mPPS = chatRoom.getParentProvider();
 
         // mPPS.getConnection() == null from field FER
-        if ((mPPS != null) && (mPPS.getConnection() != null))
+        if ((mPPS != null) && (mPPS.getConnection() != null)) {
             isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
-        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+        }
     }
 
     /**
@@ -354,7 +355,7 @@ public class ConferenceChatTransport implements ChatTransport
      */
     private boolean allowsFileTransfer()
     {
-        return httpFileUploadManager.isUploadServiceDiscovered();
+        return (httpFileUploadManager != null) && httpFileUploadManager.isUploadServiceDiscovered();
     }
 
     /**
@@ -364,7 +365,8 @@ public class ConferenceChatTransport implements ChatTransport
      */
     public long getMaximumFileLength()
     {
-        return httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
+        return (httpFileUploadManager == null)
+                ? 0 : httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
     }
 
     /**

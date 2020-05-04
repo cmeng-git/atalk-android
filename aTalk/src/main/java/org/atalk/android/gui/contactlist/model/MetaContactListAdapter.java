@@ -30,6 +30,11 @@ import timber.log.Timber;
  * Contact list model is responsible for caching current contact list obtained from contact
  * sources.(It will apply contact source filters which result in different output model).
  *
+ * Note: All contactList view update (from events) must be performed on UI thread using UI thread handler;
+ * IllegalStateException: The content of the adapter has changed but ListView did not receive a notification.
+ * Make sure the content of your adapter is not modified from a background thread, but only from the UI thread.
+ * Make sure your adapter calls notifyDataSetChanged() when its content changes.
+ *
  * @author Yana Stamcheva
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -333,7 +338,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         if (isMatchingQuery) {
             TreeSet<MetaContact> contactList = getContactList(groupIndex);
             if ((contactList != null) && (getChildIndex(contactList, metaContact) < 0)) {
-                // // do no allow duplication with multiple accounts registration on same server
+                // do no allow duplication with multiple accounts registration on same server
                 //	if (!contactList.contains(metaContact)) ??? not correct test
                 contactList.add(metaContact);
             }
@@ -448,9 +453,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactAdded(MetaContactEvent evt)
     {
         Timber.d("CONTACT ADDED: %s", evt.getSourceMetaContact());
-
-        addContact(evt.getParentGroup(), evt.getSourceMetaContact());
-        uiChangeUpdate();
+        uiHandler.post(() -> {
+            addContact(evt.getParentGroup(), evt.getSourceMetaContact());
+            notifyDataSetChanged();
+        });
     }
 
     /**
@@ -472,9 +478,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactRemoved(MetaContactEvent evt)
     {
         Timber.d("CONTACT REMOVED: %s", evt.getSourceMetaContact());
-
-        removeContact(evt.getParentGroup(), evt.getSourceMetaContact());
-        uiChangeUpdate();
+        uiHandler.post(() -> {
+            removeContact(evt.getParentGroup(), evt.getSourceMetaContact());
+            notifyDataSetChanged();
+        });
     }
 
     /**
@@ -485,42 +492,43 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactMoved(MetaContactMovedEvent evt)
     {
         Timber.d("CONTACT MOVED: %s", evt.getSourceMetaContact());
-
-        MetaContactGroup oldParent = evt.getOldParent();
-        MetaContactGroup newParent = evt.getNewParent();
-        // Modify original group
-        int oldGroupIdx = originalGroups.indexOf(oldParent);
-        int newGroupIdx = originalGroups.indexOf(newParent);
-        if (oldGroupIdx < 0 || newGroupIdx < 0) {
-            Timber.e("Move group error - original list, srcGroupIdx: %s, dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
-        }
-        else {
-            TreeSet<MetaContact> srcGroup = getOriginalCList(oldGroupIdx);
-            if (srcGroup != null) {
-                srcGroup.remove(evt.getSourceMetaContact());
+        uiHandler.post(() -> {
+            MetaContactGroup oldParent = evt.getOldParent();
+            MetaContactGroup newParent = evt.getNewParent();
+            // Modify original group
+            int oldGroupIdx = originalGroups.indexOf(oldParent);
+            int newGroupIdx = originalGroups.indexOf(newParent);
+            if (oldGroupIdx < 0 || newGroupIdx < 0) {
+                Timber.e("Move group error - original list, srcGroupIdx: %s, dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
             }
-            TreeSet<MetaContact> dstGroup = getOriginalCList(newGroupIdx);
-            if (dstGroup != null) {
-                dstGroup.add(evt.getSourceMetaContact());
+            else {
+                TreeSet<MetaContact> srcGroup = getOriginalCList(oldGroupIdx);
+                if (srcGroup != null) {
+                    srcGroup.remove(evt.getSourceMetaContact());
+                }
+                TreeSet<MetaContact> dstGroup = getOriginalCList(newGroupIdx);
+                if (dstGroup != null) {
+                    dstGroup.add(evt.getSourceMetaContact());
+                }
             }
-        }
-        // Move search results group
-        oldGroupIdx = groups.indexOf(oldParent);
-        newGroupIdx = groups.indexOf(newParent);
-        if (oldGroupIdx < 0 || newGroupIdx < 0) {
-            Timber.e("Move group error, srcGroupIdx: %s. dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
-        }
-        else {
-            TreeSet<MetaContact> srcGroup = getContactList(oldGroupIdx);
-            if (srcGroup != null) {
-                srcGroup.remove(evt.getSourceMetaContact());
+            // Move search results group
+            oldGroupIdx = groups.indexOf(oldParent);
+            newGroupIdx = groups.indexOf(newParent);
+            if (oldGroupIdx < 0 || newGroupIdx < 0) {
+                Timber.e("Move group error, srcGroupIdx: %s. dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
             }
-            TreeSet<MetaContact> dstGroup = getContactList(newGroupIdx);
-            if (dstGroup != null) {
-                dstGroup.add(evt.getSourceMetaContact());
+            else {
+                TreeSet<MetaContact> srcGroup = getContactList(oldGroupIdx);
+                if (srcGroup != null) {
+                    srcGroup.remove(evt.getSourceMetaContact());
+                }
+                TreeSet<MetaContact> dstGroup = getContactList(newGroupIdx);
+                if (dstGroup != null) {
+                    dstGroup.add(evt.getSourceMetaContact());
+                }
             }
-        }
-        uiChangeUpdate();
+            notifyDataSetChanged();
+        });
     }
 
     /**
@@ -530,10 +538,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactRenamed(final MetaContactRenamedEvent evt)
     {
-        uiHandler.post(() -> {
-            Timber.d("CONTACT RENAMED: %s", evt.getSourceMetaContact());
-            updateDisplayName(evt.getSourceMetaContact());
-        });
+        Timber.d("CONTACT RENAMED: %s", evt.getSourceMetaContact());
+        uiHandler.post(() -> updateDisplayName(evt.getSourceMetaContact()));
     }
 
     /**
@@ -543,10 +549,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactAdded(final ProtoContactEvent evt)
     {
-        uiHandler.post(() -> {
-            Timber.d("PROTO CONTACT ADDED: %s", evt.getNewParent());
-            updateStatus(evt.getNewParent());
-        });
+        Timber.d("PROTO CONTACT ADDED: %s", evt.getNewParent());
+        uiHandler.post(() -> updateStatus(evt.getNewParent()));
     }
 
     /**
@@ -559,7 +563,6 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         Timber.d("PROTO CONTACT RENAMED: %s", evt.getProtoContact().getAddress());
         invalidateViews();
     }
-
 
     /**
      * Indicates that a protocol specific <tt>Contact</tt> has been modified.
@@ -579,10 +582,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactRemoved(final ProtoContactEvent evt)
     {
-        uiHandler.post(() -> {
-            Timber.d("PROTO CONTACT REMOVED: %s", evt.getProtoContact().getAddress());
-            updateStatus(evt.getOldParent());
-        });
+        Timber.d("PROTO CONTACT REMOVED: %s", evt.getProtoContact().getAddress());
+        uiHandler.post(() -> updateStatus(evt.getOldParent()));
     }
 
     /**
@@ -592,8 +593,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void protoContactMoved(final ProtoContactEvent evt)
     {
+        Timber.d("PROTO CONTACT MOVED: %s", evt.getProtoContact().getAddress());
         uiHandler.post(() -> {
-            Timber.d("PROTO CONTACT MOVED: %s", evt.getProtoContact().getAddress());
             updateStatus(evt.getOldParent());
             updateStatus(evt.getNewParent());
         });
@@ -607,8 +608,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactGroupAdded(MetaContactGroupEvent evt)
     {
         Timber.d("GROUP ADDED: %s", evt.getSourceMetaContactGroup());
-        addContacts(evt.getSourceMetaContactGroup());
-        uiChangeUpdate();
+        uiHandler.post(() -> {
+            addContacts(evt.getSourceMetaContactGroup());
+            notifyDataSetChanged();
+        });
     }
 
     /**
@@ -630,8 +633,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void metaContactGroupRemoved(MetaContactGroupEvent evt)
     {
         Timber.d("GROUP REMOVED: %s", evt.getSourceMetaContactGroup());
-        removeGroup(evt.getSourceMetaContactGroup());
-        uiChangeUpdate();
+        uiHandler.post(() -> {
+            removeGroup(evt.getSourceMetaContactGroup());
+            notifyDataSetChanged();
+        });
     }
 
     /**
@@ -645,35 +650,36 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     public void childContactsReordered(MetaContactGroupEvent evt)
     {
         Timber.d("CHILD CONTACTS REORDERED: %s", evt.getSourceMetaContactGroup());
+        uiHandler.post(() -> {
+            MetaContactGroup group = evt.getSourceMetaContactGroup();
+            int origGroupIndex = originalGroups.indexOf(group);
+            int groupIndex = groups.indexOf(group);
 
-        MetaContactGroup group = evt.getSourceMetaContactGroup();
-        int origGroupIndex = originalGroups.indexOf(group);
-        int groupIndex = groups.indexOf(group);
+            if (origGroupIndex >= 0) {
+                TreeSet<MetaContact> contactList = getOriginalCList(origGroupIndex);
 
-        if (origGroupIndex >= 0) {
-            TreeSet<MetaContact> contactList = getOriginalCList(origGroupIndex);
-
-            if (contactList != null) {
-                // Timber.w("Modify originalGroups: " + origGroupIndex + " / " + originalGroups.size());
-                synchronized (originalContacts) {
-                    originalContacts.add(origGroupIndex, new TreeSet<>(contactList));
-                    originalContacts.remove(origGroupIndex + 1);
+                if (contactList != null) {
+                    // Timber.w("Modify originalGroups: " + origGroupIndex + " / " + originalGroups.size());
+                    synchronized (originalContacts) {
+                        originalContacts.add(origGroupIndex, new TreeSet<>(contactList));
+                        originalContacts.remove(origGroupIndex + 1);
+                    }
                 }
             }
-        }
 
-        if (groupIndex >= 0) {
-            TreeSet<MetaContact> contactList = getContactList(groupIndex);
+            if (groupIndex >= 0) {
+                TreeSet<MetaContact> contactList = getContactList(groupIndex);
 
-            if (contactList != null) {
-                // Timber.w("Modify groups: " + groupIndex + " / " + groups.size());
-                synchronized (contacts) {
-                    contacts.add(groupIndex, new TreeSet<>(contactList));
-                    contacts.remove(groupIndex + 1);
+                if (contactList != null) {
+                    // Timber.w("Modify groups: " + groupIndex + " / " + groups.size());
+                    synchronized (contacts) {
+                        contacts.add(groupIndex, new TreeSet<>(contactList));
+                        contacts.remove(groupIndex + 1);
+                    }
                 }
             }
-        }
-        uiChangeUpdate();
+            notifyDataSetChanged();
+        });
     }
 
     /**
@@ -683,10 +689,8 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactAvatarUpdated(final MetaContactAvatarUpdateEvent evt)
     {
-        uiHandler.post(() -> {
-            Timber.log(TimberLog.FINER, "metaContact avatar updated: %s", evt.getSourceMetaContact());
-            updateAvatar(evt.getSourceMetaContact());
-        });
+        Timber.log(TimberLog.FINER, "metaContact avatar updated: %s", evt.getSourceMetaContact());
+        uiHandler.post(() -> updateAvatar(evt.getSourceMetaContact()));
     }
 
     /**
@@ -739,43 +743,45 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void filterData(String query)
     {
-        currentFilterQuery = query.toLowerCase(Locale.US);
-        groups.clear();
-        contacts.clear();
+        uiHandler.post(() -> {
+            currentFilterQuery = query.toLowerCase(Locale.US);
+            groups.clear();
+            contacts.clear();
 
-        if (presenceFilter.isShowOffline() && TextUtils.isEmpty(query)) {
-            // hide group contains zero contact
-            for (MetaContactGroup metaGroup : originalGroups) {
-                if (metaGroup.countChildContacts() > 0) {
-                    int groupIndex = originalGroups.indexOf(metaGroup);
-                    groups.add(metaGroup);
-                    contacts.add(getOriginalCList(groupIndex));
+            if (presenceFilter.isShowOffline() && TextUtils.isEmpty(query)) {
+                // hide group contains zero contact
+                for (MetaContactGroup metaGroup : originalGroups) {
+                    if (metaGroup.countChildContacts() > 0) {
+                        int groupIndex = originalGroups.indexOf(metaGroup);
+                        groups.add(metaGroup);
+                        contacts.add(getOriginalCList(groupIndex));
+                    }
                 }
             }
-        }
-        else {
-            for (MetaContactGroup metaGroup : originalGroups) {
-                if (metaGroup.countChildContacts() > 0) {
-                    int groupIndex = originalGroups.indexOf(metaGroup);
-                    TreeSet<MetaContact> contactList = getOriginalCList(groupIndex);
+            else {
+                for (MetaContactGroup metaGroup : originalGroups) {
+                    if (metaGroup.countChildContacts() > 0) {
+                        int groupIndex = originalGroups.indexOf(metaGroup);
+                        TreeSet<MetaContact> contactList = getOriginalCList(groupIndex);
 
-                    if (contactList != null) {
-                        TreeSet<MetaContact> filteredList = new TreeSet<>();
-                        for (MetaContact metaContact : contactList) {
-                            if (isMatching(metaContact, query))
-                                filteredList.add(metaContact);
-                        }
+                        if (contactList != null) {
+                            TreeSet<MetaContact> filteredList = new TreeSet<>();
+                            for (MetaContact metaContact : contactList) {
+                                if (isMatching(metaContact, query))
+                                    filteredList.add(metaContact);
+                            }
 
-                        if (filteredList.size() > 0) {
-                            groups.add(metaGroup);
-                            contacts.add(filteredList);
+                            if (filteredList.size() > 0) {
+                                groups.add(metaGroup);
+                                contacts.add(filteredList);
+                            }
                         }
                     }
                 }
             }
-        }
-        uiChangeUpdate();
-        expandAllGroups();
+            notifyDataSetChanged();
+            expandAllGroups();
+        });
     }
 
 
@@ -845,7 +851,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      * @return <tt>true</tt> to indicate that the given <tt>metaGroup</tt> is matching the current
      * filter, otherwise returns <tt>false</tt>
      */
-    public boolean isMatching(MetaContactGroup metaGroup, String query)
+    private boolean isMatching(MetaContactGroup metaGroup, String query)
     {
         if (presenceFilter.isMatching(metaGroup)) {
             if (TextUtils.isEmpty(query))
@@ -979,16 +985,6 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             return ContactGroup.ROOT_GROUP_NAME;
         else
             return metaGroup.getGroupName();
-    }
-
-    /**
-     * All contactList fragment view update must be perform on UI thread
-     * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the single thread.
-     */
-    private void uiChangeUpdate()
-    {
-        uiHandler.post(this::notifyDataSetChanged);
     }
 
     //	/**

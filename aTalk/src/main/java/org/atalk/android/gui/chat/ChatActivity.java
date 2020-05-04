@@ -836,7 +836,11 @@ public class ChatActivity extends OSGiActivity
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivityForResult(intent, REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY);
+                try {
+                    startActivityForResult(intent, REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY);
+                } catch (SecurityException e) {
+                    aTalkApp.showToastMessage(R.string.all_permissions_denied_feedback);
+                }
                 break;
 
             case video_record:
@@ -847,7 +851,11 @@ public class ChatActivity extends OSGiActivity
                 // create Intent to record video and return control to the calling application
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
-                startActivityForResult(intent, REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
+                try {
+                    startActivityForResult(intent, REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
+                } catch (SecurityException e) {
+                    aTalkApp.showToastMessage(R.string.all_permissions_denied_feedback);
+                }
                 break;
 
             case share_file:

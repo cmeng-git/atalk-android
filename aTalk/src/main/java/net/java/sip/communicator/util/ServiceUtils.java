@@ -52,7 +52,7 @@ public class ServiceUtils
         }
 
         if (serviceReferences == null)
-            serviceReferences = new ServiceReference[0];
+            serviceReferences = new ServiceReference[0]; // Collections.emptyList();
 
         return serviceReferences;
     }

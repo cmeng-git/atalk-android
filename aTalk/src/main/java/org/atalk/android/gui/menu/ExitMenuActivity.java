@@ -19,9 +19,7 @@ import org.atalk.service.osgi.OSGiActivity;
  */
 public abstract class ExitMenuActivity extends OSGiActivity
 {
-    private static Menu menu;
-
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -30,8 +28,7 @@ public abstract class ExitMenuActivity extends OSGiActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		this.menu = menu;
-		super.onCreateOptionsMenu(menu);
+        super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.exit_menu, menu);
 
 		return true;

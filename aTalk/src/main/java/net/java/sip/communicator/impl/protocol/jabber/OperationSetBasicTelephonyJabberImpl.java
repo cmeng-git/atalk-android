@@ -390,9 +390,15 @@ public class OperationSetBasicTelephonyJabberImpl
                     throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_ROSTER,
                             telephonyDomain), OperationFailedException.ILLEGAL_ARGUMENT);
                 else {
-                    String message = aTalkApp.getResString(R.string.service_gui_CREATE_CALL_FAILED);
-                    if (t.getMessage() != null)
+                    String message = "Initiate call session Exception:";
+                    if (t.getCause() != null) {
+                        message +=  "\n" + t.getCause().getMessage();
+                    }
+                    else if (t.getMessage() != null) {
                         message += "\n" + t.getMessage();
+                    }
+
+                    Timber.e(message);
                     throw new OperationFailedException(message, OperationFailedException.NETWORK_FAILURE);
                 }
             }

@@ -7,7 +7,7 @@ package org.atalk.android.gui.account;
 
 import android.accounts.Account;
 import android.accounts.*;
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
@@ -82,18 +82,36 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
      */
     private Map<Integer, CertificateConfigEntry> mCertEntryList = new LinkedHashMap<>();
 
-    Activity mActivity;
+    private Context mContext;
+
+    /**
+     * Creates new <tt>AccountLoginFragment</tt> with optionally filled login and password fields.
+     *
+     * @param login optional login text that will be filled on the form.
+     * @param password optional password text that will be filled on the form.
+     * @return new instance of parametrized <tt>AccountLoginFragment</tt>.
+     */
+    public static AccountLoginFragment createInstance(String login, String password)
+    {
+        AccountLoginFragment fragment = new AccountLoginFragment();
+
+        Bundle args = new Bundle();
+        args.putString(ARG_USERNAME, login);
+        args.putString(ARG_PASSWORD, password);
+
+        return fragment;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-        mActivity = activity;
-        if (activity instanceof AccountLoginListener) {
-            this.loginListener = (AccountLoginListener) activity;
+        super.onAttach(context);
+        mContext = context;
+        if (context instanceof AccountLoginListener) {
+            this.loginListener = (AccountLoginListener) context;
         }
         else {
             throw new RuntimeException("Account login listener unspecified");
@@ -118,13 +136,13 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     {
         View content = inflater.inflate(R.layout.account_create_new, container, false);
         spinnerNwk = content.findViewById(R.id.networkSpinner);
-        ArrayAdapter<CharSequence> adapterNwk = ArrayAdapter.createFromResource(mActivity,
+        ArrayAdapter<CharSequence> adapterNwk = ArrayAdapter.createFromResource(mContext,
                 R.array.networks_array, R.layout.simple_spinner_item);
         adapterNwk.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerNwk.setAdapter(adapterNwk);
 
         spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
-        ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(mActivity,
+        ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(mContext,
                 R.array.dnssec_Mode_name, R.layout.simple_spinner_item);
         adapterDM.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerDM.setAdapter(adapterDM);
@@ -172,7 +190,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
 
         List<CertificateConfigEntry> certEntries = new ArrayList<>();
         CertificateService cvs = CertConfigActivator.getCertService();
-        if (cvs != null)
+        if (cvs != null) // NPE from field
             certEntries = cvs.getClientAuthCertificateConfigs();
         certEntries.add(0, CertificateConfigEntry.CERT_NONE);
 
@@ -182,7 +200,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
             mCertEntryList.put(idx, entry);
         }
 
-        ArrayAdapter<String> certAdapter = new ArrayAdapter<>(mActivity, R.layout.simple_spinner_item, certList);
+        ArrayAdapter<String> certAdapter = new ArrayAdapter<>(mContext, R.layout.simple_spinner_item, certList);
         certAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         spinnerCert.setAdapter(certAdapter);
         spinnerCert.setOnItemSelectedListener(this);
@@ -216,10 +234,9 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
             String selectedDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
             accountProperties.put(ProtocolProviderFactory.DNSSEC_MODE, selectedDnssecMode);
 
-            // cmeng - must trim all inline, leading and ending whitespace character entered
-            // by user accidentally or included by android from auto correction checker
+            // cmeng - must trim all leading and ending whitespace character entered
+            // get included by android from auto correction checker
             String userName = ViewUtil.toString(content.findViewById(R.id.usernameField));
-            userName = (userName == null) ? null : userName.replaceAll("\\s", "");
             String password = ViewUtil.toString(mPasswordField);
 
             if (mClientCertCheckBox.isChecked() && (!CertificateConfigEntry.CERT_NONE.equals(mCertEntry))) {
@@ -251,8 +268,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
         });
 
         final Button cancelButton = content.findViewById(R.id.buttonCancel);
-        if (mActivity != null)
-            cancelButton.setOnClickListener(v -> mActivity.finish());
+        cancelButton.setOnClickListener(v -> getActivity().finish());
     }
 
     private void updateCertEntryViewVisibility(boolean isEnabled)
@@ -313,24 +329,6 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
             // TODO: notify about account authentication
             // finish();
         }
-    }
-
-    /**
-     * Creates new <tt>AccountLoginFragment</tt> with optionally filled login and password fields.
-     *
-     * @param login optional login text that will be filled on the form.
-     * @param password optional password text that will be filled on the form.
-     * @return new instance of parametrized <tt>AccountLoginFragment</tt>.
-     */
-    public static AccountLoginFragment createInstance(String login, String password)
-    {
-        AccountLoginFragment fragment = new AccountLoginFragment();
-
-        Bundle args = new Bundle();
-        args.putString(ARG_USERNAME, login);
-        args.putString(ARG_PASSWORD, password);
-
-        return fragment;
     }
 
     @Override

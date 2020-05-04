@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.2'
+        classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
     }
 }
@@ -27,16 +27,17 @@ repositories {
 
         // Smack custom library for org.igniterealtime - not recognize by F-Droid
         // url 'https://igniterealtime.org/repo/'
-
-        // Custom library for org.jitsi - maven-metadata.xml not compatible
-        // Unable to load Maven meta-data from https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots/org/jitsi/ice4j/2.0.0-SNAPSHOT/maven-metadata.xml.
-        // org.xml.sax.SAXParseException; lineNumber: 44; columnNumber: 91; Attribute name "data-pjax-transient" associated with an element type "meta" must be followed by the ' = ' character.
-        // url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
     }
     maven {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
         url 'https://jitpack.io'
     }
+    // maven {
+    // Custom library for org.jitsi - maven-metadata.xml not compatible
+    // Unable to load Maven meta-data from https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots/org/jitsi/ice4j/2.0.0-SNAPSHOT/maven-metadata.xml.
+    // org.xml.sax.SAXParseException; lineNumber: 44; columnNumber: 91; Attribute name "data-pjax-transient" associated with an element type "meta" must be followed by the ' = ' character.
+    // url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
+    // }
 }
 
 configurations {
@@ -207,7 +208,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
-    // implementation 'org.jitsi:ice4j:2.0.0-SNAPSHOT';
     implementation 'com.github.yalantis:ucrop:2.2.2'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.5'
@@ -223,8 +223,10 @@ dependencies {
     implementation 'org.apache.james:apache-mime4j-core:0.8.3'
     implementation 'org.bitlet:weupnp:0.1.4'
 
-    // DtlsControlImpl dependency
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.62'
+    // DtlsControlImpl dependency - For compatible with zrtp4j-light-4.1.0
+    // Replace zrtp: org.bouncycastle.cryptozrtp.params.ECDomainParameteres: GIn.getEncoded() => GIn.getEncoded(false)
+    implementation 'org.bouncycastle:bcpg-jdk15on:1.64'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
 
     // Use by provisioning Discover
     // implementation 'org.jitsi:dnssecjava:1.1.3'
@@ -286,18 +288,24 @@ dependencies {
 
     // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
     // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
-    // Objects class only available in API-19 and above
     implementation jarjar.repackage {
-        // Do not use the latest master-SNAPSHOT => not compatible with aTalk
-        // use only ba7e30c189 i.e. the release version of ice4j-2.0.0-20181024.160538-12.jar
-        from('com.github.jitsi:ice4j:ba7e30c18980556f126e5e72ecbdb637616dd1bf') {
+	    // Do not use the latest master-SNAPSHOT => not compatible with aTalk
+	    // use the latest release version: ice4j-2.0.0-20190607.184546-36.jar
+        from('com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac') {
+            // duplication in dependency conflict
             transitive = false
         }
         destinationDir new File("${projectDir}/libs")
         destinationName "ice4j-2.0.0-SNAPSHOT.jar"
 
-        classRename 'java.util.Objects', 'org.jivesoftware.smack.util.Objects'
+        // Consumer was introduced in API-24
+        classRename 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
+
+        // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
+        classRename 'java.time.Duration', 'org.threeten.bp.Duration'
     }
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+    // implementation 'org.jitsi:jain-sip-ri-ossonly:1.2.279-jitsi-oss1'
 
     // implementation 'com.github.jitsi:zrtp4j:master-SNAPSHOT'
     implementation jarjar.repackage {
@@ -310,6 +318,7 @@ dependencies {
         destinationName "zrtp4j-light-4.1.0.jar"
 
         classRename 'org.jitsi.**', 'org.atalk.@1'
+        classDelete 'org.bouncycastle.cryptozrtp.params.ECDomainParameters'
     }
 
     // implementation 'ch.imvs:sdes4j:1.1.4'
