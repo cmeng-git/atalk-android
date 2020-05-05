@@ -6,6 +6,7 @@ public class WebmWriter
 {
 	static {
 		System.loadLibrary("jnvpx");
+        System.loadLibrary(WebmWriter.class.getName());
 	}
 
 	/**

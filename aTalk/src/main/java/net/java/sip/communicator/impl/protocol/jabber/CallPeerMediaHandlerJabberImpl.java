@@ -1767,26 +1767,25 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         boolean b = false;
 
         if (remoteTransport != null) {
-            List<DtlsFingerprintExtension> remoteFingerpintPEs
+            List<DtlsFingerprintExtension> remoteFingerprintPEs
                     = remoteTransport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
 
-            if (!remoteFingerpintPEs.isEmpty()) {
+            if (!remoteFingerprintPEs.isEmpty()) {
                 AccountID accountID = getPeer().getProtocolProvider().getAccountID();
 
-                if (accountID.getAccountPropertyBoolean(
-                        ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
+                if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                         && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)) {
                     Map<String, String> remoteFingerprints = new LinkedHashMap<>();
 
-                    for (DtlsFingerprintExtension remoteFingerprintPE : remoteFingerpintPEs) {
+                    for (DtlsFingerprintExtension remoteFingerprintPE : remoteFingerprintPEs) {
                         String remoteFingerprint = remoteFingerprintPE.getFingerprint();
                         String remoteHash = remoteFingerprintPE.getHash();
                         remoteFingerprints.put(remoteHash, remoteFingerprint);
                     }
-                    DtlsControl dtlsControl;
-                    DtlsControl.Setup setup;
 
                     // TODO Read the setup from the remote DTLS fingerprint elementExtension.
+                    DtlsControl dtlsControl;
+                    DtlsControl.Setup setup;
                     if (isInitiator) {
                         dtlsControl = (DtlsControl) srtpControls.get(mediaType, SrtpControlType.DTLS_SRTP);
                         setup = DtlsControl.Setup.PASSIVE;
@@ -1795,6 +1794,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                         dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
                         setup = DtlsControl.Setup.ACTIVE;
                     }
+
                     if (dtlsControl != null) {
                         dtlsControl.setRemoteFingerprints(remoteFingerprints);
                         dtlsControl.setSetup(setup);
@@ -1933,8 +1933,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     private boolean setDtlsEncryptionOnTransport(MediaType mediaType,
             JingleContent localContent, JingleContent remoteContent)
     {
-        IceUdpTransportExtension localTransport
-                = localContent.getFirstChildOfType(IceUdpTransportExtension.class);
+        IceUdpTransportExtension localTransport = localContent.getFirstChildOfType(IceUdpTransportExtension.class);
         boolean b = false;
         if (localTransport == null)
             return b;
@@ -2156,8 +2155,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (peer.getCall().getConference().isJitsiVideobridge())
             return;
 
-        // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for
-        // a given DESCRIPTION.
+        // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
         EncryptionExtension encryptionPacketExtension
                 = description.getFirstChildOfType(EncryptionExtension.class);
 
@@ -2197,16 +2195,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     /**
      * Returns the selected SDES crypto suite selected.
      *
-     * @param isInitiator True if the local call instance is the initiator of
-     * the call. False otherwise.
-     * @param sDesControl The SDES based SRTP MediaStream encryption
-     * control.
+     * @param isInitiator True if the local call instance is the initiator of the call. False otherwise.
+     * @param sDesControl The SDES based SRTP MediaStream encryption control.
      * @param encryptionPacketExtension The ENCRYPTION element received from the
-     * remote peer. This may contain the SDES crypto suites available for the
-     * remote peer.
+     * remote peer. This may contain the SDES crypto suites available for the remote peer.
      * @return The selected SDES crypto suite supported by both the local and
-     * the remote peer. Or null, if there is no crypto suite supported by both
-     * of the peers.
+     * the remote peer. Or null, if there is no crypto suite supported by both of the peers.
      */
     private SrtpCryptoAttribute selectSdesCryptoSuite(boolean isInitiator, SDesControl sDesControl,
             EncryptionExtension encryptionPacketExtension)

@@ -34,7 +34,6 @@
             android:dependency="@string/pref_key_enable_encryption"
             android:dialogTitle="@string/service_gui_PREF_SECURITY_SDES_DLG_TITLE"
             android:key="@string/pref_key_enc_cipher_suites"
-
             android:title="@string/service_gui_PREF_SECURITY_SDES_TITLE" />
         <ListPreference
             android:dependency="@string/pref_key_enable_encryption"
