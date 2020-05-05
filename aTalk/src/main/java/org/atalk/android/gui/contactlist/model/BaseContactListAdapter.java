@@ -311,7 +311,6 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             contactViewHolder.callVideoButton.setOnClickListener(this);
             contactViewHolder.callVideoButton.setTag(contactViewHolder);
 
-            contactViewHolder.selectedBgView = convertView.findViewById(R.id.selectedBackgroundIcon);
             contactViewHolder.buttonSeparatorView = convertView.findViewById(R.id.buttonSeparatorView);
 
             convertView.setTag(contactViewHolder);
@@ -381,26 +380,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         boolean isShowCall = renderer.isShowCallBtn(child);
 
         if (isMainContactList && (isShowVideoCall || isShowCall)) {
-            contactViewHolder.callButtonLayout.setVisibility(View.VISIBLE);
-            contactViewHolder.callButton.setVisibility(View.VISIBLE);
-            contactViewHolder.callVideoButton.setVisibility(View.VISIBLE);
-
             AndroidUtils.setOnTouchBackgroundEffect(contactViewHolder.callButtonLayout);
 
-            if (contactViewHolder.callButton.isSelected()) {
-                contactViewHolder.callButton.setImageResource(R.drawable.contact_call_selected_dark);
-            }
-            else if (contactViewHolder.callVideoButton.isPressed()) {
-                contactViewHolder.callVideoButton.setImageResource(R.drawable.contact_call_video_selected_dark);
-            }
-            else {
-                if (!isShowCall) {
-                    contactViewHolder.callButton.setVisibility(View.INVISIBLE);
-                }
-                if (!isShowVideoCall) {
-                    contactViewHolder.callVideoButton.setVisibility(View.INVISIBLE);
-                }
-            }
+            contactViewHolder.callButtonLayout.setVisibility(View.VISIBLE);
+            contactViewHolder.callButton.setVisibility(isShowCall ? View.VISIBLE : View.GONE);
+            contactViewHolder.callVideoButton.setVisibility(isShowVideoCall ? View.VISIBLE : View.GONE);
         }
         else {
             contactViewHolder.callButtonLayout.setVisibility(View.INVISIBLE);
@@ -601,7 +585,6 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         ImageView statusView;
         ImageView callButton;
         ImageView callVideoButton;
-        ImageView selectedBgView;
         ImageView buttonSeparatorView;
         View callButtonLayout;
         UnreadCountCustomView unreadCount;

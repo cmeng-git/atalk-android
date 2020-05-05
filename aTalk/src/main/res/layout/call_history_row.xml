@@ -65,11 +65,11 @@
 
     <ImageView
         android:id="@+id/callButton"
+        android:background="@drawable/list_selector_state"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_margin="10dp"
-        android:background="@android:color/transparent"
+        android:padding="10dp"
         android:clickable="true"
         android:contentDescription="@string/service_gui_CALL"
         android:focusable="true"
@@ -88,11 +88,11 @@
 
     <ImageView
         android:id="@+id/callVideoButton"
+        android:background="@drawable/list_selector_state"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_margin="10dp"
-        android:background="@android:color/transparent"
+        android:padding="10dp"
         android:clickable="true"
         android:contentDescription="@string/service_gui_CALL_VIDEO"
         android:focusable="true"
