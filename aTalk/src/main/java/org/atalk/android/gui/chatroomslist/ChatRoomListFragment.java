@@ -144,7 +144,6 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
 
         ViewGroup content = (ViewGroup) inflater.inflate(R.layout.chatroom_list, container, false);
         chatRoomListView = content.findViewById(R.id.chatRoomListView);
-        chatRoomListView.setSelector(R.drawable.list_selector_transparent);
         chatRoomListView.setOnGroupClickListener(this);
         initChatRoomListAdapter();
 

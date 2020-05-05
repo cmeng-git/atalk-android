@@ -526,7 +526,6 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         CheckBox autojoin;
         CheckBox bookmark;
         UnreadCountCustomView unreadCount;
-        ImageView selectedBgView;
         int groupPosition;
         int childPosition;
     }
