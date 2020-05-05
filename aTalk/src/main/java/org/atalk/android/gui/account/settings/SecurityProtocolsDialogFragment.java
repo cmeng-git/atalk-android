@@ -216,10 +216,10 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
             TextView tv = v.findViewById(android.R.id.text1);
             tv.setText(encryption);
 
-            CompoundButton cb = v.findViewById(android.R.id.checkbox);
+            CheckBox cb = v.findViewById(android.R.id.checkbox);
             cb.setChecked(statusMap.containsKey(encryption) && statusMap.get(encryption));
-            cb.setOnCheckedChangeListener((cb1, b) -> {
-                statusMap.put(encryption, b);
+            cb.setOnCheckedChangeListener((cb1, state) -> {
+                statusMap.put(encryption, state);
                 hasChanges = true;
             });
 

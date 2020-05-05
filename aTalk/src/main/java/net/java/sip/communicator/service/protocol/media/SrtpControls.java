@@ -26,8 +26,8 @@ public class SrtpControls
 	/**
 	 * The <tt>SrtpControl</tt> implementations which are the elements of this sorted set.
 	 */
-	private final SrtpControl[][] elements = new SrtpControl[MediaType.values().length]
-            [SrtpControlType.values().length];
+	private final SrtpControl[][] elements
+            = new SrtpControl[MediaType.values().length][SrtpControlType.values().length];
 
 	/**
 	 * Initializes a new <tt>SrtpControls</tt> instance.

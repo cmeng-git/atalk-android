@@ -93,8 +93,7 @@ public class DatagramTransportImpl implements DatagramTransport
         receiveQ = new ArrayBlockingQueue<>(receiveQCapacity);
     }
 
-    private AbstractRTPConnector assertNotClosed(
-            boolean breakOutOfDTLSReliableHandshakeReceiveMessage)
+    private AbstractRTPConnector assertNotClosed(boolean breakOutOfDTLSReliableHandshakeReceiveMessage)
             throws IOException
     {
         AbstractRTPConnector connector = this.connector;
@@ -113,8 +112,7 @@ public class DatagramTransportImpl implements DatagramTransport
 
     /**
      * Works around a bug in the Bouncy Castle Crypto APIs which may cause
-     * <tt>org.bouncycastle.crypto.tls.DTLSReliableHandshake.receiveMessage()</tt> to enter an
-     * endless loop.
+     * <tt>org.bouncycastle.crypto.tls.DTLSReliableHandshake.receiveMessage()</tt> to enter an endless loop.
      *
      * @param cause the <tt>Throwable</tt> which would have been thrown if the bug did not exist
      */
@@ -173,7 +171,6 @@ public class DatagramTransportImpl implements DatagramTransport
             throws IOException
     {
         assertNotClosed(false);
-
         byte[] buf;
         int len;
 
@@ -227,18 +224,15 @@ public class DatagramTransportImpl implements DatagramTransport
 
         if (sendLimit <= 0) {
             /*
-             * XXX The estimation bellow is wildly inaccurate and hardly related but we have to
-             * start somewhere.
+             * XXX The estimation bellow is wildly inaccurate and hardly related but we have to start somewhere.
              */
-            sendLimit = DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH
-                    + Packetizer.MAX_PAYLOAD_SIZE;
+            sendLimit = DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH + Packetizer.MAX_PAYLOAD_SIZE;
         }
         return sendLimit;
     }
 
     /**
-     * Queues a packet received from the network to be received by the application through this
-     * <tt>DatagramTransport</tt>.
+     * Queues a packet received from the network to be received by the application through this <tt>DatagramTransport</tt>.
      *
      * @param buf the array of <tt>byte</tt>s which contains the packet to be queued
      * @param off the offset within <tt>buf</tt> at which the packet to be queued starts
@@ -293,9 +287,8 @@ public class DatagramTransportImpl implements DatagramTransport
          * a response to a request that was earlier scheduled for send.
          */
         /*
-         * XXX However, it may unnecessarily break up a flight into multiple datagrams. Since we
-         * have implemented the recognition of the end of flights, it should be fairly safe to rely
-         * on it alone.
+         * XXX However, it may unnecessarily break up a flight into multiple datagrams. Since we have
+         * implemented the recognition of the end of flights, it should be fairly safe to rely on it alone.
          */
         // flush();
 
@@ -347,8 +340,7 @@ public class DatagramTransportImpl implements DatagramTransport
                             toReceiveIsPositive = (toReceive > 0);
                         }
                         if (toReceiveIsPositive) {
-                            System.arraycopy(pkt.getBuffer(), pktOffset, buf, off + received,
-                                    toReceive);
+                            System.arraycopy(pkt.getBuffer(), pktOffset, buf, off + received, toReceive);
                             received += toReceive;
                         }
                         if (toReceive == pktLength) {
@@ -361,8 +353,7 @@ public class DatagramTransportImpl implements DatagramTransport
                         }
                         if (toReceiveIsPositive) {
                             /*
-                             * The specified buf has received toReceive bytes and we do not
-                             * concatenate RawPackets.
+                             * The specified buf has received toReceive bytes and we do not concatenate RawPackets.
                              */
                             break;
                         }
