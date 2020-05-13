@@ -38,6 +38,7 @@ import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.muc.*;
+import org.jivesoftware.smackx.muc.filter.MUCUserStatusCodeFilter;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.nick.packet.Nick;
@@ -2714,8 +2715,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
         public void processPresence(Presence presence)
         {
-            String myRoomJID = mMultiUserChat.getRoom() + "/" + mNickName;
-            if (presence.getFrom().equals(myRoomJID))
+            if (MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF.accept(presence))
                 processOwnPresence(presence);
             else
                 processOtherPresence(presence);

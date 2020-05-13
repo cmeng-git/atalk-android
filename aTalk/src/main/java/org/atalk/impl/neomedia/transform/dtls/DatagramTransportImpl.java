@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.transform.dtls;
 import org.atalk.impl.neomedia.*;
 import org.atalk.impl.neomedia.codec.video.h264.Packetizer;
 import org.atalk.service.neomedia.RawPacket;
-import org.bouncycastle.crypto.tls.*;
+import org.bouncycastle.tls.*;
 import org.ice4j.ice.Component;
 
 import java.io.IOException;
@@ -41,8 +41,7 @@ public class DatagramTransportImpl implements DatagramTransport
     /**
      * The pool of <tt>RawPacket</tt>s instances to reduce their allocations and garbage collection.
      */
-    private final Queue<RawPacket> rawPacketPool
-            = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
+    private final Queue<RawPacket> rawPacketPool = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
 
     /**
      * The queue of <tt>RawPacket</tt>s which have been received from the network are awaiting to be
@@ -97,7 +96,6 @@ public class DatagramTransportImpl implements DatagramTransport
             throws IOException
     {
         AbstractRTPConnector connector = this.connector;
-
         if (connector == null) {
             IOException ioe = new IOException(getClass().getName() + " is closed!");
 
@@ -112,15 +110,14 @@ public class DatagramTransportImpl implements DatagramTransport
 
     /**
      * Works around a bug in the Bouncy Castle Crypto APIs which may cause
-     * <tt>org.bouncycastle.crypto.tls.DTLSReliableHandshake.receiveMessage()</tt> to enter an endless loop.
+     * <tt>org.bouncycastle.tls.DTLSReliableHandshake.receiveMessage()</tt> to enter an endless loop.
      *
      * @param cause the <tt>Throwable</tt> which would have been thrown if the bug did not exist
      */
     private void breakOutOfDTLSReliableHandshakeReceiveMessage(Throwable cause)
     {
         for (StackTraceElement stackTraceElement : cause.getStackTrace()) {
-            if ("org.bouncycastle.crypto.tls.DTLSReliableHandshake"
-                    .equals(stackTraceElement.getClassName())
+            if ("org.bouncycastle.tls.DTLSReliableHandshake".equals(stackTraceElement.getClassName())
                     && "receiveMessage".equals(stackTraceElement.getMethodName())) {
                 throw new IllegalStateException(cause);
             }
@@ -315,7 +312,6 @@ public class DatagramTransportImpl implements DatagramTransport
                 assertNotClosed(true);
 
                 RawPacket pkt = receiveQ.peek();
-
                 if (pkt != null) {
                     /*
                      * If a datagram has been received and even if it carries no/zero bytes, a
@@ -401,13 +397,12 @@ public class DatagramTransportImpl implements DatagramTransport
 
             switch (type) {
                 case ContentType.handshake:
-                    short msg_type = TlsUtils.readUint8(buf,
-                            off
-                                    + 1 /* type */
-                                    + 2 /* version */
-                                    + 2 /* epoch */
-                                    + 6 /* sequence_number */
-                                    + 2 /* length */);
+                    short msg_type = TlsUtils.readUint8(buf, off
+                            + 1 /* type */
+                            + 2 /* version */
+                            + 2 /* epoch */
+                            + 6 /* sequence_number */
+                            + 2 /* length */);
 
                     switch (msg_type) {
                         case HandshakeType.certificate:
@@ -416,7 +411,7 @@ public class DatagramTransportImpl implements DatagramTransport
                         case HandshakeType.client_key_exchange:
                         case HandshakeType.server_hello:
                         case HandshakeType.server_key_exchange:
-                        case HandshakeType.session_ticket:
+                        case HandshakeType.new_session_ticket:
                         case HandshakeType.supplemental_data:
                             endOfFlight = false;
                             break;

@@ -13,19 +13,19 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
 import org.atalk.util.ConfigUtils;
-import org.bouncycastle.crypto.tls.*;
+import org.bouncycastle.tls.*;
+import org.bouncycastle.tls.crypto.TlsSecret;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.*;
 
 import timber.log.Timber;
 
 /**
- * Implements {@link PacketTransformer} for DTLS-SRTP. It's capable of working in pure DTLS mode if
- * appropriate flag was set in <tt>DtlsControlImpl</tt>.
+ * Implements {@link PacketTransformer} for DTLS-SRTP. It's capable of working in
+ * pure DTLS mode if appropriate flag was set in <tt>DtlsControlImpl</tt>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -61,7 +61,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     /**
      * The name of the <tt>ConfigurationService</tt> and/or <tt>System</tt> property which
      * indicates whether unencrypted packets sent or received through
-     * <tt>DtlsPacketTransformer</tt> are  to be dropped. The default value is <tt>false</tt>.
+     * <tt>DtlsPacketTransformer</tt> are to be dropped. The default value is <tt>false</tt>.
      */
     private static final String DROP_UNENCRYPTED_PKTS_PNAME
             = DtlsPacketTransformer.class.getName() + ".dropUnencryptedPkts";
@@ -73,15 +73,13 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * The number of milliseconds a <tt>DtlsPacketTransform</tt> is to wait on its
-     * {@link #dtlsTransport} in order to receive a packet.
+     * {@link #mDtlsTransport} in order to receive a packet. -1 not allow in tls.DTLSTransport
      */
-    private static final int DTLS_TRANSPORT_RECEIVE_WAITMILLIS = -1;
+    private static final int DTLS_TRANSPORT_RECEIVE_WAITMILLIS = 100; // -1
 
     /**
-     * The maximum number of elements of queues such as
-     * {@link #_reverseTransformSrtpQueue} and {@link #_transformSrtpQueue}.
-     * Defined in order to reduce excessive memory use (which may lead to
-     * {@link OutOfMemoryError}s, for example).
+     * The maximum number of elements of queues such as {@link #_reverseTransformSrtpQueue} and {@link #transformSrtpQueue}.
+     * Defined in order to reduce excessive memory use (which may lead to {@link OutOfMemoryError}s, for example).
      */
     private static final int TRANSFORM_QUEUE_CAPACITY = RTPConnectorOutputStream.PACKET_QUEUE_CAPACITY;
 
@@ -152,7 +150,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private AbstractRTPConnector connector;
 
     /**
-     * The background <tt>Thread</tt> which initializes {@link #dtlsTransport}.
+     * The background <tt>Thread</tt> which initializes {@link #mDtlsTransport}.
      */
     private Thread connectThread;
 
@@ -163,10 +161,9 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private DatagramTransportImpl datagramTransport;
 
     /**
-     * The <tt>DTLSTransport</tt> through which the actual packet transformations are being
-     * performed by this instance.
+     * The <tt>DTLSTransport</tt> through which the actual packet transformations are being performed by this instance.
      */
-    private DTLSTransport dtlsTransport;
+    private DTLSTransport mDtlsTransport;
 
     /**
      * The <tt>MediaType</tt> of the stream which this instance works for/is associated with.
@@ -200,10 +197,9 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private long _srtpTransformerLastChanged = -1;
 
     /**
-     * The indicator which determines whether the <tt>TlsPeer</tt> employed by
-     * this <tt>PacketTransformer</tt> has raised an
-     * <tt>AlertDescription.close_notify</tt> <tt>AlertLevel.warning</tt> i.e.
-     * the remote DTLS peer has closed the write side of the connection.
+     * The indicator which determines whether the <tt>TlsPeer</tt> employed by this <tt>PacketTransformer</tt>
+     * has raised an <tt>AlertDescription.close_notify</tt> <tt>AlertLevel.warning</tt>
+     * i.e. the remote DTLS peer has closed the write side of the connection.
      */
     private boolean tlsPeerHasRaisedCloseNotifyWarning;
 
@@ -252,8 +248,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Closes {@link #datagramTransport} if it is non-<tt>null</tt> and logs and swallows any
-     * <tt>IOException</tt>.
+     * Closes {@link #datagramTransport} if it is non-<tt>null</tt> and logs and swallows any <tt>IOException</tt>.
      */
     private void closeDatagramTransport()
     {
@@ -276,7 +271,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      * to try to establish a DTLS connection.
      *
      * @param i the number of tries remaining after the current one
-     * @param datagramTransport
+     * @param datagramTransport object sending and receiving DTLS data
      * @return <tt>true</tt> to try to establish a DTLS connection; otherwise, <tt>false</tt>
      */
     private boolean enterRunInConnectThreadLoop(int i, DatagramTransport datagramTransport)
@@ -384,14 +379,12 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * Handles a specific <tt>IOException</tt> which was thrown during the execution of
-     * {@link #runInConnectThread(DTLSProtocol, TlsPeer, DatagramTransport)} while trying to
-     * establish a DTLS connection
+     * {@link #runInConnectThread(DTLSProtocol, TlsPeer, DatagramTransport)} while trying to establish a DTLS connection
      *
      * @param ioe the <tt>IOException</tt> to handle
      * @param msg the human-readable message to log about the specified <tt>ioe</tt>
      * @param i the number of tries remaining after the current one
-     * @return <tt>true</tt> if the specified <tt>ioe</tt> was successfully handled;
-     * <tt>false</tt>, otherwise
+     * @return <tt>true</tt> if the specified <tt>ioe</tt> was successfully handled; <tt>false</tt>, otherwise
      */
     private boolean handleRunInConnectThreadException(IOException ioe, String msg, int i)
     {
@@ -466,7 +459,6 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private SinglePacketTransformer initializeSRTPTransformer(int srtpProtectionProfile, TlsContext tlsContext)
     {
         boolean rtcp;
-
         switch (componentID) {
             case DtlsTransformEngine.COMPONENT_RTCP:
                 rtcp = true;
@@ -561,47 +553,47 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         }
 
         byte[] keyingMaterial = null;
+        int length = 2 * (cipher_key_length + cipher_salt_length);
+
+        SecurityParameters sp = tlsContext.getSecurityParameters();
+        if (sp.getMasterSecret() == null && tlsContext.getResumableSession() != null) {
+            /*
+             * BouncyCastle 1.59 clears the master secret from its session parameters immediately after connect,
+             * making them unavailable for exporting keying material. https://github.com/bcgit/bc-java/issues/203
+             * The value is present in the session parameters from the resume-able session, which is used here.
+             */
+            final SessionParameters ssp = tlsContext.getResumableSession().exportSessionParameters();
+            if ((ssp != null) && ssp.getMasterSecret() != null) {
+                keyingMaterial = exportKeyingMaterial(tlsContext, ExporterLabel.dtls_srtp, null,
+                        length, ssp.getMasterSecret());
+            }
+        }
+        else {
+            // Available on TlsSession (the session keeps a copy of the master secret after handshake completion)
+            TlsSecret masterSecret = tlsContext.getSession().exportSessionParameters().getMasterSecret();
+            keyingMaterial = exportKeyingMaterial(tlsContext, ExporterLabel.dtls_srtp, null,
+                    length, masterSecret);
+        }
+
         byte[] client_write_SRTP_master_key = new byte[cipher_key_length];
         byte[] server_write_SRTP_master_key = new byte[cipher_key_length];
         byte[] client_write_SRTP_master_salt = new byte[cipher_salt_length];
         byte[] server_write_SRTP_master_salt = new byte[cipher_salt_length];
 
-        SecurityParameters sp = tlsContext.getSecurityParameters();
-        if ((sp != null) && !sp.isExtendedMasterSecret()) {
-            if (sp.getMasterSecret() == null && tlsContext.getResumableSession() != null) {
-                // BouncyCastle 1.59 clears the master secret from its session
-                // parameters immediately after connect, making them unavailable
-                // for exporting keying material. The value can still be present
-                // in the session parameters from the resumable session, which is used here.
-                final SessionParameters ssp = tlsContext.getResumableSession().exportSessionParameters();
-                if ((ssp != null) && ssp.getMasterSecret() != null) {
-                    keyingMaterial = exportKeyingMaterial(tlsContext, ExporterLabel.dtls_srtp, null,
-                            2 * (cipher_key_length + cipher_salt_length), ssp.getMasterSecret()
-                    );
-                }
-            }
-            else {
-                // Original, BouncyCastle 1.54-compatible code.
-                // byte[] secret = sp.getMasterSecret(); // always null for isExtendedMasterSecret == true;
-                keyingMaterial = tlsContext.exportKeyingMaterial(ExporterLabel.dtls_srtp, null,
-                        2 * (cipher_key_length + cipher_salt_length));
-            }
+        byte[][] keyingMaterialValues = {
+                client_write_SRTP_master_key,
+                server_write_SRTP_master_key,
+                client_write_SRTP_master_salt,
+                server_write_SRTP_master_salt
+        };
 
-            byte[][] keyingMaterialValues = {
-                    client_write_SRTP_master_key,
-                    server_write_SRTP_master_key,
-                    client_write_SRTP_master_salt,
-                    server_write_SRTP_master_salt
-            };
+        if (keyingMaterial != null) {
+            for (int i = 0, keyingMaterialOffset = 0; i < keyingMaterialValues.length; i++) {
+                byte[] keyingMaterialValue = keyingMaterialValues[i];
 
-            if (keyingMaterial != null) {
-                for (int i = 0, keyingMaterialOffset = 0; i < keyingMaterialValues.length; i++) {
-                    byte[] keyingMaterialValue = keyingMaterialValues[i];
-
-                    System.arraycopy(keyingMaterial, keyingMaterialOffset,
-                            keyingMaterialValue, 0, keyingMaterialValue.length);
-                    keyingMaterialOffset += keyingMaterialValue.length;
-                }
+                System.arraycopy(keyingMaterial, keyingMaterialOffset,
+                        keyingMaterialValue, 0, keyingMaterialValue.length);
+                keyingMaterialOffset += keyingMaterialValue.length;
             }
         }
 
@@ -676,15 +668,14 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Notifies this instance that the DTLS record layer associated with a
-     * specific <tt>TlsPeer</tt> has raised an alert.
+     * Notifies this instance that the DTLS record layer associated with a specific <tt>TlsPeer</tt> has raised an alert.
      *
      * @param alertLevel {@link AlertLevel}
      * @param alertDescription {@link AlertDescription}
      * @param message a human-readable message explaining what caused the alert. May be <tt>null</tt>.
      * @param cause the exception that caused the alert to be raised. May be <tt>null</tt>.
      */
-    void notifyAlertRaised(TlsPeer tlsPeer, short alertLevel, short alertDescription,
+    protected void notifyAlertRaised(TlsPeer tlsPeer, short alertLevel, short alertDescription,
             String message, Throwable cause)
     {
         if ((AlertLevel.warning == alertLevel)
@@ -736,9 +727,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             synchronized (q) {
                 for (RawPacket pkt : pkts) {
                     if (pkt != null) {
-                        while (q.size() >= TRANSFORM_QUEUE_CAPACITY
-                                && q.poll() != null) {
-                            ;
+                        while ((q.size() >= TRANSFORM_QUEUE_CAPACITY)
+                                && (q.poll() != null)) {
                         }
                         q.add(pkt);
                     }
@@ -787,25 +777,20 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         }
 
         // Next, try to read any available application data from bouncycastle.
-        DTLSTransport dtlsTransport = this.dtlsTransport;
-
-        if (dtlsTransport == null) {
-            // The DTLS transport hasn't initialized yet.
-        }
-        else {
+        // The DTLS transport hasn't initialized yet if null.
+        if (mDtlsTransport != null) {
             // There might be more than one packet queued in datagramTransport,
             // if they were added prior to dtlsTransport being initialized. Read all of them.
             try {
                 do {
-                    int receiveLimit = dtlsTransport.getReceiveLimit();
+                    int receiveLimit = mDtlsTransport.getReceiveLimit();
                     // FIXME This is at best inefficient, but it is not meant as
                     // a long-term solution. A major refactoring is planned,
                     // which will probably make this code obsolete.
                     byte[] buf = new byte[receiveLimit];
                     RawPacket p = new RawPacket(buf, 0, buf.length);
 
-                    int received = dtlsTransport.receive(
-                            buf, 0, buf.length, DTLS_TRANSPORT_RECEIVE_WAITMILLIS);
+                    int received = mDtlsTransport.receive(buf, 0, buf.length, DTLS_TRANSPORT_RECEIVE_WAITMILLIS);
 
                     if (received <= 0) {
                         // No (more) application data was decoded.
@@ -822,7 +807,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 // TransformEngine. We will use that mediaType to signal the
                 // normal stop then as well i.e. we will ignore exception after
                 // the procedure to stop this PacketTransformer has begun.
-                if (mediaType != null
+                if ((mediaType != null)
                         && !tlsPeerHasRaisedCloseNotifyWarning) {
                     Timber.e(ioe, "Failed to decode a DTLS record!");
                 }
@@ -831,11 +816,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Runs in {@link #connectThread} to initialize {@link #dtlsTransport}.
+     * Runs in {@link #connectThread} to initialize {@link #mDtlsTransport}.
      *
-     * @param dtlsProtocol
-     * @param tlsPeer
-     * @param datagramTransport
+     * @param dtlsProtocol server or client TLS protocol
+     * @param tlsPeer TLS peer
+     * @param datagramTransport UDP DatagramTransport
      */
     private void runInConnectThread(DTLSProtocol dtlsProtocol, TlsPeer tlsPeer, DatagramTransport datagramTransport)
     {
@@ -857,12 +842,12 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     break;
                 } catch (IOException ioe) {
                     if (handleRunInConnectThreadException(ioe,
-                            "Failed to connect this DTLS client to a DTLS" + " server!", i)) {
+                            "Failed to connect this DTLS client to DTLS server!", i)) {
                         break;
                     }
                 }
             }
-            if (dtlsTransport != null && srtp) {
+            if ((dtlsTransport != null) && srtp) {
                 srtpProtectionProfile = tlsClient.getChosenProtectionProfile();
                 tlsContext = tlsClient.getContext();
             }
@@ -886,7 +871,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     }
                 }
             }
-            if (dtlsTransport != null && srtp) {
+            if ((dtlsTransport != null) && srtp) {
                 srtpProtectionProfile = tlsServer.getChosenProtectionProfile();
                 tlsContext = tlsServer.getContext();
             }
@@ -896,20 +881,22 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             throw new IllegalStateException("dtlsProtocol");
         }
 
-        SinglePacketTransformer srtpTransformer = (dtlsTransport == null || !srtp)
+        SinglePacketTransformer srtpTransformer = ((dtlsTransport == null) || !srtp)
                 ? null : initializeSRTPTransformer(srtpProtectionProfile, tlsContext);
-        boolean closeSRTPTransformer;
 
+        boolean closeSRTPTransformer;
         synchronized (this) {
             if (Thread.currentThread().equals(this.connectThread)
                     && datagramTransport.equals(this.datagramTransport)) {
-                this.dtlsTransport = dtlsTransport;
+                mDtlsTransport = dtlsTransport;
                 setSrtpTransformer(srtpTransformer);
             }
             closeSRTPTransformer = (_srtpTransformer != srtpTransformer);
         }
-        if (closeSRTPTransformer && (srtpTransformer != null))
+
+        if (closeSRTPTransformer && (srtpTransformer != null)) {
             srtpTransformer.close();
+        }
     }
 
     /**
@@ -922,7 +909,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      */
     public void sendApplicationData(byte[] buf, int off, int len)
     {
-        DTLSTransport dtlsTransport = this.dtlsTransport;
+        DTLSTransport dtlsTransport = mDtlsTransport;
         Throwable throwable = null;
 
         if (dtlsTransport != null) {
@@ -971,8 +958,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     /**
      * Sets the <tt>MediaType</tt> of the stream which this instance is to work for/be associated with.
      *
-     * @param mediaType the <tt>MediaType</tt> of the stream which this instance is to work for/be associated
-     * with
+     * @param mediaType the <tt>MediaType</tt> of the stream which this instance is to work for/be associated with
      */
     private synchronized void setMediaType(MediaType mediaType)
     {
@@ -990,8 +976,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     /**
      * Enables/disables rtcp-mux.
      *
-     * @param rtcpmux {@code true} to enable rtcp-mux or {@code false} to
-     * disable it.
+     * @param rtcpmux {@code true} to enable rtcp-mux or {@code false} to disable it.
      */
     void setRtcpmux(boolean rtcpmux)
     {
@@ -1001,16 +986,15 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     /**
      * Sets {@link #_srtpTransformer} to a specific value.
      *
-     * @param srtpTransformer the {@code SinglePacketTransformer} to set on
-     * {@code _srtpTransformer}
+     * @param srtpTransformer the {@code SinglePacketTransformer} to set on {@code _srtpTransformer}
      */
     private synchronized void setSrtpTransformer(SinglePacketTransformer srtpTransformer)
     {
         if (_srtpTransformer != srtpTransformer) {
             _srtpTransformer = srtpTransformer;
             _srtpTransformerLastChanged = System.currentTimeMillis();
-            // For the sake of completeness, we notify whenever we assign to
-            // _srtpTransformer.
+
+            // For the sake of completeness, we notify whenever we assign to srtpTransformer.
             notifyAll();
         }
     }
@@ -1021,7 +1005,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private synchronized void start()
     {
         if (this.datagramTransport != null) {
-            if ((this.connectThread == null) && (dtlsTransport == null)) {
+            if ((this.connectThread == null) && (mDtlsTransport == null)) {
                 Timber.w("%s has been started but has failed to establish the DTLS connection!",
                         getClass().getName());
             }
@@ -1029,8 +1013,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         }
         if (rtcpmux && DtlsTransformEngine.COMPONENT_RTCP == componentID) {
             /*
-             * In the case of rtcp-mux, the RTCP transformer does not create a DTLS session. The
-             * SRTP context (srtpTransformer) will be initialized on demand using
+             * In the case of rtcp-mux, the RTCP transformer does not create a DTLS session.
+             * The SRTP context (srtpTransformer) will be initialized on demand using
              * initializeSRTCPTransformerFromRtp()
              */
             return;
@@ -1043,19 +1027,19 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             throw new NullPointerException("connector");
 
         DtlsControl.Setup setup = getProperties().getSetup();
-        final DTLSProtocol dtlsProtocolObj;
+        final DTLSProtocol dtlsProtocol;
         final TlsPeer tlsPeer;
 
         if (DtlsControl.Setup.ACTIVE.equals(setup)) {
-            dtlsProtocolObj = new DTLSClientProtocol(new SecureRandom());
+            dtlsProtocol = new DTLSClientProtocol();
             tlsPeer = new TlsClientImpl(this);
         }
         else {
-            dtlsProtocolObj = new DTLSServerProtocol(new SecureRandom());
+            dtlsProtocol = new DTLSServerProtocol();
             tlsPeer = new TlsServerImpl(this);
         }
-        tlsPeerHasRaisedCloseNotifyWarning = false;
 
+        tlsPeerHasRaisedCloseNotifyWarning = false;
         final DatagramTransportImpl datagramTransport = new DatagramTransportImpl(componentID);
         datagramTransport.setConnector(connector);
 
@@ -1065,7 +1049,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             public void run()
             {
                 try {
-                    runInConnectThread(dtlsProtocolObj, tlsPeer, datagramTransport);
+                    runInConnectThread(dtlsProtocol, tlsPeer, datagramTransport);
                 } finally {
                     if (Thread.currentThread().equals(DtlsPacketTransformer.this.connectThread)) {
                         DtlsPacketTransformer.this.connectThread = null;
@@ -1105,16 +1089,15 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             connectThread = null;
         try {
             /*
-             * The dtlsTransport and srtpTransformer SHOULD be closed, of course. The
-             * datagramTransport MUST be closed.
+             * The dtlsTransport and srtpTransformer SHOULD be closed, of course. The datagramTransport MUST be closed.
              */
-            if (dtlsTransport != null) {
+            if (mDtlsTransport != null) {
                 try {
-                    dtlsTransport.close();
+                    mDtlsTransport.close();
                 } catch (IOException ioe) {
-                    Timber.e(ioe, "Failed to (properly) close %s", dtlsTransport.getClass());
+                    Timber.e(ioe, "Failed to (properly) close %s", mDtlsTransport.getClass());
                 }
-                dtlsTransport = null;
+                mDtlsTransport = null;
             }
             if (_srtpTransformer != null) {
                 _srtpTransformer.close();
@@ -1199,9 +1182,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                         reverseTransformDtls(inPkt, outPkts);
                     }
 
-                    // Whatever the outcome, inPkt has been consumed. The
-                    // following is being done because there may be a subsequent
-                    // iteration over inPkts later on.
+                    // Whatever the outcome, inPkt has been consumed. The following is being done
+                    // because there may be a subsequent iteration over inPkts later on.
                     inPkts[i] = null;
                 }
             }
@@ -1425,41 +1407,31 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         return true;
     }
 
-    /* Copied from TlsContext#exportKeyingMaterial and modified to work with
-     * an externally provided masterSecret value.
+    /**
+     * Copied from AbstractTlsContext#exportKeyingMaterial and modified to work with an externally provided masterSecret value.
      */
-    private static byte[] exportKeyingMaterial(TlsContext context, String asciiLabel, byte[] context_value, int length, byte[] masterSecret)
+    private static byte[] exportKeyingMaterial(TlsContext context, String asciiLabel, byte[] context_value, int length, TlsSecret tlsSecret)
     {
         if (context_value != null && !TlsUtils.isValidUint16(context_value.length)) {
             throw new IllegalArgumentException("'context_value' must have length less than 2^16 (or be null)");
         }
 
-        SecurityParameters sp = context.getSecurityParameters();
-        byte[] cr = sp.getClientRandom(), sr = sp.getServerRandom();
-
-        int seedLength = cr.length + sr.length;
-        if (context_value != null) {
-            seedLength += (2 + context_value.length);
+        SecurityParameters securityParameters = context.getSecurityParameters();
+        if (null == securityParameters) {
+            throw new IllegalStateException("Export of key material unavailable before handshake completion");
         }
-
-        byte[] seed = new byte[seedLength];
-        int seedPos = 0;
-
-        System.arraycopy(cr, 0, seed, seedPos, cr.length);
-        seedPos += cr.length;
-        System.arraycopy(sr, 0, seed, seedPos, sr.length);
-        seedPos += sr.length;
-        if (context_value != null) {
-            TlsUtils.writeUint16(context_value.length, seed, seedPos);
-            seedPos += 2;
-            System.arraycopy(context_value, 0, seed, seedPos, context_value.length);
-            seedPos += context_value.length;
+        if (!securityParameters.isExtendedMasterSecret()) {
+            /*
+             * RFC 7627 5.4. If a client or server chooses to continue with a full handshake without
+             * the extended master secret extension, [..] the client or server MUST NOT export any
+             * key material based on the new master secret for any subsequent application-level
+             * authentication. In particular, it MUST disable [RFC5705] [..].
+             */
+            throw new IllegalStateException("cannot export keying material without extended_master_secret");
         }
+        byte[] seed = TlsUtils.calculateExporterSeed(securityParameters, context_value);
 
-        if (seedPos != seedLength) {
-            throw new IllegalStateException("error in calculation of seed for export");
-        }
-
-        return TlsUtils.PRF(context, masterSecret, asciiLabel, seed, length);
+        // pass sp instead of context as securityParametersHandshake is clear on AbstractTlsContext#handshakeComplete
+        return TlsUtils.PRF(securityParameters, tlsSecret, asciiLabel, seed, length).extract();
     }
 }

@@ -223,12 +223,12 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
                 hasChanges = true;
             });
 
-            // Disable DTLS_SRTP as BC 1.6.2 now uses Extended Mater Secret - not compatible with source
-            if (encryption.equals(SrtpControlType.DTLS_SRTP.toString())) {
-                tv.setEnabled(false);
-                cb.setChecked(false);
-                cb.setEnabled(false);
-            }
+            // Source ported for DTLS_SRTP bctls 1.6.5
+//            if (encryption.equals(SrtpControlType.DTLS_SRTP.toString())) {
+//                tv.setEnabled(false);
+//                cb.setChecked(false);
+//                cb.setEnabled(false);
+//            }
             return v;
         }
 

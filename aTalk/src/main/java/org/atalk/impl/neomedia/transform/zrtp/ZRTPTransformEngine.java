@@ -544,7 +544,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      */
     public boolean getSecureCommunicationStatus()
     {
-        return srtpInTransformer != null || srtpOutTransformer != null;
+        return (srtpInTransformer != null) || (srtpOutTransformer != null);
     }
 
     /**

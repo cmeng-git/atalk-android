@@ -3,56 +3,50 @@
     android:id="@+id/notificationContent"
     android:layout_width="match_parent"
     android:layout_height="64dp"
+    android:background="@color/background_light"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/iconContainer"
-        android:layout_width="64dp"
-        android:layout_height="match_parent"
+    <ImageView
+        android:id="@+id/avatarView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_centerVertical="true"
         android:padding="2dp"
-        android:layout_marginStart="2dp"
-        android:background="@color/status_bar_icon_bg">
-
-        <ImageView
-            android:id="@+id/avatarView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="2dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_logo" />
-    </RelativeLayout>
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_logo" />
 
     <TextView
         android:id="@+id/calleeDisplayName"
-        style="@style/NotificationTitle"
+        style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/iconContainer"
+        android:layout_toEndOf="@+id/avatarView"
         android:singleLine="true"
-        android:text="CalleeDisplayName@server.com" />
+        android:text="CalleeDisplayName@server.com"
+        android:textColor="@color/textColorBlack" />
 
     <TextView
         android:id="@+id/call_duration"
-        style="@style/NotificationTitle"
+        style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
         android:singleLine="true"
-        android:text="00:00:00" />
+        android:text="00:00:00"
+        android:textColor="@color/textColorBlack" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/iconContainer"
+        android:layout_toEndOf="@+id/avatarView"
         android:orientation="horizontal"
         android:weightSum="5">
 
@@ -81,9 +75,9 @@
             style="@style/NotificationCtrlButton"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:background="@color/status_bar_button"
             android:padding="2dp"
             android:scaleType="centerInside"
-            android:background="@color/status_bar_button"
             android:src="@drawable/call_microphone_dark" />
 
         <ImageButton
@@ -91,19 +85,19 @@
             style="@style/NotificationCtrlButton"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:background="@color/status_bar_button"
             android:padding="2dp"
             android:scaleType="centerInside"
-            android:background="@color/status_bar_button"
             android:src="@drawable/call_hold_off_dark" />
 
         <ImageButton
             android:id="@+id/button_hangup"
             style="@style/NotificationCtrlButton"
             android:layout_width="0dp"
+            android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:background="@color/status_bar_hangup"
             android:padding="2dp"
-            android:layout_marginEnd="4dp"
             android:scaleType="centerInside"
             android:src="@drawable/call_hangup_dark" />
     </LinearLayout>

@@ -6,6 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.2.5 (05/13/2020)" versioncode="1125">
+        <change>Implemented DTLS_SRTP call encryption DTLSv12/DTLSv10 protocols and additional CipherSuites support</change>
+        <change>Ensure camera resource permission is granted when required in chat attachments i.e. picture and video</change>
+        <change>Fix STUN/TURN editor crashes when saved UserName and/or Password are null</change>
+        <change>Limit account login credentials reason field maxLines to 6 to avoid 'Sign in' button get obscured</change>
+        <change>Highlight user selected item in contact, chatRoom and call history list window</change>
+        <change>Fix crash when create/join a remote server chat room with pre-occupied members</change>
+        <change>Port and upgrade library for ice4j-2.0.0-20181024.160538-12 to the latest ice4j-2.0.0-20190607.184546-36</change>
+        <change>Port and upgrade all org.bouncycastle libraries from jdk15on_1.62 to jdk15on_1.65</change>
+        <change>Migrate to bctls-jdk15on_1.65.jar library for DTLS-SRTP DTLSv12 protocol compatibility and additional CipherSuites support</change>
+        <change>Fix crashes in aTalk releases for v2.2.4/v2.2.3 FFR from the fields</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.2.4 (04/30/2020)" versioncode="1124">
         <change>Display contacts sorted according to contacts' presence status in main contact list window</change>
         <change>Ensure hide offline contact list get updated when a contact presence status changes</change>

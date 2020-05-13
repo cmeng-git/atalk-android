@@ -15,8 +15,8 @@
  */
 package org.atalk.impl.neomedia.transform.dtls;
 
-import org.bouncycastle.crypto.*;
-import org.bouncycastle.crypto.tls.*;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.tls.Certificate;
 
 /**
  * Bundles information such as key pair, hash function, fingerprint, etc. about
@@ -24,6 +24,7 @@ import org.bouncycastle.crypto.tls.*;
  * authenticates its ends of DTLS sessions.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 class CertificateInfo
 {
@@ -44,15 +45,13 @@ class CertificateInfo
     public final String localFingerprint;
 
     /**
-     * The hash function of {@link #localFingerprint} (which is the same as the
-     * digest algorithm of the signature algorithm of {@link #certificate} in
-     * accord with RFC 4572).
+     * The hash function of {@link #localFingerprint} (which is the same as the digest algorithm
+     * of the signature algorithm of {@link #certificate} in accord with RFC 4572).
      */
     public final String localFingerprintHashFunction;
 
     /**
-     * The timestamp (in milliseconds of system time) of the generation of this
-     * {@code CertificateInfo}.
+     * The timestamp (in milliseconds of system time) of the generation of this {@code CertificateInfo}.
      */
     public final long timestamp;
 
@@ -61,18 +60,13 @@ class CertificateInfo
      *
      * @param keyPair the private and public keys of {@code certificate}
      * @param certificate the certificate with which the local endpoint
-     * represented by the new instance is to authenticates its ends of DTLS
-     * sessions
-     * @param localFingerprintHashFunction
-     * @param localFingerprint
-     * @param timestamp
+     * represented by the new instance is to authenticates its ends of DTLS sessions
+     * @param localFingerprintHashFunction hash function of localFingerprint
+     * @param localFingerprint of the certificate
+     * @param timestamp (ms) of the generation of this CertificateInfo.
      */
-    public CertificateInfo(
-            AsymmetricCipherKeyPair keyPair,
-            Certificate certificate,
-            String localFingerprintHashFunction,
-            String localFingerprint,
-            long timestamp)
+    public CertificateInfo(AsymmetricCipherKeyPair keyPair, Certificate certificate,
+            String localFingerprintHashFunction, String localFingerprint, long timestamp)
     {
         this.keyPair = keyPair;
         this.certificate = certificate;

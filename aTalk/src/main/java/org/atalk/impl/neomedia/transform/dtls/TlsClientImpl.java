@@ -5,9 +5,15 @@
  */
 package org.atalk.impl.neomedia.transform.dtls;
 
-import org.bouncycastle.crypto.tls.*;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.tls.*;
+import org.bouncycastle.tls.crypto.TlsCrypto;
+import org.bouncycastle.tls.crypto.TlsCryptoParameters;
+import org.bouncycastle.tls.crypto.impl.bc.BcDefaultTlsCredentialedSigner;
+import org.bouncycastle.tls.crypto.impl.bc.BcTlsCrypto;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Hashtable;
 
@@ -47,6 +53,7 @@ public class TlsClientImpl extends DefaultTlsClient
      */
     public TlsClientImpl(DtlsPacketTransformer packetTransformer)
     {
+        super(new BcTlsCrypto(new SecureRandom()));
         this.packetTransformer = packetTransformer;
     }
 
@@ -61,11 +68,9 @@ public class TlsClientImpl extends DefaultTlsClient
     }
 
     /**
-     * Gets the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its
-     * server.
+     * Gets the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its server.
      *
-     * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its
-     * server
+     * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its server
      */
     int getChosenProtectionProfile()
     {
@@ -76,28 +81,45 @@ public class TlsClientImpl extends DefaultTlsClient
      * {@inheritDoc}
      *
      * Overrides the super implementation to explicitly specify cipher suites which we know to be
-     * supported by Bouncy Castle. At the time of this writing, we know that Bouncy Castle
-     * implements Client Key Exchange only with <tt>TLS_ECDHE_WITH_XXX</tt> and
-     * <tt>TLS_RSA_WITH_XXX</tt>.
+     * supported by Bouncy Castle v1.65.
+     *
+     * Extract from core/src/main/java/org/bouncycastle/tls/DefaultTlsClient.java
      */
     @Override
-    public int[] getCipherSuites()
+    protected int[] getSupportedCipherSuites()
     {
         return new int[]{
-                /* core/src/main/java/org/bouncycastle/crypto/tls/DefaultTlsClient.java */
+                /* TLS 1.3 */
+                // CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
+                // CipherSuite.TLS_AES_128_GCM_SHA256,
+
+                /* pre-TLS 1.3 */
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
                 CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
                 CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
                 CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
                 CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
                 CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
                 CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256,
+                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA
         };
+    }
+
+    /**
+     * {@inheritDoc}
+     * The implementation of <tt>TlsClientImpl</tt> always returns <tt>ProtocolVersion.DTLSv12 & DTLSv10</tt>
+     */
+    @Override
+    protected ProtocolVersion[] getSupportedVersions()
+    {
+        return ProtocolVersion.DTLSv12.downTo(ProtocolVersion.DTLSv10);
     }
 
     /**
@@ -106,7 +128,6 @@ public class TlsClientImpl extends DefaultTlsClient
      * Includes the <tt>use_srtp</tt> extension in the DTLS extended client hello.
      */
     @Override
-    @SuppressWarnings("rawtypes")
     public Hashtable getClientExtensions()
             throws IOException
     {
@@ -116,23 +137,10 @@ public class TlsClientImpl extends DefaultTlsClient
                 && TlsSRTPUtils.getUseSRTPExtension(clientExtensions) == null) {
             if (clientExtensions == null)
                 clientExtensions = new Hashtable();
-            TlsSRTPUtils.addUseSRTPExtension(
-                    clientExtensions, new UseSRTPData(DtlsControlImpl.SRTP_PROTECTION_PROFILES, mki));
+            TlsSRTPUtils.addUseSRTPExtension(clientExtensions,
+                    new UseSRTPData(DtlsControlImpl.SRTP_PROTECTION_PROFILES, mki));
         }
         return clientExtensions;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * The implementation of <tt>TlsClientImpl</tt> always returns <tt>ProtocolVersion.DTLSv10</tt>
-     * because <tt>ProtocolVersion.DTLSv12</tt> does not work with the Bouncy Castle Crypto APIs at
-     * the time of this writing.
-     */
-    @Override
-    public ProtocolVersion getClientVersion()
-    {
-        return ProtocolVersion.DTLSv10;
     }
 
     /**
@@ -155,15 +163,6 @@ public class TlsClientImpl extends DefaultTlsClient
         return packetTransformer.getDtlsControl();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ProtocolVersion getMinimumVersion()
-    {
-        return ProtocolVersion.DTLSv10;
-    }
-
     private Properties getProperties()
     {
         return packetTransformer.getProperties();
@@ -179,7 +178,6 @@ public class TlsClientImpl extends DefaultTlsClient
     @Override
     public void init(TlsClientContext context)
     {
-        // TODO Auto-generated method stub
         super.init(context);
     }
 
@@ -204,6 +202,19 @@ public class TlsClientImpl extends DefaultTlsClient
     public void notifyAlertRaised(short alertLevel, short alertDescription, String message, Throwable cause)
     {
         packetTransformer.notifyAlertRaised(this, alertLevel, alertDescription, message, cause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyHandshakeComplete()
+            throws IOException
+    {
+        super.notifyHandshakeComplete();
+
+        // masterSecrete date is empty? https://github.com/bcgit/bc-java/issues/203
+        // packetTransformer.setMasterSecrete(context.getSecurityParameters().getMasterSecret());
     }
 
     /**
@@ -282,13 +293,24 @@ public class TlsClientImpl extends DefaultTlsClient
                 throws IOException
         {
             if (clientCredentials == null) {
-                CertificateInfo certificateInfo = getDtlsControl().getCertificateInfo();
-                /*
-                 * FIXME The signature and hash algorithms should be retrieved from the certificate.
-                 */
-                clientCredentials = new DefaultTlsSignerCredentials(context,
-                        certificateInfo.getCertificate(), certificateInfo.getKeyPair().getPrivate(),
-                        new SignatureAndHashAlgorithm(HashAlgorithm.sha1, SignatureAlgorithm.rsa));
+                short[] certificateTypes = certificateRequest.getCertificateTypes();
+                if (certificateTypes == null || !org.bouncycastle.util.Arrays.contains(certificateTypes, ClientCertificateType.rsa_sign)) {
+                    return null;
+                }
+
+                TlsCrypto crypto = context.getCrypto();
+                TlsCryptoParameters cryptoParams = new TlsCryptoParameters(context);
+
+                CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
+                AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
+                Certificate certificate = certInfo.getCertificate();
+
+                // FIXME The signature and hash algorithms should be retrieved from the certificate.
+                SignatureAndHashAlgorithm signatureAndHashAlgorithm
+                        = new SignatureAndHashAlgorithm(HashAlgorithm.sha256, SignatureAlgorithm.rsa);
+
+                clientCredentials = new BcDefaultTlsCredentialedSigner(cryptoParams, (BcTlsCrypto) crypto,
+                        privateKey, certificate, signatureAndHashAlgorithm);
             }
             return clientCredentials;
         }
@@ -297,11 +319,11 @@ public class TlsClientImpl extends DefaultTlsClient
          * {@inheritDoc}
          */
         @Override
-        public void notifyServerCertificate(Certificate serverCertificate)
+        public void notifyServerCertificate(TlsServerCertificate serverCertificate)
                 throws IOException
         {
             try {
-                getDtlsControl().verifyAndValidateCertificate(serverCertificate);
+                getDtlsControl().verifyAndValidateCertificate(serverCertificate.getCertificate());
             } catch (Exception e) {
                 Timber.e(e, "Failed to verify and/or validate server certificate!");
                 if (e instanceof IOException)

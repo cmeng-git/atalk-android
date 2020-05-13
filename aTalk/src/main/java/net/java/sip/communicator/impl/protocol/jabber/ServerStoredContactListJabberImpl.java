@@ -361,26 +361,28 @@ public class ServerStoredContactListJabberImpl
      */
     public ContactJabberImpl findContactById(Jid id)
     {
+        if (id == null)
+            return null;
+
         Iterator<ContactGroup> contactGroups = rootGroup.subgroups();
-        ContactJabberImpl result;
-        BareJid userId = id.asBareJid();
+        ContactJabberImpl contact;
 
         while (contactGroups.hasNext()) {
             ContactGroupJabberImpl contactGroup = (ContactGroupJabberImpl) contactGroups.next();
-            result = contactGroup.findContact(userId);
-            if (result != null)
-                return result;
+            contact = contactGroup.findContact(id);
+            if (contact != null)
+                return contact;
         }
 
         // check for private contacts
         ContactGroupJabberImpl volatileGroup = getNonPersistentGroup();
         if (volatileGroup != null) {
-            result = volatileGroup.findContact(id);
-            if (result != null)
-                return result;
+            contact = volatileGroup.findContact(id);
+            if (contact != null)
+                return contact;
         }
         // try the root group now
-        return rootGroup.findContact(userId);
+        return rootGroup.findContact(id);
     }
 
     /**

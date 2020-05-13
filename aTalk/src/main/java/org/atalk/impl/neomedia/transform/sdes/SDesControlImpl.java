@@ -93,7 +93,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
 
     public boolean getSecureCommunicationStatus()
     {
-        return transformEngine != null;
+        return (transformEngine != null);
     }
 
     public Iterable<String> getSupportedCryptoSuites()
