@@ -352,7 +352,8 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
 
             String eventType = evt.getEventType();
             ChatRoomMember chatRoomMember = evt.getChatRoomMember();
-            Contact protoContact = chatRoomMember.getContact();
+            // Timber.d("ChatRoom member: %s (%s)", chatRoomMember.getContactAddress(), chatRoomMember.getNickName());
+
             String statusMessage = null;
             if (eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED)) {
                 ConferenceChatContact chatContact = new ConferenceChatContact(chatRoomMember);

@@ -72,8 +72,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1124
-        versionName "2.2.4"
+        versionCode 1125
+        versionName "2.2.5"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -225,8 +225,21 @@ dependencies {
 
     // DtlsControlImpl dependency - For compatible with zrtp4j-light-4.1.0
     // Replace zrtp: org.bouncycastle.cryptozrtp.params.ECDomainParameteres: GIn.getEncoded() => GIn.getEncoded(false)
-    implementation 'org.bouncycastle:bcpg-jdk15on:1.64'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
+    implementation 'org.bouncycastle:bcpg-jdk15on:1.65'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    implementation 'org.bouncycastle:bctls-jdk15on:1.65'
+
+    // required for debug and tracing only
+//    implementation jarjar.repackage {
+//        from('org.bouncycastle:bctls-jdk15on:1.65') {
+//            transitive = false
+//        }
+//        destinationDir new File("${projectDir}/libs")
+//        destinationName "bctls-jdk15on-1.65.jar"
+//
+//        classDelete 'org.bouncycastle.tls.DTLSServerProtocol**'
+//        classDelete 'org.bouncycastle.tls.DTLSClientProtocol**'
+//    }
 
     // Use by provisioning Discover
     // implementation 'org.jitsi:dnssecjava:1.1.3'

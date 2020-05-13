@@ -9,6 +9,7 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.util.ConfigUtils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -21,11 +22,14 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
 import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
-import org.bouncycastle.crypto.tls.SRTPProtectionProfile;
 import org.bouncycastle.crypto.util.SubjectPublicKeyInfoFactory;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.bc.BcDefaultDigestProvider;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
+import org.bouncycastle.tls.SRTPProtectionProfile;
+import org.bouncycastle.tls.crypto.TlsCertificate;
+import org.bouncycastle.tls.crypto.impl.bc.BcTlsCertificate;
+import org.bouncycastle.tls.crypto.impl.bc.BcTlsCrypto;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -94,9 +98,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
 
     /**
      * The RSA key size certainty to use.
-     * The default value is {@code DEFAULT_RSA_KEY_SIZE_CERTAINTY} but may be
-     * overridden by the {@code ConfigurationService} and/or {@code System}
-     * property {@code RSA_KEY_SIZE_CERTAINTY_PNAME}.
+     * The default value is {@code DEFAULT_RSA_KEY_SIZE_CERTAINTY} but may be overridden by the
+     * {@code ConfigurationService} and/or {@code System} property {@code RSA_KEY_SIZE_CERTAINTY_PNAME}.
      * For more on certainty, look at the three parameter constructor here:
      * https://docs.oracle.com/javase/7/docs/api/java/math/BigInteger.html
      */
@@ -115,9 +118,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
 
     /**
      * The certificate cache expiration time to use, in milliseconds.
-     * The default value is {@code DEFAULT_CERT_CACHE_EXPIRE_TIME} but may be
-     * overridden by the {@code ConfigurationService} and/or {@code System}
-     * property {@code CERT_CACHE_EXPIRE_TIME_PNAME}.
+     * The default value is {@code DEFAULT_CERT_CACHE_EXPIRE_TIME} but may be overridden by the
+     * {@code ConfigurationService} and/or {@code System} property {@code CERT_CACHE_EXPIRE_TIME_PNAME}.
      */
     public static final long CERT_CACHE_EXPIRE_TIME;
 
@@ -130,27 +132,30 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * The public exponent to always use for RSA key generation.
      */
     public static final BigInteger RSA_KEY_PUBLIC_EXPONENT = new BigInteger("10001", 16);
+
     /**
      * The <tt>SRTPProtectionProfile</tt>s supported by <tt>DtlsControlImpl</tt>.
      */
     static final int[] SRTP_PROTECTION_PROFILES = {
             SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80,
-            SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32
+            SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32,
+//            SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_80,
+//            SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_32,
+//            SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM,
+//            SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM
     };
 
     /**
-     * The indicator which specifies whether {@code DtlsControlImpl} is to tear
-     * down the media session if the fingerprint does not match the hashed
-     * certificate. The default value is {@code true} and may be overridden by
-     * the {@code ConfigurationService} and/or {@code System} property
+     * The indicator which specifies whether {@code DtlsControlImpl} is to tear down the media session
+     * if the fingerprint does not match the hashed certificate. The default value is {@code true} and
+     * may be overridden by the {@code ConfigurationService} and/or {@code System} property
      * {@code VERIFY_AND_VALIDATE_CERTIFICATE_PNAME}.
      */
     private static final boolean VERIFY_AND_VALIDATE_CERTIFICATE;
 
     /**
-     * The name of the {@code ConfigurationService} and/or {@code System}
-     * property which specifies whether {@code DtlsControlImpl} is to tear down
-     * the media session if the fingerprint does not match the hashed
+     * The name of the {@code ConfigurationService} and/or {@code System} property which specifies whether
+     * {@code DtlsControlImpl} is to tear down the media session if the fingerprint does not match the hashed
      * certificate. The default value is {@code true}.
      */
     private static final String VERIFY_AND_VALIDATE_CERTIFICATE_PNAME = "neomedia.transform.dtls.verifyAndValidateCertificate";
@@ -211,11 +216,11 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * Computes the fingerprint of a specific certificate using a specific hash function.
      *
      * @param certificate the certificate the fingerprint of which is to be computed
-     * @param hashFunction the hash function to be used in order to compute the fingerprint of the specified
-     * <tt>certificate</tt>
+     * @param hashFunction the hash function to be used in order to compute the fingerprint
+     * of the specified <tt>certificate</tt>
      * @return the fingerprint of the specified <tt>certificate</tt> computed using the specified <tt>hashFunction</tt>
      */
-    private static final String computeFingerprint(Certificate certificate, String hashFunction)
+    private static String computeFingerprint(Certificate certificate, String hashFunction)
     {
         try {
             AlgorithmIdentifier digAlgId
@@ -277,10 +282,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * @param hashFunction the hash function which is not associated with a
      * fingerprint and for which an &quot;upgrade&quot; associated with a fingerprint is to be found
      * @param fingerprints the set of available hash function-fingerprint associations
-     * @return a hash function written in lower case which is an
-     * &quot;upgrade&quot; of the specified {@code hashFunction} and has a
-     * fingerprint associated with it in {@code fingerprints} if there is such
-     * a hash function; otherwise, {@code null}
+     * @return a hash function written in lower case which is an &quot;upgrade&quot; of the specified
+     * {@code hashFunction} and has a fingerprint associated with it in {@code fingerprints} if
+     * there is such a hash function; otherwise, {@code null}
      */
     private static String findHashFunctionUpgrade(String hashFunction, Map<String, String> fingerprints)
     {
@@ -297,38 +301,28 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Generates a new certificate from a new key pair, determines the hash
-     * function, and computes the fingerprint.
+     * Generates a new certificate from a new key pair, determines the hash function, and computes the fingerprint.
      *
-     * @return CertificateInfo a new certificate generated from a new key pair,
-     * its hash function, and fingerprint
+     * @return CertificateInfo a new certificate generated from a new key pair, its hash function, and fingerprint
      */
     private static CertificateInfo generateCertificateInfo()
     {
         AsymmetricCipherKeyPair keyPair = generateKeyPair();
         Certificate x509Certificate = generateX509Certificate(generateCN(), keyPair);
 
-        org.bouncycastle.crypto.tls.Certificate certificate
-                = new org.bouncycastle.crypto.tls.Certificate(new Certificate[]
-                {
-                        x509Certificate
-                }
-        );
+        BcTlsCertificate tlsCertificate = new BcTlsCertificate(new BcTlsCrypto(new SecureRandom()), x509Certificate);
+        org.bouncycastle.tls.Certificate certificate
+                = new org.bouncycastle.tls.Certificate(new TlsCertificate[]{tlsCertificate});
+
         String localFingerprintHashFunction = findHashFunction(x509Certificate);
         String localFingerprint = computeFingerprint(x509Certificate, localFingerprintHashFunction);
 
         long timestamp = System.currentTimeMillis();
-        return new CertificateInfo(
-                keyPair,
-                certificate,
-                localFingerprintHashFunction,
-                localFingerprint,
-                timestamp);
+        return new CertificateInfo(keyPair, certificate, localFingerprintHashFunction, localFingerprint, timestamp);
     }
 
     /**
-     * Generates a new subject for a self-signed certificate to be generated by
-     * <tt>DtlsControlImpl</tt>.
+     * Generates a new subject for a self-signed certificate to be generated by <tt>DtlsControlImpl</tt>.
      *
      * @return an <tt>X500Name</tt> which is to be used as the subject of a self-signed certificate
      * to be generated by <tt>DtlsControlImpl</tt>
@@ -380,12 +374,10 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      */
     private static Certificate generateX509Certificate(X500Name subject, AsymmetricCipherKeyPair keyPair)
     {
-        // The signature algorithm of the generated certificate defaults to
-        // SHA256. However, allow the overriding of the default via the
-        // ConfigurationService.
+        // The signature algorithm of the generated certificate defaults to SHA256.
+        // However, allow the overriding of the default via the ConfigurationService.
         String signatureAlgorithm = ConfigUtils.getString(
-                LibJitsi.getConfigurationService(),
-                PROP_SIGNATURE_ALGORITHM, "SHA256withRSA");
+                LibJitsi.getConfigurationService(), PROP_SIGNATURE_ALGORITHM, "SHA256withRSA");
 
         Timber.d("Signature algorithm: %s", signatureAlgorithm);
         try {
@@ -397,6 +389,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                     /* serial */BigInteger.valueOf(now), notBefore, notAfter, subject,
                     /* publicKeyInfo */
                     SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyPair.getPublic()));
+
             AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA256withRSA");
             AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
             ContentSigner signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
@@ -576,15 +569,13 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public boolean getSecureCommunicationStatus()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return (transformEngine != null);
     }
 
     /**
      * Gets the value of the {@code setup} SDP attribute defined by RFC 4145
-     * &quot;TCP-Based Media Transport in the Session Description Protocol
-     * (SDP)&quot; which determines whether this instance acts as a DTLS client
-     * or a DTLS server.
+     * &quot;TCP-Based Media Transport in the Session Description Protocol (SDP)&quot;
+     * which determines whether this instance acts as a DTLS client or a DTLS server.
      *
      * @return the value of the {@code setup} SDP attribute defined by RFC 4145 &quot;TCP-Based
      * Media Transport in the Session Description Protocol (SDP)&quot; which determines whether
@@ -668,16 +659,22 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     public void start(MediaType mediaType)
     {
         properties.put(Properties.MEDIA_TYPE_PNAME, mediaType);
+
+        Timber.d("DTLS media type: %s Transformer status: %s", mediaType.toString(), getSecureCommunicationStatus());
+
+        SrtpListener srtpListener = getSrtpListener();
+        srtpListener.securityNegotiationStarted(mediaType, this);
+        srtpListener.securityTurnedOn(mediaType, getSrtpControlType().toString(), this);
     }
 
     /**
      * Verifies and validates a specific certificate against the fingerprints presented by the
      * remote endpoint via the signaling path.
      *
-     * @param certificate the certificate to be verified and validated against the fingerprints presented by the
-     * remote endpoint via the signaling path
-     * @throws Exception if the specified <tt>certificate</tt> failed to verify and validate against the
-     * fingerprints presented by the remote endpoint via the signaling path
+     * @param certificate the certificate to be verified and validated against the fingerprints
+     * presented by the remote endpoint via the signaling path
+     * @throws Exception if the specified <tt>certificate</tt> failed to verify and validate
+     * against the fingerprints presented by the remote endpoint via the signaling path
      */
     private void verifyAndValidateCertificate(Certificate certificate)
             throws Exception
@@ -689,7 +686,6 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
          * certificate's signature algorithm."
          */
         String hashFunction = findHashFunction(certificate);
-
 
         /*
          * As RFC 5763 "Framework for Establishing a Secure Real-time Transport Protocol (SRTP)
@@ -715,11 +711,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
             // Its certificate uses SHA-1 and it sends a fingerprint computed with SHA-256. We
             // could, of course, wait for Mozilla to make Firefox compliant. However, we would
             // like to support Firefox in the meantime. That is why we will allow the fingerprint
-            // to "upgrade" the hash function of the certificate much like SHA-256 is an
-            // "upgrade" of SHA-1.
+            // to "upgrade" the hash function of the certificate much like SHA-256 is an "upgrade" of SHA-1.
             if (remoteFingerprint == null) {
-                String hashFunctionUpgrade
-                        = findHashFunctionUpgrade(hashFunction, remoteFingerprints);
+                String hashFunctionUpgrade = findHashFunctionUpgrade(hashFunction, remoteFingerprints);
 
                 if (hashFunctionUpgrade != null
                         && !hashFunctionUpgrade.equalsIgnoreCase(hashFunction)) {
@@ -730,8 +724,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
             }
         }
         if (remoteFingerprint == null) {
-            throw new IOException("No fingerprint declared over the signaling path with"
-                    + " hash function: " + hashFunction + "!");
+            throw new IOException("No fingerprint declared over the signaling path with hash function: "
+                    + hashFunction + "!");
         }
 
         String fingerprint = computeFingerprint(certificate, hashFunction);
@@ -750,30 +744,24 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * Verifies and validates a specific certificate against the fingerprints presented by the
      * remote endpoint via the signaling path.
      *
-     * @param certificate the certificate to be verified and validated against the fingerprints presented by the
-     * remote endpoint via the signaling path
-     * @return <tt>true</tt> if the specified <tt>certificate</tt> was successfully verified and
-     * validated against the fingerprints presented by the remote endpoint over the
-     * signaling path
+     * @param certificate the certificate to be verified and validated against the fingerprints
+     * presented by the remote endpoint via the signaling path
      * @throws Exception if the specified <tt>certificate</tt> failed to verify and validate against the
      * fingerprints presented by the remote endpoint over the signaling path
      */
-    boolean verifyAndValidateCertificate(org.bouncycastle.crypto.tls.Certificate certificate)
+    public void verifyAndValidateCertificate(org.bouncycastle.tls.Certificate certificate)
             throws Exception
     {
-        boolean b = false;
-
         try {
-            Certificate[] certificateList = certificate.getCertificateList();
-
-            if (certificateList.length == 0) {
+            if (certificate.isEmpty()) {
                 throw new IllegalArgumentException("certificate.certificateList");
             }
             else {
-                for (org.bouncycastle.asn1.x509.Certificate x509Certificate : certificateList) {
-                    verifyAndValidateCertificate(x509Certificate);
+                TlsCertificate[] chain = certificate.getCertificateList();
+                for (TlsCertificate tlsCertificate : chain) {
+                    Certificate entry = Certificate.getInstance(tlsCertificate.getEncoded());
+                    verifyAndValidateCertificate(entry);
                 }
-                b = true;
             }
         } catch (Exception e) {
             String message = "Failed to verify and/or validate a certificate offered over"
@@ -785,7 +773,6 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                     Timber.e(e, "%s", message);
                 else
                     Timber.e("%s %s", message, throwableMessage);
-
                 throw e;
             }
             else {
@@ -793,14 +780,12 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                 // Real-time Transport Protocol (SRTP) Security Context Using
                 // Datagram Transport Layer Security (DTLS)", we do NOT want to
                 // teardown the media session if the fingerprint does not match
-                // the hashed certificate. We want to notify the user via the
-                // SrtpListener.
+                // the hashed certificate. We want to notify the user via the SrtpListener.
                 if (throwableMessage == null || throwableMessage.length() == 0)
                     Timber.w(e, "%s", message);
                 else
                     Timber.w("%s %s", message, throwableMessage);
             }
         }
-        return b;
     }
 }

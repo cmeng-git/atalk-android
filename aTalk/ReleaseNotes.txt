@@ -2,15 +2,21 @@ Project aTalk-Android Release Notes
 
 =========================================================================
 Author:         cmeng
-Upload Date:	05/04/2020
-Version:		2.2.5.a (1125)
+Upload Date:	05/13/2020
+Version:		2.2.5 (1125)
 
-- MetaContactListAdapter: All contactList view update (from events) must be performed on UI thread using UI thread handler => IllegalStateException
-- ICE - STUN/TURN entry editor crashes when UserName or Password is null => NPE
+- Fix STUN/TURN editor crashes when saved UserName or Password is null => NPE
   * StunTurnDialogFragment => StunServerDescriptor must check for null in setName and setPassword
 - ChatActivity#sendAttachment need to catch SecurityException in case user has denied some resources access
 - ChatInviteDialog#inviteContacts skip inclusion of DomainJid if selected
+- Limit account_credentials reason field maxLines=6 to avoid 'Sign in' button get obscured
+- Highlight user selected item in contact, chatRoom and call history list window
+- MetaContactListAdapter: All contactList view update (from events) must be performed on UI thread handler => IllegalStateException
 - ServerStoredContactListJabberImpl#addContact: replace deprecated addInterceptor() with addPresenceInterceptor()
+
+- ChatRoomMemberJabberImpl.getContact(): must check for (jabberJid != null)
+  remote (anonymous) muc chatRoom members may not have local stored contacts;
+- ChatRoomJabberImpl: Use STATUS_110_PRESENCE_TO_SELF to check and process own chatRoom presence
 
 - Port ice4j-2.0.0-20181024.160538-12 to ice4j-2.0.0-20190607.184546-36
   * Consumer was introduced in API 24: classRename 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
@@ -18,9 +24,10 @@ Version:		2.2.5.a (1125)
     classRename 'java.time.Duration', 'org.threeten.bp.Duration' for < API-26 support
   * Remove obsoleted atalk local files: org.ice4j.util.CustomizableThreadFactory.java and ExecutorFactory.java
 
-- Limit account_credentials reason field maxLines=6 to avoid 'Sign in' button get obscured
-- org.bouncycastle:bcpkix-jdk15on:1.62 => 1.64 (Need change to zrtp4j-light-4.1.0)
-  * Replace Zrtp: org.bouncycastle.cryptozrtp.params.ECDomainParameters: GIn.getEncoded() => GIn.getEncoded(false)
+- Port and upgrade all bouncycastle library jars from v1.62 to v1.65 and added new bctls-jdk15on:1.65.jar
+  * Changes to zrtp4j-light-4.1.0: org.bouncycastle.cryptozrtp.params.ECDomainParameters: GIn.getEncoded() => GIn.getEncoded(false)
+  * bctls-jdk15on_1.65.jar supports DTLS-SRTP TLSv12 protocol and additional CipherSuites
+  * DtlsPacketTransformer#DTLS_TRANSPORT_RECEIVE_WAITMILLIS = -1 not allowed
 
 - 20200501 fix or take action for all v2.2.4 / v2.2.3 FFR from the fields
 

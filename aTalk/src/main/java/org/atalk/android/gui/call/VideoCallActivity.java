@@ -1024,7 +1024,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         doUpdatePadlockStatus(isSecure, isVerified);
         if (isSecure) {
             ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.security_protocol,
-                    srtpControlType.toString().toLowerCase());
+                    srtpControlType.toString());
         }
     }
 
@@ -1151,6 +1151,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 srtpControlType = SrtpControlType.DTLS_SRTP;
                 isVerified = true;
             }
+            // Timber.d("SRTP Secure: %s = %s", isVerified, srtpControlType.toString());
 
             // Update both secure padLock status and protocol name
             doUpdatePadlockStatus(true, isVerified);

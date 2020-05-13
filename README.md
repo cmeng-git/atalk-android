@@ -48,7 +48,8 @@ aTalk is an xmpp client designed for android and supports the following features
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
 * Join or create room with full room configuration support for owner
 * Integrated captcha protected room user interface with retry on failure
-* Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
+* Support both vo to algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
+* SDES encice and video call with ZRTP, SDES and DTLS SRTP (DTLSv12) encryption modes
 * ZRTP crypto algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
 * SDES encryption with AES256 and AES192, acceleration using OpenSSL
 * Support simultaneous media call and message chat sessions

@@ -98,7 +98,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
         presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
                 chatRoom.getParentProvider().getOperationSet(OperationSetPersistentPresence.class);
 
-        // jabberID may be null
+        // jabberID may be null e.g. remote anonymous conference, all jids are null
         if (jabberJid != null) {
             // If we found the mContact we set also its avatar.
             mContact = presenceOpSet.findContactByJid(jabberJid);
@@ -106,7 +106,6 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
                 this.avatar = mContact.getImage();
             }
         }
-
         // just query the server muc member for role, the value is set if present
         getRole();
     }
@@ -248,12 +247,14 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      * mContact list and in function of this to show additional information add additional functionality.
      * Note: Use nick to retrieve mContact if null to take care the old history messages;
      *
+     * For remote conference chatRoom members, aTalk does not have local stored contacts, so jabberJid can be null .
+     *
      * @return the protocol mContact corresponding to this member in our mContact list.
      */
     public Contact getContact()
     {
         // old history muc message has mContact field = null (not stored);
-        if ((mContact == null) && (presenceOpSet != null)) {
+        if ((mContact == null) && (presenceOpSet != null) && (jabberJid != null)) {
             mContact = presenceOpSet.findContactByJid(jabberJid);
         }
         return mContact;

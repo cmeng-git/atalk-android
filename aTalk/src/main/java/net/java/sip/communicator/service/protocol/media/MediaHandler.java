@@ -780,7 +780,7 @@ public class MediaHandler extends PropertyChangeNotifier
         else {
             Timber.log(TimberLog.FINER, "Reinitializing stream: " + stream);
         }
-        // cmeng: sream can still be null in testing. why?
+        // cmeng: stream can still be null in testing. why?
         return configureStream(callPeerMediaHandler, device, format, target, direction,
                 rtpExtensions, stream, masterStream);
     }

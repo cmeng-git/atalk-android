@@ -205,9 +205,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     public ContactJabberImpl findContact(Jid jid)
     {
-        if (jid == null)
-            return null;
-        return (ContactJabberImpl) buddies.get(jid.asBareJid());
+        return (jid == null) ? null : (ContactJabberImpl) buddies.get(jid.asBareJid());
     }
 
     /**

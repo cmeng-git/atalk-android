@@ -268,7 +268,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     ContactJabberImpl findContact(Jid id)
     {
-        return (id == null) ? null : (ContactJabberImpl) contacts.get(id);
+        return (id == null) ? null : (ContactJabberImpl) contacts.get(id.asBareJid());
     }
 
 
