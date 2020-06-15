@@ -226,9 +226,8 @@ public class Jingle extends IQ
     }
 
     /**
-     * Specifies this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a
-     * <tt>jingle</tt> IQ provides machine and possibly human -readable information about the reason
-     * for the action.
+     * Specifies this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a <tt>jingle</tt> IQ
+     * provides machine and possibly human -readable information about the reason for the action.
      *
      * @param reason this IQ's <tt>reason</tt> extension.
      */
@@ -238,9 +237,8 @@ public class Jingle extends IQ
     }
 
     /**
-     * Returns this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a
-     * <tt>jingle</tt> IQ provides machine and possibly human -readable information about the reason
-     * for the action.
+     * Returns this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a <tt>jingle</tt> IQ
+     * provides machine and possibly human -readable information about the reason for the action.
      *
      * @return this IQ's <tt>reason</tt> extension.
      */
@@ -250,8 +248,7 @@ public class Jingle extends IQ
     }
 
     /**
-     * Returns a reference (and not a copy so be careful how you are handling it) of this element's
-     * content list.
+     * Returns a reference (and not a copy so be careful how you are handling it) of this element's content list.
      *
      * @return a reference to this element's content list.
      */
@@ -314,8 +311,7 @@ public class Jingle extends IQ
      * Finds <tt>JingleContent</tt> that matches given <tt>contentName</tt>.
      *
      * @param contentName the name of the content for which extension will be returned
-     * @return <tt>JingleContent</tt> that matches given <tt>contentName</tt> or
-     * <tt>null</tt> if not found.
+     * @return <tt>JingleContent</tt> that matches given <tt>contentName</tt> or <tt>null</tt> if not found.
      */
     public JingleContent getContentByName(String contentName)
     {
@@ -340,11 +336,9 @@ public class Jingle extends IQ
     }
 
     /**
-     * Returns a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and
-     * <tt>null</tt> otherwise.
+     * Returns a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and <tt>null</tt> otherwise.
      *
-     * @return a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and
-     * <tt>null</tt> otherwise.
+     * @return a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and <tt>null</tt> otherwise.
      */
     public SessionInfoExtension getSessionInfo()
     {

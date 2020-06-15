@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia;
 import net.java.sip.communicator.service.gui.ConfigurationForm;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
+import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
@@ -388,7 +389,7 @@ public class NeomediaActivator implements BundleActivator
                     Map<String, Object> extras = new HashMap<>();
 
                     extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, this);
-                    notificationService.fireNotification(DEVICE_CONFIGURATION_HAS_CHANGED,
+                    notificationService.fireNotification(DEVICE_CONFIGURATION_HAS_CHANGED, SystrayService.NONE_MESSAGE_TYPE,
                             aTalkApp.getResString(R.string.impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED),
                             aTalkApp.getResString(R.string.impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK),
                             null, extras);

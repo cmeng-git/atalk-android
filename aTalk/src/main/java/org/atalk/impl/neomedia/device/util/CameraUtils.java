@@ -203,14 +203,6 @@ public class CameraUtils
     }
 
     /**
-     * get current display orientation
-     **/
-    public static int getDisplayOrientation()
-    {
-        return surfaceProvider.getDisplayRotation();
-    }
-
-    /**
      * Calculates camera preview orientation value for the {@link android.view.Display}'s
      * <tt>rotation</tt> in degrees.
      *

@@ -15,7 +15,7 @@ import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.AndroidCallUtil;
+import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
 /**

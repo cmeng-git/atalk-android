@@ -123,12 +123,12 @@ public class MediaUtils
                 MediaType.AUDIO,
                 Constants.SPEEX_RTP,
                 8000, 16000, 32000);
-        //		 addMediaFormats(
-        //		 		(byte) SdpConstants.G722,
-        //				 "G722",
-        //				 MediaType.AUDIO,
-        //				 Constants.G722_RTP,
-        //				 8000);
+//		 addMediaFormats(
+//		 		(byte) SdpConstants.G722,
+//				 "G722",
+//				 MediaType.AUDIO,
+//				 Constants.G722_RTP,
+//				 8000);
         if (EncodingConfigurationImpl.G729) {
             Map<String, String> g729FormatParams = new HashMap<>();
             g729FormatParams.put("annexb", "no");
@@ -183,19 +183,35 @@ public class MediaUtils
                 null,
                 8000, 12000, 16000, 24000);
 
+        /*
+         * RTP Payload Format for the Opus Speech and Audio Codec (June 2015)
+         * https://tools.ietf.org/html/rfc7587
+         */
         Map<String, String> opusFormatParams = new HashMap<>();
-        boolean opusFec = cfg.getBoolean(Constants.PROP_OPUS_FEC, true);
-        if (!opusFec)
-            opusFormatParams.put("useinbandfec", "0");
-
-        boolean opusDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, true);
-        if (opusDtx)
-            opusFormatParams.put("usedtx", "1");
+        // not in rfc7587
         // opusFormatParams.put("minptime", "10");
 
+        /*
+         * Decoder support for FEC SHOULD be indicated at the time a session is setup.
+         */
+        boolean opusFec = cfg.getBoolean(Constants.PROP_OPUS_FEC, true);
+        if (opusFec)
+            opusFormatParams.put("useinbandfec", "1");
+
+        /*
+         * DTX can be used with both variable and constant bitrate.  It will have a slightly lower speech
+         * or audio quality than continuous transmission.  Therefore, using continuous transmission is
+         * RECOMMENDED unless constraints on available network bandwidth are severe.
+         * If no value is specified, the default is 0.
+         */
+        boolean opusDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, false);
+        if (opusDtx)
+            opusFormatParams.put("usedtx", "1");
+
         Map<String, String> opusAdvancedParams = new HashMap<>();
-        String packetizationTime = Constants.PTIME;
-        opusAdvancedParams.put(packetizationTime, "20");
+        /* The preferred duration of media represented by a packet that a decoder wants to receive, in milliseconds
+         */
+        opusAdvancedParams.put(Constants.PTIME, "20");
 
         addMediaFormats(
                 MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
@@ -259,10 +275,9 @@ public class MediaUtils
                 h264FormatParams.put("profile-level-id", "42E01f");
             }
 
-            //		if (cfg.getBoolean("neomedia.codec.video.h264.enabled", false)) {
+            // if (cfg.getBoolean("neomedia.codec.video.h264.enabled", false)) {
             // By default, packetization-mode=1 is enabled.
-            if ((cfg == null)
-                    || cfg.getBoolean("neomedia.codec.video.h264.packetization-mode-1.enabled", true)) {
+            if (cfg.getBoolean("neomedia.codec.video.h264.packetization-mode-1.enabled", true)) {
                 // packetization-mode=1
                 h264FormatParams.put(packetizationMode, "1");
                 addMediaFormats(

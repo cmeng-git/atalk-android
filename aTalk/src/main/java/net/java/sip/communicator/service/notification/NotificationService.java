@@ -182,13 +182,14 @@ public interface NotificationService
      * </p>
      *
      * @param eventType the type of the event that we'd like to fire a notification for.
+     * @param msgType the notification sub-category message type
      * @param messageTitle the message title to use if and where appropriate (e.g. with systray)
      * @param message the message to use if and where appropriate (e.g. with systray or log notification.)
      * @param icon the icon to show in the notification if and where appropriate
      * @return An object referencing the notification. It may be used to stop a still running notification.
      * Can be null if the eventType is unknown or the notification is not active.
      */
-    NotificationData fireNotification(String eventType, String messageTitle, String message, byte[] icon);
+    NotificationData fireNotification(String eventType, int msgType, String messageTitle, String message, byte[] icon);
 
     /**
      * Fires all notifications registered for the specified <tt>eventType</tt> using <tt>message</tt> as a
@@ -197,6 +198,7 @@ public interface NotificationService
      * This method does nothing if the given <tt>eventType</tt> is not contained in the list of registered event types.
      *
      * @param eventType the type of the event that we'd like to fire a notification for.
+     * @param msgType the notification sub-category message type
      * @param messageTitle the message title to use if and where appropriate (e.g. with systray)
      * @param message the message to use if and where appropriate (e.g. with systray or log notification.)
      * @param icon the icon to show in the notification if and where appropriate
@@ -206,7 +208,7 @@ public interface NotificationService
      * @return An object referencing the notification. It may be used to stop a still running notification.
      * Can be null if the eventType is unknown or the notification is not active.
      */
-    NotificationData fireNotification(String eventType, String messageTitle, String message, byte[] icon,
+    NotificationData fireNotification(String eventType, int msgType, String messageTitle, String message, byte[] icon,
             Map<String, Object> extras);
 
     /**

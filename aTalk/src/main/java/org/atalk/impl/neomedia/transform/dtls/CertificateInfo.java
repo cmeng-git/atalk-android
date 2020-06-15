@@ -60,7 +60,7 @@ class CertificateInfo
      *
      * @param keyPair the private and public keys of {@code certificate}
      * @param certificate the certificate with which the local endpoint
-     * represented by the new instance is to authenticates its ends of DTLS sessions
+     * represented by the new instance is to authenticate its ends of DTLS sessions
      * @param localFingerprintHashFunction hash function of localFingerprint
      * @param localFingerprint of the certificate
      * @param timestamp (ms) of the generation of this CertificateInfo.

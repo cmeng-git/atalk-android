@@ -18,6 +18,7 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.systray.PopupMessage;
+import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
@@ -97,31 +98,51 @@ public class AndroidPopup
         this.popupMessage = popupMessage;
         mContext = aTalkApp.getGlobalContext();
 
-        // Default aTalk icon
-        mSmallIcon = R.drawable.ic_notification;
         group = popupMessage.getGroup();
+        id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
 
-        // default group is sharing general notification icon
-        if (AndroidNotifications.DEFAULT_GROUP.equals(group)) {
+        // set separate notification icon for each group of notification
+        switch (group) {
+            case AndroidNotifications.MESSAGE_GROUP:
+                mSmallIcon = R.drawable.incoming_message;
+                break;
+
+            case AndroidNotifications.SILENT_GROUP:
+                mSmallIcon = R.drawable.incoming_message;
+                break;
+
+            case AndroidNotifications.FILE_GROUP:
+                mSmallIcon = R.drawable.ic_attach_dark;
+                break;
+
+            case AndroidNotifications.CALL_GROUP:
+                switch (popupMessage.getMessageType()) {
+                    case SystrayService.WARNING_MESSAGE_TYPE:
+                        mSmallIcon = R.drawable.ic_alert_dark;
+                        break;
+
+                    case SystrayService.JINGLE_INCOMING_CALL:
+                    case SystrayService.JINGLE_MESSAGE_PROPOSE:
+                        mSmallIcon = R.drawable.call_incoming;
+                        break;
+
+                    case SystrayService.MISSED_CALL_MESSAGE_TYPE:
+                        mSmallIcon = R.drawable.call_incoming_missed;
+                        break;
+
+                    default:
+                        mSmallIcon = R.drawable.ic_info_dark;
+                        break;
+                }
+                break;
+
+            // default group is sharing general notification icon
             // By default all notifications share aTalk icon
-            id = SystrayServiceImpl.getGeneralNotificationId();
-        }
-        else {
-            id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-
-            // set separate notification icon for each group of notification
-            if (AndroidNotifications.MESSAGE_GROUP.equals(group)) {
-                mSmallIcon = R.drawable.incoming_message;
-            }
-            else if (AndroidNotifications.SILENT_GROUP.equals(group)) {
-                mSmallIcon = R.drawable.incoming_message;
-            }
-            else if (AndroidNotifications.FILE_GROUP.equals(group)) {
-                mSmallIcon = R.drawable.incoming_file;
-            }
-            else if (AndroidNotifications.CALL_GROUP.equals(group)) {
-                mSmallIcon = R.drawable.missed_call;
-            }
+            case AndroidNotifications.DEFAULT_GROUP:
+            default:
+                id = SystrayServiceImpl.getGeneralNotificationId();
+                mSmallIcon = R.drawable.ic_notification;
+                break;
         }
         // Extract contained chat descriptor if any
         mDescriptor = popupMessage.getTag();
@@ -378,7 +399,7 @@ public class AndroidPopup
      */
     protected void onBuildInboxStyle(NotificationCompat.InboxStyle inboxStyle)
     {
-        inboxStyle.addLine(popupMessage.getMessage());
+        inboxStyle.addLine(getMessage());
         // Summary
         if (mDescriptor instanceof Contact) {
             ProtocolProviderService pps = ((Contact) mDescriptor).getProtocolProvider();
@@ -431,7 +452,8 @@ public class AndroidPopup
      */
     public boolean isHeadUpNotificationAllow()
     {
-        return ConfigurationUtils.isHeadsUpEnable() && AndroidNotifications.MESSAGE_GROUP.equals(group);
+        return ConfigurationUtils.isHeadsUpEnable() &&
+                (AndroidNotifications.MESSAGE_GROUP.equals(group) || AndroidNotifications.CALL_GROUP.equals(group));
     }
 
     /**

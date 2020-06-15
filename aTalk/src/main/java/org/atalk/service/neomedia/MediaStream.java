@@ -272,8 +272,7 @@ public interface MediaStream
 	 * to receive data (e.g. RTP) and control data (e.g. RTCP).
 	 *
 	 * @return the <tt>MediaStreamTarget</tt> describing the data (e.g. RTP) and the control data
-	 * (e.g. RTCP) locations to which this <tt>MediaStream</tt> is to send and from which it
-	 * is to receive
+	 * (e.g. RTCP) locations to which this <tt>MediaStream</tt> is to send and from which it is to receive
 	 * @see MediaStream#setTarget(MediaStreamTarget)
 	 */
 	MediaStreamTarget getTarget();

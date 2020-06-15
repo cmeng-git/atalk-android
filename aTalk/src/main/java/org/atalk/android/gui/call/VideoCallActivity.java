@@ -173,12 +173,22 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_video_audio);
-        this.callIdentifier = getIntent().getExtras().getString(CallManager.CALL_IDENTIFIER);
 
-        call = CallManager.getActiveCall(callIdentifier);
-        if (call == null) {
-            Timber.e("There's no call with id: %s", callIdentifier);
-            return;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        );
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
+
+            call = CallManager.getActiveCall(callIdentifier);
+            if (call == null) {
+                Timber.e("There's no call with id: %s", callIdentifier);
+                return;
+            }
         }
         // Registers as the call state listener
         call.addCallChangeListener(this);
@@ -438,11 +448,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
             case R.id.button_call_hangup:
                 // Start the hang up Thread, Activity will be closed later on call ended event
-                if (call != null)
+                if (call != null) {
                     CallManager.hangupCall(call);
-                    // if call thread is null, then just exit the activity
-                else
+                }
+                // if call thread is null, then just exit the activity
+                else {
                     finish();
+                }
                 break;
 
             case R.id.security_group:

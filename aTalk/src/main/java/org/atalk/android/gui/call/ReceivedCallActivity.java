@@ -9,7 +9,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,18 +43,6 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     private Call call;
 
     /**
-     * {@inheritDoc}
-     */
-    public void onAttachedToWindow()
-    {
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-    }
-
-    /**
      * Called when the activity is starting. Initializes the call identifier.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the
@@ -63,61 +52,48 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.call_received);
-        TextView displayNameView = findViewById(R.id.calleeDisplayName);
-        TextView addressView = findViewById(R.id.calleeAddress);
-        ImageView avatarView = findViewById(R.id.calleeAvatar);
-        Bundle extras = getIntent().getExtras();
-        displayNameView.setText(extras.getString(CallManager.CALLEE_DISPLAY_NAME));
-        addressView.setText(extras.getString(CallManager.CALLEE_ADDRESS));
 
-        byte[] avatar = extras.getByteArray(CallManager.CALLEE_AVATAR);
-        if (avatar != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
-            avatarView.setImageBitmap(bitmap);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        );
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
+
+            call = CallManager.getActiveCall(callIdentifier);
+            if (call != null) {
+                String Callee = CallUIUtils.getCalleeAddress(call);
+
+                TextView addressView = findViewById(R.id.calleeAddress);
+                addressView.setText(Callee);
+
+                byte[] avatar = CallUIUtils.getCalleeAvatar(call);
+                if (avatar != null) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
+
+                    ImageView avatarView = findViewById(R.id.calleeAvatar);
+                    avatarView.setImageBitmap(bitmap);
+                }
+            }
+            else {
+                Timber.e("There is no call with ID: %s", callIdentifier);
+                finish();
+                return;
+            }
         }
-        callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
-        call = CallManager.getActiveCall(callIdentifier);
-        if (call == null) {
-            Timber.e("There is no call with ID: %s", callIdentifier);
-            finish();
-            return;
-        }
+
         ImageView hangupView = findViewById(R.id.hangupButton);
         hangupView.setOnClickListener(v -> hangupCall());
 
-        final ImageView callButton = findViewById(R.id.callButton);
+        ImageView callButton = findViewById(R.id.callButton);
         callButton.setOnClickListener(v -> answerCall(call, false));
-    }
 
-    /**
-     * Method mapped to answer button's onClick event
-     *
-     * @param v the answer with video button's <tt>View</tt>
-     */
-    public void onAnswerWithVideoClicked(View v)
-    {
-        if (call != null) {
-            Timber.d("Answer call with video");
-            answerCall(call, true);
-        }
-    }
-
-    /**
-     * Answers the given call and launches the call user interface.
-     *
-     * @param call the call to answer
-     * @param isVideoCall indicates if video shall be used
-     */
-    private void answerCall(final Call call, boolean isVideoCall)
-    {
-        CallManager.answerCall(call, isVideoCall);
-        runOnUiThread(() -> {
-            Intent videoCall = VideoCallActivity.createVideoCallIntent(ReceivedCallActivity.this, callIdentifier);
-            startActivity(videoCall);
-            finish();
-        });
+        ImageView videoCallButton = findViewById(R.id.videoCallButton);
+        videoCallButton.setOnClickListener(v -> answerCall(call, true));
     }
 
     /**
@@ -127,7 +103,6 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     protected void onResume()
     {
         super.onResume();
-
         if (call.getCallState().equals(CallState.CALL_ENDED)) {
             finish();
         }
@@ -149,6 +124,22 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     }
 
     /**
+     * Answers the given call and launches the call user interface.
+     *
+     * @param call the call to answer
+     * @param isVideoCall indicates if video shall be used
+     */
+    private void answerCall(final Call call, boolean isVideoCall)
+    {
+        CallManager.answerCall(call, isVideoCall);
+        runOnUiThread(() -> {
+            Intent videoCall = VideoCallActivity.createVideoCallIntent(ReceivedCallActivity.this, callIdentifier);
+            startActivity(videoCall);
+            finish();
+        });
+    }
+
+    /**
      * Hangs up the call and finishes this <tt>Activity</tt>.
      */
     private void hangupCall()
@@ -163,9 +154,9 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
+        // Block the back key action to end this activity.
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // Hangs up the call when back is pressed as this Activity will not be displayed again.
-            hangupCall();
+            // hangupCall();
             return true;
         }
         return super.onKeyUp(keyCode, event);
@@ -198,7 +189,8 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      */
     public void callStateChanged(CallChangeEvent evt)
     {
-        if (evt.getNewValue().equals(CallState.CALL_ENDED)) {
+        Object callState = evt.getNewValue();
+        if (CallState.CALL_ENDED.equals(callState)) {
             finish();
         }
     }

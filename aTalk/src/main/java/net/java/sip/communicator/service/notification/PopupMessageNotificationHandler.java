@@ -20,12 +20,9 @@ public interface PopupMessageNotificationHandler extends NotificationHandler
      * Shows the given <tt>PopupMessage</tt>
      *
      * @param action the action to act upon
-     * @param title the title of the given message
-     * @param message the message to use if and where appropriate (e.g. with systray or log notification.)
-     * @param icon the icon to show in the notification if and where appropriate
-     * @param tag additional info to be used by the notification handler
+     * @param data <tt>NotificationData</tt> that contains the name/key, icon and extra info for popup notification
      */
-    void popupMessage(PopupMessageNotificationAction action, String title, String message, byte[] icon, Object tag);
+    void popupMessage(PopupMessageNotificationAction action, NotificationData data);
 
     /**
      * Adds a listener for <tt>SystrayPopupMessageEvent</tt>s posted when user clicks on the system tray popup message.

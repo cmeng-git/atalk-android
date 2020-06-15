@@ -905,8 +905,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
                      * is still ringing), we can try to obtain our local SSRC from the streams we
                      * have already set up with the other participants in the conference.
                      */
-                    for (MediaAwareCallPeer<?, ?, ?> otherCallPeer : callPeer.getCall()
-                            .getCallPeerList()) {
+                    for (MediaAwareCallPeer<?, ?, ?> otherCallPeer : callPeer.getCall().getCallPeerList()) {
                         MediaStream otherStream = otherCallPeer.getMediaHandler().getStream(mediaType);
                         if (otherStream != null) {
                             srcId = otherStream.getLocalSourceID();

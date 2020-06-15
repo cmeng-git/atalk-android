@@ -260,8 +260,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     {
         if (callRecord.getDirection().equals(CallRecord.IN)) {
             // if the call record has reason for normal call clearing
-            // means it was answered somewhere else and we don't
-            // mark it as missed
+            // means it was answered somewhere else, then we don't mark it as missed
             if (callRecord.getStartTime().equals(callRecord.getEndTime())
                     && (callRecord.getEndReason() != CallPeerChangeEvent.NORMAL_CALL_CLEARING))
                 return missedCallIcon;
@@ -275,17 +274,14 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s supporting the given
-     * <tt>OperationSet</tt> class.
+     * Returns a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt> class.
      *
      * @param operationSet the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s supporting the given
-     * <tt>OperationSet</tt> class
+     * @return a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt> class.
      */
     public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet)
     {
-        // We support only call details
-        // or persistence presence so we can add contacts.
+        // We support only call details or persistence presence so we can add contacts.
         if (!(operationSet.equals(OperationSetBasicTelephony.class)
                 || operationSet.equals(OperationSetPersistentPresence.class)))
             return null;
@@ -307,13 +303,11 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Returns the preferred <tt>ContactDetail</tt> for a given
-     * <tt>OperationSet</tt> class.
+     * Returns the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class.
      *
      * @param operationSet the <tt>OperationSet</tt> class, for which we would
      * like to obtain a <tt>ContactDetail</tt>
-     * @return the preferred <tt>ContactDetail</tt> for a given
-     * <tt>OperationSet</tt> class
+     * @return the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class
      */
     public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)
     {
@@ -345,8 +339,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Returns the status of the source contact. And null if such information
-     * is not available.
+     * Returns the status of the source contact. And null if such information is not available.
      *
      * @return the PresenceStatus representing the state of this source contact.
      */
@@ -387,9 +380,8 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Whether the current image returned by @see #getImage() is the one
-     * provided by the SourceContact by default, or is a one used and obtained
-     * from external source.
+     * Whether the current image returned by @see #getImage() is the one provided by the
+     * SourceContact by default, or is a one used and obtained from external source.
      *
      * @return whether this is the default image for this SourceContact.
      */

@@ -10,8 +10,8 @@ import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.JingleContent;
 import org.xmpp.extensions.jingle.element.JingleContent.Creator;
 import org.xmpp.extensions.jingle.element.JingleContent.Senders;
-import net.java.sip.communicator.service.protocol.media.DynamicPayloadTypeRegistry;
-import net.java.sip.communicator.service.protocol.media.DynamicRTPExtensionsRegistry;
+
+import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.NetworkUtils;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
@@ -24,6 +24,8 @@ import java.net.*;
 import java.util.*;
 
 import timber.log.Timber;
+
+import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
 
 /**
  * The class contains a number of utility methods that are meant to facilitate creating and parsing
@@ -392,23 +394,23 @@ public class JingleUtils
      * (e.g. audio/video) of the media description is determined via from the type of the first
      * {@link MediaFormat} in the <tt>formats</tt> list.
      *
-     * @param creator indicates whether the person who originally created this content was the initiator or
-     * the responder of the jingle session
-     * @param contentName the name of the content element as indicator by the creator or, in case we are the
-     * creators: as we'd like it to be.
+     * @param creator indicates whether the person who originally created
+     * this content was the initiator or the responder of the jingle session
+     * @param contentName the name of the content element as indicator by the creator or,
+     * in case we are the creators: as we'd like it to be.
      * @param formats the list of formats that should be advertised in the newly created content extension.
      * @param senders indicates the direction of the media in this stream.
-     * @param rtpExtensions a list of <tt>RTPExtension</tt>s supported by the <tt>MediaDevice</tt> that we will be
-     * advertising.
-     * @param dynamicPayloadTypes a reference to the <tt>DynamicPayloadTypeRegistry</tt> that we should be using to
-     * lookup and register dynamic RTP mappings.
-     * @param rtpExtensionsRegistry a reference to the <tt>DynamicRTPExtensionRegistry</tt> that we should be using to
-     * lookup and register URN to ID mappings.
+     * @param rtpExtensions a list of <tt>RTPExtension</tt>s supported by the <tt>MediaDevice</tt>
+     * that we will be advertising.
+     * @param dynamicPayloadTypes a reference to the <tt>DynamicPayloadTypeRegistry</tt>
+     * that we should be using to lookup and register dynamic RTP mappings.
+     * @param rtpExtensionsRegistry a reference to the <tt>DynamicRTPExtensionRegistry</tt>
+     * that we should be using to lookup and register URN to ID mappings.
      * @return the newly create SDP <tt>MediaDescription</tt>.
      */
     public static JingleContent createDescription(Creator creator, String contentName, Senders senders,
             List<MediaFormat> formats, List<RTPExtension> rtpExtensions, DynamicPayloadTypeRegistry dynamicPayloadTypes,
-            DynamicRTPExtensionsRegistry rtpExtensionsRegistry)
+            DynamicRTPExtensionsRegistry rtpExtensionsRegistry, boolean rtcpmux, boolean imgattr)
     {
         JingleContent content = new JingleContent();
         RtpDescriptionExtension description = new RtpDescriptionExtension();
@@ -426,10 +428,14 @@ public class JingleUtils
 
         // now fill in the RTP description
         for (MediaFormat fmt : formats) {
+            // remove FORMAT_PARAMETER_ATTR_IMAGEATTR if not found in the earlier format offered
+            if (fmt.hasParameter(FORMAT_PARAMETER_ATTR_IMAGEATTR) && !imgattr) {
+                fmt.removeParameter(FORMAT_PARAMETER_ATTR_IMAGEATTR);
+            }
             description.addPayloadType(formatToPayloadType(fmt, dynamicPayloadTypes));
         }
 
-        // extmap attributes
+        // RTPExtension attributes
         if (rtpExtensions != null && rtpExtensions.size() > 0) {
             for (RTPExtension extension : rtpExtensions) {
                 byte extID = rtpExtensionsRegistry.obtainExtensionMapping(extension);
@@ -446,6 +452,12 @@ public class JingleUtils
                 description.addChildExtension(ext);
             }
         }
+
+        // RtcpmuxExtension per XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)
+        if (rtcpmux) {
+            description.addChildExtension(new RtcpmuxExtension());
+        }
+
         return content;
     }
 
@@ -493,20 +505,19 @@ public class JingleUtils
     }
 
     /**
-     * Returns the <tt>MediaType</tt> for <tt>content</tt> by looking for it in the <tt>content</tt>
-     * 's <tt>description</tt>, if any.
+     * Returns the <tt>MediaType</tt> for <tt>content</tt> by looking for it in the <tt>content</tt>'s
+     * <tt>description</tt>, if any.
      *
      * @param content the content to return the <tt>MediaType</tt> of
-     * @return the <tt>MediaType</tt> for <tt>content</tt> by looking for it in the <tt>content</tt>
-     * 's <tt>description</tt>, if any. <tt>contentName</tt>
+     * @return the <tt>MediaType</tt> for <tt>content</tt> by looking for it in the <tt>content</tt>'s
+     * <tt>description</tt>, if any. <tt>contentName</tt>
      */
     public static MediaType getMediaType(JingleContent content)
     {
         if (content == null)
             return null;
 
-        // We will use content name for determining media type
-        // if no RTP description is present(SCTP connection case)
+        // We will use content name for determining media type if no RTP description is present(SCTP connection case)
         String mediaTypeName = content.getName();
 
         RtpDescriptionExtension desc = getRtpDescription(content);

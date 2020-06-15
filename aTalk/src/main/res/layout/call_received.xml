@@ -7,13 +7,11 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/screen_padding"
+        android:layout_above="@id/button_Container"
         android:gravity="center"
-        android:orientation="vertical"
-        android:paddingBottom="100dp" >
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/calleeAvatar"
@@ -26,62 +24,39 @@
             android:src="@drawable/person_photo" />
 
         <TextView
-            android:id="@+id/calleeDisplayName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:paddingBottom="@dimen/between_padding"
-            android:text="some.long.name@sip-communicator.org"
-            android:textSize="22sp" />
-
-        <TextView
             android:id="@+id/calleeAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:paddingBottom="@dimen/between_padding"
-            android:text="name@sip-communicator.org/atalk-randowm23!@43$"
+            android:text="name@sip-communicator.org/atalk"
             android:textSize="@dimen/label_text_size" />
     </LinearLayout>
 
-    <!--
-         ImageView
-        android:id="@+id/fadeBackground"
-        android:src="@drawable/fade"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="0px"/
-    -->
-
     <LinearLayout
-        android:id="@+id/layout2"
+        android:id="@+id/button_Container"
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="80dp"
+        android:gravity="center_vertical"
         android:layout_alignParentBottom="true"
         android:background="#40000000"
         android:orientation="horizontal" >
 
         <ImageButton
-            android:id="@+id/answerVideoButton"
+            android:id="@+id/videoCallButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/accept_call_video"
             android:focusable="true"
-            android:onClick="onAnswerWithVideoClicked"
-            android:src="@drawable/accept_video_call" />
+            android:src="@drawable/call_video" />
 
         <ImageButton
             android:id="@+id/callButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/service_gui_CALL"
@@ -92,8 +67,6 @@
             android:id="@+id/hangupButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
             android:contentDescription="@string/hang_up"

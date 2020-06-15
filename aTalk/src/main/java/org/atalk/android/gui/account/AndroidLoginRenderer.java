@@ -110,14 +110,12 @@ public class AndroidLoginRenderer implements LoginRenderer
      */
     public void addProtocolProviderUI(ProtocolProviderService protocolProvider)
     {
-        OperationSetBasicTelephony<?> telOpSet
-                = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
+        OperationSetBasicTelephony<?> telOpSet = protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
         if (telOpSet != null) {
             telOpSet.addCallListener(androidCallListener);
         }
 
-        OperationSetPresence presenceOpSet
-                = protocolProvider.getOperationSet(OperationSetPresence.class);
+        OperationSetPresence presenceOpSet = protocolProvider.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null) {
             presenceOpSet.addProviderPresenceStatusListener(androidPresenceListener);
         }

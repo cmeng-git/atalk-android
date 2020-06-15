@@ -31,6 +31,7 @@ import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
+import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
@@ -104,6 +105,9 @@ public class aTalkApp extends Application implements LifecycleObserver
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             new WebView(this).destroy();
         }
+
+        // Must initialize Notification channels before any notification is being issued.
+        new NotificationHelper(this);
 
         // force delete in case system locked during testing
         // ServerPersistentStoresRefreshDialog.deleteDB();  // purge sql database

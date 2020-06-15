@@ -1316,13 +1316,14 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
          * will re-implement the functionality bellow using a Control interface and we will not
          * bother with inserting customized codecs.
          */
+        // aTalk uses external h264, so accept OSUtils.IS_ANDROID ???
         if (!OSUtils.IS_ANDROID && "h264/rtp".equalsIgnoreCase(format.getEncoding())) {
             encoder = new JNIEncoder();
 
             // packetization-mode
             Map<String, String> formatParameters = mediaFormat.getFormatParameters();
-            String packetizationMode = (formatParameters == null) ? null : formatParameters
-                    .get(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP);
+            String packetizationMode = (formatParameters == null)
+                    ? null : formatParameters.get(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP);
             encoder.setPacketizationMode(packetizationMode);
 
             // additionalCodecSettings

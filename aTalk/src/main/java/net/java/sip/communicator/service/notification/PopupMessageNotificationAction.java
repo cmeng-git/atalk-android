@@ -55,7 +55,8 @@ public class PopupMessageNotificationAction extends NotificationAction
      *
      * @param defaultMessage the default message to use if no message is specified
      * @param timeout suggested timeout in ms for hiding the popup if not clicked by the user, -1 for infinity
-     * @param groupName name of the group that will be used for merging popups
+     * @param groupName name of the group that will be used for merging popups,
+     * it is also one of the android notification channel
      */
     public PopupMessageNotificationAction(String defaultMessage, long timeout, String groupName)
     {

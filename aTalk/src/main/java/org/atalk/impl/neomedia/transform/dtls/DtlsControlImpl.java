@@ -5,6 +5,10 @@
  */
 package org.atalk.impl.neomedia.transform.dtls;
 
+import android.text.TextUtils;
+
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -26,7 +30,7 @@ import org.bouncycastle.crypto.util.SubjectPublicKeyInfoFactory;
 import org.bouncycastle.operator.*;
 import org.bouncycastle.operator.bc.BcDefaultDigestProvider;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
-import org.bouncycastle.tls.SRTPProtectionProfile;
+import org.bouncycastle.tls.*;
 import org.bouncycastle.tls.crypto.TlsCertificate;
 import org.bouncycastle.tls.crypto.impl.bc.BcTlsCertificate;
 import org.bouncycastle.tls.crypto.impl.bc.BcTlsCrypto;
@@ -115,18 +119,17 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      */
     public static final String CERT_CACHE_EXPIRE_TIME_PNAME = "neomedia.transform.dtls.CERT_CACHE_EXPIRE_TIME";
 
-
     /**
      * The certificate cache expiration time to use, in milliseconds.
      * The default value is {@code DEFAULT_CERT_CACHE_EXPIRE_TIME} but may be overridden by the
      * {@code ConfigurationService} and/or {@code System} property {@code CERT_CACHE_EXPIRE_TIME_PNAME}.
      */
-    public static final long CERT_CACHE_EXPIRE_TIME;
+    private static final long CERT_CACHE_EXPIRE_TIME;
 
     /**
      * The default certificate cache expiration time, when config properties are not found.
      */
-    public static final long DEFAULT_CERT_CACHE_EXPIRE_TIME = ONE_DAY;
+    private static final long DEFAULT_CERT_CACHE_EXPIRE_TIME = ONE_DAY;
 
     /**
      * The public exponent to always use for RSA key generation.
@@ -459,11 +462,11 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
 
     /**
      * Initializes a new <tt>DtlsControlImpl</tt> instance.
+     * By default aTalk works in DTLS/SRTP mode.
      */
     public DtlsControlImpl()
     {
-        // By default we work in DTLS/SRTP mode.
-        this(/* srtpDisabled */ false);
+        this(false);
     }
 
     /**
@@ -569,7 +572,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public boolean getSecureCommunicationStatus()
     {
-        return (transformEngine != null);
+        // Will always return false as this is called even before the handshake has started
+        return false;
     }
 
     /**
@@ -659,12 +663,62 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     public void start(MediaType mediaType)
     {
         properties.put(Properties.MEDIA_TYPE_PNAME, mediaType);
+    }
 
-        Timber.d("DTLS media type: %s Transformer status: %s", mediaType.toString(), getSecureCommunicationStatus());
-
+    /**
+     * Update app on the security status of the handshake result
+     *
+     * @param securityState Security state
+     */
+    protected void secureOnOff(boolean securityState)
+    {
         SrtpListener srtpListener = getSrtpListener();
-        srtpListener.securityNegotiationStarted(mediaType, this);
-        srtpListener.securityTurnedOn(mediaType, getSrtpControlType().toString(), this);
+        MediaType mediaType = (MediaType) properties.get(Properties.MEDIA_TYPE_PNAME);
+
+        if (securityState)
+            srtpListener.securityTurnedOn(mediaType, getSrtpControlType().toString(), this);
+        else
+            srtpListener.securityTurnedOff(mediaType);
+    }
+
+    /**
+     * Notifies this instance that the DTLS record layer associated with a specific <tt>TlsPeer</tt> has raised an alert.
+     *
+     * @param alertLevel {@link AlertLevel} has similar values as SrtpListener
+     * @param alertDescription {@link AlertDescription}
+     * @param message a human-readable message explaining what caused the alert. May be <tt>null</tt>.
+     * @param cause the exception that caused the alert to be raised. May be <tt>null</tt>.
+     */
+    protected void notifyAlertRaised(TlsPeer tlsPeer, short alertLevel, short alertDescription,
+            String message, Throwable cause)
+    {
+        SrtpListener srtpListener = getSrtpListener();
+        String errDescription = AlertDescription.getName(alertDescription);
+
+        int srtError = SrtpListener.INFORMATION;;
+        if (AlertLevel.fatal == alertLevel) {
+            srtError = SrtpListener.SEVERE;
+        }
+        else if (AlertLevel.warning == alertLevel) {
+            srtError = SrtpListener.WARNING;
+        }
+
+        /* The client and the server must share knowledge that the connection is ending in order to avoid a truncation
+         * a initiate the exchange of closing messages.
+         * close_notify: This message notifies the recipient that the sender will not send any more messages on this connection.
+         * Note that as of TLS 1.1, failure to properly close a connection no longer requires that a session not be resumed.
+         * This is a change from TLS 1.0 to conform with widespread implementation practice.
+         */
+        if (TextUtils.isEmpty(message)) {
+            if (AlertDescription.close_notify == alertDescription) {
+                srtError = SrtpListener.INFORMATION;  // change to for info only
+                message = aTalkApp.getResString(R.string.imp_media_security_ENCRYPTION_ENDED, errDescription);
+            }
+            else {
+                message = aTalkApp.getResString(R.string.impl_media_security_INTERNAL_PROTOCOL_ERROR, errDescription);
+            }
+        }
+        srtpListener.securityMessageReceived(errDescription, message, srtError);
     }
 
     /**

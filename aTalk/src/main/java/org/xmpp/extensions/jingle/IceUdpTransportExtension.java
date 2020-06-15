@@ -17,6 +17,7 @@ import javax.xml.namespace.QName;
 
 /**
  * An {@link AbstractExtensionElement} implementation for transport elements.
+ * i.e. XEP-0176: Jingle ICE-UDP Transport Method; https://xmpp.org/extensions/xep-0176.html
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
@@ -281,7 +282,7 @@ public class IceUdpTransportExtension extends AbstractExtensionElement
 
                     copy.setFingerprint(dtlsFingerprint.getFingerprint());
                     copy.setHash(dtlsFingerprint.getHash());
-                    copy.setRequired(dtlsFingerprint.getRequired());
+                    // copy.setRequired(dtlsFingerprint.getRequired()); // obsoleted
                     copy.setSetup(dtlsFingerprint.getSetup());
                     dst.addChildExtension(copy);
                 }

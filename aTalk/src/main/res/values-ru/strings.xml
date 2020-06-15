@@ -103,8 +103,10 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">Имя группы не должно быть пустым.</string>
     <string name="service_gui_ADD_GROUP">Создать группу</string>
     <string name="service_gui_ADD_GROUP_HINT">Введите имя группы</string>
+    <string name="service_gui_ANSWER">Ответ</string>
     <string name="service_gui_APPLY">Применить</string>
     <string name="service_gui_APPLY_CHANGES">Применение изменений учетной записи (~60S) &#8230;</string>
+    <string name="service_gui_AT">at</string>
     <string name="service_gui_AUTHORIZE">Авторизовать</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">контакт принял ваш запрос авторизации.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Ошибка аутентификации для %1$s. Введенный пароль недействителен.</string>
@@ -122,21 +124,32 @@
 
     <string name="service_gui_BUSY_STATUS">Занято</string>
     <string name="service_gui_CALL">Аудиозвонок</string>
+    <string name="service_gui_CALL_ANSWER">%1$sответил на звонок.</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk не удалось инициализировать %1$s\nВозвраты/службы мультимедиа будут отключены.\n%2$s</string>
+    <string name="service_gui_CALL_END">Удаленный абонент завершил звонок: %1$s</string>
     <string name="service_gui_CALL_FAILED">Не удалось выполнить вызов</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Журнал вызовов</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Вы уверены, что хотите удалить все выбранные записи вызовов?</string>
-    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk не удалось инициализировать %1$s\nВозвраты/службы мультимедиа будут отключены.\n%2$s</string>
-    <string name="service_gui_CALL_WITH">Вызов с</string>
+    <string name="service_gui_CALL_INCOMING">Входящий вызов, полученный от: %1$s</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Входящий вызов</string>
+    <string name="service_gui_CALL_INITIATING_STATUS">Инициирующий вызов</string>
+    <string name="service_gui_CALL_REJECTED">%1$s отклонил звонок.</string>
+    <string name="service_gui_CALL_MISSED_CALL">Пропущенные вызовы:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Мы не смогли найти никаких активных аудио/видео устройств, следовательно, не смогли создать вызов.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Нет настроенного аудиоустройства.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Отсутствует аудиокодек.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Устройство или кодек %1$s не полностью сконфигурирован в «Настройки&#8230;». Проверьте и настройте.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Вы хотите продолжить вызов?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Не найдено подходящих форматов медиа против предложения %1$s для приема вызова. Проверьте настройки устройства и кодека в «Настройки&#8230;».</string>
+    <string name="service_gui_CALL_OUTGOING">Исходящий вызов</string>
+    <string name="service_gui_CALL_OUTGOING_MSG">Выполнение вызова с помощью %1$s&#8230;</string>
     <string name="service_gui_CALL_VIA">Вызов через: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Видеозвонок</string>
-    <string name="service_gui_CANCEL">Отменить</string>
+    <string name="service_gui_CALL_WITH">Вызов с</string>
+
+    <string name="service_gui_CANCEL">Отменить</string>
     <string name="service_gui_CONTACT_INVALID">Выбранный контакт недействителен: %1$s</string>
+    <string name="service_gui_DISMISS">отклонять</string>
     <string name="service_gui_DONE">Готово</string>
     <string name="service_gui_MAS">пометить, как прочитанное</string>
     <string name="service_gui_REASON_LABEL">Причина:</string>
@@ -155,11 +168,13 @@
     <string name="service_gui_CHANGE_NICKNAME_LABEL">В поле ниже вы можете ввести новый псевдоним.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Псевдоним Имя поля не может быть пустым</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Изменить информацию комнаты чата</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">В поле ниже вы можете ввести новый предмет для этой комнаты.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Изменить качество удаленного видео</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s конференция</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Конференции</string>
     <string name="service_gui_CHATROOM">Чат</string>
     <string name="service_gui_CHATROOM_ALREADY_JOINED">Вы уже вошли в чат-комнату %1$s.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">Конфигурация ChatRoom</string>
 	<string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Не удалось получить конфигурационную форму в чате %1$s.</string>
 	<string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Не удалось получить форму конфигурации комнаты чата %1$s. Только владельцы чата могут видеть и изменять конфигурационную форму.</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Список справа содержит пользователей, которые имеют роль участника в этом чате. Когда в чате есть «Только члены», это будут пользователи, которым разрешено присоединиться.</string>
@@ -265,11 +280,8 @@
     <string name="title_activity_maps">Карта</string>
 
     <!-- Location Permissions -->
-    <string name="permission_rationale_location">Доступ к службе определения местоположения необходим для демонстрации функции «мое местоположение»,
-        которая показывает ваше текущее местоположение на карте.</string>
-    <string name="location_permission_denied">Для этого примера требуется разрешение на размещение, чтобы включить слой «мое местоположение». Повторите попытку
-        и предоставите доступ для использования этого местоположения.\nЕсли разрешение было окончательно отклонено, его можно включить с помощью Системных
-        настроек &gt; Приложения &gt; «Демоки Google Maps API».</string>
+    <string name="permission_rationale_location">Доступ к службе определения местоположения необходим для демонстрации функции «мое местоположение», которая показывает ваше текущее местоположение на карте.</string>
+    <string name="location_permission_denied">Для этого примера требуется разрешение на размещение, чтобы включить слой «мое местоположение». Повторите попытку и предоставите доступ для использования этого местоположения.\nЕсли разрешение было окончательно отклонено, его можно включить с помощью Системных настроек &gt; Приложения &gt; «Демоки Google Maps API».</string>
     <string name="permission_required_toast">Для этой демонстрации требуется разрешение на размещение.</string>
 
     <!-- Persistent Store -->
@@ -290,7 +302,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Создать видеомост</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Создать/Присоединиться к видеоконференции</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Создать новую видеоконференцию для этого чата</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Не удалось установить предварительный просмотр камеры устройства на: %1$s; Исключение: %2$s.</string>
+    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Не удалось установить предварительный просмотр камеры устройства на: %1$s; Исключение: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Отключено</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Отключение %1$s</string>
     <string name="service_gui_DENY">Запретить</string>
@@ -306,7 +318,6 @@
     <string name="service_gui_ERROR_WAS">Ошибка: %1$s</string>
 	<string name="service_gui_EXIT">Выход</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Давно отсутствую</string>
-    <string name="service_gui_FAILED_STATUS">Не удалось выполнить вызов</string>
     <string name="service_gui_FFC_STATUS">Бесплатно для чата</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -400,9 +411,6 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Не удалось выполнить проверку CAPTCHA</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s тайм-аут вызова ChatRoom CAPTCHA;\nпожалуйста, присоединитесь к chatRoom и попробуйте снова.</string>
 
-    <string name="service_gui_INCOMING_CALL">Входящий вызов, полученный от: %1$s</string>
-    <string name="service_gui_INCOMING_CALL_STATUS">Входящий вызов</string>
-    <string name="service_gui_INITIATING_CALL_STATUS">Инициирующий вызов</string>
 	<string name="service_gui_INVITATION">Пригласительное сообщение:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Приглашение получено</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s приглашает вас войти в чат-комнату %2$S. Вы можете принять, отклонить или проигнорировать это приглашение.</string>
@@ -436,7 +444,7 @@
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Автоматически присоединяться</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Не присоединяться автоматически</string>
-    <string name="service_gui_KICK">Kick</string>
+    <string name="service_gui_KICK">пинать</string>
 	<string name="service_gui_KICK_FAILED">Ошибка отказа</string>
 	<string name="service_gui_KICK_FAILED_GENERAL_ERROR">Не удалось нажать %1$s. Произошла общая ошибка сервера.</string>
 	<string name="service_gui_KICK_FAILED_NOT_ALLOWED">Не удалось нажать %1$s. Владельца и администратора комнаты нельзя было пинать.</string>
@@ -471,15 +479,13 @@
 	<string name="service_gui_MSG_DELIVERY_ERROR">Не удалось доставить сообщение.</string>
     <string name="service_gui_MSG_DELIVERY_FAILURE">Приведенное выше сообщение не может быть доставлено</string>
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Произошла внутренняя ошибка. Скорее всего, Пожалуйста, сообщите об этом через журнал отладки.</string>
-    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Используемый протокол не поддерживает автономные сообщения.
-        Вы можете попытаться достигнуть %1$s через другой протокол или подождать, пока он/она не станет онлайн.</string>
+    <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Используемый протокол не поддерживает автономные сообщения. Вы можете попытаться достигнуть %1$s через другой протокол или подождать, пока он/она не станет онлайн.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Неизвестная ошибка произошла при доставке вашего сообщения.</string>
     <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Неподдерживаемая операция.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Произошла сетевая проблема. Проверьте конфигурацию сети и повторите попытку.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s написал</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Вы должны сначала войти в систему, чтобы отправить сообщение.</string>
 
-    <string name="service_gui_MISSED_CALLS_TOOL_TIP">Пропущенные вызовы:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Несколько моментов входа не разрешены. Следующая учетная запись: Имя пользователя: %1$s, Имя сервера: %2$s отключено.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Взаимное удержание</string>
     <string name="service_gui_NAME">Имя</string>
@@ -519,8 +525,6 @@
 	<string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Переключить видео</string>
     <string name="service_gui_MIC_CONTROL_TITLE">Уровень усиления микрофона</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Отрегулировать звук микрофона</string>
-    <string name="service_gui_OUTGOING_CALL">Исходящий вызов</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Выполнение вызова с помощью %1$s&#8230;</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Присутствие не поддерживается %1$s</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">записывает сообщение</string>
     <string name="service_gui_RECENT_MESSAGES">Недавние разговоры</string>
@@ -678,16 +682,11 @@
 	<string name="service_gui_ALWAYS_TRUST">Всегда доверяйте этому сертификату</string>
     <string name="service_gui_CERT_DIALOG_TITLE">Проверка сертификата</string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s не может проверить личность сервера при подключении к &lt;br/>&lt;b>%2$s &lt;/b>&lt;br/>&lt;br/>
-        Сертификату не доверяют (самозаверяющий сертификат), что означает, что сервер
-        идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
-        Продолжить подключение только для этого экземпляра? &lt;br/>
-        Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s не может проверить
-        идентификатор сертификата сервера. &lt;br/>&lt;br/>
-        Сертификату не доверяют (самозаверяющий сертификат), что означает, что сервер
-        идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
-        Продолжить подключение только для этого экземпляра? &lt;br/>
-        Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
+        Сертификату не доверяют (самозаверяющий сертификат), что означает, что сервер идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
+        Продолжить подключение только для этого экземпляра? &lt;br/> Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s не может проверить идентификатор сертификата сервера. &lt;br/>&lt;br/>
+        Сертификату не доверяют (самозаверяющий сертификат), что означает, что сервер идентификация не может быть автоматически проверена. &lt;br/>&lt;br/>
+        Продолжить подключение только для этого экземпляра? &lt;br/> Для получения дополнительной информации и информации нажмите «Показать сертификат». &lt;/html></string>
     <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s не может проверить идентичность соединительного клиента. &lt;br/>
 		&lt;br/>Сертификату не доверяют (самозаверяющий сертификат), что означает, что клиентский идентификация не может быть автоматически проверена.
 		&lt;br/>&lt;br/> Продолжить подключение только для этого экземпляра? &lt;br/> Для получения дополнительной информации и информации нажмите «Показать сертификат».&lt;/html></string>
@@ -793,7 +792,6 @@
     <string name="plugin_accountinfo_ORGANIZATION">Название организации:</string>
     <string name="plugin_accountinfo_PHONE">Телефон:</string>
     <string name="plugin_accountinfo_POST">Почтовый индекс:</string>
-
 	<string name="plugin_accountinfo_REGION">Регион:</string>
     <string name="plugin_accountinfo_SELECT_ACCOUNT">Выберите учетную запись:</string>
     <string name="plugin_accountinfo_STREET">Улица:</string>
@@ -806,8 +804,7 @@
     <string name="plugin_certconfig_TITLE">Конфигурация TLS</string>
     <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Источник доверенных корневых сертификатов</string>
     <string name="plugin_certconfig_CERT_LIST_TITLE">Конфигурации аутентификации клиента TLS</string>
-    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">206/5000
-Управляемые здесь конфигурации могут быть выбраны в качестве клиентских сертификатов TLS в конфигурациях учетной записи (например, для аутентификации с помощью сертификата против вашего поставщика SIP вместо имени пользователя и пароля).</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">Управляемые здесь конфигурации могут быть выбраны в качестве клиентских сертификатов TLS в конфигурациях учетной записи (например, для аутентификации с помощью сертификата против вашего поставщика SIP вместо имени пользователя и пароля).</string>
     <string name="plugin_certconfig_ALIAS">Псевдоним в KeyStore</string>
     <string name="plugin_certconfig_KEYSTORE_TYPE">Тип</string>
     <string name="plugin_certconfig_CERT_ENTRY_TITLE">Сертификат клиента TLS</string>
@@ -882,10 +879,13 @@
     <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Произошла ошибка внутреннего протокола. &lt;br/>&lt;b>Ваш вызов не защищен &lt;/b>&lt;br/>Код ошибки: %1$s &lt;/html ></string>
     <string name="impl_media_security_SECURITY_OFF">Поддержка шифрования вызовов</string>
     <string name="impl_media_security_SECURITY_ON">Поддержка шифрования вызовов в</string>
-    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема безопасности. &lt;br/>&lt;b>Ваш вызов не защищен &lt;/b>&lt;br/>Код ошибки: {0} &lt;/html></string>
+    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема безопасности. &lt;br/>&lt;b>Ваш вызов не защищен &lt;/b>&lt;br/>Код ошибки: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Недоступен сохраненный общий секрет. &lt;br/>&lt;b>Рекомендуется проверка SAS &lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Отсутствует ожидаемый сохраненный общий секрет. &lt;br/>&lt;b>Требуется проверка SAS &lt;/b>&lt;br/>Если коды SAS не совпадают, то зависание и повторите попытку &lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема ZRTP. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки : %1$s &lt;/html></string>
+
+    <!-- DTLS-SRTP Securing -->
+    <string name="imp_media_security_ENCRYPTION_ENDED">Шифрование звонка закончилось: %1$s</string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Аутентификация приятеля</string>
@@ -1427,11 +1427,9 @@
     <string name="pref_cat_OMEMO_SECURITY_SETTINGS">OMEMO Messaging Security</string>
     <!-- OMEMO device screen -->
     <string name="pref_omemo_blind_trust_before_verification">Слепое доверие перед проверкой</string>
-    <string name="pref_omemo_blind_trust_before_verification_summary">Автоматическое доверие ко всем новым устройствам контактов,
-        которые ранее не были проверены; запрос на подтверждение вручную, когда подтвержденный контакт добавляет новые устройства.</string>
+    <string name="pref_omemo_blind_trust_before_verification_summary">Автоматическое доверие ко всем новым устройствам контактов, которые ранее не были проверены; запрос на подтверждение вручную, когда подтвержденный контакт добавляет новые устройства.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">После восстановления вашей идентичности OMEMO все ваши контакты получат новый
-        отпечаток пальца и должны будут повторно подтвердить вас. Перезапустите aTalk после регенерации. Выполняйте только при наличии проблемы установки omemo.</string>
+    <string name="pref_omemo_regenerate_identities_summary">После восстановления вашей идентичности OMEMO все ваши контакты получат новый отпечаток пальца и должны будут повторно подтвердить вас. Перезапустите aTalk после регенерации. Выполняйте только при наличии проблемы установки omemo.</string>
     <string name="pref_omemo_regenerate_identities_title">Регенерировать идентификаторы OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Оповещения OMEMO Обновить</string>
     <!-- OMEMO purge device screen -->
@@ -1442,6 +1440,7 @@
     <!-- Key & FingerPrint security category -->
     <string name="pref_cat_KEY_FINGERPRINT_SECURITY">Key &amp; Безопасность FingerPrint</string>
     <!-- Crypto private Keys screen -->
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY">Найден нулевой зарегистрированный пользователь</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Управление секретными отпечатками crypto</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Закрытые ключи Crypto</string>
     <!-- Crypto fingerprints screen -->
@@ -1577,4 +1576,5 @@
     <string name="location_permission_dialog_message">Включить разрешение на размещение сейчас?</string>
     <string name="location_services_off">Услуги по размещению</string>
     <string name="open_location_settings">Включить услуги определения местоположения?</string>
+
 </resources>

@@ -36,9 +36,10 @@ import timber.log.Timber;
 public class JingleProvider extends IQProvider<Jingle>
 {
     /**
-     * Creates a new instance of the <tt>JingleProvider</tt> and register all jingle related
-     * extension providers. It is the responsibility of the application to register the
-     * <tt>JingleProvider</tt> itself.
+     * Creates a new instance of the <tt>JingleProvider</tt> and register all jingle related extension providers.
+     * It is the responsibility of the application to register the <tt>JingleProvider</tt> itself.
+     *
+     * Note: All sub Elements without its own NAMESPACE use their parent NAMESPACE for provider support (Parser implementation)
      */
     public JingleProvider()
     {
@@ -158,7 +159,13 @@ public class JingleProvider extends IQProvider<Jingle>
                 RtcpFbExtension.ELEMENT, RtcpFbExtension.NAMESPACE,
                 new DefaultExtensionElementProvider<>(RtcpFbExtension.class));
 
-        // rtcp-mux
+        // rtcp-mux => XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22) https://xmpp.org/extensions/xep-0167.html
+        ProviderManager.addExtensionProvider(
+                RtcpmuxExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RtcpmuxExtension.class));
+
+        // rtcp-mux =>  Multiplexing RTP Data and Control Packets on a Single Port (April 2010)
+        // https://tools.ietf.org/html/rfc5761 (5.1.3.  Interactions with ICE)
         ProviderManager.addExtensionProvider(
                 RtcpmuxExtension.ELEMENT, IceUdpTransportExtension.NAMESPACE,
                 new DefaultExtensionElementProvider<>(RtcpmuxExtension.class));
@@ -263,15 +270,6 @@ public class JingleProvider extends IQProvider<Jingle>
                                 }
                             }
                             else {
-                                /*
-                                 * Seem to have problem with extracting correct elementName???; will failed if passed on to
-                                 * PacketParserUtils.addExtensionElement(jingle, parser);
-                                 *
-                                 * <jingle xmlns='urn:xmpp:jingle:1' action='session-initiate'
-                                 *         initiator='swordfish@atalk.org/atalk' sid='5e00252pm8if7'>
-                                 *     <content creator='initiator' name='audio'>
-                                 * Unknown jingle IQ type: content; urn:xmpp:jingle:1)
-                                 */
                                 Timber.w("Unknown jingle IQ: <%s xml:'%s'>)", elementName, namespace);
                                 try {
                                     PacketParserUtils.addExtensionElement(jingle, parser, xmlEnvironment);

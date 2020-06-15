@@ -127,7 +127,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         // assume first registered provider if null;
         if (pps == null) {
             Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
-            if ((providers == null) || providers.size() == 0)
+            if (providers.size() == 0)
                 return null;
             pps = ((List<ProtocolProviderService>) providers).get(0);
         }

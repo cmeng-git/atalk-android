@@ -266,7 +266,7 @@ public class JNIEncoder extends AbstractCodec2
         minPacketLoss = cfg.getInt(Constants.PROP_OPUS_MIN_EXPECTED_PACKET_LOSS, 1);
         Opus.encoder_set_packet_loss_perc(encoder, minPacketLoss);
 
-        useDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, true);
+        useDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, false);
         Opus.encoder_set_dtx(encoder, useDtx ? 1 : 0);
 
         useVbr = cfg.getBoolean(Constants.PROP_OPUS_VBR, true);

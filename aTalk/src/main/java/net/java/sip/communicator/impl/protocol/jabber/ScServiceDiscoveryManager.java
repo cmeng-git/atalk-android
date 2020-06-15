@@ -679,7 +679,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         private OperationSetContactCapabilitiesJabberImpl capabilitiesOpSet;
 
         /**
-         * Runs in different thread.
+         * Runs in a different thread.
          */
         public void run()
         {

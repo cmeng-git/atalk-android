@@ -65,9 +65,6 @@ public class LauncherActivity extends OSGiActivity
             return;
         }
 
-        // Must initialize Notification channels before any notification is being issued.
-        new NotificationHelper(this);
-
         // Get restore Intent and display "Restoring..." label
         Intent intent = getIntent();
         if (intent != null) {

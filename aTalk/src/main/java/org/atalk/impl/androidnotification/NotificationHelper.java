@@ -20,7 +20,6 @@ package org.atalk.impl.androidnotification;
 import android.annotation.TargetApi;
 import android.app.*;
 import android.content.*;
-import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
 
@@ -54,40 +53,39 @@ public class NotificationHelper extends ContextWrapper
             // Init the system service NotificationManager
             notificationManager = ctx.getSystemService(NotificationManager.class);
 
-            // Delete any unused channel IDs
-            deleteObsoletedChannelIds();
+            // Delete any unused channel IDs or force to re-init all notification channels
+            deleteObsoletedChannelIds(false);
+
+            final NotificationChannel nCall = new NotificationChannel(AndroidNotifications.CALL_GROUP,
+                    getString(R.string.noti_channel_CALL_GROUP), NotificationManager.IMPORTANCE_HIGH);
+            nCall.setSound(null, null);
+            nCall.setShowBadge(false);
+            nCall.setLightColor(LED_COLOR);
+            nCall.enableLights(true);
+            nCall.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationManager.createNotificationChannel(nCall);
 
             final NotificationChannel nMessage = new NotificationChannel(AndroidNotifications.MESSAGE_GROUP,
                     getString(R.string.noti_channel_MESSAGE_GROUP), NotificationManager.IMPORTANCE_HIGH);
+            nMessage.setSound(null, null);
             nMessage.setShowBadge(true);
             nMessage.setLightColor(LED_COLOR);
+            nMessage.enableLights(true);
             // nMessage.setAllowBubbles(true);
             nMessage.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             notificationManager.createNotificationChannel(nMessage);
 
             final NotificationChannel nFile = new NotificationChannel(AndroidNotifications.FILE_GROUP,
                     getString(R.string.noti_channel_FILE_GROUP), NotificationManager.IMPORTANCE_LOW);
+            nFile.setSound(null, null);
             nFile.setShowBadge(false);
             // nFile.setLightColor(Color.GREEN);
             nFile.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             notificationManager.createNotificationChannel(nFile);
 
-            final NotificationChannel nCall = new NotificationChannel(AndroidNotifications.CALL_GROUP,
-                    getString(R.string.noti_channel_CALL_GROUP), NotificationManager.IMPORTANCE_LOW);
-            nCall.setShowBadge(false);
-            // nCall.setLightColor(Color.CYAN);
-            nCall.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationManager.createNotificationChannel(nCall);
-
-            final NotificationChannel nMissCall = new NotificationChannel(AndroidNotifications.MISSED_CALL,
-                    getString(R.string.noti_channel_MISSED_CALL), NotificationManager.IMPORTANCE_LOW);
-            nMissCall.setShowBadge(false);
-            nMissCall.setLightColor(Color.RED);
-            nMissCall.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            notificationManager.createNotificationChannel(nMissCall);
-
             final NotificationChannel nDefault = new NotificationChannel(AndroidNotifications.DEFAULT_GROUP,
                     getString(R.string.noti_channel_DEFAULT_GROUP), NotificationManager.IMPORTANCE_LOW);
+            nDefault.setSound(null, null);
             nDefault.setShowBadge(false);
             // nDefault.setLightColor(Color.WHITE);
             nDefault.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
@@ -95,6 +93,7 @@ public class NotificationHelper extends ContextWrapper
 
             final NotificationChannel nQuietHours = new NotificationChannel(AndroidNotifications.SILENT_GROUP,
                     getString(R.string.noti_channel_SILENT_GROUP), NotificationManager.IMPORTANCE_LOW);
+            nQuietHours.setSound(null, null);
             nQuietHours.setShowBadge(true);
             nQuietHours.setLightColor(LED_COLOR);
             nQuietHours.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
@@ -127,23 +126,23 @@ public class NotificationHelper extends ContextWrapper
     /**
      * Send intent to load system Notification Settings UI for a particular channel.
      *
-     * @param channel Name of channel to configure
+     * @param channel Name of notification channel.
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void goToNotificationSettings(String channel)
     {
-        Intent i = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
-        i.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-        i.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
-        startActivity(i);
+        Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+        intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel);
+        startActivity(intent);
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    private void deleteObsoletedChannelIds()
+    private void deleteObsoletedChannelIds(boolean force)
     {
         List<NotificationChannel> channelGroups = notificationManager.getNotificationChannels();
         for (NotificationChannel nc : channelGroups) {
-            if (!AndroidNotifications.notificationIds.contains(nc.getId())) {
+            if (force || !AndroidNotifications.notificationIds.contains(nc.getId())) {
                 notificationManager.deleteNotificationChannel(nc.getId());
             }
         }

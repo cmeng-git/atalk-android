@@ -103,8 +103,10 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">Nama grup tidak boleh kosong.</string>
     <string name="service_gui_ADD_GROUP">Bikin grup</string>
     <string name="service_gui_ADD_GROUP_HINT">Masukkan nama grup</string>
+    <string name="service_gui_ANSWER">Jawab</string>
     <string name="service_gui_APPLY">Terapkan</string>
     <string name="service_gui_APPLY_CHANGES">Menerapkan perubahan akun (~60S) &#8230;</string>
+    <string name="service_gui_AT">di</string>
     <string name="service_gui_AUTHORIZE">Otorisasi</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">kontak telah menerima permintaan otorisasi Anda.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Autentikasi gagal untuk %1$s. Kata sandi yang Anda masukkan tidak sah.</string>
@@ -122,21 +124,32 @@
 
     <string name="service_gui_BUSY_STATUS">Sibuk</string>
     <string name="service_gui_CALL">Panggilan audio</string>
+    <string name="service_gui_CALL_ANSWER">%1$s telah menjawab panggilan.</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk gagal menginisialisasi %1$s\nSemua panggilan/layanan media akan dinonaktifkan.\n%2$s</string>
+    <string name="service_gui_CALL_END">Penelepon jarak jauh telah mengakhiri panggilan: %1$s</string>
     <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat Panggilan</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin membersihkan semua catatan panggilan yang dipilih?</string>
-    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk gagal menginisialisasi %1$s\nSemua panggilan/layanan media akan dinonaktifkan.\n%2$s</string>
-    <string name="service_gui_CALL_WITH">Panggil dengan</string>
+    <string name="service_gui_CALL_INCOMING">Panggilan masuk diterima dari: %1$s</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Panggilan masuk</string>
+    <string name="service_gui_CALL_INITIATING_STATUS">Memulai panggilan</string>
+    <string name="service_gui_CALL_REJECTED">%1$s telah menolak panggilan.</string>
+	<string name="service_gui_CALL_MISSED_CALL">Panggilan tidak terjawab dari:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Kami tidak dapat menemukan perangkat Audio/Video yang aktif sehingga tidak dapat membuat panggilan.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Tidak ada perangkat audio yang dikonfigurasi.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Tidak ada codec audio yang diaktifkan.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Perangkat %1$s atau codec tidak sepenuhnya terkonfigurasi di\'Pengaturan…\'. Silakan periksa dan siapkan.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Apakah Anda ingin melanjutkan panggilan?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Tidak ada format media yang cocok yang ditemukan terhadap penawaran %1$s untuk menerima panggilan. Harap verifikasi pengaturan perangkat dan codec di\'Pengaturan…\'.</string>
+    <string name="service_gui_CALL_OUTGOING">Panggilan keluar</string>
+    <string name="service_gui_CALL_OUTGOING_MSG">Melakukan panggilan dengan %1$s&#8230;</string>
     <string name="service_gui_CALL_VIA">Hubungi dengan: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Panggilan video</string>
+    <string name="service_gui_CALL_WITH">Panggil dengan</string>
+
     <string name="service_gui_CANCEL">Tamatkan</string>
     <string name="service_gui_CONTACT_INVALID">Kontak yang dipilih tidak dikenali: %1$s</string>
+    <string name="service_gui_DISMISS">Tolak</string>
     <string name="service_gui_DONE">Selesai</string>
     <string name="service_gui_MAS">tandai membaca</string>
     <string name="service_gui_REASON_LABEL">Alasan:</string>
@@ -155,6 +168,7 @@
     <string name="service_gui_CHANGE_NICKNAME_LABEL">Pada bidang di bawah ini, Anda dapat memasukkan nama panggilan baru Anda.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Konten bidang Nama Nick tidak boleh nol</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Ubah Info Ruang obrolan</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Di bidang di bawah ini, Anda dapat memasukkan subjek baru untuk ruangan ini.</string>
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Ubah kualitas video jarak jauh</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">konferensi %1$s \</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Konferensi</string>
@@ -288,7 +302,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Buat jembatan video</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Buat/Gabung konferensi video</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Buat konferensi video baru untuk ruang obrolan ini</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Gagal menyetel pratinjau kamera perangkat ke: %1$s; Pengecualian: %2$s.</string>
+    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Gagal menyetel pratinjau kamera perangkat ke: %1$s; Pengecualian: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Terputus</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Memutuskan sambungan %1$s</string>
     <string name="service_gui_DENY">Tolak</string>
@@ -304,7 +318,6 @@
     <string name="service_gui_ERROR_WAS">Kesalahannya adalah: %1$s</string>
     <string name="service_gui_EXIT">Tamat</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Meninggal lama</string>
-    <string name="service_gui_FAILED_STATUS">Panggilan gagal</string>
     <string name="service_gui_FFC_STATUS">Gratis untuk obrolan</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -398,9 +411,6 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
 
-        <string name="service_gui_INCOMING_CALL">Panggilan masuk diterima dari: %1$s</string>
-    <string name="service_gui_INCOMING_CALL_STATUS">Panggilan masuk</string>
-    <string name="service_gui_INITIATING_CALL_STATUS">Memulai panggilan</string>
     <string name="service_gui_INVITATION">Pesan undangan:</string>
     <string name="service_gui_INVITATION_RECEIVED">Undangan diterima</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s telah mengundang Anda untuk bergabung dengan ruang obrolan %2$s. Anda dapat menerima, menolak, atau mengabaikan undangan ini.</string>
@@ -477,7 +487,6 @@
     <string name="service_gui_MSG_RECEIVED">%1$s menulis</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Anda harus login terlebih dahulu untuk mengirim pesan.</string>
 
-	<string name="service_gui_MISSED_CALLS_TOOL_TIP">Panggilan tidak terjawab dari:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Beberapa instans masuk tidak diizinkan. Akun berikut: Nama pengguna: %1$s, Nama server: %2$s telah diputuskan.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Saling Menerus Saat</string>
     <string name="service_gui_NAME">Nama</string>
@@ -517,8 +526,6 @@
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Alihkan video</string>
     <string name="service_gui_MIC_CONTROL_TITLE">Tingkat penguatan mikrofon</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Sesuaikan suara mikrofon</string>
-    <string name="service_gui_OUTGOING_CALL">Panggilan keluar</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Melakukan panggilan dengan %1$s&#8230;</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Keberadaan tidak didukung oleh %1$s</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">sedang menulis pesan</string>
     <string name="service_gui_RECENT_MESSAGES">Percakapan terbaru</string>
@@ -881,10 +888,13 @@
     <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Terjadi kesalahan protokol internal.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan: %1$s&lt;/html ></string>
     <string name="impl_media_security_SECURITY_OFF">Dukungan enkripsi panggilan dimatikan</string>
     <string name="impl_media_security_SECURITY_ON">Dukungan enkripsi panggilan pada</string>
-    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Masalah keamanan yang parah terdeteksi.&lt;br/>&lt;br/>Kode kesalahan: {0}&lt;/html></string>
+    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Masalah keamanan yang parah terdeteksi.&lt;br/>&lt;br/>Kode kesalahan: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Tidak ada rahasia bersama yang dipertahankan.&lt;br/>&lt;b>Verifikasi SAS direkomendasikan&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Rahasia bersama retensi yang diharapkan tidak ada.&lt;br/>&lt;b>Verifikasi SAS diperlukan&lt;/b>&lt;br/>Jika kode SAS tidak cocok, maka hangup dan coba lagi&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Masalah ZRTP parah terdeteksi.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan : %1$s&lt;/html></string>
+
+    <!-- DTLS-SRTP Securing -->
+    <string name="imp_media_security_ENCRYPTION_ENDED">Enkripsi panggilan telah berakhir: %1$s</string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Otentikasi teman</string>
@@ -1437,6 +1447,7 @@
     <!-- Key & FingerPrint security category -->
     <string name="pref_cat_KEY_FINGERPRINT_SECURITY">Kunci &amp; Keamanan Cap Jari</string>
     <!-- Crypto private Keys screen -->
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY">Ditemukan nol pengguna terdaftar</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Kelola sidik jari pribadi kripto</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Kunci pribadi Crypto</string>
     <!-- Crypto fingerprints screen -->
@@ -1571,4 +1582,5 @@
     <string name="location_permission_dialog_message">Aktifkan izin Lokasi sekarang?</string>
     <string name="location_services_off">Layanan lokasi diTutup</string>
     <string name="open_location_settings">Aktifkan layanan lokasi sekarang?</string>
+
 </resources>

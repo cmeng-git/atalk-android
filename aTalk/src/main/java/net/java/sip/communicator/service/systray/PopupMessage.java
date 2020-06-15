@@ -18,6 +18,12 @@ import org.atalk.android.util.javax.swing.JComponent;
  */
 public class PopupMessage
 {
+    /**
+     * The type of the event that the popup message for.
+     *
+     * @see net.java.sip.communicator.plugin.notificationwiring.NotificationManager
+     */
+    private String eventType;
 
     /**
      * Message to show in the popup.
@@ -77,7 +83,7 @@ public class PopupMessage
      *
      * @param title the title, which will be shown
      * @param message the content of the message to display
-     * @param messageType the message type; one of XXX_MESSAGE_TYPE constants declared in <tt>SystrayService
+     * @param messageType the message type; one of XXX_MESSAGE_TYPE constants declared in <tt>SystrayService</tt>
      */
     public PopupMessage(String title, String message, int messageType)
     {
@@ -143,6 +149,26 @@ public class PopupMessage
     {
         this(title, message, imageIcon);
         this.tag = tag;
+    }
+
+    /**
+     * Gets the type of the event that triggers the popup.
+     *
+     * @return the eventType of the popup
+     */
+    public String getEventType()
+    {
+        return eventType;
+    }
+
+    /**
+     * Sets the event type that trigger the popup.
+     *
+     * @param evtType the event type of the popup.
+     */
+    public void setEventType(String evtType)
+    {
+        this.eventType = evtType;
     }
 
     /**

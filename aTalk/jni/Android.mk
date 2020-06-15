@@ -76,6 +76,7 @@ include ./speex/Android.mk
 # ================================= G722 ==============================================
 ### Refer to libjitsi and jitsi-lgpl-dependency for support if so required
 ### G722 library build (cmeng - removed support for jn722, incomplete libjn722.so provided)
+# https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-G.722-201209-I!!SOFT-ZST-E&type=items
 # LOCAL_PATH := $(ROOT)
 # include $(CLEAR_VARS)
 # LOCAL_MODULE := jng722

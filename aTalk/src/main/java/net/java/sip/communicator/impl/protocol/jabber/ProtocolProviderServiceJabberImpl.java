@@ -25,6 +25,7 @@ import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
+import org.atalk.android.gui.call.JingleMessageHelper;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.android.gui.util.AndroidUtils;
@@ -91,6 +92,8 @@ import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
 import org.jivesoftware.smackx.iqversion.VersionManager;
+import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
+import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
@@ -220,8 +223,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Jingle's Discovery Info URN for &quot;XEP-0320: Use of DTLS-SRTP in Jingle Sessions&quot;.
+     * "urn:xmpp:jingle:apps:dtls:0"
      */
-    public static final String URN_XMPP_JINGLE_DTLS_SRTP = "urn:xmpp:jingle:apps:dtls:0";
+    public static final String URN_XMPP_JINGLE_DTLS_SRTP = DtlsFingerprintExtension.NAMESPACE;
 
     /**
      * Discovery Info URN for classic RFC3264-style Offer/Answer negotiation with no support for
@@ -1388,6 +1392,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // must initialize caps entities upon success connection to ensure it is ready for the very first <iq/> send
             initServicesAndFeatures();
 
+            JingleMessageManager.getInstanceFor(connection);
+            JingleMessageHelper.getInstanceFor(ProtocolProviderServiceJabberImpl.this);
+
             /*
              * Broadcast to all others after connection is connected but before actual account registration start.
              * This is required by others to init their states and get ready when the user is authenticated
@@ -1800,6 +1807,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             supportedFeatures.add(URN_XMPP_JINGLE_RTP);
             // XEP-0177: Jingle Raw UDP Transport Method
             supportedFeatures.add(URN_XMPP_JINGLE_RAW_UDP_0);
+
+            supportedFeatures.add(JingleMessage.NAMESPACE);
 
             /*
              * Reflect the preference of the user with respect to the use of ICE.

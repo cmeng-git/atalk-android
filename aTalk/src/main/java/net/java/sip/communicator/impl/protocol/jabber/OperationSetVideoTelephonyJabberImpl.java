@@ -9,6 +9,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetVideoTelephony;
 
 import org.atalk.service.neomedia.QualityControl;
+import org.xmpp.extensions.jingle.element.Jingle;
 
 import timber.log.Timber;
 
@@ -92,14 +93,14 @@ public class OperationSetVideoTelephonyJabberImpl
     protected Call createOutgoingVideoCall(String calleeAddress)
             throws OperationFailedException
     {
-        Timber.d("creating outgoing video call...");
+        Timber.d("creating outgoing video call forL %s", calleeAddress);
         if (parentProvider.getConnection() == null) {
             throw new OperationFailedException("Failed to create OutgoingJingleSession.\n"
                     + "we don't have a valid XMPPConnection.", OperationFailedException.INTERNAL_ERROR);
         }
-        CallJabberImpl call = new CallJabberImpl(basicTelephony);
 
         /* enable video */
+        CallJabberImpl call = new CallJabberImpl(basicTelephony, Jingle.generateSid());
         call.setLocalVideoAllowed(true, getMediaUseCase());
         CallPeer callPeer = basicTelephony.createOutgoingCall(call, calleeAddress);
 

@@ -33,6 +33,21 @@ public interface SystrayService
     int WARNING_MESSAGE_TYPE = 2;
 
     /**
+     * Message type corresponding to a missed call message.
+     */
+    int MISSED_CALL_MESSAGE_TYPE = 3;
+
+    /**
+     * Message type corresponding to a Jingle <session-initiate/> call message.
+     */
+    int JINGLE_INCOMING_CALL = 4;
+
+    /**
+     * Message type corresponding to a JingleMessage <propose/> call message.
+     */
+    int JINGLE_MESSAGE_PROPOSE = 5;
+
+    /**
      * Message type is not accessible.
      */
     int NONE_MESSAGE_TYPE = -1;

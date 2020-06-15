@@ -16,6 +16,7 @@
  */
 package org.atalk.crypto.omemo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -68,8 +69,25 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      */
     private FingerprintListAdapter fpListAdapter;
 
-    private OmemoFingerprint remoteFingerprint = null;
-    private String bareJid;
+    /**
+     * Creates parametrized <tt>Intent</tt> of buddy authenticate dialog.
+     *
+     * @param omemoManager the UUID of OTR session.
+     * @return buddy authenticate dialog parametrized with given OTR session's UUID.
+     */
+    public static Intent createIntent(Context context, OmemoManager omemoManager, Set<OmemoDevice> omemoDevices,
+            AuthenticateListener listener)
+    {
+        Intent intent = new Intent(context, OmemoAuthenticateDialog.class);
+
+        mOmemoManager = omemoManager;
+        mOmemoDevices = omemoDevices;
+        mListener = listener;
+
+        // Started not from Activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
 
     /**
      * {@inheritDoc}
@@ -80,7 +98,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         super.onCreate(savedInstanceState);
         try {
             mOmemoStore = (SQLiteOmemoStore) SignalOmemoService.getInstance().getOmemoStoreBackend();
-            // IllegalStateException from field?
+            // IllegalStateException from the field?
         } catch (IllegalStateException ex) {
             finish();
         }
@@ -186,26 +204,6 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         finish();
     }
 
-    /**
-     * Creates parametrized <tt>Intent</tt> of buddy authenticate dialog.
-     *
-     * @param omemoManager the UUID of OTR session.
-     * @return buddy authenticate dialog parametrized with given OTR session's UUID.
-     */
-    public static Intent createIntent(OmemoManager omemoManager, Set<OmemoDevice> omemoDevices,
-            AuthenticateListener listener)
-    {
-        Intent intent = new Intent(aTalkApp.getGlobalContext(), OmemoAuthenticateDialog.class);
-
-        mOmemoManager = omemoManager;
-        mOmemoDevices = omemoDevices;
-        mListener = listener;
-
-        // Started not from Activity
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
-    }
-
     // ============== OMEMO Buddy FingerPrints Handlers ================== //
     private boolean isOmemoFPVerified(OmemoDevice omemoDevice, String fingerprint)
     {
@@ -217,7 +215,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      * Trust an OmemoIdentity. This involves marking the key as trusted.
      *
      * @param omemoDevice OmemoDevice
-     * @param remoteFingerprint fingerprint
+     * @param remoteFingerprint fingerprint.
      */
     private void trustOmemoFingerPrint(OmemoDevice omemoDevice, String remoteFingerprint)
     {
