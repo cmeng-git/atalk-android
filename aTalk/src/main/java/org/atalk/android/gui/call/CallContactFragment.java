@@ -22,6 +22,7 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.BundleContext;
@@ -123,7 +124,7 @@ public class CallContactFragment extends OSGiFragment
 
                     MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, accountAddress);
                     menuItem.setOnMenuItemClickListener(item -> {
-                        createCall(calleeAddress, provider);
+                        createCall(provider, calleeAddress);
                         return false;
                     });
                     mProvider = provider;
@@ -135,7 +136,7 @@ public class CallContactFragment extends OSGiFragment
         if (menu.size() > 1)
             popup.show();
         else
-            createCall(calleeAddress, mProvider);
+            createCall(mProvider, calleeAddress);
     }
 
     /**
@@ -144,14 +145,14 @@ public class CallContactFragment extends OSGiFragment
      * @param destination target callee name.
      * @param provider the provider that will be used to make a call.
      */
-    private void createCall(final String destination, final ProtocolProviderService provider)
+    private void createCall(final ProtocolProviderService provider, final String destination)
     {
         new Thread()
         {
             public void run()
             {
                 try {
-                    CallManager.createCall(provider, destination);
+                    CallManager.createCall(provider, destination, false);
                 } catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
                     AndroidUtils.showAlertDialog(getActivity(), getString(R.string.service_gui_ERROR), t.getMessage());

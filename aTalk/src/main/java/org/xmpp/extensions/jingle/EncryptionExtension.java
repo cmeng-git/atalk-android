@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * The element transporting encryption information during jingle session establishment.
+ * XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)
  *
  * @author Emil Ivov
  * @author Eng Chong Meng

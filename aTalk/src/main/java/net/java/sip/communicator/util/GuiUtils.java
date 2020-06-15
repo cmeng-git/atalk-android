@@ -6,6 +6,7 @@
  */
 package net.java.sip.communicator.util;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -255,6 +256,12 @@ public class GuiUtils
         // return strBuf.append(" ").append(formatTime(dateTime)).toString();
     }
 
+    public static String formatDateTimeShort(Date date)
+    {
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+        return df.format(date);
+    }
+
     /**
      * Formats the given date. The result format is the following:
      * [Month] [Day], [Year]. For example: Dec 24, 2000.
@@ -302,12 +309,10 @@ public class GuiUtils
     }
 
     /**
-     * Formats the given date as: Month DD, YYYY and appends it to the given
-     * <tt>dateStrBuf</tt> string buffer.
+     * Formats the given date as: Month DD, YYYY and appends it to the given <tt>dateStrBuf</tt> string buffer.
      *
      * @param date the date to format
-     * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the
-     * formatted date
+     * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the formatted date
      */
     public static void formatDate(Date date, StringBuffer dateStrBuf)
     {

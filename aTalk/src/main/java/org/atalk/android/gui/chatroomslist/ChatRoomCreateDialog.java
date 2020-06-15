@@ -152,8 +152,8 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     }
 
     /**
-     * Creates the providers comboBox and filling its content with the current available chatRooms
-     * Add available server chatRooms to the chatRoomList when providers changes
+     * Creates the providers comboBox and filling its content with the current available chatRooms.
+     * Add all available server's chatRooms to the chatRoomList when providers changed.
      */
     private class initComboBox extends AsyncTask<Void, Void, List<String>>
     {
@@ -197,8 +197,9 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             // Must do this after setText as it clear the list; otherwise only one item in the list
             chatRoomComboBox.setSuggestionSource(chatRoomList);
 
-            // Update the dialog form fields with all the relevant values
-            onItemClick(null, chatRoomComboBox, 0, 0);
+            // Update the dialog form fields with all the relevant values, for first chatRoomWrapperList entry if available.
+            if (!chatRoomWrapperList.isEmpty())
+                onItemClick(null, chatRoomComboBox, 0, 0);
         }
     }
 

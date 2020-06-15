@@ -3,7 +3,7 @@
  *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
-package org.atalk.android.gui.util;
+package org.atalk.android.gui.call;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,18 +11,19 @@ import android.view.*;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.dialogs.ProgressDialogFragment;
+import org.atalk.android.gui.util.AndroidUtils;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
+import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
+import org.jxmpp.jid.Jid;
 
 import timber.log.Timber;
 
@@ -42,98 +43,112 @@ public class AndroidCallUtil
      * Creates an android call.
      *
      * @param context the android context
-     * @param callButtonView the button view that generated the call
      * @param contact the contact address to call
+     * @param callButtonView the button view that generated the call
      * @param isVideoCall true to setup video call
      */
-    public static void createAndroidCall(Context context, View callButtonView, String contact,
-            final boolean isVideoCall)
+    public static void createAndroidCall(Context context, Jid contact, View callButtonView, boolean isVideoCall)
     {
-        showCallViaMenu(context, callButtonView, contact, isVideoCall);
+        showCallViaMenu(context, contact, callButtonView, isVideoCall);
     }
 
     /**
      * Shows "call via" menu allowing user to selected from multiple providers.
      *
      * @param context the android context
+     * @param calleeJid the target callee name that will be used.
      * @param v the View that will contain the popup menu.
-     * @param calleeAddress the target callee name that will be used.
-     * @param isVideoCall true to setup video call
+     * @param isVideoCall true for video call setup
      */
-    private static void showCallViaMenu(final Context context, View v, final String calleeAddress,
-            final boolean isVideoCall)
+    private static void showCallViaMenu(final Context context, final Jid calleeJid, View v, final boolean isVideoCall)
     {
         PopupMenu popup = new PopupMenu(context, v);
         Menu menu = popup.getMenu();
         ProtocolProviderService mProvider = null;
 
-        // loop through all registered providers to find the calleeAddress own provider
+        // loop through all registered providers to find the callee own provider
         for (final ProtocolProviderService provider : AccountUtils.getOnlineProviders()) {
             XMPPConnection connection = provider.getConnection();
-            try {
-                if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
-                    String accountAddress = provider.getAccountID().getAccountJid();
-                    MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, accountAddress);
-                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
-                    {
-                        public boolean onMenuItemClick(MenuItem item)
-                        {
-                            createCall(context, calleeAddress, provider, isVideoCall);
-                            return false;
-                        }
-                    });
-                    mProvider = provider;
-                }
-                // Pre-assigned current provider in case the calleeAddress is not listed in roaster;
-                // e.g call contact from phone book - user the first available
-                if (mProvider == null)
-                    mProvider = provider;
-
-            } catch (XmppStringprepException e) {
-                e.printStackTrace();
+            if (Roster.getInstanceFor(connection).contains(calleeJid.asBareJid())) {
+                String accountAddress = provider.getAccountID().getAccountJid();
+                MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, accountAddress);
+                menuItem.setOnMenuItemClickListener(item -> {
+                    createCall(context, provider, calleeJid, isVideoCall);
+                    return false;
+                });
+                mProvider = provider;
             }
+            // Pre-assigned current provider in case the calleeAddress is not listed in roaster;
+            // e.g call contact from phone book - user the first available
+            if (mProvider == null)
+                mProvider = provider;
         }
-        if (menu.size() > 1)
+
+        // Show contact selection menu if more than one choice
+        if (menu.size() > 1) {
             popup.show();
+        }
         else if (mProvider != null)
-            createCall(context, calleeAddress, mProvider, isVideoCall);
+            createCall(context, mProvider, calleeJid, isVideoCall);
     }
 
     /**
      * Creates new call to given <tt>destination</tt> using selected <tt>provider</tt>.
      *
      * @param context the android context
-     * @param destination target callee name.
-     * @param provider the provider that will be used to make a call.
+     * @param metaContact target callee metaContact.
      * @param isVideoCall true to setup video call
+     * @param callButtonView not null if call via contact list fragment.
      */
-    public static void createCall(final Context context, final String destination,
-            final ProtocolProviderService provider, final boolean isVideoCall)
+    public static void createCall(Context context, MetaContact metaContact, boolean isVideoCall, View callButtonView)
     {
+        Jid callee = metaContact.getDefaultContact().getJid();
+        ProtocolProviderService pps = metaContact.getDefaultContact().getProtocolProvider();
+
+        boolean isJmSupported = metaContact.isFeatureSupported(JingleMessage.NAMESPACE);
+        if (isJmSupported) {
+            JingleMessageHelper.createAndSendJingleMessagePropose(pps, callee, isVideoCall);
+        }
+        else if (callButtonView != null) {
+            showCallViaMenu(context, callee, callButtonView, isVideoCall);
+        }
+        else {
+            createCall(context, pps, callee, isVideoCall);
+        }
+    }
+
+    /**
+     * Creates new call to given <tt>destination</tt> using selected <tt>provider</tt>.
+     *
+     * @param context the android context
+     * @param provider the provider that will be used to make a call.
+     * @param callee target callee Jid.
+     * @param id the Jingle Message call id (must use this to send session-initiate if not null)
+     * @param isVideoCall true for video call setup
+     */
+    public static void createCall(final Context context, final ProtocolProviderService provider,
+            final Jid callee, final boolean isVideoCall)
+    {
+        // Force to null assuming user is making a call seeing no call in progress, otherwise cannot make call at all
         if (createCallThread != null) {
-            // force to null assuming user is making a call seeing no call in progress,
-            // otherwise cannot make call at all
             createCallThread = null;
-            aTalkApp.showToastMessage("Another call is already being created. End and restart!");
+            aTalkApp.showToastMessage("Another call is already being created. restarting call thread!");
         }
         else if (CallManager.getActiveCallsCount() > 0) {
-            aTalkApp.showToastMessage("Another call is in progress!");
+            aTalkApp.showToastMessage("Another call is already in progress!");
             return;
         }
 
         final long dialogId = ProgressDialogFragment.showProgressDialog(
-                aTalkApp.getResString(R.string.service_gui_OUTGOING_CALL),
-                aTalkApp.getResString(R.string.service_gui_OUTGOING_CALL_MSG, destination));
+                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING),
+                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING_MSG, callee));
 
         createCallThread = new Thread("Create call thread")
         {
             public void run()
             {
                 try {
-                    if (isVideoCall)
-                        CallManager.createVideoCall(provider, destination);
-                    else
-                        CallManager.createCall(provider, destination);
+                    CallManager.createCall(provider, callee.toString(), isVideoCall);
                 } catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
                     AndroidUtils.showAlertDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());

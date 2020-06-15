@@ -466,7 +466,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         // Try to get the ZidFile path through the FileAccessService.
         File file = null;
         FileAccessService faService = LibJitsi.getFileAccessService();
-
         if (faService != null) {
             try {
                 // Create the zid file
@@ -612,7 +611,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     public void cleanup()
     {
         disposed = true;
-
         stopZrtp();
 
         if (timeoutProvider != null) {
@@ -939,8 +937,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             final String peerHelloHash = version_and_hash[1];
 
             if (!peerHelloVersion.equals(receivedSignaledZRTPVersion)
-                    || !peerHelloHash.equals(receivedSignaledZRTPHashValue))
-            {
+                    || !peerHelloHash.equals(receivedSignaledZRTPHashValue)) {
                 if (securityEventManager != null) {
                     securityEventManager.showMessage(ZrtpCodes.MessageSeverity.Severe, EnumSet.of(ZrtpCodes.SevereCodes.SevereSecurityException));
                 }

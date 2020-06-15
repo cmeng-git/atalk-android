@@ -7,18 +7,16 @@ package org.atalk.impl.neomedia.transform.zrtp;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.neomedia.*;
 import org.jxmpp.jid.BareJid;
 
-import java.util.EnumSet;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
-
+import java.security.NoSuchAlgorithmException;
+import java.util.EnumSet;
 
 import gnu.java.zrtp.ZrtpCodes;
 import gnu.java.zrtp.utils.ZrtpUtils;
@@ -370,12 +368,13 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
 
     /**
      * Compute own ZID from salt value stored in accountID and peer JID.
+     *
      * @param accountID Use the ZID salt value for this account
      * @param peerJid peer JID. Muss be a base JID, without resources part, because the
-     *                resource can change too often.
+     * resource can change too often.
      * @return computed ZID
      */
-    public static byte[] generateMyZid (final AccountID accountID, final BareJid peerJid)
+    public static byte[] generateMyZid(final AccountID accountID, final BareJid peerJid)
     {
         final String ZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT, "");
 

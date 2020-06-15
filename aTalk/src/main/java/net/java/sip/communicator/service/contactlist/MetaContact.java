@@ -64,6 +64,8 @@ public interface MetaContact extends Comparable<MetaContact>
      */
     Contact getOpSetSupportedContact(Class<? extends OperationSet> operationSet);
 
+    boolean isFeatureSupported(String feature);
+
     /**
      * Returns a <tt>java.util.Iterator</tt> with all protocol specific
      * <tt>Contacts</tt> encapsulated by this <tt>MetaContact</tt>.

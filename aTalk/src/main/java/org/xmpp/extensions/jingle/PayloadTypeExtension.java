@@ -10,7 +10,8 @@ import org.xmpp.extensions.AbstractExtensionElement;
 import java.util.List;
 
 /**
- * Represents the <tt>payload-type</tt> elements described in XEP-0167.
+ * Represents the <tt>payload-type</tt> elements described in
+ * XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)
  *
  * @author Emil Ivov
  * @author Eng Chong Meng

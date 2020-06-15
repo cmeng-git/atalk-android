@@ -73,18 +73,6 @@ public class OperationSetChatStateNotificationsJabberImpl extends
 
     private ChatStateManager chatStateManager = null;
 
-    // Use smack ChatManager (add enhance for group chat state support), so not further required
-//    /**
-//     * The listener instance that we use to track chat states according to XEP-0085;
-//     */
-//    private SmackChatStateListener smackChatStateListener = null;
-//
-//    /*
-//     * ChatState StanzaFilter for the listener
-//     */
-//    private static final StanzaFilter CHATSTATE = new AndFilter(StanzaTypeFilter.MESSAGE,
-//            new StanzaExtensionFilter(ChatStateExtension.NAMESPACE));
-
     /**
      * @param provider a ref to the <tt>ProtocolProviderServiceImpl</tt> that created us and that we'll use
      * for retrieving the underlying aim connection.
@@ -133,47 +121,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         else {
             throw new IllegalArgumentException("The specified chatDescriptor is not valid." + chatDescriptor);
         }
-
-//        if (opSetBasicIM != null && mConnection != null) {
-//            Jid toJid = opSetBasicIM.getRecentFullJidForContactIfPossible(contact);
-//
-//            /*
-//             * find the currently contacted jid to send chat state info or if we do not have a jid and
-//             * we have already sent message to the bare jid we will also send chat state info there
-//             */
-//            // if we haven't sent a message yet, do not send chat state notifications
-//            if (toJid == null)
-//                return;
-//
-//            Timber.log(TimberLog.FINER, "Sending XEP-0085 chat state=%s to %s", chatState, toJid);
-//            setCurrentState(chatState, toJid);
-//        }
     }
-
-//    /**
-//     * Creates and sends a packet for the new chat state.
-//     *
-//     * @param chatState the new chat state.
-//     * @param jid the JID of the receiver.
-//     */
-//    private void setCurrentState(ChatState chatState, Jid jid)
-//            throws NotConnectedException, InterruptedException
-//    {
-//        String threadID = opSetBasicIM.getThreadIDForAddress(jid.asBareJid(), true);
-//
-//        Message message = new Message();
-//        ChatStateExtension extension = new ChatStateExtension(chatState);
-//        message.addExtension(extension);
-//
-//        message.setTo(jid);
-//        message.setType(Message.Type.chat);
-//        message.setThread(threadID);
-//        message.setFrom(mConnection.getUser());
-//        mConnection.sendStanza(message);
-//
-//        if (chatState == ChatState.gone)
-//            opSetBasicIM.purgeGoneJidThreads(jid.asBareJid());
-//    }
 
     /**
      * Utility method throwing an exception if the stack is not properly initialized.
@@ -302,6 +250,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     /**
      * Receives incoming chat state info, Jid from is always a buddy (currently not implemented in aTalk)
      * #TODO - to use for message delivery
+     *
      * @see <a href="http://xmpp.org/extensions/xep-0022.html">XEP-22: Message Events</a>
      * Note: This specification has been obsoleted in favor of XEP-0085 and XEP-0184.
      */
@@ -328,8 +277,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         }
 
         /**
-         * Called when a notification that the receiver of the message is composing a reply is
-         * received.
+         * Called when a notification that the receiver of the message is composing a reply is received.
          *
          * @param from the user that sent the notification.
          * @param packetID the id of the message that was sent.
@@ -359,8 +307,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         }
 
         /**
-         * Called when a notification that the receiver of the message cancelled the reply
-         * is received.
+         * Called when a notification that the receiver of the message cancelled the reply is received.
          *
          * @param from the user that sent the notification.
          * @param packetID the id of the message that was sent.
@@ -410,7 +357,6 @@ public class OperationSetChatStateNotificationsJabberImpl extends
      */
     @Override
     public void stateChanged(Chat chat, ChatState state, Message message)
-    // private void stateChanged(ChatState state, Message message)
     {
         Jid fromJid = message.getFrom();
         BareJid bareJid = fromJid.asBareJid();
@@ -428,7 +374,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         }
 
         // Must not pass in a null descriptor to ChatStateNotificationEvent() => IllegalArgumentException (FFR)
-        if (chatDescriptor == null)  {
+        if (chatDescriptor == null) {
             chatDescriptor = bareJid;
         }
 
@@ -445,25 +391,4 @@ public class OperationSetChatStateNotificationsJabberImpl extends
             fireChatStateNotificationsEvent(event);
         }
     }
-
-//    // smack ChatStatManager#ChatStateListener 4.4.3 does not support group chat state notifications
-//    /**
-//     * Handles incoming messages and dispatches whatever events are necessary.
-//     * The listener that we use to track chat state notifications according to XEP-0085.
-//     */
-//    private class SmackChatStateListener implements StanzaListener
-//    {
-//        @Override
-//        public void processStanza(Stanza packet)
-//        {
-//            Message message = (Message) packet;
-//            ChatStateExtension ext = (ChatStateExtension) message.getExtension(ChatStateExtension.class);
-//            if (ext != null) {
-//                stateChanged(null, ext.getChatState(), message);
-//            }
-//            else {
-//                MetaContactChatTransport.setChatStateSupport(false);
-//            }
-//        }
-//    }
 }

@@ -92,9 +92,8 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * Should return current {@link Display} rotation as defined in
      * {@link android.view.Display#getRotation()}.
      *
-     * @return current {@link Display} rotation as one of values: {@link Surface#ROTATION_0},
-     * {@link Surface#ROTATION_90}, {@link Surface#ROTATION_180},
-     * {@link Surface#ROTATION_270}.
+     * @return current {@link Display} rotation as one of values:
+     * {@link Surface#ROTATION_0}, {@link Surface#ROTATION_90}, {@link Surface#ROTATION_180}, {@link Surface#ROTATION_270}.
      */
     public int getDisplayRotation()
     {

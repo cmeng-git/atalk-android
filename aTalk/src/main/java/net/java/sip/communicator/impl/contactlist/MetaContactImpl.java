@@ -14,15 +14,19 @@
  */
 package net.java.sip.communicator.impl.contactlist;
 
-import android.os.Build;
-
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.ScServiceDiscoveryManager;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.DataObject;
 
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.json.*;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
@@ -31,7 +35,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import timber.log.Timber;
 
 /**
@@ -197,6 +200,34 @@ public class MetaContactImpl extends DataObject implements MetaContact
                 opSetContacts.add(contact);
         }
         return opSetContacts;
+    }
+
+    /**
+     * Determines if the given <tt>feature</tt> is supported by this metaContact for all presence contact.
+     *
+     * @param feature the feature to check for
+     * @return <tt>true</tt> if the required feature is supported; otherwise, <tt>false</tt>
+     */
+    public boolean isFeatureSupported(String feature)
+    {
+        Contact contact = getDefaultContact();
+        ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) contact.getProtocolProvider();
+
+        ScServiceDiscoveryManager discoveryManager = pps.getDiscoveryManager();
+        if (discoveryManager == null)
+            return  false;
+
+        // Proceed only for presence with Type.available
+        List<Presence> presences = Roster.getInstanceFor(pps.getConnection()).getPresences(contact.getJid().asBareJid());
+        for (Presence presence : presences) {
+            if (presence.isAvailable()) {
+                DiscoverInfo featureInfo = discoveryManager.discoverInfoNonBlocking(presence.getFrom());
+                if ((featureInfo != null) && featureInfo.containsFeature(feature)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -901,7 +932,6 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * @param name of the detail to be removed.
      * @param value value of the detail to be removed.
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void removeDetail(String name, String value)
     {
         try {
@@ -1103,13 +1133,12 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Remove capabilities for the given contacts based on FullJid
      *
-     * @param jid the FullJid of the <tt>Contact</tt>, which capabilities we remove. Null applies ot all resources
-     * @param opSets the new updated set of operation sets
+     * @param jid the FullJid of the <tt>Contact</tt>, whom capabilities we remove. Null applies to all resources
+     * @param opSets the new updated set of operation sets.
      */
     private void removeCapabilities(Jid jid, Map<String, ? extends OperationSet> opSets)
     {
         Timber.d("Opset capability removal started: %s", jid);
-
         synchronized (capabilityJid) {
             Iterator<Map.Entry<String, List<Jid>>> capJids = capabilityJid.entrySet().iterator();
             Set<String> contactNewCaps = opSets.keySet();
@@ -1139,8 +1168,8 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Adds the capabilities of the given contact based on FullJid
      *
-     * @param jid the FullJid of the <tt>Contact</tt>, which capabilities we remove. Null applies ot all resources
-     * @param opSets the map of operation sets supported by the contact
+     * @param jid the FullJid of the <tt>Contact</tt>, whom capabilities we remove. Null applies to all resources
+     * @param opSets the map of operation sets supported by the contact.
      */
     private void addCapabilities(Jid jid, Map<String, ? extends OperationSet> opSets)
     {

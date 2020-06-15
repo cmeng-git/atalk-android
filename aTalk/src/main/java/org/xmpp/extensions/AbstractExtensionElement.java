@@ -5,10 +5,8 @@
  */
 package org.xmpp.extensions;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -178,6 +176,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
 
     /**
      * This method must be overwritten by subclasses to create their child content.
+     *
      * @return the xml builder for the content.
      */
     public XmlStringBuilder getChildElementBuilder()

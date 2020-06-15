@@ -155,8 +155,8 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
             if (res == 0) {
                 res = Double.compare(enc2.getClockRate(), enc1.getClockRate());
                 /*
-                 * And then again, there are formats (e.g. H.264) with one and the same encoding
-                 * (name) and clock rate but different format parameters (e.g. packetization-mode).
+                 * Then again, there are formats (e.g. H.264) with the same encoding name and
+                 * clock rate but different format parameters (e.g. packetization-mode).
                  */
                 if (res == 0) {
                     // Try to preserve the order specified by MediaUtils.

@@ -368,8 +368,8 @@ public class MediaStreamImpl extends AbstractMediaStream
      * RTP flows sending and receiving media in <tt>format</tt>. Usually, <tt>rtpPayloadType</tt>
      * will be in the range of dynamic RTP payload types.
      *
-     * @param rtpPayloadType the RTP payload type to be associated in this <tt>MediaStream</tt> with the specified
-     * <tt>MediaFormat</tt>
+     * @param rtpPayloadType the RTP payload type to be associated in this
+     * <tt>MediaStream</tt> with the specified <tt>MediaFormat</tt>
      * @param format the <tt>MediaFormat</tt> to be associated in this <tt>MediaStream</tt> with <tt>rtpPayloadType</tt>
      * @see MediaStream#addDynamicRTPPayloadType(byte, MediaFormat)
      */
@@ -393,7 +393,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         }
         else if (Constants.ULPFEC.equals(encoding)) {
             TransformEngineWrapper<FECTransformEngine> fecTransformEngineWrapper = getFecTransformEngine();
-            if (fecTransformEngineWrapper.getWrapped() != null) {
+            if ((fecTransformEngineWrapper != null) && (fecTransformEngineWrapper.getWrapped() != null)) {
                 FECTransformEngine fecTransformEngine = fecTransformEngineWrapper.getWrapped();
                 fecTransformEngine.setIncomingPT(rtpPayloadType);
                 // TODO ULPFEC without RED doesn't make sense.

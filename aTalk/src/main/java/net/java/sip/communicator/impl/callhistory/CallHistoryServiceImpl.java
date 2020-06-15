@@ -1161,9 +1161,9 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
             if (!CallChangeEvent.CALL_STATE_CHANGE.equals(evt.getPropertyName()))
                 return;
 
-            if (evt.getNewValue().equals(CallState.CALL_ENDED)) {
+            if (CallState.CALL_ENDED.equals(evt.getNewValue())) {
                 boolean writeRecord = true;
-                if (evt.getOldValue().equals(CallState.CALL_INITIALIZATION)) {
+                if (CallState.CALL_INITIALIZATION.equals(evt.getOldValue())) {
                     callRecord.setEndTime(callRecord.getStartTime());
 
                     // if call was answered elsewhere, add its reason; so we can distinguish it from missed

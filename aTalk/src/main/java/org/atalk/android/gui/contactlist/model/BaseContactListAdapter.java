@@ -19,9 +19,11 @@ import net.java.sip.communicator.service.protocol.Contact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jxmpp.jid.DomainBareJid;
@@ -481,6 +483,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         if (object instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) object;
             Contact contact = metaContact.getDefaultContact();
+            Boolean isAudioCall = null;
 
             if (view.getId() == R.id.contact_view) {
                 contactListFragment.startChat(metaContact);
@@ -501,12 +504,14 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
                                     .replace(android.R.id.content, extPhone).commit();
                             break;
                         }
+                        isAudioCall = true;
 
                     case R.id.contactCallVideoButton:
                         if (viewHolder != null) {
-                            boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                            AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
-                                    viewHolder.callVideoButton, JidAddress, isVideoCall);
+                            // AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
+                            //        viewHolder.callVideoButton, JidAddress, (isAudioCall == null));
+                            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), metaContact, (isAudioCall == null),
+                                    viewHolder.callVideoButton);
                         }
                         break;
 

@@ -68,6 +68,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * The length of the header of a DTLS record.
+     * +1 content_type
+     * +2 version
+     * +2 epoch
+     * +6 sequence_number
+     * +2 length (record layer fragment)
      */
     static final int DTLS_RECORD_HEADER_LENGTH = 13;
 
@@ -336,12 +341,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         if (rtcpmux && DtlsTransformEngine.COMPONENT_RTCP == componentID)
             return initializeSRTCPTransformerFromRtp();
 
-        // XXX It is our explicit policy to rely on the SrtpListener to notify
-        // the user that the session is not secure. Unfortunately, (1) the
-        // SrtpListener is not supported by this DTLS SrtpControl implementation
-        // and (2) encrypted packets may arrive soon enough to be let through
-        // while _srtpTransformer is still initializing. Consequently, we may
-        // wait for _srtpTransformer (a bit) to initialize.
+        // XXX It is our explicit policy to rely on the SrtpListener to notify the user that
+        // the session is not secure. Unfortunately,
+        // (1) the SrtpListener is not supported by this DTLS SrtpControl implementation and
+        // (2) encrypted packets may arrive soon enough to be let through while _srtpTransformer is still initializing.
+        // Consequently, we may wait for _srtpTransformer (a bit) to initialize.
         boolean yield = true;
         do {
             synchronized (this) {
@@ -364,6 +368,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             }
         }
         while (true);
+
         return srtpTransformer;
     }
 
@@ -421,9 +426,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Tries to initialize {@link #_srtpTransformer} by using the
-     * {@code DtlsPacketTransformer} for RTP. (The method invocations should be
-     * on the {@code DtlsPacketTransformer} for RTCP as the method name suggests.)
+     * Tries to initialize {@link #_srtpTransformer} by using the {@code DtlsPacketTransformer} for RTP.
+     * (The method invocations should be on the {@code DtlsPacketTransformer} for RTCP as the method name suggests.)
      *
      * @return the (possibly updated) value of {@link #_srtpTransformer}.
      */
@@ -443,21 +447,24 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 }
             }
         }
-
         return _srtpTransformer;
     }
 
     /**
      * Initializes a new <tt>SRTPTransformer</tt> instance with a specific (negotiated)
      * <tt>SRTPProtectionProfile</tt> and the keying material specified by a specific <tt>TlsContext</tt>.
+     * Note: Only call via notifyHandshakeComplete(), return value is not use
      *
      * @param srtpProtectionProfile the (negotiated) <tt>SRTPProtectionProfile</tt> to initialize the new instance with
      * @param tlsContext the <tt>TlsContext</tt> which represents the keying material
      * @return a new <tt>SRTPTransformer</tt> instance initialized with
      * <tt>srtpProtectionProfile</tt> and <tt>tlsContext</tt>
      */
-    private SinglePacketTransformer initializeSRTPTransformer(int srtpProtectionProfile, TlsContext tlsContext)
+    public SinglePacketTransformer initializeSRTPTransformer(int srtpProtectionProfile, TlsContext tlsContext)
     {
+        if (isSrtpDisabled())
+            return null;
+
         boolean rtcp;
         switch (componentID) {
             case DtlsTransformEngine.COMPONENT_RTCP:
@@ -519,11 +526,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
             /*
              * RFC 7714 14.2 - correspond to the use of an AEAD algorithm
-             * Note that these SRTP protection profiles do not specify an auth_function, auth_key_length,
-             * or auth_tag_length, because all of these profiles use AEAD algorithms and thus do not use a
-             * separate auth_function, auth_key, or auth_tag. The term aead_auth_tag_length" is used to emphasize
-             * that this refers to the authentication tag provided by the AEAD algorithm and that this tag is
-             * not located in the authentication tag field provided by SRTP/SRTCP.
+             * Note: SRTP protection profiles do not specify an auth_function, auth_key_length, or auth_tag_length,
+             * because all of these profiles use AEAD algorithms and thus do not use a separate auth_function,
+             * auth_key, or auth_tag. The term aead_auth_tag_length" is used to emphasize that this refers to the
+             * authentication tag provided by the AEAD algorithm and that this tag is not located in the
+             * authentication tag field provided by SRTP/SRTCP.
              */
             case SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM:
                 Timber.w("Unsupported RFC-7714 SRTP profile: %s", SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM);
@@ -552,27 +559,21 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 throw new IllegalArgumentException("srtpProtectionProfile");
         }
 
-        byte[] keyingMaterial = null;
+        /*
+         * BouncyCastle >=1.59 clears the master secret from its session parameters immediately after connect,
+         * making it unavailable. See https://github.com/bcgit/bc-java/issues/203:
+         * Either call exportKeyingMaterial during the notifyHandshakeComplete callback OR
+         * Available on TlsSession (the session keeps a copy of the master secret after handshake completion)
+         */
         int length = 2 * (cipher_key_length + cipher_salt_length);
-
-        SecurityParameters sp = tlsContext.getSecurityParameters();
-        if (sp.getMasterSecret() == null && tlsContext.getResumableSession() != null) {
-            /*
-             * BouncyCastle 1.59 clears the master secret from its session parameters immediately after connect,
-             * making them unavailable for exporting keying material. https://github.com/bcgit/bc-java/issues/203
-             * The value is present in the session parameters from the resume-able session, which is used here.
-             */
-            final SessionParameters ssp = tlsContext.getResumableSession().exportSessionParameters();
-            if ((ssp != null) && ssp.getMasterSecret() != null) {
-                keyingMaterial = exportKeyingMaterial(tlsContext, ExporterLabel.dtls_srtp, null,
-                        length, ssp.getMasterSecret());
-            }
-        }
-        else {
-            // Available on TlsSession (the session keeps a copy of the master secret after handshake completion)
-            TlsSecret masterSecret = tlsContext.getSession().exportSessionParameters().getMasterSecret();
-            keyingMaterial = exportKeyingMaterial(tlsContext, ExporterLabel.dtls_srtp, null,
-                    length, masterSecret);
+        byte[] keyingMaterial = null;
+        try {
+            // must call via notifyHandshakeComplete() callback, otherwise sp.getMasterSecret() == null
+            keyingMaterial = tlsContext.exportKeyingMaterial(ExporterLabel.dtls_srtp, null, length);
+        } catch (Exception ex) {
+            keyingMaterial = exportKeyingMaterial(tlsContext, ExporterLabel.dtls_srtp, null, length);
+            Timber.w("Export Keying Material without ExtendedMasterSecret for %s: %s",
+                    rtcp ? "rtcp" : "rtp", keyingMaterial);
         }
 
         byte[] client_write_SRTP_master_key = new byte[cipher_key_length];
@@ -639,14 +640,22 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         }
 
         SinglePacketTransformer srtpTransformer;
-
         if (rtcp) {
             srtpTransformer = new SRTCPTransformer(forwardSRTPContextFactory, reverseSRTPContextFactory);
         }
         else {
             srtpTransformer = new SRTPTransformer(forwardSRTPContextFactory, reverseSRTPContextFactory);
         }
+
+        Timber.d("SinglePacketTransformer initialized (%s/%s); profile = %s; tlsPeer: %s", mediaType.toString(),
+                componentID, srtpProtectionProfile, tlsContext);
+        setSrtpTransformer(srtpTransformer);
         return srtpTransformer;
+    }
+
+    public boolean getSecureCommunicationStatus()
+    {
+        return (_srtpTransformer != null);
     }
 
     /**
@@ -682,6 +691,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 && (AlertDescription.close_notify == alertDescription)) {
             tlsPeerHasRaisedCloseNotifyWarning = true;
         }
+        getDtlsControl().notifyAlertRaised(tlsPeer, alertLevel, alertDescription, message, cause);
     }
 
     public void propertyChange(PropertyChangeEvent ev)
@@ -825,9 +835,6 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private void runInConnectThread(DTLSProtocol dtlsProtocol, TlsPeer tlsPeer, DatagramTransport datagramTransport)
     {
         DTLSTransport dtlsTransport = null;
-        final boolean srtp = !isSrtpDisabled();
-        int srtpProtectionProfile = 0;
-        TlsContext tlsContext = null;
 
         // DTLS client
         if (dtlsProtocol instanceof DTLSClientProtocol) {
@@ -846,10 +853,6 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                         break;
                     }
                 }
-            }
-            if ((dtlsTransport != null) && srtp) {
-                srtpProtectionProfile = tlsClient.getChosenProtectionProfile();
-                tlsContext = tlsClient.getContext();
             }
         }
 
@@ -871,31 +874,17 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     }
                 }
             }
-            if ((dtlsTransport != null) && srtp) {
-                srtpProtectionProfile = tlsServer.getChosenProtectionProfile();
-                tlsContext = tlsServer.getContext();
-            }
         }
         else {
             // It MUST be either a DTLS client or a DTLS server.
             throw new IllegalStateException("dtlsProtocol");
         }
 
-        SinglePacketTransformer srtpTransformer = ((dtlsTransport == null) || !srtp)
-                ? null : initializeSRTPTransformer(srtpProtectionProfile, tlsContext);
-
-        boolean closeSRTPTransformer;
         synchronized (this) {
             if (Thread.currentThread().equals(this.connectThread)
                     && datagramTransport.equals(this.datagramTransport)) {
                 mDtlsTransport = dtlsTransport;
-                setSrtpTransformer(srtpTransformer);
             }
-            closeSRTPTransformer = (_srtpTransformer != srtpTransformer);
-        }
-
-        if (closeSRTPTransformer && (srtpTransformer != null)) {
-            srtpTransformer.close();
         }
     }
 
@@ -1053,6 +1042,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 } finally {
                     if (Thread.currentThread().equals(DtlsPacketTransformer.this.connectThread)) {
                         DtlsPacketTransformer.this.connectThread = null;
+                        getDtlsControl().secureOnOff(getSecureCommunicationStatus());
                     }
                 }
             }
@@ -1135,8 +1125,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         List<RawPacket> outPkts = new ArrayList<>();
 
         // DTLS and SRTP packets are distinct, separate (in DTLS-SRTP).
-        // Additionally, the UDP transport does not guarantee the packet send
-        // order. Consequently, it should be fine to process DTLS packets first.
+        // Additionally, the UDP transport does not guarantee the packet send order.
+        // Consequently, it should be fine to process DTLS packets first.
         outPkts = transformDtls(inPkts, transform, outPkts);
         outPkts = transformNonDtls(inPkts, transform, outPkts);
 
@@ -1252,9 +1242,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Processes SRTP {@code RawPacket}s to be sent to or received from
-     * (depending on {@code transform}) the remote peer. The implementation
-     * assumes that all elements of {@code inPkts} are SRTP {@code RawPacket}s.
+     * Processes SRTP {@code RawPacket}s to be sent or received (depending on {@code transform}) the remote peer.
+     * The implementation assumes that all elements of {@code inPkts} are SRTP {@code RawPacket}s.
      *
      * @param inPkts the SRTP {@code RawPacket}s to be sent to or received from
      * (depending on {@code transform}) the remote peer
@@ -1270,8 +1259,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         SinglePacketTransformer srtpTransformer = getSRTPTransformer();
 
         if (srtpTransformer == null) {
-            // If unencrypted (SRTP) packets are to be dropped, they are dropped
-            // by not being processed here.
+            // If unencrypted (SRTP) packets are to be dropped, they are dropped by not being processed here.
             if (!DROP_UNENCRYPTED_PKTS) {
                 queueTransformSrtp(inPkts, transform);
             }
@@ -1409,27 +1397,20 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * Copied from AbstractTlsContext#exportKeyingMaterial and modified to work with an externally provided masterSecret value.
+     * One without the Extemded Master Password
      */
-    private static byte[] exportKeyingMaterial(TlsContext context, String asciiLabel, byte[] context_value, int length, TlsSecret tlsSecret)
+    private static byte[] exportKeyingMaterial(TlsContext tlsContext, String asciiLabel, byte[] context_value, int length)
     {
         if (context_value != null && !TlsUtils.isValidUint16(context_value.length)) {
             throw new IllegalArgumentException("'context_value' must have length less than 2^16 (or be null)");
         }
 
-        SecurityParameters securityParameters = context.getSecurityParameters();
+        SecurityParameters securityParameters = tlsContext.getSecurityParametersConnection();
         if (null == securityParameters) {
             throw new IllegalStateException("Export of key material unavailable before handshake completion");
         }
-        if (!securityParameters.isExtendedMasterSecret()) {
-            /*
-             * RFC 7627 5.4. If a client or server chooses to continue with a full handshake without
-             * the extended master secret extension, [..] the client or server MUST NOT export any
-             * key material based on the new master secret for any subsequent application-level
-             * authentication. In particular, it MUST disable [RFC5705] [..].
-             */
-            throw new IllegalStateException("cannot export keying material without extended_master_secret");
-        }
         byte[] seed = TlsUtils.calculateExporterSeed(securityParameters, context_value);
+        TlsSecret tlsSecret = securityParameters.getMasterSecret();
 
         // pass sp instead of context as securityParametersHandshake is clear on AbstractTlsContext#handshakeComplete
         return TlsUtils.PRF(securityParameters, tlsSecret, asciiLabel, seed, length).extract();

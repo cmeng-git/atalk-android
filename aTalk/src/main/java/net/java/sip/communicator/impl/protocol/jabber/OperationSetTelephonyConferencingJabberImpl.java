@@ -5,6 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import org.atalk.android.gui.call.JingleMessageHelper;
 import org.xmpp.extensions.coin.CoinIQ;
 import org.xmpp.extensions.jingle.CoinExtension;
 import org.xmpp.extensions.jingle.element.Jingle;
@@ -270,7 +271,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     protected CallJabberImpl createOutgoingCall()
             throws OperationFailedException
     {
-        return new CallJabberImpl(getBasicTelephony());
+        return new CallJabberImpl(getBasicTelephony(), Jingle.generateSid());
     }
 
     /**
@@ -487,11 +488,11 @@ public class OperationSetTelephonyConferencingJabberImpl
         OperationSetVideoBridge videoBridge = parentProvider.getOperationSet(OperationSetVideoBridge.class);
         boolean isVideobridge = (videoBridge != null) && videoBridge.isActive();
 
-        CallJabberImpl call = new CallJabberImpl(getBasicTelephony());
+        CallJabberImpl call = new CallJabberImpl(getBasicTelephony(), Jingle.generateSid());
         call.setAutoAnswer(true);
 
         String uri = "xmpp:" + chatRoom.getIdentifier() + "/" + chatRoom.getUserNickname();
-        ConferenceDescription cd = new ConferenceDescription(uri, call.getCallID());
+        ConferenceDescription cd = new ConferenceDescription(uri, call.getCallId());
 
         call.addCallChangeListener(new CallChangeListener()
         {
@@ -520,7 +521,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             cd.addTransport(ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0);
         }
         Timber.i("Setup a conference with uri = %s and callid = %s. Videobridge in use: %s",
-                uri, call.getCallID(), isVideobridge);
+                uri, call.getCallId(), isVideobridge);
         return cd;
     }
 }

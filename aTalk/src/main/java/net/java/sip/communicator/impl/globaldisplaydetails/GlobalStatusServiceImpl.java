@@ -70,13 +70,12 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
         int status = PresenceStatus.OFFLINE;
         Collection<ProtocolProviderService> pProviders = getRegisteredProviders();
         // If we don't have registered providers we return offline status.
-        if ((pProviders == null) || (pProviders.size() <= 0))
+        if (pProviders.isEmpty())
             return getPresenceStatus(status);
 
         boolean hasAvailableProvider = false;
         for (ProtocolProviderService protocolProvider : pProviders) {
-            // We do not show hidden protocols in our status bar,
-            // so we do not care about their status here.
+            // We do not show hidden protocols in our status bar, so we do not care about their status here.
             if (!protocolProvider.getAccountID().isHidden() && protocolProvider.isRegistered()) {
                 OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
                 if (presence == null) {
@@ -91,7 +90,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
                 }
             }
         }
-        // if we have at least one online provider
+        // if we have at least one online provider and without OperationSetPresence feature
         if ((status == PresenceStatus.OFFLINE) && hasAvailableProvider)
             status = PresenceStatus.AVAILABLE_THRESHOLD;
 

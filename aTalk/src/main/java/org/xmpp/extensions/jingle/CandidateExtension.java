@@ -350,7 +350,7 @@ public class CandidateExtension extends AbstractExtensionElement implements Comp
      * "srflx" for server reflexive candidates. All allowable values are enumerated in the
      * {@link CandidateType} enum.
      *
-     * @param type this candidates' type as per ICE's RFC 5245.
+     * @param type the candidates' type as per ICE's RFC 5245.
      */
     public void setType(CandidateType type)
     {

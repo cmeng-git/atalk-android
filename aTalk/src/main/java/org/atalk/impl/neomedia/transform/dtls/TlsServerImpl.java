@@ -8,8 +8,7 @@ package org.atalk.impl.neomedia.transform.dtls;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.tls.*;
-import org.bouncycastle.tls.crypto.TlsCrypto;
-import org.bouncycastle.tls.crypto.TlsCryptoParameters;
+import org.bouncycastle.tls.crypto.*;
 import org.bouncycastle.tls.crypto.impl.bc.*;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.util.Vector;
 import timber.log.Timber;
 
 /**
- * Implements {@link TlsServer} for the purposes of supporting DTLS-SRTP.
+ * Implements {@link TlsServer} for the purposes of supporting DTLS-SRTP - DTLSv12/DTLSv10.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -33,8 +32,8 @@ public class TlsServerImpl extends DefaultTlsServer
     private CertificateRequest certificateRequest = null;
 
     /**
-     * If TLS 1.2 or higher is negotiated, configures the set of supported signature algorithms in the
-     * CertificateRequest (if one is sent). If null, uses a default set.
+     * If DTLSv12 or higher is negotiated, configures the set of supported signature algorithms in the
+     * CertificateRequest (if one is sent). If null, uses the default set.
      */
     private Vector serverCertReqSigAlgs = null;
 
@@ -76,6 +75,10 @@ public class TlsServerImpl extends DefaultTlsServer
     public CertificateRequest getCertificateRequest()
     {
         if (certificateRequest == null) {
+            short[] certificateTypes = new short[]{ ClientCertificateType.rsa_sign,
+                    ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
+
+
             Vector serverSigAlgs = null;
             if (TlsUtils.isSignatureAlgorithmsExtensionAllowed(context.getServerVersion())) {
                 serverSigAlgs = serverCertReqSigAlgs;
@@ -84,12 +87,21 @@ public class TlsServerImpl extends DefaultTlsServer
                 }
             }
 
-            // CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
+//            Certificate certificate = getDtlsControl().getCertificateInfo().getCertificate();
+//            TlsCertificate[] chain = certificate.getCertificateList();
+//            try {
+//                for (TlsCertificate tlsCertificate : chain) {
+//                    org.bouncycastle.asn1.x509.Certificate entry = org.bouncycastle.asn1.x509.Certificate.getInstance(tlsCertificate.getEncoded());
+//                    certificateAuthorities.addElement(entry.getIssuer());
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
             Vector certificateAuthorities = new Vector();
             certificateAuthorities.addElement(new X500Name("CN=atalk.org TLS CA"));
 
-            certificateRequest = new CertificateRequest(new short[]{ClientCertificateType.rsa_sign},
-                    serverSigAlgs, certificateAuthorities);
+            certificateRequest = new CertificateRequest(certificateTypes, serverSigAlgs, certificateAuthorities);
         }
         return certificateRequest;
     }
@@ -99,50 +111,9 @@ public class TlsServerImpl extends DefaultTlsServer
      *
      * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its client
      */
-    int getChosenProtectionProfile()
+    private int getChosenProtectionProfile()
     {
         return chosenProtectionProfile;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides the super implementation to explicitly specify cipher suites
-     * which we know to be supported by Bouncy Castle v1.65 and provide Perfect Forward Secrecy.
-     *
-     * Extracted from core/src/main/java/org/bouncycastle/tls/DefaultTlsServer.java
-     */
-    @Override
-    protected int[] getSupportedCipherSuites()
-    {
-        return new int[]{
-                /* TLS 1.3 */
-                // CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
-                // CipherSuite.TLS_AES_256_GCM_SHA384,
-                // CipherSuite.TLS_AES_128_GCM_SHA256,
-
-                /* pre-TLS 1.3 */
-                CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_RSA_WITH_AES_256_GCM_SHA384,
-                CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256,
-                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA
-        };
     }
 
     /**
@@ -368,6 +339,17 @@ public class TlsServerImpl extends DefaultTlsServer
      * {@inheritDoc}
      */
     @Override
+    public void notifyHandshakeComplete()
+            throws IOException
+    {
+        super.notifyHandshakeComplete();
+        packetTransformer.initializeSRTPTransformer(getChosenProtectionProfile(), context);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void notifyClientCertificate(Certificate clientCertificate)
             throws IOException
     {
@@ -380,19 +362,6 @@ public class TlsServerImpl extends DefaultTlsServer
             else
                 throw new IOException(e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void notifyHandshakeComplete()
-            throws IOException
-    {
-        super.notifyHandshakeComplete();
-
-        // masterSecrete date is empty? https://github.com/bcgit/bc-java/issues/203
-        // packetTransformer.setMasterSecrete(context.getSecurityParameters().getMasterSecret());
     }
 
     /**

@@ -107,8 +107,10 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">El nombre del grupo no debe estar vacío.</string>
     <string name="service_gui_ADD_GROUP">Crear un grupo</string>
     <string name="service_gui_ADD_GROUP_HINT">Introducir el nombre del grupo</string>
+    <string name="service_gui_ANSWER">Responder</string>
     <string name="service_gui_APPLY">Aplicar</string>
     <string name="service_gui_APPLY_CHANGES">Aplicando los cambion en la cuenta (~60S) &#8230;</string>
+    <string name="service_gui_AT">at</string>
     <string name="service_gui_AUTHORIZE">Autorizar</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">El contacto ha aceptado su solicitud de autorización.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Falló la autenticación para %1$s. La contraseña introducida no es válida.</string>
@@ -126,21 +128,32 @@
 
     <string name="service_gui_BUSY_STATUS">Ocupado</string>
     <string name="service_gui_CALL">Llamada de audio</string>
+    <string name="service_gui_CALL_ANSWER">%1$s ha contestado la llamada.</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
+    <string name="service_gui_CALL_END">La persona que llama remota ha finalizado la llamada.: %1$s</string>
     <string name="service_gui_CALL_FAILED">Llamada fallida</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de Llamadas</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">¿Está seguro de que desea purgar todos los registros de llamadas seleccionados?</string>
-    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
-    <string name="service_gui_CALL_WITH">Llamar con</string>
+    <string name="service_gui_CALL_INCOMING">Llamada recibida desde: %1$s</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Llamada entrante</string>
+    <string name="service_gui_CALL_INITIATING_STATUS">Iniciando la llamada</string>
+    <string name="service_gui_CALL_REJECTED">%1$s ha rechazado la llamada.</string>
+    <string name="service_gui_CALL_MISSED_CALL">Llamadas perdidas de:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Ningún dispositivo de audio configurado.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">No hay ningún codec de audio activado.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">El dispositivo %1$s o el códec no está totalmente configurado en \'Ajustes…\'. Por favor, compruébese y configúrese.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">¿Continuar la llamada?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No hay formatos de medios que coincidan con la oferta %1$s para recibir llamadas. Por favor, compruebar la configuración del dispositivo y el códec en \'Ajustes…\'.</string>
+    <string name="service_gui_CALL_OUTGOING">Llamada saliente</string>
+    <string name="service_gui_CALL_OUTGOING_MSG">Hacer llamadas con %1$s…</string>
     <string name="service_gui_CALL_VIA">Llamar por: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Video llamada</string>
+    <string name="service_gui_CALL_WITH">Llamar con</string>
+
     <string name="service_gui_CANCEL">Cancelar</string>
     <string name="service_gui_CONTACT_INVALID">El contacto seleccionado no es válido: %1$s</string>
+    <string name="service_gui_DISMISS">Descartar</string>
     <string name="service_gui_DONE">¡Hecho!</string>
     <string name="service_gui_MAS">Marcar como leído</string>
     <string name="service_gui_REASON_LABEL">Motivo:</string>
@@ -159,6 +172,7 @@
 	<string name="service_gui_CHANGE_NICKNAME_LABEL">En el campo de abajo, puedes introducir tu nuevo apodo.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">El contenido del campo Nick Name no puede ser nulo</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Cambiar información de la sala de chat</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">In the field below, you can enter the new subject for this room.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Cambiar la calidad de vídeo remoto</string>
 	<string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s sala</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Salas</string>
@@ -292,7 +306,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Crear una pasarela de vídeo</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Crear / Ingresar en una videoconferencia</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Crear una nueva videoconferencia para esta sala de chat</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Error al configurar la vista previa de la cámara del dispositivo en: %1$s; Excepción: %2$s.</string>
+    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Error al configurar la vista previa de la cámara del dispositivo en: %1$s; Excepción: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Desconectado</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Desconectando %1$s</string>
     <string name="service_gui_DENY">Denegar</string>
@@ -308,7 +322,6 @@
     <string name="service_gui_ERROR_WAS">El error fue: %1$s</string>
 	<string name="service_gui_EXIT">Salir</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Ausencia extendida</string>
-    <string name="service_gui_FAILED_STATUS">Fallo en la llamada</string>
     <string name="service_gui_FFC_STATUS">Disponible para conversar</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -402,9 +415,6 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">La verificación de CAPTCHA ha fallado</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA desafío timeout;\npor favor, vuelva a unirse a chatRoom y vuelva a intentarlo.</string>
 
-    <string name="service_gui_INCOMING_CALL">Llamada recibida desde: %1$s</string>
-    <string name="service_gui_INCOMING_CALL_STATUS">Llamada entrante</string>
-    <string name="service_gui_INITIATING_CALL_STATUS">Iniciando la llamada</string>
 	<string name="service_gui_INVITATION">Mensaje de invitación:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Invitación recibida</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s ha cursado una invitación para participar en la sala de charla %2$s. Se puedes aceptar, rechazar o ignorar esta invitación.</string>
@@ -481,7 +491,6 @@
     <string name="service_gui_MSG_RECEIVED">%1$s escrito</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Se debes iniciar la sesión primero para enviar el mensaje.</string>
 
-    <string name="service_gui_MISSED_CALLS_TOOL_TIP">Llamadas perdidas de:</string>
 	<string name="service_gui_MULTIPLE_LOGIN">No se permiten varias instancias de inicio de sesión. La siguiente cuenta: Usuario: %1$s, Servidor: %2$s ha sido desconectada.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Mutuamente en espera</string>
     <string name="service_gui_NAME">"Nombre "</string>
@@ -521,8 +530,6 @@
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Alternar vídeo</string>
     <string name="service_gui_MIC_CONTROL_TITLE">Nivel de ganancia del micrófono</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Ajustar el sonido del micrófono</string>
-    <string name="service_gui_OUTGOING_CALL">Llamada saliente</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Llamar con %1$s…</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Presencia no soportada por %1$s</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">está escribiendo un mensaje</string>
     <string name="service_gui_RECENT_MESSAGES">Conversaciones recientes</string>
@@ -890,6 +897,9 @@
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Ningún secreto compartido retenido disponible.&lt;br/>&lt;b>Se recomienda la verificación SAS&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Falta un secreto compartido que se espera que se conserve.&lt;br/>&lt;b>Se requiere verificación SAS&lt;/b>&lt;br/>Si los códigos SAS no coinciden, cuelga y vuelva a intentarlo.&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Se detectó un problema grave de ZRTP. &lt;br/>&lt;b>Su llamada no es segura &lt;/b>&lt;br/>Código de error: %1$s&lt;/html></string>
+
+    <!-- DTLS-SRTP Securing -->
+    <string name="imp_media_security_ENCRYPTION_ENDED">La encriptación de llamadas ha finalizado: %1$s</string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Autentificar amigo</string>
@@ -1448,6 +1458,7 @@
     <!-- Key & FingerPrint security category -->
     <string name="pref_cat_KEY_FINGERPRINT_SECURITY">Llave &amp; Seguridad de las huellas digitales</string>
     <!-- Crypto private Keys screen -->
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY">Cero usuario registrado encontrado</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Gestionar huellas digitales criptográficas privadas</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Claves privadas de cifrado</string>
     <!-- Crypto fingerprints screen -->
@@ -1583,4 +1594,5 @@
     <string name="location_permission_dialog_message">Habilitar permiso de ubicación ahora?</string>
     <string name="location_services_off">Servicios de localización OFF</string>
     <string name="open_location_settings">Habilitar servicios de ubicación ahora?</string>
+
 </resources>

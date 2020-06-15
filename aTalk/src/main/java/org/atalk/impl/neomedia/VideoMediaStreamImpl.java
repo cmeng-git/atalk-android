@@ -873,13 +873,11 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                             continue;
                         }
 
-                        Dimension res[] = parseSendRecvResolution(value);
-                        if (res != null) {
-                            setOutputSize(res[1]);
-                            qualityControl.setRemoteSendMaxPreset(new QualityPreset(res[0]));
-                            qualityControl.setRemoteReceiveResolution(outputSize);
-                            ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
-                        }
+                        Dimension[] res = parseSendRecvResolution(value);
+                        setOutputSize(res[1]);
+                        qualityControl.setRemoteSendMaxPreset(new QualityPreset(res[0]));
+                        qualityControl.setRemoteReceiveResolution(outputSize);
+                        ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                         break;
 
                     case "CIF":
@@ -1023,6 +1021,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         if (newValue != null) {
             MediaDeviceSession deviceSession = getDeviceSession();
 
+            Timber.w("rtpConnectorChanged: %s => %s", deviceSession.getClass().getSimpleName(),
+                    newValue.getConnector().getDataSocket().getInetAddress());
             if (deviceSession instanceof VideoMediaDeviceSession) {
                 ((VideoMediaDeviceSession) deviceSession).setConnector(newValue);
             }
@@ -1064,12 +1064,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
             if (entry.getKey().equals("imageattr")) {
                 Dimension res[] = parseSendRecvResolution(entry.getValue());
 
-                if (res != null) {
-                    qualityControl.setRemoteSendMaxPreset(new QualityPreset(res[0]));
-                    qualityControl.setRemoteReceiveResolution(res[1]);
-                    setOutputSize(res[1]);
-                    ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
-                }
+                qualityControl.setRemoteSendMaxPreset(new QualityPreset(res[0]));
+                qualityControl.setRemoteReceiveResolution(res[1]);
+                setOutputSize(res[1]);
+                ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
             }
         }
     }

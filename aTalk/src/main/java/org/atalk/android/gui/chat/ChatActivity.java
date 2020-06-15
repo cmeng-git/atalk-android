@@ -30,6 +30,7 @@ import net.sf.fmj.utility.IOUtils;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
+import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
@@ -39,7 +40,8 @@ import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
 import org.atalk.android.gui.share.Attachment;
 import org.atalk.android.gui.share.MediaPreviewAdapter;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
@@ -618,6 +620,8 @@ public class ChatActivity extends OSGiActivity
         }
         // Handle item selection for mRecipient if non-null
         else if (mRecipient != null) {
+            Boolean isAudioCall = null;
+
             switch (item.getItemId()) {
                 case R.id.chat_tts_enable:
                     if (mRecipient.isTtsEnable()) {
@@ -637,15 +641,16 @@ public class ChatActivity extends OSGiActivity
                         TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
                         getSupportFragmentManager().beginTransaction()
                                 .replace(android.R.id.content, extPhone).commit();
+                        return true;
                     }
-                    else
-                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                                mRecipient.getProtocolProvider(), false);
-                    return true;
+                    isAudioCall = true;  // fall through to start either audio / video call
 
-                case R.id.call_contact_video: // start video call
-                    AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                            mRecipient.getProtocolProvider(), true);
+                case R.id.call_contact_video:
+                    // AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                    //        mRecipient.getProtocolProvider(), (isAudioCall == null));
+
+                    AndroidCallUtil.createCall(this, selectedChatPanel.getMetaContact(),
+                            (isAudioCall == null), null);
                     return true;
             }
         }

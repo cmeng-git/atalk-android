@@ -218,7 +218,7 @@ public class AccountID
             protocolName = defaultProtocolName;
             accountProperties.put(key, protocolName);
         }
-        return protocolName.trim();
+        return protocolName;
     }
 
     /**

@@ -123,21 +123,32 @@
 
     <string name="service_gui_BUSY_STATUS">Zaneprázdnený</string>
     <string name="service_gui_CALL">Zvukový hovor</string>
+    <string name="service_gui_CALL_ANSWER">%1$s Používateľ prijal hovor.</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk sa nepodarilo inicializovať %1$s\n Všetky mediálne hovory/služby budú vypnuté.\n %2$s</string>
+    <string name="service_gui_CALL_END">Diaľkový volajúci hovor ukončil: %1$s</string>
     <string name="service_gui_CALL_FAILED">Hovor zlyhal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">História hovorov</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Ali ste prepričani, da želite očistiti vse izbrane zapise klicev?</string>
-    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk sa nepodarilo inicializovať %1$s\n Všetky mediálne hovory/služby budú vypnuté.\n %2$s</string>
-    <string name="service_gui_CALL_WITH">Volajte s</string>
+    <string name="service_gui_CALL_INCOMING">Prichádzajúci hovor prijatý od: %1$s</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Prichádzajúci hovor</string>
+    <string name="service_gui_CALL_INITIATING_STATUS">Začatie hovoru</string>
+    <string name="service_gui_CALL_REJECTED">%1$s Používateľ odmietol hovor.</string>
+    <string name="service_gui_CALL_MISSED_CALL">Zmeškané hovory od:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Nenašli sme žiadne aktívne audio/video zariadenia, a preto sa nemohol uskutočniť hovor.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Nie je nakonfigurované žiadne zvukové zariadenie.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Nie je povolený žiadny zvukový kodek.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Zariadenie alebo kodek %1$s nie je úplne nakonfigurované v \'Nastavenia…\'. Skontrolujte a nastavte.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Chcete pokračovať v hovore?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">V ponuke %1$s sa nenašli žiadne zodpovedajúce formáty médií, ktoré by mohli prijať hovor. Skontrolujte nastavenie zariadenia a kodeku v časti \'Nastavenia…\'.</string>
+    <string name="service_gui_CALL_OUTGOING">Odchádzajúci hovor</string>
+    <string name="service_gui_CALL_OUTGOING_MSG">Volanie s %1$s&#8230;</string>
     <string name="service_gui_CALL_VIA">Hovor cez: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Videohovor</string>
+    <string name="service_gui_CALL_WITH">Volajte s</string>
+
     <string name="service_gui_CANCEL">Zrušiť</string>
     <string name="service_gui_CONTACT_INVALID">Vybraný kontakt nie je platný: %1$s</string>
+    <string name="service_gui_DISMISS">Zavrieť hovor</string>
     <string name="service_gui_DONE">Hotovo</string>
     <string name="service_gui_MAS">Označiť ako prečítané</string>
     <string name="service_gui_REASON_LABEL">Dôvod:</string>
@@ -290,7 +301,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Vytvoriť video most</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Vytvoriť / Pripojiť sa k videokonferencii</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Vytvorte novú videokonferenciu pre túto diskusnú miestnosť</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Nepodarilo sa nastaviť ukážku kamery na: %1$s; Výnimka: %2$s.</string>
+    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Nepodarilo sa nastaviť ukážku kamery na: %1$s; Výnimka: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Odpojený</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Odpojuje sa %1$s</string>
     <string name="service_gui_DENY">Odmietnuť</string>
@@ -306,7 +317,6 @@
     <string name="service_gui_ERROR_WAS">Chyba bola: %1$s</string>
     <string name="service_gui_EXIT">Ukončiť aplikáciu</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Rozšírené</string>
-    <string name="service_gui_FAILED_STATUS">Hovor zlyhal</string>
     <string name="service_gui_FFC_STATUS">Dostupný na diskusiu</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -414,9 +424,6 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Overenie CAPTCHA zlyhalo</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s CAPTCHA vypršal časový limit výzvy;\nProsim znovu sa pripojte k diskusnej miestnosti a skúste to znova.</string>
 
-    <string name="service_gui_INCOMING_CALL">Prichádzajúci hovor prijatý od: %1$s</string>
-    <string name="service_gui_INCOMING_CALL_STATUS">Prichádzajúci hovor</string>
-    <string name="service_gui_INITIATING_CALL_STATUS">Začatie hovoru</string>
     <string name="service_gui_INVITATION">Pozvánka:</string>
     <string name="service_gui_INVITATION_RECEIVED">Pozvánka bola prijatá</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">Používateľ %1$s vás pozval do diskusnej miestnosti %2$s. Túto pozvánku môžete prijať, odmietnuť alebo ignorovať.</string>
@@ -492,7 +499,6 @@
     <string name="service_gui_MSG_RECEIVED">Napísal (-a) %1$s</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Ak chcete poslať správu, musíte sa najprv prihlásiť.</string>
 
-    <string name="service_gui_MISSED_CALLS_TOOL_TIP">Zmeškané hovory od:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Nie je povolené viacnásobné prihlásenie. Nasledujúci účet: Meno používateľa: %1$s, Názov servera: %2$s bol odpojený.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Vzájomne pozastavené</string>
     <string name="service_gui_NAME">Meno</string>
@@ -532,8 +538,6 @@
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Prepnúť video</string>
     <string name="service_gui_MIC_CONTROL_TITLE">Úroveň zisku mikrofónu</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Upravte zvuk mikrofónu</string>
-    <string name="service_gui_OUTGOING_CALL">Odchádzajúci hovor</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Volanie s %1$s ...</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">%1$s nepodporuje prítomnosť</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">píše správu</string>
     <string name="service_gui_RECENT_MESSAGES">Posledné konverzácie</string>
@@ -732,7 +736,7 @@
     <string name="service_gui_CERT_INFO_PUB_KEY">Verejný kľúč:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">Bajty: %1$s:%2$s</string>
     <string name="service_gui_CERT_INFO_KEY_BITS_PRINT">Bity %1$s</string>
-    <string name="service_gui_CERT_INFO_EXP">exponent:</string>
+    <string name="service_gui_CERT_INFO_EXP">Exponent:</string>
     <string name="service_gui_CERT_INFO_KEY_SIZE">Veľkosť kľúča:</string>
     <string name="service_gui_CERT_INFO_SIGN">podpis:</string>
     <string name="service_gui_CONTINUE">ďalej</string>
@@ -897,6 +901,9 @@
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>An expected retained shared secret is missing.&lt;br/>&lt;b>SAS verification is required&lt;/b>&lt;br/>If SAS codes do not match then hangup and try again&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
 
+    <!-- DTLS-SRTP Securing -->
+    <string name="imp_media_security_ENCRYPTION_ENDED">Šifrovanie hovorov skončilo: %1$s</string>
+
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Autentifikácia kamaráta</string>
     <string name="plugin_otr_menu_CB_AUTO">Automaticky iniciovať súkromné správy</string>
@@ -926,7 +933,6 @@
     <string name="plugin_otr_authbuddydialog_CANCEL">Zrušiť</string>
     <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Zadajte odtlačok prsta, ktorý ste dostali od %1$s.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Pomoc</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">mám</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE_NOT">nemám</string>
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Môj odtlačok prsta za %1$s:%2$s</string>
@@ -1000,6 +1006,7 @@
 
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Automaticky objaví URI provizórnych služieb</string>
+    <string name="plugin_provisioning_BONJOUR">Bonjour</string>
     <string name="plugin_provisioning_CLIPBOARD_FAILED">Nepodarilo sa skopírovať UUID do schránky</string>
     <string name="plugin_provisioning_COPYTOCLIPBOARD">Skopírovať UUID do schránky</string>
     <string name="plugin_provisioning_CREDENTIALS">Posledné uložené poverovacie oprávnenia</string>

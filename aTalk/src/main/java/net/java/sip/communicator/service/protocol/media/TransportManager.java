@@ -387,8 +387,8 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Sends empty UDP packets to target destination data/control ports in order to open ports on
-     * NATs or and help RTP proxies latch onto our RTP ports.
+     * Sends empty UDP packets to target destination data/control ports in order
+     * to open ports on NATs or/and help RTP proxies latch onto our RTP ports.
      *
      * @param target <tt>MediaStreamTarget</tt>
      * @param type the {@link MediaType} of the connector we'd like to send the hole punching packet through.
@@ -396,7 +396,6 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      */
     public void sendHolePunchPacket(MediaStreamTarget target, MediaType type, RawPacket packet)
     {
-        Timber.i("Send NAT hole punch packets");
         // target may have been closed by remote action
         if (target == null)
             return;
@@ -410,6 +409,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
         if (packetCount == 0)
             return;
 
+        Timber.i("Send NAT hole punch packets to port for media: %s", type.name());
         try {
             final StreamConnector connector = getStreamConnector(type);
             if (connector.getProtocol() == StreamConnector.Protocol.TCP)
@@ -440,7 +440,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
                 }
             }
         } catch (Exception e) {
-            Timber.e(e, "Error cannot send to remote peer");
+            Timber.e(e, "Error cannot send to remote peer for media: %s ; %s", type.name(), target);
         }
     }
 

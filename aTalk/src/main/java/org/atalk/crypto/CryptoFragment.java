@@ -90,8 +90,8 @@ public class CryptoFragment extends OSGiFragment
     private static final Map<Object, Boolean> omemoCapable = new LinkedHashMap<>();
 
     /**
-     * A cache map of the Descriptor and its CryptoModeChangeListener. Need this as listener is
-     * being added only when the chatFragment is launch. Slide pages does not get updated.
+     * A cache map of the Descriptor and its CryptoModeChangeListener. Need this as listener is added only
+     * when the chatFragment is launched. Slide pages does not get updated.
      * ChatType change event is sent to CryptoModeChangeListener to update chatFragment background colour:
      */
     private static final Map<Object, CryptoModeChangeListener> cryptoModeChangeListeners = new LinkedHashMap<>();
@@ -138,7 +138,7 @@ public class CryptoFragment extends OSGiFragment
     private boolean isOmemoMode = false;
 
     /**
-     * Creates new instance of <tt>OtrFragment</tt>.
+     * Creates a new instance of <tt>OtrFragment</tt>.
      */
     public CryptoFragment()
     {
@@ -341,7 +341,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (InterruptedException | SmackException.NoResponseException | CryptoFailedException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
@@ -397,7 +397,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
                     | XMPPException.XMPPErrorException | CryptoFailedException
@@ -481,7 +481,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
                     | XMPPException.XMPPErrorException | CryptoFailedException | IOException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {

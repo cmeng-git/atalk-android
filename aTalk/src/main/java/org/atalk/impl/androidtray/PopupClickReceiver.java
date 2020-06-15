@@ -7,6 +7,8 @@ package org.atalk.impl.androidtray;
 
 import android.content.*;
 
+import net.java.sip.communicator.service.notification.NotificationData;
+
 import org.atalk.android.aTalkApp;
 
 import timber.log.Timber;
@@ -43,6 +45,9 @@ public class PopupClickReceiver extends BroadcastReceiver
     // private static final String ACTION_CLEAR_NOTIFICATION = "clear_notification";
     // private static final String ACTION_DISMISS_ERROR_NOTIFICATIONS = "dismiss_error";
 
+    public static final String ACTION_CALL_DISMISS = "call_dismiss";
+    public static final String ACTION_CALL_ANSWER = "call_answer";
+
     /**
      * <tt>Intent</tt> extra key that provides the notification id.
      */
@@ -74,6 +79,8 @@ public class PopupClickReceiver extends BroadcastReceiver
         filter.addAction(ACTION_REPLY_TO);
         filter.addAction(ACTION_MARK_AS_READ);
         filter.addAction(ACTION_SNOOZE);
+        filter.addAction(ACTION_CALL_ANSWER);
+        filter.addAction(ACTION_CALL_DISMISS);
 
         aTalkApp.getGlobalContext().registerReceiver(this, filter);
     }
@@ -100,6 +107,8 @@ public class PopupClickReceiver extends BroadcastReceiver
 
         String action = intent.getAction();
         Timber.d("Popup action: %s", action);
+        if (action == null)
+            return;
 
         switch (action) {
             case ACTION_POPUP_CLICK:
@@ -113,6 +122,8 @@ public class PopupClickReceiver extends BroadcastReceiver
             case ACTION_POPUP_CLEAR:
             case ACTION_MARK_AS_READ:
             case ACTION_SNOOZE:
+            case ACTION_CALL_ANSWER:
+            case ACTION_CALL_DISMISS:
                 notificationHandler.fireNotificationClicked(notificationId, action);
                 break;
 
@@ -187,6 +198,28 @@ public class PopupClickReceiver extends BroadcastReceiver
     {
         Intent intent = new Intent();
         intent.setAction(ACTION_SNOOZE);
+        intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
+        return intent;
+    }
+
+    /**
+     * Creates call dismiss <tt>Intent</tt> for notification popup identified by given <tt>notificationId</tt>.
+     *
+     * @param notificationId the id of popup message notification.
+     * @return new dismiss <tt>Intent</tt> for given <tt>notificationId</tt>.
+     */
+    public static Intent createCallDismiss(int notificationId)
+    {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_CALL_DISMISS);
+        intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
+        return intent;
+    }
+
+    public static Intent createCallAnswer(int notificationId)
+    {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_CALL_ANSWER);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;
     }

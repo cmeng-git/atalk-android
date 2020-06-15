@@ -6,7 +6,8 @@
 package org.atalk.android.gui.settings;
 
 import android.app.Activity;
-import android.content.*;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
+import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.ThemeHelper.Theme;

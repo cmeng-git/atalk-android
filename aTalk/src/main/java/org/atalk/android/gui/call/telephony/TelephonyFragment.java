@@ -16,7 +16,7 @@
  */
 package org.atalk.android.gui.call.telephony;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.*;
 import android.view.*;
@@ -30,7 +30,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountsListAdapter;
-import org.atalk.android.gui.util.AndroidCallUtil;
+import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jxmpp.jid.Jid;
@@ -40,6 +40,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import java.util.*;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl.GOOGLE_VOICE_DOMAIN;
 
@@ -56,7 +57,8 @@ public class TelephonyFragment extends OSGiFragment
     private static String mLastJid = null;
     private static String mDomainJid;
 
-    private Activity mActivity;
+    private Context mContext;
+    FragmentActivity fragmentActivity;
     private Spinner accountsSpinner;
     private RecipientSelectView vRecipient;
     private TextView vTelephonyDomain;
@@ -76,22 +78,16 @@ public class TelephonyFragment extends OSGiFragment
     }
 
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-        mActivity = activity;
+        super.onAttach(context);
+        mContext = context;
+        fragmentActivity = getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        // All not working in aTalk : set background color in layout instead
-        // ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(mActivity, aTalkApp.getAppThemeResourceId());
-        // LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
-        // View content = localInflater.inflate(R.layout.telephony, container, false);
-
-        // inflater.getContext().setTheme(aTalkApp.getAppThemeResourceId());
-
         super.onCreate(savedInstanceState);
         View content = inflater.inflate(R.layout.telephony, container, false);
 
@@ -184,7 +180,7 @@ public class TelephonyFragment extends OSGiFragment
                 idx++;
             }
         }
-        AccountsListAdapter accountsAdapter = new AccountsListAdapter(mActivity,
+        AccountsListAdapter accountsAdapter = new AccountsListAdapter(getActivity(),
                 R.layout.select_account_row, R.layout.select_account_dropdown, accounts, true);
         accountsSpinner.setAdapter(accountsAdapter);
 
@@ -201,10 +197,10 @@ public class TelephonyFragment extends OSGiFragment
     private void initButton(final View content)
     {
         final Button buttonAudio = content.findViewById(R.id.button_audio);
-        buttonAudio.setOnClickListener(v -> onCallClicked(content, false));
+        buttonAudio.setOnClickListener(v -> onCallClicked(false));
 
         final Button buttonVideo = content.findViewById(R.id.button_video);
-        buttonVideo.setOnClickListener(v -> onCallClicked(content, true));
+        buttonVideo.setOnClickListener(v -> onCallClicked(true));
 
         final Button buttonCancel = content.findViewById(R.id.button_cancel);
         buttonCancel.setOnClickListener(v -> closeFragment());
@@ -213,10 +209,9 @@ public class TelephonyFragment extends OSGiFragment
     /**
      * Method fired when one of the call buttons is clicked.
      *
-     * @param content <tt>View</tt>
      * @param videoCall vide call is true else audio call
      */
-    public void onCallClicked(View content, boolean videoCall)
+    private void onCallClicked(boolean videoCall)
     {
         String recipient;
         if (!vRecipient.isEmpty()) {
@@ -233,26 +228,28 @@ public class TelephonyFragment extends OSGiFragment
 
         recipient = recipient.replace(" ", "");
         mLastJid = recipient;
-        if (recipient.contains("@")) {
-            try {
-                Jid phoneJid = JidCreate.from(recipient);
-            } catch (XmppStringprepException | IllegalArgumentException e) {
-                aTalkApp.showToastMessage(R.string.unknown_recipient);
-                return;
-            }
-        }
-        else {
+
+        if (!recipient.contains("@")) {
             String telephonyDomain = ViewUtil.toString(vTelephonyDomain);
             recipient += "@" + telephonyDomain;
         }
 
-        AndroidCallUtil.createCall(mActivity, recipient, mPPS, videoCall);
+        Jid phoneJid;
+        try {
+            phoneJid = JidCreate.from(recipient);
+        } catch (XmppStringprepException | IllegalArgumentException e) {
+            aTalkApp.showToastMessage(R.string.unknown_recipient);
+            return;
+        }
+
+        AndroidCallUtil.createCall(mContext, mPPS, phoneJid, videoCall);
         closeFragment();
     }
 
     private void closeFragment()
     {
         Fragment phoneFragment = getParentFragmentManager().findFragmentById(android.R.id.content);
-        getActivity().getSupportFragmentManager().beginTransaction().remove(phoneFragment).commit();
+        if (phoneFragment != null)
+            fragmentActivity.getSupportFragmentManager().beginTransaction().remove(phoneFragment).commit();
     }
 }

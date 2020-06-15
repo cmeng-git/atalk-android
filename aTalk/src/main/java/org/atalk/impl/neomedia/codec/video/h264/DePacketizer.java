@@ -150,8 +150,7 @@ public class DePacketizer extends AbstractCodec2
      */
     public DePacketizer()
     {
-        super("H264 DePacketizer",
-                VideoFormat.class,
+        super("H264 DePacketizer", VideoFormat.class,
                 new VideoFormat[]{new VideoFormat(Constants.H264)});
 
         List<Format> inputFormats = new ArrayList<>();
@@ -160,7 +159,7 @@ public class DePacketizer extends AbstractCodec2
          * Apart from the generic Constants.H264_RTP VideoFormat, add the possible respective
          * ParameterizedVideoFormats because ParameterizedVideoFormat will not match every
          * VideoFormat due to the fact that a missing packetization-mode format parameter is
-         * interpreted as it having a value of 0.
+         * interpreted as having a value of 0.
          */
         Collections.addAll(inputFormats, Packetizer.SUPPORTED_OUTPUT_FORMATS);
         this.inputFormats = inputFormats.toArray(EMPTY_FORMATS);

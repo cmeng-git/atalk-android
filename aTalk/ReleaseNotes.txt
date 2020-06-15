@@ -2,6 +2,160 @@ Project aTalk-Android Release Notes
 
 =========================================================================
 Author:         cmeng
+Upload Date:	06/15/2020
+Version:		2.3.0 (1130)
+
+- Remove 'Miss Call Notification' option from android notification channel; miss call is controlled via 'Call Notification'
+- Add popup notification option for NotificationManager.CALL_SECURITY_ERROR event independent of SECURITY_MESSAGE
+  * AndroidPopup: subCategorized mSmallIcon for WARNING_MESSAGE_TYPE, MISSED_CALL_MESSAGE_TYPE and Others e.g. SECURITY_MESSAGE
+  * PopupMessageNotificationHandlerImpl: int messageType
+- Do not fire missed call notifications if user dismissed the call:
+  CallPeerJabberImpl#hangup with reason code set to CallPeerChangeEvent.NORMAL_CALL_CLEARING
+
+- Show heads-up notification for an incoming message only if aTalk is in background.
+
+- Move NotificationHelper() init to aTalkApp onCreate, so to get ready earlier to avoid RemoteServiceException:
+  Bad notification for startForeground: RuntimeException: invalid channel for service notification:
+  Notification(channel=default pri=0 contentView=null vibrate=null sound=null defaults=0x0 flags=0x60 color=0x00000000 vis=PRIVATE semFlags=0x0 semPriority=0 semMissedCount=0)
+
+- Fix call problem with pidgin v2.13.0 having improper implementation sending 4 instances <jingle xmlns='urn:xmpp:jingle:1' action='session-accept'..>
+  * CallPeerJabberImpl#processSessionAccept(): accept only first one and ignore all others; otherwise creates havoc in aTalk i.e.:
+  * a. Accidentally stopZrtp() because of new audio stream (new accept), and this will clear all zrtp setup e.g. zrtpEngine == null (NPE)
+  * b. VideoActivity#doFinishActivity() does not hangup call properly and the send stream remains active even after call end
+  * c. Android system volume get stuck in call setOutputVolumeControl(audioStream, call) settings
+
+- Implement XEP-0353: Jingle Message Initiation: https://xmpp.org/extensions/xep-0353.htm
+  Block and skip handling of any incoming delayed Jingle Messages
+- Use common Jingle session id for Jingle <propose/>, session-initiate, and media Call etc for easy handling of call notifications and actions
+- Add new CallState#CALL_AUTO_ANSWER to handle call via Jingle Message Initiation.
+- Add PopupMessage#EvenType - the type of the event that the popup message for for better handling of the various popup messages.
+- Add new message type to SystrayService i.e. MISSED_CALL_MESSAGE_TYPE, JINGLE_INCOMING_CALL and JINGLE_INCOMING_CALL
+- Add CallState.CALL_AUTO_ANSWER action in CallListener class to handle Jingle Message Accept and future auto-answer support.
+- Change VideoCallActivity property to allow launching when device is in standby
+
+- Fix call compatibility with conversations:
+  * Conversation use Jingle Message Initiation for call setup - implement XEP-0353.
+  * Add missing 'setup' attribute for fingerprint extension in jingle session-initiate: XEP-0320: Use of DTLS-SRTP in Jingle Sessions
+    <fingerprint xmlns='urn:xmpp:jingle:apps:dtls:0' hash='sha-256' setup='actpass'/>
+  * Conversations only accept setup.ACTPASS when aTalk is the initiator; Aborted when use setup.PASSIVE
+  * Jingle session-initiate sid must be the same as the JingleMessage id, otherwise conversations will immediately terminate the call.
+    Copy the JingleMessage id value to CallJabberImpl for use when creating session-initiate
+  * Copy GroupExtension from session-initiate to session-accept - required by conversations
+    Conversations v2.8.5 expects transport-info trailing session-accept, otherwise gives warning:
+    W/conversations: hawk@atalk.sytes.net: no identification tags found in initial offer. we won't be able to calculate mLineIndices
+    hawk@atalk.sytes.net: received unhandled jingle action session-info
+  * conversations check for attributes ufrag and pwd in <transport/>; check unfrag (null) for space => error
+    aTalk must include the same values as specified in session-accept transport-info
+    <transport xmlns='urn:xmpp:jingle:transports:ice-udp:1' ufrag='aKw6' pwd='lMi0g0i9hPGJHPeb1TXlkZ9U'/>
+  * Rejected by conversation with whitespace in value for <parameter name='imageattr' value='send * recv *'/>
+    Negotiation of Generic Image Attributes in the Session Description Protocol (SDP); https://tools.ietf.org/html/rfc6236
+    3.2.  Considerations
+    3.2.1.  No imageattr in First Offer
+    When the initial offer does not contain the 'imageattr' attribute, the rules in Section 3.1.1.2 require the attribute to be absent in the answer.
+    Make aTalk compliance i.e. excluded 'imageattr' if none in the initial offer
+  * Caller aTalk rejected: conversations failed with bouncyCastle certificate verification stage - illegal parameter:
+    Certificate is signed with SignatureAlgorithm.ecdsa not supported by aTalk
+    TlsServerImpl.getCertificateRequest to include ClientCertificateType.ecdsa_sign i.e:
+    short[] certificateTypes = new short[]{ ClientCertificateType.rsa_sign, ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
+  * aTalk Video call with conversations cause conversations to crash for h264 codec:
+    eu.siacs.conversations W/System.err: java.lang.IllegalArgumentException: h264 is not a constant in org.webrtc.VideoCodecType
+     When remove H264 from codec offer, aTalk is then able to send/received VP8 video without problem;
+     However conversations still has problem decode and display VP8 video.
+     Reason: aTalk hardware codedc supported packetization-mode does not really match Conversations (no common codec): need more investigation
+     a. send from aalk:
+        <payload-type id='105' name='h264' clockrate='90000'>
+          <parameter name='profile-level-id' value='42E01f'/>
+          <parameter name='packetization-mode' value='1'/>
+        </payload-type>
+        <payload-type id='99' name='h264' clockrate='90000'>
+          <parameter name='profile-level-id' value='42E01f'/>
+        </payload-type>
+     b. send from Conversations:
+        <payload-type name='rtx' id='99' clockrate='90000'>
+          <parameter name='apt' value='98'/>
+        </payload-type>
+          <payload-type name='H264' id='100' clockrate='90000'>
+          <parameter name='level-asymmetry-allowed' value='1'/>
+          <parameter name='packetization-mode' value='1'/>
+          <parameter name='profile-level-id' value='42e01f'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' type='goog-remb'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' type='transport-cc'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' subtype='fir' type='ccm'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' type='nack'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' subtype='pli' type='nack'/>
+        </payload-type>
+  * OperationSetAutoAnswerJabberImpl: Auto-accept call if call accept via Jingle Message <accept/>
+
+- jisti 2.11.5624/5611 compatibility (video call only work on 5611):
+  * jitsi does not respect the setting of <rtcp-mux/> in transport-info, continues to send non rtcp-mux transport info
+    aTalk will realign itself to jitsi non rtcp-mux after received first call from jitsi
+  * DTLS encryption failed with "cannot export keying material without "extended_master_secret" when aTalk is a server
+    Make aTalk backward compatible with jitsi
+
+- Support call via JingleMessage protocol or legacy if peer does not support XEP-0353: Jingle Message Initiation
+- Default Opus Codec with useinbandfec=1 and usedtx=0 in advertised transport-info
+  Not in rfc7587 specification: opusFormatParams.put("minptime", "10"), so not advertised
+
+- Ensure transport-info of session-accept must have the two attributes i.e. ufrag and pwd specified
+  * IceUdpTransportManager#createTransportPacketExtension must set both the attribute values
+  * IceUdpTransportManager#wrapupConnectivityEstablishment must not strip the two attributes if transport-info contains child elements
+
+- aTalk cannot handle Jingle transport-info properly when sent separately from session-initialize; session-accept with trailing transport-info
+  * Break processJingle() handler into Synchronized (callPeer == null) and Non-Synchronized (callPeer != null)
+  * Conversations sends trailing audio/video transport one after another for session-initiate and session-accept.
+    Merge session-initiate with trailing transport-info's before being processed by OperationSetBasicTelephonyJabberImpl#processJingle();
+    otherwise need to synchronously execute OperationSetBasicTelephonyJabberImpl#processJingle() to completion before process trailing transport-info
+  * Must not start generating/processing local transport candidates establishment, before remote transport-info are processed
+    - causing problem hold local transport until remote has completed.
+  * For session-accept, must consolidated both transport-info's i.e. audio & video before process;
+    Otherwise Ice4j#Agent#pruneNonMatchedStreams() prune video component when process the audio transport-info => creating problem.
+
+- Always enable <rtcp-mux/> mode for all calls.
+- NotificationServiceImpl#checkDefaultAgainstLoadedNotification: allow update of PopupMessageAction with new setting (no default)
+- Enhance NotificationService to support sub-category message Type for Notification event
+
+- Fix RtpDescriptionExtension implementation errors:
+  * RtcpmuxExtension is childElement of RtpDescriptionExtension and not IceUdpTransportExtension.
+    XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22) https://xmpp.org/extensions/xep-0167.html
+    <rtcp-mux/> specifies the ability to multiplex RTP Data and Control Packets on a single port as described in RFC 5761 [13].
+  * Multiplexing RTP Data and Control Packets on a Single Port (April 2010), also propose to be included in transport
+    https://tools.ietf.org/html/rfc5761 (5.1.3. Interactions with ICE)
+  * Fix incorrect ExtensionProvider specified for <description/>:<rtcp-mux/>
+    ProviderManager.addExtensionProvider( RtcpmuxExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+        new DefaultExtensionElementProvider<>(RtcpmuxExtension.class));
+  * CallPeerMediaHandlerJabberImpl#processOffer() must check for rtcpmux in RtpDescriptionExtension i.e.
+        boolean rtcpmux = false;
+        if (!description.getChildExtensionsOfType(RtcpmuxExtension.class).isEmpty() ||
+            !transport.getChildExtensionsOfType(RtcpmuxExtension.class).isEmpty()) {
+            rtcpmux = true;
+            getTransportManager().setRtcpmux(true);
+        }
+  * Add chileElement RtcpmuxExtension support in RtpDescriptionExtension
+  * Add parameter RtcpMux in JingleUtils#createDescription() for <rtcp-mux/> inclusion
+
+- Cleanup DtlsFingerprintExtension class removing obsoleted 'required' to confirm with
+  XEP-0320: Use of DTLS-SRTP in Jingle Sessions 0.3.1 (2015-10-15).
+
+- Android 10: incoming (audio or video) calls fail to wake android device in standby for ring tone alert.
+  Need to implement full-screen intent to start an activity from the background (standby)
+
+- srtp classes improvements
+  * DtlsPacketTransformer#initializeSRTPTransformer: use notifyHandshakeComplete() callback to init
+  * Report any handShaking alert if any via srtpListener.securityMessageReceived()
+  * Ensure the actual srtp security status is used for VideoActivity() encryption for display
+  * TlsServierImpl and TslCleintImple now use getSupportedCipherSuites() in bctls DefaultTls_xxx
+
+- OTR not interoperable with pidgin
+  * XEP-0201: Best Practices for Message Threads; recommended only but not implemented by pidgin
+  * OperationSetBasicInstantMessagingJabberImpl#getThreadIDForAddress(); create one if none found
+
+- NotificationHelper: Set all android notification channels' alert to have silent tone, as aTalk have its own event handler
+- Default Opus JNIEncoder#useDtx to false; MediaUtils=>opusFormatParams.put("useinbandfec", "1");
+- FFR: Prevent ChatRoomCreateDialog crash on newly installed aTalk where there is no local or server chatRoom.
+- Port to smack library new MessageBuilder() replacing the deprecated new Message()
+
+=========================================================================
+Author:         cmeng
 Upload Date:	05/13/2020
 Version:		2.2.5 (1125)
 
@@ -44,7 +198,7 @@ Upload Date:	04/30/2020
 - Ensure Text to Speech when enabled remains active even when the chatSession is not in focus.
 - TTSActivity must check and blocked TTS access if TTS voice is not available on device
 - Display android device cameras sorted by name for user selection in Settings...
-  Camera name changed (Front Camera => Front): Must force valie in DeviceConfiguration#extractConfiguredVideoCaptureDevice to a valid value
+  Camera name changed (Front Camera => Front): Must force valid in DeviceConfiguration#extractConfiguredVideoCaptureDevice to a valid value
 - Add new call history records display UI in main pager selection
 - Add new UI language support for Slovak
 
@@ -131,7 +285,8 @@ Version:		2.2.1 (1121)
 Author:         cmeng / MilanKral
 Upload Date:	03/17/2020
 - Add user selectable Themes support
-- Implement user selectable option for heads-up notification
+- Implement user selectable option for heads-up notification.
+  Must ensure android Notification category 'show as pop-up' is also enabled for android-N.
 - Support download and display of url image in src tag embedded in xhtml message
 - Share of youtube and other social media links are tagged with thumbnail and title
   see https://noembed.com

@@ -42,6 +42,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -174,6 +175,9 @@
         <activity
             android:name="org.atalk.android.gui.call.VideoCallActivity"
             android:hardwareAccelerated="true"
+            android:label="@string/APPLICATION_NAME" />
+        <activity
+            android:name="org.atalk.android.gui.call.JingleMessageCallActivity"
             android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.call.ReceivedCallActivity"

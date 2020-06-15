@@ -14,6 +14,7 @@ import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.systray.SystrayService;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;
@@ -42,6 +43,9 @@ import timber.log.Timber;
 /**
  * Listens to various events which are related to the display and/or playback of notifications
  * and shows/starts or hides/stops the notifications in question.
+ *
+ * @see #registerDefaultNotifications
+ * This is where all the events actions e.g. notification popup, vibrate and alert are defined for each notification
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -184,7 +188,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
         Map<String, Object> extras = new HashMap<>();
         extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, chatDescriptor);
-        notificationService.fireNotification(eventType, messageTitle, message, contactIcon, extras);
+        notificationService.fireNotification(eventType, SystrayService.INFORMATION_MESSAGE_TYPE,
+                messageTitle, message, contactIcon, extras);
 
         // Reset the popupActionHandler to enable for ACTION_POPUP_MESSAGE for incomingMessage if it was disabled
         if (popupActionHandler != null)
@@ -195,11 +200,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Fires a notification for the given event type through the <tt>NotificationService</tt>. The
      * event type is one of the static constants defined in the <tt>NotificationManager</tt> class.
      *
-     * <b>Note</b>: The uses of the method at the time of this writing do not take measures to
-     * stop looping sounds if the respective notifications use them i.e. there is implicit
-     * agreement that the notifications fired through the method do not loop sounds.
-     * Consequently, the method passes arguments to <tt>NotificationService</tt> so that sounds
-     * are played once only.
+     * <b>Note</b>: The uses of the method at the time of this writing do not take measures to stop looping sounds
+     * if the respective notifications use them i.e. there is implicit agreement that the notifications fired through
+     * the method do not loop sounds. Consequently, the method passes arguments to <tt>NotificationService</tt>
+     * so that sounds are played once only.
      *
      * @param eventType the event type for which we want to fire a notification
      */
@@ -234,15 +238,16 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * the method passes arguments to <tt>NotificationService</tt> so that sounds are played once only.
      *
      * @param eventType the event type of the notification to be fired
+     * @param msgType the notification sub-category message type
      * @param messageTitle the title of the message to be displayed by the notification to be fired if such a
      * display is supported
      * @param message the message to be displayed by the notification to be fired if such a display is supported
      */
-    private static void fireNotification(String eventType, String messageTitle, String message)
+    private static void fireNotification(String eventType, int msgType, String messageTitle, String message)
     {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null) {
-            notificationService.fireNotification(eventType, messageTitle, message, null);
+            notificationService.fireNotification(eventType, msgType, messageTitle, message, null);
         }
     }
 
@@ -272,7 +277,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             if (loopCondition != null) {
                 extras.put(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA, loopCondition);
             }
-            return notificationService.fireNotification(eventType, messageTitle, message, null, extras);
+            return notificationService.fireNotification(eventType,
+                    SystrayService.INFORMATION_MESSAGE_TYPE, messageTitle, message, null, extras);
         }
     }
 
@@ -712,18 +718,18 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Implements CallListener.incomingCallReceived. When a call is received plays the ring phone
-     * sound to the user and gathers caller information that may be used by a user-specified
-     * command (incomingCall event trigger).
+     * Implements CallListener.incomingCallReceived. Upon received a call, plays the phone ring tone to the user
+     * and gathers caller information that may be used by a user-specified command (incomingCall event trigger).
      *
      * @param evt the <tt>CallEvent</tt>
      */
     public void incomingCallReceived(CallEvent evt)
     {
         try {
+            Map<String, String> peerInfo = new HashMap<>();
+
             Call call = evt.getSourceCall();
             CallPeer peer = call.getCallPeers().next();
-            Map<String, String> peerInfo = new HashMap<>();
             String peerName = peer.getDisplayName();
 
             peerInfo.put("caller.uri", peer.getURI());
@@ -737,8 +743,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
              * to stop it then. That's why the loopCondition will weakly reference the call.
              */
             final WeakReference<Call> weakCall = new WeakReference<>(call);
+
             NotificationData notification = fireNotification(INCOMING_CALL, "",
-                    aTalkApp.getResString(R.string.service_gui_INCOMING_CALL, peerName), peerInfo, () -> {
+                    aTalkApp.getResString(R.string.service_gui_CALL_INCOMING, peerName), peerInfo, () -> {
                         Call call1 = weakCall.get();
                         if (call1 == null)
                             return false;
@@ -1109,7 +1116,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Fired when peer's state is changed
+     * Fired when peer's state has changed
      *
      * @param evt fired CallPeerEvent
      */
@@ -1120,16 +1127,16 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             Call call = peer.getCall();
             CallPeerState newState = (CallPeerState) evt.getNewValue();
             CallPeerState oldState = (CallPeerState) evt.getOldValue();
+            Timber.d("Peer State Changed to %s", newState);
 
             // Play the dialing audio when in connecting and initiating call state.
             // Stop the dialing audio when we enter any other state.
             if ((newState == CallPeerState.INITIATING_CALL)
                     || (newState == CallPeerState.CONNECTING)) {
                 /*
-                 * The loopCondition will stay with the notification sound until the latter is
-                 * stopped. If by any chance the sound fails to stop by the time the peer is no
-                 * longer referenced, do try to stop it then. That's why the loopCondition will
-                 * weakly reference the peer.
+                 * The loopCondition will stay with the notification sound until the latter is being stopped.
+                 * If by any chance the sound fails to stop by the time the peer is no longer referenced,
+                 * do try to stop it then. That's why the loopCondition will weakly reference the peer.
                  */
                 final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
 
@@ -1144,14 +1151,13 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             }
             else {
                 NotificationData notification = callNotifications.get(call);
-
                 if (notification != null)
                     stopSound(notification);
             }
 
+            // If we were already in state of CONNECTING_WITH_EARLY_MEDIA, then the server has already
+            // taking care of playing the notification, so we don't need to fire a notification here.
             if (newState == CallPeerState.ALERTING_REMOTE_SIDE
-                    // if we were already in state CONNECTING_WITH_EARLY_MEDIA the server is already taking care
-                    // of playing the notifications so we don't need to fire a notification here.
                     && oldState != CallPeerState.CONNECTING_WITH_EARLY_MEDIA) {
                 final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
                 NotificationData notification = fireNotification(OUTGOING_CALL, () -> {
@@ -1205,7 +1211,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     {
         try {
             ResourceManagementService resources = NotificationWiringActivator.getResources();
-            fireNotification(CALL_SAVED,
+            fireNotification(CALL_SAVED, SystrayService.NONE_MESSAGE_TYPE,
                     aTalkApp.getResString(R.string.plugin_callrecordingconfig_CALL_SAVED),
                     aTalkApp.getResString(R.string.plugin_callrecordingconfig_CALL_SAVED_TO, recorder.getFilename()));
         } catch (Throwable t) {
@@ -1231,8 +1237,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         notificationService.registerDefaultNotificationForEvent(INCOMING_MESSAGE,
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
         notificationService.registerDefaultNotificationForEvent(INCOMING_MESSAGE,
-                new SoundNotificationAction(SoundProperties.INCOMING_MESSAGE, -1, true,
-                        false, false));
+                new SoundNotificationAction(SoundProperties.INCOMING_MESSAGE, -1,
+                        true, false, false));
 
         // Register incoming call notifications.
         notificationService.registerDefaultNotificationForEvent(INCOMING_CALL,
@@ -1266,22 +1272,24 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         notificationService.registerDefaultNotificationForEvent(SECURITY_MESSAGE,
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
 
-        // Register sound notification for security state on during a call.
-        notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ON,
-                new SoundNotificationAction(SoundProperties.CALL_SECURITY_ON, -1, false,
-                        true, false));
-
         // Register sound notification for security state off during a call.
         notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ERROR,
+                NotificationAction.ACTION_POPUP_MESSAGE, null, null);
+        notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ERROR,
                 new SoundNotificationAction(SoundProperties.CALL_SECURITY_ERROR, -1,
+                        false, true, false));
+
+        // Register sound notification for security state on during a call.
+        notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ON,
+                new SoundNotificationAction(SoundProperties.CALL_SECURITY_ON, -1,
                         false, true, false));
 
         // Register sound notification for incoming files.
         notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
         notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
-                new SoundNotificationAction(SoundProperties.INCOMING_FILE, -1, true, false,
-                        false));
+                new SoundNotificationAction(SoundProperties.INCOMING_FILE, -1,
+                        true, false, false));
 
         // Register notification for saved calls.
         notificationService.registerDefaultNotificationForEvent(CALL_SAVED,
@@ -1289,7 +1297,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Processes the received security message.
+     * Processes the received security message and security errors.
      *
      * @param evt the event we received
      */
@@ -1302,25 +1310,28 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                 // Don't play alert sound for Info or warning.
                 case SrtpListener.INFORMATION:
                     messageTitleKey = "service.gui.SECURITY_INFO";
-                    break;
+                    aTalkApp.showToastMessage(evt.getI18nMessage());
+                    return;
 
                 case SrtpListener.WARNING:
                     messageTitleKey = "service.gui.SECURITY_WARNING";
                     break;
 
-                // Security cannot be established! Play an alert sound.
+                // Security cannot be established! Play an alert sound and popup message
                 case SrtpListener.SEVERE:
                 case SrtpListener.ERROR:
                     messageTitleKey = "service.gui.SECURITY_ERROR";
-                    fireNotification(CALL_SECURITY_ERROR);
-                    break;
+                    fireNotification(CALL_SECURITY_ERROR, SystrayService.WARNING_MESSAGE_TYPE,
+                            NotificationWiringActivator.getResources().getI18NString(messageTitleKey), evt.getI18nMessage());
+                    return;
 
                 default:
-                    // Whatever other severity there is or will be, we do not how to react to it yet.
+                    // Whatever other severity there is or will be, we do not know how to react to it yet.
                     messageTitleKey = null;
             }
+
             if (messageTitleKey != null) {
-                fireNotification(SECURITY_MESSAGE,
+                fireNotification(SECURITY_MESSAGE, SystrayService.INFORMATION_MESSAGE_TYPE,
                         NotificationWiringActivator.getResources().getI18NString(messageTitleKey), evt.getI18nMessage());
             }
         } catch (Throwable t) {

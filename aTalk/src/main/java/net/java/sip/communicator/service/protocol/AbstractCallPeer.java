@@ -393,7 +393,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     {
         CallPeerSecurityMessageEvent evt = new CallPeerSecurityMessageEvent(this, messageType, i18nMessage, severity);
 
-        Timber.d("Dispatching CallPeerSecurityFailedEvent Message to %s listeners: %s",
+        Timber.d("Dispatching CallPeer Security Message Events to %s listeners:\n%s",
                 callPeerSecurityListeners.size(), evt.toString());
 
         Iterator<CallPeerSecurityListener> listeners;
@@ -755,6 +755,6 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     @Override
     public String toString()
     {
-        return getDisplayName() + " <" + getAddress() + ">;status=" + getState().getStateString();
+        return getDisplayName() + " <" + getAddress() + ">; status=" + getState().getStateString();
     }
 }

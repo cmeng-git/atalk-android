@@ -31,7 +31,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
     /**
      * The {@link Class} that the packets we will be parsing here belong to.
      */
-    private final Class<EE> packetClass;
+    private final Class<EE> stanzaClass;
 
     /**
      * Creates a new packet provider for the specified packet extensions.
@@ -41,7 +41,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
      */
     public DefaultExtensionElementProvider(Class<EE> c)
     {
-        this.packetClass = c;
+        this.stanzaClass = c;
     }
 
     /**
@@ -57,16 +57,18 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
     public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException, SmackParsingException
     {
-        EE packetExtension = null;
+        EE stanzaExtension = null;
         try {
-            packetExtension = packetClass.newInstance();
+            stanzaExtension = stanzaClass.newInstance();
         } catch (IllegalAccessException | InstantiationException ignore) {
+            Timber.w("Unknown stanza class: %s", parser.getName());
+            return null;
         }
 
         // first, set all attributes
         int attrCount = parser.getAttributeCount();
         for (int i = 0; i < attrCount; i++) {
-            packetExtension.setAttribute(parser.getAttributeName(i), parser.getAttributeValue(i));
+            stanzaExtension.setAttribute(parser.getAttributeName(i), parser.getAttributeValue(i));
         }
 
         // now parse the sub elements
@@ -80,14 +82,13 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
             elementName = parser.getName();
             namespace = parser.getNamespace();
 
-            Timber.log(TimberLog.FINER, "Parsing %s; ns: %s; class: %s", elementName, namespace,
-                    packetExtension.getClass().getSimpleName());
-
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
+                // Timber.d("<%s %s/> class: %s", elementName, namespace, packetExtension.getClass().getSimpleName());
+
                 ExtensionElementProvider provider = ProviderManager.getExtensionProvider(elementName, namespace);
                 if (provider == null) {
-                    // Extension element provider may not have added properly
-                    Timber.w("No provider for element: %s; namespace: %s", elementName, namespace);
+                    // Extension element provider may not have added properly if null
+                    Timber.w("No provider for <%s %s/>", elementName, namespace);
                 }
                 else {
                     ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
@@ -96,20 +97,20 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
                             ((AbstractExtensionElement) childExtension).setNamespace(namespace);
                         }
                     }
-                    packetExtension.addChildExtension(childExtension);
+                    stanzaExtension.addChildExtension(childExtension);
                 }
             }
             if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(packetExtension.getElementName())) {
+                if (parser.getName().equals(stanzaExtension.getElementName())) {
                     done = true;
                 }
             }
             if (eventType == XmlPullParser.Event.TEXT_CHARACTERS) {
                 String text = parser.getText();
-                packetExtension.setText(text);
+                stanzaExtension.setText(text);
             }
-            Timber.log(TimberLog.FINER, "Done parsing: %s", packetExtension.getClass().getSimpleName());
+            Timber.log(TimberLog.FINER, "Done parsing: %s", stanzaExtension.getClass().getSimpleName());
         }
-        return packetExtension;
+        return stanzaExtension;
     }
 }

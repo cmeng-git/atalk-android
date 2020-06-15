@@ -11,8 +11,8 @@ import org.xmpp.extensions.AbstractExtensionElement;
 import javax.xml.namespace.QName;
 
 /**
- * The element containing details about an encryption algorithm that could be used during a jingle
- * session.
+ * The element containing details about an encryption algorithm that could be used during
+ * a jingle session. XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)
  *
  * @author Emil Ivov
  * @author Vincent Lucas

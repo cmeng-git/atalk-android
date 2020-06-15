@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
@@ -16,6 +14,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.jingle.IceUdpTransportExtension;
+import org.xmpp.extensions.jingle.RtpDescriptionExtension;
 import org.xmpp.extensions.jingle.element.JingleContent;
 
 import java.net.InetAddress;
@@ -232,10 +233,10 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * executed in a separate thread. Candidate harvest would then need to be concluded in the
      * {@link #wrapupCandidateHarvest()} method which would be called once we absolutely need the candidates.
      *
-     * @param theirOffer a media description offer that we've received from the remote party and that we should
-     * use in case we need to know what transports our peer is using.
-     * @param ourAnswer the content descriptions that we should be adding our transport lists to (although not
-     * necessarily in this very instance).
+     * @param theirOffer a media description offer that we've received from the remote party
+     * and that we should use in case we need to know what transports our peer is using.
+     * @param ourAnswer the content descriptions that we should be adding our transport lists to.
+     * This is used i.e. when their offer is null, for sending the Jingle session-initiate offer.
      * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
      * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
      * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
@@ -348,28 +349,6 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                     ourContent.addChildExtension(pe);
             }
         }
-    }
-
-    /**
-     * Starts transport candidate harvest. This method should complete rapidly and, in case of
-     * lengthy procedures like STUN/TURN/UPnP candidate harvests are necessary, they should be
-     * executed in a separate thread. Candidate harvest would then need to be concluded in the
-     * {@link #wrapupCandidateHarvest()} method which would be called once we absolutely need the candidates.
-     *
-     * @param ourOffer the content descriptions that we should be adding our transport lists to (although not
-     * necessarily in this very instance).
-     * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
-     * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
-     * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
-     * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
-     * included in the result of {@link #wrapupCandidateHarvest()}.
-     * @throws OperationFailedException if we fail to allocate a port number.
-     */
-    public void startCandidateHarvest(List<JingleContent> ourOffer, TransportInfoSender transportInfoSender)
-            throws OperationFailedException
-    {
-        startCandidateHarvest(null, ourOffer, transportInfoSender);
     }
 
     /**
@@ -730,4 +709,9 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * Sets the flag which indicates whether to use rtcpmux or not.
      */
     public abstract void setRtcpmux(boolean rtcpmux);
+
+    public boolean isRtcpmux()
+    {
+        return false;
+    }
 }

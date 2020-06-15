@@ -103,6 +103,7 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">The group name must not be empty.</string>
     <string name="service_gui_ADD_GROUP">Create group</string>
     <string name="service_gui_ADD_GROUP_HINT">Enter group name</string>
+    <string name="service_gui_ANSWER">Answer</string>
     <string name="service_gui_APPLY">Apply</string>
     <string name="service_gui_APPLY_CHANGES">Applying account changes (~60S) &#8230;</string>
     <string name="service_gui_AT">at</string>
@@ -123,21 +124,32 @@
 
     <string name="service_gui_BUSY_STATUS">Busy</string>
     <string name="service_gui_CALL">Audio call</string>
+    <string name="service_gui_CALL_ANSWER">%1$s has answered the call.</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk has failed to initialize %1$s\nAll media calls/services will be disabled.\n%2$s</string>
+    <string name="service_gui_CALL_END">The remote caller has ended the call: %1$s</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call History</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Are you sure you want to purge all selected call records?</string>
-    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk has failed to initialize %1$s\nAll media calls/services will be disabled.\n%2$s</string>
-    <string name="service_gui_CALL_WITH">Call with</string>
+    <string name="service_gui_CALL_INCOMING">Incoming call received from: %1$s</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Incoming call</string>
+    <string name="service_gui_CALL_INITIATING_STATUS">Initiating call</string>
+    <string name="service_gui_CALL_REJECTED">%1$s has rejected the call.</string>
+    <string name="service_gui_CALL_MISSED_CALL">Missed calls from:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">We could not find any active Audio/Video devices hence unable to create the call.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">No audio device configured.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">No audio codec enabled.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">The %1$s device or codec is not fully configured in \'Settings…\'. Please check and setup.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Would you like to continue the call?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No matching media formats found against offer %1$s to receive call. Please verify device and codec setup in \'Settings…\'.</string>
+    <string name="service_gui_CALL_OUTGOING">Outgoing call</string>
+    <string name="service_gui_CALL_OUTGOING_MSG">Making call with %1$s…</string>
     <string name="service_gui_CALL_VIA">Call via: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Video call</string>
+    <string name="service_gui_CALL_WITH">Call with</string>
+
     <string name="service_gui_CANCEL">Cancel</string>
     <string name="service_gui_CONTACT_INVALID">The selected contact is not valid: %1$s</string>
+    <string name="service_gui_DISMISS">Dismiss</string>
     <string name="service_gui_DONE">Done</string>
     <string name="service_gui_MAS">Mark as read</string>
     <string name="service_gui_REASON_LABEL">Reason:</string>
@@ -290,7 +302,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Create a video bridge</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Create / Join video conference</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Create a new video conference for this chat room</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Failed to set device camera preview to: %1$s; Exception: %2$s.</string>
+    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Failed to set device camera preview to: %1$s; Exception: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Disconnected</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Disconnecting %1$s</string>
     <string name="service_gui_DENY">Deny</string>
@@ -306,7 +318,6 @@
     <string name="service_gui_ERROR_WAS">Error was: %1$s</string>
     <string name="service_gui_EXIT">Exit</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Extended Away</string>
-    <string name="service_gui_FAILED_STATUS">Call failed</string>
     <string name="service_gui_FFC_STATUS">Free for chat</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -414,9 +425,6 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">The CAPTCHA verification has failed</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA challenge timeout;\nplease rejoin chatRoom and try again.</string>
 
-    <string name="service_gui_INCOMING_CALL">Incoming call received from: %1$s</string>
-    <string name="service_gui_INCOMING_CALL_STATUS">Incoming call</string>
-    <string name="service_gui_INITIATING_CALL_STATUS">Initiating call</string>
     <string name="service_gui_INVITATION">Invitation message:</string>
     <string name="service_gui_INVITATION_RECEIVED">Invitation received</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s has invited you to join %2$s chat room. You could accept, reject or ignore this invitation.</string>
@@ -492,7 +500,6 @@
     <string name="service_gui_MSG_RECEIVED">%1$s wrote</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">You must login first to send message.</string>
 
-    <string name="service_gui_MISSED_CALLS_TOOL_TIP">Missed calls from:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Multiple login instants not allowed. The following account: User name: %1$s, Server name: %2$s has been disconnected.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Mutually On Hold</string>
     <string name="service_gui_NAME">Name</string>
@@ -532,8 +539,6 @@
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Toggle video</string>
     <string name="service_gui_MIC_CONTROL_TITLE">Microphone gain level</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Adjust microphone sound</string>
-    <string name="service_gui_OUTGOING_CALL">Outgoing call</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Making call with %1$s…</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Presence is not supported by %1$s</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">is writing a message</string>
     <string name="service_gui_RECENT_MESSAGES">Recent conversations</string>
@@ -892,10 +897,13 @@
     <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Internal protocol error occurred.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
     <string name="impl_media_security_SECURITY_OFF">Call encryption support off</string>
     <string name="impl_media_security_SECURITY_ON">Call encryption support on</string>
-    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>A severe security problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: {0}&lt;/html></string>
+    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>A severe security problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>No retained shared secret available.&lt;br/>&lt;b>SAS verification is recommended&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>An expected retained shared secret is missing.&lt;br/>&lt;b>SAS verification is required&lt;/b>&lt;br/>If SAS codes do not match then hangup and try again&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+
+    <!-- DTLS-SRTP Securing -->
+    <string name="imp_media_security_ENCRYPTION_ENDED">The call encryption has ended: %1$s</string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Authenticate buddy</string>

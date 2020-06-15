@@ -7,8 +7,7 @@ package org.atalk.impl.neomedia.transform.dtls;
 
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.tls.*;
-import org.bouncycastle.tls.crypto.TlsCrypto;
-import org.bouncycastle.tls.crypto.TlsCryptoParameters;
+import org.bouncycastle.tls.crypto.*;
 import org.bouncycastle.tls.crypto.impl.bc.BcDefaultTlsCredentialedSigner;
 import org.bouncycastle.tls.crypto.impl.bc.BcTlsCrypto;
 
@@ -20,7 +19,7 @@ import java.util.Hashtable;
 import timber.log.Timber;
 
 /**
- * Implements {@link TlsClientContext} for the purposes of supporting DTLS-SRTP.
+ * Implements {@link TlsClientContext} for the purposes of supporting DTLS-SRTP - DTLSv12/DTLSv10.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -72,44 +71,9 @@ public class TlsClientImpl extends DefaultTlsClient
      *
      * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its server
      */
-    int getChosenProtectionProfile()
+    private int getChosenProtectionProfile()
     {
         return chosenProtectionProfile;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Overrides the super implementation to explicitly specify cipher suites which we know to be
-     * supported by Bouncy Castle v1.65.
-     *
-     * Extract from core/src/main/java/org/bouncycastle/tls/DefaultTlsClient.java
-     */
-    @Override
-    protected int[] getSupportedCipherSuites()
-    {
-        return new int[]{
-                /* TLS 1.3 */
-                // CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
-                // CipherSuite.TLS_AES_128_GCM_SHA256,
-
-                /* pre-TLS 1.3 */
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA
-        };
     }
 
     /**
@@ -185,15 +149,14 @@ public class TlsClientImpl extends DefaultTlsClient
      * Determines whether this {@code TlsClientImpl} is to operate in pure DTLS
      * mode without SRTP extensions or in DTLS/SRTP mode.
      *
-     * @return {@code true} for pure DTLS without SRTP extensions or
-     * {@code false} for DTLS/SRTP
+     * @return {@code true} for pure DTLS without SRTP extensions or {@code false} for DTLS/SRTP
      */
     private boolean isSrtpDisabled()
     {
         return getProperties().isSrtpDisabled();
     }
 
-    /**
+    /**this
      * {@inheritDoc}
      *
      * Forwards to {@link #packetTransformer}.
@@ -212,15 +175,13 @@ public class TlsClientImpl extends DefaultTlsClient
             throws IOException
     {
         super.notifyHandshakeComplete();
-
-        // masterSecrete date is empty? https://github.com/bcgit/bc-java/issues/203
-        // packetTransformer.setMasterSecrete(context.getSecurityParameters().getMasterSecret());
+        packetTransformer.initializeSRTPTransformer(getChosenProtectionProfile(), context);
     }
 
     /**
      * {@inheritDoc}
      *
-     * Makes sure that the DTLS extended server hello contains the <tt>use_srtp</tt> extension.
+     * Makes sure the DTLS extended server hello contains the <tt>use_srtp</tt> extension.
      */
     @Override
     @SuppressWarnings("rawtypes")
@@ -278,8 +239,6 @@ public class TlsClientImpl extends DefaultTlsClient
 
     /**
      * Implements {@link TlsAuthentication} for the purposes of supporting DTLS-SRTP.
-     *
-     * @author Lyubomir Marinov
      */
     private class TlsAuthenticationImpl implements TlsAuthentication
     {

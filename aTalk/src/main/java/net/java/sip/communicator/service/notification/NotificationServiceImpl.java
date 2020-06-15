@@ -5,8 +5,10 @@
  */
 package net.java.sip.communicator.service.notification;
 
+import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
+import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.gui.settings.TimePreference;
@@ -167,6 +169,12 @@ class NotificationServiceImpl implements NotificationService
                 saveNotification(eventType, soundAction, soundAction.isEnabled(), false);
             }
         }
+
+        // Just update the modified popUp Message action properties
+        else if (defaultAction instanceof PopupMessageNotificationAction) {
+            PopupMessageNotificationAction popUpAction = (PopupMessageNotificationAction) defaultAction;
+            saveNotification(eventType, popUpAction, popUpAction.isEnabled(), false);
+        }
     }
 
     /**
@@ -222,10 +230,7 @@ class NotificationServiceImpl implements NotificationService
 
                     case ACTION_POPUP_MESSAGE:
                     default:
-                        ((PopupMessageNotificationHandler) handler).popupMessage(
-                                (PopupMessageNotificationAction) action,
-                                data.getTitle(), data.getMessage(), data.getIcon(),
-                                data.getExtra(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA));
+                        ((PopupMessageNotificationHandler) handler).popupMessage((PopupMessageNotificationAction) action, data);
                         break;
                 }
             } catch (Exception e) {
@@ -236,6 +241,7 @@ class NotificationServiceImpl implements NotificationService
 
     /**
      * Check if Quite Hours is in effect
+     *
      * @return false if option is not enable or is not wihtin the quite hours period.
      */
     public static boolean isQuietHours()
@@ -260,12 +266,13 @@ class NotificationServiceImpl implements NotificationService
      * notification is currently activated, we go through the list of registered actions and execute them.
      *
      * @param eventType the type of the event that we'd like to fire a notification for.
+     * @param msgType the notification sub-category message type
      * @return An object referencing the notification. It may be used to stop a still running
      * notification. Can be null if the eventType is unknown or the notification is not active.
      */
     public NotificationData fireNotification(String eventType)
     {
-        return fireNotification(eventType, null, null, null);
+        return fireNotification(eventType, SystrayService.INFORMATION_MESSAGE_TYPE, null, null, null);
     }
 
     /**
@@ -273,15 +280,16 @@ class NotificationServiceImpl implements NotificationService
      * notification is currently activated, the list of registered actions is executed.
      *
      * @param eventType the type of the event that we'd like to fire a notification for.
+     * @param msgType the notification sub-category message type
      * @param title the title of the given message
      * @param message the message to use if and where appropriate (e.g. with systray or log notification.)
      * @param icon the icon to show in the notification if and where appropriate
      * @return An object referencing the notification. It may be used to stop a still running
      * notification. Can be null if the eventType is unknown or the notification is not active.
      */
-    public NotificationData fireNotification(String eventType, String title, String message, byte[] icon)
+    public NotificationData fireNotification(String eventType, int msgType, String title, String message, byte[] icon)
     {
-        return fireNotification(eventType, title, message, icon, null);
+        return fireNotification(eventType, msgType, title, message, icon, null);
     }
 
     /**
@@ -289,6 +297,7 @@ class NotificationServiceImpl implements NotificationService
      * notification is currently activated, the list of registered actions is executed.
      *
      * @param eventType the type of the event that we'd like to fire a notification for.
+     * @param msgType the notification sub-category message type
      * @param title the title of the given message
      * @param message the message to use if and where appropriate (e.g. with systray or log notification.)
      * @param icon the icon to show in the notification if and where appropriate
@@ -298,14 +307,14 @@ class NotificationServiceImpl implements NotificationService
      * @return An object referencing the notification. It may be used to stop a still running
      * notification. Can be null if the eventType is unknown or the notification is not active.
      */
-    public NotificationData fireNotification(String eventType, String title, String message,
+    public NotificationData fireNotification(String eventType, int msgType, String title, String message,
             byte[] icon, Map<String, Object> extras)
     {
         Notification notification = notifications.get(eventType);
         if ((notification == null) || !notification.isActive())
             return null;
 
-        NotificationData data = new NotificationData(eventType, title, message, icon, extras);
+        NotificationData data = new NotificationData(eventType, msgType, title, message, icon, extras);
         // cache the notification when the handlers are not yet ready
         // Timber.d("Fire notification for: %s %s", eventType, notificationCache);
         if (notificationCache != null)

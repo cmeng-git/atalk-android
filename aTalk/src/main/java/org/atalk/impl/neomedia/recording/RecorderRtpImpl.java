@@ -343,20 +343,21 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     public void stop()
     {
         if (started) {
-            Timber.i("Stopping %s", hashCode());
+            Timber.d("Stopping %s", this);
 
-            // remove the recorder from the translator (e.g. stop new packets from
-            // being written to rtpConnector
-            if (streamRTPManager != null)
+            // remove the recorder from the translator (e.g. stop new packets from being written to rtpConnector
+            if (streamRTPManager != null) {
                 streamRTPManager.dispose();
+            }
 
             HashSet<ReceiveStreamDesc> streamsToRemove = new HashSet<>();
             synchronized (receiveStreams) {
                 streamsToRemove.addAll(receiveStreams);
             }
 
-            for (ReceiveStreamDesc r : streamsToRemove)
+            for (ReceiveStreamDesc r : streamsToRemove) {
                 removeReceiveStream(r, false);
+            }
 
             rtpConnector.rtcpPacketTransformer.close();
             rtpConnector.rtpPacketTransformer.close();
@@ -364,7 +365,6 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
             if (activeSpeakerDetector != null)
                 activeSpeakerDetector.removeActiveSpeakerChangedListener(this);
-
             started = false;
         }
 

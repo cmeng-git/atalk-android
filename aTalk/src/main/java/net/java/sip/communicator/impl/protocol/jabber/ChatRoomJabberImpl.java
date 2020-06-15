@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
@@ -52,6 +53,7 @@ import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
+import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -971,10 +973,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     {
         mEncType = message.getEncType();
         String content = message.getContent();
-        Message sendMessage = new Message();
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
 
         if (IMessage.ENCODE_HTML == message.getMimeType()) {
-            sendMessage.setBody(Html.fromHtml(content));
+            messageBuilder.addBody(null, Html.fromHtml(content).toString());
 
             // Just add XHTML element as it will be ignored by buddy without XEP-0071: XHTML-IM support
             // Also carbon messages may send to buddy on difference clients with different capabilities
@@ -983,14 +985,19 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // Check if the buddy supports XHTML messages make sure we use our discovery manager as it caches calls
             // if (jabberProvider.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE)) {
             // Add the XHTML text to the message
-            XHTMLText htmlText = new XHTMLText("", "us").append(content).appendCloseBodyTag();
-            XHTMLManager.addBody(sendMessage, htmlText);
+            XHTMLText htmlText = new XHTMLText("", "us")
+                    .append(content)
+                    .appendCloseBodyTag();
+
+            XHTMLExtension xhtmlExtension = new XHTMLExtension();
+            xhtmlExtension.addBody(htmlText.toXML());
+            messageBuilder.addExtension(xhtmlExtension);
         }
         else {
             // this is plain text so keep it as it is.
-            sendMessage.setBody(content);
+            messageBuilder.addBody(null, content);
         }
-        sendMessage(sendMessage);
+        sendMessage(messageBuilder);
     }
 
     /**
@@ -1002,31 +1009,31 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     public void sendJsonMessage(String json)
             throws OperationFailedException
     {
-        Message sendMessage = new Message();
-        sendMessage.addExtension(new JsonMessageExtension(json));
-        sendMessage(sendMessage);
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
+                .addExtension(new JsonMessageExtension(json));
+        sendMessage(messageBuilder);
     }
 
     /**
      * Sends the <tt>message</tt> to the destination <tt>multiUserChat</tt> chatRoom.
      *
-     * @param message the {@link Message} to be sent.
+     * @param messageBuilder the {@link Message} to be sent.
      * @throws OperationFailedException if sending the message fails for some reason.
      */
-    private void sendMessage(Message message)
+    private void sendMessage(MessageBuilder messageBuilder)
             throws OperationFailedException
     {
         try {
             assertConnected();
-            mMultiUserChat.sendMessage(message.asBuilder());
+            mMultiUserChat.sendMessage(messageBuilder);
         } catch (NotConnectedException | InterruptedException e) {
             Timber.e("Failed to send message: %s", e.getMessage());
-            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, message),
+            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_SEND_MESSAGE_FAIL, messageBuilder.build()),
                     OperationFailedException.GENERAL_ERROR, e);
         }
     }
 
-    public void sendMessage(IMessage message, OmemoManager omemoManager)
+    public void sendMessage(IMessage message, final OmemoManager omemoManager)
     {
         EntityBareJid entityBareJid = mMultiUserChat.getRoom();
         String msgContent = message.getContent();
@@ -1066,8 +1073,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             fireMessageEvent(msgDeliveredEvt);
         } catch (UndecidedOmemoIdentityException e) {
             OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, omemoManager);
-            aTalkApp.getGlobalContext().startActivity(
-                    OmemoAuthenticateDialog.createIntent(omemoManager, e.getUndecidedDevices(), omemoAuthListener));
+            Context ctx = aTalkApp.getGlobalContext();
+            ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
         } catch (NoOmemoSupportException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, "NoOmemoSupportException");

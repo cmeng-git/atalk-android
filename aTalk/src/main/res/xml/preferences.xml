@@ -153,6 +153,71 @@
         -->
     </PreferenceCategory>
 
+    <!-- Notifications -->
+    <PreferenceCategory
+        android:key="@string/pref_cat_settings_notifications"
+        android:title="@string/service_gui_settings_NOTIFICATIONS">
+
+        <!-- Popup notifications type -->
+        <ListPreference
+            android:key="@string/pref_key_popup_handler"
+            android:title="@string/service_gui_settings_POPUP_HANDLER" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_key_heads_up_enable"
+            android:summary="@string/pref_headsup_notifications_summary"
+            android:title="@string/pref_headsup_notifications" />
+
+        <PreferenceScreen
+            android:key="quiet_hours"
+            android:summary="@string/pref_quiet_hours_summary"
+            android:title="@string/title_pref_quiet_hours">
+            <PreferenceCategory
+                android:key="quiet_hour_details"
+                android:title="@string/title_pref_quiet_hours">
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="@string/pref_key_quiet_hours_enable"
+                    android:summary="@string/pref_quiet_hours_summary"
+                    android:title="@string/title_pref_enable_quiet_hours" />
+                <org.atalk.android.gui.settings.TimePreference
+                    android:dependency="@string/pref_key_quiet_hours_enable"
+                    android:key="pref.key.quiet_hours_start"
+                    android:negativeButtonText="@string/service_gui_CANCEL"
+                    android:positiveButtonText="@string/service_gui_SET"
+                    android:title="@string/title_pref_quiet_hours_start_time" />
+                <org.atalk.android.gui.settings.TimePreference
+                    android:dependency="@string/pref_key_quiet_hours_enable"
+                    android:key="pref.key.quiet_hours_end"
+                    android:negativeButtonText="@string/service_gui_CANCEL"
+                    android:positiveButtonText="@string/service_gui_SET"
+                    android:title="@string/title_pref_quiet_hours_end_time" />
+                <intent android:action="android.intent.action.VIEW">
+                    <!--android:targetClass="eu.siacs.conversations.ui.SettingsActivity"
+                    android:targetPackage="@string/applicationId"-->
+                    <extra
+                        android:name="page"
+                        android:value="quiet_hours" />
+                </intent>
+            </PreferenceCategory>
+        </PreferenceScreen>
+
+        <!-- Events -->
+        <PreferenceScreen
+            android:summary="@string/service_gui_settings_EVENTS_SUMMARY"
+            android:title="@string/service_gui_settings_EVENTS_TITLE">
+            <intent android:action=".android.gui.settings.notification.NotificationsSettings" />
+        </PreferenceScreen>
+
+        <!-- Auto Software Version Check -->
+        <!-- CheckBoxPreference
+            android:key="@string/pref_key_auto_update_check_enable"
+            android:summaryOff="@string/service_gui_settings_DISABLED_STR"
+            android:summaryOn="@string/service_gui_settings_ENABLED_STR"
+            android:title="@string/service_gui_settings_auto_update_check_status" /-->
+    </PreferenceCategory>
+
     <!-- Media Call Settings -->
     <PreferenceCategory
         android:key="@string/pref_cat_settings_media_call"
@@ -204,71 +269,6 @@
             android:summaryOff="@string/service_gui_settings_ALLOW_ALPHA_OFF"
             android:summaryOn="@string/service_gui_settings_ALLOW_ALPHA_ON"
             android:title="@string/service_gui_settings_ALLOW_ALPHA_PNUMBER" />
-    </PreferenceCategory>
-
-    <!-- Notifications -->
-    <PreferenceCategory
-        android:key="@string/pref_cat_settings_notifications"
-        android:title="@string/service_gui_settings_NOTIFICATIONS">
-
-        <!-- Popup notifications type -->
-        <ListPreference
-            android:key="@string/pref_key_popup_handler"
-            android:title="@string/service_gui_settings_POPUP_HANDLER" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="@string/pref_key_heads_up_enable"
-            android:summary="@string/pref_headsup_notifications_summary"
-            android:title="@string/pref_headsup_notifications" />
-
-        <PreferenceScreen
-            android:key="quiet_hours"
-            android:summary="@string/pref_quiet_hours_summary"
-            android:title="@string/title_pref_quiet_hours">
-            <PreferenceCategory
-                android:key="quiet_hour_details"
-                android:title="@string/title_pref_quiet_hours">
-                <CheckBoxPreference
-                    android:defaultValue="true"
-                    android:key="@string/pref_key_quiet_hours_enable"
-                    android:summary="@string/pref_quiet_hours_summary"
-                    android:title="@string/title_pref_enable_quiet_hours" />
-                <org.atalk.android.gui.settings.TimePreference
-                    android:dependency="@string/pref_key_quiet_hours_enable"
-                android:key="pref.key.quiet_hours_start"
-                    android:negativeButtonText="@string/service_gui_CANCEL"
-                    android:positiveButtonText="@string/service_gui_SET"
-                    android:title="@string/title_pref_quiet_hours_start_time" />
-                <org.atalk.android.gui.settings.TimePreference
-                    android:dependency="@string/pref_key_quiet_hours_enable"
-                android:key="pref.key.quiet_hours_end"
-                    android:negativeButtonText="@string/service_gui_CANCEL"
-                    android:positiveButtonText="@string/service_gui_SET"
-                    android:title="@string/title_pref_quiet_hours_end_time" />
-                <intent android:action="android.intent.action.VIEW">
-                    <!--android:targetClass="eu.siacs.conversations.ui.SettingsActivity"
-                    android:targetPackage="@string/applicationId"-->
-                    <extra
-                        android:name="page"
-                        android:value="quiet_hours" />
-                </intent>
-            </PreferenceCategory>
-        </PreferenceScreen>
-
-        <!-- Events -->
-        <PreferenceScreen
-            android:summary="@string/service_gui_settings_EVENTS_SUMMARY"
-            android:title="@string/service_gui_settings_EVENTS_TITLE">
-            <intent android:action=".android.gui.settings.notification.NotificationsSettings" />
-        </PreferenceScreen>
-
-        <!-- Auto Software Version Check -->
-        <!-- CheckBoxPreference
-            android:key="@string/pref_key_auto_update_check_enable"
-            android:summaryOff="@string/service_gui_settings_DISABLED_STR"
-            android:summaryOn="@string/service_gui_settings_ENABLED_STR"
-            android:title="@string/service_gui_settings_auto_update_check_status" /-->
     </PreferenceCategory>
 
     <!-- Advanced Settings -->

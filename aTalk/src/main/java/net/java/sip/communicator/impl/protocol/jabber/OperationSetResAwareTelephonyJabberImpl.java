@@ -12,6 +12,7 @@ import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
+import org.xmpp.extensions.jingle.element.Jingle;
 
 /**
  * @author Yana Stamcheva
@@ -97,7 +98,7 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
     public Call createCall(String uri, String calleeResource, CallConference conference)
             throws OperationFailedException
     {
-        CallJabberImpl call = new CallJabberImpl(jabberTelephony);
+        CallJabberImpl call = new CallJabberImpl(jabberTelephony, Jingle.generateSid());
         if (conference != null)
             call.setConference(conference);
 

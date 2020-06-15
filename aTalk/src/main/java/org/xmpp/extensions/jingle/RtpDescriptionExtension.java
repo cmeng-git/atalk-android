@@ -5,17 +5,23 @@
  */
 package org.xmpp.extensions.jingle;
 
-import org.xmpp.extensions.AbstractExtensionElement;
-
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.xmpp.extensions.AbstractExtensionElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import timber.log.Timber;
+
 /**
- * Represents the content <tt>description</tt> elements described in XEP-0167.
+ * Represents the content <tt>description</tt> elements described in
+ * XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)
+ *
+ * Multiplexing RTP Data and Control Packets on a Single Port (April 2010),
+ * https://tools.ietf.org/html/rfc5761 (5.1.3. Interactions with ICE) eem to propose
+ * <rtpc-mux/> to be included in transport
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -55,6 +61,11 @@ public class RtpDescriptionExtension extends AbstractExtensionElement
     private EncryptionExtension encryption;
 
     /**
+     * An optional encryption element that contains encryption parameters for this session.
+     */
+    private RtcpmuxExtension rtcpMux;
+
+    /**
      * An optional bandwidth element that specifies the allowable or preferred bandwidth for use by
      * this application type.
      */
@@ -77,16 +88,6 @@ public class RtpDescriptionExtension extends AbstractExtensionElement
     public RtpDescriptionExtension()
     {
         super(ELEMENT, NAMESPACE);
-    }
-
-    /**
-     * Create a new <tt>RtpDescriptionExtensionElement</tt> with a different namespace.
-     *
-     * @param namespace namespace to use
-     */
-    public RtpDescriptionExtension(String namespace)
-    {
-        super(ELEMENT, namespace);
     }
 
     /**
@@ -161,7 +162,7 @@ public class RtpDescriptionExtension extends AbstractExtensionElement
     public List<? extends ExtensionElement> getChildExtensions()
     {
         if (children == null)
-            children = new ArrayList<ExtensionElement>();
+            children = new ArrayList<>();
         else
             children.clear();
 
@@ -203,8 +204,11 @@ public class RtpDescriptionExtension extends AbstractExtensionElement
 
         else if (childExtension instanceof RTPHdrExtExtension)
             this.addExtmap((RTPHdrExtExtension) childExtension);
-        else
+
+        else {
             super.addChildExtension(childExtension);
+            // Timber.w("Optional childExtension added: %s", childExtension.getClass().getSimpleName());
+        }
     }
 
     /**
@@ -270,4 +274,26 @@ public class RtpDescriptionExtension extends AbstractExtensionElement
     {
         return extmapList;
     }
+
+    /**
+     * Sets the optional rtcpmux element that contains rtcpmux parameters for this session.
+     *
+     * @param rtcpmux the rtcpmux {@link ExtensionElement} we'd like to add to this packet.
+     */
+    public void setRtcpMux(RtcpmuxExtension rtcpmux)
+    {
+        this.rtcpMux = rtcpmux;
+    }
+
+    /**
+     * Returns the optional encryption element that contains encryption parameters for this session.
+     *
+     * @return the encryption {@link ExtensionElement} added to this packet or <tt>null</tt> if none has been set yet.
+     */
+    public RtcpmuxExtension getRtcpMux()
+    {
+        return rtcpMux;
+    }
+
+
 }

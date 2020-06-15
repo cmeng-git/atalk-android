@@ -6,6 +6,22 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.3.0 (06/15/2020)" versioncode="1130">
+        <change>Implement full-screen intent for compliance with android-10; allowing incoming call to wake device from standby and start up call UI</change>
+        <change>Implement XEP-0353: Jingle Message Initiation; better handling of Jingle session invitation to buddy with multiple resources' login</change>
+        <change>Support call via JingleMessage protocol or legacy Jingle if peer does not support Jingle Message Initiation</change>
+        <change>Answer call via android heads-up notification; Android 'Call Notification' settings: Enable 'Alert (Sound-Silent)' and 'Show as pop-up'</change>
+        <change>Default to use RTP/RTCP channel multiplexing for media call; auto realign for clients without 'rtcp-mux' support</change>
+        <change>Enhance DTLS-SRTP encryption handling and allow backward compatible for clients with old DTLS protocol implementation</change>
+        <change>Enhance and make media call compatibility with Conversations (DTLS encryption etc); h264 codec not compatible.</change>
+        <change>Fix call problem with pidgin (v2.13.0) having improper implementation by sending 4 instances of 'session-accept' to caller</change>
+        <change>Make OTR interoperable with pidgin implementation (OTR message does not include Thread Id)</change>
+        <change>Remove 'Miss Call Notification' from android notification channel; miss call alert handling is via 'Call Notification'</change>
+        <change>Do not show 'missed call' notification if user dismissed the call</change>
+        <change>Show heads-up notification for an incoming message only if aTalk is in background</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.2.5 (05/13/2020)" versioncode="1125">
         <change>Implemented DTLS_SRTP call encryption DTLSv12/DTLSv10 protocols and additional CipherSuites support</change>
         <change>Ensure camera resource permission is granted when required in chat attachments i.e. picture and video</change>
@@ -50,7 +66,7 @@
         <change>Enhance create/join chat room UI: refresh field contents and allow user password entry</change>
         <change>Allow saving and retrieving of the chat room protected password for later room auto-join or rejoin</change>
         <change>Support joining room on cross domain server, and default new room creation with OMEMO chat support</change>
-        <change>Support room configuration by owner. Update OMEMO encrypt option after the changes</change>
+        <change>Support room configuration by the owner. Update OMEMO encrypt option after the changes</change>
         <change>Display an error message in chat instead of a pop-up alert dialog when user canceled Captcha challenge on joining room</change>
         <change>Fix CaptchaDialog race condition when user canceled challenge but still triggering a retry popup</change>
         <change>Make fingerprinting of ZRTP connections harder with different ZID per user callee</change>

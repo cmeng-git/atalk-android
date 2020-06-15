@@ -34,7 +34,7 @@ public class DefaultTCPStreamConnector implements StreamConnector
     /**
      * Whether this <tt>DefaultStreamConnector</tt> uses rtcp-mux.
      */
-    protected boolean rtcpmux = false;
+    protected boolean rtcpmux;
 
     /**
      * Initializes a new <tt>DefaultTCPStreamConnector</tt> instance with no control and data

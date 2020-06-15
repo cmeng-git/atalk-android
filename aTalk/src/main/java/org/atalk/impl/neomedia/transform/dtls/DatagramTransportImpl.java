@@ -385,24 +385,21 @@ public class DatagramTransportImpl implements DatagramTransport
      * {@inheritDoc}
      */
     @Override
-    public void send(byte[] buf, int off, int len)
+    public void send(byte[] buf, int offset, int len)
             throws IOException
     {
         assertNotClosed(false);
 
         // If possible, construct a single datagram from multiple DTLS records.
         if (len >= DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH) {
-            short type = TlsUtils.readUint8(buf, off);
+            short type = TlsUtils.readUint8(buf, offset);
             boolean endOfFlight = false;
 
             switch (type) {
                 case ContentType.handshake:
-                    short msg_type = TlsUtils.readUint8(buf, off
-                            + 1 /* type */
-                            + 2 /* version */
-                            + 2 /* epoch */
-                            + 6 /* sequence_number */
-                            + 2 /* length */);
+                    // message_type is the first byte of the record layer fragment (encrypted after 'change_cipher_spec')
+                    short msg_type = TlsUtils.readUint8(buf,
+                            offset + DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH);
 
                     switch (msg_type) {
                         case HandshakeType.certificate:
@@ -423,8 +420,8 @@ public class DatagramTransportImpl implements DatagramTransport
                             endOfFlight = true;
                             break;
                         default:
+                            Timber.w("Encrypted DTLS handshake 'Finished' or unknown message type: %s", msg_type);
                             endOfFlight = true;
-                            Timber.w("Unknown DTLS handshake message type: %s", msg_type);
                             break;
                     }
                     // Do fall through!
@@ -446,7 +443,7 @@ public class DatagramTransportImpl implements DatagramTransport
                                         Math.min(sendBufLength, sendBuf.length));
                             }
 
-                            System.arraycopy(buf, off, sendBuf, sendBufLength, len);
+                            System.arraycopy(buf, offset, sendBuf, sendBufLength, len);
                             sendBufLength = newSendBufLength;
 
                             if (endOfFlight)
@@ -454,11 +451,11 @@ public class DatagramTransportImpl implements DatagramTransport
                         }
                         else {
                             if (endOfFlight) {
-                                doSend(buf, off, len);
+                                doSend(buf, offset, len);
                             }
                             else {
                                 flush();
-                                send(buf, off, len);
+                                send(buf, offset, len);
                             }
                         }
                     }
@@ -467,12 +464,12 @@ public class DatagramTransportImpl implements DatagramTransport
                 case ContentType.alert:
                 case ContentType.application_data:
                 default:
-                    doSend(buf, off, len);
+                    doSend(buf, offset, len);
                     break;
             }
         }
         else {
-            doSend(buf, off, len);
+            doSend(buf, offset, len);
         }
     }
 

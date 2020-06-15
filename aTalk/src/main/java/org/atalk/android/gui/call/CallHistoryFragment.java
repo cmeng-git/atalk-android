@@ -38,7 +38,6 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
-import org.atalk.android.gui.util.AndroidCallUtil;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiFragment;
@@ -418,12 +417,11 @@ public class CallHistoryFragment extends OSGiFragment
 
             if (contact != null) {
                 Jid jid = contact.getJid();
-                String JidAddress = contact.getAddress();
 
                 switch (view.getId()) {
                     case R.id.callButton:
                         if (jid instanceof DomainBareJid) {
-                            TelephonyFragment extPhone = TelephonyFragment.newInstance(JidAddress);
+                            TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
                             ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
                                     .replace(android.R.id.content, extPhone).commit();
                             break;
@@ -432,8 +430,8 @@ public class CallHistoryFragment extends OSGiFragment
                     case R.id.callVideoButton:
                         if (viewHolder != null) {
                             boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                            AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
-                                    viewHolder.callVideoButton, JidAddress, isVideoCall);
+                            AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(), jid,
+                                    viewHolder.callVideoButton, isVideoCall);
                         }
                         break;
 

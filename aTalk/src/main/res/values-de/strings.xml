@@ -103,8 +103,10 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">Der Gruppenname darf nicht leer sein.</string>
     <string name="service_gui_ADD_GROUP">Gruppe anlegen</string>
     <string name="service_gui_ADD_GROUP_HINT">Gruppenname eingeben</string>
+    <string name="service_gui_ANSWER">Antworten</string>
     <string name="service_gui_APPLY">Übernehmen</string>
     <string name="service_gui_APPLY_CHANGES">Kontoeinstellungen übernehmen (~60S) &#8230;</string>
+    <string name="service_gui_AT">at</string>
     <string name="service_gui_AUTHORIZE">Autorisierung</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">Der Kontakt hat Ihre Autorisierungsanfrage bestätigt.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Autoriesierung für %1$s fehlgeschlagen. Das angegebene Passwort ist nicht korrekt.</string>
@@ -122,21 +124,30 @@
 
     <string name="service_gui_BUSY_STATUS">Beschäftigt</string>
     <string name="service_gui_CALL">Audioanruf</string>
+    <string name="service_gui_CALL_ANSWER">%1$s hat den Anruf beantwortet.</string>
+    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk konnte %1$s nicht initialisieren\nAlle Medienanrufe/-dienste werden deaktiviert.\n%2$s</string>
+    <string name="service_gui_CALL_END">Der entfernte Anrufer hat den Anruf beendet: %1$s</string>
     <string name="service_gui_CALL_FAILED">Gescheiteter Anruf</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Anrufverlauf</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Möchten Sie wirklich alle ausgewählten Anrufdatensätze löschen?</string>
-    <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk konnte %1$s nicht initialisieren\nAlle Medienanrufe/-dienste werden deaktiviert.\n%2$s</string>
-    <string name="service_gui_CALL_WITH">Gespräch mit</string>
+    <string name="service_gui_CALL_INCOMING">Eingehender Anruf von: %1$s</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Eingehender Anruf</string>
+    <string name="service_gui_CALL_INITIATING_STATUS">Starte Anruf</string>
+    <string name="service_gui_CALL_REJECTED">%1$s hat den Anruf abgelehnt</string>
+    <string name="service_gui_CALL_MISSED_CALL">Verpasste Anrufe von:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Es steht kein Audio/Video-Gerät zur Verfügung, kann Anruf nicht ausführen.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Kein Audiogerät definiert.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Kein Audiocodec aktiviert.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Das %1$s Gerät oder dessen Codec ist nicht richtig unter\'Einstellungen…\' konfiguriert. Bitte überprüfen.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Soll der Anruf fortgesetzt werden?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Es wurden keine passenden Mediaformate zum eigehenden Anruf %1$s gefunden. Bitte überprüfe das Gerät und dessen Codecs unter \'Einstellungen…\'.</string>
+    <string name="service_gui_CALL_OUTGOING">Ausgehender Anruf</string>
+    <string name="service_gui_CALL_OUTGOING_MSG">Gespräch mit %1$s&#8230;</string>
     <string name="service_gui_CALL_VIA">Anruf über: %1$s</string>
-    <string name="service_gui_CALL_VIDEO">Videoanruf tätigen</string>
+
     <string name="service_gui_CANCEL">Zurück</string>
     <string name="service_gui_CONTACT_INVALID">Der ausgewählte Kontakt ist nicht gültig: %1$s</string>
+    <string name="service_gui_DISMISS">Entlassen</string>
     <string name="service_gui_DONE">OK</string>
     <string name="service_gui_MAS">als gelesen markieren</string>
     <string name="service_gui_REASON_LABEL">Grund:</string>
@@ -155,6 +166,7 @@
     <string name="service_gui_CHANGE_NICKNAME_LABEL">Untenstehend kannst du deinen Spitznamen ändern.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Der Feldinhalt für den Spitznamen darf nicht null sein</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Informationen zum Chatraum ändern</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">IIm Feld unten können Sie das neue Thema für diesen Raum eingeben.</string>
 	<string name="service_gui_CHANGE_VIDEO_QUALITY">Ändern der Videoauflösung auf der Gegenseite.</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">%1$s\'s Konferenz</string>
 	<string name="service_gui_CHAT_CONFERENCE_LABEL">Konferenzen</string>
@@ -237,7 +249,7 @@
     <string name="app_libraries">aTalk benutzt folgende Bibliotheken von Drittanbietern: %1$s</string>
     <string name="app_revision_fmt">Revision: %1$s</string>
     <string name="app_xeps">aTalk unterstützt folgende XEPs: %1$s</string>
-    <string name="PoweredBy">Powered By atalk.org</string>
+    <string name="PoweredBy">Unterstützt von atalk.org</string>
 
     <!-- PTT Chat -->
     <string name="chat_noaudio_buddyOffline">Ein Audio-Chat mit jemandem der offline ist, ist nicht möglich.</string>
@@ -288,7 +300,7 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Eine Videobrücke erstellen</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Videokonferenzschaltung erzeugen/beitreten.</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Eine neue Videokonferenz für diesen Chatraum einrichten.</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Die Gerätekamera kann die ausgewählte Videoauflösung im Hochformat nicht unterstützen. Bitte benutze das Telefon im Querformat für den Videoanruf:\n[width=%1$s; Höhe=%2$s]</string>
+    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Die Gerätekamera kann die ausgewählte Videoauflösung im Hochformat nicht unterstützen. Bitte benutze das Telefon im Querformat für den Videoanruf:\n[width=%1$s; Höhe=%2$s]</string>
     <string name="service_gui_DISCONNECTED_STATUS">Beendet</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Beende %1$s</string>
     <string name="service_gui_DENY">Ablehnen</string>
@@ -304,7 +316,6 @@
     <string name="service_gui_ERROR_WAS">Error war: %1$s</string>
 	<string name="service_gui_EXIT">Abbrechen</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Abwesend (erweitert)</string>
-    <string name="service_gui_FAILED_STATUS">Anruf fehlgeschlagen</string>
     <string name="service_gui_FFC_STATUS">Für Chats verfügbar</string>
 
     <!-- File Transfer (xFile prefix with date) -->
@@ -398,9 +409,6 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s Zeitlimit für die ChatRoom-CAPTCHA-Herausforderung;\nTreten Sie dem ChatRoom erneut bei und versuchen Sie es erneut.</string>
 
-    <string name="service_gui_INCOMING_CALL">Eingehender Anruf von: %1$s</string>
-    <string name="service_gui_INCOMING_CALL_STATUS">Eingehender Anruf</string>
-    <string name="service_gui_INITIATING_CALL_STATUS">Starte Anruf</string>
 	<string name="service_gui_INVITATION">Einladungsnachricht:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Einladung empfangen</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s hat dich eingeladen dem Chatraum %2$s beizutreten. Du kannst zustimmen, ablehnen oder ignorieren.</string>
@@ -476,7 +484,6 @@
     <string name="service_gui_MSG_RECEIVED">%1$s schrieb</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Du musst dich zuerst anmelden, um eine Nachricht zu senden.</string>
 
-    <string name="service_gui_MISSED_CALLS_TOOL_TIP">Verpasste Anrufe von:</string>
     <string name="service_gui_MULTIPLE_LOGIN">Mehrfachanmeldungen sind nicht zulässig. Die Verbindung von Benutzername:%1$s, Servername:%2$s wurde getrennt.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Wird beidseitig gehalten</string>
     <string name="service_gui_NAME">Name</string>
@@ -516,8 +523,6 @@
 	<string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Video umschalten</string>
     <string name="service_gui_MIC_CONTROL_TITLE">Mikrofon-Lautstärke</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Anpassen des Mikrofonklangs</string>
-    <string name="service_gui_OUTGOING_CALL">Ausgehender Anruf</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Gespräch mit %1$s&#8230;</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Wird von %1$s nicht unterstützt</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">schreibt eine Nachricht</string>
     <string name="service_gui_RECENT_MESSAGES">Letzte Nachrichten</string>
@@ -691,7 +696,6 @@
         Mit dieser Verbindung fortfahren?&lt;br/>
         Klicke für weitere Optionen und Informationen auf "Zertifikat anzeigen".&lt;/html></string>
    <string name="service_gui_PROCEED">Fortfahren</string>
-
     <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Ausgestellt für&lt;/b></string>
     <string name="service_gui_CERT_INFO_CHAIN">Zertifikatsdaten:</string>
     <string name="service_gui_CERT_INFO_CN">Name:</string>
@@ -874,11 +878,14 @@
   <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Interner Protokollfehler aufgetreten.&lt;br/>&lt;b>Ihr Anruf läuft unverschlüsselt.&lt;/b>&lt;br/>Fehlercode: %1$s&lt;/html></string>
     <string name="impl_media_security_SECURITY_OFF">Anrufverschlüsselungsunterstützung aus</string>
     <string name="impl_media_security_SECURITY_ON">Anrufverschlüsselungsunterstützung für</string>
-    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Ein schwerwiegendes Sicherheitsproblem wurde erkannt.&lt;br/>&lt;b>Ihr Anruf ist unverschlüsselt&lt;/b>&lt;br/>Fehlercode: {0}&lt;/html></string>
+    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Ein schwerwiegendes Sicherheitsproblem wurde erkannt.&lt;br/>&lt;b>Ihr Anruf ist unverschlüsselt&lt;/b>&lt;br/>Fehlercode: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Kein gemeinsames Passwort verfügbar.&lt;br/>&lt;b>SAS-Verifizierung wird empfohlen&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Ein erwartetes gemeinsames Passwort 
     fehlt.&lt;br/>&lt;b>SAS-Verifikation ist erforderlich.&lt;/b>&lt;br/>Wenn SAS-Codes nicht übereinstimmen, dann auflegen und neu versuchen.&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Ein schwerwiegendes ZRTP-Problem wurde erkannt.&lt;br/>&lt;b>Ihr Anruf läuft unverschlüsselt.&lt;br>&lt;br/>Fehlercode: %1$s&lt;/html></string>
+
+    <!-- DTLS-SRTP Securing -->
+    <string name="imp_media_security_ENCRYPTION_ENDED">Die Anrufverschlüsselung wurde beendet: %1$s</string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Chatpartner authentifizieren</string>
@@ -903,7 +910,7 @@
     <string name="plugin_otr_menu_WHATS_THIS">Was ist das?</string>
 
     <string name="plugin_otr_authbuddydialog_AUTHENTICATION_INFO">Das Authentifizieren eines Chatpartners stellt sicher, dass es sich um die eigentliche Person handelt. Um den digitalen Fingerprint zu überprüfen, nimm mit dem Chatpartner über alternative Wege, wie z.B. Email oder Telefon Kontakt auf, um diesen dann gegenseitig zu bestätigen. Wenn Übereinstimmung herrscht solltest du im weiteren den Fingerprint akzeptieren.</string>
-    <string name="plugin_otr_authbuddydialog_CANCEL">Abbrechen</string>
+    <string name="plugin_otr_authbuddydialog_CANCEL">Stornieren</string>
     <string name="plugin_otr_authbuddydialog_FINGERPRINT_CHECK">Bitte gib den Fingerprint ein, den du von %1$s erhalten hast.</string>
     <string name="plugin_otr_authbuddydialog_HELP">Hilfe</string>
     <string name="plugin_otr_authbuddydialog_I_HAVE">Ich habe</string>

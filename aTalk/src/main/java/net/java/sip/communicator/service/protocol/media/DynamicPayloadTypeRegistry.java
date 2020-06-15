@@ -38,13 +38,13 @@ public class DynamicPayloadTypeRegistry
      * The mappings of <tt>MediaFormat</tt> instances to the dynamic payload type numbers they have
      * obtained for the lifetime of this registry.
      */
-    private final Map<MediaFormat, Byte> payloadTypeMappings = new HashMap<MediaFormat, Byte>();
+    private final Map<MediaFormat, Byte> payloadTypeMappings = new HashMap<>();
 
     /**
      * Maps locally defined payload types to payload type numbers that the remote party wants to
      * use.
      */
-    private final Map<Byte, Byte> payloadTypeOverrides = new HashMap<Byte, Byte>();
+    private final Map<Byte, Byte> payloadTypeOverrides = new HashMap<>();
 
     /**
      * An override mappings of <tt>MediaFormat</tt> instances to the dynamic payload type numbers.
@@ -84,9 +84,8 @@ public class DynamicPayloadTypeRegistry
         // seems like we haven't allocated a payload type for this format yet.
         // lets try to do so now.
         if (payloadType == null) {
-            // first, let's check whether there's a particular PT number that
-            // this format would like to have (e.g. "telephone-event" generally
-            // loves to be called "101").
+            // first, let's check whether there's a particular PT number that this format would like to have
+            // (e.g. "telephone-event" generally loves to be called "101").
             Byte preferredPT = getPreferredDynamicPayloadType(format);
 
             if (preferredPT != null && findFormat(preferredPT) == null) {
@@ -94,8 +93,7 @@ public class DynamicPayloadTypeRegistry
                 payloadType = preferredPT;
             }
             else {
-                // the format does not have a preferred PT number or it isn't
-                // free.
+                // the format does not have a preferred PT number or it isn't free.
                 payloadType = nextPayloadTypeNumber();
             }
             payloadTypeMappings.put(format, payloadType);
@@ -112,15 +110,13 @@ public class DynamicPayloadTypeRegistry
     private Map<MediaFormat, Byte> getDynamicPayloadTypePreferences()
     {
         if (mediaMappings == null) {
-            Map<MediaFormat, Byte> mappings = new HashMap<MediaFormat, Byte>(ProtocolMediaActivator
-                    .getMediaService().getDynamicPayloadTypePreferences());
+            Map<MediaFormat, Byte> mappings
+                    = new HashMap<>(ProtocolMediaActivator.getMediaService().getDynamicPayloadTypePreferences());
 
             if (localPayloadTypePreferences == null)
                 return mappings;
 
-            // If we have specific payload type preferences from
-            // CallPeerMediaHandler, replace them here.
-
+            // If we have specific payload type preferences from CallPeerMediaHandler, replace them here.
             for (Map.Entry<Byte, String> e : localPayloadTypePreferences.entrySet()) {
                 Byte key = e.getKey();
                 String fmt = e.getValue();
@@ -238,7 +234,7 @@ public class DynamicPayloadTypeRegistry
         }
         else {
             // we are just adding a new mapping. nothing out of the ordinary
-            payloadTypeMappings.put(format, Byte.valueOf(payloadType));
+            payloadTypeMappings.put(format, payloadType);
         }
     }
 
@@ -304,7 +300,7 @@ public class DynamicPayloadTypeRegistry
         for (Map.Entry<MediaFormat, Byte> entry : getDynamicPayloadTypePreferences().entrySet()) {
             Byte value = entry.getValue();
 
-            if ((value != null) && (value.byteValue() == payloadTypePreference))
+            if ((value != null) && (value == payloadTypePreference))
                 return entry.getKey();
         }
         return null;
@@ -317,7 +313,7 @@ public class DynamicPayloadTypeRegistry
      */
     public Map<MediaFormat, Byte> getMappings()
     {
-        return new HashMap<MediaFormat, Byte>(payloadTypeMappings);
+        return new HashMap<>(payloadTypeMappings);
     }
 
     /**
@@ -327,7 +323,7 @@ public class DynamicPayloadTypeRegistry
      */
     public Map<Byte, Byte> getMappingOverrides()
     {
-        return new HashMap<Byte, Byte>(payloadTypeOverrides);
+        return new HashMap<>(payloadTypeOverrides);
     }
 
     /**
@@ -358,7 +354,6 @@ public class DynamicPayloadTypeRegistry
                 return mapping.getValue();
             }
         }
-
         return null;
     }
 

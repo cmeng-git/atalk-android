@@ -377,7 +377,6 @@
     <string name="noti_channel_MESSAGE_GROUP">Chat Message Notification</string>
     <string name="noti_channel_FILE_GROUP">File Transfer Notification</string>
     <string name="noti_channel_CALL_GROUP">Call Notification</string>
-    <string name="noti_channel_MISSED_CALL">Miss Call Notification</string>
     <string name="noti_channel_DEFAULT_GROUP">General Notification</string>
     <string name="noti_channel_SILENT_GROUP">Silent Notification</string>
 

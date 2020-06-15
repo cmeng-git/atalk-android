@@ -28,12 +28,12 @@ import timber.log.Timber;
  * associated ZRTP multi-stream sessions.
  *
  * Coordinate this callback class with the associated GUI implementation class
+ * @see net.java.sip.communicator.impl.gui.main.call.ZrtpSecurityPanel
  *
  * @author Emanuel Onica
  * @author Werner Dittmann
  * @author Yana Stamcheva
  * @author Eng Chong Meng
- * @see // net.java.sip.communicator.impl.gui.main.call.ZrtpSecurityPanel
  */
 public class SecurityEventManager extends ZrtpUserCallback
 {
@@ -132,8 +132,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     }
 
     /**
-     * ZRTP computes the SAS string after nearly all the negotiation and computations are done
-     * internally.
+     * ZRTP computes the SAS string after nearly all the negotiation and computations are done internally.
      *
      * @param sas The string containing the SAS.
      * @param isVerified is sas verified.
@@ -193,7 +192,8 @@ public class SecurityEventManager extends ZrtpUserCallback
             }
         }
         else if (msgCode instanceof ZrtpCodes.WarningCodes) {
-            // Warning codes usually do not affect encryption or security. Only in few cases inform the user and ask to verify SAS.
+            // Warning codes usually do not affect encryption or security.
+            // Only in few cases inform the user and ask to verify SAS.
             ZrtpCodes.WarningCodes warn = (ZrtpCodes.WarningCodes) msgCode;
             severity = SrtpListener.WARNING;
 
@@ -249,6 +249,7 @@ public class SecurityEventManager extends ZrtpUserCallback
 
         if (sendEvent)
             securityListener.securityMessageReceived(message, i18nMessage, severity);
+
         Timber.log(TimberLog.FINER, "%s: ZRTP message: severity: %s, sub code: %s, multi: %s",
                 sessionTypeToString(sessionType), sev, msgCode, multiStreams);
     }
