@@ -82,7 +82,7 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
         // Accept the call if it is already accepted in JingleMessageHelper
         if (jingleSessionInit != null) {
             answerOnJingleMessageAccept = JingleMessageHelper.isJingleMessageAccept(jingleSessionInit);
-            Timber.d("Auto answer OnJingleMessageAccept: %s", answerOnJingleMessageAccept);
+            Timber.d("OnJingleMessageAccept (auto answer): %s", answerOnJingleMessageAccept);
         }
 
         boolean isVideoCall = false;

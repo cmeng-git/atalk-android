@@ -454,11 +454,10 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     {
         // get traffic class value for RTP audio/video
         int trafficClass = getDSCP(type);
-
         if (trafficClass <= 0)
             return;
-        Timber.i("Set traffic class for %s to %s", type, trafficClass);
 
+        Timber.i("Set traffic class for %s to %s", type, trafficClass);
         try {
             StreamConnector connector = getStreamConnector(type);
 

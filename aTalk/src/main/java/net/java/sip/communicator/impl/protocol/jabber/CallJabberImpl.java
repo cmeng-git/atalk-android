@@ -852,10 +852,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 getProtocolProvider().getOperationSet(OperationSetBasicAutoAnswer.class);
 
         if (autoAnswerOpSet != null) {
-            if (autoAnswerOpSet.autoAnswer(this, directions, jingle)) {
-                Timber.d("Auto answer call fired!");
-                fireCallChangeEvent(CallChangeEvent.CALL_STATE_CHANGE, null, CallState.CALL_AUTO_ANSWER);
-            }
+            autoAnswerOpSet.autoAnswer(this, directions, jingle);
         }
     }
 

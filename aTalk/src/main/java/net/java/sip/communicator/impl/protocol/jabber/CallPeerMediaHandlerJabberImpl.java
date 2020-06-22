@@ -1092,7 +1092,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         RtpDescriptionExtension description = JingleUtils.getRtpDescription(content);
         MediaType mediaType = JingleUtils.getMediaType(content);
 
-        // if sender has temporary pause the video, then set backToChat flag to avoid checkReplay failure on resume
+        // if sender has paused the video temporary, then set backToChat flag to avoid checkReplay failure on resume
         Senders sender = content.getSenders();
         if (Senders.responder == sender) {
             VideoCallActivity.setBackToChat(true);
@@ -2303,7 +2303,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             // get or create the control
             SrtpControls srtpControls = getSrtpControls();
             SDesControl sdesControl = (SDesControl) srtpControls.getOrCreate(mediaType, SrtpControlType.SDES, null);
-            // set the enabled ciphers suites
+            // set the enabled ciphers suites (must remove any unwanted spaces)
             String ciphers = accountID.getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES);
 
             if (ciphers == null) {

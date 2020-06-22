@@ -32,17 +32,6 @@ public class CallState
     public static final CallState CALL_INITIALIZATION = new CallState(_CALL_INITIALIZATION);
 
     /**
-     * This constant indicates that the call has been auto-answer prior to CALL_IN_PROGRESS
-     * This state allow earlier handling of security parameter setup prior to the actual call
-     */
-    private static final String _CALL_AUTO_ANSWER = "Auto Answer";
-
-    /**
-     * This constant value indicates that the associated call is currently in an initialization state.
-     */
-    public static final CallState CALL_AUTO_ANSWER = new CallState(_CALL_AUTO_ANSWER);
-
-    /**
      * This constant containing a String representation of the CALL_IN_PROGRESS state.
      */
     private static final String _CALL_IN_PROGRESS = "In Progress";

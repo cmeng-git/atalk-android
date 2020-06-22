@@ -251,8 +251,8 @@ public final class JingleMessageHelper implements JingleMessageListener
     @Override
     public void onJingleMessagePropose(XMPPConnection connection, JingleMessage jingleMessage, Message message)
     {
-        List<String> medias = jingleMessage.getMedia();
-        isVideoCall = medias.contains(MediaType.VIDEO.toString());
+        List<String> media = jingleMessage.getMedia();
+        isVideoCall = media.contains(MediaType.VIDEO.toString());
 
         String id = jingleMessage.getId();
         Jid caller = message.getFrom();
@@ -361,7 +361,7 @@ public final class JingleMessageHelper implements JingleMessageListener
 
     /**
      * Call from JingleMessageManager with the received original message and Retract JingleMessage
-     * i.e. when caller decides to abort the call. Send missed call notification.
+     * i.e. when caller decides to abort the call. Send missed call notification
      *
      * @param connection XMPPConnection
      * @param jingleMessage Retract received

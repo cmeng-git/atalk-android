@@ -1014,7 +1014,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
                 if (localFormat.hasParameter(FORMAT_PARAMETER_ATTR_IMAGEATTR)) {
                     if (!remoteFormat.hasParameter(FORMAT_PARAMETER_ATTR_IMAGEATTR)) {
                         localFormat.removeParameter(FORMAT_PARAMETER_ATTR_IMAGEATTR);
-                        Timber.d("Media format advance parameter (%s) removed: %s : %s",
+                        Timber.d("Media format advance parameter (%s) removed; remote: %s; local: %s",
                                 FORMAT_PARAMETER_ATTR_IMAGEATTR, remoteFormat, localFormat);
                     }
                     else
@@ -1573,11 +1573,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     public void start()
             throws IllegalStateException
     {
-
         MediaStream stream;
         stream = getStream(MediaType.AUDIO);
         if ((stream != null) && !stream.isStarted() && isLocalAudioTransmissionEnabled()) {
-            Timber.i("Starting call media handler for: %s", stream.getName());
+            Timber.i("Starting callPeer media handler for: %s", stream.getName());
             getTransportManager().setTrafficClass(stream.getTarget(), MediaType.AUDIO);
             stream.start();
             sendHolePunchPacket(stream, MediaType.AUDIO);
@@ -1585,7 +1584,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
         stream = getStream(MediaType.VIDEO);
         if (stream != null) {
-            Timber.i("Starting call media handler for: %s", stream.getName());
+            Timber.i("Starting callPeer media handler for: %s", stream.getName());
             /*
              * Inform listener of LOCAL_VIDEO_STREAMING only once the video starts so that
              * VideoMediaDeviceSession has correct MediaDevice set (switch from desktop

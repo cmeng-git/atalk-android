@@ -809,7 +809,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         }
         else {
             boolean status = startConnectivityEstablishment(map);
-            Timber.d("### Processed Jingle IQ (transport-info) for medias: %s; status: %s", map.keySet(), status);
+            Timber.d("### Processed Jingle IQ (transport-info) for remote media: %s; success: %s", map.keySet(), status);
             return status;
         }
     }
@@ -972,7 +972,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 {
                     Agent iceAgent = (Agent) evt.getSource();
                     if (iceAgent.isOver()) {
-                        Timber.w("Current IceProcessingState: %s", evt.getNewValue());
+                        Timber.d("Current IceProcessingState: %s", evt.getNewValue());
                         iceAgent.removeStateChangeListener(this);
                         if (iceAgent == IceUdpTransportManager.this.iceAgent) {
                             synchronized (iceProcessingStateSyncRoot) {

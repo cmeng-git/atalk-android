@@ -303,10 +303,9 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
             listeners = new ArrayList<>(callPeerListeners).iterator();
         }
 
+        Timber.d("Dispatching CallPeerChangeEvent (%s): %s; Events: %s", callPeerListeners.size(), callPeerListeners, evt);
         while (listeners.hasNext()) {
             CallPeerListener listener = listeners.next();
-            Timber.d("Dispatching CallPeerChangeEvent to %s: %s", listener.getClass(), evt.toString());
-
             // catch any possible errors, so we are sure we dispatch events to all listeners
             try {
                 switch (eventType) {
@@ -320,6 +319,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
                         listener.peerImageChanged(evt);
                         break;
                     case CallPeerChangeEvent.CALL_PEER_STATE_CHANGE:
+                        Timber.d("Dispatching CallPeerChangeEvent CALL_PEER_STATE_CHANGE to: %s", listener);
                         listener.peerStateChanged(evt);
                         break;
                 }

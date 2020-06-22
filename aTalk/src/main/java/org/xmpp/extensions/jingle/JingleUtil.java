@@ -62,7 +62,7 @@ public class JingleUtil
     }
 
     /**
-     * Creates a {@link Jingle} <tt>session-info</tt> packet carrying a the specified payload type.
+     * Creates a {@link Jingle} <tt>session-info</tt> packet carrying the specified payload type.
      *
      * @param from our full jid
      * @param recipient their full jid

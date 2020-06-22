@@ -64,6 +64,7 @@ public class CallManager
         String key = call.getCallId();
         if (TextUtils.isEmpty(key)) {
             key = String.valueOf(System.currentTimeMillis());
+            Timber.e("CallId is not initialized with jingle sid: %s", key);
         }
 
         synchronized (activeCalls) {
