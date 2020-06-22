@@ -91,7 +91,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     protected void onCallEvent(final CallEvent evt)
     {
         Call call = evt.getSourceCall();
+        Timber.d("Received CallEvent: %s: %s", evt, call.getCallId());
         switch (evt.getEventID()) {
+            // Triggered by outgoing call after session-initiate
             case CallEvent.CALL_INITIATED:
                 storeSpeakerPhoneStatus();
                 clearVideoCallState();
@@ -112,7 +114,15 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                 else {
                     storeSpeakerPhoneStatus();
                     clearVideoCallState();
-                    startReceivedCallActivity(evt);
+
+                    // If incoming call accepted via Jingle Message Initiation, then just start the VideoCallActivity UI;
+                    if (JingleMessageHelper.getCallee(call.getCallId()) != null) {
+                        startVideoCallActivity(call);
+                    }
+                    // else launch a heads-up UI for user to accept the call
+                    else {
+                        startReceivedCallActivity(evt);
+                    }
                 }
                 break;
 
@@ -138,7 +148,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     {
         AudioManager audioManager = aTalkApp.getAudioManager();
         speakerPhoneBeforeCall = audioManager.isSpeakerphoneOn();
-        Timber.d("Storing speakerphone status: %s", speakerPhoneBeforeCall);
+        // Timber.d("Storing speakerphone status: %s", speakerPhoneBeforeCall);
     }
 
     /**
@@ -149,7 +159,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
         if (speakerPhoneBeforeCall != null) {
             AudioManager audioManager = aTalkApp.getAudioManager();
             audioManager.setSpeakerphoneOn(speakerPhoneBeforeCall);
-            Timber.d("Restoring speakerphone to: %s", speakerPhoneBeforeCall);
+            // Timber.d("Restoring speakerphone to: %s", speakerPhoneBeforeCall);
             speakerPhoneBeforeCall = null;
         }
     }
@@ -170,10 +180,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
         Object callState = evt.getNewValue();
         Call call = evt.getSourceCall();
 
-        if (CallState.CALL_AUTO_ANSWER.equals(callState)) {
-            answerCall(call, true);
-        }
-        else if (CallState.CALL_ENDED.equals(callState)) {
+        if (CallState.CALL_ENDED.equals(callState)) {
             // remove heads-up notification in case the call end is by remote retract.
             NotificationPopupHandler.removeCallNotification(call.getCallId());
             if (CallState.CALL_INITIALIZATION.equals(evt.getOldValue())) {
@@ -187,7 +194,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     }
 
     /**
-     * Starts the video call UI when an outgoing call has been initiated.
+     * Starts the video call UI when:
+     * a. an incoming call is accepted via Jingle Message Initiation or
+     * b. an outgoing call has been initiated.
      *
      * @param evt the <tt>CallEvent</tt> that notified us
      */
@@ -200,15 +209,13 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     }
 
     /**
-     * Starts the incoming (received) call activity.
+     * Start the heads-up notifications for incoming (received) call via legacy Jingle.
      *
      * @param evt the <tt>CallEvent</tt>
      */
     private void startReceivedCallActivity(CallEvent evt)
     {
         Call call = evt.getSourceCall();
-        if (JingleMessageHelper.getCallee(call.getCallId()) != null)
-            return;
 
         String identifier = CallManager.addActiveCall(call);
         Map<String, Object> extras = new HashMap<>();
@@ -228,7 +235,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      * Answers the given call and launches the call user interface.
      *
      * @param call the call to answer
-     * @param isVideoCall indicates if video shall be used
+     * @param isVideoCall indicates if video shall be used.
      */
     public static void answerCall(final Call call, boolean isVideoCall)
     {
@@ -280,10 +287,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
         extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, contact);
 
         byte[] contactIcon = contact.getImage();
-        Date when = new Date();
+        String message = contact.getDisplayName() + " " + GuiUtils.formatDateTime(new Date());
 
         notificationService.fireNotification(NotificationManager.MISSED_CALL, SystrayService.MISSED_CALL_MESSAGE_TYPE,
-                aTalkApp.getResString(R.string.service_gui_CALL_MISSED_CALL), contact.getDisplayName() + " "
-                        + GuiUtils.formatDateTime(when), contactIcon, extras);
+                aTalkApp.getResString(R.string.service_gui_CALL_MISSED_CALL), message, contactIcon, extras);
     }
 }

@@ -390,15 +390,15 @@ public class OperationSetBasicTelephonyJabberImpl
                     throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_ROSTER,
                             telephonyDomain), OperationFailedException.ILLEGAL_ARGUMENT);
                 else {
-                    String message = "Initiate call session Exception:";
+                    String message = null;
                     if (t.getCause() != null) {
-                        message += "\n" + t.getCause().getMessage();
+                        message = t.getCause().getMessage();
                     }
                     else if (t.getMessage() != null) {
-                        message += "\n" + t.getMessage();
+                        message = t.getMessage();
                     }
 
-                    Timber.e(message);
+                    Timber.e("Initiate call session Exception: %s", message);
                     throw new OperationFailedException(message, OperationFailedException.NETWORK_FAILURE);
                 }
             }
@@ -837,8 +837,8 @@ public class OperationSetBasicTelephonyJabberImpl
 
                     /*
                      * cmeng (20200602) - must process to completion if transport-info is send separately,
-                     * otherwise IceUdpTransportManager#startConnectivityEstablishment will fail (cpeList is empty)
-                     * and Ice Agent medias is not initialized properly
+                     * otherwise IceUdpTransportManager#startConnectivityEstablishment will fail
+                     * (cpeList is empty) and Ice Agent for the media is not initialized properly
                      */
                     // call.processSessionInitiate(jingle, callPeer);
 
@@ -946,7 +946,7 @@ public class OperationSetBasicTelephonyJabberImpl
     private static List<String> contentMedias = new ArrayList<>();
 
     /**
-     * Keep a reference of the medias to be processed for transport-info to avoid media prune;
+     * Keep a reference of the media to be processed for transport-info to avoid media prune;
      * Applicable for training transport-info sedning only e.g. conversations
      *
      * @param jingle Jingle element of session-initiate or session-accept
@@ -1020,7 +1020,7 @@ public class OperationSetBasicTelephonyJabberImpl
             jingleTransports = jingleTransport;
         }
 
-        // Merge the transport-info to the session-initiate before process
+        // Merge the transport-info to the session-initiate before process (20200616: confirmed by sendStanza())
         if (jingleSI != null) {
             for (JingleContent contents : jingleTransport.getContents()) {
                 String nameContent = contents.getName();
@@ -1041,7 +1041,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         if (jingleTransports.getContents().size() >= contentMedias.size()) {
             if (jingleSI != null) {
-                Timber.d("### Process Jingle session-initiate: %s = %s", contentMedias, jingleSI);
+                Timber.d("### Process Jingle session-initiate (merged): %s = %s", contentMedias, jingleSI);
                 new Thread()
                 {
                     @Override
@@ -1053,7 +1053,7 @@ public class OperationSetBasicTelephonyJabberImpl
                 }.start();
             }
             else {
-                Timber.d("### Process transport-info for media type: %s: %s,", contentMedias, jingleTransports.getContents());
+                Timber.d("### Process transport-info (merged) for media type: %s: %s,", contentMedias, jingleTransports.getContents());
                 try {
                     callPeer.processOfferTransportInfo(jingleTransports);
                 } catch (NotConnectedException | InterruptedException e) {

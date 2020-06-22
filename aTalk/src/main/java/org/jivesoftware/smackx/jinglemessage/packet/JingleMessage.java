@@ -52,7 +52,7 @@ public class JingleMessage implements ExtensionElement
 
     private String action;
     private String id;
-    private List<String> medias = new ArrayList<>();
+    private List<String> media = new ArrayList<>();
 
     /**
      * Creates a new instance of jingleMessage.
@@ -74,10 +74,10 @@ public class JingleMessage implements ExtensionElement
         if (ACTION_PROPOSE.equals(action)) {
             List<StandardExtensionElement> elements
                     = extElement.getElements(RtpDescriptionExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE);
-            medias.clear();
+            media.clear();
             if (elements != null) {
                 for (StandardExtensionElement element : elements) {
-                    medias.add(element.getAttributeValue(RtpDescriptionExtension.MEDIA_ATTR_NAME));
+                    media.add(element.getAttributeValue(RtpDescriptionExtension.MEDIA_ATTR_NAME));
                 }
             }
         }
@@ -110,7 +110,7 @@ public class JingleMessage implements ExtensionElement
 
     public List<String> getMedia()
     {
-        return medias;
+        return media;
     }
 
     /**

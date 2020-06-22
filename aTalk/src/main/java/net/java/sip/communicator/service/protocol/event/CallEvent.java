@@ -14,8 +14,8 @@ import org.atalk.service.neomedia.MediaType;
 import java.util.*;
 
 /**
- * An event class representing that an incoming, or an outgoing call has been created. The event id
- * indicates the exact reason for this event.
+ * An event class representing that an incoming, or an outgoing call has been created.
+ * The event id indicates the exact reason for this event.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -33,8 +33,7 @@ public class CallEvent extends EventObject
     public static final int CALL_RECEIVED = 2;
 
     /**
-     * An event id value indicating that this event has been triggered as a result of a call
-     * being ended (all its peers have left).
+     * An event id value indicating that this event has been triggered as a result of a call ended (all its peers have left).
      */
     public static final int CALL_ENDED = 3;
 
@@ -71,10 +70,10 @@ public class CallEvent extends EventObject
      *
      * @param call the call that triggered this event.
      * @param eventID determines whether the new instance represents an event notifying that:
-     * a. an incoming <tt>Call</tt> was received,
-     * b. an outgoing <tt>Call</tt> was initiated, or
+     * a. an outgoing <tt>Call</tt> was initiated, or
+     * b. an incoming <tt>Call</tt> was received, or
      * c. a <tt>Call</tt> has ended
-     * @param mediaDirections Media Direction
+     * @param mediaDirections Media Direction.
      */
     public CallEvent(Call call, int eventID, Map<MediaType, MediaDirection> mediaDirections)
     {
@@ -179,6 +178,6 @@ public class CallEvent extends EventObject
     @Override
     public String toString()
     {
-        return "CallEvent:[ id=" + getEventID() + " Call=" + getSourceCall() + "]";
+        return "CallEvent:[id=" + getEventID() + " Call=" + getSourceCall() + "]";
     }
 }

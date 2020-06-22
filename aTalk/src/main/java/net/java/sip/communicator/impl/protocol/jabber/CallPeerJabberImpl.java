@@ -58,7 +58,7 @@ public class CallPeerJabberImpl
     private final Object candSyncRoot = new Object();
 
     /**
-     * If the content-add does not contains candidates.
+     * If the content-add does not contain candidates.
      */
     private boolean contentAddWithNoCands = false;
 
@@ -103,8 +103,7 @@ public class CallPeerJabberImpl
     private DiscoverInfo discoverInfo;
 
     /**
-     * The indicator which determines whether this peer has initiated the
-     * session.
+     * The indicator which determines whether this peer has initiated the session.
      */
     private boolean initiator = false;
 
@@ -186,6 +185,7 @@ public class CallPeerJabberImpl
 
         // Send the session-accept first and start the stream later in case the
         // media relay needs to see it before letting hole punching techniques through.
+        // Timber.w(new Exception("Create session accept"));
         Jingle response = JingleUtil.createSessionAccept(mConnection.getUser(), sessionInitIQ, answer);
         try {
             mConnection.sendStanza(response);
@@ -564,7 +564,6 @@ public class CallPeerJabberImpl
                 if (MediaType.VIDEO.equals(mediaType))
                     videoContentRemoved = true;
             }
-
             /*
              * TODO XEP-0166: Jingle says: If the content-remove results in zero content definitions
              * for the session, the entity that receives the content-remove SHOULD send a
@@ -839,11 +838,11 @@ public class CallPeerJabberImpl
             }
 
             List<JingleContent> jingleContents = jingle.getContents();
-            List<String> medias = new ArrayList<>();
+            List<String> media = new ArrayList<>();
             for (JingleContent jingleContent : jingleContents) {
-                medias.add(jingleContent.getName());
+                media.add(jingleContent.getName());
             }
-            Timber.d("### Processing Jingle IQ (transport-info) for media: %s", medias);
+            Timber.d("### Processing Jingle IQ (transport-info) for media: %s", media);
             getMediaHandler().processTransportInfo(jingleContents);
         } catch (OperationFailedException ofe) {
             Timber.w(ofe, "Failed to process an incoming transport-info");
@@ -934,10 +933,9 @@ public class CallPeerJabberImpl
     }
 
     /**
-     * Returns the <tt>MediaDirection</tt> that should be set for the content of type
-     * <tt>mediaType</tt> in the Jingle session for this <tt>CallPeer</tt>. If we are the focus of a
-     * conference and are doing RTP translation, takes into account the other <tt>CallPeer</tt>s in
-     * the <tt>Call</tt>.
+     * Returns the <tt>MediaDirection</tt> that should be set for the content of type <tt>mediaType</tt>
+     * in the Jingle session for this <tt>CallPeer</tt>. If we are the focus of a conference and are doing
+     * RTP translation, takes into account the other <tt>CallPeer</tt>s in the <tt>Call</tt>.
      *
      * @param mediaType the <tt>MediaType</tt> for which to return the <tt>MediaDirection</tt>
      * @return the <tt>MediaDirection</tt> that should be used for the content of type
@@ -1130,7 +1128,7 @@ public class CallPeerJabberImpl
     protected void sendTransportInfo(Iterable<JingleContent> contents)
             throws NotConnectedException, InterruptedException
     {
-        // if the call is canceled, do not start sending candidates in transport-info
+        // if the call is canceled, do not start sending candidates in transport-info.
         if (cancelled)
             return;
 
@@ -1316,7 +1314,7 @@ public class CallPeerJabberImpl
      * <tt>mediaType</tt> in the Jingle session with this <tt>CallPeer</tt>
      *
      * @param mediaType the <tt>MediaType</tt> for which to get the current value of the <tt>senders</tt> field.
-     * @param senders the value to set
+     * @param senders the value to set.
      */
     private void setSenders(MediaType mediaType, Senders senders)
     {

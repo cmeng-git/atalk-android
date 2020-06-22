@@ -279,11 +279,9 @@ public abstract class Call extends DataObject
     protected void fireCallChangeEvent(String type, Object oldValue, Object newValue, CallPeerChangeEvent cause)
     {
         CallChangeEvent event = new CallChangeEvent(this, type, oldValue, newValue, cause);
-        Timber.d("Dispatching a CallChange event to %s call listeners. The event is: %s",
-                callListeners.size(), event);
+        Timber.d("Dispatching CallChangeEvent to (%s) listeners. %s", callListeners.size(), event);
 
         CallChangeListener[] listeners;
-
         synchronized (callListeners) {
             listeners = callListeners.toArray(new CallChangeListener[0]);
         }
