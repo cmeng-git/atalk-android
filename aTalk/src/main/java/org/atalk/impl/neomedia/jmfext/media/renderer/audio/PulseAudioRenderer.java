@@ -10,7 +10,6 @@ import org.atalk.impl.neomedia.device.AudioSystem;
 import org.atalk.impl.neomedia.device.PulseAudioSystem;
 import org.atalk.impl.neomedia.pulseaudio.PA;
 import org.atalk.service.neomedia.BasicVolumeControl;
-import org.atalk.util.StringUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
@@ -394,7 +393,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
                  */
                 String locatorDev = getLocatorDev();
 
-                if (!StringUtils.isEquals(dev, locatorDev)) {
+                if (!Objects.equals(dev, locatorDev)) {
                     /*
                      * PulseAudio has the capability to move a stream to a different device while
                      * the stream is connected to a sink. In other words, it may turn out that the
@@ -402,7 +401,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
                      * of the execution.
                      */
                     String streamDev = PA.stream_get_device_name(stream);
-                    if (!StringUtils.isEquals(streamDev, locatorDev)) {
+                    if (!Objects.equals(streamDev, locatorDev)) {
                         /*
                          * The close method will stop this Renderer if it is currently started.
                          */

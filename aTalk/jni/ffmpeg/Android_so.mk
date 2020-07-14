@@ -77,7 +77,7 @@ LOCAL_LDLIBS += -llog -lz
 LOCAL_SHARED_LIBRARIES := libavcodec libavdevice libavfilter libavutil libavformat  libswresample libswscale libx264
 # Must use exact format prefix with $(LOCAL_PATH) below to work - $(LOCAL_LIB_PATH)/include not working
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include
-LOCAL_SRC_FILES := ./org_atalk_impl_neomedia_codec_FFmpeg.c
+LOCAL_SRC_FILES := ./FFmpeg.c
 LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -w
 
 include $(BUILD_SHARED_LIBRARY)

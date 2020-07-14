@@ -17,6 +17,7 @@ package org.atalk.impl.neomedia.transform;
 
 import org.atalk.impl.neomedia.*;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 
 /**
  * Implements a no-op {@link SrtpControl}, i.e. one which does not perform

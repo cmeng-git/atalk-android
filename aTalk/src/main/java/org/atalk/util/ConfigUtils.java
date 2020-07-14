@@ -15,9 +15,9 @@
  */
 package org.atalk.util;
 
-import java.io.*;
-
 import org.atalk.service.configuration.ConfigurationService;
+
+import java.io.File;
 
 /**
  * @author George Politis
@@ -33,24 +33,19 @@ public class ConfigUtils
      * or the current working directory.
      *
      * @param path the absolute or relative path in the form of <tt>String</tt>
-     * for/from which an absolute path in the form of <tt>File</tt> is to be
-     * returned
-     * @param cfg the <tt>ConfigurationService</tt> to be employed by the method
-     * (invocation) if necessary
-     * @return an absolute path in the form of <tt>File</tt> for/from the
-     * specified <tt>path</tt>
+     * for/from which an absolute path in the form of <tt>File</tt> is to be returned
+     * @param cfg the <tt>ConfigurationService</tt> to be employed by the method (invocation) if necessary
+     * @return an absolute path in the form of <tt>File</tt> for/from the specified <tt>path</tt>
      */
     public static File getAbsoluteFile(String path, ConfigurationService cfg)
     {
         File file = new File(path);
 
-        if (!file.isAbsolute())
-        {
+        if (!file.isAbsolute()) {
             String scHomeDirLocation, scHomeDirName;
             if (cfg == null) {
                 scHomeDirLocation = System.getProperty(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION);
-                scHomeDirName
-                    = System.getProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
+                scHomeDirName = System.getProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
             }
             else {
                 scHomeDirLocation = cfg.getScHomeDirLocation();
@@ -86,12 +81,10 @@ public class ConfigUtils
             boolean defaultValue)
     {
         boolean b;
-        if (cfg == null)
-        {
+        if (cfg == null) {
             String s = System.getProperty(property);
             b = (s == null || s.length() == 0)
-                    ? defaultValue
-                    : Boolean.parseBoolean(s);
+                    ? defaultValue : Boolean.parseBoolean(s);
         }
         else {
             b = cfg.getBoolean(property, defaultValue);
@@ -106,8 +99,7 @@ public class ConfigUtils
      * @param cfg the {@code ConfigurationService} to get the value from or
      * {@code null} if the property is to be retrieved from {@code System}
      * @param property the name of the property to get
-     * @param defaultValue the value to be returned if {@code property} is not
-     * associated with a value
+     * @param defaultValue the value to be returned if {@code property} is not associated with a value
      * @return the value as an {@code int} of {@code property} retrieved from
      * either {@code cfg} or {@code System}
      */
@@ -127,14 +119,12 @@ public class ConfigUtils
             else {
                 try {
                     i = Integer.parseInt(s);
-                }
-                catch (NumberFormatException nfe) {
+                } catch (NumberFormatException nfe) {
                     i = defaultValue;
                 }
             }
         }
-        else
-        {
+        else {
             i = cfg.getInt(property, defaultValue);
         }
         return i;
@@ -167,8 +157,7 @@ public class ConfigUtils
             else {
                 try {
                     i = Long.parseLong(s);
-                }
-                catch (NumberFormatException nfe) {
+                } catch (NumberFormatException nfe) {
                     i = defaultValue;
                 }
             }
@@ -218,7 +207,7 @@ public class ConfigUtils
      * either {@code cfg} or {@code System}
      */
     public static String getString(ConfigurationService cfg, String property,
-                            String propertyAlternative, String defaultValue)
+            String propertyAlternative, String defaultValue)
     {
         String ret = getString(cfg, property, null);
         if (ret == null) {

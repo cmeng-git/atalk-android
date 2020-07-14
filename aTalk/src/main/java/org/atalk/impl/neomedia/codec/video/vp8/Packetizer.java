@@ -86,7 +86,7 @@ public class Packetizer extends AbstractCodec2
 
         //The input will fit in a single packet
         int inOff = inputBuffer.getOffset();
-        int len = (inLen <= MAX_SIZE) ? inLen : MAX_SIZE;
+        int len = Math.min(inLen, MAX_SIZE);
 
         offset = pdMaxLen;
         output = validateByteArraySize(outputBuffer, offset + len, true);

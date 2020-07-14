@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia.transform.sdes;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.event.SrtpListener;
+import org.atalk.util.MediaType;
 
 import java.security.SecureRandom;
 import java.util.*;
@@ -46,7 +47,6 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
     public SDesControlImpl()
     {
         super(SrtpControlType.SDES);
-
         {
             enabledCryptoSuites.add(SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80);
             enabledCryptoSuites.add(SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_32);
@@ -203,6 +203,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
     {
     }
 
+    // must trim any leading or training spaces, else cause error
     public void setEnabledCiphers(Iterable<String> ciphers)
     {
         enabledCryptoSuites.clear();

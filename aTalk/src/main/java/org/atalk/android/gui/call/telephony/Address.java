@@ -95,7 +95,7 @@ public class Address implements Serializable
     public static Address[] parseUnencoded(String addressList)
     {
         List<Address> addresses = new ArrayList<>();
-        if (!StringUtils.isNullOrEmpty(addressList)) {
+        if (StringUtils.isNotEmpty(addressList)) {
             Rfc822Token[] tokens = Rfc822Tokenizer.tokenize(addressList);
             for (Rfc822Token token : tokens) {
                 String address = token.getAddress();
@@ -115,7 +115,7 @@ public class Address implements Serializable
      */
     public static Address[] parse(String addressList)
     {
-        if (StringUtils.isNullOrEmpty(addressList)) {
+        if (StringUtils.isEmpty(addressList)) {
             return EMPTY_ADDRESS_ARRAY;
         }
         // parseUnencoded(addressList);

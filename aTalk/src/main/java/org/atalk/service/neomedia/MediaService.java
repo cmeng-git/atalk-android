@@ -10,6 +10,7 @@ import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.*;
 import org.atalk.service.neomedia.format.*;
 import org.atalk.service.neomedia.recording.*;
+import org.atalk.util.MediaType;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;

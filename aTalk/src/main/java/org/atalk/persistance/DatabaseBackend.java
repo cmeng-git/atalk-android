@@ -30,12 +30,12 @@ import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.chat.*;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.*;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
@@ -855,7 +855,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             String identityKP = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.IDENTITY_KEY));
             cursor.close();
             try {
-                if (!StringUtils.isNullOrEmpty(identityKP)) {
+                if (StringUtils.isNotEmpty(identityKP)) {
                     identityKeyPair = new IdentityKeyPair(Base64.decode(identityKP, Base64.DEFAULT));
                 }
             } catch (InvalidKeyException e) {
@@ -877,7 +877,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             String key = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.IDENTITY_KEY));
             cursor.close();
             try {
-                if (!StringUtils.isNullOrEmpty(key)) {
+                if (StringUtils.isNotEmpty(key)) {
                     identityKey = new IdentityKey(Base64.decode(key, Base64.DEFAULT), 0);
                 }
             } catch (InvalidKeyException e) {
@@ -953,7 +953,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             }
             try {
                 key = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.IDENTITY_KEY));
-                if (!StringUtils.isNullOrEmpty(key)) {
+                if (StringUtils.isNotEmpty(key)) {
                     identityKeys.add(new IdentityKey(Base64.decode(key, Base64.DEFAULT), 0));
                 }
                 else {
@@ -1233,7 +1233,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         while (cursor.moveToNext()) {
             deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             String sessionKey = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY));
-            if (!StringUtils.isNullOrEmpty(sessionKey)) {
+            if (StringUtils.isNotEmpty(sessionKey)) {
                 try {
                     session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
                 } catch (IOException e) {
@@ -1263,7 +1263,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
 
         while (cursor.moveToNext()) {
             String sessionKey = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY));
-            if (!StringUtils.isNullOrEmpty(sessionKey)) {
+            if (StringUtils.isNotEmpty(sessionKey)) {
                 try {
                     session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
                 } catch (IOException e) {

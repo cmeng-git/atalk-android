@@ -21,7 +21,7 @@ import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.UtilActivator;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jxmpp.jid.Jid;
 
 import java.util.Iterator;
@@ -288,7 +288,7 @@ public abstract class AccountRegistrationWizard
     {
         // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
         String prefWName = UtilActivator.getResources().getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
-        return (!StringUtils.isNullOrEmpty(prefWName) && prefWName.equals(this.getClass().getName()));
+        return (StringUtils.isNotEmpty(prefWName) && prefWName.equals(this.getClass().getName()));
     }
 
     /**

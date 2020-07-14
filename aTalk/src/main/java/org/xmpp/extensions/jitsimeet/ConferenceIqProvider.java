@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -68,23 +68,23 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
 
             iq.setRoom(room);
             String ready = parser.getAttributeValue("", ConferenceIq.READY_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(ready)) {
+            if (StringUtils.isNotEmpty(ready)) {
                 iq.setReady(Boolean.valueOf(ready));
             }
             String focusJid = parser.getAttributeValue("", ConferenceIq.FOCUS_JID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(focusJid)) {
+            if (StringUtils.isNotEmpty(focusJid)) {
                 iq.setFocusJid(focusJid);
             }
             String sessionId = parser.getAttributeValue("", ConferenceIq.SESSION_ID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(sessionId)) {
+            if (StringUtils.isNotEmpty(sessionId)) {
                 iq.setSessionId(sessionId);
             }
             String machineUID = parser.getAttributeValue("", ConferenceIq.MACHINE_UID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(machineUID)) {
+            if (StringUtils.isNotEmpty(machineUID)) {
                 iq.setMachineUID(machineUID);
             }
             String identity = parser.getAttributeValue("", ConferenceIq.IDENTITY_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(identity)) {
+            if (StringUtils.isNotEmpty(identity)) {
                 iq.setIdentity(identity);
             }
         }
@@ -121,13 +121,13 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
 
                         // Name
                         String propName = parser.getAttributeValue("", ConferenceIq.Property.NAME_ATTR_NAME);
-                        if (!StringUtils.isNullOrEmpty(propName)) {
+                        if (StringUtils.isNotEmpty(propName)) {
                             property.setName(propName);
                         }
 
                         // Value
                         String propValue = parser.getAttributeValue("", ConferenceIq.Property.VALUE_ATTR_NAME);
-                        if (!StringUtils.isNullOrEmpty(propValue)) {
+                        if (StringUtils.isNotEmpty(propValue)) {
                             property.setValue(propValue);
                         }
                     }

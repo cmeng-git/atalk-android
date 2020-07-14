@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.event.CallListener;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.recording.Recorder;
 
 import java.text.ParseException;

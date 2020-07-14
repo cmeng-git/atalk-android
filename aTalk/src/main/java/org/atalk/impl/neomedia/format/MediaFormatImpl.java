@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.format;
 
 import org.atalk.impl.neomedia.MediaUtils;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.format.*;
 
 import java.util.*;

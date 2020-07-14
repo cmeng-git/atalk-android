@@ -14,11 +14,11 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package org.xmpp.extensions.rayo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
@@ -87,7 +87,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
             String dst = parser.getAttributeValue("", DialIq.DST_ATTR_NAME);
 
             // Destination is mandatory
-            if (StringUtils.isNullOrEmpty(dst))
+            if (StringUtils.isEmpty(dst))
                 return null;
 
             dial.setSource(src);
@@ -96,7 +96,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         else if (RefIq.ELEMENT.equals(rootElement)) {
             iq = ref = new RefIq();
             String uri = parser.getAttributeValue("", RefIq.URI_ATTR_NAME);
-            if (StringUtils.isNullOrEmpty(uri))
+            if (StringUtils.isEmpty(uri))
                 return null;
             ref.setUri(uri);
         }
@@ -153,7 +153,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
                      * String platformCode = parser.getAttributeValue( "",
                      * JingleReason.PLATFORM_CODE_ATTRIBUTE);
                      *
-                     * if (!StringUtils.isNullOrEmpty(platformCode)) {
+                     * if (StringUtils.isNotEmpty(platformCode)) {
                      * reason.setPlatformCode(platformCode); } }
                      */
                     break;

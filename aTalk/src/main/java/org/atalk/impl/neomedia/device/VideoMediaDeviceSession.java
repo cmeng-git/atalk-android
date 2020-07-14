@@ -21,7 +21,7 @@ import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.impl.neomedia.transform.ControlTransformInputStream;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
 import org.atalk.service.neomedia.event.*;

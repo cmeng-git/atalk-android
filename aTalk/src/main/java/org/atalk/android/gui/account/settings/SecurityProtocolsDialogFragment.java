@@ -162,7 +162,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         protected Map<String, Boolean> statusMap = new HashMap<>();
 
         /**
-         * Creates new instance of {@link ProtocolsAdapter}
+         * Creates a new instance of {@link ProtocolsAdapter}
          *
          * @param encryptions
          * @param statusMap
@@ -223,12 +223,6 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
                 hasChanges = true;
             });
 
-            // Source ported for DTLS_SRTP bctls 1.6.5
-//            if (encryption.equals(SrtpControlType.DTLS_SRTP.toString())) {
-//                tv.setEnabled(false);
-//                cb.setChecked(false);
-//                cb.setEnabled(false);
-//            }
             return v;
         }
 

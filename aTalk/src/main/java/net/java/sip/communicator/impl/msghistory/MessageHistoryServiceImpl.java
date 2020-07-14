@@ -39,13 +39,13 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
 import org.jxmpp.jid.Jid;
@@ -562,12 +562,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         // Timber.i("Find recent message for: " + providerToFilter + " -> " + contactToFilter);
         List<String> argList = new ArrayList<>();
-        if (!StringUtils.isNullOrEmpty(providerToFilter)) {
+        if (StringUtils.isNotEmpty(providerToFilter)) {
             whereCondition = ChatSession.ACCOUNT_UID + "=?";
             argList.add(providerToFilter);
         }
-        if (!StringUtils.isNullOrEmpty(contactToFilter)) {
-            if (!StringUtils.isNullOrEmpty(whereCondition))
+        if (StringUtils.isNotEmpty(contactToFilter)) {
+            if (StringUtils.isNotEmpty(whereCondition))
                 whereCondition += " AND ";
             whereCondition += ChatSession.ENTITY_JID + "=?";
             argList.add(contactToFilter);
@@ -586,7 +586,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             sessionUuid = cursor.getString(cursor.getColumnIndex(ChatSession.SESSION_UUID));
             // skip for null sessionUuid i.e. message from non-persistent contact e.g server
             // announcement.
-            if (StringUtils.isNullOrEmpty(sessionUuid))
+            if (StringUtils.isEmpty(sessionUuid))
                 continue;
 
             accountUuid = cursor.getString(cursor.getColumnIndex(ChatSession.ACCOUNT_UUID));
@@ -677,7 +677,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     private Object getContactOrRoomByID(String accountUuid, String contactId, boolean isSMSEnabled)
     {
         // skip for system virtual server e.g. atalk.org without "@"
-        if (StringUtils.isNullOrEmpty(contactId) || contactId.indexOf("@") <= 0)
+        if (StringUtils.isEmpty(contactId) || contactId.indexOf("@") <= 0)
             return null;
 
         AccountID accountID = null;
@@ -810,7 +810,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             sessionUuid = cursor.getString(0);
         }
         cursor.close();
-        if (!StringUtils.isNullOrEmpty(sessionUuid))
+        if (StringUtils.isNotEmpty(sessionUuid))
             return sessionUuid;
 
         // Create new chatSession entry if one does not exist
@@ -828,7 +828,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         }
 
         // generate new sessionUuid for non-persistent contact or ChatSession.MODE_MULTI
-        if (StringUtils.isNullOrEmpty(sessionUuid)) {
+        if (StringUtils.isEmpty(sessionUuid)) {
             sessionUuid = timeStamp + Math.abs(entityJid.hashCode());
         }
 
@@ -857,7 +857,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String entityJid = chatSession.getChatEntity();
         AccountID accountUid = chatSession.getCurrentChatTransport().getProtocolProvider().getAccountID();
 
-        if (StringUtils.isNullOrEmpty(entityJid) || (accountUid == null))
+        if (StringUtils.isEmpty(entityJid) || (accountUid == null))
             return chatType;
 
         String accountUuid = accountUid.getAccountUuid();
@@ -888,7 +888,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String entityJid = chatSession.getChatEntity();
         AccountID accountUid = chatSession.getCurrentChatTransport().getProtocolProvider().getAccountID();
 
-        if (StringUtils.isNullOrEmpty(entityJid) || entityJid.equals(aTalkApp.getResString(R.string.service_gui_UNKNOWN))
+        if (StringUtils.isEmpty(entityJid) || entityJid.equals(aTalkApp.getResString(R.string.service_gui_UNKNOWN))
                 || (accountUid == null))
             return 0;
 

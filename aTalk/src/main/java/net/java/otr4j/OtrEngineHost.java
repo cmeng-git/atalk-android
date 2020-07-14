@@ -51,7 +51,7 @@ public interface OtrEngineHost
 	/**
 	 * Get instructions for the necessary fragmentation operations.
 	 * <p>
-	 * If no fragmentation is necessary, return <tt>null</tt> to set the default
+	 * If no fragmentation is necessary, return {@code null} to set the default
 	 * fragmentation instructions which are to use an unlimited number of
 	 * messages of unlimited size each. Hence fragmentation is not necessary or
 	 * applied.

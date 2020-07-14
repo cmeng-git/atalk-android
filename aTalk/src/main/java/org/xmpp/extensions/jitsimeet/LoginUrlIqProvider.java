@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -24,7 +24,6 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.IOException;
 
@@ -64,21 +63,21 @@ public class LoginUrlIqProvider extends IQProvider<LoginUrlIq>
             authUrlIQ = new LoginUrlIq();
 
             String url = parser.getAttributeValue("", LoginUrlIq.URL_ATTRIBUTE_NAME);
-            if (!StringUtils.isNullOrEmpty(url)) {
+            if (StringUtils.isNotEmpty(url)) {
                 authUrlIQ.setUrl(url);
             }
             String room = parser.getAttributeValue("", LoginUrlIq.ROOM_NAME_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(room)) {
+            if (StringUtils.isNotEmpty(room)) {
                 EntityBareJid roomJid = JidCreate.entityBareFrom(room);
                 authUrlIQ.setRoom(roomJid);
             }
             String popup = parser.getAttributeValue("", LoginUrlIq.POPUP_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(popup)) {
+            if (StringUtils.isNotEmpty(popup)) {
                 Boolean popupBool = Boolean.parseBoolean(popup);
                 authUrlIQ.setPopup(popupBool);
             }
             String machineUID = parser.getAttributeValue("", LoginUrlIq.MACHINE_UID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(machineUID)) {
+            if (StringUtils.isNotEmpty(machineUID)) {
                 authUrlIQ.setMachineUID(machineUID);
             }
         }

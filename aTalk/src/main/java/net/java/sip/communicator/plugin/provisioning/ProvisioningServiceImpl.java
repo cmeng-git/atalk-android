@@ -4,6 +4,7 @@ import net.java.sip.communicator.service.httputil.HttpUtils;
 import net.java.sip.communicator.service.provisioning.ProvisioningService;
 import net.java.sip.communicator.util.OrderedProperties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -11,7 +12,6 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
-import org.atalk.util.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -122,7 +122,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
             url = getProvisioningUri();
         }
 
-        if (!StringUtils.isNullOrEmpty(url)) {
+        if (StringUtils.isNotEmpty(url)) {
             InputStream data = retrieveConfigurationFile(url);
 
             if (data != null) {

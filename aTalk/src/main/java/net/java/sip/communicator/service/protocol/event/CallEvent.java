@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
 
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 
 import java.util.*;
 

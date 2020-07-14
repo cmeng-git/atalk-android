@@ -30,13 +30,15 @@ import org.atalk.android.R;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import java.io.*;
@@ -69,7 +71,7 @@ public class CaptchaDialog extends Dialog
 
     private Bitmap mCaptcha;
     private DataForm mDataForm;
-    private DataForm formSubmit;
+    private DataForm.Builder formBuilder;
     private String mReasonText;
 
     private static XMPPConnection mConnection;
@@ -80,6 +82,7 @@ public class CaptchaDialog extends Dialog
     public interface CaptchaDialogListener
     {
         void onResult(int state);
+
         void addMessage(String msg, int msgType);
     }
 
@@ -149,14 +152,10 @@ public class CaptchaDialog extends Dialog
     {
         mImageView.setOnClickListener(v -> mCaptchaText.requestFocus());
 
-        mAcceptButton.setOnClickListener(v -> {
-            showResult(onAcceptClicked(false));
-        });
+        mAcceptButton.setOnClickListener(v -> showResult(onAcceptClicked(false)));
 
-        mCancelButton.setOnClickListener(v -> {
-            // force to terminate smack wait loop early by sending empty reply
-            showResult(onAcceptClicked(true));
-        });
+        // force terminate smack wait loop early by sending empty reply
+        mCancelButton.setOnClickListener(v -> showResult(onAcceptClicked(true)));
 
         mOKButton.setOnClickListener(v -> closeDialog());
     }
@@ -181,25 +180,19 @@ public class CaptchaDialog extends Dialog
      */
     private boolean onAcceptClicked(boolean isCancel)
     {
-        formSubmit = new DataForm(DataForm.Type.submit);
-        addField(FormField.FORM_TYPE, CaptchaExtension.NAMESPACE);
-
-        String from = mDataForm.getField(CaptchaExtension.FROM).getFirstValue();
-        addField(CaptchaExtension.FROM, from);
-
-        String cl = mDataForm.getField(CaptchaExtension.CHALLENGE).getFirstValue();
-        addField(CaptchaExtension.CHALLENGE, cl);
-
-        String sid = mDataForm.getField(CaptchaExtension.SID).getFirstValue();
-        addField(CaptchaExtension.SID, sid);
+        formBuilder = DataForm.builder(DataForm.Type.submit)
+                .addField(mDataForm.getField(FormField.FORM_TYPE))
+                .addField(mDataForm.getField(CaptchaExtension.FROM))
+                .addField(mDataForm.getField(CaptchaExtension.CHALLENGE))
+                .addField(mDataForm.getField(CaptchaExtension.SID));
 
         // Only localPart is required
         String userName = mMessage.getTo().toString();
-        addField(CaptchaExtension.USER_NAME, userName);
+        addFormField(CaptchaExtension.USER_NAME, userName);
 
         Editable rc = mCaptchaText.getText();
         if (rc != null) {
-            addField(CaptchaExtension.OCR, rc.toString());
+            addFormField(CaptchaExtension.OCR, rc.toString());
         }
 
         /*
@@ -209,7 +202,7 @@ public class CaptchaDialog extends Dialog
         if (isCancel)
             callBack.onResult(cancel);
 
-        CaptchaIQ iqCaptcha = new CaptchaIQ(formSubmit);
+        CaptchaIQ iqCaptcha = new CaptchaIQ(formBuilder.build());
         iqCaptcha.setType(IQ.Type.set);
         iqCaptcha.setTo(mMessage.getFrom());
         try {
@@ -242,17 +235,16 @@ public class CaptchaDialog extends Dialog
     }
 
     /**
-     * Add field / value to the submit Form for registration
+     * Add field / value to formBuilder for registration
      *
-     * @param name the submit field variable
-     * @param value the field value
+     * @param name the FormField variable
+     * @param value the FormField value
      */
-    private void addField(String name, String value)
+    private void addFormField(String name, String value)
     {
-        FormField.Builder field = FormField.builder(name);
-        field.addValue(value);
-        field.setType(FormField.Type.text_single);
-        formSubmit.addField(field.build());
+        TextSingleFormField.Builder field = FormField.builder(name);
+        field.setValue(value);
+        formBuilder.addField(field.build());
     }
 
     /*

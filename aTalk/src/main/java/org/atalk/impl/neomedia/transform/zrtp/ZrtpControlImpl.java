@@ -10,6 +10,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.jxmpp.jid.BareJid;
 
 import java.io.UnsupportedEncodingException;
@@ -211,10 +212,11 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     {
         ZRTPTransformEngine transformEngine = new ZRTPTransformEngine();
 
-        final String zidFilename = "GNUZRTP4J_"
-                + new BigInteger(myZid).toString(32) + ".zid";
+        // NOTE: set paranoid mode before initializing
+        // zrtpEngine.setParanoidMode(paranoidMode);
 
-        // NOTE: set paranoid mode before initializing zrtpEngine.setParanoidMode(paranoidMode);
+        final String zidFilename = "GNUZRTP4J_" + new BigInteger(myZid).toString(32) + ".zid";
+
         transformEngine.initialize(zidFilename, false, ZrtpConfigureUtils.getZrtpConfiguration(), myZid);
         transformEngine.setUserCallback(new SecurityEventManager(this));
         return transformEngine;

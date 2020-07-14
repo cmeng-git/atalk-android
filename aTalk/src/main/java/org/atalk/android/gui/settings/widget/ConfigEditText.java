@@ -12,10 +12,10 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.StringUtils;
 
 /**
  * Edit text preference which persists it's value through the <tt>ConfigurationService</tt>. Current value is reflected
@@ -165,7 +165,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue)
     {
-        if (allowEmpty && StringUtils.isNullOrEmpty((String) newValue)) {
+        if (allowEmpty && StringUtils.isEmpty((String) newValue)) {
             return true;
         }
 

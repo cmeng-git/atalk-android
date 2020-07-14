@@ -307,7 +307,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     @Override
     public String toString()
     {
-        return getClass().getSimpleName() + "(" + getAccountID().getDisplayName() + ")";
+        return getClass().getSimpleName() + "(" + getAccountID() + ")";
     }
 
     /**

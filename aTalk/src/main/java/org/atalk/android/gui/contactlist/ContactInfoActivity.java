@@ -13,13 +13,13 @@ import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.util.StringUtils;
 
 import java.text.DateFormat;
 import java.util.*;
@@ -136,7 +136,7 @@ public class ContactInfoActivity extends OSGiActivity
             OperationSetPresence contactPresence = pps.getOperationSet(OperationSetPresence.class);
             String statusMsg = contactPresence.getCurrentStatusMessage();
             // String statusMsg = mContact.getStatusMessage();
-            if (!StringUtils.isNullOrEmpty(statusMsg, true)) {
+            if (StringUtils.isNotBlank(statusMsg)) {
                 statusMessage.setText(statusMsg);
             }
         }

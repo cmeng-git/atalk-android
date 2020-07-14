@@ -5,14 +5,14 @@
  */
 package org.atalk.service.libjitsi;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.libjitsi.LibJitsiImpl;
+import org.atalk.impl.libjitsi.LibJitsiOSGiImpl;
 import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
-
-import java.lang.reflect.Constructor;
+import org.osgi.framework.BundleContext;
 
 import timber.log.Timber;
 
@@ -113,7 +113,7 @@ public abstract class LibJitsi
      *
      * @return the <tt>ResourceManagementService</tt> instance known to the
      * library or <tt>null</tt> if no <tt>ResourceManagementService</tt>
-     * instance is known to the library
+     * instance is known to the library.
      */
     public static ResourceManagementService getResourceManagementService()
     {
@@ -123,9 +123,9 @@ public abstract class LibJitsi
     /**
      * Invokes {@link #getService(Class)} on {@link #impl}.
      *
-     * @param serviceClass the class of the service to be retrieved
-     * @return a service of the specified type if such a service is associated with the library
-     * @throws IllegalStateException if the library is not currently initialized
+     * @param serviceClass the class of the service to be retrieved.
+     * @return a service of the specified type if such a service is associated with the library.
+     * @throws IllegalStateException if the library is not currently initialized.
      */
     private static <T> T invokeGetServiceOnImpl(Class<T> serviceClass)
     {
@@ -147,18 +147,14 @@ public abstract class LibJitsi
     /**
      * Starts/initializes the use of the <tt>libjitsi</tt> library.
      *
-     * @param context an <tt>Object</tt>, if any, which represents a context in
-     * which the <tt>libjitsi</tt> library is being started and is to be
-     * executed. If non-<tt>null</tt>, a <tt>LibJitsi</tt> implementation which
-     * accepts it will be used. For example, <tt>BundleContext</tt> may be
-     * specified in which case an OSGi-aware <tt>LibJitsi</tt> implementation will be used.
+     * @param context an OSGi {@link BundleContext}.
      */
-    static void start(Object context)
+    static LibJitsi start(BundleContext context)
     {
         if (null != LibJitsi.impl) {
             Timber.d("LibJitsi already started, using as implementation: %s",
                     impl.getClass().getCanonicalName());
-            return;
+            return impl;
         }
 
         /*
@@ -166,66 +162,14 @@ public abstract class LibJitsi
          * appropriate at run time. For example, an OSGi-aware backend is used
          * if it is detected that an OSGi implementation is available.
          */
-        String implBaseClassName = LibJitsi.class.getName().replace(".service.", ".impl.");
-        String[] implClassNameExtensions = new String[]{"OSGi", ""};
-        LibJitsi impl = null;
-
-        for (int i = 0; i < implClassNameExtensions.length; i++) {
-            Class<?> implClass = null;
-            String implClassName = implBaseClassName + implClassNameExtensions[i] + "Impl";
-            Throwable exception = null;
-
-            try {
-                implClass = Class.forName(implClassName);
-            } catch (ClassNotFoundException | LinkageError ex) {
-                exception = ex;
-            }
-            if ((implClass != null) && LibJitsi.class.isAssignableFrom(implClass)) {
-                try {
-                    if (context == null) {
-                        impl = (LibJitsi) implClass.newInstance();
-                    }
-                    else {
-                        /*
-                         * Try to find a Constructor which will accept the specified context.
-                         */
-                        for (Constructor<?> constructor : implClass.getConstructors()) {
-                            Class<?>[] parameterTypes = constructor.getParameterTypes();
-                            if ((parameterTypes.length == 1) && parameterTypes[0].isInstance(context)) {
-                                impl = (LibJitsi) constructor.newInstance(context);
-                                break;
-                            }
-                        }
-                    }
-                } catch (Throwable t) {
-                    if (t instanceof ThreadDeath)
-                        throw (ThreadDeath) t;
-                    else
-                        exception = t;
-                }
-                if (impl != null)
-                    break;
-            }
-
-            if ((exception != null) && TimberLog.isTraceEnable) {
-                StringBuilder message = new StringBuilder();
-
-                message.append("Failed to initialize LibJitsi backend ");
-                message.append(implClassName);
-                message.append(". (Exception stack trace follows.)");
-                // If the current backend is not the last, we'll try the next.
-                if (i < (implClassNameExtensions.length - 1))
-                    message.append(" Will try an alternative.");
-                Timber.i(exception, "%s", message);
-            }
+        if (context == null) {
+            impl = new LibJitsiImpl();
         }
-
-        if (impl == null)
-            throw new IllegalStateException("impl");
         else {
-            LibJitsi.impl = impl;
-            Timber.i("Successfully started LibJitsi using implementation: %s", impl.getClass().getCanonicalName());
+            impl = new LibJitsiOSGiImpl(context);
         }
+        Timber.d("Successfully started LibJitsi using implementation: %s", impl.getClass().getCanonicalName());
+        return impl;
     }
 
     /**

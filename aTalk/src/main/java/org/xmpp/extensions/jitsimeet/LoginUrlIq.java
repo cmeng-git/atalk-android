@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.EntityBareJid;
 
@@ -93,7 +93,7 @@ public class LoginUrlIq extends IQ
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
-        if (!StringUtils.isNullOrEmpty(url)) {
+        if (StringUtils.isNotEmpty(url)) {
             try {
                 String value = URLEncoder.encode(url, "UTF-8");
                 xml.attribute(URL_ATTRIBUTE_NAME, value);

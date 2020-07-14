@@ -6,6 +6,9 @@
 package net.java.sip.communicator.impl.protocol.jabber.jinglesdp;
 
 import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
+
+import org.apache.commons.lang3.StringUtils;
+import org.atalk.util.MediaType;
 import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.JingleContent;
 import org.xmpp.extensions.jingle.element.JingleContent.Creator;
@@ -17,7 +20,6 @@ import net.java.sip.communicator.util.NetworkUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.format.*;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 
 import java.net.*;
@@ -523,7 +525,7 @@ public class JingleUtils
         RtpDescriptionExtension desc = getRtpDescription(content);
         if (desc != null) {
             String rtpMedia = desc.getMedia().toLowerCase();
-            if (!StringUtils.isNullOrEmpty(rtpMedia)) {
+            if (StringUtils.isNotEmpty(rtpMedia)) {
                 mediaTypeName = rtpMedia;
             }
         }

@@ -16,6 +16,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.JingleMessageHelper;
 import org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.*;

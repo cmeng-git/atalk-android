@@ -34,6 +34,7 @@ import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -44,7 +45,6 @@ import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
-import org.atalk.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -505,7 +505,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         if (chatRoomListView == null)
             return;
 
-        if (StringUtils.isNullOrEmpty(query)) {
+        if (StringUtils.isEmpty(query)) {
             // Cancel any pending queries
             disposeSourcesAdapter();
 

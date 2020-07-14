@@ -30,12 +30,12 @@ import net.java.sip.communicator.service.muc.ChatRoomPresenceStatus;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeEvent;
@@ -874,7 +874,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     @Override
     public ContactQuery createContactQuery(String queryString, int contactCount)
     {
-        if (!StringUtils.isNullOrEmpty(queryString))
+        if(StringUtils.isNotEmpty(queryString))
             return null;
         recentQuery = new MessageSourceContactQuery(MessageSourceService.this);
         return recentQuery;

@@ -29,69 +29,74 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
      * The name of the property that contains the maximum port number that we'd like our RTP
      * managers to bind upon.
      */
-    public static final String MAX_MEDIA_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_MEDIA_PORT_NUMBER";
+    String MAX_MEDIA_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_MEDIA_PORT_NUMBER";
 
     /**
      * The name of the property that contains the minimum port number that we'd like our RTP
      * managers to bind upon.
      */
-    public static final String MIN_MEDIA_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_MEDIA_PORT_NUMBER";
+    String MIN_MEDIA_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_MEDIA_PORT_NUMBER";
 
     /**
      * The name of the property that contains the minimum port number that we'd like our Video RTP
      * managers to bind upon.
      */
-    public static final String MIN_VIDEO_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_VIDEO_PORT_NUMBER";
+    String MIN_VIDEO_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_VIDEO_PORT_NUMBER";
 
     /**
      * The name of the property that contains the maximum port number that we'd like our Video RTP
      * managers to bind upon.
      */
-    public static final String MAX_VIDEO_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_VIDEO_PORT_NUMBER";
+    String MAX_VIDEO_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_VIDEO_PORT_NUMBER";
 
     /**
      * The name of the property that contains the minimum port number that we'd like our Audio RTP
      * managers to bind upon.
      */
-    public static final String MIN_AUDIO_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_AUDIO_PORT_NUMBER";
+    String MIN_AUDIO_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_AUDIO_PORT_NUMBER";
 
     /**
      * The name of the property that contains the maximum port number that we'd like our Audio RTP
      * managers to bind upon.
      */
-    public static final String MAX_AUDIO_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_AUDIO_PORT_NUMBER";
+    String MAX_AUDIO_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_AUDIO_PORT_NUMBER";
 
     /**
      * The name of the property that contains the minimum port number that we'd like our Data
      * Channel (e.g. Pseudo TCP) managers to bind upon.
      */
-    public static final String MIN_DATA_CHANNEL_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_DATA_CHANNEL_PORT_NUMBER";
+    String MIN_DATA_CHANNEL_PORT_NUMBER_PROPERTY_NAME = "protocol.MIN_DATA_CHANNEL_PORT_NUMBER";
 
     /**
      * The name of the property that contains the maximum port number that we'd like our Data
      * Channel RTP managers to bind upon.
      */
-    public static final String MAX_DATA_CHANNEL_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_DATA_CHANNEL_PORT_NUMBER";
+    String MAX_DATA_CHANNEL_PORT_NUMBER_PROPERTY_NAME = "protocol.MAX_DATA_CHANNEL_PORT_NUMBER";
 
     /**
      * Reason code used to hangup peer, indicates normal hangup.
      */
-    public static final int HANGUP_REASON_NORMAL_CLEARING = 200;
+    int HANGUP_REASON_NORMAL_CLEARING = 200;
 
     /**
      * Reason code used to hangup peer when we wait for some event and it timeouted.
      */
-    public static final int HANGUP_REASON_TIMEOUT = 408;
+    int HANGUP_REASON_TIMEOUT = 408;
 
     /**
      * Reason code used to hangup peer if call was not encrypted.
      */
-    public static final int HANGUP_REASON_ENCRYPTION_REQUIRED = 609;
+    int HANGUP_REASON_ENCRYPTION_REQUIRED = 609;
 
     /**
      * Reason code used to hangup peer, indicates busy here.
      */
-    public static final int HANGUP_REASON_BUSY_HERE = 486;
+    int HANGUP_REASON_BUSY_HERE = 486;
+
+    /**
+     * Reason code used to hangup peer, indicates internal server error.
+     */
+    int HANGUP_REASON_ERROR = 500;
 
     /**
      * Registers the specified CallListener with this provider so that it could be notified when

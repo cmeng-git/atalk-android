@@ -15,10 +15,10 @@
  */
 package org.xmpp.extensions.health;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xmpp.extensions.AbstractExtensionElement;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
 
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 /**
@@ -97,7 +97,7 @@ public class HealthStatusExtension extends AbstractExtensionElement
          */
         public static Health parse(String health)
         {
-            if (StringUtils.isNullOrEmpty(health)) {
+            if (StringUtils.isEmpty(health)) {
                 return UNDEFINED;
             }
             try {

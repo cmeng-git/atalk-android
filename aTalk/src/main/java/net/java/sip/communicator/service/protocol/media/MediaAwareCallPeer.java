@@ -10,6 +10,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.event.*;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.XMPPConnection;
 
 import java.beans.PropertyChangeEvent;

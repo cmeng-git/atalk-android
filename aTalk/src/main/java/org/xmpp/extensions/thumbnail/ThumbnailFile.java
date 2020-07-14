@@ -75,10 +75,10 @@ public class ThumbnailFile extends StreamInitiation.File
         xml.rightAngleBracket();
 
         String desc = this.getDesc();
-        if (!StringUtils.isNullOrEmpty(desc)
+        if (StringUtils.isNotEmpty(desc)
                 || isRanged()
                 || (thumbnail != null)) {
-            if (!StringUtils.isNullOrEmpty(desc)) {
+            if (StringUtils.isNotEmpty(desc)) {
                 xml.element("desc", desc);
             }
             if (isRanged()) {

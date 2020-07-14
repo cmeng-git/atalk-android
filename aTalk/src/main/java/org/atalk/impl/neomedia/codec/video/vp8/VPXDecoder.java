@@ -27,7 +27,7 @@ public class VPXDecoder extends AbstractCodec2
     /**
      * The decoder interface to use
      */
-    private static final int INTERFACE = VPX.INTEFACE_VP8_DEC;
+    private static final int INTERFACE = VPX.INTERFACE_VP8_DEC;
 
     /**
      * Default output formats
@@ -46,8 +46,7 @@ public class VPXDecoder extends AbstractCodec2
     private long context = 0;
 
     /**
-     * The last known width of the video output by this
-     * <tt>VPXDecoder</tt>. Used to detect changes in the output size.
+     * The last known width of the video output by this <tt>VPXDecoder</tt>. Used to detect changes in the output size.
      */
     private int height;
 
@@ -59,14 +58,12 @@ public class VPXDecoder extends AbstractCodec2
     private long img = 0;
 
     /**
-     * Iterator for the frames in the decoder context. Can be re-initialized by
-     * setting its only element to 0.
+     * Iterator for the frames in the decoder context. Can be re-initialized by setting its only element to 0.
      */
     private long[] iter = new long[1];
 
     /**
-     * Whether there are unprocessed frames left from a previous call to
-     * VP8.codec_decode()
+     * Whether there are unprocessed frames left from a previous call to VP8.codec_decode()
      */
     private boolean leftoverFrames = false;
 
@@ -127,8 +124,7 @@ public class VPXDecoder extends AbstractCodec2
     /**
      * {@inheritDoc}
      * <p>
-     * Decodes a VP8 frame contained in <tt>inputBuffer</tt> into
-     * <tt>outputBuffer</tt> (in <tt>AVFrameFormat</tt>)
+     * Decodes a VP8 frame contained in <tt>inputBuffer</tt> into <tt>outputBuffer</tt> (in <tt>AVFrameFormat</tt>)
      *
      * @param inputBuffer input <tt>Buffer</tt>
      * @param outputBuffer output <tt>Buffer</tt>
@@ -148,7 +144,6 @@ public class VPXDecoder extends AbstractCodec2
                     ((VideoFormat) inputBuffer.getFormat()).getFrameRate());
             outputBuffer.setFormat(outputFormat);
 
-
             AVFrame avframe = makeAVFrame(img);
             outputBuffer.setData(avframe);
 
@@ -161,7 +156,6 @@ public class VPXDecoder extends AbstractCodec2
              * All frames from the decoder context have been processed. Decode the next VP8
              * frame, and fill outputBuffer with the first decoded frame.
              */
-
             byte[] buf = (byte[]) inputBuffer.getData();
             int buf_offset = inputBuffer.getOffset();
             int buf_size = inputBuffer.getLength();
@@ -170,7 +164,7 @@ public class VPXDecoder extends AbstractCodec2
                     buf,
                     buf_offset,
                     buf_size,
-                    0, 0);
+                    0, VPX.DL_BEST_QUALITY);
             if (ret != VPX.CODEC_OK) {
                 Timber.w("Discarding a frame with decode error: %s", VPX.codec_err_to_string(ret));
                 outputBuffer.setDiscard(true);
@@ -267,11 +261,9 @@ public class VPXDecoder extends AbstractCodec2
     /**
      * Sets the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>.
      *
-     * @param format the <tt>Format</tt> of the media data to be input for
-     * processing in this <tt>Codec</tt>
+     * @param format the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
      * @return the <tt>Format</tt> of the media data to be input for processing
-     * in this <tt>Codec</tt> if <tt>format</tt> is compatible with this
-     * <tt>Codec</tt>; otherwise, <tt>null</tt>
+     * in this <tt>Codec</tt> if <tt>format</tt> is compatible with this <tt>Codec</tt>; otherwise, <tt>null</tt>
      */
     @Override
     public Format setInputFormat(Format format)
@@ -283,8 +275,7 @@ public class VPXDecoder extends AbstractCodec2
     }
 
     /**
-     * Changes the output format, if necessary, according to the new dimensions
-     * given via <tt>width</tt> and <tt>height</tt>.
+     * Changes the output format, if necessary, according to the new dimensions given via <tt>width</tt> and <tt>height</tt>.
      *
      * @param width new width
      * @param height new height

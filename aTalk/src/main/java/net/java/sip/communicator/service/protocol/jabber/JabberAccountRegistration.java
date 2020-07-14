@@ -8,10 +8,10 @@ package net.java.sip.communicator.service.protocol.jabber;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.gui.aTalk;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;
 
@@ -231,7 +231,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         if (isModification) {
             String accountUuid = null;
             // cmeng - editedAccUID contains the last edited account e.g. jabber:xxx@atalk.org.
-            if (!StringUtils.isNullOrEmpty(editedAccUID)) {
+            if (StringUtils.isNotEmpty(editedAccUID)) {
                 AccountManager accManager = ProtocolProviderActivator.getAccountManager();
                 accountUuid = accManager.getStoredAccountUUID(factory, editedAccUID);
             }
@@ -346,7 +346,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     protected String getServerFromUserName(String userName)
     {
         String newServerAddr = XmppStringUtils.parseDomain(userName);
-        if (!StringUtils.isNullOrEmpty(newServerAddr)) {
+        if (StringUtils.isNotEmpty(newServerAddr)) {
             return newServerAddr.equals(GOOGLE_USER_SUFFIX) ? GOOGLE_CONNECT_SRV : newServerAddr;
         }
         return null;

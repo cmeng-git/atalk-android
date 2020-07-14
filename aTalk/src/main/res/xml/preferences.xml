@@ -251,6 +251,12 @@
                     android:value="media_type.AUDIO" />
             </intent>
         </PreferenceScreen>
+
+        <PreferenceScreen
+            android:summary="@string/service_gui_settings_MEDIA_CODEC_LIST_SUMMARY"
+            android:title="@string/service_gui_settings_MEDIA_CODEC_LIST">
+            <intent android:action=".android.gui.settings.MediaCodecList" />
+        </PreferenceScreen>
     </PreferenceCategory>
 
     <!-- Phone Call Settings -->
@@ -323,12 +329,6 @@
                     android:dialogMessage="\n"
                     android:key="@string/pref_key_video_bitrate"
                     android:title="@string/service_gui_settings_VIDEO_BITRATE" />
-
-                <PreferenceScreen
-                    android:summary="@string/service_gui_settings_MEDIA_CODEC_LIST_SUMMARY"
-                    android:title="@string/service_gui_settings_MEDIA_CODEC_LIST">
-                    <intent android:action=".android.gui.settings.MediaCodecList" />
-                </PreferenceScreen>
             </PreferenceCategory>
 
             <!-- Audio Settings -->

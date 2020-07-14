@@ -17,6 +17,7 @@
 
 package org.atalk.android.gui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -221,7 +222,7 @@ public class About extends OSGiActivity implements View.OnClickListener
                 break;
             case R.id.atalk_help:
             case R.id.atalk_link:
-                atalkUrlAccess();
+                atalkUrlAccess(this, getString(R.string.AboutDialog_Link));
                 break;
             default:
                 finish();
@@ -229,12 +230,13 @@ public class About extends OSGiActivity implements View.OnClickListener
         }
     }
 
-    private void atalkUrlAccess()
+    public static void atalkUrlAccess(Context context, String url)
     {
-        String url = getString(R.string.AboutDialog_Link);
+        if (url == null)
+            url = context.getString(R.string.AboutDialog_Link);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
-        startActivity(intent);
+        context.startActivity(intent);
     }
 
     private String getAboutInfo()

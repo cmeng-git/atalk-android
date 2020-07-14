@@ -5,13 +5,13 @@
  */
 package org.xmpp.extensions.colibri;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 
 import org.atalk.android.util.ApiLib;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.util.StringUtils;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
 import org.xmpp.extensions.jingle.element.JingleContent;
@@ -372,7 +372,7 @@ public class ColibriBuilder
             throws IllegalArgumentException
     {
         ApiLib.requireNonNull(transport, "transport");
-        if ((conferenceState == null) || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if ((conferenceState == null) || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet.
 
             // XXX by returning false we silently indicate that there is no
@@ -409,7 +409,7 @@ public class ColibriBuilder
     {
         ApiLib.requireNonNull(channelInfo, "channelInfo");
         // Formulate the ColibriConferenceIQ request which is to be sent.
-        if ((conferenceState == null) || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if ((conferenceState == null) || StringUtils.isEmpty(conferenceState.getID())) {
             return false;
         }
 
@@ -525,7 +525,7 @@ public class ColibriBuilder
         ApiLib.requireNonNull(contentName, "contentName");
         ApiLib.requireNonNull(channel, "channel");
 
-        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
 
             // XXX by returning false we silently indicate that there is no
@@ -557,7 +557,7 @@ public class ColibriBuilder
         ApiLib.requireNonNull(sourceMap, "sourceMap");
         ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -597,7 +597,7 @@ public class ColibriBuilder
         ApiLib.requireNonNull(octoRelays, "octoRelays");
         ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -638,7 +638,7 @@ public class ColibriBuilder
         ApiLib.requireNonNull(sourceGroupMap, "sourceGroupMap");
         ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -683,7 +683,7 @@ public class ColibriBuilder
         ApiLib.requireNonNull(transportMap, "transportMap");
         ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }
@@ -729,7 +729,7 @@ public class ColibriBuilder
         ApiLib.requireNonNull(mediaDirectionMap, "mediaDirectionMap");
         ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
-        if (conferenceState == null || StringUtils.isNullOrEmpty(conferenceState.getID())) {
+        if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
             return false;
         }

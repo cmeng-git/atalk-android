@@ -22,13 +22,13 @@ import net.java.sip.communicator.impl.muc.*;
 import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jivesoftware.smackx.bookmarks.BookmarkedConference;
@@ -314,7 +314,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
                     chatRoomWrapper.setAutoJoin(bookmarkedConference.isAutoJoin());
 
                     String password = bookmarkedConference.getPassword();
-                    if (!StringUtils.isNullOrEmpty(password))
+                    if (StringUtils.isNotEmpty(password))
                         chatRoomWrapper.savePassword(password);
                 }
             } catch (SmackException.NoResponseException | SmackException.NotConnectedException
@@ -517,7 +517,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
 
             if (crWrapperList != null) {
                 for (ChatRoomWrapper crWrapper : crWrapperList) {
-                    if (StringUtils.isNullOrEmpty(currentFilterQuery)
+                    if (StringUtils.isEmpty(currentFilterQuery)
                             || isMatching(crWrapper, query)) {
                         filteredList.add(crWrapper);
                     }

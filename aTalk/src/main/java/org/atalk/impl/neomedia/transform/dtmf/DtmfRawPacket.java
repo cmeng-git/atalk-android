@@ -7,7 +7,6 @@ package org.atalk.impl.neomedia.transform.dtmf;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 
 import timber.log.Timber;
 
@@ -21,7 +20,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class DtmfRawPacket extends RawPacket
+public class DtmfRawPacket extends RawPacket implements Cloneable
 {
     /**
      * The event code to send.
@@ -84,8 +83,7 @@ public class DtmfRawPacket extends RawPacket
      * @param timestamp the RTP timestamp
      * @param volume the DTMF volume
      */
-    public void init(int code, boolean end, boolean marker, int duration, long timestamp, int
-            volume)
+    public void init(int code, boolean end, boolean marker, int duration, long timestamp, int volume)
     {
         Timber.log(TimberLog.FINER, "DTMF send on RTP, code: %s duration = %s timestamps = %s Marker = %s End = %s",
                 code, duration, timestamp, marker, end);
@@ -104,11 +102,13 @@ public class DtmfRawPacket extends RawPacket
     }
 
     /**
-     * Initializes the a DTMF raw data using event, E and duration field. Event : the digits to
-     * transmit (0-15). E : End field, used to mark the two last packets. R always = 0. Volume
-     * always = 0. Duration : duration increments for each dtmf sending updates, stay unchanged at
-     * the end for the 3 last packets.
-     * <p>
+     * Initializes the  a DTMF raw data using event, E and duration field.
+     * Event : the digits to transmit (0-15).
+     * E : End field, used to mark the two last packets.
+     * R always = 0.
+     * Volume always = 0.
+     * Duration : duration increments for each dtmf sending updates,
+     * stay unchanged at the end for the 3 last packets.
      * <pre>
      *  0                   1                   2                   3
      *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -179,5 +179,17 @@ public class DtmfRawPacket extends RawPacket
     public int getVolume()
     {
         return volume;
+    }
+
+    /**
+     * Initializes a new <tt>DtmfRawPacket</tt> instance which has the same properties as this instance.
+     *
+     * @return a new <tt>DtmfRawPacket</tt> instance which has the same properties as this instance
+     */
+    @Override
+    public Object clone()
+    {
+        RawPacket pkt = new RawPacket(getBuffer().clone(), getOffset(), getLength());
+        return new DtmfRawPacket(pkt);
     }
 }

@@ -12,6 +12,7 @@ import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.ice4j.ice.*;
 
 import java.net.*;

@@ -117,8 +117,7 @@ public class VideoFormat extends Format
     /**
      * Constructs a <tt>VideoFormat</tt> with the specified attributes.
      *
-     * @param encoding A <tt>String</tt> that describes the encoding type for this
-     * <tt>VideoFormat</tt>.
+     * @param encoding A <tt>String</tt> that describes the encoding type for this <tt>VideoFormat</tt>.
      * @param size The size of a video frame.
      * @param maxDataLength The maximum length of a data chunk.
      * @param dataType The type of data. For example, byte array.
@@ -206,8 +205,7 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Gets the length of the largest data chunk associated with this
-     * <tt>VideoFormat</tt>.
+     * Gets the length of the largest data chunk associated with this <tt>VideoFormat</tt>.
      *
      * @return The maximum length of a data chunk in this <tt>VideoFormat</tt>.
      */
@@ -238,8 +236,7 @@ public class VideoFormat extends Format
      * Finds the attributes shared by two matching <tt>Format</tt> objects. If
      * the specified <tt>Format</tt> does not match this one, the result is undefined.
      *
-     * @param format The matching <tt>Format</tt> to intersect with this
-     * <tt>VideoFormat</tt>.
+     * @param format The matching <tt>Format</tt> to intersect with this <tt>VideoFormat</tt>.
      * @return A <tt>Format</tt> object with its attributes set to those
      * attributes common to both <tt>Format</tt> objects.
      * @see #matches
@@ -255,18 +252,15 @@ public class VideoFormat extends Format
         VideoFormat other = (VideoFormat) format;
         VideoFormat res = (VideoFormat) fmt;
         res.size = (size != null ? size : other.size);
-        res.maxDataLength = (maxDataLength != NOT_SPECIFIED ? maxDataLength
-                : other.maxDataLength);
-        res.frameRate = (frameRate != NOT_SPECIFIED ? frameRate
-                : other.frameRate);
+        res.maxDataLength = (maxDataLength != NOT_SPECIFIED ? maxDataLength : other.maxDataLength);
+        res.frameRate = (frameRate != NOT_SPECIFIED ? frameRate : other.frameRate);
         return res;
     }
 
     /**
-     * Checks whether or not the specified <tt>Format</tt> <EM>matches</EM> this
+     * Checks whether the specified <tt>Format</tt> <EM>matches</EM> this
      * <tt>VideoFormat</tt>. Matches only compares the attributes that are
-     * defined in the specified <tt>Format</tt>, unspecified attributes are
-     * ignored.
+     * defined in the specified <tt>Format</tt>, unspecified attributes are ignored.
      * <p/>
      * The two <tt>Format</tt> objects do not have to be of the same class to
      * match. For example, if "A" are "B" are being compared, a match is
@@ -274,8 +268,7 @@ public class VideoFormat extends Format
      * compared attributes must still match, or <tt>matches</tt> fails.)
      *
      * @param format The <tt>Format</tt> to compare with this one.
-     * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one,
-     * <tt>false</tt> if it does not.
+     * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one, <tt>false</tt> if it does not.
      */
     @Override
     public boolean matches(Format format)
@@ -293,10 +286,9 @@ public class VideoFormat extends Format
 
     /**
      * Generate a format that's less restrictive than this format but contains
-     * the basic attributes that will make this resulting format useful for
-     * format matching.
+     * the basic attributes that will make this resulting format useful for format matching.
      *
-     * @return A <tt>Format</tt> that's less restrictive than the this format.
+     * @return A <tt>Format</tt> that's less restrictive than this format.
      */
     @Override
     public Format relax()
@@ -313,11 +305,10 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Gets a <tt>String</tt> representation of the attributes of this
-     * <tt>VideoFormat</tt>. For example: "RGB, 352x240, ...".
+     * Gets a <tt>String</tt> representation of the attributes of this <tt>VideoFormat</tt>.
+     * For example: "RGB, 352x240, ...".
      *
-     * @return A <tt>String</tt> that describes the <tt>VideoFormat</tt>
-     * attributes.
+     * @return A <tt>String</tt> that describes the <tt>VideoFormat</tt> attributes.
      */
     @Override
     public String toString()

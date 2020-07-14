@@ -17,11 +17,11 @@ import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.plugin.certconfig.CertConfigActivator;
 import org.atalk.service.osgi.OSGiFragment;
-import org.atalk.util.StringUtils;
 
 import java.util.*;
 
@@ -169,12 +169,12 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
         Bundle extras = getArguments();
         if (extras != null) {
             String username = extras.getString(ARG_USERNAME);
-            if (!StringUtils.isNullOrEmpty(username)) {
+            if (StringUtils.isNotEmpty(username)) {
                 ViewUtil.setTextViewValue(container, R.id.usernameField, username);
             }
 
             String password = extras.getString(ARG_PASSWORD);
-            if (!StringUtils.isNullOrEmpty(password)) {
+            if (StringUtils.isNotEmpty(password)) {
                 ViewUtil.setTextViewValue(content, R.id.passwordField, password);
             }
         }

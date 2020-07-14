@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.plugin.notificationwiring;
 
+import android.text.Html;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -1305,12 +1307,14 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     {
         try {
             String messageTitleKey;
+            // Android notification cannot support html tags
+            String message = Html.fromHtml(evt.getI18nMessage()).toString();
 
             switch (evt.getEventSeverity()) {
                 // Don't play alert sound for Info or warning.
                 case SrtpListener.INFORMATION:
                     messageTitleKey = "service.gui.SECURITY_INFO";
-                    aTalkApp.showToastMessage(evt.getI18nMessage());
+                    aTalkApp.showToastMessage(message);
                     return;
 
                 case SrtpListener.WARNING:
@@ -1322,7 +1326,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                 case SrtpListener.ERROR:
                     messageTitleKey = "service.gui.SECURITY_ERROR";
                     fireNotification(CALL_SECURITY_ERROR, SystrayService.WARNING_MESSAGE_TYPE,
-                            NotificationWiringActivator.getResources().getI18NString(messageTitleKey), evt.getI18nMessage());
+                            NotificationWiringActivator.getResources().getI18NString(messageTitleKey), message);
                     return;
 
                 default:
@@ -1332,7 +1336,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             if (messageTitleKey != null) {
                 fireNotification(SECURITY_MESSAGE, SystrayService.INFORMATION_MESSAGE_TYPE,
-                        NotificationWiringActivator.getResources().getI18NString(messageTitleKey), evt.getI18nMessage());
+                        NotificationWiringActivator.getResources().getI18NString(messageTitleKey), message);
             }
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)

@@ -56,20 +56,24 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.audio.speex.SpeexResampler",
             "org.atalk.impl.neomedia.codec.audio.ilbc.JavaDecoder",
             "org.atalk.impl.neomedia.codec.audio.ilbc.JavaEncoder",
-            // cmeng null cannot register
-            // EncodingConfigurationImpl.G729 ?
-            // "org.atalk.impl.neomedia.codec.audio.g729.JavaDecoder" : null,
-            // EncodingConfigurationImpl.G729 ?
-            // "org.atalk.impl.neomedia.codec.audio.g729.JavaEncoder" : null,
-            // cmeng - removed support g722; libjng722.so implementation incomplete
-            // "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoder",
-            // "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoder",
+
+             EncodingConfigurationImpl.G729 ? "org.atalk.impl.neomedia.codec.audio.g729.JavaDecoder" : null,
+             EncodingConfigurationImpl.G729 ? "org.atalk.impl.neomedia.codec.audio.g729.JavaEncoder" : null,
+
+            // cmeng - removed support g722; libjng722.so implementation incomplete???
+            // "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoderImpl",
+            // "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoderImpl",
+
+            // gsm
             "org.atalk.impl.neomedia.codec.audio.gsm.Decoder",
             "org.atalk.impl.neomedia.codec.audio.gsm.Encoder",
             "org.atalk.impl.neomedia.codec.audio.gsm.DePacketizer",
             "org.atalk.impl.neomedia.codec.audio.gsm.Packetizer",
+
+            // silk
             "org.atalk.impl.neomedia.codec.audio.silk.JavaDecoder",
             "org.atalk.impl.neomedia.codec.audio.silk.JavaEncoder",
+
             // VP8
             "org.atalk.impl.neomedia.codec.video.vp8.DePacketizer",
             "org.atalk.impl.neomedia.codec.video.vp8.Packetizer",
@@ -79,7 +83,10 @@ public class FMJPlugInConfiguration
             // VP9 (FMJPlugInConfiguration.java:228)#registerCustomCodecs:
             // vp9.DePacketizer is NOT successfully registered: org.atalk.impl.neomedia.codec.video.vp9.DePacketizer
             // cannot be cast to javax.media.Codec
-            // "org.atalk.impl.neomedia.codec.video.vp9.DePacketizer",
+            "org.atalk.impl.neomedia.codec.video.vp9.DePacketizer",
+            "org.atalk.impl.neomedia.codec.video.vp9.Packetizer",
+            "org.atalk.impl.neomedia.codec.video.vp9.VPXDecoder",
+            "org.atalk.impl.neomedia.codec.video.vp9.VPXEncoder",
     };
 
     /**
@@ -89,6 +96,7 @@ public class FMJPlugInConfiguration
     private static final String[] CUSTOM_CODECS_FFMPEG = {
             // MP3 - cmeng (not working)
             // "org.atalk.impl.neomedia.codec.audio.mp3.JNIEncoder",
+
             // h264
             "org.atalk.impl.neomedia.codec.video.h264.DePacketizer",
             "org.atalk.impl.neomedia.codec.video.h264.JNIDecoder",
@@ -99,8 +107,8 @@ public class FMJPlugInConfiguration
             // Adaptive Multi-Rate Wideband (AMR-WB)
             // "org.atalk.impl.neomedia.codec.audio.amrwb.DePacketizer",
             // "org.atalk.impl.neomedia.codec.audio.amrwb.JNIDecoder",
-            // "org.atalk.impl.neomedia.codec.audio.amrwb.Packetizer",
             // "org.atalk.impl.neomedia.codec.audio.amrwb.JNIEncoder",
+            // "org.atalk.impl.neomedia.codec.audio.amrwb.Packetizer",
     };
 
     /**
@@ -110,7 +118,8 @@ public class FMJPlugInConfiguration
     private static final String[] CUSTOM_PACKAGES = {
             "org.atalk.impl.neomedia.jmfext",
             "net.java.sip.communicator.impl.neomedia.jmfext",
-            "net.sf.fmj"};
+            "net.sf.fmj"
+    };
 
     /**
      * The list of class names to register as FMJ plugins with type <tt>PlugInManager.MULTIPLEXER</tt>.
@@ -136,17 +145,14 @@ public class FMJPlugInConfiguration
 
         // Register the custom codec which haven't already been registered.
         @SuppressWarnings("unchecked")
-        Collection<String> registeredPlugins = new HashSet<>(PlugInManager.getPlugInList(
-                null, null, PlugInManager.CODEC));
+        Collection<String> registeredPlugins
+                = new HashSet<String>(PlugInManager.getPlugInList(null, null, PlugInManager.CODEC));
         boolean commit = false;
 
         // Remove JavaRGBToYUV.
-        PlugInManager.removePlugIn(
-                "com.sun.media.codec.video.colorspace.JavaRGBToYUV", PlugInManager.CODEC);
-        PlugInManager.removePlugIn(
-                "com.sun.media.codec.video.colorspace.JavaRGBConverter", PlugInManager.CODEC);
-        PlugInManager.removePlugIn(
-                "com.sun.media.codec.video.colorspace.RGBScaler", PlugInManager.CODEC);
+        PlugInManager.removePlugIn("com.sun.media.codec.video.colorspace.JavaRGBToYUV", PlugInManager.CODEC);
+        PlugInManager.removePlugIn("com.sun.media.codec.video.colorspace.JavaRGBConverter", PlugInManager.CODEC);
+        PlugInManager.removePlugIn("com.sun.media.codec.video.colorspace.RGBScaler", PlugInManager.CODEC);
 
         // Remove JMF's GSM codec. As working only on some OS.
         String gsmCodecPackage = "com.ibm.media.codec.audio.gsm.";
@@ -169,10 +175,9 @@ public class FMJPlugInConfiguration
 
         /*
          * Remove FMJ's JavaSoundCodec because it seems to slow down the
-         * building of the filter graph and we do not currently seem to need it.
+         * building of the filter graph, and we do not currently seem to need it.
          */
-        PlugInManager.removePlugIn(
-                "net.sf.fmj.media.codec.JavaSoundCodec", PlugInManager.CODEC);
+        PlugInManager.removePlugIn("net.sf.fmj.media.codec.JavaSoundCodec", PlugInManager.CODEC);
 
         List<String> customCodecs = new LinkedList<>(Arrays.asList(CUSTOM_CODECS));
         if (enableFfmpeg) {
@@ -181,7 +186,7 @@ public class FMJPlugInConfiguration
 
         for (String className : customCodecs) {
             /*
-             * A codec with a className of null is configured at compile time to not be registered.
+             * A codec with a className null configured at compile time to not be registered.
              */
             if (className == null)
                 continue;
@@ -200,6 +205,7 @@ public class FMJPlugInConfiguration
                             PlugInManager.CODEC);
 
                     Timber.log(TimberLog.FINER, "Codec %s is successfully registered", className);
+                    // Timber.d("Codec %s is successfully registered", className);
                 } catch (Throwable ex) {
                     Timber.w("Codec %s is NOT successfully registered: %s", className, ex.getMessage());
                 }
@@ -279,19 +285,11 @@ public class FMJPlugInConfiguration
             return;
 
         // Remove the FMJ WAV multiplexers, as they don't work.
-        PlugInManager.removePlugIn(
-                "com.sun.media.multiplexer.audio.WAVMux",
-                PlugInManager.MULTIPLEXER);
-        PlugInManager.removePlugIn(
-                "net.sf.fmj.media.multiplexer.audio.WAVMux",
-                PlugInManager.MULTIPLEXER);
+        PlugInManager.removePlugIn("com.sun.media.multiplexer.audio.WAVMux", PlugInManager.MULTIPLEXER);
+        PlugInManager.removePlugIn("net.sf.fmj.media.multiplexer.audio.WAVMux", PlugInManager.MULTIPLEXER);
 
         Collection<String> registeredMuxers
-                = new HashSet<String>(
-                PlugInManager.getPlugInList(
-                        null,
-                        null,
-                        PlugInManager.MULTIPLEXER));
+                = new HashSet<String>(PlugInManager.getPlugInList(null, null, PlugInManager.MULTIPLEXER));
 
         boolean commit = false;
         for (String className : CUSTOM_MULTIPLEXERS) {

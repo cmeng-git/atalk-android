@@ -19,7 +19,7 @@ public interface SDesControl extends SrtpControl
      * Name of the config setting that supplies the default enabled cipher suites. Cipher suites are
      * comma-separated.
      */
-    static final String SDES_CIPHER_SUITES = "neomedia.SDES_CIPHER_SUITES";
+    String SDES_CIPHER_SUITES = "neomedia.SDES_CIPHER_SUITES";
 
     /**
      * Gets the crypto attribute of the incoming MediaStream.

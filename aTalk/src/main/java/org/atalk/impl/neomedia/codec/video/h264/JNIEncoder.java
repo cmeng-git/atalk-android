@@ -73,14 +73,12 @@ public class JNIEncoder extends AbstractCodec
     public static final String MAIN_PROFILE = "main";
 
     /**
-     * The default value of the {@link #DEFAULT_PROFILE_PNAME} <tt>ConfigurationService</tt>
-     * property.
+     * The default value of the {@link #DEFAULT_PROFILE_PNAME} <tt>ConfigurationService</tt> property.
      */
     public static final String DEFAULT_DEFAULT_PROFILE = BASELINE_PROFILE;
 
     /**
-     * The frame rate to be assumed by <tt>JNIEncoder</tt> instances in the absence of any other
-     * frame rate indication.
+     * The frame rate to be assumed by <tt>JNIEncoder</tt> instances in the absence of any other frame rate indication.
      */
     public static final int DEFAULT_FRAME_RATE = 15;
 
@@ -524,7 +522,6 @@ public class JNIEncoder extends AbstractCodec
              */
             FFmpeg.avcodeccontext_add_flags2(avctx, FFmpeg.CODEC_FLAG2_INTRA_REFRESH);
         }
-        FFmpeg.avcodeccontext_set_me_method(avctx, 7);
         FFmpeg.avcodeccontext_set_me_subpel_quality(avctx, 2);
         FFmpeg.avcodeccontext_set_me_range(avctx, 16);
         FFmpeg.avcodeccontext_set_me_cmp(avctx, FFmpeg.FF_CMP_CHROMA);

@@ -5,10 +5,10 @@
  */
 package org.atalk.impl.fileaccess;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.*;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -207,7 +207,7 @@ public class FileAccessServiceImpl implements FileAccessService
     private static String getSystemProperty(String propertyName)
     {
         String retval = System.getProperty(propertyName);
-        return StringUtils.isNullOrEmpty(retval, true) ? null : retval;
+        return StringUtils.isBlank(retval) ? null : retval;
     }
 
     /**

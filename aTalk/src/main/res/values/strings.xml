@@ -195,6 +195,8 @@
     <string name="service_gui_CHATROOM_NOT_JOINED">You need to have joined the chat room in order to do further operations with it.</string>
     <string name="service_gui_CHATROOM_OPTIONS">Chat room options</string>
     <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">The %1$s chat room has requested a password.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Disable Room Status</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Enable Room Status</string>
     <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Room subject changed: \'%1$s\' => \'%2$s\'</string>
     <string name="service_gui_CHAT_ROOMS">Chat rooms</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s is now known as %2$s</string>
@@ -242,6 +244,7 @@
     <string name="About_help">Help</string>
     <string name="check_new_version">Check Update</string>
     <string name="show_history_log">History Logs</string>
+    <string name="Online_help">Online help</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP Authorization Request</string>

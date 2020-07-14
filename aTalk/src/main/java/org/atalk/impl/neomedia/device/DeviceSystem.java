@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.BackgroundManager;
 import org.atalk.impl.neomedia.MediaServiceImpl;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 

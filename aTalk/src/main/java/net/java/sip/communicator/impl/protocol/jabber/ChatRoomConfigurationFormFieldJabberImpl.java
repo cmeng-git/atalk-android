@@ -7,9 +7,10 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.ChatRoomConfigurationFormField;
 
-import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.*;
 import org.jivesoftware.smackx.xdata.FormField.Type;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 
 import java.util.*;
 
@@ -23,7 +24,7 @@ import java.util.*;
 public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigurationFormField
 {
     /**
-     * The smack library for field.
+     * The smack library FormField.
      */
     private final FormField smackFormField;
 
@@ -38,14 +39,14 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
      * smack form field and the smack submit form, which are the base of this implementation.
      *
      * @param formField the smack form field
-     * @param submitForm the smack submit form
+     * @param submitForm the smack submit form.
      */
-    public ChatRoomConfigurationFormFieldJabberImpl(FormField formField, Form submitForm)
+    public ChatRoomConfigurationFormFieldJabberImpl(FormField formField, FillableForm submitForm)
     {
         this.smackFormField = formField;
 
         if (formField.getType() != FormField.Type.fixed)
-            this.smackSubmitFormField = submitForm.getField(formField.getVariable());
+            this.smackSubmitFormField = submitForm.getField(formField.getFieldName());
         else
             this.smackSubmitFormField = null;
     }
@@ -53,17 +54,17 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
     /**
      * Returns the variable name of the corresponding smack property.
      *
-     * @return the variable name of the corresponding smack property
+     * @return the variable name of the corresponding smack property.
      */
     public String getName()
     {
-        return smackFormField.getVariable();
+        return smackFormField.getFieldName();
     }
 
     /**
      * Returns the description of the corresponding smack property.
      *
-     * @return the description of the corresponding smack property
+     * @return the description of the corresponding smack property.
      */
     public String getDescription()
     {
@@ -73,7 +74,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
     /**
      * Returns the label of the corresponding smack property.
      *
-     * @return the label of the corresponding smack property
+     * @return the label of the corresponding smack property.
      */
     public String getLabel()
     {
@@ -83,14 +84,14 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
     /**
      * Returns the options of the corresponding smack property.
      *
-     * @return the options of the corresponding smack property
+     * @return the options of the corresponding smack property.
      */
     public Iterator<String> getOptions()
     {
         List<String> options = new ArrayList<>();
-        List<FormField.Option> smackOptions = smackFormField.getOptions();
+        List<FormField.Option> ffOptions = ((FormFieldWithOptions) smackFormField).getOptions();
 
-        for (FormField.Option smackOption : smackOptions) {
+        for (FormField.Option smackOption : ffOptions) {
             options.add(smackOption.getValueString());
         }
         return Collections.unmodifiableList(options).iterator();
@@ -99,7 +100,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
     /**
      * Returns the isRequired property of the corresponding smack property.
      *
-     * @return the isRequired property of the corresponding smack property
+     * @return the isRequired property of the corresponding smack property.
      */
     public boolean isRequired()
     {
@@ -142,7 +143,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
     /**
      * Returns an Iterator over the list of values of this field.
      *
-     * @return an Iterator over the list of values of this field
+     * @return an Iterator over the list of values of this field.
      */
     public Iterator<?> getValues()
     {
@@ -172,16 +173,15 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
         if (value instanceof Boolean)
             value = (Boolean) value ? "1" : "0";
 
-        // smackSubmitFormField.addValue(value.toString());
-        FormField.Builder fieldBuilder = smackSubmitFormField.asBuilder();
-        fieldBuilder.addValue(value.toString());
+        TextSingleFormField.Builder fieldBuilder = ((TextSingleFormField) smackSubmitFormField).asBuilder();
+        fieldBuilder.setValue((String) value);
         smackSubmitFormField = fieldBuilder.build();
     }
 
     /**
      * Sets the given list of values to this field.
      *
-     * @param newValues the list of values to set
+     * @param newValues the list of values to set.
      */
     public void setValues(Object[] newValues)
     {
@@ -195,7 +195,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
             list.add(stringValue);
         }
         // smackSubmitFormField.addValues(list);
-        FormField.Builder fieldBuilder = smackSubmitFormField.asBuilder();
+        ListMultiFormField.Builder fieldBuilder = ((ListMultiFormField) smackSubmitFormField).asBuilder();
         fieldBuilder.addValues(list);
         smackSubmitFormField = fieldBuilder.build();
     }

@@ -38,6 +38,7 @@ import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.transform.sdes.SDesControlImpl;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.util.MediaType;
 import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;

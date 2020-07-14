@@ -200,7 +200,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 
             String conferenceName = parser.getAttributeValue("", ColibriConferenceIQ.NAME_ATTR_NAME);
             if ((conferenceName != null) && (conferenceName.length() != 0))
-                if (!StringUtils.isNullOrEmpty(conferenceName))
+                if (StringUtils.isNotEmpty(conferenceName))
                     conferenceIQ.setName(Localpart.from(conferenceName));
             boolean done = false;
             ColibriConferenceIQ.Channel channel = null;
@@ -245,7 +245,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                         }
                         else if (ColibriConferenceIQ.Channel.SSRC_ELEMENT.equals(name)) {
                             String s =  (ssrc == null) ? null :  ssrc.toString().trim();
-                            if (!StringUtils.isNullOrEmpty(s)) {
+                            if (StringUtils.isNotEmpty(s)) {
                                 int i;
 
                                 /*
@@ -294,97 +294,97 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             // direction
                             String direction = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.DIRECTION_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(direction)) {
+                            if (StringUtils.isNotEmpty(direction)) {
                                 channel.setDirection(MediaDirection.fromString(direction));
                             }
 
                             // endpoint
                             String endpoint = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.ENDPOINT_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(endpoint)) {
+                            if (StringUtils.isNotEmpty(endpoint)) {
                                 channel.setEndpoint(endpoint);
                             }
 
                             String channelBundleId = parser.getAttributeValue("",
                                     ColibriConferenceIQ.ChannelCommon.CHANNEL_BUNDLE_ID_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(channelBundleId)) {
+                            if (StringUtils.isNotEmpty(channelBundleId)) {
                                 channel.setChannelBundleId(channelBundleId);
                             }
 
                             // expire
                             String expire = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.EXPIRE_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(expire)) {
+                            if (StringUtils.isNotEmpty(expire)) {
                                 channel.setExpire(Integer.parseInt(expire));
                             }
 
                             // packetDelay
                             String packetDelay = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.PACKET_DELAY_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(packetDelay)) {
+                            if (StringUtils.isNotEmpty(packetDelay)) {
                                 channel.setPacketDelay(Integer.parseInt(packetDelay));
                             }
 
                             // host
                             String host = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.HOST_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(host)) {
+                            if (StringUtils.isNotEmpty(host)) {
                                 channel.setHost(host);
                             }
 
                             // id
                             String channelID = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.ID_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(channelID)) {
+                            if (StringUtils.isNotEmpty(channelID)) {
                                 channel.setID(channelID);
                             }
 
                             // initiator
                             String initiator = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.INITIATOR_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(initiator)) {
+                            if (StringUtils.isNotEmpty(initiator)) {
                                 channel.setInitiator(Boolean.valueOf(initiator));
                             }
 
                             // lastN
                             String lastN = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.LAST_N_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(lastN)) {
+                            if (StringUtils.isNotEmpty(lastN)) {
                                 channel.setLastN(Integer.parseInt(lastN));
                             }
 
                             // simulcastMode
                             String simulcastMode = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.SIMULCAST_MODE_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(simulcastMode)) {
+                            if (StringUtils.isNotEmpty(simulcastMode)) {
                                 channel.setSimulcastMode(SimulcastMode.fromString(simulcastMode));
                             }
 
                             // receiving simulcast layer
                             String receivingSimulcastLayer = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.RECEIVING_SIMULCAST_LAYER);
-                            if (!StringUtils.isNullOrEmpty(receivingSimulcastLayer)) {
+                            if (StringUtils.isNotEmpty(receivingSimulcastLayer)) {
                                 channel.setReceivingSimulcastLayer(Integer.parseInt(receivingSimulcastLayer));
                             }
 
                             // rtcpPort
                             String rtcpPort = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.RTCP_PORT_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(rtcpPort)) {
+                            if (StringUtils.isNotEmpty(rtcpPort)) {
                                 channel.setRTCPPort(Integer.parseInt(rtcpPort));
                             }
 
                             // rtpLevelRelayType
                             String rtpLevelRelayType = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.RTP_LEVEL_RELAY_TYPE_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(rtpLevelRelayType)) {
+                            if (StringUtils.isNotEmpty(rtpLevelRelayType)) {
                                 channel.setRTPLevelRelayType(rtpLevelRelayType);
                             }
 
                             // rtpPort
                             String rtpPort = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Channel.RTP_PORT_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(rtpPort)) {
+                            if (StringUtils.isNotEmpty(rtpPort)) {
                                 channel.setRTPPort(Integer.parseInt(rtpPort));
                             }
                         }
@@ -392,7 +392,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             String bundleId = parser.getAttributeValue("",
                                     ColibriConferenceIQ.ChannelBundle.ID_ATTR_NAME);
 
-                            if (!StringUtils.isNullOrEmpty(bundleId)) {
+                            if (StringUtils.isNotEmpty(bundleId)) {
                                 bundle = new ColibriConferenceIQ.ChannelBundle(bundleId);
                             }
                         }
@@ -402,7 +402,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             // name
                             String strategyName = parser.getAttributeValue("",
                                     ColibriConferenceIQ.RTCPTerminationStrategy.NAME_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(strategyName)) {
+                            if (StringUtils.isNotEmpty(strategyName)) {
                                 rtcpTerminationStrategy.setName(strategyName);
                             }
                         }
@@ -443,42 +443,42 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             String connID = parser.getAttributeValue("",
                                     ColibriConferenceIQ.ChannelCommon.ID_ATTR_NAME);
 
-                            if (StringUtils.isNullOrEmpty(connID) && StringUtils.isNullOrEmpty(endpoint)) {
+                            if (StringUtils.isEmpty(connID) && StringUtils.isEmpty(endpoint)) {
                                 sctpConnection = null;
                                 continue;
                             }
 
                             sctpConnection = new ColibriConferenceIQ.SctpConnection();
-                            if (!StringUtils.isNullOrEmpty(connID))
+                            if (StringUtils.isNotEmpty(connID))
                                 sctpConnection.setID(connID);
 
-                            if (!StringUtils.isNullOrEmpty(endpoint)) {
+                            if (StringUtils.isNotEmpty(endpoint)) {
                                 sctpConnection.setEndpoint(endpoint);
                             }
 
                             // port
                             String port = parser.getAttributeValue("",
                                     ColibriConferenceIQ.SctpConnection.PORT_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(port))
+                            if (StringUtils.isNotEmpty(port))
                                 sctpConnection.setPort(Integer.parseInt(port));
 
                             String channelBundleId = parser.getAttributeValue("",
                                     ColibriConferenceIQ.ChannelCommon.CHANNEL_BUNDLE_ID_ATTR_NAME);
-                            if (!StringUtils.isNullOrEmpty(channelBundleId))
+                            if (StringUtils.isNotEmpty(channelBundleId))
                                 sctpConnection.setChannelBundleId(channelBundleId);
 
                             // initiator
                             String initiator = parser.getAttributeValue("",
                                     ColibriConferenceIQ.SctpConnection.INITIATOR_ATTR_NAME);
 
-                            if (!StringUtils.isNullOrEmpty(initiator))
+                            if (StringUtils.isNotEmpty(initiator))
                                 sctpConnection.setInitiator(Boolean.valueOf(initiator));
 
                             // expire
                             String expire = parser.getAttributeValue("",
                                     ColibriConferenceIQ.SctpConnection.EXPIRE_ATTR_NAME);
 
-                            if (!StringUtils.isNullOrEmpty(expire))
+                            if (StringUtils.isNotEmpty(expire))
                                 sctpConnection.setExpire(Integer.parseInt(expire));
                         }
                         else if (ColibriConferenceIQ.Endpoint.ELEMENT.equals(name)) {
@@ -491,7 +491,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             String statsId = parser.getAttributeValue("",
                                     ColibriConferenceIQ.Endpoint.STATS_ID_ATTR_NAME);
 
-                            if (!StringUtils.isNullOrEmpty(id)) {
+                            if (StringUtils.isNotEmpty(id)) {
                                 conferenceEndpoint = new ColibriConferenceIQ.Endpoint(id, statsId, displayName);
                             }
                         }

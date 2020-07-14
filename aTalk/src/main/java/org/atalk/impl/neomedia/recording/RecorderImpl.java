@@ -9,6 +9,7 @@ import org.atalk.impl.neomedia.device.*;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.MediaException;
 import org.atalk.service.neomedia.recording.*;
+import org.atalk.util.MediaType;
 import org.atalk.util.SoundFileUtils;
 
 import java.io.IOException;

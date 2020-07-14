@@ -77,13 +77,10 @@ public class PropertyChangeNotifier
      *
      * @param property the name of the property of this
      * <tt>PropertyChangeNotifier</tt> which had its value changed
-     * @param oldValue the value of the property with the specified name before
-     * the change
-     * @param newValue the value of the property with the specified name after
-     * the change
+     * @param oldValue the value of the property with the specified name before the change
+     * @param newValue the value of the property with the specified name after the change
      */
-    protected void firePropertyChange(String property,
-            Object oldValue, Object newValue)
+    protected void firePropertyChange(String property, Object oldValue, Object newValue)
     {
         PropertyChangeListener[] ls;
 
@@ -122,18 +119,15 @@ public class PropertyChangeNotifier
      *
      * @param property the name of the property which had its value changed from
      * the specified old value to the specified new value
-     * @param oldValue the value of the property with the specified name before
-     * the change
-     * @param newValue the value of the property with the specified name after
-     * the change
+     * @param oldValue the value of the property with the specified name before the change
+     * @param newValue the value of the property with the specified name after the change
      * @return the <tt>Object</tt> to be reported as the source of the new
      * <tt>PropertyChangeEvent</tt> which is to notify the
      * <tt>PropertyChangeListener</tt>s registered with this
      * <tt>PropertyChangeNotifier</tt> about the change in the value of the
      * property with the specified name from the specified old value to the specified new value
      */
-    protected Object getPropertyChangeSource(
-            String property, Object oldValue, Object newValue)
+    protected Object getPropertyChangeSource(String property, Object oldValue, Object newValue)
     {
         return this;
     }

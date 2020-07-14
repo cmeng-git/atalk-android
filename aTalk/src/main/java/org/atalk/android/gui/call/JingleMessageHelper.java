@@ -33,7 +33,7 @@ import net.java.sip.communicator.util.GuiUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.*;

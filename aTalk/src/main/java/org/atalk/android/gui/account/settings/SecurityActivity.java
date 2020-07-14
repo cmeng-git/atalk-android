@@ -346,7 +346,6 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         private String getCipherSuitesSummary(MultiSelectListPreference ml)
         {
             Set<String> selected = ml.getValues();
-
             StringBuilder sb = new StringBuilder();
 
             boolean firstElem = true;
@@ -357,7 +356,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                         firstElem = false;
                     }
                     else {
-                        sb.append(", ");
+                        // separator must not have space. Otherwise, result in unknown crypto suite error.
+                        sb.append(",");
                         sb.append(entry);
                     }
                 }

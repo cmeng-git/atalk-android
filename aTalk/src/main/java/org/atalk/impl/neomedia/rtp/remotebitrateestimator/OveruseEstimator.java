@@ -14,7 +14,7 @@
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.util.DiagnosticContext;
+import org.atalk.util.logging.DiagnosticContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

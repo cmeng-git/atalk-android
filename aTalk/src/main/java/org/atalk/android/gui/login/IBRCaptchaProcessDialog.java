@@ -34,6 +34,7 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -42,13 +43,13 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bob.packet.BoBExt;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormField.Type;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.util.XmppStringUtils;
@@ -102,7 +103,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     private Bitmap mCaptcha;
     private Context mContext;
     private DataForm mDataForm;
-    private DataForm submitForm;
+    private DataForm.Builder formBuilder;
     private String mPassword;
     private String mReasonText;
 
@@ -382,7 +383,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     {
         String password;
         Editable pwd = mPasswordField.getText();
-        if ((pwd != null) && !StringUtils.isNullOrEmpty(password = pwd.toString())) {
+        if ((pwd != null) && StringUtils.isNotEmpty(password = pwd.toString())) {
             mAccountId.setPassword(password);
             if (mAccountId.isPasswordPersistent())
                 JabberActivator.getProtocolProviderFactory().storePassword(mAccountId, password);
@@ -410,7 +411,7 @@ public class IBRCaptchaProcessDialog extends Dialog
      */
     private void onSubmitClicked()
     {
-        // Server will ends connection on wait timeout due to user no response
+        // Server will end connection on wait timeout due to user no response
         if ((mConnection != null) && mConnection.isConnected()) {
             AccountManager accountManager = AccountManager.getInstance(mConnection);
 
@@ -420,13 +421,14 @@ public class IBRCaptchaProcessDialog extends Dialog
 
             try {
                 if (mDataForm != null) {
-                    submitForm = new DataForm(DataForm.Type.submit);
-                    addField(CaptchaExtension.USER_NAME, userName);
+                    formBuilder = DataForm.builder(DataForm.Type.submit);
+
+                    addFormField(CaptchaExtension.USER_NAME, userName);
                     if (pwd != null) {
-                        addField(CaptchaExtension.PASSWORD, pwd.toString());
+                        addFormField(CaptchaExtension.PASSWORD, pwd.toString());
                     }
 
-                    // Add extra field if any and its value is not empty
+                    // Add an extra field if any and its value is not empty
                     int varCount = entryFields.getChildCount();
                     for (int i = 0; i < varCount; i++) {
                         final View row = entryFields.getChildAt(i);
@@ -434,27 +436,25 @@ public class IBRCaptchaProcessDialog extends Dialog
                         if (varMap.containsKey(label)) {
                             String data = ViewUtil.toString(row.findViewById(R.id.field_value));
                             if (data != null)
-                                addField(varMap.get(label), data);
+                                addFormField(varMap.get(label), data);
                         }
                     }
 
                     // set captcha challenge required info
                     if (mCaptcha != null) {
-                        addField(FormField.FORM_TYPE, CaptchaExtension.NAMESPACE);
+                        addFormField(FormField.FORM_TYPE, CaptchaExtension.NAMESPACE);
 
-                        String cl = mDataForm.getField(CaptchaExtension.CHALLENGE).getFirstValue();
-                        addField(CaptchaExtension.CHALLENGE, cl);
+                        formBuilder.addField(mDataForm.getField(CaptchaExtension.CHALLENGE));
+                        formBuilder.addField(mDataForm.getField(CaptchaExtension.SID));
 
-                        String sid = mDataForm.getField(CaptchaExtension.SID).getFirstValue();
-                        addField(CaptchaExtension.SID, sid);
-                        addField(CaptchaExtension.ANSWER, "3");
+                        addFormField(CaptchaExtension.ANSWER, "3");
 
                         Editable rc = mCaptchaText.getText();
                         if (rc != null) {
-                            addField(CaptchaExtension.OCR, rc.toString());
+                            addFormField(CaptchaExtension.OCR, rc.toString());
                         }
                     }
-                    accountManager.createAccount(submitForm);
+                    accountManager.createAccount(formBuilder.build());
                 }
                 else {
                     Localpart username = Localpart.formUnescapedOrNull(userName);
@@ -488,18 +488,16 @@ public class IBRCaptchaProcessDialog extends Dialog
     }
 
     /**
-     * Add field / value to the submit Form for registration
+     * Add field / value to formBuilder for registration
      *
-     * @param name the submit field variable
-     * @param value the field value
+     * @param name the FormField variable
+     * @param value the FormField value
      */
-    private void addField(String name, String value)
+    private void addFormField(String name, String value)
     {
-        FormField.Builder field = FormField.builder(name);
-        field.addValue(value);
-        field.setType(FormField.Type.text_single);
-        submitForm.addField(field.build());
-
+        TextSingleFormField.Builder field = FormField.builder(name);
+        field.setValue(value);
+        formBuilder.addField(field.build());
     }
 
     private void closeDialog()
@@ -549,7 +547,7 @@ public class IBRCaptchaProcessDialog extends Dialog
         } catch (SmackException.NoResponseException | InterruptedException e) {
             errMsg = e.getMessage();
         }
-        if (!StringUtils.isNullOrEmpty(errMsg)) {
+        if (StringUtils.isNotEmpty(errMsg)) {
             mReasonText = mContext.getString(R.string.captcha_registration_fail, errMsg);
         }
         // close connection on error, else throws connectionClosedOnError on timeout

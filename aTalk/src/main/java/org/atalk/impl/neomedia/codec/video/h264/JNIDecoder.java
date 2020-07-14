@@ -26,8 +26,7 @@ import javax.media.format.VideoFormat;
 import timber.log.Timber;
 
 /**
- * Decodes H.264 NAL units and returns the resulting frames as FFmpeg <tt>AVFrame</tt>s (i.e. in
- * YUV format).
+ * Decodes H.264 NAL units and returns the resulting frames as FFmpeg <tt>AVFrame</tt>s (i.e. in YUV format).
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -71,8 +70,7 @@ public class JNIDecoder extends AbstractCodec
     private int height;
 
     /**
-     * The <tt>KeyFrameControl</tt> used by this <tt>JNIDecoder</tt> to control its key
-     * frame-related logic.
+     * The <tt>KeyFrameControl</tt> used by this <tt>JNIDecoder</tt> to control its key frame-related logic.
      */
     private KeyFrameControl keyFrameControl;
 

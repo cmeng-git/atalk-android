@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -60,13 +60,13 @@ public class LogoutIqProvider extends IQProvider<LogoutIq>
 
             String sessionId = parser.getAttributeValue("", LogoutIq.SESSION_ID_ATTR);
 
-            if (!StringUtils.isNullOrEmpty(sessionId)) {
+            if (StringUtils.isNotEmpty(sessionId)) {
                 logoutIq.setSessionId(sessionId);
             }
 
             String logoutUrl = parser.getAttributeValue("", LogoutIq.LOGOUT_URL_ATTR);
 
-            if (!StringUtils.isNullOrEmpty(logoutUrl)) {
+            if (StringUtils.isNotEmpty(logoutUrl)) {
                 logoutIq.setLogoutUrl(logoutUrl);
             }
         }

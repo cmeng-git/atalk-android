@@ -443,7 +443,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
         }
         else {
-            mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID);
+            mcOpSet.correctMessage(contact, toResource, msg, correctedMessageUID);
         }
     }
 

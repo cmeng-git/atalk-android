@@ -5,13 +5,13 @@
  */
 package org.atalk.util.xml;
 
+import android.text.TextUtils;
+
 import org.atalk.util.OSUtils;
-import org.atalk.util.StringUtils;
 import org.w3c.dom.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.*;
@@ -26,8 +26,6 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static javax.xml.XMLConstants.XML_NS_URI;
 import static org.atalk.util.StringUtils.fromString;
-import static org.atalk.util.StringUtils.isEquals;
-import static org.atalk.util.StringUtils.isNullOrEmpty;
 
 /**
  * Common XML Tasks
@@ -61,16 +59,14 @@ public class XMLUtils
      * DOCTYPE declaration is allowed. See
      * {@link "https://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl"}
      */
-    private static final String FEATURE_DISSALLOW_DOCTYPE
-            = "http://apache.org/xml/features/disallow-doctype-decl";
+    private static final String FEATURE_DISSALLOW_DOCTYPE = "http://apache.org/xml/features/disallow-doctype-decl";
 
     /**
      * Extracts from node the attribute with the specified name.
      *
      * @param node the node whose attribute we'd like to extract.
      * @param name the name of the attribute to extract.
-     * @return a String containing the trimmed value of the attribute or null if no such attribute
-     * exists
+     * @return a String containing the trimmed value of the attribute or null if no such attribute exists
      */
     public static String getAttribute(Node node, String name)
     {
@@ -192,6 +188,7 @@ public class XMLUtils
                 if (type == Node.TEXT_NODE || type == Node.CDATA_SECTION_NODE) {
                     data = ((Text) node).getData();
                     if (data == null || data.trim().length() < 1) {
+                        // continue;
                     }
                 }
                 else {
@@ -203,8 +200,7 @@ public class XMLUtils
     }
 
     /**
-     * Writes the specified document to the given file adding indentation. The default encoding
-     * is UTF-8.
+     * Writes the specified document to the given file adding indentation. The default encoding is UTF-8.
      *
      * @param out the output File
      * @param document the document to write
@@ -220,8 +216,7 @@ public class XMLUtils
     }
 
     /**
-     * Writes the specified document to the given file adding indentation. The default encoding
-     * is UTF-8.
+     * Writes the specified document to the given file adding indentation. The default encoding is UTF-8.
      *
      * @param writer the writer to use when writing the File
      * @param document the document to write
@@ -235,8 +230,7 @@ public class XMLUtils
     }
 
     /**
-     * Writes the specified document to the given file adding indentation. The default encoding
-     * is UTF-8.
+     * Writes the specified document to the given file adding indentation. The default encoding is UTF-8.
      *
      * @param streamResult the streamResult object where the document should be written
      * @param document the document to write
@@ -323,12 +317,12 @@ public class XMLUtils
         }
         out.println(">");
 
-        String data = getText(root);
-        if (!StringUtils.isNullOrEmpty(data, true))
+        String data = getText(root).trim();
+        if (!TextUtils.isEmpty(data))
             out.println(prefix + "\t" + data);
 
-        data = getCData(root);
-        if (!StringUtils.isNullOrEmpty(data, true))
+        data = getCData(root).trim();
+        if (!TextUtils.isEmpty(data))
             out.println(prefix + "\t<![CDATA[" + data + "]]>");
 
         NodeList nodes = root.getChildNodes();
@@ -365,7 +359,7 @@ public class XMLUtils
         for (int i = 0; i < len; i++) {
             node = nodes.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE
-                    && ((Element) node).getNodeName().equals(tagName))
+                    && node.getNodeName().equals(tagName))
                 return (Element) node;
         }
         return null;
@@ -511,7 +505,7 @@ public class XMLUtils
         String prefix = node.getPrefix();
         String namespaceUri = node.getNamespaceURI();
 
-        if (!isNullOrEmpty(namespaceUri))
+        if (!TextUtils.isEmpty(namespaceUri))
             return normalizeNamespace(namespaceUri);
         if (XMLConstants.XMLNS_ATTRIBUTE.equals(node.getNodeName())
                 || XMLConstants.XMLNS_ATTRIBUTE.equals(prefix))
@@ -525,7 +519,7 @@ public class XMLUtils
                 if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
                     parentNode = ((Attr) node).getOwnerElement();
                     // If attribute doesn't have prefix - it has its parent namespace
-                    if (isNullOrEmpty(prefix))
+                    if (TextUtils.isEmpty(prefix))
                         prefix = parentNode.getPrefix();
                 }
                 else if (node.getNodeType() == Node.ELEMENT_NODE)
@@ -537,13 +531,13 @@ public class XMLUtils
                 parentNode = parentNode.getParentNode();
             String parentPrefix = parentNode.getPrefix();
             String parentNamespaceUri = parentNode.getNamespaceURI();
-            if (isNullOrEmpty(prefix)) {
+            if (TextUtils.isEmpty(prefix)) {
                 Node xmlnsAttribute = parentNode.getAttributes().getNamedItem("xmlns");
                 if (xmlnsAttribute != null)
                     return ((Attr) xmlnsAttribute).getValue();
             }
-            else if (isEquals(prefix, parentPrefix)) {
-                if (!isNullOrEmpty(parentNamespaceUri))
+            else if (Objects.equals(prefix, parentPrefix)) {
+                if (!TextUtils.isEmpty(parentNamespaceUri))
                     return normalizeNamespace(parentNamespaceUri);
             }
         }
@@ -611,7 +605,7 @@ public class XMLUtils
         builderFactory.setNamespaceAware(true);
 
         DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
-        if (!isNullOrEmpty(xml)) {
+        if (!TextUtils.isEmpty(xml)) {
             InputStream input = fromString(xml);
             return documentBuilder.parse(input);
         }

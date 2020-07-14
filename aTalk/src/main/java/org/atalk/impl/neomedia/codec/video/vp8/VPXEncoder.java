@@ -298,9 +298,9 @@ public class VPXEncoder extends AbstractCodec2
                     offsetY,
                     offsetU,
                     offsetV,
-                    frameCount, //pts
-                    1, //duration
-                    0, //flags
+                    frameCount,
+                    1,
+                    0,
                     VPX.DL_REALTIME);
             if (result != VPX.CODEC_OK) {
                 Timber.w("Failed to encode a frame: %s", VPX.codec_err_to_string(result));

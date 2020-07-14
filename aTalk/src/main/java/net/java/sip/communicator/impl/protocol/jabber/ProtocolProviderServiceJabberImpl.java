@@ -21,6 +21,7 @@ import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEn
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.NetworkUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
@@ -34,7 +35,6 @@ import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.OSUtils;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
@@ -1117,7 +1117,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             mConnection.connect();
         } catch (StreamErrorException ex) {
             String errMsg = ex.getMessage();
-            if (StringUtils.isNullOrEmpty(errMsg))
+            if (StringUtils.isEmpty(errMsg))
                 errMsg = ex.getStreamError().getDescriptiveText();
             Timber.e("Encounter problem during XMPPConnection: %s", errMsg);
             StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
@@ -1567,7 +1567,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         mRoster = null;
         try {
             Presence unavailablePresence = new Presence(Presence.Type.unavailable);
-            if ((OpSetPP != null) && !StringUtils.isNullOrEmpty(OpSetPP.getCurrentStatusMessage())) {
+            if ((OpSetPP != null) && StringUtils.isNotEmpty(OpSetPP.getCurrentStatusMessage())) {
                 unavailablePresence.setStatus(OpSetPP.getCurrentStatusMessage());
             }
             if (mConnection.isConnected())
@@ -1920,8 +1920,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         supportedFeatures.add(AvatarMetadata.NAMESPACE_NOTIFY);
         supportedFeatures.add(AvatarData.NAMESPACE);
 
-        // XEP-0384: OMEMO Encryption
-        supportedFeatures.add(OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY);
+        // XEP-0384: OMEMO Encryption - obsoleted?
+        // supportedFeatures.add(OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY);
 
         // XEP-0092: Software Version
         supportedFeatures.add(URN_XMPP_IQ_VERSION);
@@ -1942,7 +1942,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         // Add features aTalk supports in addition to smack.
         String[] featuresToRemove = new String[]{"http://jabber.org/protocol/commands"};
-        String[] featuresToAdd = supportedFeatures.toArray(new String[supportedFeatures.size()]);
+        String[] featuresToAdd = supportedFeatures.toArray(new String[0]);
         // boolean cacheNonCaps = true;
 
         discoveryManager = new ScServiceDiscoveryManager(this, mConnection, featuresToRemove,
@@ -3037,7 +3037,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     public void onHTTPAuthorizationRequest(DomainBareJid from, ConfirmExtension confirmExt)
     {
         String instruction = httpAuthorizationRequestManager.getInstruction();
-        if (StringUtils.isNullOrEmpty(instruction)) {
+        if (StringUtils.isEmpty(instruction)) {
             instruction = aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_INSTRUCTION,
                     confirmExt.getMethod(), confirmExt.getUrl(), confirmExt.getId(), mAccountID.getAccountJid());
         }

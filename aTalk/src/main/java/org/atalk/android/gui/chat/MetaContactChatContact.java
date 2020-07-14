@@ -17,9 +17,9 @@ package org.atalk.android.gui.chat;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.util.StringUtils;
 
 /**
  * The <tt>MetaContactChatContact</tt> represents a <tt>ChatContact</tt> in a
@@ -61,7 +61,7 @@ public class MetaContactChatContact extends ChatContact<MetaContact>
     {
         String name = descriptor.getDisplayName();
 
-        if (StringUtils.isNullOrEmpty(name))
+        if (StringUtils.isEmpty(name))
             name = aTalkApp.getResString(R.string.service_gui_UNKNOWN_USER);
 
         return name;

@@ -94,8 +94,9 @@ public class AddContactActivity extends OSGiActivity
         MetaContactGroupAdapter contactGroupAdapter
                 = new MetaContactGroupAdapter(this, R.id.selectGroupSpinner, true, true);
 
-        contactGroupAdapter.setItemLayout(R.layout.simple_spinner_item);
-        contactGroupAdapter.setDropDownLayout(R.layout.simple_spinner_dropdown_item);
+        // Already default to use in MetaContactGroupAdapter.
+        // contactGroupAdapter.setItemLayout(R.layout.simple_spinner_item);
+        // contactGroupAdapter.setDropDownLayout(R.layout.simple_spinner_dropdown_item);
         groupSpinner.setAdapter(contactGroupAdapter);
     }
 

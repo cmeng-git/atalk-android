@@ -28,13 +28,13 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.*;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -123,7 +123,7 @@ public class CryptoPrivateKeys extends OSGiActivity
             // Get OTRDevice fingerprint - can be null for new generation
             deviceJid = OTR + bareJid;
             fingerprint = keyManager.getLocalFingerprint(accountId);
-            if (!StringUtils.isNullOrEmpty(fingerprint)) {
+            if (StringUtils.isNotEmpty(fingerprint)) {
                 fingerprint = fingerprint.toLowerCase();
             }
             deviceFingerprints.put(deviceJid, fingerprint);
@@ -147,7 +147,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         ListView.AdapterContextMenuInfo ctxInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
         int pos = ctxInfo.position;
         String privateKey = accountsAdapter.getOwnKeyFromRow(pos);
-        boolean isKeyExist = !StringUtils.isNullOrEmpty(privateKey);
+        boolean isKeyExist = StringUtils.isNotEmpty(privateKey);
 
         menu.findItem(R.id.generate).setEnabled(!isKeyExist);
         menu.findItem(R.id.regenerate).setEnabled(isKeyExist);
@@ -290,7 +290,7 @@ public class CryptoPrivateKeys extends OSGiActivity
 
             String fingerprint = getOwnKeyFromRow(position);
             String fingerprintStr = fingerprint;
-            if (StringUtils.isNullOrEmpty(fingerprint)) {
+            if (StringUtils.isEmpty(fingerprint)) {
                 fingerprintStr = getString(R.string.crypto_NO_KEY_PRESENT);
             }
             ViewUtil.setTextViewValue(rowView, R.id.fingerprint, CryptoHelper.prettifyFingerprint(fingerprintStr));

@@ -13,7 +13,7 @@ import org.atalk.android.util.java.awt.Toolkit;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.util.OSUtils;
 

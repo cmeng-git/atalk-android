@@ -18,6 +18,7 @@
 
 #include <vpx/vpx_decoder.h>
 #include <vpx/vpx_encoder.h>
+#include <vpx/vpx_image.h>
 #include <vpx/vp8dx.h>
 #include <vpx/vp8cx.h>
 
@@ -30,14 +31,17 @@
 
 #define VPX_CODEC_DISABLE_COMPAT 1
 
-/* Convert the INTERFACE_* constants defined in java to
-   the (vpx_codec_iface_t *)'s used in libvpx */
-#define GET_INTERFACE(x) \
-    (((x) == org_atalk_impl_neomedia_codec_video_VPX_INTEFACE_VP8_DEC) \
-    ? vpx_codec_vp8_dx() \
-    : (((x) == org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_ENC)) \
-        ? vpx_codec_vp8_cx() \
-        : NULL)
+/* Convert the INTERFACE_* constants defined in java to the (vpx_codec_iface_t *)'s used in libvpx */
+ #define GET_INTERFACE(x) \
+     (((x) == org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_DEC) \
+     ? vpx_codec_vp8_dx() \
+     : (((x) == org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_ENC)) \
+         ? vpx_codec_vp8_cx() \
+         : (((x) == org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP9_DEC)) \
+             ? vpx_codec_vp9_dx() \
+             : (((x) == org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP9_ENC)) \
+                 ? vpx_codec_vp9_cx() \
+                 : NULL)
 
 #define DEFINE_ENC_CFG_INT_PROPERTY_SETTER(name, property) \
     JNIEXPORT void JNICALL \
@@ -198,10 +202,10 @@ Java_org_atalk_impl_neomedia_codec_video_VPX_codec_1encode
     unsigned char *buf
         = (unsigned char *) (*env)->GetByteArrayElements(env, bufArray, NULL);
     vpx_image_t *img = (vpx_image_t *) (intptr_t) jimg;
-    img->planes[0] = (buf + offset0);
-    img->planes[1] = (buf + offset1);
-    img->planes[2] = (buf + offset2);
-    img->planes[3] = 0;
+    img->planes[VPX_PLANE_Y] = (buf + offset0);
+    img->planes[VPX_PLANE_U] = (buf + offset1);
+    img->planes[VPX_PLANE_V] = (buf + offset2);
+    img->planes[VPX_PLANE_ALPHA] = 0;
 
     jint ret = (jint) vpx_codec_encode(
                     (vpx_codec_ctx_t *) (intptr_t) context,

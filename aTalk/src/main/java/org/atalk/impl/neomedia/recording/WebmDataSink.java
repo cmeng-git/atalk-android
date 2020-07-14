@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.recording;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.recording.RecorderEvent;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;

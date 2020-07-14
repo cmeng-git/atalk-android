@@ -317,6 +317,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 else
                     globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
                 break;
+            case R.id.online_help:
+                About.atalkUrlAccess(this, getString(R.string.FAQ_Link));
+                break;
             case R.id.about:
                 startActivity(About.class);
                 // showAboutDialog();

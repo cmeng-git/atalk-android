@@ -6,6 +6,21 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.3.1 (07/14/2020)" versioncode="1131">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Add chatRoom option to enable/disable member presence status and subject change notification info display</change>
+        <change>Fix dual session-accept sending when call received via Jingle Message Initiation</change>
+        <change>Fix 'Add contact' group pull down menu items display blank when light theme is selected</change>
+        <change>Fix 'ChatRoomConfiguration' incorrect setup in multiSelectionSpinner field items</change>
+        <change>Port to use smack-4.4.0-alpha5 release</change>
+        <change>Update libraries to use maven releases: fmj-1.0.0-jitsi, zrtp4j-light-4.1.1 etc.</change>
+        <change>Library ZRTP (v4.1.1) update is not backward compatible with previous aTalk releases &lt;= v2.3.0</change>
+        <change>Add 'Online help' in the main menu for direct access to online FAQ web page</change>
+        <change>Remove 'Fault Tolerance File Transfer' i.e. SOCK5 with IBB fallback support': not further supported in smack-4.4.0-alpha5</change>
+        <change>Remove obsoleted disco info for OMEMO, not further advertised (XEP-0384: OMEMO Encryption)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.3.0 (06/15/2020)" versioncode="1130">
         <change>Implement full-screen intent for compliance with android-10; allowing incoming call to wake device from standby and start up call UI</change>
         <change>Implement XEP-0353: Jingle Message Initiation; better handling of Jingle session invitation to buddy with multiple resources' login</change>
@@ -79,7 +94,7 @@
         <change>Support download and display of url image in src tag embedded in xhtml message</change>
         <change>Share of youtube and other social media links are tagged with thumbnail and title</change>
         <change>New features support for group chat: Erase chatRoom history and GPS location sending</change>
-        <change>Upgrade glide library to v4.11.0 for better control of image preview sizes for history and new medias</change>
+        <change>Upgrade glide library to v4.11.0 for better control of image preview sizes for history and new media</change>
         <change>Execute getLastSeen for contacts in new thread to avoid ANR</change>
         <change>Refresh Setting... immediately when user changes Language or Theme options</change>
         <change>Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES256 &amp; TWOFISH-256, and enable elliptic curve crypto using Curve 25519</change>

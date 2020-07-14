@@ -28,6 +28,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.sf.fmj.utility.IOUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.AndroidCallUtil;
@@ -49,7 +50,6 @@ import org.atalk.crypto.CryptoFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
@@ -132,6 +132,7 @@ public class ChatActivity extends OSGiActivity
     private MenuItem mSendFile;
     private MenuItem mSendLocation;
     private MenuItem mTtsEnable;
+    private MenuItem mStatusEnable;
     private MenuItem mRoomInvite;
     private MenuItem mLeaveChatRoom;
     private MenuItem mDestroyChatRoom;
@@ -404,6 +405,7 @@ public class ChatActivity extends OSGiActivity
         mSendFile = mMenu.findItem(R.id.send_file);
         mSendLocation = mMenu.findItem(R.id.send_location);
         mTtsEnable = mMenu.findItem(R.id.chat_tts_enable);
+        mStatusEnable = mMenu.findItem(R.id.room_status_enable);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
         mRoomInvite = mMenu.findItem(R.id.muc_invite);
         mLeaveChatRoom = mMenu.findItem(R.id.leave_chat_room);
@@ -459,6 +461,7 @@ public class ChatActivity extends OSGiActivity
                 mTtsEnable.setTitle(mRecipient.isTtsEnable()
                         ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
 
+                mStatusEnable.setVisible(false);
                 mRoomInvite.setVisible(!isDomainJid);
                 mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
@@ -483,6 +486,10 @@ public class ChatActivity extends OSGiActivity
                 mTtsEnable.setVisible(isJoined);
                 mTtsEnable.setTitle(chatRoomWrapper.isTtsEnable()
                         ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+
+                mStatusEnable.setVisible(true);
+                mStatusEnable.setTitle(chatRoomWrapper.isRoomStatusEnable()
+                        ? R.string.service_gui_CHATROOM_STATUS_OFF : R.string.service_gui_CHATROOM_STATUS_ON);
 
                 mChatRoomNickSubject.setVisible(isJoined);
 
@@ -592,6 +599,17 @@ public class ChatActivity extends OSGiActivity
                 case R.id.chatroom_config:
                     chatRoomConfig = ChatRoomConfiguration.getInstance(chatRoomWrapper, this);
                     ft.replace(android.R.id.content, chatRoomConfig).commit();
+                    return true;
+
+                case R.id.room_status_enable:
+                    if (chatRoomWrapper.isRoomStatusEnable()) {
+                        chatRoomWrapper.setRoomStatusEnable(false);
+                        mStatusEnable.setTitle(R.string.service_gui_CHATROOM_STATUS_ON);
+                    }
+                    else {
+                        chatRoomWrapper.setRoomStatusEnable(true);
+                        mStatusEnable.setTitle(R.string.service_gui_CHATROOM_STATUS_OFF);
+                    }
                     return true;
 
                 case R.id.show_chatroom_occupant:
@@ -908,7 +926,7 @@ public class ChatActivity extends OSGiActivity
                         Uri uri = intent.getData();
                         if (uri != null) {
                             filePath = FilePathHelper.getPath(this, uri);
-                            if (!StringUtils.isNullOrEmpty(filePath))
+                            if (StringUtils.isNotEmpty(filePath))
                                 openDownloadable(new File(filePath));
                             else
                                 aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);

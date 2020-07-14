@@ -195,6 +195,8 @@
 	<string name="service_gui_CHATROOM_NOT_JOINED">Вам нужно войти в комнату чата, чтобы выполнить дальнейшие операции с ним.</string>
 	<string name="service_gui_CHATROOM_OPTIONS">Параметры чата</string>
 	<string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Чат чата %1$s запросил пароль.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Отключить статус номера</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Включить статус комнаты</string>
 	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Тема номера изменилась: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOMS">Чаты</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s теперь известен как %2$s</string>
@@ -235,13 +237,14 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ваш список контактов не содержит групп. Сначала создайте группу (File/Create group).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Онлайн-справка </a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Онлайн-справка</a></string>
     <string name="AboutDialog_title">О</string>
     <string name="AboutDialog_Version">Версия %1$s</string>
     <string name="About_action">О</string>
     <string name="About_help">Справка</string>
     <string name="check_new_version">Проверить обновление</string>
     <string name="show_history_log">История журналов</string>
+    <string name="Online_help">Онлайн-справка</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP-запрос авторизации</string>

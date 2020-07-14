@@ -5,9 +5,12 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.function.Predicate;
+import org.jivesoftware.smack.util.Function;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import timber.log.Timber;
 
@@ -19,7 +22,7 @@ import timber.log.Timber;
  * packet into a single transformed packet (as opposed to an array of possibly more than one packet).
  *
  * cmeng (20190723): Do not update this file - video call not working on old android (Note-3)
- * Need API-24 for new implementation
+ * Need API-24 for new implementation (Use Function from smack).
  *
  * @author Boris Grozev
  * @author George Politis
@@ -37,15 +40,12 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     /**
      * The number of exceptions caught in {@link #reverseTransform(RawPacket)}.
      */
-    // private AtomicInteger exceptionsInReverseTransform = new AtomicInteger();
-    private long exceptionsInReverseTransform;
-
+    private AtomicInteger exceptionsInReverseTransform = new AtomicInteger();
 
     /**
      * The number of exceptions caught in {@link #transform(RawPacket)}.
      */
-    // private AtomicInteger exceptionsInTransform = new AtomicInteger();
-    private long exceptionsInTransform;
+    private AtomicInteger exceptionsInTransform = new AtomicInteger();
 
     /**
      * The idea is to have <tt>PacketTransformer</tt> implementations strictly associated with a
@@ -57,26 +57,23 @@ public abstract class SinglePacketTransformer implements PacketTransformer
 
     /*
      * A cached link to {@link #reverseTransform(RawPacket)} method to reduce calling overhead on hotpath.
-     * Need API-24 (not use in aTalk)
+     * Need API-24 (Use Function from smack)
      */
-    // private final Function<RawPacket, RawPacket> cachedReverseTransform
-    //        = pkt -> this.reverseTransform(pkt);
+    private final Function<RawPacket, RawPacket> cachedReverseTransform = this::reverseTransform;
 
     /*
      * A cached link to {@link #transform(RawPacket)} method to reduce calling overhead on hotpath.
-     * Need API-24 (not use in aTalk)
+     * Need API-24 (Use Function from smack)
      */
-    // private final Function<RawPacket, RawPacket> cachedTransform
-    //         = pkt -> this.transform(pkt);
+    private final Function<RawPacket, RawPacket> cachedTransform = this::transform;
 
     /**
      * Ctor.
      *
      * XXX At some point ideally we would get rid of this ctor and all the inheritors will use the
-     * parametrized ctor. Also, we might want to move this check inside the
-     * <tt>TransformEngineChain</tt> so that we only make the check once per packet: The RTCP
-     * transformer is only supposed to (reverse) transform RTCP packets and the RTP transformer is
-     * only supposed to modify RTP packets.
+     * parametrized ctor. Also, we might want to move this check inside the <tt>TransformEngineChain</tt>
+     * so that we only make the check once per packet: The RTCP transformer is only supposed to (reverse)
+     * transform RTCP packets and the RTP transformer is only supposed to modify RTP packets.
      */
     public SinglePacketTransformer()
     {
@@ -120,30 +117,32 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     @Override
     public RawPacket[] reverseTransform(RawPacket[] pkts)
     {
-        // For API-24 only
-        // return transformArray(pkts, cachedReverseTransform, exceptionsInReverseTransform, "reverseTransform");
+        // For API-24 only - Use Function from smack
+        return transformArray(pkts, cachedReverseTransform, exceptionsInReverseTransform, "reverseTransform");
 
-        if (pkts != null) {
-            for (int i = 0; i < pkts.length; i++) {
-                RawPacket pkt = pkts[i];
-
-                if (pkt != null && (packetPredicate == null || packetPredicate.test(pkt))) {
-                    try {
-                        pkts[i] = reverseTransform(pkt);
-                    } catch (Throwable t) {
-                        exceptionsInReverseTransform++;
-                        if ((exceptionsInReverseTransform % EXCEPTIONS_TO_LOG) == 0 || exceptionsInReverseTransform == 1) {
-                            Timber.e(t, "Failed to reverse-transform RawPacket(s)!");
-                        }
-                        if (t instanceof Error)
-                            throw (Error) t;
-                        else
-                            throw (RuntimeException) t;
-                    }
-                }
-            }
-        }
-        return pkts;
+//        if (pkts != null) {
+//            for (int i = 0; i < pkts.length; i++) {
+//                RawPacket pkt = pkts[i];
+//
+//                if (pkt != null
+//                        && (packetPredicate == null || packetPredicate.test(pkt))) {
+//                    try {
+//                        pkts[i] = reverseTransform(pkt);
+//                    } catch (Throwable t) {
+//                        exceptionsInReverseTransform.incrementAndGet();
+//                        if ((exceptionsInReverseTransform.get() % EXCEPTIONS_TO_LOG) == 0
+//                                || exceptionsInReverseTransform.get() == 1) {
+//                            Timber.e(t, "Failed to reverse-transform RawPacket(s)!");
+//                        }
+//                        if (t instanceof Error)
+//                            throw (Error) t;
+//                        else
+//                            throw (RuntimeException) t;
+//                    }
+//                }
+//            }
+//        }
+//        return pkts;
     }
 
     /**
@@ -162,34 +161,36 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     @Override
     public RawPacket[] transform(RawPacket[] pkts)
     {
-        // For API-24 only
-        // return transformArray(pkts, cachedTransform, exceptionsInTransform, "transform");
+        // For API-24 only - Use Function from smack
+        return transformArray(pkts, cachedTransform, exceptionsInTransform, "transform");
 
-        if (pkts != null) {
-            for (int i = 0; i < pkts.length; i++) {
-                RawPacket pkt = pkts[i];
-
-                if (pkt != null && (packetPredicate == null || packetPredicate.test(pkt))) {
-                    try {
-                        pkts[i] = transform(pkt);
-                    } catch (Throwable t) {
-                        exceptionsInTransform++;
-                        if ((exceptionsInTransform % EXCEPTIONS_TO_LOG) == 0 || exceptionsInTransform == 1) {
-                            Timber.e(t, "Failed to transform RawPacket(s)!");
-                        }
-                        if (t instanceof Error)
-                            throw (Error) t;
-                        else
-                            throw (RuntimeException) t;
-                    }
-                }
-            }
-        }
-        return pkts;
+//        if (pkts != null) {
+//            for (int i = 0; i < pkts.length; i++) {
+//                RawPacket pkt = pkts[i];
+//
+//                if (pkt != null
+//                        && (packetPredicate == null || packetPredicate.test(pkt))) {
+//                    try {
+//                        pkts[i] = transform(pkt);
+//                    } catch (Throwable t) {
+//                        exceptionsInTransform.incrementAndGet();
+//                        if ((exceptionsInTransform.get() % EXCEPTIONS_TO_LOG) == 0
+//                                || exceptionsInTransform.get() == 1) {
+//                            Timber.e(t, "Failed to transform RawPacket(s)!");
+//                        }
+//                        if (t instanceof Error)
+//                            throw (Error) t;
+//                        else
+//                            throw (RuntimeException) t;
+//                    }
+//                }
+//            }
+//        }
+//        return pkts;
     }
 
-    // cmeng - for API-24 implementation
     /*
+     * cmeng - for API-24 implementation - use Function from smack
      * Applies a specific transformation function to an array of {@link RawPacket}s.
      *
      * @param pkts the array to transform.
@@ -198,32 +199,32 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      * @param logMessage a name of the transformation function, to be used when logging exceptions.
      * @return {@code pkts}.
      */
-//    private RawPacket[] transformArray(RawPacket[] pkts, Function<RawPacket, RawPacket> transformFunction,
-//            AtomicInteger exceptionCounter, String logMessage)
-//    {
-//        if (pkts != null) {
-//            for (int i = 0; i < pkts.length; i++) {
-//                RawPacket pkt = pkts[i];
-//                if (pkt != null
-//                        && (packetPredicate == null || packetPredicate.test(pkt))) {
-//                    try {
-//                        pkts[i] = transformFunction.apply(pkt);
-//                    } catch (Throwable t) {
-//                        exceptionCounter.incrementAndGet();
-//                        if ((exceptionCounter.get() % EXCEPTIONS_TO_LOG) == 0
-//                                || exceptionCounter.get() == 1) {
-//                            Timber.e(t, "Failed to %s RawPacket(s)!", logMessage);
-//                        }
-//                        if (t instanceof Error) {
-//                            throw (Error) t;
-//                        }
-//                        else {
-//                            throw (RuntimeException) t;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return pkts;
-//    }
+    private RawPacket[] transformArray(RawPacket[] pkts, Function<RawPacket, RawPacket> transformFunction,
+            AtomicInteger exceptionCounter, String logMessage)
+    {
+        if (pkts != null) {
+            for (int i = 0; i < pkts.length; i++) {
+                RawPacket pkt = pkts[i];
+                if (pkt != null
+                        && ((packetPredicate == null) || (packetPredicate.test(pkt)))) {
+                    try {
+                        pkts[i] = transformFunction.apply(pkt);
+                    } catch (Throwable t) {
+                        exceptionCounter.incrementAndGet();
+                        if ((exceptionCounter.get() % EXCEPTIONS_TO_LOG == 0)
+                                || (exceptionCounter.get() == 1)) {
+                            Timber.e(t, "Failed to %s RawPacket(s)!", logMessage);
+                        }
+                        if (t instanceof Error) {
+                            throw (Error) t;
+                        }
+                        else {
+                            throw (RuntimeException) t;
+                        }
+                    }
+                }
+            }
+        }
+        return pkts;
+    }
 }

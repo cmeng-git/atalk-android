@@ -5,7 +5,8 @@
  */
 package org.xmpp.extensions.jibri;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.EntityBareJid;
 
@@ -366,14 +367,10 @@ public class JibriIq extends IQ
         xml.optAttribute(SESSION_ID_ATTR_NAME, sessionId);
         xml.optAttribute(FAILURE_REASON_ATTR_NAME, failureReason);
 
-        if (failureReason != null && failureReason != FailureReason.UNDEFINED) {
-            if (shouldRetry == null) {
-                throw new RuntimeException("shouldRetry field must be filled out when a failure reason is set");
-            }
+        if (shouldRetry != null) {
             xml.attribute(SHOULD_RETRY_ATTR_NAME, shouldRetry);
         }
         xml.optAttribute(APP_DATA_ATTR_NAME, appData);
-
         xml.setEmptyElement();
         return xml;
     }
@@ -507,7 +504,7 @@ public class JibriIq extends IQ
          */
         public static Action parse(String action)
         {
-            if (StringUtils.isNullOrEmpty(action))
+            if (StringUtils.isEmpty(action))
                 return UNDEFINED;
 
             try {
@@ -571,7 +568,7 @@ public class JibriIq extends IQ
          */
         public static RecordingMode parse(String status)
         {
-            if (StringUtils.isNullOrEmpty(status))
+            if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
             try {
@@ -597,6 +594,7 @@ public class JibriIq extends IQ
         /**
          * {@inheritDoc}
          */
+        @NotNull
         @Override
         public String toString()
         {
@@ -612,7 +610,7 @@ public class JibriIq extends IQ
          */
         public static FailureReason parse(String status)
         {
-            if (StringUtils.isNullOrEmpty(status))
+            if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
             try {
@@ -666,6 +664,7 @@ public class JibriIq extends IQ
         /**
          * {@inheritDoc}
          */
+        @NotNull
         @Override
         public String toString()
         {
@@ -681,7 +680,7 @@ public class JibriIq extends IQ
          */
         public static Status parse(String status)
         {
-            if (StringUtils.isNullOrEmpty(status))
+            if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
             try {

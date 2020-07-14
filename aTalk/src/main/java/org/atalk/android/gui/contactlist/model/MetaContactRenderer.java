@@ -13,12 +13,12 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations.SubscriptionStatus;
 import net.java.sip.communicator.util.StatusUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.DrawableCache;
-import org.atalk.util.StringUtils;
 import org.jxmpp.jid.DomainBareJid;
 
 import java.util.Iterator;
@@ -132,7 +132,7 @@ public class MetaContactRenderer implements UIContactRenderer
                 else if (SubscriptionStatus.NotSubscribed.equals(status))
                     subscriptionDetails = aTalkApp.getResString(R.string.service_gui_NOT_AUTHORIZED);
             }
-            else if (!StringUtils.isNullOrEmpty(protoContact.getStatusMessage())) {
+            else if (StringUtils.isNotEmpty(protoContact.getStatusMessage())) {
                 displayDetails = protoContact.getStatusMessage();
                 subscribed = true;
                 break;
@@ -142,8 +142,8 @@ public class MetaContactRenderer implements UIContactRenderer
             }
         }
 
-        if (StringUtils.isNullOrEmpty(displayDetails) && !subscribed
-                && !StringUtils.isNullOrEmpty(subscriptionDetails))
+        if (StringUtils.isEmpty(displayDetails) && !subscribed
+                && StringUtils.isNotEmpty(subscriptionDetails))
             displayDetails = subscriptionDetails;
 
         return displayDetails;

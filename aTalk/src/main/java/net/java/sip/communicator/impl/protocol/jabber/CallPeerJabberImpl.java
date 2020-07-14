@@ -14,6 +14,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -27,7 +28,6 @@ import org.xmpp.extensions.colibri.SourceExtension;
 import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.*;
 import org.xmpp.extensions.jingle.element.JingleContent.Senders;
-import org.xmpp.extensions.jitsimeet.MediaPresenceExtension;
 import org.xmpp.extensions.jitsimeet.SSRCInfoExtension;
 
 import java.lang.reflect.UndeclaredThrowableException;
@@ -1380,8 +1380,9 @@ public class CallPeerJabberImpl
             }
 
             RtpDescriptionExtension rtpDesc = JingleUtils.getRtpDescription(c);
-            for (MediaPresenceExtension.Source src
-                    : rtpDesc.getChildExtensionsOfType(MediaPresenceExtension.Source.class)) {
+
+            // for (MediaPresenceExtension.Source src : rtpDesc.getChildExtensionsOfType(MediaPresenceExtension.Source.class)) {
+            for (SourceExtension src : rtpDesc.getChildExtensionsOfType(SourceExtension.class)) {
                 SSRCInfoExtension ssrcInfo = src.getFirstChildOfType(SSRCInfoExtension.class);
                 if (ssrcInfo == null)
                     continue;
@@ -1395,7 +1396,7 @@ public class CallPeerJabberImpl
                     member = new AbstractConferenceMember(this, owner.toString());
                     this.addConferenceMember(member);
                 }
-                member.setAudioSsrc(Long.parseLong(src.getSSRC()));
+                member.setAudioSsrc(src.getSSRC());
             }
         }
     }

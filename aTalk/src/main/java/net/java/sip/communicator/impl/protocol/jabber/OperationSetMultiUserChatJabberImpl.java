@@ -23,7 +23,6 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
-import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.muc.*;
 import org.jivesoftware.smackx.muc.MultiUserChat.MucCreateConfigFormHandle;
@@ -34,8 +33,8 @@ import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.exceptions.*;
 import org.jivesoftware.smackx.omemo.listener.OmemoMucMessageListener;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
-import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
@@ -206,24 +205,24 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     boolean isPrivate = (roomProperties != null) && Boolean.TRUE.equals(roomProperties.get(ChatRoom.IS_PRIVATE));
                     if (isPrivate) {
                         /**
-                         * @see Form#createAnswerForm()
-                         * @see Form#setAnswer(FormField, Object)
+                         * @see Form#getFillableForm()
+                         * @see FillableForm#setAnswer(String, int)
                          */
                         Form initForm = muc.getConfigurationForm();
-                        Form form = initForm.createAnswerForm();
+                        FillableForm fillableForm = initForm.getFillableForm();
 
                         // cmeng - update all the below fields in the default form.
                         String[] fields = {"muc#roomconfig_membersonly", "muc#roomconfig_allowinvites", "muc#roomconfig_publicroom"};
                         Boolean[] values = {true, true, false};
                         for (int i = 0; i < fields.length; i++) {
                             try {
-                                form.setAnswer(fields[i], values[i]);
+                                fillableForm.setAnswer(fields[i], values[i]);
                             } catch (IllegalArgumentException ignore) {
                                 // Just ignore and continue for IllegalArgumentException variable
                                 Timber.w("Exception in setAnswer for field: %s = %s", fields[i], values[i]);
                             }
                         }
-                        muc.sendConfigurationForm(form);
+                        muc.sendConfigurationForm(fillableForm);
                     }
                     else {
                         mucFormHandler.makeInstant();

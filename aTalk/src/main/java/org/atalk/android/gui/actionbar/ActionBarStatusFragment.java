@@ -22,6 +22,7 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.StatusUtil;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
@@ -30,7 +31,6 @@ import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.widgets.ActionMenuItem;
 import org.atalk.service.osgi.OSGiFragment;
-import org.atalk.util.StringUtils;
 
 import java.util.Collection;
 
@@ -293,7 +293,7 @@ public class ActionBarStatusFragment extends OSGiFragment
         String displayName = name;
         Collection<ProtocolProviderService> pProviders = AccountUtils.getRegisteredProviders();
 
-        if (StringUtils.isNullOrEmpty(displayName) && (pProviders.size() == 1)) {
+        if (StringUtils.isEmpty(displayName) && (pProviders.size() == 1)) {
             displayName = pProviders.iterator().next().getAccountID().getUserID();
         }
         if (pProviders.size() > 1)

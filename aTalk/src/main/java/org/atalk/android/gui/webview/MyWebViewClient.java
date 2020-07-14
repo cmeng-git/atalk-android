@@ -26,9 +26,9 @@ import android.view.View;
 import android.webkit.*;
 import android.widget.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.util.StringUtils;
 
 import java.util.regex.Pattern;
 
@@ -145,11 +145,11 @@ public class MyWebViewClient extends WebViewClient
         String aim = Uri.parse(url).getHost();
 
         // return true if this is the first time url loading or exact match of host
-        if (StringUtils.isNullOrEmpty(origin) || origin.equalsIgnoreCase(aim))
+        if (StringUtils.isEmpty(origin) || origin.equalsIgnoreCase(aim))
             return true;
 
         // return false if aim contains no host string i.e. not a url e.g. mailto:info[at]example.com
-        if (StringUtils.isNullOrEmpty(aim))
+        if (StringUtils.isEmpty(aim))
             return false;
 
         String originDomain = pattern.matcher(origin).replaceAll("$1");

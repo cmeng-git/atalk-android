@@ -132,7 +132,7 @@ import timber.log.Timber;
  *
  * @author Werner Dittmann &lt;Werner.Dittmann@t-online.de>
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public class ZRTPTransformEngine extends SinglePacketTransformer implements SrtpControl.TransformEngine, ZrtpCallback
 {
@@ -296,7 +296,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * ZRTP packet sequence number
      */
-    private short senderZrtpSeqNo = 0;
+    private short senderZrtpSeqNo;
 
     /**
      * The timeout provider instance This is used for handling the ZRTP timers
@@ -311,8 +311,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Sometimes we need to start muted so we will discard any packets during some time after the
      * start of the transformer. This is needed when for this time we can receive encrypted packets
-     * but we hadn't established a secure communication. This happens when a secure stream is
-     * recreated.
+     * but we hadn't established a secure communication. This happens when a secure stream is recreated.
      */
     private boolean muted = false;
 
@@ -453,8 +452,8 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 //    }
 
     /**
-     * Custom engine initialization method. This allows to explicit specify if the engine starts
-     * with auto-sensing or not.
+     * Custom engine initialization method.
+     * This allows to explicit specify if the engine starts with auto-sensing or not.
      *
      * @param zidFilename The ZID file name
      * @param autoEnable Set this true to start with auto-sensing and false to disable it.
@@ -485,15 +484,13 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         }
 
         ZidFile zf = ZidFile.getInstance();
-        if (zf.isOpen())
-        {
-            if (!zf.getZid().equals(myZid)) {
+        if (zf.isOpen()) {
+            if (!Arrays.equals(zf.getZid(), myZid)) {
                 zf.close();
             }
         }
 
-        if (!zf.isOpen())
-        {
+        if (!zf.isOpen()) {
             if (zf.open(zidFilePath) < 0)
                 return false;
         }
@@ -664,8 +661,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             startZrtp();
 
         /*
-         * If the incoming packet is not a ZRTP packet, treat it as a normal RTP packet and handle
-         * it accordingly.
+         * If the incoming packet is not a ZRTP packet, treat it as a normal RTP packet and handle it accordingly.
          */
         if (!ZrtpRawPacket.isZrtpData(pkt)) {
             if (srtpInTransformer == null)
@@ -685,8 +681,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
         }
 
         /*
-         * If ZRTP is enabled, process it. In any case return null because ZRTP packets must never
-         * reach the application.
+         * Process if ZRTP is enabled. In any case return null because ZRTP packets must never reach the application.
          */
         if (enableZrtp && started) {
             ZrtpRawPacket zPkt = new ZrtpRawPacket(pkt);
@@ -712,7 +707,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      * complete ZRTP packet, copy the message part in its place, the initialize the header, counter, SSRC and crc.
      *
      * @param data The ZRTP packet data
-     * @return true if sending succeeds, false if it fails
+     * @return true if sending succeeded, false if it failed.
      */
     public boolean sendDataZRTP(byte[] data)
     {
@@ -739,63 +734,92 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * Switch on the security for the defined part.
+     * 4.5.1.  The ZRTP Key Derivation Function
+     * The output of the KDF is truncated to the leftmost L bits
+     * 4.5.3.  Deriving the Rest of the Keys from s0
+     * ... AES-CM 128 or 256-bit key length, 112-bit session salt key length...
+     * (Need to performed here as it is not done in ZRtp class.
      *
-     * @param secrets The secret keys and salt negotiated by ZRTP
+     * @param secrets The secret keys and salt negotiated by ZRTP.
      * @param part An enum that defines sender, receiver, or both.
      * @return always return true.
      */
     public boolean srtpSecretsReady(ZrtpSrtpSecrets secrets, EnableSecurity part)
     {
-        SRTPPolicy srtpPolicy;
+        SrtpPolicy srtpPolicy;
         int cipher = 0, authn = 0, authKeyLen = 0;
 
         if (secrets.getAuthAlgorithm() == ZrtpConstants.SupportedAuthAlgos.HS) {
-            authn = SRTPPolicy.HMACSHA1_AUTHENTICATION;
+            authn = SrtpPolicy.HMACSHA1_AUTHENTICATION;
             authKeyLen = 20;
         }
         else if (secrets.getAuthAlgorithm() == ZrtpConstants.SupportedAuthAlgos.SK) {
-            authn = SRTPPolicy.SKEIN_AUTHENTICATION;
+            authn = SrtpPolicy.SKEIN_AUTHENTICATION;
             authKeyLen = 32;
         }
 
         if (secrets.getSymEncAlgorithm() == ZrtpConstants.SupportedSymAlgos.AES) {
-            cipher = SRTPPolicy.AESCM_ENCRYPTION;
+            cipher = SrtpPolicy.AESCM_ENCRYPTION;
         }
         else if (secrets.getSymEncAlgorithm() == ZrtpConstants.SupportedSymAlgos.TwoFish) {
-            cipher = SRTPPolicy.TWOFISH_ENCRYPTION;
+            cipher = SrtpPolicy.TWOFISH_ENCRYPTION;
         }
+
+        // Actually both Initiator and Responder have the same  masterKey and saltKey Length
+        int srtp_auth_tag_length = secrets.getSrtpAuthTagLen() / 8;
+        int initiator_cipher_key_length =  secrets.getInitKeyLen() / 8;
+        int initiator_cipher_salt_length =  secrets.getInitSaltLen() / 8;
+        int responder_cipher_key_length =  secrets.getRespKeyLen() / 8;
+        int responder_cipher_salt_length =  secrets.getRespSaltLen() / 8;
+
+        byte[] initiator_SRTP_master_key = new byte[initiator_cipher_key_length];
+        byte[] initiator_SRTP_master_salt = new byte[initiator_cipher_salt_length];
+        byte[] responder_SRTP_master_key = new byte[responder_cipher_key_length];
+        byte[] responder_SRTP_master_salt = new byte[responder_cipher_salt_length];
+
+        System.arraycopy(secrets.getKeyInitiator(), 0,
+                initiator_SRTP_master_key, 0, initiator_cipher_key_length);
+        System.arraycopy(secrets.getSaltInitiator(), 0,
+                initiator_SRTP_master_salt, 0, initiator_cipher_salt_length);
+        System.arraycopy(secrets.getKeyResponder(), 0,
+                responder_SRTP_master_key, 0, responder_cipher_key_length);
+        System.arraycopy(secrets.getSaltResponder(), 0,
+                responder_SRTP_master_salt, 0, responder_cipher_salt_length);
 
         if (part == EnableSecurity.ForSender) {
             // To encrypt packets: initiator uses initiator keys, responder uses responder keys
             // Create a "half baked" crypto context first and store it. This is
             // the main crypto context for the sending part of the connection.
             if (secrets.getRole() == Role.Initiator) {
-                srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getInitKeyLen() / 8,
+                srtpPolicy = new SrtpPolicy(cipher,
+                        initiator_cipher_key_length,
                         authn, authKeyLen,
-                        secrets.getSrtpAuthTagLen() / 8,
-                        secrets.getInitSaltLen() / 8
+                        srtp_auth_tag_length,
+                        initiator_cipher_salt_length
                 );
 
-                SRTPContextFactory engine = new SRTPContextFactory(
+                SrtpContextFactory engine = new SrtpContextFactory(
                         true,
-                        secrets.getKeyInitiator(), secrets.getSaltInitiator(),
+                        initiator_SRTP_master_key,
+                        initiator_SRTP_master_salt,
                         srtpPolicy, srtpPolicy);
 
                 srtpOutTransformer = new SRTPTransformer(engine);
                 getRTCPTransformer().setSrtcpOut(new SRTCPTransformer(engine));
             }
             else {
-                srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getRespKeyLen() / 8,
+                srtpPolicy = new SrtpPolicy(
+                        cipher,
+                        responder_cipher_key_length,
                         authn, authKeyLen,
-                        secrets.getSrtpAuthTagLen() / 8,
-                        secrets.getRespSaltLen() / 8
+                        srtp_auth_tag_length,
+                        responder_cipher_salt_length
                 );
 
-                SRTPContextFactory engine = new SRTPContextFactory(
+                SrtpContextFactory engine = new SrtpContextFactory(
                         true,
-                        secrets.getKeyResponder(), secrets.getSaltResponder(),
+                        responder_SRTP_master_key,
+                        responder_SRTP_master_salt,
                         srtpPolicy, srtpPolicy);
 
                 srtpOutTransformer = new SRTPTransformer(engine);
@@ -806,16 +830,18 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             // To decrypt packets: initiator uses responder keys, responder initiator keys
             // See comment above.
             if (secrets.getRole() == Role.Initiator) {
-                srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getRespKeyLen() / 8,
+                srtpPolicy = new SrtpPolicy(
+                        cipher,
+                        responder_cipher_key_length,
                         authn, authKeyLen,
-                        secrets.getSrtpAuthTagLen() / 8,
-                        secrets.getRespSaltLen() / 8
+                        srtp_auth_tag_length,
+                        responder_cipher_salt_length
                 );
 
-                SRTPContextFactory engine = new SRTPContextFactory(
+                SrtpContextFactory engine = new SrtpContextFactory(
                         false /* receiver */,
-                        secrets.getKeyResponder(), secrets.getSaltResponder(),
+                        responder_SRTP_master_key,
+                        responder_SRTP_master_salt,
                         srtpPolicy, srtpPolicy);
 
                 srtpInTransformer = new SRTPTransformer(engine);
@@ -823,16 +849,18 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
                 this.muted = false;
             }
             else {
-                srtpPolicy = new SRTPPolicy(cipher,
-                        secrets.getInitKeyLen() / 8,
-                        authn, authKeyLen, // auth key length
-                        secrets.getSrtpAuthTagLen() / 8,
-                        secrets.getInitSaltLen() / 8
+                srtpPolicy = new SrtpPolicy(
+                        cipher,
+                        initiator_cipher_key_length,
+                        authn, authKeyLen,
+                        srtp_auth_tag_length,
+                        initiator_cipher_salt_length
                 );
 
-                SRTPContextFactory engine = new SRTPContextFactory(
+                SrtpContextFactory engine = new SrtpContextFactory(
                         false /* receiver */,
-                        secrets.getKeyInitiator(), secrets.getSaltInitiator(),
+                        initiator_SRTP_master_key,
+                        initiator_SRTP_master_salt,
                         srtpPolicy, srtpPolicy);
 
                 srtpInTransformer = new SRTPTransformer(engine);
@@ -928,11 +956,11 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      */
     public void sendInfo(ZrtpCodes.MessageSeverity severity, EnumSet<?> subCode)
     {
-        final String version_and_hash[] = zrtpEngine.getPeerHelloHashSep();
+        final String[] version_and_hash = zrtpEngine.getPeerHelloHashSep();
 
         if (version_and_hash != null
-            && receivedSignaledZRTPVersion != null
-            && receivedSignaledZRTPHashValue != null) {
+                && receivedSignaledZRTPVersion != null
+                && receivedSignaledZRTPHashValue != null) {
             final String peerHelloVersion = version_and_hash[0];
             final String peerHelloHash = version_and_hash[1];
 
@@ -947,6 +975,10 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
         if (securityEventManager != null)
             securityEventManager.showMessage(severity, subCode);
+
+        if (ZrtpCodes.MessageSeverity.ZrtpError.equals(severity)) {
+            Timber.w(new Exception("ZRTP Error: " + subCode.toString()));
+        }
     }
 
     /**
@@ -982,7 +1014,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     }
 
     /**
-     * @param info
+     * @param info information to the user about the result of an enrollment.
      * @see gnu.java.zrtp.ZrtpCallback#zrtpInformEnrollment(gnu.java.zrtp.ZrtpCodes.InfoEnrollment)
      */
     public void zrtpInformEnrollment(ZrtpCodes.InfoEnrollment info)
@@ -992,7 +1024,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     }
 
     /**
-     * @param sasHash
+     * @param sasHash Hash value of Short Authentication String.
      * @see gnu.java.zrtp.ZrtpCallback#signSAS(byte[])
      */
     public void signSAS(byte[] sasHash)
@@ -1002,7 +1034,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     }
 
     /**
-     * @param sasHash
+     * @param sasHash Hash value of Short Authentication String.
      * @return false if signature check fails, true otherwise
      * @see gnu.java.zrtp.ZrtpCallback#checkSASSignature(byte[])
      */
@@ -1215,8 +1247,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Check the state of the MitM mode flag.
      *
-     * If true then this ZRTP session acts as MitM, usually enabled by a PBX based client (user
-     * agent)
+     * If true then this ZRTP session acts as MitM, usually enabled by a PBX based client (useragent)
      *
      * @return state of mitmMode
      */
@@ -1228,8 +1259,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * Set the state of the MitM mode flag.
      *
-     * If MitM mode is set to true this ZRTP session acts as MitM, usually enabled by a PBX based
-     * client (user agent).
+     * If MitM mode is set to true this ZRTP session acts as MitM, usually enabled by a PBX based client (user agent).
      *
      * @param mitmMode defines the new state of the mitmMode flag
      */
@@ -1410,17 +1440,21 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * Set ZRTP version received from the signaling layer.
+     *
      * @param version received version
      */
-    public void setReceivedSignaledZRTPVersion(final String version) {
+    public void setReceivedSignaledZRTPVersion(final String version)
+    {
         this.receivedSignaledZRTPVersion = version;
     }
 
     /**
      * Set ZRTP hash value received from the signaling layer.
+     *
      * @param value hash value
      */
-    public void setReceivedSignaledZRTPHashValue(final String value) {
+    public void setReceivedSignaledZRTPHashValue(final String value)
+    {
         this.receivedSignaledZRTPHashValue = value;
     }
 }

@@ -3,9 +3,9 @@ package org.atalk.android.gui.call;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.UtilActivator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.util.StringUtils;
 
 import java.util.Iterator;
 
@@ -37,13 +37,13 @@ public class CallUIUtils
             // More peers.
             if (peersIter.hasNext()) {
                 String peerAddress = getPeerDisplayAddress(peer);
-                if (!StringUtils.isNullOrEmpty(peerAddress))
+                if (StringUtils.isNotEmpty(peerAddress))
                     textAddress = textAddress + peerAddress + ", ";
             }
             // Only one peer.
             else {
                 String peerAddress = getPeerDisplayAddress(peer);
-                if (!StringUtils.isNullOrEmpty(peerAddress))
+                if (StringUtils.isNotEmpty(peerAddress))
                     textAddress = peerAddress;
             }
         }
@@ -104,7 +104,7 @@ public class CallUIUtils
     private static String getPeerDisplayName(CallPeer peer)
     {
         String displayName = peer.getDisplayName();
-        return StringUtils.isNullOrEmpty(displayName, true) ? peer.getAddress() : displayName;
+        return StringUtils.isBlank(displayName) ? peer.getAddress() : displayName;
     }
 
     /**
@@ -116,7 +116,7 @@ public class CallUIUtils
     private static String getPeerDisplayAddress(CallPeer peer)
     {
         String peerAddress = peer.getAddress();
-        if (StringUtils.isNullOrEmpty(peerAddress, true))
+        if (StringUtils.isBlank(peerAddress))
             return null;
         else {
             return peerAddress.equalsIgnoreCase(peer.getDisplayName()) ? null : peerAddress;

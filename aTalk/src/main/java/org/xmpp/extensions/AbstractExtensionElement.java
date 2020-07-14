@@ -5,9 +5,9 @@
  */
 package org.xmpp.extensions;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +38,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
     @SuppressWarnings("unchecked")
     public static <T extends AbstractExtensionElement> T clone(T src)
     {
-        T dst = null;
+        T dst;
         try {
             dst = (T) src.getClass().getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -148,7 +148,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
         XmlStringBuilder childBuilder = getChildElementBuilder();
 
         if (childElements.isEmpty() && childBuilder.length() == 0) {
-            if (StringUtils.isNullOrEmpty(text)) {
+            if (StringUtils.isEmpty(text)) {
                 return xml.closeEmptyElement();
             }
             else
@@ -157,7 +157,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
         else {
             synchronized (childElements) {
                 if (childElements.isEmpty() && (childBuilder.length() == 0)
-                        && (StringUtils.isNullOrEmpty(text))) {
+                        && (StringUtils.isEmpty(text))) {
                     return xml.closeEmptyElement();
                 }
                 else {

@@ -51,9 +51,35 @@ public class ColibriStatsExtension extends AbstractExtensionElement
     public static final String CONFERENCES = "conferences";
 
     /**
+     * The number of conferences with Octo enabled.
+     */
+    public static final String OCTO_CONFERENCES = "octo_conferences";
+
+    /**
+     * The number of inactive conferences (with no endpoints sending audio or
+     * video).
+     */
+    public static final String INACTIVE_CONFERENCES = "inactive_conferences";
+
+    /**
+     * The number of conferences that have two endpoints connected peer-to-peer.
+     */
+    public static final String P2P_CONFERENCES = "p2p_conferences";
+
+    /**
      * The name of the conference sizes statistic.
      */
     public static final String CONFERENCE_SIZES = "conference_sizes";
+
+    /**
+     * The number of conferences by the number of audio senders.
+     */
+    public static final String CONFERENCES_BY_AUDIO_SENDERS = "conferences_by_audio_senders";
+
+    /**
+     * The number of conferences by the number of video senders.
+     */
+    public static final String CONFERENCES_BY_VIDEO_SENDERS = "conferences_by_video_senders";
 
     /**
      * The name of the CPU usage statistic.
@@ -86,9 +112,19 @@ public class ColibriStatsExtension extends AbstractExtensionElement
     public static final String OCTO_RECEIVE_BITRATE = "octo_receive_bitrate";
 
     /**
+     * The Octo receive packet rate in packets per second.
+     */
+    public static final String OCTO_RECEIVE_PACKET_RATE = "octo_receive_packet_rate";
+
+    /**
      * The name of the stat for the Octo send bitrate in Kbps.
      */
     public static final String OCTO_SEND_BITRATE = "octo_send_bitrate";
+
+    /**
+     * The Octo sen packet rate in packets per second.
+     */
+    public static final String OCTO_SEND_PACKET_RATE = "octo_send_packet_rate";
 
     /**
      * The name of the packet rate statistic for download.
@@ -104,6 +140,32 @@ public class ColibriStatsExtension extends AbstractExtensionElement
      * The name of the stat used to indicate the number of participants.
      */
     public static final String PARTICIPANTS = "participants";
+
+    /**
+     * The number of endpoints in inactive conferences.
+     */
+    public static final String INACTIVE_ENDPOINTS = "inactive_endpoints";
+
+    /**
+     * The number of endpoints endpoints that have no audio or video, but
+     * are not inactive.
+     */
+    public static final String RECEIVE_ONLY_ENDPOINTS = "receive_only_endpoints";
+
+    /**
+     * The number of endpoints currently sending audio.
+     */
+    public static final String ENDPOINTS_SENDING_AUDIO = "endpoints_sending_audio";
+
+    /**
+     * The number of endpoints currently sending video.
+     */
+    public static final String ENDPOINTS_SENDING_VIDEO = "endpoints_sending_video";
+
+    /**
+     * The number of remote Octo endpoints.
+     */
+    public static final String OCTO_ENDPOINTS = "octo_endpoints";
 
     /**
      * The name of the "region" statistic.
@@ -317,6 +379,11 @@ public class ColibriStatsExtension extends AbstractExtensionElement
      * The name of the number of video streams statistic. Its runtime type is {@code Integer}.
      */
     public static final String VIDEO_STREAMS = "videostreams";
+
+    /**
+     * The cumulative number of times the dominant speaker changed.
+     */
+    public static final String TOTAL_DOMINANT_SPEAKER_CHANGES = "total_dominant_speaker_changes";
 
     /**
      * Tries to parse an object as an integer, returns null on failure.

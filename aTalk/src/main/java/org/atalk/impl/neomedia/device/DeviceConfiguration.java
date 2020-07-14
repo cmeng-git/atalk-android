@@ -11,7 +11,7 @@ import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.util.OSUtils;

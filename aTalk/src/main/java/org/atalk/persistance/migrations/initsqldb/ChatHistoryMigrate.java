@@ -25,11 +25,11 @@ import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.IMessage;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.util.StringUtils;
 import org.atalk.util.xml.XMLUtils;
 import org.json.JSONObject;
 import org.w3c.dom.*;
@@ -133,7 +133,7 @@ public class ChatHistoryMigrate extends OSGiActivity
                         accountUid = fpName.substring(0, idx).replace("_", ":");
                         accountUuid = PropertiesMigrate.accountValues.get(accountUid);
                         // Ignore obsolete or stray xml message files crated during migration
-                        if (StringUtils.isNullOrEmpty(accountUuid)) {
+                        if (StringUtils.isEmpty(accountUuid)) {
                             Timber.w("Skip processing obsolete xml message file: %s", fpName);
                             continue;
                         }
@@ -164,7 +164,7 @@ public class ChatHistoryMigrate extends OSGiActivity
                         sessionUuid
                                 = PropertiesMigrate.accountValues.get(accountUuid + entityJid);
                         // create new sessionID with a string of length = 22.
-                        if (StringUtils.isNullOrEmpty(sessionUuid)) {
+                        if (StringUtils.isEmpty(sessionUuid)) {
                             sessionUuid = String.valueOf(messageFp.lastModified())
                                     + String.valueOf(Math.abs(entityJid.hashCode()));
                             // Keep the newly created session UUID for later reference
@@ -183,7 +183,7 @@ public class ChatHistoryMigrate extends OSGiActivity
                         // retrieve all the muc chatRoom information
                         if (chatType == Type_Muc) {
                             String roomID = PropertiesMigrate.accountValues.get(entityJid);
-                            if (!StringUtils.isNullOrEmpty(roomID)) {
+                            if (StringUtils.isNotEmpty(roomID)) {
                                 userNick = PropertiesMigrate.accountValues.get(roomID + "."
                                         + ChatRoom.USER_NICK_NAME);
                                 for (String key : PropertiesMigrate.accountValues.keySet()) {
@@ -196,7 +196,7 @@ public class ChatHistoryMigrate extends OSGiActivity
                                     }
                                 }
                             }
-                            if (StringUtils.isNullOrEmpty(userNick)) {
+                            if (StringUtils.isEmpty(userNick)) {
                                 userNick = userId.split("@")[0];
                             }
                         }

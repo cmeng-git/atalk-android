@@ -7,6 +7,7 @@ package org.atalk.service.neomedia;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.neomedia.event.SrtpListener;
+import org.atalk.util.MediaType;
 
 /**
  * Controls SRTP encryption in the MediaStream.

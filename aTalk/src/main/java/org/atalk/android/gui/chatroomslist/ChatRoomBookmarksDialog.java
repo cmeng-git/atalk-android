@@ -31,6 +31,7 @@ import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -38,7 +39,6 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
@@ -279,7 +279,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
 
                 if ((keySet != null) && (keySet.length > 0)) {
                     String accountId = (String) keySet[0];
-                    if (!StringUtils.isNullOrEmpty(accountId))
+                    if (StringUtils.isNotEmpty(accountId))
                         initChatRoomSpinner(accountId);
                 }
             }
