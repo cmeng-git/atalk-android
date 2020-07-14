@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.codec;
 
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
@@ -50,11 +50,14 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
                 "H264",
                 VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
                 1100);
-
         setEncodingPreference(
                 "VP8",
                 VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
-                1200);
+                0);
+        setEncodingPreference(
+                "VP9",
+                VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
+                0);
         setEncodingPreference(
                 "JPEG",
                 VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,

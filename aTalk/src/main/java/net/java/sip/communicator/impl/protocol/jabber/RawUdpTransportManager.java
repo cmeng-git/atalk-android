@@ -5,6 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import org.atalk.util.MediaType;
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
 import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;

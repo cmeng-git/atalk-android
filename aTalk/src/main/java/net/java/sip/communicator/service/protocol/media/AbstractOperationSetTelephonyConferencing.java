@@ -9,6 +9,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.atalk.util.xml.XMLException;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.w3c.dom.*;

@@ -20,8 +20,8 @@ import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.contactsource.*;
 import net.java.sip.communicator.service.protocol.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.util.StringUtils;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -225,7 +225,7 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
                 String contactDisplayName = contact.getDisplayName();
                 String queryLowerCase = queryString.toLowerCase();
 
-                if (StringUtils.isNullOrEmpty(queryString)
+                if (StringUtils.isEmpty(queryString)
                         || metaContact.getDisplayName().toLowerCase().contains(queryLowerCase)
                         || contactAddress.toLowerCase().contains(queryLowerCase)
                         || contactDisplayName.toLowerCase().contains(queryLowerCase)) {

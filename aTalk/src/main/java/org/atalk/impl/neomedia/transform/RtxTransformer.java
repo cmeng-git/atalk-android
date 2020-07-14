@@ -25,7 +25,8 @@ import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.Logger;
+import org.atalk.util.ByteArrayBuffer;
+import org.atalk.util.logging.Logger;
 
 import java.util.*;
 

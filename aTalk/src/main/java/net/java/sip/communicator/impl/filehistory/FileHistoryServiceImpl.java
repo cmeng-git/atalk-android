@@ -30,11 +30,11 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.*;
 
@@ -375,7 +375,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
 
         contentValues.clear();
         contentValues.put(ChatMessage.STATUS, status);
-        if (!StringUtils.isNullOrEmpty(fileName)) {
+        if (StringUtils.isNotEmpty(fileName)) {
             contentValues.put(ChatMessage.FILE_PATH, fileName);
         }
         contentValues.put(ChatMessage.ENC_TYPE, encType);

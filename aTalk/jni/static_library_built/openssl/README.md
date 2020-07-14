@@ -69,9 +69,9 @@ LOCAL_MODULE := jnopenssl
 LOCAL_LDLIBS := -llog -lz
 LOCAL_STATIC_LIBRARIES := crypto_static ssl_static
 LOCAL_SRC_FILES := \
- HMAC.c \
- OpenSSLWrapperLoader.c \
- SRTPCipherCTROpenSSL.c
+ Hmac.c \
+ OpenSslWrapperLoader.c \
+ SrtpCipherCtrOpenSsl.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
 

@@ -9,7 +9,7 @@ import org.atalk.android.util.javax.sound.sampled.*;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.resources.ResourceManagementService;
 
 import java.io.IOException;

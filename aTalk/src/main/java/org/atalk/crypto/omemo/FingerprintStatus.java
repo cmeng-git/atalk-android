@@ -19,7 +19,7 @@ package org.atalk.crypto.omemo;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -74,12 +74,12 @@ public class FingerprintStatus implements Comparable<FingerprintStatus>
             e.printStackTrace();
         }
         status.mFingerPrint = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.FINGERPRINT));
-        if (StringUtils.isNullOrEmpty(status.mFingerPrint ))
+        if (StringUtils.isEmpty(status.mFingerPrint ))
             return null;
 
         try {
             String trust = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.TRUST));
-            if (StringUtils.isNullOrEmpty(trust))
+            if (StringUtils.isEmpty(trust))
                 status.trust = Trust.UNDECIDED;
             else
                 status.trust = Trust.valueOf(trust);

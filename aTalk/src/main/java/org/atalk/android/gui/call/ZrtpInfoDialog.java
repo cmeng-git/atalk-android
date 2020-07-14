@@ -19,6 +19,7 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiDialogFragment;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
 

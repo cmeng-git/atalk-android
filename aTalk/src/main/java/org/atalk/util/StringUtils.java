@@ -1,5 +1,5 @@
 /*
- * Copyright @ 2015 Atlassian Pty Ltd
+ * Copyright @ 2019 - Present 8x8, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,10 @@ import java.nio.charset.Charset;
  *
  * @author Grigorii Balutsel
  * @author Emil Ivov
+ *
+ * @deprecated Use StringUtils from apache commons.
  */
+@Deprecated
 public final class StringUtils
 {
     /**
@@ -35,46 +38,10 @@ public final class StringUtils
     }
 
     /**
-     * Gets a <tt>String</tt> which represents the conversion of a specific
-     * camel-case formatted <tt>String</tt> to a more human-readable form (i.e.
-     * with spaces between the words).
-     *
-     * @param camelCase a camel-case (or Pascal-case) formatted <tt>String</tt>
-     * from which a human-readable <tt>String</tt> is to be constructed
-     * @return a <tt>String</tt> which represents the conversion of the specified
-     * camel-case formatted <tt>String</tt> to a more human-readable form
-     */
-    public static String convertCamelCaseToDisplayString(String camelCase)
-    {
-        if (camelCase == null)
-            return null;
-
-        int camelCaseLength = camelCase.length();
-        if (camelCaseLength == 0)
-            return camelCase;
-
-        int wordEndIndex = 0;
-        int wordBeginIndex = 0;
-        StringBuilder display = new StringBuilder();
-
-        for (; wordEndIndex < camelCaseLength; wordEndIndex++) {
-            char ch = camelCase.charAt(wordEndIndex);
-
-            if (Character.isUpperCase(ch) && (wordBeginIndex != wordEndIndex)) {
-                display.append(camelCase.substring(wordBeginIndex, wordEndIndex));
-                display.append(' ');
-                wordBeginIndex = wordEndIndex;
-            }
-        }
-        display.append(camelCase.substring(wordBeginIndex));
-        return display.toString();
-    }
-
-    /**
-     * Indicates whether string is <tt>null</tt> or empty.
+     * Checks whether a string is {@code null} or blank (empty or whitespace).
      *
      * @param s the string to analyze.
-     * @return <tt>true</tt> if string is <tt>null</tt> or empty.
+     * @return {@code true} if the string is {@code null} or blank.
      */
     public static boolean isNullOrEmpty(String s)
     {
@@ -90,26 +57,11 @@ public final class StringUtils
      */
     public static boolean isNullOrEmpty(String s, boolean trim)
     {
-        if ((s == null) || (s.length() == 0))
+        if (s == null)
             return true;
         if (trim)
             s = s.trim();
         return s.length() == 0;
-    }
-
-    /**
-     * Determines whether a specific <tt>String</tt> value equals another
-     * <tt>String</tt> value. If the two specified <tt>String</tt> values are
-     * equal to <tt>null</tt>, they are considered equal.
-     *
-     * @param s1 the first <tt>String</tt> value to check for value equality with the second
-     * @param s2 the second <tt>String</tt> value to check for value equality with the first
-     * @return <tt>true</tt> if the two specified <tt>Sting</tt> values are
-     * equal; otherwise, <tt>false</tt>
-     */
-    public static boolean isEquals(String s1, String s2)
-    {
-        return (s1 == null) ? (s2 == null) : s1.equals(s2);
     }
 
     /**
@@ -159,8 +111,7 @@ public final class StringUtils
      * Converts <tt>string</tt> into an UTF8 <tt>String</tt> and handles the
      * unlikely case where UTF-8 is not supported.
      *
-     * @param bytes the <tt>byte</tt> array that we'd like to convert into a
-     * <tt>String</tt>.
+     * @param bytes the <tt>byte</tt> array that we'd like to convert into a <tt>String</tt>.
      * @return the UTF-8 <tt>String</tt>.
      */
     public static String getUTF8String(byte[] bytes)
@@ -174,28 +125,10 @@ public final class StringUtils
     }
 
     /**
-     * Indicates if the given string is composed only of digits or not.
-     *
-     * @param string the string to check
-     * @return <tt>true</tt> if the given string is composed only of digits;
-     * <tt>false</tt>, otherwise
-     */
-    public static boolean isNumber(String string)
-    {
-        for (int i = 0; i < string.length(); i++) {
-            //If we find a non-digit character we return false.
-            if (!Character.isDigit(string.charAt(i)))
-                return false;
-        }
-        return true;
-    }
-
-    /**
      * Indicates whether the given string contains any letters.
      *
      * @param string the string to check for letters
-     * @return <tt>true</tt> if the given string contains letters;
-     * <tt>false</tt>, otherwise
+     * @return <tt>true</tt> if the given string contains letters; <tt>false</tt>, otherwise
      */
     public static boolean containsLetters(String string)
     {
@@ -207,26 +140,7 @@ public final class StringUtils
     }
 
     /**
-     * Removes all spaces from the given string and returns a concatenated result string.
-     *
-     * @param string the string to concatenate
-     * @return the concatenated string
-     */
-    public static String concatenateWords(String string)
-    {
-        char[] chars = string.toCharArray();
-        StringBuilder buff = new StringBuilder(chars.length);
-
-        for (char ch : chars) {
-            if (ch != ' ')
-                buff.append(ch);
-        }
-        return buff.toString();
-    }
-
-    /**
-     * Initializes a new <tt>String</tt> instance by decoding a specified array
-     * of bytes (mostly used by JNI).
+     * Initializes a new <tt>String</tt> instance by decoding a specified array of bytes (mostly used by JNI).
      *
      * @param bytes the bytes to be decoded into characters/a new
      * <tt>String</tt> instance

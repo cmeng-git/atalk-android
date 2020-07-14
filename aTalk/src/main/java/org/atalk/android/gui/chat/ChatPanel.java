@@ -21,6 +21,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -28,7 +29,6 @@ import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.chat.conference.*;
 import org.atalk.android.plugin.textspeech.TTSService;
 import org.atalk.persistance.FileBackend;
-import org.atalk.util.StringUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -125,7 +125,7 @@ public class ChatPanel implements Chat, MessageListener
     private final List<ChatSessionListener> msgListeners = new ArrayList<>();
 
     /**
-     * Current chatSession TTS is allowed if true
+     * Current chatSession TTS is active if true
      */
     private boolean isChatTtsEnable = false;
 
@@ -173,7 +173,7 @@ public class ChatPanel implements Chat, MessageListener
     public void setChatSession(ChatSession chatSession)
     {
         if (mChatSession != null) {
-            // remove old listener if any
+            // remove any old listener if present.
             mCurrentChatTransport.removeInstantMessageListener(this);
             mCurrentChatTransport.removeSmsMessageListener(this);
         }
@@ -188,7 +188,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Returns the protocolProvider of the user associated with this chat panel.
      *
-     * @return the protocolProvider associated with this chat panel
+     * @return the protocolProvider associated with this chat panel.
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -198,7 +198,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Returns the chat session associated with this chat panel.
      *
-     * @return the chat session associated with this chat panel
+     * @return the chat session associated with this chat panel.
      */
     public ChatSession getChatSession()
     {
@@ -218,7 +218,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Stores current chatType.
      *
-     * @param chatType selected chatType e.g. MSGTYPE_NORMAL
+     * @param chatType selected chatType e.g. MSGTYPE_NORMAL.
      **/
     public void setChatType(int chatType)
     {
@@ -234,7 +234,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Check if current chat is set to OMEMO crypto mode
      *
-     * @return return <tt>true</tt> if OMEMO crypto chat is selected
+     * @return return <tt>true</tt> if OMEMO crypto chat is selected.
      */
     public boolean isOmemoChat()
     {
@@ -639,7 +639,7 @@ public class ChatPanel implements Chat, MessageListener
      * @param displayName the display name of the contact
      * @param date the time at which the message is sent or received
      * @param chatMsgType the type of the message. See ChatMessage
-     * @param message the IMessage
+     * @param message the IMessage.
      */
     public void addMessage(String contactName, String displayName, Date date, int chatMsgType,
             IMessage message, String correctedMessageUID)
@@ -650,7 +650,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Adds a chat message to this <tt>Chat</tt> panel.
      *
-     * @param chatMessage the ChatMessage
+     * @param chatMessage the ChatMessage.
      */
     public void addMessage(ChatMessageImpl chatMessage)
     {
@@ -1010,7 +1010,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void updateChatContactStatus(final ChatContact<?> chatContact, final String statusMessage)
     {
-        if (!StringUtils.isNullOrEmpty(statusMessage)) {
+        if (StringUtils.isNotEmpty(statusMessage)) {
             String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
             addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN, statusMessage);
         }

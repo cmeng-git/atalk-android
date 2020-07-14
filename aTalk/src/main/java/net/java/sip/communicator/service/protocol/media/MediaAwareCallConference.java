@@ -11,6 +11,7 @@ import net.java.sip.communicator.service.protocol.CallConference;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
@@ -67,6 +68,11 @@ public class MediaAwareCallConference extends CallConference
             MediaAwareCallConference.this.propertyChange(ev);
         }
     };
+
+    /**
+     * Sync around creating/removing audio and video translator.
+     */
+    private final Object translatorSyncRoot = new Object();
 
     /**
      * The <tt>RTPTranslator</tt> which forwards video RTP and RTCP traffic between the
@@ -211,14 +217,16 @@ public class MediaAwareCallConference extends CallConference
     {
         super.callRemoved(call);
         if (getCallCount() == 0) {
-            if (videoRTPTranslator != null) {
-                videoRTPTranslator.dispose();
-                videoRTPTranslator = null;
-            }
+            synchronized (translatorSyncRoot) {
+                if (videoRTPTranslator != null) {
+                    videoRTPTranslator.dispose();
+                    videoRTPTranslator = null;
+                }
 
-            if (audioRTPTranslator != null) {
-                audioRTPTranslator.dispose();
-                audioRTPTranslator = null;
+                if (audioRTPTranslator != null) {
+                    audioRTPTranslator.dispose();
+                    audioRTPTranslator = null;
+                }
             }
         }
     }
@@ -322,17 +330,21 @@ public class MediaAwareCallConference extends CallConference
         // cmeng - enable it even for Android - need it for jitsi-videBridge ???
         // if (MediaType.VIDEO.equals(mediaType) && (isConferenceFocus())) {
         if (MediaType.VIDEO.equals(mediaType) && (!OSUtils.IS_ANDROID || isConferenceFocus())) {
-            if (videoRTPTranslator == null) {
-                videoRTPTranslator = ProtocolMediaActivator.getMediaService().createRTPTranslator();
+            synchronized (translatorSyncRoot) {
+                if (videoRTPTranslator == null) {
+                    videoRTPTranslator = ProtocolMediaActivator.getMediaService().createRTPTranslator();
+                }
+                return videoRTPTranslator;
             }
-            return videoRTPTranslator;
         }
 
         if (this.translator) {
-            if (audioRTPTranslator == null) {
-                audioRTPTranslator = ProtocolMediaActivator.getMediaService().createRTPTranslator();
+            synchronized (translatorSyncRoot) {
+                if (audioRTPTranslator == null) {
+                    audioRTPTranslator = ProtocolMediaActivator.getMediaService().createRTPTranslator();
+                }
+                return audioRTPTranslator;
             }
-            return audioRTPTranslator;
         }
         return null;
     }

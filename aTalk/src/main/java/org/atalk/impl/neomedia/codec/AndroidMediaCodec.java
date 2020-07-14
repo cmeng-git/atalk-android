@@ -28,7 +28,6 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class AndroidMediaCodec extends AbstractCodec2
 {
     /**
@@ -62,8 +61,7 @@ public class AndroidMediaCodec extends AbstractCodec2
     private static final int[] PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of media data supported as input by <tt>AndroidMediaCodec</tt>
-     * instances.
+     * The list of <tt>Format</tt>s of media data supported as input by <tt>AndroidMediaCodec</tt> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
@@ -77,6 +75,11 @@ public class AndroidMediaCodec extends AbstractCodec2
      */
     private static final String VP8_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp8";
 
+    /**
+     * The mime type of VP8-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     */
+    private static final String VP9_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp9";
+
     static {
         /*
          * AndroidMediaCodec is an FMJ Codec and, consequently, defines the various formats of media
@@ -84,9 +87,11 @@ public class AndroidMediaCodec extends AbstractCodec2
          * to translate between the two domains of terms.
          */
         FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES = new String[]{
-                Constants.H264, H264_MEDIA_CODEC_TYPE, Constants.VP8, VP8_MEDIA_CODEC_TYPE};
-        PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS = new int[]{FFmpeg.PIX_FMT_NV12,
-                MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar};
+                Constants.H264, H264_MEDIA_CODEC_TYPE,
+                Constants.VP9, VP9_MEDIA_CODEC_TYPE,
+                Constants.VP8, VP8_MEDIA_CODEC_TYPE};
+        PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS = new int[]{
+                FFmpeg.PIX_FMT_NV12, MediaCodecInfo.CodecCapabilities.COLOR_TI_FormatYUV420PackedSemiPlanar};
 
         /*
          * The Formats supported by AndroidMediaCodec as input and output are the mime types and
@@ -101,15 +106,10 @@ public class AndroidMediaCodec extends AbstractCodec2
         List<Format> supportedInputFormats = new ArrayList<>();
         List<Format> supportedOutputFormats = new ArrayList<>();
 
-        for (int codecIndex = 0, codecCount = MediaCodecList.getCodecCount();
-             codecIndex < codecCount; codecIndex++) {
-            MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(codecIndex);
-            // MediaCodecInfo[] mCodecInfos = new
-            // MediaCodecList(MediaCodecList.REGULAR_CODECS).getCodecInfos();
-            // for (MediaCodecInfo codecInfo: mCodecInfos) {
+        MediaCodecInfo[] mCodecInfos = new MediaCodecList(MediaCodecList.REGULAR_CODECS).getCodecInfos();
+        for (MediaCodecInfo codecInfo : mCodecInfos) {
 
             String[] supportedTypes = codecInfo.getSupportedTypes();
-
             for (String supportedType : supportedTypes) {
                 /*
                  * Represent Android's MediaCodec mime type in the terms of FMJ (i.e. as an FMJ
@@ -126,8 +126,7 @@ public class AndroidMediaCodec extends AbstractCodec2
                  * other half of the information related to the supported Formats. Of course, that
                  * means that we will not utilize Android's MediaCodec for audio just yet.
                  */
-                MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(codecInfo,
-                        supportedType);
+                MediaCodecInfo.CodecCapabilities capabilities = getCapabilitiesForType(codecInfo, supportedType);
 
                 if (capabilities == null)
                     continue;

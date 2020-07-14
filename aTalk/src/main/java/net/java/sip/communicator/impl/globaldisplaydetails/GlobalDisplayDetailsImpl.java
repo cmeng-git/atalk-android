@@ -13,9 +13,9 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
 
@@ -108,7 +108,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
 //                    = pps.getOperationSet(OperationSetServerStoredAccountInfo.class);
 //            if (accountInfoOpSet != null) {
 //                String displayName = AccountInfoUtils.getDisplayName(accountInfoOpSet);
-//                if (!StringUtils.isNullOrEmpty(displayName)) {
+//                if (StringUtils.isNotEmpty(displayName)) {
 //                    return displayName;
 //                }
 //            }
@@ -245,7 +245,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      */
     public void serverStoredDetailsChanged(ServerStoredDetailsChangeEvent evt)
     {
-        if (!StringUtils.isNullOrEmpty(provisionedDisplayName))
+        if(StringUtils.isNotEmpty(provisionedDisplayName))
             return;
 
         if (((evt.getEventID() == ServerStoredDetailsChangeEvent.DETAIL_ADDED)
@@ -318,13 +318,13 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
             }
 
             if (!isUpdate || (!TextUtils.isEmpty(provisionedDisplayName)
-                    && !StringUtils.isNullOrEmpty(globalDisplayName)))
+                    && StringUtils.isNotEmpty(globalDisplayName)))
                 return;
 
             if (currentFirstName == null) {
                 String firstName = AccountInfoUtils.getFirstName(accountInfoOpSet);
 
-                if (!StringUtils.isNullOrEmpty(firstName)) {
+                if (StringUtils.isNotEmpty(firstName)) {
                     currentFirstName = firstName;
                 }
             }
@@ -332,7 +332,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
             if (currentLastName == null) {
                 String lastName = AccountInfoUtils.getLastName(accountInfoOpSet);
 
-                if (!StringUtils.isNullOrEmpty(lastName)) {
+                if (StringUtils.isNotEmpty(lastName)) {
                     currentLastName = lastName;
                 }
             }
@@ -353,16 +353,16 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         protected void setGlobalDisplayName()
         {
             String accountName = null;
-            if (!StringUtils.isNullOrEmpty(currentFirstName)) {
+            if (StringUtils.isNotEmpty(currentFirstName)) {
                 accountName = currentFirstName;
             }
 
-            if (!StringUtils.isNullOrEmpty(currentLastName)) {
+            if (StringUtils.isNotEmpty(currentLastName)) {
                 /*
                  * If accountName is null, don't use += because it will make the accountName start
                  * with the string "null".
                  */
-                if (StringUtils.isNullOrEmpty(accountName))
+                if (StringUtils.isEmpty(accountName))
                     accountName = currentLastName;
                 else
                     accountName += " " + currentLastName;
@@ -374,7 +374,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
             }
 
             globalDisplayName = accountName;
-            if (!StringUtils.isNullOrEmpty(globalDisplayName)) {
+            if (StringUtils.isNotEmpty(globalDisplayName)) {
                 fireGlobalDisplayNameEvent(globalDisplayName);
             }
         }

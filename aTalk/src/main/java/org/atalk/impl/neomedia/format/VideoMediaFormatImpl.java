@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.format;
 
 import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.format.*;
 
 import java.util.Map;
@@ -28,8 +28,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     public static final double DEFAULT_CLOCK_RATE = 90000;
 
     /**
-     * The name of the format parameter which specifies the packetization mode of H.264 RTP
-     * payload.
+     * The name of the format parameter which specifies the packetization mode of H.264 RTP payload.
      */
     public static final String H264_PACKETIZATION_MODE_FMTP = "packetization-mode";
 
@@ -178,8 +177,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
      * @param encoding the encoding (name) related to the two sets of format parameters to be tested for equality
      * @param fmtps1 the first set of format parameters to be tested for equality
      * @param fmtps2 the second set of format parameters to be tested for equality
-     * @return <tt>true</tt> if the specified sets of format parameters are equal; <tt>false</tt>,
-     * otherwise
+     * @return <tt>true</tt> if the specified sets of format parameters are equal; <tt>false</tt>, otherwise
      */
     public static boolean formatParametersAreEqual(String encoding, Map<String, String> fmtps1,
             Map<String, String> fmtps2)
@@ -217,8 +215,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
      * parameter distinguishes H.264 payload types.
      * </p>
      *
-     * @param fmtps the set of format parameters to match to the format parameters of this
-     * <tt>MediaFormat</tt>
+     * @param fmtps the set of format parameters to match to the format parameters of this <tt>MediaFormat</tt>
      * @return <tt>true</tt> if this <tt>MediaFormat</tt> considers <tt>fmtps</tt> matching its
      * format parameters; otherwise, <tt>false</tt>
      */
@@ -238,8 +235,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
      * @return <tt>true</tt> if the two sets of format parameters match in the context of the
      * specified <tt>encoding</tt>; otherwise, <tt>false</tt>
      */
-    public static boolean formatParametersMatch(String encoding, Map<String, String> fmtps1,
-            Map<String, String> fmtps2)
+    public static boolean formatParametersMatch(String encoding, Map<String, String> fmtps1, Map<String, String> fmtps2)
     {
         /*
          * RFC 3984 "RTP Payload Format for H.264 Video" says that "When the value of
@@ -300,8 +296,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     /**
      * Gets the size of the image that this <tt>VideoMediaFormat</tt> describes.
      *
-     * @return a {@link Dimension} instance indicating the image size (in pixels) of this
-     * <tt>VideoMediaFormat</tt>
+     * @return a {@link Dimension} instance indicating the image size (in pixels) of this <tt>VideoMediaFormat</tt>
      * @see VideoMediaFormat#getSize()
      */
     public Dimension getSize()
@@ -310,8 +305,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Overrides <tt>MediaFormatImpl#hashCode()</tt> because <tt>Object#equals(Object)</tt> is
-     * overridden.
+     * Overrides <tt>MediaFormatImpl#hashCode()</tt> because <tt>Object#equals(Object)</tt> is overridden.
      *
      * @return a hash code value for this <tt>VideoMediaFormatImpl</tt>
      * @see MediaFormatImpl#hashCode()

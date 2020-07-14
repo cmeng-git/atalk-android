@@ -12,7 +12,6 @@ import javax.media.rtp.*;
 import org.atalk.impl.neomedia.RTPConnectorTCPImpl;
 import org.atalk.impl.neomedia.RTPConnectorTCPInputStream;
 import org.atalk.service.neomedia.StreamConnector;
-import org.atalk.util.Logger;
 
 import timber.log.Timber;
 

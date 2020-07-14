@@ -33,14 +33,12 @@ public class HFlip extends AbstractCodec2
     private static final Format[] SUPPORTED_FORMATS = new Format[]{new AVFrameFormat()};
 
     /**
-     * The name of the FFmpeg ffsink video source <tt>AVFilter</tt> used by
-     * <tt>HFlip</tt>.
+     * The name of the FFmpeg ffsink video source <tt>AVFilter</tt> used by <tt>HFlip</tt>.
      */
     private static final String VSINK_FFSINK_NAME = "buffersink";
 
     /**
-     * The name of the FFmpeg buffer video source <tt>AVFilter</tt> used by
-     * <tt>HFlip</tt>.
+     * The name of the FFmpeg buffer video source <tt>AVFilter</tt> used by <tt>HFlip</tt>.
      */
     private static final String VSRC_BUFFER_NAME = "buffer";
 
@@ -223,7 +221,7 @@ public class HFlip extends AbstractCodec2
                 String filters
                         = VSRC_BUFFER_NAME + "=" + size.width + ":" + size.height
                         + ":" + pixFmt + ":1:1000000:1:1,"
-                        + "hflip,"
+                        + "scale,hflip,scale,"
                         + "format=pix_fmts=" + pixFmt + ","
                         + VSINK_FFSINK_NAME;
                 long log_ctx = 0;
@@ -242,7 +240,7 @@ public class HFlip extends AbstractCodec2
                         errorReason = "avfilter_graph_get_filter: " + VSRC_BUFFER_NAME + "/" + parsedFilterName;
                     }
                     else {
-                        parsedFilterName = String.format(parsedFilterNameFormat, 3, VSINK_FFSINK_NAME);
+                        parsedFilterName = String.format(parsedFilterNameFormat, 5, VSINK_FFSINK_NAME);
                         ffsink = FFmpeg.avfilter_graph_get_filter(graph, parsedFilterName);
                         if (ffsink == 0) {
                             errorReason = "avfilter_graph_get_filter: " + VSINK_FFSINK_NAME + "/" + parsedFilterName;

@@ -23,7 +23,7 @@ import org.atalk.impl.neomedia.codec.video.AndroidEncoder;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 
 import java.util.ArrayList;

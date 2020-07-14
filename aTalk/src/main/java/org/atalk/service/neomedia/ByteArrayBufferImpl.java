@@ -15,7 +15,9 @@
  */
 package org.atalk.service.neomedia;
 
-import org.atalk.android.util.ApiLib;
+import org.atalk.util.ByteArrayBuffer;
+
+import java.util.Objects;
 
 /**
  * Implements {@link ByteArrayBuffer}.
@@ -48,7 +50,7 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
      */
     public ByteArrayBufferImpl(byte[] buffer, int offset, int length)
     {
-        this.buffer = ApiLib.requireNonNull(buffer, "buffer");
+        this.buffer = Objects.requireNonNull(buffer, "buffer");
         if (offset + length > buffer.length || length < 0 || offset < 0) {
             throw new IllegalArgumentException("length or offset");
         }

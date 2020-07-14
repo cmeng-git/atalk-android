@@ -149,6 +149,9 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
      */
     public void setPeerImage(Jid callee)
     {
+        if (callee == null)
+            return;
+
         byte[] avatar = AvatarManager.getAvatarImageByJid(callee.asBareJid());
         if ((avatar != null) && (avatar.length != 0)) {
             peerAvatar.setImageBitmap(AndroidImageUtil.bitmapFromBytes(avatar));

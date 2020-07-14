@@ -26,8 +26,8 @@ import net.java.sip.communicator.service.contactlist.event.*;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactGroup;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.persistance.DatabaseBackend;
-import org.atalk.util.StringUtils;
 import org.json.*;
 import org.osgi.framework.BundleContext;
 
@@ -268,7 +268,7 @@ public class MclStorageManager implements MetaContactListListener
 
             // add persistent data
             String persistentData = protoGroup.getPersistentData();
-            if (StringUtils.isNullOrEmpty(persistentData))
+            if (StringUtils.isEmpty(persistentData))
                 persistentData = "";
             mcgContent.put(MetaContactGroup.PERSISTENT_DATA, persistentData);
 
@@ -565,7 +565,7 @@ public class MclStorageManager implements MetaContactListListener
         }
         String oldDisplayName = evt.getOldDisplayName();
         String newDisplayName = evt.getNewDisplayName();
-        if (!StringUtils.isNullOrEmpty(newDisplayName) && !newDisplayName.equals(oldDisplayName)) {
+        if (StringUtils.isNotEmpty(newDisplayName) && !newDisplayName.equals(oldDisplayName)) {
             mcValues.clear();
             mcValues.put(MetaContactGroup.MC_DISPLAY_NAME, newDisplayName);
             boolean isUserDefined = metaContactImpl.isDisplayNameUserDefined();
@@ -828,7 +828,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // update the svrDisplayName for the specific contact
         String svrDisplayName = contact.getDisplayName();
-        if (!StringUtils.isNullOrEmpty(svrDisplayName)) {
+        if (StringUtils.isNotEmpty(svrDisplayName)) {
             String[] args = {"Jabber", contact.getAddress()};
             mcValues.clear();
             mcValues.put(Contact.SVR_DISPLAY_NAME, svrDisplayName);
@@ -860,7 +860,7 @@ public class MclStorageManager implements MetaContactListListener
         mcValues.clear();
         Contact contact = evt.getProtoContact();
         String persistentData = contact.getPersistentData();
-        if (!StringUtils.isNullOrEmpty(persistentData)) {
+        if (StringUtils.isNotEmpty(persistentData)) {
             String contactAddress = contact.getAddress();
             String[] args = {metaContactUid, contactAddress};
 
@@ -968,7 +968,7 @@ public class MclStorageManager implements MetaContactListListener
         Cursor cursor;
         String[] args = {contactJid};
 
-        if (StringUtils.isNullOrEmpty(mcUid)) {
+        if (StringUtils.isEmpty(mcUid)) {
             cursor = mDB.query(TBL_CHILD_CONTACTS, null,
                     MetaContactGroup.CONTACT_JID + "=?", args, null, null, null);
         }

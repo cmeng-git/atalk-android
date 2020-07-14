@@ -25,7 +25,6 @@ import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.BandwidthEstimator;
-import org.atalk.util.Logger;
 import org.atalk.util.OSUtils;
 import org.atalk.util.concurrent.RecurringRunnableExecutor;
 import org.atalk.util.event.*;

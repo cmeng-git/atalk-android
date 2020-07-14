@@ -9,7 +9,7 @@ import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.impl.neomedia.quicktime.*;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 
 import javax.media.*;
 import javax.media.format.RGBFormat;

@@ -33,15 +33,14 @@ public abstract class AbstractCodec2 extends AbstractCodec
     public static final int BUFFER_FLAG_PLC = (1 << 25);
 
     /**
-     * An empty array of <tt>Format</tt> element type. Explicitly defined to reduce unnecessary
-     * allocations.
+     * An empty array of <tt>Format</tt> element type. Explicitly defined to reduce unnecessary allocations.
      */
     public static final Format[] EMPTY_FORMATS = new Format[0];
 
     /**
      * The maximum number of lost sequence numbers to conceal with packet loss mitigation
      * techniques such as Forward Error Correction (FEC) and Packet Loss Concealment (PLC)
-     * when dealing with audio.
+     * when dealing with audio stream.
      */
     public static final int MAX_AUDIO_SEQUENCE_NUMBERS_TO_PLC = 3;
 
@@ -75,9 +74,8 @@ public abstract class AbstractCodec2 extends AbstractCodec
         int delta = (int) (seqNo - lastSeqNo);
 
         /*
-         * We explicitly allow the same sequence number to be received multiple times for the
-         * purposes of Codec implementations which repeatedly process one and the same input Buffer
-         * multiple times.
+         * We explicitly allow the same sequence number to be received multiple times for the purposes of
+         * Codec implementations which repeatedly process the one and the same input Buffer multiple times.
          */
         if (delta == 0)
             return 0;
@@ -93,7 +91,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
      *
      * @param seqNo the sequence number to increment
      * @return a sequence number which represents an increment over the specified <tt>seqNo</tt>
-     * within the range of valid RTP sequence number values
+     * within the range of valid RTP sequence number values.
      */
     public static long incrementSeqNo(long seqNo)
     {
@@ -258,8 +256,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
         this.supportedOutputFormats = supportedOutputFormats;
 
         /*
-         * An Effect is a Codec that does not modify the Format of the data, it modifies the
-         * contents.
+         * An Effect is a Codec that does not modify the Format of the data, it modifies the contents.
          */
         if (this instanceof Effect)
             inputFormats = this.supportedOutputFormats;
@@ -309,8 +306,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
     protected Format[] getMatchingOutputFormats(Format inputFormat)
     {
         /*
-         * An Effect is a Codec that does not modify the Format of the data, it modifies the
-         * contents.
+         * An Effect is a Codec that does not modify the Format of the data, it modifies the contents.
          */
         if (this instanceof Effect)
             return new Format[]{inputFormat};

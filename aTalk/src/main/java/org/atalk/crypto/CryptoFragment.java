@@ -923,7 +923,7 @@ public class CryptoFragment extends OSGiFragment
         }
         mOmemoManager = OmemoManager.getInstanceFor(mConnection);
 
-        // Execute in new thread to avoid ANR with black screen when chat window is opened
+        // Execute in a new thread to avoid ANR with black screen when chat window is opened.
         new Thread()
         {
             @Override

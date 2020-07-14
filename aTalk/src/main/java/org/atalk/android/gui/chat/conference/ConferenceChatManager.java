@@ -20,6 +20,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -28,7 +29,6 @@ import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.util.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.*;
 
@@ -422,7 +422,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals(eventType)) {
             if (chatRoomWrapper != null) {
-                if (StringUtils.isNullOrEmpty(evt.getReason())) {
+                if (StringUtils.isEmpty(evt.getReason())) {
                     AndroidGUIActivator.getUIService().closeChatRoomWindow(chatRoomWrapper);
                 }
                 else {
@@ -434,7 +434,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                                 IMessage.ENCODE_PLAIN, evt.getReason());
 
                         // print and the alternate address
-                        if (!StringUtils.isNullOrEmpty(evt.getAlternateAddress())) {
+                        if (StringUtils.isNotEmpty(evt.getAlternateAddress())) {
                             chatPanel.addMessage(sourceChatRoom.getName(), new Date(),
                                     ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                                     aTalkApp.getResString(R.string.service_gui_CHATROOM_ALTERNATE_ADDRESS,

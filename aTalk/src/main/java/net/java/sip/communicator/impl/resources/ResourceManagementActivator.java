@@ -15,21 +15,25 @@
  */
 package net.java.sip.communicator.impl.resources;
 
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ServiceUtils;
+import net.java.sip.communicator.util.SimpleServiceActivator;
 
-import org.atalk.service.resources.*;
-import org.osgi.framework.*;
+import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.resources.ResourceManagementService;
+import org.osgi.framework.BundleContext;
 
 /**
  * Starts Resource Management Service.
+ *
  * @author Damian Minkov
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class ResourceManagementActivator
-    extends SimpleServiceActivator<ResourceManagementServiceImpl>
+        extends SimpleServiceActivator<ResourceManagementServiceImpl>
 {
     static BundleContext bundleContext;
+    private static ConfigurationService configService;
 
     /**
      * Creates new instance of <tt>ResourceManagementActivator</tt>
@@ -54,7 +58,8 @@ public class ResourceManagementActivator
      * @param bc the osgi bundle context
      * @throws Exception
      */
-    public void stop(BundleContext bc) throws Exception
+    public void stop(BundleContext bc)
+            throws Exception
     {
         bc.removeServiceListener(serviceImpl);
     }
@@ -66,5 +71,18 @@ public class ResourceManagementActivator
     protected ResourceManagementServiceImpl createServiceImpl()
     {
         return new ResourceManagementServiceImpl();
+    }
+
+    /**
+     * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+     *
+     * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+     */
+    public static ConfigurationService getConfigService()
+    {
+        if (configService == null) {
+            configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
+        }
+        return configService;
     }
 }

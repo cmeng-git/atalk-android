@@ -194,6 +194,8 @@
     <string name="service_gui_CHATROOM_NOT_JOINED">Aby ste s ňou mohli robiť ďalšie operácie, musíte sa pripojiť k diskusnej miestnosti.</string>
     <string name="service_gui_CHATROOM_OPTIONS">Možnosti diskusnej miestnosti</string>
     <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Diskusná miestnosť %1$s požiadala o heslo.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Zakázať stav miestnosti</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Zakázať stav miestnosti</string>
     <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Predmet miestnosti zmenený: \'%1$s \' => \'%2$s \'</string>
     <string name="service_gui_CHAT_ROOMS">Diskusné miestnosti</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s je teraz známy ako %2$s</string>
@@ -241,6 +243,7 @@
     <string name="About_help">Pomoc</string>
     <string name="check_new_version">Skontrolujte aktualizáciu</string>
     <string name="show_history_log">História</string>
+    <string name="Online_help">Online pomoc</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">Žiadosť o autorizáciu HTTP</string>

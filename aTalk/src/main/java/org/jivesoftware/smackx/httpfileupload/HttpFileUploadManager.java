@@ -42,9 +42,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -128,7 +127,7 @@ public final class HttpFileUploadManager extends Manager {
     private HttpFileUploadManager(XMPPConnection connection) {
         super(connection);
 
-        connection.addConnectionListener(new AbstractConnectionListener() {
+        connection.addConnectionListener(new ConnectionListener() {
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {
                 // No need to reset the cache if the connection got resumed.
@@ -317,7 +316,9 @@ public final class HttpFileUploadManager extends Manager {
     public URL uploadFile(InputStream inputStream, String fileName, long fileSize, UploadProgressListener listener) throws XMPPErrorException, InterruptedException, SmackException, IOException {
         Objects.requireNonNull(inputStream, "Input Stream cannot be null");
         Objects.requireNonNull(fileName, "Filename Stream cannot be null");
-        Objects.requireNonNull(fileSize, "Filesize Stream cannot be null");
+        if (fileSize < 0) {
+            throw new IllegalArgumentException("File size cannot be negative");
+        }
         final Slot slot = requestSlot(fileName, fileSize, "application/octet-stream");
         upload(inputStream, fileSize, slot, listener);
         return slot.getGetUrl();
@@ -402,8 +403,7 @@ public final class HttpFileUploadManager extends Manager {
      *         supported by the service.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
-     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
-     * @throws SmackException.NoResponseException if there was no response from the remote entity.
+     * @throws SmackException if smack exception.
      */
     public Slot requestSlot(String filename, long fileSize) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException {
@@ -426,7 +426,7 @@ public final class HttpFileUploadManager extends Manager {
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
-     * @throws SmackException.NoResponseException if there was no response from the remote entity.
+     * @throws SmackException if smack exception.
      */
     public Slot requestSlot(String filename, long fileSize, String contentType) throws SmackException,
             InterruptedException, XMPPException.XMPPErrorException {
@@ -503,11 +503,6 @@ public final class HttpFileUploadManager extends Manager {
             return;
         }
         this.tlsSocketFactory = tlsContext.getSocketFactory();
-    }
-
-    public void useTlsSettingsFrom(ConnectionConfiguration connectionConfiguration) {
-        SSLContext sslContext = connectionConfiguration.getCustomSSLContext();
-        setTlsContext(sslContext);
     }
 
     private void upload(InputStream iStream, long fileSize, Slot slot, UploadProgressListener listener) throws IOException {

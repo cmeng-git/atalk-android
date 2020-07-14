@@ -25,8 +25,8 @@ import net.java.sip.communicator.impl.protocol.jabber.ContactJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.aTalkApp;
-import org.atalk.util.StringUtils;
 import org.atalk.util.xml.XMLException;
 import org.atalk.util.xml.XMLUtils;
 import org.bouncycastle.util.encoders.Base64;
@@ -295,7 +295,7 @@ public class MclStorageMigrate
             }
             mcgValues.put(MetaContactGroup.PERSISTENT_DATA, persistentData);
 
-            if (!StringUtils.isNullOrEmpty(parentProtoGroupUID)) {
+            if (StringUtils.isNotEmpty(parentProtoGroupUID)) {
                 Timber.i("Process meta Group: %s: %s", parentProtoGroupUID, protoGroupUID);
                 mcgValues.put(MetaContactGroup.PARENT_PROTO_GROUP_UID, parentProtoGroupUID);
                 mDB.insert(MetaContactGroup.TABLE_NAME, null, mcgValues);
@@ -348,7 +348,7 @@ public class MclStorageMigrate
 
                 String isDNUserDefined
                         = displayNameNode.getAttribute(USER_DEFINED_DISPLAY_NAME_ATTR_NAME);
-                if (StringUtils.isNullOrEmpty(isDNUserDefined))
+                if (StringUtils.isEmpty(isDNUserDefined))
                     isDNUserDefined = "false";
                 ccValues.put(MetaContactGroup.MC_USER_DEFINED, isDNUserDefined);
 

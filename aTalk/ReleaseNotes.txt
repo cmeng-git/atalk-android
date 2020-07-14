@@ -1,4 +1,70 @@
 Project aTalk-Android Release Notes
+=========================================================================
+Author:         cmeng
+Upload Date:	07/14/2020
+Version:		2.3.1 (1131)
+
+- Add chatRoom option to enable/disable info display for member presence status and subject change notification.
+- Error in sending two session-accept when call received via Jingle Message Initiation
+  * AndroidCallListener#onCallEvent: CALL_RECEIVED should handle both incoming call via Jingle Message Initiation or Jingle session-initiate
+  * CallJabberImpl#processSessionInitiate: Remove fireCallChangeEvent(CallChangeEvent.CALL_STATE_CHANGE, null, CallState.CALL_AUTO_ANSWER);
+  * Remove CallState.CALL_AUTO_ANSWER - not required
+- Make MetaContactGroupAdapter default to use aTalk defined i.e.
+  * itemLayout = R.layout.simple_spinner_item;
+  * dropDownLayout = R.layout.simple_spinner_dropdown_item;
+- Fix ChatRoomConfiguration incorrect setup in multiSelectionSpinner field items: i.e. setItems() and setSelection().
+  * Strange as it is still working in aTalk v2.2.5???
+  * text_private, text_single and text_multi must clear the text entry when user enter empty string, and also update the configUpdates
+- Add 'Online help' direct link access to FAQ web page
+
+Port to use smack-4.4.0-alpha5 release
+- ChatRoomJabberImpl#processOwnPresence() for room creation must include "http://jabber.org/protocol/muc#roomconfig" in form submit.
+  or mMultiUserChat.sendConfigurationForm(null) for instant Room creation.
+- Remove 'Fault Tolerance File Transfer' i.e. SOCK5 with IBB fallback support': not further supported in smack-4.4.0-alpha5<
+  * InBandBytestreamManager, InBandBytestreamSession, IBBTransferNegotiator and FaultTolerantNegotiator
+- Patch DataFormProvider class so it is backward compatible with earlier aTalk release for FileTransfer.
+  * Need to remove in future aTalk new release
+- smack Form class changes:
+  * Form list_single must pass in String only and not arrayList in smack 4.4.0-alpha5
+  * patch FillableForm to fix case error.
+  * Files affected: CaptchaDialog, ChatRoomConfiguration, and IBRCaptchaProcessDialog etc
+- Remove obsoleted disco spec:
+  * OMEMO not further advertised @see XEP-0384: OMEMO Encryption
+  * remove supportedFeatures.add(OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY);
+
+Update source per latest jitsi releases (20200630)
+- Port neomedia source
+  * zrtp4j-light-4.1.0-jitsi-1-SNAPSHOT to zrtp4j-light-4.1.1
+  * Remove bccontrib source directory and files, use bouncycastle libraries instead
+  * ch.imvs:sdes4j:1.1.4 to ch.imvs:sdes4j:1.1.5 (java.util.Base64 has problem on Note-5 - so revert the change)
+
+- Update libraries to use maven releases and sources i.e:
+  * fmj-1.0.0-jitsi
+  * jitsi-lgpl-dependencies-1.2-1-gfc49658
+  * jitsi-utils-1.0-39-gd481c98
+  * jitsi-srtp-1.0-24-g6823dfa
+- org.osgi.core-6.0.0
+- Revert removal of files: org.ice4j.util.CustomizableThreadFactory.java and ExecutorFactory.java
+- Removed unused class file: org.atalk.impl.neomedia.codec.video.Utils
+
+- Implemented VP9 codec but not working - still under investigation:
+  VPXEncoder: doProcess() -> (VPXEncoder.java:310)#doProcess: Failed to encode a frame: Invalid parameter
+  VPXDecoder: doProcess() ->
+  a. (VPXDecoder.java:177)#doProcess: Discarding a frame with decode error: Bitstream not supported by this decoder
+  b. (VPXDecoder.java:177)#doProcess: Discarding a frame with decode error: Unspecified internal error
+
+- Delete MediaPresenceExtension.class => move to use SourceExtension.class
+- Replace StringUtils with org.apache.commons.lang3.StringUtils;
+
+- Applied PR from libjitsi:
+  * Fixes plain VP9 #432 (committed but not in jitsi actual source)
+    https://github.com/jitsi/libjitsi/pull/432
+  * Fix code inspection issues #526 (+aTalk own changes)
+    https://github.com/jitsi/libjitsi/pull/526
+  * Update VP8 according to RFC 7741 #513
+    https://github.com/jitsi/libjitsi/pull/513
+  * Improved interpretation of DTMF tones in DtmfTransformEngine #433
+    https://github.com/jitsi/libjitsi/pull/433
 
 =========================================================================
 Author:         cmeng
@@ -176,7 +242,7 @@ Version:		2.2.5 (1125)
   * Consumer was introduced in API 24: classRename 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
   * Duration: added in API level 26; see https://github.com/JakeWharton/ThreeTenABP.
     classRename 'java.time.Duration', 'org.threeten.bp.Duration' for < API-26 support
-  * Remove obsoleted atalk local files: org.ice4j.util.CustomizableThreadFactory.java and ExecutorFactory.java
+  * Remove unused atalk local files: org.ice4j.util.CustomizableThreadFactory.java and ExecutorFactory.java
 
 - Port and upgrade all bouncycastle library jars from v1.62 to v1.65 and added new bctls-jdk15on:1.65.jar
   * Changes to zrtp4j-light-4.1.0: org.bouncycastle.cryptozrtp.params.ECDomainParameters: GIn.getEncoded() => GIn.getEncoded(false)
@@ -292,7 +358,7 @@ Upload Date:	03/17/2020
   see https://noembed.com
 - New features support for group chat: Erase chatRoom history and GPS location sending
 - Execute ChatActivity.getLastSeen() in new thread to avoid ANR
-- Upgrade glide library to v4.11.0 for better control of loadImage preview sizes for history and new medias
+- Upgrade glide library to v4.11.0 for better control of loadImage preview sizes for history and new media
 - Refresh Setting... immediately when user changes Language or Theme options
 
 - Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES-256 & TWOFISH-256, and enable elliptic curve crypto using Curve 25519

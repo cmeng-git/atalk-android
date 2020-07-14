@@ -19,6 +19,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -29,7 +30,6 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.*;
@@ -49,7 +49,10 @@ import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.exceptions.*;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
@@ -1167,7 +1170,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             Resourcepart nick = mMultiUserChat.getNickname();
             if (nick == null) {
                 String role = ConfigurationUtils.getChatRoomProperty(mPPS, getName(), ChatRoom.USER_ROLE);
-                mUserRole = (StringUtils.isNullOrEmpty(role)) ? null : ChatRoomMemberRole.fromString(role);
+                mUserRole = (StringUtils.isEmpty(role)) ? null : ChatRoomMemberRole.fromString(role);
             }
             else {
                 EntityFullJid participant = JidCreate.entityFullFrom(getIdentifier(), nick);
@@ -1836,7 +1839,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace, boolean matchElementName)
     {
-        if (StringUtils.isNullOrEmpty(namespace)) {
+        if (StringUtils.isEmpty(namespace)) {
             return;
         }
 
@@ -2329,12 +2332,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * Called when the room is destroyed.
          *
          * @param alternateMUC an alternate MultiUserChat, may be null.
-         * @param reason the reason why the room was closed, may be null.
+         * @param reason the reason why the room was destroyed, may be null.
          */
         @Override
         public void roomDestroyed(MultiUserChat alternateMUC, String reason)
         {
-            Timber.d("CharRoom destroyed: %s. Reason: %s", alternateMUC.getRoom(), reason);
+            Timber.d("CharRoom destroyed, alternate MUC: %s. Reason: %s", alternateMUC, reason);
         }
     }
 
@@ -2745,7 +2748,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 if ((mucUser.getStatus() != null)
                         && mucUser.getStatus().contains(MUCUser.Status.ROOM_CREATED_201)) {
                     try {
-                        mMultiUserChat.sendConfigurationForm(new Form(DataForm.Type.submit));
+                        TextSingleFormField formField
+                                = FormField.buildHiddenFormType("http://jabber.org/protocol/muc#roomconfig");
+                        DataForm dataForm = DataForm.builder(DataForm.Type.form)
+                                .addField(formField).build();
+                        mMultiUserChat.sendConfigurationForm(new FillableForm(dataForm));
+
+                        // Sending null also picked up the options OperationSetMultiUserChatJabberImpl#createChatRoom and sent
+                        // mMultiUserChat.sendConfigurationForm(null);
                     } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
                         Timber.e(e, "Failed to send config form.");
                     }

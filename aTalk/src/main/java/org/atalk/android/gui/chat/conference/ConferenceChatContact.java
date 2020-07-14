@@ -15,10 +15,10 @@ package org.atalk.android.gui.chat.conference;
 import net.java.sip.communicator.service.protocol.ChatRoomMember;
 import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatContact;
-import org.atalk.util.StringUtils;
 
 /**
  * The <tt>ConferenceChatContact</tt> represents a <tt>ChatContact</tt> in a conference chat.
@@ -57,7 +57,7 @@ public class ConferenceChatContact extends ChatContact<ChatRoomMember>
     public String getName()
     {
         String name = descriptor.getNickName();
-        if (StringUtils.isNullOrEmpty(name))
+        if (StringUtils.isEmpty(name))
             name = aTalkApp.getResString(R.string.service_gui_UNKNOWN_USER);
 
         return name;

@@ -47,6 +47,9 @@
         android:id="@+id/chatroom_config"
         android:title="@string/service_gui_CHATROOM_CONFIGURATION" />
     <item
+        android:id="@+id/room_status_enable"
+        android:title="@string/service_gui_CHATROOM_STATUS_OFF" />
+    <item
         android:id="@+id/show_chatroom_occupant"
         android:title="@string/service_gui_CHATROOM_OCCUPANT" />
     <item

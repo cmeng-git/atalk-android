@@ -13,6 +13,7 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
 import org.atalk.util.ConfigUtils;
+import org.atalk.util.MediaType;
 import org.bouncycastle.tls.*;
 import org.bouncycastle.tls.crypto.TlsSecret;
 
@@ -490,35 +491,35 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
              * RFC 5764 4.1.2.
              */
             case SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80:
-                cipher = SRTPPolicy.AESCM_ENCRYPTION;
+                cipher = SrtpPolicy.AESCM_ENCRYPTION;
                 cipher_key_length = 128 / 8;
                 cipher_salt_length = 112 / 8;
-                auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
+                auth_function = SrtpPolicy.HMACSHA1_AUTHENTICATION;
                 auth_key_length = 160 / 8;
                 RTP_auth_tag_length = RTCP_auth_tag_length = 80 / 8;
                 break;
             case SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32:
-                cipher = SRTPPolicy.AESCM_ENCRYPTION;
+                cipher = SrtpPolicy.AESCM_ENCRYPTION;
                 cipher_key_length = 128 / 8;
                 cipher_salt_length = 112 / 8;
-                auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
+                auth_function = SrtpPolicy.HMACSHA1_AUTHENTICATION;
                 auth_key_length = 160 / 8;
                 RTP_auth_tag_length = 32 / 8;
                 RTCP_auth_tag_length = 80 / 8;
                 break;
             case SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_80:
-                cipher = SRTPPolicy.NULL_ENCRYPTION;
+                cipher = SrtpPolicy.NULL_ENCRYPTION;
                 cipher_key_length = 0;
                 cipher_salt_length = 0;
-                auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
+                auth_function = SrtpPolicy.HMACSHA1_AUTHENTICATION;
                 auth_key_length = 160 / 8;
                 RTP_auth_tag_length = RTCP_auth_tag_length = 80 / 8;
                 break;
             case SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_32:
-                cipher = SRTPPolicy.NULL_ENCRYPTION;
+                cipher = SrtpPolicy.NULL_ENCRYPTION;
                 cipher_key_length = 0;
                 cipher_salt_length = 0;
-                auth_function = SRTPPolicy.HMACSHA1_AUTHENTICATION;
+                auth_function = SrtpPolicy.HMACSHA1_AUTHENTICATION;
                 auth_key_length = 160 / 8;
                 RTP_auth_tag_length = 32 / 8;
                 RTCP_auth_tag_length = 80 / 8;
@@ -534,22 +535,22 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
              */
             case SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM:
                 Timber.w("Unsupported RFC-7714 SRTP profile: %s", SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM);
-                cipher = SRTPPolicy.AESCM_ENCRYPTION;
+                cipher = SrtpPolicy.AESCM_ENCRYPTION;
                 cipher_key_length = 128 / 8;
                 cipher_salt_length = 96 / 8;
                 aead_auth_tag_length = 16; // 16 octets
-                auth_function = SRTPPolicy.NULL_ENCRYPTION;
+                auth_function = SrtpPolicy.NULL_ENCRYPTION;
                 auth_key_length = 0;        // NA
                 RTP_auth_tag_length = 0;    // NA
                 RTCP_auth_tag_length = 0;   // NA
                 break;
             case SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM:
                 Timber.w("Unsupported RFC-7714 SRTP profile: %s", SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM);
-                cipher = SRTPPolicy.AESCM_ENCRYPTION;
+                cipher = SrtpPolicy.AESCM_ENCRYPTION;
                 cipher_key_length = 256 / 8;
                 cipher_salt_length = 96 / 8;
                 aead_auth_tag_length = 16; // 16 octets
-                auth_function = SRTPPolicy.NULL_ENCRYPTION;
+                auth_function = SrtpPolicy.NULL_ENCRYPTION;
                 auth_key_length = 0;        // NA
                 RTP_auth_tag_length = 0;    // NA
                 RTCP_auth_tag_length = 0;   // NA
@@ -598,34 +599,34 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             }
         }
 
-        SRTPPolicy srtcpPolicy = new SRTPPolicy(
+        SrtpPolicy srtcpPolicy = new SrtpPolicy(
                 cipher,
                 cipher_key_length,
                 auth_function,
                 auth_key_length,
                 RTCP_auth_tag_length,
                 cipher_salt_length);
-        SRTPPolicy srtpPolicy = new SRTPPolicy(
+        SrtpPolicy srtpPolicy = new SrtpPolicy(
                 cipher,
                 cipher_key_length,
                 auth_function,
                 auth_key_length,
                 RTP_auth_tag_length,
                 cipher_salt_length);
-        SRTPContextFactory clientSRTPContextFactory = new SRTPContextFactory(
+        SrtpContextFactory clientSRTPContextFactory = new SrtpContextFactory(
                 /* sender */ tlsContext instanceof TlsClientContext,
                 client_write_SRTP_master_key,
                 client_write_SRTP_master_salt,
                 srtpPolicy,
                 srtcpPolicy);
-        SRTPContextFactory serverSRTPContextFactory = new SRTPContextFactory(
+        SrtpContextFactory serverSRTPContextFactory = new SrtpContextFactory(
                 /* sender */ tlsContext instanceof TlsServerContext,
                 server_write_SRTP_master_key,
                 server_write_SRTP_master_salt,
                 srtpPolicy,
                 srtcpPolicy);
-        SRTPContextFactory forwardSRTPContextFactory;
-        SRTPContextFactory reverseSRTPContextFactory;
+        SrtpContextFactory forwardSRTPContextFactory;
+        SrtpContextFactory reverseSRTPContextFactory;
 
         if (tlsContext instanceof TlsClientContext) {
             forwardSRTPContextFactory = clientSRTPContextFactory;

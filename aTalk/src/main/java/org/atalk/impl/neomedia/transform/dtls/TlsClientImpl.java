@@ -34,8 +34,8 @@ public class TlsClientImpl extends DefaultTlsClient
     private int chosenProtectionProfile;
 
     /**
-     * The SRTP Master Key Identifier (MKI) used by the <tt>SRTPCryptoContext</tt> associated with
-     * this instance. Since the <tt>SRTPCryptoContext</tt> class does not utilize it, the value is
+     * The SRTP Master Key Identifier (MKI) used by the <tt>SrtpCryptoContext</tt> associated with
+     * this instance. Since the <tt>SrtpCryptoContext</tt> class does not utilize it, the value is
      * {@link TlsUtils#EMPTY_BYTES}.
      */
     private final byte[] mki = TlsUtils.EMPTY_BYTES;

@@ -14,6 +14,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.NetworkUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -26,7 +27,7 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.StringUtils;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
 
@@ -969,14 +970,14 @@ public class CallManager
         if (resourceTelephony != null && contactResource != null) {
             if (contact != null)
                 createdCall = resourceTelephony.createCall(contact, contactResource);
-            else if (!StringUtils.isNullOrEmpty(stringContact))
+            else if (StringUtils.isNotEmpty(stringContact))
                 createdCall = resourceTelephony.createCall(stringContact, contactResource.getResourceName());
         }
         else if (telephony != null) {
             if (contact != null) {
                 createdCall = telephony.createCall(contact);
             }
-            else if (!StringUtils.isNullOrEmpty(stringContact))
+            else if (StringUtils.isNotEmpty(stringContact))
                 createdCall = telephony.createCall(stringContact);
         }
 

@@ -19,6 +19,7 @@ import org.atalk.service.neomedia.control.AdvancedAttributesAwareCodec;
 import org.atalk.service.neomedia.control.FormatParametersAwareCodec;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 

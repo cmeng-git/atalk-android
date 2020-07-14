@@ -193,6 +193,8 @@
 	<string name="service_gui_CHATROOM_NOT_JOINED">Du musst einen Chatraum betreten haben bevor du weitere Handlungen mit ihm vornehmen kannst.</string>
 	<string name="service_gui_CHATROOM_OPTIONS">Chatraum Optionen</string>
 	<string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Der %1$s Chatraum fragt nach einem Passwort.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Raumstatus deaktivieren</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Raumstatus aktivieren</string>
 	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Raumthema geändert: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOMS">Chaträume</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s heißt nun %2$s</string>
@@ -233,13 +235,14 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ihre Kontaktliste enthält keine Gruppen. Bitte erstelle zuerst eine Gruppe. (Datei/Gruppe erstellen).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online Hilfe</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online hilfe</a></string>
     <string name="AboutDialog_title">Über uns</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">Über uns</string>
     <string name="About_help">Hilfe</string>
     <string name="check_new_version">Auf Updates prüfen</string>
     <string name="show_history_log">Verlauf zeigen</string>
+    <string name="Online_help">Online hilfe</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP-Autorisierungsanforderung</string>

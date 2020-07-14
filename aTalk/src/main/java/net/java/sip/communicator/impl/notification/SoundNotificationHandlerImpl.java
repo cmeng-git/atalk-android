@@ -8,10 +8,10 @@ package net.java.sip.communicator.impl.notification;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.notification.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.audionotifier.*;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.OSUtils;
-import org.atalk.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -69,7 +69,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     private void play(SoundNotificationAction action, NotificationData data, SCAudioClipDevice device)
     {
         AudioNotifierService audioNotifService = NotificationActivator.getAudioNotifier();
-        if ((audioNotifService == null) || StringUtils.isNullOrEmpty(action.getDescriptor(), true))
+        if ((audioNotifService == null) || StringUtils.isBlank(action.getDescriptor()))
             return;
 
         // this is hack, seen on some os (particularly seen on macosx with external devices).

@@ -9,6 +9,7 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.VideoListener;
 
 import java.beans.PropertyChangeListener;

@@ -6,7 +6,6 @@
     </style>
 
     <style name="SpinnerView" parent="@android:style/Widget.Spinner">
-        <item name="android:radius">5dp</item>
         <item name="android:textColor">@color/textColorBlack</item>
         <item name="android:textCursorDrawable">@null</item>
         <item name="android:background">@drawable/spinner_dark</item>

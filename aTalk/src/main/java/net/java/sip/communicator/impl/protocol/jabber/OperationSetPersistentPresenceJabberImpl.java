@@ -13,7 +13,6 @@ import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEn
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -541,9 +540,8 @@ public class OperationSetPersistentPresenceJabberImpl
         }
         fireProviderStatusChangeEvent(currentStatus, status);
 
-        // Use StringUtils.isEquals instead of String.equals to avoid a NullPointerException.
         String oldStatusMessage = getCurrentStatusMessage();
-        if (!StringUtils.isEquals(oldStatusMessage, statusMessage)) {
+        if (!Objects.equals(oldStatusMessage, statusMessage)) {
             currentStatusMessage = statusMessage;
             fireProviderStatusMessageChangeEvent(oldStatusMessage, getCurrentStatusMessage());
         }

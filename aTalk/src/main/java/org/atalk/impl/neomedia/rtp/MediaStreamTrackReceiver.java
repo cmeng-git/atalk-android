@@ -20,7 +20,6 @@ import org.atalk.impl.neomedia.RTPPacketPredicate;
 import org.atalk.impl.neomedia.transform.PacketTransformer;
 import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
 import org.atalk.impl.neomedia.transform.TransformEngine;
-import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ArrayUtils;

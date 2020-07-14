@@ -35,9 +35,10 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.*;
 import org.jivesoftware.smackx.xdata.FormField.Option;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 
 import java.util.*;
 
@@ -69,7 +70,7 @@ public class ChatRoomConfiguration extends OSGiFragment
     /**
      * Room configuration reply submit form
      */
-    private Form replyForm;
+    private FillableForm replyForm;
 
     /**
      * Map contains a list of the user selected/changed room properties
@@ -128,7 +129,7 @@ public class ChatRoomConfiguration extends OSGiFragment
     }
 
     /**
-     * Use internal or call from ChatActivity: method not supported in fragment
+     * Use internal or call from ChatActivity: method not supported in a fragment.
      * Fragment does not support onBackPressed method.
      */
     public void onBackPressed()
@@ -250,10 +251,10 @@ public class ChatRoomConfiguration extends OSGiFragment
 
             FormField ff = formFields.get(position);
             if (ff != null) {
-                String variable = ff.getVariable();
+                String fieldName = ff.getFieldName();
                 String label = ff.getLabel();
                 String firstValue = ff.getFirstValue();
-                Object objValue = configUpdates.get(variable);
+                Object objValue = configUpdates.get(fieldName);
 
                 FormField.Type formType = ff.getType();
                 try {
@@ -268,9 +269,9 @@ public class ChatRoomConfiguration extends OSGiFragment
                                 cb.setChecked((Boolean) objValue);
                             }
                             else {
-                                cb.setChecked("1".equals(firstValue));
+                                cb.setChecked(((BooleanFormField)ff).getValueAsBoolean());
                             }
-                            cb.setOnCheckedChangeListener((cb1, isChecked) -> configUpdates.put(variable, isChecked));
+                            cb.setOnCheckedChangeListener((cb1, isChecked) -> configUpdates.put(fieldName, isChecked));
                             break;
 
                         case list_multi:
@@ -286,8 +287,9 @@ public class ChatRoomConfiguration extends OSGiFragment
                                 valueList = ff.getValuesAsString();
                             }
 
+                            // Create both optionList and valueList both using optLabels as keys
                             mapOption.clear();
-                            ffOptions = ff.getOptions();
+                            ffOptions = ((ListMultiFormField) ff).getOptions();
                             for (Option option : ffOptions) {
                                 String optLabel = option.getLabel();
                                 String optValue = option.getValueString();
@@ -300,7 +302,7 @@ public class ChatRoomConfiguration extends OSGiFragment
                             }
 
                             MultiSelectionSpinner multiSelectionSpinner = convertView.findViewById(R.id.cr_Spinner);
-                            multiSelectionSpinner.setItems(valueList, (multiSelectionSpinner1, selected) -> {
+                            multiSelectionSpinner.setItems(optionList, (multiSelectionSpinner1, selected) -> {
                                 List<String> selection = new ArrayList<>();
                                 for (int i = 0; i < optionList.size(); ++i) {
                                     if (selected[i]) {
@@ -308,10 +310,10 @@ public class ChatRoomConfiguration extends OSGiFragment
                                         selection.add(mapOption.get(optSelected));
                                     }
                                 }
-                                configUpdates.put(variable, selection);
+                                configUpdates.put(fieldName, selection);
                             });
 
-                            multiSelectionSpinner.setSelection(optionList);
+                            multiSelectionSpinner.setSelection(valueList);
                             break;
 
                         case list_single:
@@ -321,7 +323,7 @@ public class ChatRoomConfiguration extends OSGiFragment
                             textLabel.setText(label);
 
                             mapOption.clear();
-                            ffOptions = ff.getOptions();
+                            ffOptions = ((ListSingleFormField) ff).getOptions();
                             for (Option option : ffOptions) {
                                 String optLabel = option.getLabel();
                                 String optValue = option.getValueString();
@@ -336,8 +338,8 @@ public class ChatRoomConfiguration extends OSGiFragment
                             arrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
                             spinner.setAdapter(arrayAdapter);
 
-                            if (objValue instanceof ArrayList<?>) {
-                                firstValue = ((List<String>) objValue).get(0);
+                            if (objValue instanceof String) {
+                                firstValue = (String) objValue;
                             }
 
                             spinner.setSelection(valueList.indexOf(firstValue), false);
@@ -347,9 +349,7 @@ public class ChatRoomConfiguration extends OSGiFragment
                                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
                                 {
                                     String optSelected = optionList.get(position);
-                                    List<String> selection = new ArrayList<>();
-                                    selection.add(mapOption.get(optSelected));
-                                    configUpdates.put(variable, selection);
+                                    configUpdates.put(fieldName, mapOption.get(optSelected));
                                 }
 
                                 @Override
@@ -357,7 +357,6 @@ public class ChatRoomConfiguration extends OSGiFragment
                                 {
                                     // your code here
                                 }
-
                             });
                             break;
 
@@ -379,8 +378,8 @@ public class ChatRoomConfiguration extends OSGiFragment
                                 @Override
                                 public void afterTextChanged(Editable s)
                                 {
-                                    if (s.length() != 0) {
-                                        configUpdates.put(variable, s.toString());
+                                    if (s != null) {
+                                        configUpdates.put(fieldName, s.toString());
                                     }
                                 }
 
@@ -419,8 +418,8 @@ public class ChatRoomConfiguration extends OSGiFragment
                                 @Override
                                 public void afterTextChanged(Editable s)
                                 {
-                                    if (s.length() != 0) {
-                                        configUpdates.put(variable, s.toString());
+                                    if (s != null) {
+                                        configUpdates.put(fieldName, s.toString());
                                     }
                                 }
 
@@ -440,24 +439,24 @@ public class ChatRoomConfiguration extends OSGiFragment
                         case jid_multi:
                         case jid_single:
                             Timber.w("Unhandled formField type: %s; variable: %s; %s=%s", formType.toString(),
-                                    variable, label, firstValue);
+                                    fieldName, label, firstValue);
                         case hidden:
                             // convertView cannot be null, so just return an empty view
                             convertView = mInflater.inflate(R.layout.chatroom_config_none, parent, false);
                             break;
                     }
-                    convertView.setTag(variable);
+                    convertView.setTag(fieldName);
                 } catch (Exception e) {
-                    Timber.w("Exception in get View for variable %s; %s=%s; %s %s", variable, label, firstValue,
-                            configUpdates.get(variable), e.getMessage());
+                    Timber.w("Exception in get View for variable %s; %s=%s; %s %s", fieldName, label, firstValue,
+                            configUpdates.get(fieldName), e.getMessage());
                 }
             }
             return convertView;
         }
 
         /**
-         * Retrieve the chatRoom configuration fields from server and init the default replyFrom
-         * Populate the fragment with the available options are done in getView()
+         * Retrieve the chatRoom configuration fields from the server and init the default replyFrom
+         * Populate the fragment with the available options in getView()
          */
         private class getRoomConfig extends AsyncTask<Void, Void, Form>
         {
@@ -488,8 +487,8 @@ public class ChatRoomConfiguration extends OSGiFragment
                 if (initForm != null) {
                     mTitle.setText(initForm.getTitle());
 
-                    formFields = initForm.getFields();
-                    replyForm = initForm.createAnswerForm();
+                    formFields = initForm.getDataForm().getFields();
+                    replyForm = initForm.getFillableForm();
                 }
                 configListAdapter.notifyDataSetChanged();
             }

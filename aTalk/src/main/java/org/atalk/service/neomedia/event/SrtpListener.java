@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.event;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.SrtpControl;
 
 /**

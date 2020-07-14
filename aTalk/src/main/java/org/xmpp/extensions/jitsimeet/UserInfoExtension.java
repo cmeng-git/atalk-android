@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.xmpp.extensions.AbstractExtensionElement;
 
 import javax.xml.namespace.QName;
@@ -62,7 +62,7 @@ public class UserInfoExtension extends AbstractExtensionElement
     public Boolean isRobot()
     {
         String isRobotStr = getAttributeAsString(ROBOT_ATTRIBUTE_NAME);
-        if (!StringUtils.isNullOrEmpty(isRobotStr)) {
+        if (StringUtils.isNotEmpty(isRobotStr)) {
             return Boolean.parseBoolean(isRobotStr);
         }
         else {

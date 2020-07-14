@@ -9,14 +9,13 @@ public class TimberLog
     public static final int FINEST = 11;
 
     /*
-     * Flag to indicate if Timber.finest is being enabled for finest tracing of the debug message
-     * Set this to false if detail finest tracing is not required.
+     * Set this to true to enable Timber.FINEST for tracing debug message.
+     * It is also used to collect and format info for more detailed debug message display.
      */
     public static boolean isFinestEnable = false;
 
     /*
-     * Flag to indicate if Timber.fine is being enabled for finer tracing of the debug message
-     * Set this to false if detail tracing is not required.
+     * Set this to true to enable Timber.FINER tracing debug message
      */
     public static boolean isTraceEnable = false;
 

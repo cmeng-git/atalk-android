@@ -308,8 +308,7 @@ public abstract class SecurityAccountRegistration implements Serializable
                 ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, true));
         setSavpOption(accountID.getAccountPropertyInt(ProtocolProviderFactory.SAVP_OPTION,
                 ProtocolProviderFactory.SAVP_OFF));
-        setSDesCipherSuites(accountID
-                .getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES));
+        setSDesCipherSuites(accountID.getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES));
 
         final String storedZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
         if (storedZIDSalt == null)

@@ -20,7 +20,7 @@ import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 
 import java.util.*;

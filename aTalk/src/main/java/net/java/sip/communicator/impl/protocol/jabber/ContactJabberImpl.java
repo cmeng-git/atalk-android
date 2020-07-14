@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.json.*;
 import org.jxmpp.jid.FullJid;
@@ -335,7 +335,7 @@ public class ContactJabberImpl extends AbstractContact
             if (entry != null)
                 name = entry.getName();
 
-            if (!StringUtils.isNullOrEmpty(name))
+            if (StringUtils.isNotEmpty(name))
                 return name;
         }
         return getAddress();
@@ -675,7 +675,7 @@ public class ContactJabberImpl extends AbstractContact
     {
         if (isTtsEnable == null) {
             String val = ConfigurationUtils.getContactProperty(getJid(), TTS_ENABLE);
-            isTtsEnable = StringUtils.isNullOrEmpty(val) ? false : Boolean.valueOf(val);
+            isTtsEnable = StringUtils.isEmpty(val) ? false : Boolean.valueOf(val);
         }
         return isTtsEnable;
     }
@@ -702,6 +702,7 @@ public class ContactJabberImpl extends AbstractContact
 
     /**
      * Unused method, need to clean up if required
+     *
      * @param option
      */
     public void setOption(int option)

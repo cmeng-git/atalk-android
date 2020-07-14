@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.systray.PopupMessage;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import timber.log.Timber;
 
@@ -43,7 +43,7 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
             return;
 
         String message = data.getMessage();
-        if (!StringUtils.isNullOrEmpty(message)) {
+        if (StringUtils.isNotEmpty(message)) {
             PopupMessage popupMsg = new PopupMessage(data.getTitle(), message, data.getIcon(),
                     data.getExtra(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA));
             popupMsg.setEventType(data.getEventType());

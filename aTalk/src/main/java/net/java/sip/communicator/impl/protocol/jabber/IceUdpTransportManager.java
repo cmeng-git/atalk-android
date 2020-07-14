@@ -14,7 +14,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.*;
-import org.atalk.util.StringUtils;
+import org.atalk.util.MediaType;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
 import org.ice4j.ice.*;
@@ -31,6 +31,7 @@ import org.xmpp.jnodes.smack.SmackServiceNode;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import timber.log.Timber;
@@ -196,7 +197,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 }
             }
             StunCandidateHarvester autoHarvester = namSer.discoverStunServer(accID.getService(),
-                    StringUtils.getUTF8Bytes(username), StringUtils.getUTF8Bytes(password));
+                    username.getBytes(StandardCharsets.UTF_8),
+                    password.getBytes(StandardCharsets.UTF_8));
 
             Timber.i("Auto discovered STUN/TURN-server harvester is %s", autoHarvester);
 
@@ -606,9 +608,9 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
          * This is a patch for jitsi and is non XEP standard: may want to remove once jitsi has updated.
          * Jitsi works only on audio but no video call; rtcp will get re-align to jitsi after first call i.e. false
          */
-         if (rtcpmux) {
-             transport.addChildExtension(new RtcpmuxExtension());
-         }
+        if (rtcpmux) {
+            transport.addChildExtension(new RtcpmuxExtension());
+        }
 
         return transport;
     }
@@ -919,24 +921,10 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
              * have at least one remote candidate per ICE Component i.e. audio.RTP, audio.RTCP,
              * video.RTP & video.RTCP.
              */
-            boolean status = false;
-            //cmeng: to handle stream only if available, but Agent prunes unused stream causing problem
-//            for (IceMediaStream stream : iceAgent.getStreams()) {
-//                for (Component component : stream.getComponents()) {
-//                    if (component.getRemoteCandidateCount() > 0) {
-//                        iceAgent.startConnectivityEstablishment();
-//                        status = true;
-//                    }
-//                    Timber.w("### Start Connectivity Establishment! %s: %s %s",
-//                            stream, status, component.toShortString());
-//                }
-//            }
-//            return status;
-
             for (IceMediaStream stream : iceAgent.getStreams()) {
                 for (Component component : stream.getComponents()) {
                     if (component.getRemoteCandidateCount() < 1) {
-                        Timber.w("### Insufficient remote candidates to startConnectivityEstablishment! %s: %s %s",
+                        Timber.d("### Insufficient remote candidates to startConnectivityEstablishment! %s: %s %s",
                                 component.toShortString(), component.getRemoteCandidateCount(), iceAgent.getStreams());
                         startConnectivityEstablishment = false;
                         break;

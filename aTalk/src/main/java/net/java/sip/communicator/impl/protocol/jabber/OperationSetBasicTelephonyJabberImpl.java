@@ -32,6 +32,7 @@ import org.jxmpp.util.XmppStringUtils;
 import org.xmpp.extensions.condesc.CallIdExtension;
 import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.*;
+import org.xmpp.extensions.jitsimeet.StartMutedExtension;
 
 import java.util.*;
 
@@ -131,7 +132,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         Call callOfCallPeer = callPeer.getCall();
         // We may have a Google Talk call here.
-        if ((callOfCallPeer != null) && (call != callOfCallPeer) && (conference != null))
+        if ((callOfCallPeer != call) && (conference != null))
             callOfCallPeer.setConference(conference);
 
         return callOfCallPeer;
@@ -785,6 +786,30 @@ public class OperationSetBasicTelephonyJabberImpl
                 if (jingle.getInitiator() == null) {
                     jingle.setInitiator(jingle.getFrom().asEntityFullJidIfPossible());
                 }
+
+//                StartMutedExtension startMutedExt = jingle.getExtension(StartMutedExtension.class);
+//                if (startMutedExt != null) {
+//                    ProtocolProviderServiceJabberImpl protocolProvider
+//                            = getProtocolProvider();
+//
+//                    OperationSetJitsiMeetToolsJabberImpl operationSetJitsiMeetTools
+//                            = (OperationSetJitsiMeetToolsJabberImpl) protocolProvider.getOperationSet(OperationSetJitsiMeetTools.class);
+//
+//                    if (operationSetJitsiMeetTools != null) {
+//                        boolean[] startMutedFlags = {
+//                                Boolean.parseBoolean(startMutedExt.getAttributeValue(
+//                                        StartMutedExtension.AUDIO_ATTRIBUTE_NAME)),
+//
+//                                Boolean.parseBoolean(startMutedExt.getAttributeValue(
+//                                        StartMutedExtension.VIDEO_ATTRIBUTE_NAME))
+//                        };
+//
+//                        operationSetJitsiMeetTools.notifySessionStartMuted(startMutedFlags);
+//                    }
+//                    else {
+//                        Timber.w("StartMutedPacketExtension not handled! OperationSetJitsiMeetTools not available.");
+//                    }
+//                }
 
                 CallJabberImpl call = null;
                 TransferExtension transfer = jingle.getExtension(TransferExtension.class);

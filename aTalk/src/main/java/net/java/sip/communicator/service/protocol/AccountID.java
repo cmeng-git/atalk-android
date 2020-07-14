@@ -8,19 +8,18 @@ package net.java.sip.communicator.service.protocol;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -182,7 +181,7 @@ public class AccountID
 
         JSONObject tmp = new JSONObject();
         String strKeys = accountProperties.get(ProtocolProviderFactory.KEYS);
-        if (!StringUtils.isNullOrEmpty(strKeys)) {
+        if (StringUtils.isNotEmpty(strKeys)) {
             try {
                 tmp = new JSONObject(strKeys);
             } catch (JSONException e) {
@@ -214,7 +213,7 @@ public class AccountID
     {
         String key = ProtocolProviderFactory.PROTOCOL;
         String protocolName = accountProperties.get(key);
-        if (StringUtils.isNullOrEmpty(protocolName) && !StringUtils.isNullOrEmpty(defaultProtocolName)) {
+        if (StringUtils.isEmpty(protocolName) && StringUtils.isNotEmpty(defaultProtocolName)) {
             protocolName = defaultProtocolName;
             accountProperties.put(key, protocolName);
         }
@@ -258,7 +257,7 @@ public class AccountID
         String key = ProtocolProviderFactory.ACCOUNT_DISPLAY_NAME;
         String accountDisplayName = mAccountProperties.get(key);
 
-        if (!TextUtils.isEmpty(accountDisplayName)) {
+        if (StringUtils.isNotEmpty(accountDisplayName)) {
             return accountDisplayName;
         }
 
@@ -266,7 +265,7 @@ public class AccountID
         String returnValue = userID;
         String protocolName = getProtocolDisplayName();
 
-        if (!TextUtils.isEmpty(protocolName)) {
+        if (StringUtils.isNotEmpty(protocolName)) {
             returnValue += " (" + protocolName + ")";
         }
         return returnValue;
@@ -367,7 +366,7 @@ public class AccountID
         int intValue = defaultValue;
         String stringValue = getAccountPropertyString(key);
 
-        if (!TextUtils.isEmpty(stringValue)) {
+        if (StringUtils.isNotEmpty(stringValue)) {
             try {
                 intValue = Integer.parseInt(stringValue);
             } catch (NumberFormatException ex) {
@@ -406,7 +405,7 @@ public class AccountID
             ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
             if (configService != null) {
                 value = configService.getString(uuid + "." + property);
-                if (!StringUtils.isNullOrEmpty(value)) {
+                if (StringUtils.isNotEmpty(value)) {
                     putAccountProperty(key.toString(), value);
                 }
                 else {
@@ -498,7 +497,7 @@ public class AccountID
     public boolean equals(Object obj)
     {
         return (this == obj) || (obj != null) && getClass().isInstance(obj)
-                && userID.equals(((AccountID) obj).userID);
+                && accountUID.equals(((AccountID) obj).accountUID);
     }
 
     /**
@@ -1071,7 +1070,7 @@ public class AccountID
     {
         String preferredProtocolProp = getAccountPropertyString(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL);
 
-        return !TextUtils.isEmpty(preferredProtocolProp) && Boolean.parseBoolean(preferredProtocolProp);
+        return StringUtils.isNotEmpty(preferredProtocolProp) && Boolean.parseBoolean(preferredProtocolProp);
     }
 
     /**

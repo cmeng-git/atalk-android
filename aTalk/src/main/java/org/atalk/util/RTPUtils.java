@@ -20,6 +20,8 @@ import java.util.Comparator;
 /**
  * RTP-related static utility methods.
  *
+ * // @deprecated
+ *
  * @author Boris Grozev
  */
 public class RTPUtils

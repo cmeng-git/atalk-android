@@ -5,9 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_ADDRESS;
@@ -109,8 +110,8 @@ public class StunServerDescriptor implements Serializable
         this.address = address;
         this.port = port;
         this.isTurnSupported = supportTurn;
-        this.username = (username != null) ? StringUtils.getUTF8Bytes(username) : "".getBytes();
-        this.password = (password != null) ? StringUtils.getUTF8Bytes(password) : "".getBytes();
+        this.username = (username != null) ? username.getBytes(StandardCharsets.UTF_8) : new byte[]{};
+        this.password = (password != null) ? password.getBytes(StandardCharsets.UTF_8) : new byte[]{};
         this.protocol = protocol;
     }
 
@@ -191,7 +192,7 @@ public class StunServerDescriptor implements Serializable
      */
     public void setUsername(String username)
     {
-        this.username = (username != null) ? StringUtils.getUTF8Bytes(username) : new byte[]{};
+        this.username = (username != null) ? username.getBytes(StandardCharsets.UTF_8) : new byte[]{};
     }
 
     /**
@@ -211,7 +212,7 @@ public class StunServerDescriptor implements Serializable
      */
     public void setPassword(String password)
     {
-        this.password = (password != null) ? StringUtils.getUTF8Bytes(password) : new byte[]{};
+        this.password = (password != null) ? password.getBytes(StandardCharsets.UTF_8) : new byte[]{};
     }
 
     /**
@@ -233,7 +234,7 @@ public class StunServerDescriptor implements Serializable
             props.put(namePrefix + STUN_PORT, Integer.toString(getPort()));
 
         if (getUsername() != null && getUsername().length > 0) {
-            props.put(namePrefix + STUN_USERNAME, StringUtils.getUTF8String(getUsername()));
+            props.put(namePrefix + STUN_USERNAME, StringUtils.toEncodedString(getUsername(), StandardCharsets.UTF_8));
         }
 
         if (getPassword() != null && getPassword().length > 0) {

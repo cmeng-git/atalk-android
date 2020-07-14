@@ -17,7 +17,7 @@
  */
 package org.xmpp.extensions.jibri;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.xmpp.extensions.AbstractExtensionElement;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
@@ -99,7 +99,7 @@ public class JibriBusyStatusExtension extends AbstractExtensionElement
          */
         public static BusyStatus parse(String status)
         {
-            if (StringUtils.isNullOrEmpty(status))
+            if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
             try {

@@ -41,7 +41,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -91,6 +91,9 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      */
     @SuppressWarnings("HidingField")
     private final BOSHConfiguration config;
+
+    // a flag to indicate incomingStreamXmlEnvironment has been initialized
+    private boolean xmlLangInit = false;
 
     // The readerPipe and consumer thread are used for the debugger.
     private PipedWriter readerPipe;
@@ -178,7 +181,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         }
 
         // Wait with SASL auth until the SASL mechanisms have been received
-        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
+        waitForConditionOrThrowConnectionException(() -> saslFeatureReceived, "SASL mechanisms stream feature from server");
     }
 
     @Override
@@ -448,9 +451,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                             String name = parser.getName();
                             switch (name) {
                             case IQ.IQ_ELEMENT:
-                                // cmeng: temporary fix to init incomingStreamXmlEnvironment for BOSHConnection (no stream:stream)
-                                if ((incomingStreamXmlEnvironment == null) || (incomingStreamXmlEnvironment.getLanguage() == null))
-                                    incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
+                                // cmeng: a temporary patch to init incomingStreamXmlEnvironment for BOSHConnection
+                                // BOSHConnection does not have a stream:stream Nonza.
+                                if (!xmlLangInit && body.toXML().contains(RosterPacket.NAMESPACE)) {
+                                    onStreamOpen(parser);
+                                    xmlLangInit = true;
+                                }
                             case Message.ELEMENT:
                             case Presence.ELEMENT:
                                 parseAndProcessStanza(parser);
@@ -461,7 +467,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                             case "error":
                                 // Some BOSH error isn't stream error. parser.getNamespace(null) <= http://jabber.org/protocol/httpbind
                                 StreamError streamError = PacketParserUtils.parseStreamError(parser);
-                                saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
+                                // saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
+                                // throwCurrentConnectionException();
 
                                 if (StreamError.NAMESPACE.equals(streamError.getNamespace())) {
                                     throw new StreamErrorException(streamError);

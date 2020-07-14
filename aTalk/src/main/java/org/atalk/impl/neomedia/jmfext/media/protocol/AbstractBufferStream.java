@@ -6,7 +6,6 @@
 package org.atalk.impl.neomedia.jmfext.media.protocol;
 
 import org.atalk.impl.neomedia.control.*;
-import org.atalk.util.Logger;
 
 import java.io.IOException;
 

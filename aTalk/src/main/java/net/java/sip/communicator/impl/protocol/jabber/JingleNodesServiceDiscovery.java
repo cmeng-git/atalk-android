@@ -5,13 +5,12 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -233,7 +232,7 @@ public class JingleNodesServiceDiscovery implements Runnable
             for (DiscoverItems.Item item : result.getItems()) {
                 if (item != null) {
                     for (String pref : prefixes) {
-                        if (!StringUtils.isNullOrEmpty(pref) && item.getEntityID().toString().startsWith(pref.trim())) {
+                        if (StringUtils.isNotEmpty(pref) && item.getEntityID().toString().startsWith(pref.trim())) {
                             SmackServiceNode.deepSearch(xmppConnection, maxEntries, item.getEntityID(),
                                     mappedNodes, maxDepth, maxSearchNodes, protocol, visited);
 

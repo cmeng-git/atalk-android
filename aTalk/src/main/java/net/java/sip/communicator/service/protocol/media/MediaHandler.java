@@ -18,6 +18,7 @@ import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.event.*;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.*;
 
 import java.beans.PropertyChangeEvent;

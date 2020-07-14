@@ -13,7 +13,7 @@ import org.atalk.impl.neomedia.format.*;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
@@ -25,6 +25,8 @@ import javax.media.Format;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 import javax.sdp.SdpConstants;
+
+import timber.log.Timber;
 
 /**
  * Implements static utility methods used by media classes.
@@ -223,22 +225,37 @@ public class MediaUtils
                 opusAdvancedParams,
                 48000);
 
+        boolean enableFfmpeg = cfg.getBoolean(MediaService.ENABLE_FFMPEG_CODECS_PNAME, false);
+
         // Adaptive Multi-Rate Wideband (AMR-WB)
-        addMediaFormats(
-                MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
-                Constants.AMR_WB,
-                MediaType.AUDIO,
-                Constants.AMR_WB_RTP,
-                16000);
+        // Checks whether ffmpeg is enabled and whether AMR-WB is available in the provided binaries
+        boolean amrwbEnabled = false;
+        if (enableFfmpeg) {
+            try {
+                amrwbEnabled = (FFmpeg.avcodec_find_encoder(FFmpeg.CODEC_ID_AMR_WB) != 0);
+            } catch (Throwable t) {
+                Timber.d("AMR-WB codec not found %s", t.getMessage());
+            }
+        }
+
+        if (amrwbEnabled) {
+            addMediaFormats(
+                    MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
+                    Constants.AMR_WB,
+                    MediaType.AUDIO,
+                    Constants.AMR_WB_RTP,
+                    16000);
+        }
 
         /* H264 */
         // Checks whether ffmpeg is enabled and whether h264 is available in the provided binaries
-        boolean enableFfmpeg = cfg.getBoolean(MediaService.ENABLE_FFMPEG_CODECS_PNAME, false);
         boolean h264Enabled = false;
         if (enableFfmpeg) {
-            long avcodec = FFmpeg.avcodec_find_encoder(FFmpeg.CODEC_ID_H264);
-            if (avcodec != 0)
-                h264Enabled = true;
+            try {
+                h264Enabled = FFmpeg.avcodec_find_encoder(FFmpeg.CODEC_ID_H264) != 0;
+            } catch (Throwable t) {
+                Timber.d("H264 codec not found: %s", t.getMessage());
+            }
         }
 
         // register h264 media formats if codec is present or there is

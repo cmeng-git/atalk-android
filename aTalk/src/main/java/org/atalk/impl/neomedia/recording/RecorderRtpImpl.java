@@ -7,7 +7,8 @@ package org.atalk.impl.neomedia.recording;
 
 import com.sun.media.util.Registry;
 
-import org.atalk.impl.neomedia.DominantSpeakerIdentification;
+import org.atalk.util.MediaType;
+import org.atalk.util.dsi.DominantSpeakerIdentification;
 import org.atalk.impl.neomedia.audiolevel.AudioLevelEffect;
 import org.atalk.impl.neomedia.codec.SilenceEffect;
 import org.atalk.impl.neomedia.device.MediaDeviceImpl;
@@ -24,8 +25,9 @@ import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.FlushableControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
-import org.atalk.service.neomedia.event.ActiveSpeakerChangedListener;
+import org.atalk.util.dsi.ActiveSpeakerChangedListener;
 import org.atalk.service.neomedia.recording.*;
+import org.atalk.util.dsi.ActiveSpeakerDetector;
 
 import java.io.File;
 import java.io.IOException;
@@ -245,8 +247,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Implements {@link Recorder#getFilename()}. Returns null, since we don't have a (single)
-     * associated filename.
+     * Implements {@link Recorder#getFilename()}. Returns null, since we don't
+     * have a (single) associated filename.
      */
     @Override
     public String getFilename()
@@ -255,8 +257,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Sets the instance which should be notified when events related to recordings (such as the
-     * start or end of a recording) occur.
+     * Sets the instance which should be notified when events related to
+     * recordings (such as the start or end of a recording) occur.
      */
     public void setEventHandler(RecorderEventHandler eventHandler)
     {
@@ -372,7 +374,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
     /**
      * Implements {@link ReceiveStreamListener#update(ReceiveStreamEvent)}.
-     * <p>
+     *
      * {@link #rtpManager} will use this to notify us of <tt>ReceiveStreamEvent</tt>s.
      */
     @Override

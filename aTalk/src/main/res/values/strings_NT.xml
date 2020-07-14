@@ -43,6 +43,7 @@
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
     <string name="AboutDialog_Link">https://cmeng-git.github.io</string>
+    <string name="FAQ_Link">https://cmeng-git.github.io/faq.html</string>
 
     <!-- PTT Chat -->
     <string name="chat_dbZero">00.00dB</string>

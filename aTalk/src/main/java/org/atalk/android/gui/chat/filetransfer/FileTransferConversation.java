@@ -933,7 +933,7 @@ public abstract class FileTransferConversation extends OSGiFragment
         String downloadPath = FileBackend.MEDIA_DOCUMENT;
         if (fileName.contains("voice-"))
             downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
-        else if (!StringUtils.isNullOrEmpty(mimeType) && !mimeType.startsWith("*")) {
+        else if (StringUtils.isNotEmpty(mimeType) && !mimeType.startsWith("*")) {
             downloadPath = FileBackend.MEDIA + File.separator + mimeType.split("/")[0];
         }
 

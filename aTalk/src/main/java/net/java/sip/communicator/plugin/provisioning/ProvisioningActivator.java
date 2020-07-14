@@ -11,9 +11,9 @@ import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.provdisc.ProvisioningDiscoveryService;
 import net.java.sip.communicator.service.provisioning.ProvisioningService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.atalk.util.StringUtils;
 import org.osgi.framework.*;
 
 import java.util.Dictionary;
@@ -98,7 +98,7 @@ public class ProvisioningActivator implements BundleActivator
 
         String method = provisioningService.getProvisioningMethod();
 
-        if (StringUtils.isNullOrEmpty(method, true) || method.equals("NONE")) {
+        if (StringUtils.isBlank(method) || method.equals("NONE")) {
             return;
         }
         ServiceReference serviceReferences[] = bundleContext.getServiceReferences(

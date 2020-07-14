@@ -29,8 +29,8 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.DiagnosticContext;
-import org.atalk.util.RTPUtils;
+import org.atalk.util.*;
+import org.atalk.util.logging.DiagnosticContext;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -60,7 +60,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author George Politis
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public class MediaStreamImpl extends AbstractMediaStream
         implements ReceiveStreamListener, SendStreamListener, SessionListener, RemoteListener
@@ -562,7 +562,9 @@ public class MediaStreamImpl extends AbstractMediaStream
             if (transportCCEngine != null) {
                 transportCCEngine.setExtensionID(-1);
             }
-            ohbEngine.setExtensionID(-1);
+            if (ohbEngine != null) {
+                ohbEngine.setExtensionID(-1);
+            }
 
             RemoteBitrateEstimatorWrapper remoteBitrateEstimatorWrapper = getRemoteBitrateEstimator();
             if (remoteBitrateEstimatorWrapper != null) {
@@ -1784,6 +1786,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         if (!(mediaFormat instanceof MediaFormatImpl))
             return;
 
+        @SuppressWarnings("unchecked")
         MediaFormatImpl<? extends Format> mediaFormatImpl = (MediaFormatImpl<? extends Format>) mediaFormat;
         Format format = mediaFormatImpl.getFormat();
 
@@ -3055,8 +3058,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     public int getTemporalID(RawPacket pkt)
     {
         if (frameMarkingsExtensionId != -1) {
-            RawPacket.HeaderExtension fmhe
-                    = pkt.getHeaderExtension((byte) frameMarkingsExtensionId);
+            RawPacket.HeaderExtension fmhe = pkt.getHeaderExtension((byte) frameMarkingsExtensionId);
 
             if (fmhe != null) {
                 return FrameMarkingHeaderExtension.getTemporalID(fmhe);
@@ -3071,7 +3073,8 @@ public class MediaStreamImpl extends AbstractMediaStream
             return -1;
         }
 
-        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8), vp9PT = getDynamicRTPPayloadType(Constants.VP9);
+        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8);
+        final byte vp9PT = getDynamicRTPPayloadType(Constants.VP9);
 
         if (redBlock.getPayloadType() == vp8PT) {
             return org.atalk.impl.neomedia.codec.video.vp8.DePacketizer.VP8PayloadDescriptor
@@ -3088,8 +3091,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     }
 
     /**
-     * Utility method that determines the spatial layer index (SID) of an RTP
-     * packet.
+     * Utility method that determines the spatial layer index (SID) of an RTP packet.
      *
      * @param pkt the RTP packet.
      * @return the SID of the packet, -1 otherwise.
@@ -3122,8 +3124,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                     .getSpatialLayerIndex(redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
         }
         else {
-            // XXX not implementing temporal layer detection should not break
-            // things.
+            // XXX not implementing temporal layer detection should not break things.
             return -1;
         }
     }
@@ -3156,7 +3157,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     }
 
     /**
-     * Utility method that determines whether or not a packet is a start of frame.
+     * Utility method that determines whether a packet is the start of frame.
      *
      * @param pkt raw rtp packet.
      * @return true if the packet is the start of a frame, false otherwise.
@@ -3185,7 +3186,8 @@ public class MediaStreamImpl extends AbstractMediaStream
             return false;
         }
 
-        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8), vp9PT = getDynamicRTPPayloadType(Constants.VP9);
+        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8);
+        final byte vp9PT = getDynamicRTPPayloadType(Constants.VP9);
 
         if (redBlock.getPayloadType() == vp8PT) {
             return org.atalk.impl.neomedia.codec.video.vp8.DePacketizer.VP8PayloadDescriptor.isStartOfFrame(
@@ -3276,11 +3278,16 @@ public class MediaStreamImpl extends AbstractMediaStream
             return false;
         }
 
-        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8),
-                h264PT = getDynamicRTPPayloadType(Constants.H264);
+        final byte vp8PT = getDynamicRTPPayloadType(Constants.VP8);
+        final byte vp9PT = getDynamicRTPPayloadType(Constants.VP9);
+        final byte h264PT = getDynamicRTPPayloadType(Constants.H264);
 
         if (redBlock.getPayloadType() == vp8PT) {
             return org.atalk.impl.neomedia.codec.video.vp8.DePacketizer.isKeyFrame(
+                    redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
+        }
+        else if (redBlock.getPayloadType() == vp9PT) {
+            return org.atalk.impl.neomedia.codec.video.vp9.DePacketizer.isKeyFrame(
                     redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
         }
         else if (redBlock.getPayloadType() == h264PT) {

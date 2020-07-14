@@ -24,7 +24,7 @@ repositories {
 
 apply plugin: 'org.anarres.jarjar'
 
-def smackVersion = '4.4.0-alpha3-SNAPSHOT'
+def smackVersion = '4.4.0-alpha5'
 
 def jarJarDeps = task("jarJarDeps") {
     doFirst {
@@ -48,11 +48,8 @@ jarJarDeps.dependsOn(
         destinationName "smack-core-jarjar-${smackVersion}.jar"
 
         // smack-core
-        classDelete 'org.jivesoftware.smack.packet.Stanza'
-        classDelete 'org.jivesoftware.smack.packet.StanzaView'
         classDelete 'org.jivesoftware.smack.provider.AbstractProvider'
         classDelete 'org.jivesoftware.smack.util.StringUtils**'
-        classDelete 'org.jivesoftware.smack.AbstractXMPPConnection**'
     },
 
     jarjar.repackage {
@@ -74,12 +71,11 @@ jarJarDeps.dependsOn(
         destinationName "smack-extensions-jarjar-${smackVersion}.jar"
 
         // smack-extensions
-        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager**'
-        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
         classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
-        classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
-        classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
-        classDelete 'org.jivesoftware.smackx.muc.MultiUserChat**'
+        classDelete 'org.jivesoftware.smackx.xdata.form.FillableForm**'
+
+        // keep this change for next two aTalk versions release - for backward compatibility with old aTalk
+        classDelete 'org.jivesoftware.smackx.xdata.provider.DataFormProvider**'
     }
 )
 tasks.getByName("build").dependsOn(jarJarDeps)

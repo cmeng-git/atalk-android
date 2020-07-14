@@ -13,6 +13,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
@@ -28,7 +29,6 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
@@ -121,7 +121,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * A prefix helps to make sure that thread ID's are unique across multiple instances.
      */
-    private static String prefix = StringUtils.randomString(5);
+    private static String prefix = RandomStringUtils.random(5);
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to forum a unique thread ID.
@@ -499,7 +499,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param message The new message.
      * @param correctedMessageUID The ID of the message being replaced.
      */
-    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID)
+    public void correctMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID)
     {
         Collection<ExtensionElement> extElements
                 = Collections.singletonList(new MessageCorrectExtension(correctedMessageUID));

@@ -37,6 +37,7 @@ import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
@@ -891,7 +892,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
     private Contact getContact(String sender)
     {
-        if (StringUtils.isNullOrEmpty(sender))
+        if (StringUtils.isEmpty(sender))
             return null;
 
         OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
@@ -1628,11 +1629,19 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
         }
 
-        // some messages are added directly without event triggered
+        // Add a new message directly without an event triggered.
         @Override
         public void messageAdded(ChatMessage msg)
         {
-            addMessageImpl(msg);
+            if (ChatMessage.MESSAGE_STATUS == msg.getMessageType()) {
+                Object descriptor = chatPanel.getChatSession().getDescriptor();
+                if ((descriptor instanceof ChatRoomWrapper) &&
+                        ((ChatRoomWrapper) descriptor).isRoomStatusEnable())
+                    addMessageImpl(msg);
+            }
+            else {
+                addMessageImpl(msg);
+            }
         }
 
         /**
@@ -2474,7 +2483,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         mEncryption = IMessage.ENCRYPTION_NONE;
                     }
                     // Timber.w("HTTP link: %s: %s", mFile.getName(), urlLink);
-                    if (StringUtils.isNullOrEmpty(urlLink)) {
+                    if (StringUtils.isEmpty(urlLink)) {
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption);
                     }
                     else {
@@ -2503,6 +2512,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         protected void onCancelled()
         {
         }
+
     }
 
     @Override

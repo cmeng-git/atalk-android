@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia.rtcp;
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 import org.atalk.service.neomedia.*;
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTCPUtils;
 
 import java.util.*;

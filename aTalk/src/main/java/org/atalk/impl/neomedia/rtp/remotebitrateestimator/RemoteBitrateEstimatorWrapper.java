@@ -16,11 +16,9 @@
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
 import org.atalk.impl.neomedia.transform.*;
-import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
-import org.atalk.util.DiagnosticContext;
+import org.atalk.util.logging.DiagnosticContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

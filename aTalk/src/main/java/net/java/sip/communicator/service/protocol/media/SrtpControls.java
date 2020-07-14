@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.SrtpControlType;
 

@@ -17,6 +17,7 @@ package net.java.sip.communicator.service.httputil;
 
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.ProtocolException;
 import org.apache.http.*;
 import org.apache.http.auth.*;
@@ -39,7 +40,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.util.StringUtils;
 
 import java.io.*;
 import java.net.*;
@@ -499,8 +499,7 @@ public class HttpUtils
             // don't allow empty username
             while (creds == null
                     || creds.getUserPrincipal() == null
-                    || StringUtils.isNullOrEmpty(
-                    creds.getUserPrincipal().getName())) {
+                    || StringUtils.isEmpty(creds.getUserPrincipal().getName())) {
                 creds = prov.getCredentials(
                         new AuthScope(url.getHost(), url.getPort()));
 

@@ -46,8 +46,8 @@ public class ZRTCPTransformer extends SinglePacketTransformer
     /**
      * Encrypt a SRTCP packet
      *
-     * Currently SRTCP packet encryption / decryption is not supported So this method does not
-     * change the packet content
+     * Currently SRTCP packet encryption / decryption is not supported
+     * So this method does not change the packet content
      *
      * @param pkt plain SRTCP packet to be encrypted
      * @return encrypted SRTCP packet
@@ -61,8 +61,8 @@ public class ZRTCPTransformer extends SinglePacketTransformer
     /**
      * Decrypt a SRTCP packet
      *
-     * Currently SRTCP packet encryption / decryption is not supported So this method does not
-     * change the packet content
+     * Currently SRTCP packet encryption / decryption is not supported
+     * So this method does not change the packet content
      *
      * @param pkt encrypted SRTCP packet to be decrypted
      * @return decrypted SRTCP packet

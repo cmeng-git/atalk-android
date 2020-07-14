@@ -17,7 +17,7 @@ package org.atalk.impl.neomedia.rtcp;
 
 import net.sf.fmj.media.rtp.RTCPSenderInfo;
 
-import org.atalk.service.neomedia.ByteArrayBuffer;
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTPUtils;
 
 /**

@@ -199,6 +199,8 @@
 	<string name="service_gui_CHATROOM_NOT_JOINED">Se necesita estar unido a la sala de chat para poder hacer más operaciones con ella..</string>
 	<string name="service_gui_CHATROOM_OPTIONS">Opciones de la Sala</string>
 	<string name="service_gui_CHATROOM_REQUIRES_PASSWORD">En la sala %1$s se requiere contraseña para ser miembro.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Deshabilitar estado de la habitación</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Habilitar estado de la habitación</string>
 	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Asunto de la habitación cambiado: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOMS">Salas</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s ahora se conoce como %2$s</string>
@@ -239,13 +241,14 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">La lista de contactos no contiene ningún grupo. Por favor, crear un grupo primero (Archivo/Crear grupo).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ayuda on-line</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ayuda online</a></string>
     <string name="AboutDialog_title">Sobre</string>
     <string name="AboutDialog_Version">Versión %s</string>
     <string name="About_action">Sobre</string>
     <string name="About_help">Ayuda</string>
     <string name="check_new_version">Comprobar actualizaciones</string>
     <string name="show_history_log">Historial de registros</string>
+    <string name="Online_help">Ayuda online</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">Solicitud de autorización HTTP</string>

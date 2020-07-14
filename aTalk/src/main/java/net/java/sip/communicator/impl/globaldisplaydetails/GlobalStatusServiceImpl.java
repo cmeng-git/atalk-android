@@ -13,10 +13,10 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.util.account.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.StringUtils;
 
 import java.util.Collection;
 
@@ -200,7 +200,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
         String lastStatus = null;
 
         String accountUuid = protocolProvider.getAccountID().getAccountUuid();
-        if (!StringUtils.isNullOrEmpty(accountUuid)) {
+        if (StringUtils.isNotEmpty(accountUuid)) {
             ConfigurationService configService = GlobalDisplayDetailsActivator.getConfigurationService();
             lastStatus = configService.getString(accountUuid + ".lastAccountStatus");
         }
@@ -456,7 +456,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
         ConfigurationService configService = GlobalDisplayDetailsActivator.getConfigurationService();
 
         String accountUuid = protocolProvider.getAccountID().getAccountUuid();
-        if (!StringUtils.isNullOrEmpty(accountUuid)) {
+        if (StringUtils.isNotEmpty(accountUuid)) {
             configService.setProperty(accountUuid + ".lastAccountStatus", statusName);
         }
     }

@@ -25,6 +25,7 @@ import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -36,7 +37,6 @@ import org.atalk.android.gui.util.*;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.persistance.FilePathHelper;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.chatstates.ChatState;
 
 import java.util.*;
@@ -445,7 +445,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                             if (!mediaPreviews.isEmpty()) {
                                 for (Attachment attachment : mediaPreviews) {
                                     String filePath = FilePathHelper.getPath(parent, attachment);
-                                    if (!StringUtils.isNullOrEmpty(filePath))
+                                    if (StringUtils.isNotEmpty(filePath))
                                         chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                                 }
                                 mpAdapter.clearPreviews();
@@ -667,7 +667,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 Timber.i("Sending audio recorded file!!!");
                 LocalBroadcastManager.getInstance(parent).unregisterReceiver(mReceiver);
                 String filePath = intent.getStringExtra(AudioBgService.URI);
-                if (!StringUtils.isNullOrEmpty(filePath)) {
+                if (StringUtils.isNotEmpty(filePath)) {
                     chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                 }
                 parent.stopService(new Intent(parent, AudioBgService.class));
@@ -925,7 +925,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         if (chatPanel.getProtocolProvider().isRegistered()) {
             Uri contentUri = info.getContentUri();
             String filePath = FilePathHelper.getPath(parent, contentUri);
-            if (!StringUtils.isNullOrEmpty(filePath)) {
+            if (StringUtils.isNotEmpty(filePath)) {
                 sendSticker(filePath);
             }
             else

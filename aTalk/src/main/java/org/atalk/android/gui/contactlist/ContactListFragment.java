@@ -20,6 +20,7 @@ import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -33,7 +34,6 @@ import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
-import org.atalk.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.DomainJid;
 import org.jxmpp.jid.Jid;
@@ -645,7 +645,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      */
     private void filterContactList(String query)
     {
-        if (StringUtils.isNullOrEmpty(query)) {
+        if (StringUtils.isEmpty(query)) {
             // Cancel any pending queries
             disposeSourcesAdapter();
 

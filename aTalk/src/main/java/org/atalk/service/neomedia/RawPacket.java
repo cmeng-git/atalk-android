@@ -17,6 +17,7 @@ package org.atalk.service.neomedia;
 
 import net.sf.fmj.media.rtp.RTPHeader;
 
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTPUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +44,7 @@ import java.util.Iterator;
  * @author Boris Grozev
  * @author Lyubomir Marinov
  * @author George Politis
+ * @author Eng Chong Meng
  */
 public class RawPacket implements ByteArrayBuffer
 {
@@ -143,8 +145,7 @@ public class RawPacket implements ByteArrayBuffer
      * @param len the length of the RTP packet to make.
      * @return the RTP {@code RawPacket} that was created.
      */
-    public static RawPacket makeRTP(
-            long ssrc, int pt, int seqNum, long ts, int len)
+    public static RawPacket makeRTP(long ssrc, int pt, int seqNum, long ts, int len)
     {
         byte[] buf = new byte[len];
 
@@ -289,7 +290,7 @@ public class RawPacket implements ByteArrayBuffer
         }
 
         int version = getVersion(buf, off, len);
-        return version == RTPHeader.VERSION;
+        return (version == RTPHeader.VERSION);
     }
 
     /**
@@ -334,8 +335,7 @@ public class RawPacket implements ByteArrayBuffer
         }
 
         HeaderExtension he = addExtension(id, len);
-        System.arraycopy(data, 0,
-                he.getBuffer(), he.getOffset() + 1, len);
+        System.arraycopy(data, 0, he.getBuffer(), he.getOffset() + 1, len);
     }
 
     /**
@@ -1520,8 +1520,8 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Write a short to this packet at the specified offset.
      *
-     * @param off offset
-     * @param val value
+     * @param off
+     * @param val
      */
     public void writeShort(int off, short val)
     {

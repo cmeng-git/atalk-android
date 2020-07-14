@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.format;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 
 import java.util.Map;
 

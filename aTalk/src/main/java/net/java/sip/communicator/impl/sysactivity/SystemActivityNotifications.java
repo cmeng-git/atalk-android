@@ -102,7 +102,7 @@ public class SystemActivityNotifications
         try {
             // Don't load native library on Android to prevent the exception
             if (!OSUtils.IS_ANDROID) {
-                //                System.loadLibrary("sysactivitynotifications", SystemActivityNotifications.class.getClassLoader());
+//                System.loadLibrary("sysactivitynotifications", SystemActivityNotifications.class.getClassLoader());
 
                 ptr = allocAndInit();
                 if (ptr == -1)

@@ -72,7 +72,7 @@ public class Constants
     public static final String ILBC = "ilbc";
 
     /**
-     * mode    : Frame size for the encoding/decoding
+     * mode: Frame size for the encoding/decoding
      * 20 - 20 ms
      * 30 - 30 ms
      */
@@ -109,8 +109,7 @@ public class Constants
     public static final String PROP_OPUS_BITRATE = "neomedia.codec.audio.opus.encoder.BITRATE";
 
     /**
-     * The name of the property used to control the Opus encoder 'complexity'
-     * setting
+     * The name of the property used to control the Opus encoder 'complexity' setting
      */
     public static final String PROP_OPUS_COMPLEXITY = "neomedia.codec.audio.opus.encoder.COMPLEXITY";
 
@@ -125,15 +124,13 @@ public class Constants
     public static final String PROP_OPUS_FEC = "neomedia.codec.audio.opus.encoder.FEC";
 
     /**
-     * The name of the property used to control the Opus encoder "minimum expected packet loss"
-     * setting
+     * The name of the property used to control the Opus encoder "minimum expected packet loss" setting
      */
     public static final String PROP_OPUS_MIN_EXPECTED_PACKET_LOSS
             = "neomedia.codec.audio.opus.encoder.MIN_EXPECTED_PACKET_LOSS";
 
     /**
-     * The name of the property used to control whether VBR is enabled for the
-     * Opus encoder
+     * The name of the property used to control whether VBR is enabled for the Opus encoder
      */
     public static final String PROP_OPUS_VBR = "neomedia.codec.audio.opus.encoder.VBR";
 
@@ -145,8 +142,7 @@ public class Constants
     /**
      * The name of the property used to control the the 'always assume packet loss' setting for SILK
      */
-    public static final String PROP_SILK_ASSUME_PL
-            = "neomedia.codec.audio.silk.encoder.AWLAYS_ASSUME_PACKET_LOSS";
+    public static final String PROP_SILK_ASSUME_PL = "neomedia.codec.audio.silk.encoder.AWLAYS_ASSUME_PACKET_LOSS";
 
     /**
      * The name of the property used to control whether FEC is enabled for SILK

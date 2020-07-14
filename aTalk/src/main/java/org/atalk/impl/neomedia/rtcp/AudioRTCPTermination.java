@@ -19,6 +19,7 @@ package org.atalk.impl.neomedia.rtcp;
 import org.atalk.impl.neomedia.*;
 import org.atalk.impl.neomedia.transform.*;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.ByteArrayBuffer;
 
 /**
  * Provide RTCP termination facilities for audio

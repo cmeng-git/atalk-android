@@ -15,6 +15,7 @@ import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -30,9 +31,8 @@ import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
-import org.atalk.util.StringUtils;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
@@ -513,23 +513,23 @@ public class ConfigurationUtils
 
         // Load the "webPage" property.
         mWebPage = configService.getString(pWebPage);
-        if (StringUtils.isNullOrEmpty(mWebPage))
+        if (StringUtils.isEmpty(mWebPage))
             mWebPage = aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY);
 
         // Load the "auPopupNewMessage" property.
         String autoPopup = configService.getString(pAutoPopupNewMessage);
-        if (StringUtils.isNullOrEmpty(autoPopup))
+        if (StringUtils.isEmpty(autoPopup))
             autoPopup = UtilActivator.getResources().getSettingsString(pAutoPopupNewMessage);
 
-        if (!StringUtils.isNullOrEmpty(autoPopup) && autoPopup.equalsIgnoreCase("yes"))
+        if (StringUtils.isNotEmpty(autoPopup) && autoPopup.equalsIgnoreCase("yes"))
             autoPopupNewMessage = true;
 
         // Load the "sendMessageCommand" property.
         String messageCommand = configService.getString(pMsgCommand);
-        if (StringUtils.isNullOrEmpty(messageCommand))
+        if (StringUtils.isEmpty(messageCommand))
             messageCommand = UtilActivator.getResources().getSettingsString(pMsgCommand);
 
-        if (!StringUtils.isNullOrEmpty(messageCommand))
+        if (StringUtils.isNotEmpty(messageCommand))
             sendMessageCommand = messageCommand;
 
         // Load the showCallPanel property.
@@ -556,15 +556,15 @@ public class ConfigurationUtils
 
         // Load the "sendTypingNotifications" property.
         String isSendTypingNotification = configService.getString(pTypingNotification);
-        if (StringUtils.isNullOrEmpty(isSendTypingNotification))
+        if (StringUtils.isEmpty(isSendTypingNotification))
             isSendTypingNotification = UtilActivator.getResources().getSettingsString(pTypingNotification);
 
-        if (!StringUtils.isNullOrEmpty(isSendTypingNotification))
+        if (StringUtils.isNotEmpty(isSendTypingNotification))
             isSendChatStateNotifications = Boolean.parseBoolean(isSendTypingNotification);
 
         // Load the "sendThumbnail" property.
         String sendThumbNail = configService.getString(pSendThumbnail);
-        if (!StringUtils.isNullOrEmpty(sendThumbNail)) {
+        if (StringUtils.isNotEmpty(sendThumbNail)) {
             isSendThumbnail = Boolean.parseBoolean(sendThumbNail);
             FileTransferConversation.FT_THUMBNAIL_ENABLE = isSendThumbnail;
         }
@@ -576,17 +576,17 @@ public class ConfigurationUtils
         String isMoveContactConfirmationRequestedString
                 = configService.getString("gui.isMoveContactConfirmationRequested");
 
-        if (!StringUtils.isNullOrEmpty(isMoveContactConfirmationRequestedString)) {
+        if (StringUtils.isNotEmpty(isMoveContactConfirmationRequestedString)) {
             isMoveContactConfirmationRequested = Boolean.parseBoolean(isMoveContactConfirmationRequestedString);
         }
 
         // Load the "isMultiChatWindowEnabled" property.
         String isMultiChatWindowEnabledString = configService.getString(pMultiChatWindowEnabled);
 
-        if (StringUtils.isNullOrEmpty(isMultiChatWindowEnabledString))
+        if (StringUtils.isEmpty(isMultiChatWindowEnabledString))
             isMultiChatWindowEnabledString = UtilActivator.getResources().getSettingsString(pMultiChatWindowEnabled);
 
-        if (!StringUtils.isNullOrEmpty(isMultiChatWindowEnabledString)) {
+        if (StringUtils.isNotEmpty(isMultiChatWindowEnabledString)) {
             isMultiChatWindowEnabled = Boolean.parseBoolean(isMultiChatWindowEnabledString);
         }
 
@@ -595,21 +595,21 @@ public class ConfigurationUtils
 
         // Load the "isLeaveChatroomOnWindowCloseEnabled" property.
         String isLeaveChatRoomOnWindowCloseEnabledString = configService.getString(pLeaveChatRoomOnWindowClose);
-        if (StringUtils.isNullOrEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
+        if (StringUtils.isEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
             isLeaveChatRoomOnWindowCloseEnabledString
                     = UtilActivator.getResources().getSettingsString(pLeaveChatRoomOnWindowClose);
         }
 
-        if (!StringUtils.isNullOrEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
+        if (StringUtils.isNotEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
             isLeaveChatRoomOnWindowCloseEnabled = Boolean.parseBoolean(isLeaveChatRoomOnWindowCloseEnabledString);
         }
 
         // Load the "isHistoryShown" property.
         String isHistoryShownString = configService.getString(pMessageHistoryShown);
-        if (StringUtils.isNullOrEmpty(isHistoryShownString))
+        if (StringUtils.isEmpty(isHistoryShownString))
             isHistoryShownString = UtilActivator.getResources().getSettingsString(pMessageHistoryShown);
 
-        if (!StringUtils.isNullOrEmpty(isHistoryShownString)) {
+        if (StringUtils.isNotEmpty(isHistoryShownString)) {
             isHistoryShown = Boolean.parseBoolean(isHistoryShownString);
         }
 
@@ -623,47 +623,47 @@ public class ConfigurationUtils
 
         // Load the "chatHistorySize" property.
         String chatHistorySizeString = configService.getString(pChatHistorySize);
-        if (StringUtils.isNullOrEmpty(chatHistorySizeString))
+        if (StringUtils.isEmpty(chatHistorySizeString))
             chatHistorySizeString = UtilActivator.getResources().getSettingsString(pChatHistorySize);
 
-        if (!StringUtils.isNullOrEmpty(chatHistorySizeString)) {
+        if (StringUtils.isNotEmpty(chatHistorySizeString)) {
             chatHistorySize = Integer.parseInt(chatHistorySizeString);
         }
 
         // Load the "CHAT_WRITE_AREA_SIZE" property.
         String chatWriteAreaSizeString = configService.getString(pChatWriteAreaSize);
-        if (StringUtils.isNullOrEmpty(chatWriteAreaSizeString))
+        if (StringUtils.isEmpty(chatWriteAreaSizeString))
             chatWriteAreaSizeString = UtilActivator.getResources().getSettingsString(pChatWriteAreaSize);
 
-        if (!StringUtils.isNullOrEmpty(chatWriteAreaSizeString)) {
+        if (StringUtils.isNotEmpty(chatWriteAreaSizeString)) {
             chatWriteAreaSize = Integer.parseInt(chatWriteAreaSizeString);
         }
 
         // Load the "isTransparentWindowEnabled" property.
         String isTransparentWindowEnabledString = configService.getString(pTransparentWindowEnabled);
-        if (StringUtils.isNullOrEmpty(isTransparentWindowEnabledString))
+        if (StringUtils.isEmpty(isTransparentWindowEnabledString))
             isTransparentWindowEnabledString = UtilActivator.getResources().getSettingsString(pTransparentWindowEnabled);
 
-        if (!StringUtils.isNullOrEmpty(isTransparentWindowEnabledString)) {
+        if (StringUtils.isNotEmpty(isTransparentWindowEnabledString)) {
             isTransparentWindowEnabled = Boolean.parseBoolean(isTransparentWindowEnabledString);
         }
 
         // Load the "windowTransparency" property.
         String windowTransparencyString = configService.getString(pWindowTransparency);
-        if (StringUtils.isNullOrEmpty(windowTransparencyString))
+        if (StringUtils.isEmpty(windowTransparencyString))
             windowTransparencyString = UtilActivator.getResources().getSettingsString(pWindowTransparency);
 
-        if (!StringUtils.isNullOrEmpty(windowTransparencyString)) {
+        if (StringUtils.isNotEmpty(windowTransparencyString)) {
             windowTransparency = Integer.parseInt(windowTransparencyString);
         }
 
         // Load the "isWindowDecorated" property.
         String isWindowDecoratedString = configService.getString(pIsWindowDecorated);
 
-        if (StringUtils.isNullOrEmpty(isWindowDecoratedString))
+        if (StringUtils.isEmpty(isWindowDecoratedString))
             isWindowDecoratedString = UtilActivator.getResources().getSettingsString(pIsWindowDecorated);
 
-        if (!StringUtils.isNullOrEmpty(isWindowDecoratedString)) {
+        if (StringUtils.isNotEmpty(isWindowDecoratedString)) {
             isWindowDecorated = Boolean.parseBoolean(isWindowDecoratedString);
         }
 
@@ -719,7 +719,7 @@ public class ConfigurationUtils
                 = UtilActivator.getResources().getSettingsString("gui.account.ADVANCED_CONFIG_DISABLED");
 
         boolean isAdvancedConfigDisabled = false;
-        if (!StringUtils.isNullOrEmpty(advancedConfigDisabledDefaultProp))
+        if (StringUtils.isNotEmpty(advancedConfigDisabledDefaultProp))
             isAdvancedConfigDisabled = Boolean.parseBoolean(advancedConfigDisabledDefaultProp);
 
         // Load the advanced account configuration disabled.
@@ -730,7 +730,7 @@ public class ConfigurationUtils
         String singleInterfaceEnabledProp = UtilActivator.getResources().getSettingsString(SINGLE_WINDOW_INTERFACE_ENABLED);
 
         boolean isEnabled;
-        if (!StringUtils.isNullOrEmpty(singleInterfaceEnabledProp))
+        if (StringUtils.isNotEmpty(singleInterfaceEnabledProp))
             isEnabled = Boolean.parseBoolean(singleInterfaceEnabledProp);
         else
             isEnabled = Boolean.parseBoolean(UtilActivator.getResources().getSettingsString("gui.SINGLE_WINDOW_INTERFACE"));
@@ -764,7 +764,7 @@ public class ConfigurationUtils
         String showStatusChangedInChatDefault = UtilActivator.getResources().getSettingsString(pShowStatusChangedInChat);
 
         // if there is a default value use it
-        if (!StringUtils.isNullOrEmpty(showStatusChangedInChatDefault))
+        if (StringUtils.isNotEmpty(showStatusChangedInChatDefault))
             showStatusChangedInChat = Boolean.parseBoolean(showStatusChangedInChatDefault);
 
         showStatusChangedInChat = configService.getBoolean(pShowStatusChangedInChat, showStatusChangedInChat);
@@ -772,7 +772,7 @@ public class ConfigurationUtils
         String routeVideoAndDesktopUsingPhoneNumberDefault
                 = UtilActivator.getResources().getSettingsString(pRouteVideoAndDesktopUsingPhoneNumber);
 
-        if (!StringUtils.isNullOrEmpty(routeVideoAndDesktopUsingPhoneNumberDefault))
+        if (StringUtils.isNotEmpty(routeVideoAndDesktopUsingPhoneNumberDefault))
             routeVideoAndDesktopUsingPhoneNumber = Boolean.parseBoolean(routeVideoAndDesktopUsingPhoneNumberDefault);
 
         routeVideoAndDesktopUsingPhoneNumber
@@ -780,7 +780,7 @@ public class ConfigurationUtils
 
         String hideAccountMenuDefaultValue = UtilActivator.getResources().getSettingsString(pHideAccountMenu);
 
-        if (!StringUtils.isNullOrEmpty(hideAccountMenuDefaultValue))
+        if (StringUtils.isNotEmpty(hideAccountMenuDefaultValue))
             hideAccountSelectionWhenPossible = Boolean.parseBoolean(hideAccountMenuDefaultValue);
 
         hideAccountSelectionWhenPossible = configService.getBoolean(pHideAccountMenu, hideAccountSelectionWhenPossible);
@@ -788,7 +788,7 @@ public class ConfigurationUtils
         String hideAccountsStatusDefaultValue
                 = UtilActivator.getResources().getSettingsString(pHideAccountStatusSelectors);
 
-        if (!StringUtils.isNullOrEmpty(hideAccountsStatusDefaultValue))
+        if (StringUtils.isNotEmpty(hideAccountsStatusDefaultValue))
             hideAccountStatusSelectors = Boolean.parseBoolean(hideAccountsStatusDefaultValue);
 
         hideAccountStatusSelectors = configService.getBoolean(pHideAccountStatusSelectors,
@@ -797,7 +797,7 @@ public class ConfigurationUtils
         String autoAnswerDisableSubmenuDefaultValue
                 = UtilActivator.getResources().getSettingsString(pAutoAnswerDisableSubmenu);
 
-        if (!StringUtils.isNullOrEmpty(autoAnswerDisableSubmenuDefaultValue))
+        if (StringUtils.isNotEmpty(autoAnswerDisableSubmenuDefaultValue))
             autoAnswerDisableSubmenu = Boolean.parseBoolean(autoAnswerDisableSubmenuDefaultValue);
 
         autoAnswerDisableSubmenu = configService.getBoolean(pAutoAnswerDisableSubmenu, autoAnswerDisableSubmenu);
@@ -819,7 +819,7 @@ public class ConfigurationUtils
 
         String hideExtendedAwayStatusDefaultValue = UtilActivator.getResources().getSettingsString(pHideExtendedAwayStatus);
 
-        if (!StringUtils.isNullOrEmpty(hideExtendedAwayStatusDefaultValue))
+        if (StringUtils.isNotEmpty(hideExtendedAwayStatusDefaultValue))
             hideExtendedAwayStatus = Boolean.parseBoolean(hideExtendedAwayStatusDefaultValue);
 
         hideExtendedAwayStatus = configService.getBoolean(pHideExtendedAwayStatus, hideExtendedAwayStatus);
@@ -847,7 +847,7 @@ public class ConfigurationUtils
 
         String defaultSettingStr = UtilActivator.getResources().getSettingsString(fontDisabledProp);
 
-        if (!StringUtils.isNullOrEmpty(defaultSettingStr))
+        if (StringUtils.isNotEmpty(defaultSettingStr))
             defaultValue = Boolean.parseBoolean(defaultSettingStr);
 
         return configService.getBoolean(fontDisabledProp, defaultValue);
@@ -1427,7 +1427,7 @@ public class ConfigurationUtils
      */
     public static int getChatDefaultFontSize()
     {
-        if (!StringUtils.isNullOrEmpty(defaultFontSize))
+        if (StringUtils.isNotEmpty(defaultFontSize))
             return Integer.parseInt(defaultFontSize);
         return -1;
     }
@@ -1566,7 +1566,7 @@ public class ConfigurationUtils
     public static String getWebPage()
     {
         WebViewFragment.initWebView();
-        return StringUtils.isNullOrEmpty(mWebPage, true)
+        return StringUtils.isBlank(mWebPage)
                 ? aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
     }
 
@@ -1577,7 +1577,7 @@ public class ConfigurationUtils
      */
     public static void setWebPage(String webPage)
     {
-        mWebPage = StringUtils.isNullOrEmpty(webPage) ? webPage : webPage.trim();
+        mWebPage = StringUtils.isEmpty(webPage) ? webPage : webPage.trim();
         configService.setProperty(pWebPage, webPage);
     }
 
@@ -2454,7 +2454,7 @@ public class ConfigurationUtils
         MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
         String sessionUuid = mhs.getSessionUuidByJid(accountID, chatRoomID);
 
-        if (StringUtils.isNullOrEmpty(sessionUuid)) {
+        if (StringUtils.isEmpty(sessionUuid)) {
             Timber.w("Failed to get MUC prefix for chatRoom: %s", chatRoomID);
             return null;
         }
@@ -2676,7 +2676,7 @@ public class ConfigurationUtils
     public static String[] getEnabledSslProtocols()
     {
         String enabledSslProtocols = configService.getString("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
-        if (StringUtils.isNullOrEmpty(enabledSslProtocols, true)) {
+        if (StringUtils.isBlank(enabledSslProtocols)) {
             SSLSocket temp;
             try {
                 temp = (SSLSocket) SSLSocketFactory.getDefault().createSocket();

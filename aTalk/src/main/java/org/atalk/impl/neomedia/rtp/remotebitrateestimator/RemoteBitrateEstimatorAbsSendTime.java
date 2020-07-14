@@ -16,7 +16,8 @@
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
-import org.atalk.util.*;
+import org.atalk.util.logging.DiagnosticContext;
+import org.atalk.util.logging.TimeSeriesLogger;
 import org.ice4j.util.RateStatistics;
 import org.jetbrains.annotations.NotNull;
 

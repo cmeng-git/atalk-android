@@ -1,0 +1,17 @@
+--- /home/cmeng/source/smack/Smack-4.4.0-alpha5/org/jivesoftware/smackx/xdata/form/FillableForm.java	2020-05-31 19:46:40.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smackx/xdata/form/FillableForm.java	2020-07-03 07:37:55.000000000 
+@@ -190,13 +190,13 @@
+         case text_private:
+             return FormField.textPrivateBuilder(fieldName);
+         case text_single:
+             return FormField.textSingleBuilder(fieldName);
+         case hidden:
+             return FormField.hiddenBuilder(fieldName);
+-        case list_multi:
++        case list_single:
+             return FormField.listSingleBuilder(fieldName);
+         default:
+             throw new IllegalArgumentException();
+         }
+     }
+ 

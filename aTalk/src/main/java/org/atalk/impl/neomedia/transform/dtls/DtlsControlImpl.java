@@ -15,6 +15,7 @@ import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.util.ConfigUtils;
+import org.atalk.util.MediaType;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;

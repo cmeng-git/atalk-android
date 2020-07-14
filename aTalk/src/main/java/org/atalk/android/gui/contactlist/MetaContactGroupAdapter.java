@@ -16,18 +16,19 @@ import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.CollectionAdapter;
-import org.atalk.android.gui.util.event.EventListener;
 
 import java.util.*;
 
 /**
- * This adapter displays all <tt>MetaContactGroup</tt> items. If in the constructor
- * <tt>AdapterView</tt> id will be passed it will include "create new group" functionality. That
- * means extra item "create group.." will be appended on the last position and when selected
- * create group dialog will popup automatically. When new group is eventually created it is
- * implicitly included into this adapter.
+ * This adapter displays all <tt>MetaContactGroup</tt> items. If in the constructor <tt>AdapterView</tt> id
+ * will be passed it will include "create new group" functionality. That means extra item "create group.."
+ * will be appended on the last position and when selected create group dialog will popup automatically.
+ * When a new group is created, it is implicitly included into this adapter.
+ *
+ * Use setItemLayout and setDropDownLayout to change the spinner style if need to.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class MetaContactGroupAdapter extends CollectionAdapter<Object>
 {
@@ -37,14 +38,14 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
     private static final Object ADD_NEW_OBJECT = new Object();
 
     /**
-     * Drop down item layout
-     */
-    private int dropDownLayout;
-
-    /**
      * Item layout
      */
     private int itemLayout;
+
+    /**
+     * Drop down item layout
+     */
+    private int dropDownLayout;
 
     /**
      * Instance of used <tt>AdapterView</tt>.
@@ -52,7 +53,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
     private AdapterView adapterView;
 
     /**
-     * Creates new instance of <tt>MetaContactGroupAdapter</tt>. It will be filled with all
+     * Creates a new instance of <tt>MetaContactGroupAdapter</tt>. It will be filled with all
      * currently available <tt>MetaContactGroup</tt>.
      *
      * @param parent the parent <tt>Activity</tt>.
@@ -60,8 +61,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      * @param includeRoot <tt>true</tt> if "No group" item should be included
      * @param includeCreate <tt>true</tt> if "Create group" item should be included
      */
-    public MetaContactGroupAdapter(Activity parent, int adapterViewId, boolean includeRoot,
-            boolean includeCreate)
+    public MetaContactGroupAdapter(Activity parent, int adapterViewId, boolean includeRoot, boolean includeCreate)
     {
         super(parent, getAllContactGroups(includeRoot, includeCreate).iterator());
 
@@ -70,7 +70,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
     }
 
     /**
-     * Creates new instance of <tt>MetaContactGroupAdapter</tt>. It will be filled with all
+     * Creates a new instance of <tt>MetaContactGroupAdapter</tt>. It will be filled with all
      * currently available <tt>MetaContactGroup</tt>.
      *
      * @param parent the parent <tt>Activity</tt>.
@@ -78,8 +78,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
      * @param includeRoot <tt>true</tt> if "No group" item should be included
      * @param includeCreate <tt>true</tt> if "Create group" item should be included
      */
-    public MetaContactGroupAdapter(Activity parent, AdapterView adapterView, boolean includeRoot,
-            boolean includeCreate)
+    public MetaContactGroupAdapter(Activity parent, AdapterView adapterView, boolean includeRoot, boolean includeCreate)
     {
         super(parent, getAllContactGroups(includeRoot, includeCreate).iterator());
         init(adapterView);
@@ -91,29 +90,21 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
         init(aView);
     }
 
-    private void init(AdapterView aView)
+    private void init(AdapterView adapterView)
     {
-        this.adapterView = aView;
-        this.dropDownLayout = android.R.layout.simple_spinner_dropdown_item;
-        this.itemLayout = android.R.layout.simple_spinner_item;
+        this.adapterView = adapterView;
+        this.itemLayout = R.layout.simple_spinner_item;
+        this.dropDownLayout = R.layout.simple_spinner_dropdown_item;
 
         // Handle add new group action
-        aView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        adapterView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
                 Object item = parent.getAdapter().getItem(position);
                 if (item == MetaContactGroupAdapter.ADD_NEW_OBJECT) {
-                    AddGroupDialog.showCreateGroupDialog(getParentActivity(),
-                            new EventListener<MetaContactGroup>()
-                            {
-                                @Override
-                                public void onChangeEvent(MetaContactGroup newGroup)
-                                {
-                                    onNewGroupCreated(newGroup);
-                                }
-                            });
+                    AddGroupDialog.showCreateGroupDialog(getParentActivity(), newGroup -> onNewGroupCreated(newGroup));
                 }
             }
 
@@ -179,8 +170,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
     }
 
     /**
-     * Handles on new group created event by append item into the list and notifying about data
-     * set change.
+     * Handles on new group created event by append item into the list and notifying about data set change.
      *
      * @param newGroup new contact group if was created or <tt>null</tt> if user cancelled the dialog.
      */
@@ -197,22 +187,22 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
     }
 
     /**
-     * Sets drop down item layout resource id.
-     *
-     * @param dropDownLayout the drop down item layout resource id to set.
-     */
-    public void setDropDownLayout(int dropDownLayout)
-    {
-        this.dropDownLayout = dropDownLayout;
-    }
-
-    /**
-     * Sets item layout resource id.
+     * Sets to caller defined item layout resource id.
      *
      * @param itemLayout the item layout resource id to set.
      */
     public void setItemLayout(int itemLayout)
     {
         this.itemLayout = itemLayout;
+    }
+
+    /**
+     * Set to caller defined drop down item layout resource id.
+     *
+     * @param dropDownLayout the drop down item layout resource id to set.
+     */
+    public void setDropDownLayout(int dropDownLayout)
+    {
+        this.dropDownLayout = dropDownLayout;
     }
 }

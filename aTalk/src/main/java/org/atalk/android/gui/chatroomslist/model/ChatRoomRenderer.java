@@ -49,7 +49,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     public String getStatusMessage(Object chatRoomWrapper)
     {
         String displayDetail = getDisplayDetail(chatRoomWrapper);
-        if (StringUtils.isNullOrEmpty(displayDetail))
+        if (StringUtils.isEmpty(displayDetail))
             displayDetail = getChatRoomID(chatRoomWrapper).split("@")[0];
         return displayDetail;
     }

@@ -195,6 +195,8 @@
     <string name="service_gui_CHATROOM_NOT_JOINED">Anda harus bergabung dengan ruang obrolan untuk melakukan operasi lebih lanjut dengannya.</string>
     <string name="service_gui_CHATROOM_OPTIONS">Opsi ruang obrolan</string>
     <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Ruang obrolan %1$s telah meminta kata sandi.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Nonaktifkan Status Kamar</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Aktifkan Status Kamar</string>
     <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Subjek kamar berubah: \'%1$s\' => \'%2$s\'</string>
     <string name="service_gui_CHAT_ROOMS">Ruang obrolan</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s sekarang dikenal sebagai %2$s</string>
@@ -235,13 +237,14 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Daftar kontak Anda tidak berisi grup apa pun. Harap buat grup terlebih dahulu (Fail/Buat grup).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Bantuan Online</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Bantuan online</a></string>
     <string name="AboutDialog_title">Tentang</string>
     <string name="AboutDialog_Version">Versi %1$s</string>
     <string name="About_action">Tentang</string>
     <string name="About_help">Bantuan</string>
     <string name="check_new_version">Periksa Pembaruan</string>
     <string name="show_history_log">Log Riwayat</string>
+    <string name="Online_help">Bantuan online</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">Permintaan Otorisasi HTTP</string>

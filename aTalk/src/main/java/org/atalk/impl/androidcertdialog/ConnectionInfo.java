@@ -18,10 +18,10 @@ import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrati
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.util.StringUtils;
 
 import java.net.InetSocketAddress;
 import java.security.cert.Certificate;
@@ -188,7 +188,7 @@ public class ConnectionInfo extends OSGiActivity
      */
     private String getItemString(String labelText, String infoText)
     {
-        if (!StringUtils.isNullOrEmpty(infoText)) {
+        if (StringUtils.isNotEmpty(infoText)) {
             if (infoText.contains("TLS"))
                 infoText = "<small>" + infoText + "</small>";
         }

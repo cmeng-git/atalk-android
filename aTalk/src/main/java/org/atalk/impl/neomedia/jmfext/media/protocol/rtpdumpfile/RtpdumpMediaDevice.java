@@ -15,7 +15,7 @@
 package org.atalk.impl.neomedia.jmfext.media.protocol.rtpdumpfile;
 
 import org.atalk.impl.neomedia.device.*;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 

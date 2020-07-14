@@ -13,11 +13,11 @@ import android.preference.Preference;
 
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.StringUtils;
 
 /**
  * Provisioning preferences screen.
@@ -84,7 +84,7 @@ public class ProvisioningSettings extends BasicSettingsActivity implements Share
         Preference forgetPass = findPreference(P_KEY_FORGET_PASS);
         ConfigurationService config = AndroidGUIActivator.getConfigurationService();
         // Enable clear credentials button if password exists
-        if (!StringUtils.isNullOrEmpty(password)) {
+        if (StringUtils.isNotEmpty(password)) {
             forgetPass.setEnabled(true);
         }
         // Forget password action handler
