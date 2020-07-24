@@ -13,6 +13,7 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package org.xmpp.extensions.rayo;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.xmpp.extensions.AbstractExtensionElement;
 
 import org.jivesoftware.smack.packet.Presence;
@@ -22,6 +23,7 @@ import org.jxmpp.jid.Jid;
  * 'End' Rayo packet extension used to notify the client about call ended event.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class EndExtension extends AbstractExtensionElement
 {
@@ -88,14 +90,17 @@ public class EndExtension extends AbstractExtensionElement
      * Creates 'Presence' packet containing call ended Rayo notification that contains specified end
      * <tt>reason</tt>.
      *
+     * @param connection XMPP Connection
      * @param from source JID of this event.
      * @param to destination JID.
      * @param reason call end reason string. One of {@link ReasonExtension} static constants.
      * @return 'Presence' packet containing call ended Rayo notification.
      */
-    public static Presence createEnd(Jid from, Jid to, String reason)
+    public static Presence createEnd(XMPPConnection connection, Jid from, Jid to, String reason)
     {
-        Presence presence = new Presence(Presence.Type.unavailable);
+        Presence presence = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.unavailable)
+                .build();
         presence.setFrom(from);
         presence.setTo(to);
 

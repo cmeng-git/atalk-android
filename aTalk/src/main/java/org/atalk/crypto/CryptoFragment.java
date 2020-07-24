@@ -18,6 +18,7 @@ package org.atalk.crypto;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.*;
 
 import net.java.otr4j.OtrPolicy;
@@ -261,9 +262,10 @@ public class CryptoFragment extends OSGiFragment
             // Timber.w("update persistent ChatType to: %s", mChatType);
 
             mOtr_Session.setVisible(showMultiOtrSession);
-            // Do not store OTR as it may be invalid on new session startup
-            if ((mChatType != MSGTYPE_OTR) && (mChatType != MSGTYPE_OTR_UA))
-                mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
+            // cmeng (20200717): proceed to save but will forced to normal on retrieval
+            // Do not store OTR as it is not valid on new session startup
+            // if ((mChatType != MSGTYPE_OTR) && (mChatType != MSGTYPE_OTR_UA))
+            mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -468,7 +470,7 @@ public class CryptoFragment extends OSGiFragment
     /**
      * Trigger when invited participant join the conference. This will fill the partial identities table for the
      * participant and request fingerPrint verification is undecided. Hence ensuring that the next sent message
-     * is properly received by the new member
+     * is properly received by the new member.
      *
      * @param evt the <tt>ChatRoomMemberPresenceChangeEvent</tt> instance containing the source chat
      */
@@ -693,6 +695,10 @@ public class CryptoFragment extends OSGiFragment
         int chatType;
         if (!encryptionChoice.containsKey(chatSessionId)) {
             chatType = mMHS.getSessionChatType(activeChat.getChatSession());
+            // OTR state in DB may not be valid in the current chat session, so force it to normal chat mode
+            if ((chatType == MSGTYPE_OTR) || (chatType == MSGTYPE_OTR_UA)) {
+                chatType = MSGTYPE_NORMAL;
+            }
             encryptionChoice.put(chatSessionId, chatType);
         }
         chatType = encryptionChoice.get(chatSessionId);
@@ -711,6 +717,20 @@ public class CryptoFragment extends OSGiFragment
 
 //		Timber.w("ChatSession ID: %s\nEncryption choice: %s\nmItem: %s\nChatType: %s", chatSessionId,
 //				encryptionChoice, mItem, activeChat.getChatType());
+    }
+
+    /**
+     * Reset the encryption choice for the specified chatSessionId.
+     * Mainly use by ChatSessionFragement; to re-enable the chat Session for UI when it is selected again
+     *
+     * @param chatSessionId chat session Uuid
+     */
+    public static void resetEncryptionChoice(String chatSessionId){
+        if (TextUtils.isEmpty(chatSessionId)) {
+            encryptionChoice.clear();
+        } else {
+            encryptionChoice.remove(chatSessionId);
+        }
     }
 
     /**
@@ -854,10 +874,12 @@ public class CryptoFragment extends OSGiFragment
             if ((chatType != mChatType) || (chatType != activeChat.getChatType())) {
                 // Timber.d("OTR listener change mChatType to: %s (%s)", mChatType, chatType);
                 mChatType = chatType;
-                // Do not save OTR state into DB
-                if (mChatType == MSGTYPE_NORMAL) {
-                    mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
-                }
+
+                // cmeng (20200717): proceed to save but will forced to normal on retrieval
+                // Do not store OTR as it is not valid on new session startup
+                // if (mChatType == MSGTYPE_NORMAL)
+                mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
+
                 notifyCryptoModeChanged(mChatType);
             }
         }
@@ -942,7 +964,7 @@ public class CryptoFragment extends OSGiFragment
                         entityCan = mOmemoManager.multiUserChatSupportsOmemo(muc);
                     }
                     else {
-                        // buddy online check may sometimes experience reply timeout
+                        // buddy online check may sometimes experience reply timeout; OMEMO obsoleted feature
                         // not a good idea to include PEP_NODE_DEVICE_LIST_NOTIFY as some siblings may
                         // support omemo encryption.
                         // boolean support = ServiceDiscoveryManager.getInstanceFor(connection)

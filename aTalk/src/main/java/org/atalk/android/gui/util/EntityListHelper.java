@@ -33,8 +33,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.CallHistoryFragment;
-import org.atalk.android.gui.chat.ChatPanel;
-import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
@@ -63,7 +62,10 @@ public class EntityListHelper
 
     /**
      * Removes given <tt>metaContact</tt> from the contact list. Asks the user for confirmation before proceed.
-     * DomainJid will not be removed
+     * a. Remove all the chat messages and chatSession records from the database.
+     * b. Remove metaContact from the roster in DB.
+     *
+     * Note: DomainJid will not be removed.
      *
      * @param metaContact the contact to be removed from the list.
      */
@@ -90,7 +92,7 @@ public class EntityListHelper
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
-                        doRemoveContact(metaContact);
+                        doRemoveContact(context, metaContact);
                         if (chatPanel != null) {
                             ChatSessionManager.removeActiveChat(chatPanel);
                         }
@@ -109,14 +111,13 @@ public class EntityListHelper
      *
      * @param contact contact to be removed
      */
-    private static void doRemoveContact(final MetaContact contact)
+    private static void doRemoveContact(final Context ctx, final MetaContact contact)
     {
         // Prevent NetworkOnMainThreadException
         new Thread(() -> {
-            Context ctx = aTalkApp.getGlobalContext();
-            MetaContactListService mls = AndroidGUIActivator.getContactListService();
+            MetaContactListService metaContactListService = AndroidGUIActivator.getContactListService();
             try {
-                mls.removeMetaContact(contact);
+                metaContactListService.removeMetaContact(contact);
             } catch (Exception ex) {
                 AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
             }
@@ -189,12 +190,12 @@ public class EntityListHelper
             return;
 
         Bundle args = new Bundle();
-        args.putString(HistoryDeleteFragment.ARG_MESSAGE,
+        args.putString(ChatMessageDeleteFragment.ARG_MESSAGE,
                 aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING, entityJid));
         String title = aTalkApp.getResString(R.string.service_gui_HISTORY_CONTACT, entityJid);
 
         // Displays the history delete dialog and waits for user confirmation
-        DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(), title, HistoryDeleteFragment.class.getName(),
+        DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(), title, ChatMessageDeleteFragment.class.getName(),
                 args, aTalkApp.getResString(R.string.service_gui_PURGE), new DialogActivity.DialogListener()
                 {
                     public boolean onConfirmClicked(DialogActivity dialog)
@@ -263,11 +264,11 @@ public class EntityListHelper
 
                 if (desc instanceof MetaContact) {
                     MetaContact metaContact = (MetaContact) desc;
-                    mhs.eraseLocallyStoredHistory(metaContact, msgUUIDs);
+                    mhs.eraseLocallyStoredChatHistory(metaContact, msgUUIDs);
                 }
                 else {
                     ChatRoom chatRoom = ((ChatRoomWrapper) desc).getChatRoom();
-                    mhs.eraseLocallyStoredHistory(chatRoom, msgUUIDs);
+                    mhs.eraseLocallyStoredChatHistory(chatRoom, msgUUIDs);
                 }
             }
             else {
@@ -289,12 +290,14 @@ public class EntityListHelper
         }
     }
 
+    // ----------- Erase all the local stored chat history for all the entities (not called) ------------- //
+
     /**
-     * Erase all the local stored chat history for all MetaContact and ChatRoomWrapper
+     * Erase all the local stored chat history for all the entities i.e. MetaContacts or ChatRoomWrappers.
      *
-     * @param caller the callback
+     * @param caller the callback.
      */
-    public static void eraseAllContactHistory(final Context caller)
+    public static void eraseAllEntityHistory(final Context caller)
     {
         Context ctx = aTalkApp.getGlobalContext();
         String title = ctx.getString(R.string.service_gui_HISTORY);
@@ -310,7 +313,7 @@ public class EntityListHelper
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
                         // EntityListHelper mErase = new EntityListHelper();
-                        new doEraseAllContactHistory(caller, mediaDelete).execute();
+                        new doEraseAllEntityHistory(caller, mediaDelete).execute();
                         return true;
                     }
 
@@ -322,12 +325,12 @@ public class EntityListHelper
         );
     }
 
-    private static class doEraseAllContactHistory extends AsyncTask<Void, Void, Integer>
+    private static class doEraseAllEntityHistory extends AsyncTask<Void, Void, Integer>
     {
         private boolean isPurgeMediaFile;
         private TaskCompleted mCallback;
 
-        private doEraseAllContactHistory(Context context, boolean purgeMedia)
+        private doEraseAllEntityHistory(Context context, boolean purgeMedia)
         {
             this.mCallback = (TaskCompleted) context;
             this.isPurgeMediaFile = purgeMedia;
@@ -348,10 +351,11 @@ public class EntityListHelper
                 for (String msgFile : msgFiles) {
                     File file = new File(msgFile);
                     if (file.exists() && !file.delete())
-                        Timber.w("Failed to delete file: %s", msgFile);
+                        Timber.w("Failed to delete the file: %s", msgFile);
                 }
             }
-            mhs.eraseLocallyStoredHistory();
+            mhs.eraseLocallyStoredChatHistory(ChatSession.MODE_SINGLE);
+            mhs.eraseLocallyStoredChatHistory(ChatSession.MODE_MULTI);
             return ALL_ENTITIES;
         }
 

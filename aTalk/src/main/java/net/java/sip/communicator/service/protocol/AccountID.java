@@ -24,6 +24,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.DomainBareJid;
 import org.osgi.framework.BundleContext;
 
 import java.util.*;
@@ -56,10 +57,10 @@ public class AccountID
      * Table accountID columns
      */
     public static final String TABLE_NAME = "accountID";
-    public static final String ACCOUNT_UUID = "accountUuid";
-    public static final String PROTOCOL = "protocolName";  // Default Jabber
-    public static final String USER_ID = "userID";
-    public static final String ACCOUNT_UID = "accountUid"; // jabber:abc123@atalk.org (uuid)
+    public static final String ACCOUNT_UUID = "accountUuid"; // ACCOUNT_UUID_PREFIX + System.currentTimeMillis()
+    public static final String PROTOCOL = "protocolName";    // Default to Jabber
+    public static final String USER_ID = "userID";           // abc123@atalk.org i.e. BareJid
+    public static final String ACCOUNT_UID = "accountUid";   // jabber:abc123@atalk.org (uuid)
     public static final String KEYS = "keys";
 
     // Not use
@@ -84,6 +85,8 @@ public class AccountID
 
     private static final String KEY_PGP_SIGNATURE = "pgp_signature";
     private static final String KEY_PGP_ID = "pgp_id";
+
+    public static final String DEFAULT_PORT = "5222";
 
     protected String avatarHash;
     protected String rosterVersion;
@@ -156,8 +159,8 @@ public class AccountID
      * @param accountProperties a Map containing any other protocol and implementation specific account
      * initialization properties
      * @param protocolName the protocol name implemented by the provider that this id is meant for e.g. Jabber
-     * @param serviceName the name of the service (e.g. iptel.org, jabber.org, icq.com) that this account is
-     * registered with.
+     * @param serviceName the name of the service is what follows after the '@' sign in XMPP addresses (JIDs).
+     * (e.g. iptel.org, jabber.org, icq.com) the service of the account registered with.
      *
      * Note: parameters userID is null and new empty accountProperties when called from
      * @see net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration or
@@ -245,6 +248,16 @@ public class AccountID
     }
 
     /**
+     * Get the Entity XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
+     *
+     * @return XMPP service domain.
+     */
+    public DomainBareJid getXmppDomain()
+    {
+        return userBareJid.asDomainBareJid();
+    }
+
+    /**
      * Returns a name that can be displayed to the user when referring to this account.
      * e.g. abc123@example.org or abc123@example.org (jabber). Create one if none is found
      *
@@ -294,7 +307,7 @@ public class AccountID
     /**
      * Returns the name of the protocol.
      *
-     * @return the name of the protocol
+     * @return the name of the protocol.
      */
     public String getProtocolName()
     {
@@ -442,7 +455,7 @@ public class AccountID
      * Adds a property to the map of properties for this account identifier.
      *
      * @param key the key of the property
-     * @param value the property value
+     * @param value the property value.
      */
     public void putAccountProperty(String key, String value)
     {
@@ -735,13 +748,13 @@ public class AccountID
     }
 
     /**
-     * The address of the server we will use for this account
+     * The address of the server we will use for this account.  Default to serviceName if null.
      *
      * @return String
      */
     public String getServerAddress()
     {
-        return getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS);
+        return getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS, serviceName);
     }
 
     /**
@@ -755,13 +768,13 @@ public class AccountID
     }
 
     /**
-     * The port on the specified server
+     * The port on the specified server. Return DEFAULT_PORT if null.
      *
      * @return int
      */
     public String getServerPort()
     {
-        return getAccountPropertyString(ProtocolProviderFactory.SERVER_PORT);
+        return getAccountPropertyString(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
     }
 
     /**

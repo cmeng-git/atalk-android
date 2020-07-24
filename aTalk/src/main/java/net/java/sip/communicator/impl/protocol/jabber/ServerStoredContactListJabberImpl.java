@@ -21,8 +21,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.roster.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
@@ -835,10 +834,12 @@ public class ServerStoredContactListJabberImpl
         // Send <presence/> only we do not have OperationSetPersistentPresence feature, which are
         // more readily to support <Presence/> sending with <photo/> tag
         else if (mPPS.getOperationSet(OperationSetPersistentPresence.class) == null) {
+            Timber.w("Smack sending presence without OpSetPP support!");
             try {
-                Timber.w("Smack sending presence without OpSetPP support!");
-                Presence presence = new Presence(Presence.Type.available);
-                getParentProvider().getConnection().sendStanza(presence);
+                XMPPConnection connection = mPPS.getConnection();
+                PresenceBuilder presenceBuilder = connection.getStanzaFactory().buildPresenceStanza()
+                        .ofType(Presence.Type.available);
+                connection.sendStanza(presenceBuilder.build());
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }

@@ -32,6 +32,7 @@ import net.java.sip.communicator.service.muc.*;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -378,7 +379,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                     Timber.w("Failed to add new Bookmarks: %s", e.getMessage());
                 }
 
-                // Allow to remove new chatRoom if join failed
+                // Allow removal of new chatRoom if join failed
                 if (AndroidGUIActivator.getConfigurationService()
                         .getBoolean(MUCService.REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
                     final ChatRoomWrapper crWrapper = chatRoomWrapper;
@@ -402,7 +403,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
             else
                 chatRoomWrapper.savePassword(null);
 
-            byte[] pwdByte = TextUtils.isEmpty(password) ? null : password.getBytes();
+            byte[] pwdByte = StringUtils.isEmpty(password) ? null : password.getBytes();
             mucService.joinChatRoom(chatRoomWrapper, nickName, pwdByte, subject);
 
             Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);

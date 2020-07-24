@@ -368,7 +368,7 @@
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Hapus riwayat kontak ini</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Hapus semua riwayat obrolan kontak</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Anda yakin ingin menghapus semua pesan untuk %1$s?</string>
-    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua kontak?</string>
+    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua entitas?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
 
@@ -686,25 +686,25 @@
     <string name="service_gui_ALWAYS_TRUST">Selalu percaya sertifikat ini</string>
     <string name="service_gui_CERT_DIALOG_TITLE">Verifikasi Sertifikat</string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s tidak dapat memverifikasi identitas server saat terhubung ke&lt;br/>&lt;b>%2$s&lt;/b>&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s tidak dapat memverifikasi
         identitas sertifikat server\'\.&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s tidak dapat memverifikasi
         identitas klien yang terhubung.&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa klien\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa klien\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>%1$s tidak dapat memverifikasi
         identitas rekan %2$s.&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa rekan\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa rekan\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>

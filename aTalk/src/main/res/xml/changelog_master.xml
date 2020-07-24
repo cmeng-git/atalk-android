@@ -6,8 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.3.1 (07/14/2020)" versioncode="1131">
+    <release version="2.3.2 (07/24/2020)" versioncode="1132">
         <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Add new recent conversations UI in main pager slider</change>
+        <change>Fix login failure when server override option is enabled</change>
+        <change>When a chat room is destroyed, all associated chat messages and session are purged from database.</change>
+        <change>Show callHistory list in descending order of the call timeStamp</change>
+        <change>upgrade libvpx to v1.8.2</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.3.1 (07/14/2020)" versioncode="1131">
         <change>Add chatRoom option to enable/disable member presence status and subject change notification info display</change>
         <change>Fix dual session-accept sending when call received via Jingle Message Initiation</change>
         <change>Fix 'Add contact' group pull down menu items display blank when light theme is selected</change>

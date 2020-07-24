@@ -366,7 +366,7 @@
 	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Den Chatverlauf löschen</string>
 	<string name="service_gui_HISTORY_ERASE_ALL">Alle Chatverlaufe löschen</string>
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Willst du wirklich alle Nachrichten von %1$s löschen?</string>
-	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Willst du wirklich alle Nachrichten von allen Kontakten löschen?</string>
+	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Willst du wirklich alle Nachrichten von allen Kontakten Entitäten?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Fehler beim Löschen der Nachrichten von %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Löschen Sie Medien von meinem Telefon</string>
 

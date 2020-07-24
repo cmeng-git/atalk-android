@@ -259,7 +259,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
 
         if (providersList.contains(chatRoomProvider)) {
             /*
-             * Remove bookmark from server when the room is removed
+             * Remove bookmark from the server when the room is removed.
              */
             ProtocolProviderService pps = chatRoomProvider.getProtocolProvider();
             BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());

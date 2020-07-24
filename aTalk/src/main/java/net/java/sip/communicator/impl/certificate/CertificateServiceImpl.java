@@ -390,7 +390,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 Provider p = (Provider) c.newInstance(new ByteArrayInputStream(config.getBytes()));
                 Security.insertProviderAt(p, 0);
             } catch (Exception e) {
-                Timber.e("Access PKCS11 provider on an unsupported platform or the load failed", e.getMessage());
+                Timber.e("Access PKCS11 provider on an unsupported platform or the load failed: %s", e.getMessage());
             }
         }
         KeyStore.Builder ksBuilder = KeyStore.Builder.newInstance(keyStoreType, null, f,

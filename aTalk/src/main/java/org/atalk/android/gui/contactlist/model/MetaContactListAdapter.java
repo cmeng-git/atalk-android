@@ -113,7 +113,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void initModelData()
     {
-        contactListService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, MetaContactListService.class);
+        contactListService = AndroidGUIActivator.getContactListService();
         if (contactListService != null) {
             addContacts(contactListService.getRoot());
             contactListService.addMetaContactListListener(this);

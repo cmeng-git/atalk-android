@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background_dark"
         android:padding="5dp"
-        android:text="Call History"
+        android:text="@string/service_gui_CALL_HISTORY_GROUP_NAME"
         android:textColor="@color/textColorWhite" />
 
     <ListView

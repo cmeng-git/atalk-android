@@ -50,7 +50,7 @@ fi
 # lame patches
 # ===============================
 if [[ " ${MODULES[@]} " =~ " lame " ]]; then
-    LAME_VER="$(grep 'PACKAGE_VERSION =' < lame/Makefile | sed 's/^.* \([1-9]\.[0-9]*\).*$/\1/')"
+    LAME_VER="$(grep 'PACKAGE_VERSION =' < lame/configure | sed 's/^.*\([1-9]\.[0-9]*\).*$/\1/')"
     echo -e "### Applying patches for lame-v${LAME_VER} modules"
 
     patch  -p0 -N --dry-run --silent -f ./lame/configure < ./patches/31.lame_configure.patch 1>/dev/null

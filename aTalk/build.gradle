@@ -72,8 +72,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1131
-        versionName "2.3.1"
+        versionCode 1132
+        versionName "2.3.2"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -191,7 +191,6 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v13:${rootProject.supportLibraryVersion}"
     implementation "androidx.appcompat:appcompat:1.1.0"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation "com.google.android.material:material:1.1.0"
 
@@ -266,7 +265,7 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
-    implementation 'org.jxmpp:jxmpp-jid:0.7.0-alpha5'
+    implementation 'org.jxmpp:jxmpp-jid:1.0.0'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
     implementation 'org.jetbrains:annotations-java5:15.0'

@@ -21,7 +21,6 @@ import timber.log.Timber;
  * Eases the implementation of <tt>PacketTransformer<tt>-s which transform each
  * packet into a single transformed packet (as opposed to an array of possibly more than one packet).
  *
- * cmeng (20190723): Do not update this file - video call not working on old android (Note-3)
  * Need API-24 for new implementation (Use Function from smack).
  *
  * @author Boris Grozev
@@ -72,7 +71,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      *
      * XXX At some point ideally we would get rid of this ctor and all the inheritors will use the
      * parametrized ctor. Also, we might want to move this check inside the <tt>TransformEngineChain</tt>
-     * so that we only make the check once per packet: The RTCP transformer is only supposed to (reverse)
+     * so that we only make the check once per packet: The RTCP transformer is only supposed only to (reverse)
      * transform RTCP packets and the RTP transformer is only supposed to modify RTP packets.
      */
     public SinglePacketTransformer()
@@ -104,7 +103,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      * Reverse-transforms a specific packet.
      *
      * @param pkt the transformed packet to be restored.
-     * @return the restored packet.
+     * @return the reversed transformed packet.
      */
     public abstract RawPacket reverseTransform(RawPacket pkt);
 
@@ -112,37 +111,11 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      * {@inheritDoc}
      *
      * Reverse-transforms an array of packets by calling {@link #reverseTransform(RawPacket)} on each one.
-     * cmeng (20190723): Do not update this method - video call not working on old android (Note-3)
      */
     @Override
     public RawPacket[] reverseTransform(RawPacket[] pkts)
     {
-        // For API-24 only - Use Function from smack
         return transformArray(pkts, cachedReverseTransform, exceptionsInReverseTransform, "reverseTransform");
-
-//        if (pkts != null) {
-//            for (int i = 0; i < pkts.length; i++) {
-//                RawPacket pkt = pkts[i];
-//
-//                if (pkt != null
-//                        && (packetPredicate == null || packetPredicate.test(pkt))) {
-//                    try {
-//                        pkts[i] = reverseTransform(pkt);
-//                    } catch (Throwable t) {
-//                        exceptionsInReverseTransform.incrementAndGet();
-//                        if ((exceptionsInReverseTransform.get() % EXCEPTIONS_TO_LOG) == 0
-//                                || exceptionsInReverseTransform.get() == 1) {
-//                            Timber.e(t, "Failed to reverse-transform RawPacket(s)!");
-//                        }
-//                        if (t instanceof Error)
-//                            throw (Error) t;
-//                        else
-//                            throw (RuntimeException) t;
-//                    }
-//                }
-//            }
-//        }
-//        return pkts;
     }
 
     /**
@@ -161,32 +134,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     @Override
     public RawPacket[] transform(RawPacket[] pkts)
     {
-        // For API-24 only - Use Function from smack
         return transformArray(pkts, cachedTransform, exceptionsInTransform, "transform");
-
-//        if (pkts != null) {
-//            for (int i = 0; i < pkts.length; i++) {
-//                RawPacket pkt = pkts[i];
-//
-//                if (pkt != null
-//                        && (packetPredicate == null || packetPredicate.test(pkt))) {
-//                    try {
-//                        pkts[i] = transform(pkt);
-//                    } catch (Throwable t) {
-//                        exceptionsInTransform.incrementAndGet();
-//                        if ((exceptionsInTransform.get() % EXCEPTIONS_TO_LOG) == 0
-//                                || exceptionsInTransform.get() == 1) {
-//                            Timber.e(t, "Failed to transform RawPacket(s)!");
-//                        }
-//                        if (t instanceof Error)
-//                            throw (Error) t;
-//                        else
-//                            throw (RuntimeException) t;
-//                    }
-//                }
-//            }
-//        }
-//        return pkts;
     }
 
     /*

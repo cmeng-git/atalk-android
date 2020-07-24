@@ -165,8 +165,8 @@ public class MUCServiceImpl extends MUCService
      *
      * @param chatRoomWrapper the chat room to join.
      * @param nickName the nickname we choose for the given chat room.
-     * @param password the password.
-     * @param subject the subject which will be set to the room after the user join successful.
+     * @param password room password.
+     * @param subject which will be set to the room after the user join successful.
      */
     public void joinChatRoom(ChatRoomWrapper chatRoomWrapper, String nickName, byte[] password, String subject)
     {

@@ -349,7 +349,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
         Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
                 CallHistoryService.ACCOUNT_UID + "=? AND "
-                        + CallHistoryService.TIME_STAMP + "<?", args, null, null, ORDER_ASC);
+                        + CallHistoryService.TIME_STAMP + "<?", args, null, null, ORDER_DESC);
 
         while (cursor.moveToNext()) {
             result.add(convertHistoryRecordToCallRecord(cursor));

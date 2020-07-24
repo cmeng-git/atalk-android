@@ -38,8 +38,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
 import org.atalk.android.gui.chatroomslist.model.*;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
@@ -50,6 +52,7 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.util.List;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
@@ -396,7 +399,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                     return true;
 
                 case R.id.erase_all_chatroom_history:
-                    EntityListHelper.eraseAllContactHistory(mActivity);
+                    EntityListHelper.eraseAllEntityHistory(mActivity);
                     return true;
 
                 case R.id.destroy_chatroom:
@@ -574,6 +577,11 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
             if ((crWrapper != null) && (chatRoomListAdapter != null)) {
                 int unreadCount = crWrapper.getUnreadCount();
                 chatRoomListAdapter.updateUnreadCount(crWrapper, unreadCount);
+
+                Fragment csf = aTalk.getFragment(aTalk.CHAT_SESSION_FRAGMENT);
+                if (csf instanceof ChatSessionFragment) {
+                    ((ChatSessionFragment) csf).updateUnreadCount(crWrapper.getChatRoomID(), unreadCount);
+                }
             }
         });
     }

@@ -2,6 +2,14 @@
 # releases are sorted from youngest to oldest.
 
 #=============================================================
+version 1.1.5 (2020/07/15):
+- Clean up scripts for libvpx v1.8.2 build
+
+#=============================================================
+version 1.1.4 (2019/05/24):
+- Clean up scripts and use only single script execution to build native library
+
+#=============================================================
 version 1.1.3 (2019/04/23):
 - Use option "--enable-runtime-cpu-detect" to fix x86_64 VP8 encoder problem
   see https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1\

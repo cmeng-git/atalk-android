@@ -77,7 +77,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             throw new IllegalArgumentException("The specified property map is null");
 
         // Generate a new accountUuid for new account creation
-        String accountUuid = AccountID.ACCOUNT_UUID_PREFIX + Long.toString(System.currentTimeMillis());
+        String accountUuid = AccountID.ACCOUNT_UUID_PREFIX + System.currentTimeMillis();
         accountProperties.put(ACCOUNT_UUID, accountUuid);
 
         String accountUID = getProtocolName() + ":" + userID;

@@ -491,7 +491,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 
     /**
      * Warn and get user confirmation if changes of userName will lead to removal of any old messages
-     * of the old account. It also checks for valid userName entry
+     * of the old account. It also checks for valid userName entry.
      *
      * @param shPrefs SharedPreferences
      */
