@@ -27,7 +27,7 @@ class QualityControlImpl implements QualityControl
     private QualityPreset localSettingsPreset;
 
     /**
-     * The maximum values for resolution, framerate, etc.
+     * The maximum values for resolution, and framerate etc.
      */
     private QualityPreset maxPreset;
 
@@ -39,7 +39,7 @@ class QualityControlImpl implements QualityControl
     /**
      * Sets the preset.
      *
-     * @param preset the desired video settings
+     * @param preset the desired video settings.
      */
     private void setRemoteReceivePreset(QualityPreset preset)
     {
@@ -51,8 +51,7 @@ class QualityControlImpl implements QualityControl
             this.preset = preset;
 
             Dimension resolution;
-
-            if ((preset != null) && ((resolution = preset.getResolution()) != null)) {
+            if ((resolution = preset.getResolution()) != null) {
                 Timber.i("video send resolution: %dx%d", resolution.width, resolution.height);
             }
         }
@@ -117,8 +116,7 @@ class QualityControlImpl implements QualityControl
     private QualityPreset getPreferredSendPreset()
     {
         if (localSettingsPreset == null) {
-            DeviceConfiguration devCfg
-                    = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
+            DeviceConfiguration devCfg = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
             localSettingsPreset = new QualityPreset(devCfg.getVideoSize(), devCfg.getFrameRate());
         }
         return localSettingsPreset;

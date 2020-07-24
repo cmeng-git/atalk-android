@@ -17,13 +17,13 @@
 # Uncomment the line below to see all script echo to terminal
 # set -x
 
-# export ANDROID_NDK="/opt/android/android-ndk-r15c" - last working is r15c without errors for aTalk
-# r16b => Unable to invoke compiler: /opt/android/android-ndk-r16b/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-gcc but build?
+# When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
+# May use android-ndk-r18b" - libvpx v1.8.2 is working with r18b without error
 
 if [[ $ANDROID_NDK = "" ]]; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
 	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk"
-	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r15c"
+	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r17c"
 	exit 1
 fi
 set -u
@@ -40,7 +40,6 @@ NDK_ABI_VERSION=4.9
 
 # Android recommended architecture support; others are deprecated
 ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
-# ABIS=("arm64-v8a")
 
 BASEDIR=`pwd`
 NDK=${ANDROID_NDK}
@@ -89,7 +88,8 @@ configure() {
       NDK_ARCH="arm64"
       NDK_ABIARCH="aarch64-linux-android"
       CFLAGS="${CFLAGS_} -march=armv8-a"
-      # Supported emulations: aarch64linux aarch64elf aarch64elf32 aarch64elf32b aarch64elfb armelf armelfb aarch64linuxb aarch64linux32 aarch64linux32b armelfb_linux_eabi armelf_linux_eabi
+      # Supported emulations: aarch64linux aarch64elf aarch64elf32 aarch64elf32b aarch64elfb armelf armelfb
+      # aarch64linuxb aarch64linux32 aarch64linux32b armelfb_linux_eabi armelf_linux_eabi
       LDFLAGS="${LDFLAGS_}" # -march=arch64linux" not valid also
       ASFLAGS=""
     ;;
@@ -146,7 +146,7 @@ configure() {
      --stl libc++ \
      --install-dir=${TOOLCHAIN_PREFIX}
 
-  # Define the install directory of the libs and include files etc
+  # Define the install-directory of the libs and include files etc
   PREFIX=${BASEDIR}/output/android/${ABI}
 
   # Add the standalone toolchain to the search path.

@@ -903,8 +903,11 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Removes the contact in the metaContact entry from the childContacts table;
+     * Remove the contact in the metaContact entry from the childContacts table;
      * also the contact entry in contacts table if none found in childContacts after removal.
+     *
+     * Note: Both the contact chatSession and its associated chat messages are left in the DB
+     * User may remove this in ChatSessionFragment when an invalid entity is selected.
      *
      * @param evt a reference to the corresponding <tt>ProtoContactEvent</tt>
      */

@@ -21,8 +21,11 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.TextView;
 
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.protocol.ChatRoom;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -109,6 +112,11 @@ public class ChatRoomDestroyDialog extends OSGiFragment
                     return false;
                 }
             }
+
+            // When a room is destroyed, purge all the chat messages and room chat session from the database.
+            ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
+            MessageHistoryServiceImpl MHS = MessageHistoryActivator.getMessageHistoryService();
+            MHS.eraseLocallyStoredChatHistory(chatRoom, null);
 
             MUCActivator.getMUCService().destroyChatRoom(chatRoomWrapper, reason, entityBareJid);
             if (chatPanel != null) {

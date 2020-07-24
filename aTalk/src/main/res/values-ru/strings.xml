@@ -368,7 +368,7 @@
 	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Удалить эту историю контактов</string>
 	<string name="service_gui_HISTORY_ERASE_ALL">Удалить все истории чатов контактов</string>
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Вы действительно хотите очистить все сообщения для %1$s?</string>
-	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Вы действительно хотите очистить все сообщения для всех контактов?</string>
+	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Вы действительно хотите очистить все сообщения для всех юридические лица?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Удалить медиа с моего телефона</string>
 

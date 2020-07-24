@@ -51,7 +51,7 @@ import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**
- * The user interface that allows user to configure the room properties.
+ * The user interface that allows user to view the call record history.
  *
  * @author Eng Chong Meng
  */
@@ -69,12 +69,12 @@ public class CallHistoryFragment extends OSGiFragment
     private List<CallRecord> callRecords = new ArrayList<>();
 
     /**
-     * The Room configuration list view adapter for user selection
+     * The Call record list view adapter for user selection
      */
     private CallHistoryAdapter callHistoryAdapter;
 
     /**
-     * The chat list view representing the chat.
+     * The call history list view representing the chat.
      */
     private ListView callListView;
 
@@ -83,11 +83,6 @@ public class CallHistoryFragment extends OSGiFragment
      * it's accessed from the main thread.
      */
     protected final Handler uiHandler = OSGiActivity.uiHandler;
-
-    /**
-     * the top of the last deleted call record to scroll to after deletion
-     */
-    private Date lastDeletedCallDate = null;
 
     /**
      * View for room configuration title description from the room configuration form
@@ -126,7 +121,7 @@ public class CallHistoryFragment extends OSGiFragment
     }
 
     /**
-     * Adapter displaying all the available room configuration properties for user selection.
+     * Adapter displaying all the available call history records for user selection.
      */
     private class CallHistoryAdapter extends BaseAdapter
     {
@@ -237,17 +232,16 @@ public class CallHistoryFragment extends OSGiFragment
         }
 
         /**
-         * Retrieve the chatRoom configuration fields from server and init the default replyFrom
-         * Populate the fragment with the available options are done in getView()
+         * Retrieve the call history records from locally stored database
+         * Populate the fragment with the call record for use in getView()
          */
         private class getCallRecords extends AsyncTask<Void, Void, Void>
         {
-            Collection<CallRecord> callRecordPPS;
-
             @Override
             protected Void doInBackground(Void... params)
             {
                 initMetaContactList();
+                Collection<CallRecord> callRecordPPS;
                 CallHistoryService CHS = CallHistoryActivator.getCallHistoryService();
 
                 Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
@@ -279,7 +273,7 @@ public class CallHistoryFragment extends OSGiFragment
     /**
      * Adds the given <tt>addContactPresenceStatusListener</tt> to listen for contact presence status change.
      *
-     * @param pps the <tt>ProtocolProviderService</tt> for which we add the listener
+     * @param pps the <tt>ProtocolProviderService</tt> for which we add the listener.
      */
     private void addContactStatusListener(ProtocolProviderService pps)
     {
@@ -294,7 +288,7 @@ public class CallHistoryFragment extends OSGiFragment
      * Sets the call state.
      *
      * @param callStateView the call state image view
-     * @param callRecord the call record
+     * @param callRecord the call record.
      */
     private void setCallState(ImageView callStateView, CallRecord callRecord)
     {
@@ -338,12 +332,13 @@ public class CallHistoryFragment extends OSGiFragment
 
     public boolean isShowVideoCallBtn(Object contactImpl)
     {
-        return isShowButton((MetaContact) contactImpl, OperationSetVideoTelephony.class);
+        return (contactImpl instanceof MetaContact)
+                && isShowButton((MetaContact) contactImpl, OperationSetVideoTelephony.class);
     }
 
     private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
     {
-        return (metaContact.getOpSetSupportedContact(opSetClass) != null);
+        return ((metaContact != null) && metaContact.getOpSetSupportedContact(opSetClass) != null);
     }
 
     /**
@@ -351,14 +346,14 @@ public class CallHistoryFragment extends OSGiFragment
      */
     public void initMetaContactList()
     {
-        MetaContactListService contactListService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, MetaContactListService.class);
+        MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
         if (contactListService != null) {
             addContacts(contactListService.getRoot());
         }
     }
 
     /**
-     * Adds all child contacts for the given <tt>group</tt>. Omit metaGroup of zero child
+     * Adds all child contacts for the given <tt>group</tt>. Omit metaGroup of zero child.
      *
      * @param group the group, which child contacts to add
      */
@@ -384,9 +379,7 @@ public class CallHistoryFragment extends OSGiFragment
     @Override
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
     {
-        uiHandler.post(() -> {
-            callHistoryAdapter.notifyDataSetChanged();
-        });
+        uiHandler.post(() -> callHistoryAdapter.notifyDataSetChanged());
     }
 
     @Override
@@ -508,17 +501,12 @@ public class CallHistoryFragment extends OSGiFragment
                             if (cType == callHistoryAdapter.CALL_RECORD) {
                                 callRecord = (CallRecord) callHistoryAdapter.getItem(cPos);
                                 if (callRecord != null) {
-                                    if (i == 0) {
-                                        // keep a reference for return to the top of last deleted call record
-                                        lastDeletedCallDate = callRecord.getStartTime();
-                                    }
                                     callUuidDel.add(callRecord.getCallUuid());
                                 }
                             }
                         }
                     }
 
-                    String cfShow = mContext.getResources().getString(R.string.service_gui_CONTACTS_OFFLINE_SHOW);
                     EntityListHelper.eraseEntityCallHistory(CallHistoryFragment.this, callUuidDel);
                     mode.finish();
                     return true;

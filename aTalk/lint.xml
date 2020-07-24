@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="OldTargetApi" severity="ignore" />
+    <issue id="GoogleAppIndexingWarning" severity="ignore" />
+
+    <!-- Transifex and Lint disagree on what quantities are necessary -->
+    <issue id="UnusedQuantity" severity="warning">
+        <ignore path="res/values-*/strings.xml" />
+    </issue>
+    <issue id="MissingQuantity" severity="warning">
+        <ignore path="res/values-*/strings.xml" />
+    </issue>
+
+</lint>

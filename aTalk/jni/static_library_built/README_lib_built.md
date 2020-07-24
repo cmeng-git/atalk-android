@@ -8,12 +8,13 @@ for Linux/Ubuntu OS with proper development environment setup i.e.
 
 Please refer to each sub-directory for more information.
 
-ffmpeg
--------
-* kept for reference only - not use. Refer to ffmpeg-x264 for the actual static libraries used in atalk
+jni/ffmpeg, jni/vpx, jni/openssl etc
+---------------------------------------
+* Contain the interface files for java to native libraries; and android_a.mk to build libjnXXX.so
+* Refer to ffmpeg-x264 etc for the actual building of static libraries used for linkage.
 
 ffmpeg-x264
-------
+-----------
 * Build static libraries for the various architectures used for aTalk/jin/ffmpeg
 
 libvpx
@@ -21,5 +22,5 @@ libvpx
 * Build static libraries for the various architectures used for aTalk/jin/vpx
 
 openssl
-------
+-------
 * Build static libraries for the various architectures used for aTalk/jin/openssl

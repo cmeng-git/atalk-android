@@ -118,7 +118,7 @@ public class MessageReceivedEvent extends EventObject
      *
      * @param source the <tt>IMessage</tt> whose reception this event represents.
      * @param from the <tt>Contact</tt> that has sent this message.
-     * @param fromResource the <tt>ContactResource</tt>, from which this message was sent
+     * @param fromResource the <tt>ContactResource</tt>, from which this message was sent.
      * @param timestamp the exact date when the event occurred.
      * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
      * correction.

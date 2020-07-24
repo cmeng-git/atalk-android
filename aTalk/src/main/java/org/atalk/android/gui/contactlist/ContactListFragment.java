@@ -24,10 +24,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountInfoPresenceActivity;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
 import org.atalk.android.gui.contactlist.model.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.share.ShareActivity;
@@ -345,7 +347,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         boolean visible = ((chatList.size() > 1) || ((chatList.size() == 1) && !closeChatVisible));
         menu.findItem(R.id.close_all_chats).setVisible(visible);
 
-        // may not want to offer erase all contacts' chat history
+        // Do not want to offer erase all contacts' chat history
         menu.findItem(R.id.erase_all_contact_chat_history).setVisible(false);
 
         // Checks if the re-request authorization item should be visible
@@ -425,7 +427,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     return true;
 
                 case R.id.erase_all_contact_chat_history:
-                    EntityListHelper.eraseAllContactHistory(getContext());
+                    EntityListHelper.eraseAllEntityHistory(getContext());
                     return true;
 
                 case R.id.contact_tts_enable:
@@ -714,6 +716,11 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
             if ((metaContact != null) && (contactListAdapter != null)) {
                 int unreadCount = metaContact.getUnreadCount();
                 contactListAdapter.updateUnreadCount(metaContact, unreadCount);
+
+                Fragment csf = aTalk.getFragment(aTalk.CHAT_SESSION_FRAGMENT);
+                if (csf instanceof ChatSessionFragment) {
+                    ((ChatSessionFragment) csf).updateUnreadCount(metaContact.getDefaultContact().getAddress(), unreadCount);
+                }
             }
         });
     }

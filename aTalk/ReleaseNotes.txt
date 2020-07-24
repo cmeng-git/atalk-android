@@ -1,6 +1,29 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	07/24/2020
+Version:		2.3.2 (1132)
+
+- Login failed when server override option is enabled; must include config.setCustomX509TrustManager(sslTrustManager) for smack-4.4.0-alpha5;
+- CallHisotry isShowVideoCallBtn() must check for valid MetaContact
+- Fix android device without the TextToSpeech engine implementation, catch ActivityNotFoundException
+  i.e. No Activity found to handle Intent { act=android.speech.tts.engine.CHECK_TTS_DATA }
+- Redefined ChatSession.STATUS to store ChatFragment#chatType and bit-7 to hide from session UI;
+  Redefine ChatFragment#MSGTYPE_XXX to support session record view
+- Remove "Do not store OTR as it is invalid on new session startup" in CryptoFragment;
+  for ((mChatType != MSGTYPE_OTR) && (mChatType != MSGTYPE_OTR_UA)), instead force to normal on retrieval
+- When a room is destroyed, purge all the chat messages and room chat session from the database; not further retrievable.
+- CallHistory list in descending order of the call timeStamp
+- Port to smack library new PresenceBuilder() replacing the deprecated new Presence()
+- upgrade libvpx to v1.8.2 (external build from libvpx-android)
+- upgrade 'org.jxmpp:jxmpp-jid:1.0.0'
+- Remove aTalk multidex implementation: android VM with version 2.1.0 has multidex support built in.
+- Remove: Migrate aTalk to new directory structure 2.1.4 (2019/12/18)
+  MigrateDir.aTalkDirMigrate();
+- Remove migrate support for original jitsi database and xml file records into SQL Lite databases
+
+=========================================================================
+Author:         cmeng
 Upload Date:	07/14/2020
 Version:		2.3.1 (1131)
 
@@ -395,7 +418,7 @@ Upload Date:	02/28/2020
 - When aTalk is minimized or closed, generate an alert tone and wake aTalk and show join room dialog on receive an invitation
 - Move from chatRoomJabberImpl to OperationSetMultiUserChatJabberImpl#addAsyncStanzaListener() to to handle captcha and error messages from room
 - Complete redesign handler and enhanced UI for room with captcha protection:
-  Omit use of SMACK_REPLY_CAPTCHA_TIMEOUT, Otherwise 60s ANR occurs if aTalk is not in-focus.
+  Omit use of SMACK_REPLY_CAPTCHA_TIMEOUT(=60000), Otherwise 60s ANR occurs if aTalk is not in-focus.
   Allow retry on user incorrect captcha code entry
   Display captcha failed/passed result on chat view
 - Hide chatRoom option items that are invalid when user has not joined the room.

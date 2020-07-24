@@ -26,7 +26,6 @@ import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
@@ -39,7 +38,6 @@ import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
 import androidx.lifecycle.*;
-import androidx.multidex.MultiDex;
 import timber.log.Timber;
 
 /**
@@ -126,9 +124,8 @@ public class aTalkApp extends Application implements LifecycleObserver
     }
 
     /**
-     * This method is for use in emulated process environments.  It will
-     * never be called on a production Android device, where processes are
-     * removed by simply killing them; no user code (including this callback)
+     * This method is for use in emulated process environments.  It will never be called on a production Android
+     * device, where processes are removed by simply killing them; no user code (including this callback)
      * is executed when doing so.
      */
     @Override
@@ -154,19 +151,13 @@ public class aTalkApp extends Application implements LifecycleObserver
         Timber.d("APP BACKGROUNDED");
     }
 
-    @Override
-    protected void attachBaseContext(Context base)
-    {
-        super.attachBaseContext(base);
-        MultiDex.install(base);
-    }
-
     /**
      * All language setting changes must call via this so aTalkApp contextWrapper is updated
      *
      * @param language locale for the aTalkApp
      */
-    public static void setLocale(String language) {
+    public static void setLocale(String language)
+    {
         LocaleHelper.setLocale(mInstance, language);
     }
 
@@ -253,6 +244,7 @@ public class aTalkApp extends Application implements LifecycleObserver
 
     /**
      * Get aTalkApp application instance
+     *
      * @return aTalkApp mInstance
      */
     public static aTalkApp getInstance()

@@ -1,6 +1,7 @@
 package org.atalk.android.plugin.textspeech;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -100,7 +101,14 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
                     REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
 
         setState(State.LOADING);
-        checkVoiceData();
+
+        // Device without TTS engine will cause aTalk to crash.
+        try {
+            checkVoiceData();
+        } catch (ActivityNotFoundException ex) {
+            aTalkApp.showToastMessage(ex.getMessage());
+            finish();
+        }
     }
 
     @Override

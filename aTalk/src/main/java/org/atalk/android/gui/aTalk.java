@@ -29,12 +29,13 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
 import org.atalk.android.gui.call.CallHistoryFragment;
-import org.atalk.android.gui.chat.ChatPanel;
-import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.DepthPageTransformer;
+import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.persistance.migrations.MigrateDir;
 import org.jetbrains.annotations.NotNull;
@@ -64,8 +65,9 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
     public final static int CL_FRAGMENT = 0;
     public final static int CRL_FRAGMENT = 1;
-    public final static int CH_FRAGMENT = 2;
-    // public final static int WP_FRAGMENT = 3;
+    public final static int CHAT_SESSION_FRAGMENT = 2;
+    public final static int CALL_HISTORY_FRAGMENT = 3;
+    // public final static int WP_FRAGMENT = 4;
 
     /**
      * The action that will show contacts.
@@ -89,7 +91,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     /**
      * The number of pages (wizard steps) to show.
      */
-    private static final int NUM_PAGES = 4;
+    private static final int NUM_PAGES = 5;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -130,11 +132,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         handleIntent(getIntent(), savedInstanceState);
 
-        // Migrate aTalk to new directory structure 2.1.4 (2019/12/18) - may be removed in future release
-        MigrateDir.aTalkDirMigrate();
-
-        // Purge obsoleted aTalk avatarcache directory and contents 2.2.0 (2020/03/13)
-        // may be removed in future release
+        // Purge obsoleted aTalk avatarcache directory and contents 2.2.0 (2020/03/13): To be removed in future release.
         MigrateDir.purgeAvatarCache();
 
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
@@ -211,7 +209,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
     /*
      * If the user is currently looking at the first page, allow the system to handle the
-     * Back button. This calls finish() on this activity and pops the back stack.
+     * Back button. This call finish() on this activity and pops the back stack.
      */
     @Override
     public void onBackPressed()
@@ -256,7 +254,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * Handler for chatListFragment on completed execution of
      *
      * @see EntityListHelper#eraseEntityChatHistory(Context, Object, List, List)
-     * @see EntityListHelper#eraseAllContactHistory(Context)
+     * @see EntityListHelper#eraseAllEntityHistory(Context)
      */
     @Override
     public void onTaskComplete(Integer result)
@@ -296,18 +294,22 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         @Override
         public Fragment getItem(int position)
         {
-            if (position == CL_FRAGMENT) {
-                contactListFragment = new ContactListFragment();
-                return contactListFragment;
-            }
-            else if (position == CRL_FRAGMENT) {
-                return new ChatRoomListFragment();
-            }
-            else if (position == CH_FRAGMENT) {
-                return new CallHistoryFragment();
-            }
-            else { // if (position == WP_FRAGMENT){
-                return new WebViewFragment();
+            switch (position) {
+                case CL_FRAGMENT:
+                    contactListFragment = new ContactListFragment();
+                    return contactListFragment;
+
+                case CRL_FRAGMENT:
+                    return new ChatRoomListFragment();
+
+                case CHAT_SESSION_FRAGMENT:
+                    return new ChatSessionFragment();
+
+                case CALL_HISTORY_FRAGMENT:
+                    return new CallHistoryFragment();
+
+                default: // if (position == WP_FRAGMENT){
+                    return new WebViewFragment();
             }
         }
 

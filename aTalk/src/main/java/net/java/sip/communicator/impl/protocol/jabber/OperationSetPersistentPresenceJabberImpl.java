@@ -19,6 +19,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.roster.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
@@ -497,7 +498,7 @@ public class OperationSetPersistentPresenceJabberImpl
         if (!isValidStatus)
             throw new IllegalArgumentException(status + " is not a valid Jabber status");
 
-        // if we got publish presence and we are still in a process of initializing the roster,
+        // if we got publish presence, and we are still in a process of initializing the roster,
         // just save the status and we will dispatch it when we are ready with the roster as
         // sending initial presence is recommended to be done after requesting the roster, but we
         // want to also dispatch it
@@ -515,28 +516,30 @@ public class OperationSetPersistentPresenceJabberImpl
             clearLocalContactResources();
         }
         else {
-            Presence presence = new Presence(Presence.Type.available);
-            currentPresence = presence;
-            presence.setMode(presenceStatusToJabberMode(status));
-            presence.setPriority(getPriorityForPresenceStatus(status.getStatusName()));
+            XMPPConnection connection = mPPS.getConnection();
+            PresenceBuilder presenceBuilder = connection.getStanzaFactory().buildPresenceStanza()
+                    .ofType(Presence.Type.available)
+                    .setMode(presenceStatusToJabberMode(status))
+                    .setPriority(getPriorityForPresenceStatus(status.getStatusName()));
 
             // On the phone or in meeting has a special status which is different from custom status message
             if (status.equals(jabberStatusEnum.getStatus(JabberStatusEnum.ON_THE_PHONE))) {
-                presence.setStatus(JabberStatusEnum.ON_THE_PHONE);
+                presenceBuilder.setStatus(JabberStatusEnum.ON_THE_PHONE);
             }
             else if (status.equals(jabberStatusEnum.getStatus(JabberStatusEnum.IN_A_MEETING))) {
-                presence.setStatus(JabberStatusEnum.IN_A_MEETING);
+                presenceBuilder.setStatus(JabberStatusEnum.IN_A_MEETING);
             }
             else
-                presence.setStatus(statusMessage);
+                presenceBuilder.setStatus(statusMessage);
 
+            currentPresence = presenceBuilder.build();
             try {
-                mPPS.getConnection().sendStanza(presence);
+                connection.sendStanza(currentPresence);
             } catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not send new presence status");
             }
             if (localContact != null)
-                updateResource(localContact, mPPS.getOurJID(), presence);
+                updateResource(localContact, mPPS.getOurJID(), currentPresence);
         }
         fireProviderStatusChangeEvent(currentStatus, status);
 
@@ -1390,10 +1393,12 @@ public class OperationSetPersistentPresenceJabberImpl
             if (responsePresenceType == null)
                 return;
 
-            Presence responsePacket = new Presence(responsePresenceType);
+            XMPPConnection connection = mPPS.getConnection();
+            Presence responsePacket = connection.getStanzaFactory().buildPresenceStanza()
+                    .ofType(responsePresenceType).build();
             responsePacket.setTo(fromJid);
             try {
-                mPPS.getConnection().sendStanza(responsePacket);
+                connection.sendStanza(responsePacket);
             } catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Sending presence subscription response failed.");
             }

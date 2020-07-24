@@ -223,9 +223,9 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns the <tt>MetaContactListService</tt> obtained from the bundle context.
+     * Returns the <tt>AlertUIService</tt> obtained from the bundle context.
      *
-     * @return the <tt>MetaContactListService</tt> obtained from the bundle context
+     * @return the <tt>AlertUIService</tt> obtained from the bundle context
      */
     public static AlertUIService getAlertUIService()
     {

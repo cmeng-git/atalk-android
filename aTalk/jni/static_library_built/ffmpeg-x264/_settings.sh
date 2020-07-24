@@ -185,10 +185,11 @@ export PKG_CONFIG="${CROSS_PREFIX}pkg-config"
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig
 
+echo "**********************************************"
 echo "### Use NDK=${NDK}"
 echo "### Use ANDROID_API=${ANDROID_API}"
 echo "### Install directory: PREFIX=${PREFIX}"
-
+echo "**********************************************"
 
 # Undefined reference in x264 when linked with ffmpeg for arm64-v8a
 # https://stackoverflow.com/questions/5555632/can-gcc-not-complain-about-undefined-references

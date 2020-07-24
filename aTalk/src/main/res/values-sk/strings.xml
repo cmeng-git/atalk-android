@@ -367,7 +367,7 @@
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Vymazať históriu pre tento kontakt</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Vymazať históriu rozhovorov všetkých kontaktov</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Naozaj chcete vymazať všetky správy pre %1$s?</string>
-    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Naozaj chcete vymazať všetky správy od všetkých kontaktov?</string>
+    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Naozaj chcete vymazať všetky správy od všetkých entity?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Chyba pri odstraňovaní lokálne uložených správ pre %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Odstrániť médiá z môjho telefónu</string>
 
@@ -697,22 +697,22 @@
     <!-- Security certificates -->
     <string name="service_gui_ALWAYS_TRUST">Vždy dôverujte tomuto certifikátu</string>
     <string name="service_gui_CERT_DIALOG_TITLE">Overenie certifikátu</string>
-    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the identity of the server when connecting to&lt;br/>&lt;b>%2$s&lt;/b>&lt;br/>&lt;br/>The certificate is not trusted (a self-signed certificate), which means that the server\'\'s identity cannot be automatically verified.&lt;br/>&lt;br/>Proceed with connection for this instance only?&lt;br/>For more option and info, click Show Certificate.&lt;/html></string>
+    <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the identity of the server when connecting to&lt;br/>&lt;b>%2$s&lt;/b>&lt;br/>&lt;br/>The certificate is not trusted (a self-signed certificate), which means that the server\'s identity cannot be automatically verified.&lt;br/>&lt;br/>Proceed with connection for this instance only?&lt;br/>For more option and info, click Show Certificate.&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s cannot verify the
-        identity of the server\'\'s certificate.&lt;br/>&lt;br/>
-        The certificate is not trusted (a self-signed certificate), which means that the server\'\'s
+        identity of the server\'s certificate.&lt;br/>&lt;br/>
+        The certificate is not trusted (a self-signed certificate), which means that the server\'s
         identity cannot be automatically verified.&lt;br/>&lt;br/>
         Proceed with connection for this instance only?&lt;br/>
         For more option and info, click "Show Certificate".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the
         identity of the connecting client.&lt;br/>&lt;br/>
-        The certificate is not trusted (a self-signed certificate), which means that the client\'\'s
+        The certificate is not trusted (a self-signed certificate), which means that the client\'s
         identity cannot be automatically verified.&lt;br/>&lt;br/>
         Proceed with connection for this instance only?&lt;br/>
         For more option and info, click "Show Certificate".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>%1$s cannot verify the
         identity of the peer %2$s.&lt;br/>&lt;br/>
-        The certificate is not trusted (a self-signed certificate), which means that the peer\'\'s
+        The certificate is not trusted (a self-signed certificate), which means that the peer\'s
         identity cannot be automatically verified.&lt;br/>&lt;br/>
         Proceed with connection for this instance only?&lt;br/>
         For more option and info, click "Show Certificate".&lt;/html></string>

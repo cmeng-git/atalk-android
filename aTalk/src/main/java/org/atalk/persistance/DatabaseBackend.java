@@ -373,7 +373,6 @@ public class DatabaseBackend extends SQLiteOpenHelper
 
         db.beginTransaction();
         try {
-            MigrationToSqlDB.xmlToSqlDatabase(db);
             db.setTransactionSuccessful();
             Timber.i("### Completed SQLite DataBase migration successfully! ###");
         } finally {

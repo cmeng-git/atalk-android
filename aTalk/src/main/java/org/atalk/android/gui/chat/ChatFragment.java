@@ -161,13 +161,19 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     public final static int MSGTYPE_NORMAL = 0x1;
 
     public final static int MSGTYPE_OMEMO = 0x02;
-    public final static int MSGTYPE_OMEMO_UT = 0x42;
-    public final static int MSGTYPE_OMEMO_UA = 0x82;
+    public final static int MSGTYPE_OMEMO_UT = 0x12;
+    public final static int MSGTYPE_OMEMO_UA = 0x22;
 
     public final static int MSGTYPE_OTR = 0x03;
-    public final static int MSGTYPE_OTR_UA = 0x83;
+    public final static int MSGTYPE_OTR_UA = 0x23;
 
     public final static int MSGTYPE_MUC_NORMAL = 0x04;
+
+    /**
+     *  bit-7 is used to hide session record from the UI if set.
+     * @see org.atalk.android.gui.chat.chatsession.ChatSessionFragment#SESSION_HIDDEN
+     */
+    public final static int MSGTYPE_MASK = 0x3F;
 
     /*
      * Current chatType that is in use.
@@ -2402,7 +2408,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      * fileComponent to visualize the transfer process n the chatFragment view.
      *
      * // @param mFile the file to send
-     * // @param FileSendConversation he send file component to use for file transfer & visualization
+     * // @param FileSendConversation send file component to use for file transfer & visualization
      * // @param msgId he view position on chatFragment
      */
 

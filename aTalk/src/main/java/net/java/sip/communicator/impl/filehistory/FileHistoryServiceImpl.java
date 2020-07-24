@@ -410,7 +410,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /**
-     * Permanently removes locally stored message history for the file transfer.
+     * Permanently removes locally stored chatRoom message messages (need cleanup - not used)
      */
     public void eraseLocallyStoredHistory()
     {
