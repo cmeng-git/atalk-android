@@ -152,13 +152,9 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
         writeThread.start();
     }
 
-    private int doWrite(
-            byte[] buf, int off, int len,
-            Format format,
-            StreamRTPManagerDesc exclusion)
+    private int doWrite(byte[] buf, int off, int len, Format format, StreamRTPManagerDesc exclusion)
     {
         RTPTranslatorImpl translator = getTranslator();
-
         if (translator == null)
             return 0;
 
@@ -187,29 +183,16 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                     removeRTPHeaderExtensions = false;
                     len = removeRTPHeaderExtensions(buf, off, len);
                 }
-
-                write = willWriteData(
-                        streamRTPManager,
-                        buf, off, len,
-                        format,
-                        exclusion);
+                write = willWriteData(streamRTPManager, buf, off, len, format, exclusion);
             }
             else {
-                write = willWriteControl(
-                        streamRTPManager,
-                        buf, off, len,
-                        format,
-                        exclusion);
+                write = willWriteControl(streamRTPManager, buf, off, len, format, exclusion);
             }
 
             if (write) {
                 // Allow the RTPTranslatorImpl a final chance to filter out the
                 // packet on a source-destination basis.
-                write = translator.willWrite(
-                        /* source */ exclusion,
-                        new RawPacket(buf, off, len),
-                        /* destination */ streamRTPManager,
-                        _data);
+                write = translator.willWrite(exclusion, new RawPacket(buf, off, len), streamRTPManager, _data);
             }
 
             if (write) {
@@ -253,16 +236,12 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                     int end = off + len;
 
                     if (xBegin + xLen < end) {
-                        xLen += RTPUtils.readUint16AsInt(
-                                buf,
-                                xBegin + 2 /* defined by profile */)
-                                * 4;
+                        xLen += RTPUtils.readUint16AsInt(buf, xBegin + 2 /* defined by profile */) * 4;
 
                         int xEnd = xBegin + xLen;
-
                         if (xEnd <= end) {
                             // Remove the RTP header extension bytes.
-                            for (int src = xEnd, dst = xBegin; src < end; )
+                            for (int src = xEnd, dst = xBegin; src < end;)
                                 buf[dst++] = buf[src++];
                             len -= xLen;
                             // Switch off the extension bit.
@@ -277,8 +256,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
 
     /**
      * Removes the {@code OutputDataStream}s owned by a specific {@code RTPConnector} from the list
-     * of {@code OutputDataStream}s into which this {@code OutputDataStream} copies written
-     * data/packets.
+     * of {@code OutputDataStream}s into which this {@code OutputDataStream} copies written data/packets.
      *
      * @param connectorDesc the {@code RTPConnector} that is the owner of the {@code OutputDataStream}s to remove
      * from this instance.
@@ -565,8 +543,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
         for (int i = 0, end = streams.size(); i < end; ++i) {
             OutputDataStreamDesc s = streams.get(i);
 
-            if (destination == s.connectorDesc.streamRTPManagerDesc.streamRTPManager
-                    .getMediaStream()) {
+            if (destination == s.connectorDesc.streamRTPManagerDesc.streamRTPManager.getMediaStream()) {
                 controlPayload.writeTo(s.stream);
                 return true;
             }

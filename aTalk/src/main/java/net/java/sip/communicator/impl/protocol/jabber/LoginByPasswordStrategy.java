@@ -39,7 +39,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
 {
     private final AbstractProtocolProviderService protocolProvider;
     private final AccountID accountID;
-    private ConnectionConfiguration.Builder ccBuilder;
+    private ConnectionConfiguration.Builder<?, ?> ccBuilder;
     private String password;
 
     /**
@@ -49,7 +49,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
      * @param accountID The accountID to use for the login.
      */
     public LoginByPasswordStrategy(AbstractProtocolProviderService protocolProvider, AccountID accountID,
-            ConnectionConfiguration.Builder ccBuilder)
+            ConnectionConfiguration.Builder<?, ?>  ccBuilder)
     {
         this.protocolProvider = protocolProvider;
         this.accountID = accountID;
@@ -246,7 +246,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
     }
 
     @Override
-    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    public ConnectionConfiguration.Builder<?, ?> getConnectionConfigurationBuilder()
     {
         return ccBuilder;
     }

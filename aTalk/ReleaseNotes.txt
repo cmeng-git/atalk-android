@@ -1,6 +1,22 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	07/28/2020
+Version:		2.3.3 (1133)
+
+- Table metaContactGroup must be initialized to contain the RootMetaContactGroup on new database creation
+  Was accidentally removed when MigrateDir.aTalkDirMigrate() was removed.
+- Include 'Online help' and 'About' in newly installed account creation UI pull down menu.
+- Fix certificate view problem for compileSdkVersion = 29+; replacing &#8226; with &bull; in X509CertificateView
+- Update source to remove dependency on the obsoleted NetworkInfo class.
+
+- Upgrade compile SdkVersion to support API-29
+- Port to use build:gradle:4.0.1 and gradle-6.1.1
+- Move StringUtils.hexStringToByteArray() into AesgcmUrl.class; eliminating patched StringUtils
+- Update RecipientSelectView to conform to "com.splitwise:tokenautocomplete:3.0.2"
+
+=========================================================================
+Author:         cmeng
 Upload Date:	07/24/2020
 Version:		2.3.2 (1132)
 

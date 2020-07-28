@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.*;
 
 import org.atalk.android.*;
+import org.atalk.android.gui.About;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.osgi.OSGiActivity;
 
@@ -41,15 +42,20 @@ public abstract class ExitMenuActivity extends OSGiActivity
 			// Shutdown application
 			case R.id.menu_exit:
 				aTalkApp.shutdownApplication();
-				return true;
-
+				break;
+            case R.id.online_help:
+                About.atalkUrlAccess(this, getString(R.string.FAQ_Link));
+                break;
+            case R.id.about:
+                startActivity(About.class);
+                break;
 			// delete database
 			case R.id.del_database:
 				ServerPersistentStoresRefreshDialog.deleteDB();
-				return true;
-
+                break;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+		return true;
 	}
 }

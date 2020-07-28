@@ -6,8 +6,7 @@ buildscript {
     }
 
     dependencies {
-        // Do not change to 3.5.0 => AbstractMethodException in Note-3 (see gradle.properties)
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -25,8 +24,8 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdkVersion = 21
-    // SDK-29 has SSL certificate webView problem
-    compileSdkVersion = 28
+    // SDK-29+ has SSL certificate webView problem (fixed by replacing &#8226; with &bull;)
+    compileSdkVersion = 29
     buildToolsVersion = '29.0.2'
     supportLibraryVersion = '1.0.0'
     gmsPlayServicesVersion = '17.0.0'

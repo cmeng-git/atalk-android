@@ -76,7 +76,7 @@ public class AndroidMediaCodec extends AbstractCodec2
     private static final String VP8_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp8";
 
     /**
-     * The mime type of VP8-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     * The mime type of VP9-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
      */
     private static final String VP9_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp9";
 

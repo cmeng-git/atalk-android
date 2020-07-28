@@ -58,7 +58,7 @@ public class ChatStateNotificationHandler
             ChatSession chatSession = chatFragment.getChatPanel().getChatSession();
             ChatTransport chatTransport = chatSession.getCurrentChatTransport();
             // return if event is not for the chatDescriptor session
-            if (!chatDescriptor.equals(chatTransport.getDescriptor()))
+            if ((chatTransport == null) || !chatDescriptor.equals(chatTransport.getDescriptor()))
                 return;
 
             // return if receive own chat state notification

@@ -39,7 +39,7 @@ public class AnonymousLoginStrategy implements JabberLoginStrategy
      * <tt>UserCredentials</tt> used by accompanying services.
      */
     private final UserCredentials credentials;
-    private ConnectionConfiguration.Builder ccBuilder;
+    private ConnectionConfiguration.Builder<?, ?>  ccBuilder;
 
     /**
      * Creates new anonymous login strategy instance.
@@ -47,7 +47,7 @@ public class AnonymousLoginStrategy implements JabberLoginStrategy
      * @param login user login only for the purpose of returning <tt>UserCredentials</tt> that are used by
      * accompanying services.
      */
-    public AnonymousLoginStrategy(String login, ConnectionConfiguration.Builder ccBuilder)
+    public AnonymousLoginStrategy(String login, ConnectionConfiguration.Builder<?, ?>  ccBuilder)
     {
         this.credentials = new UserCredentials();
         this.ccBuilder = ccBuilder;
@@ -102,7 +102,7 @@ public class AnonymousLoginStrategy implements JabberLoginStrategy
     }
 
     @Override
-    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    public ConnectionConfiguration.Builder<?, ?>  getConnectionConfigurationBuilder()
     {
         return ccBuilder;
     }

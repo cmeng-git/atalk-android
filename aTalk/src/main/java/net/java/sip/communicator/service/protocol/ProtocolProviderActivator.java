@@ -132,12 +132,11 @@ public class ProtocolProviderActivator implements BundleActivator
         ProtocolProviderFactory protocolProviderFactory = null;
 
         try {
-            ServiceReference[] serRefs = bundleContext.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+            ServiceReference[] serRefs
+                    = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), osgiFilter);
 
             if ((serRefs != null) && (serRefs.length != 0)) {
-                protocolProviderFactory = (ProtocolProviderFactory) bundleContext
-                        .getService(serRefs[0]);
+                protocolProviderFactory = (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);
             }
         } catch (InvalidSyntaxException ex) {
             Timber.i("ProtocolProviderActivator : %s", ex.getMessage());
@@ -147,11 +146,9 @@ public class ProtocolProviderActivator implements BundleActivator
 
     /**
      * Registers a new {@code AccountManagerImpl} instance as an {@code AccountManager}
-     * service and starts a new {@code SingleCallInProgressPolicy} instance to ensure that
-     * only
-     * one of the {@code Call}s accessible in the {@code BundleContext} in which this
-     * activator is to execute will be in progress and the others will automatically be put on
-     * hold.
+     * service and starts a new {@code SingleCallInProgressPolicy} instance to ensure that only
+     * one of the {@code Call}s accessible in the {@code BundleContext} in which this activator
+     * is to execute will be in progress and the others will automatically be put on hold.
      *
      * @param bundleContext the {@code BundleContext} in which the bundle activation represented by this
      * {@code BundleActivator} executes
@@ -160,8 +157,8 @@ public class ProtocolProviderActivator implements BundleActivator
     {
         ProtocolProviderActivator.bundleContext = bundleContext;
         accountManager = new AccountManager(bundleContext);
-        accountManagerServiceRegistration = bundleContext.registerService(
-                AccountManager.class.getName(), accountManager, null);
+        accountManagerServiceRegistration
+                = bundleContext.registerService(AccountManager.class.getName(), accountManager, null);
         Timber.log(TimberLog.FINER, "ProtocolProviderActivator will create SingleCallInProgressPolicy instance.");
         singleCallInProgressPolicy = new SingleCallInProgressPolicy(bundleContext);
     }
@@ -204,8 +201,7 @@ public class ProtocolProviderActivator implements BundleActivator
         ServiceReference[] serRefs = null;
         try {
             // get all registered provider factories
-            serRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(),
-                    null);
+            serRefs = bundleContext.getServiceReferences(ProtocolProviderService.class.getName(), null);
         } catch (InvalidSyntaxException e) {
             Timber.e("ProtocolProviderActivator: %s", e.getMessage());
         }
@@ -213,8 +209,7 @@ public class ProtocolProviderActivator implements BundleActivator
         List<ProtocolProviderService> providersList = new ArrayList<ProtocolProviderService>();
         if (serRefs != null) {
             for (ServiceReference<?> serRef : serRefs) {
-                ProtocolProviderService pp = (ProtocolProviderService) bundleContext
-                        .getService(serRef);
+                ProtocolProviderService pp = (ProtocolProviderService) bundleContext.getService(serRef);
                 providersList.add(pp);
             }
         }

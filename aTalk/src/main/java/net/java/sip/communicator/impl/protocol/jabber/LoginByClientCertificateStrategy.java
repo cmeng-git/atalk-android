@@ -31,15 +31,15 @@ import timber.log.Timber;
 class LoginByClientCertificateStrategy implements JabberLoginStrategy
 {
     private AccountID accountID;
-    private ConnectionConfiguration.Builder ccBuilder;
+    private ConnectionConfiguration.Builder<?, ?>  ccBuilder;
 
     /**
      * Creates a new instance of this class.
      *
      * @param accountID The account to use for the strategy.
-     * @param ccBuilder
+     * @param ccBuilder ConnectionConfiguration.Builder
      */
-    public LoginByClientCertificateStrategy(AccountID accountID, ConnectionConfiguration.Builder ccBuilder)
+    public LoginByClientCertificateStrategy(AccountID accountID, ConnectionConfiguration.Builder<?, ?>  ccBuilder)
     {
         this.accountID = accountID;
         this.ccBuilder = ccBuilder;
@@ -138,7 +138,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
     }
 
     @Override
-    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    public ConnectionConfiguration.Builder<?, ?> getConnectionConfigurationBuilder()
     {
         return ccBuilder;
     }

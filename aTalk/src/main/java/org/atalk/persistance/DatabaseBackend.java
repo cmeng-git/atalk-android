@@ -25,6 +25,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
 
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
+import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.impl.msghistory.MessageSourceService;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -370,9 +371,9 @@ public class DatabaseBackend extends SQLiteOpenHelper
     private void initDatabase(SQLiteDatabase db)
     {
         Timber.i("### Starting Database migration! ###");
-
         db.beginTransaction();
         try {
+            MclStorageManager.initMCLDataBase(db);
             db.setTransactionSuccessful();
             Timber.i("### Completed SQLite DataBase migration successfully! ###");
         } finally {

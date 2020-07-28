@@ -6,8 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.3.2 (07/24/2020)" versioncode="1132">
+    <release version="2.3.3 (07/28/2020)" versioncode="1133">
         <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Fix SQL table for saving contacts is not properly initialized in new database creation</change>
+        <change>Include 'Online help' and 'About' in newly installed account creation UI pull down menu</change>
+        <change>Upgrade aTalk compile Sdk Version to support API-29 (Android-10)</change>
+        <change>Update 'Telephopy Recipient Select View' to conform to com.splitwise:tokenautocomplete:3.0.2 release</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.3.2 (07/24/2020)" versioncode="1132">
         <change>Add new recent conversations UI in main pager slider</change>
         <change>Fix login failure when server override option is enabled</change>
         <change>When a chat room is destroyed, all associated chat messages and session are purged from database.</change>

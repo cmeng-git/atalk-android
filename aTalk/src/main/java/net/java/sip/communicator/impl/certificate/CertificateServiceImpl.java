@@ -667,6 +667,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 List<String> storedCerts = new LinkedList<>();
                 String appName = aTalkApp.getResString(R.string.APPLICATION_NAME);
 
+                Timber.w("SSL certificate untrusted chain: %s", e.getMessage());
                 if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext()) {
                     String propName = PNAME_CERT_TRUST_PREFIX + CERT_TRUST_SERVER_SUBFIX + thumbprint;
                     propNames.add(propName);
