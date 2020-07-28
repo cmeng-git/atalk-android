@@ -59,11 +59,13 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      */
     private static final ConfigurationService cfg = LibJitsi.getConfigurationService();
 
-    // values hard-coded to match chrome
+    // values hard-coded to match chrome =>
     // TODO: allow to set them dynamically
+    // Issue 6705: Stop using hardcoded payload types for VideoCodecs
+    // https://bugs.chromium.org/p/webrtc/issues/detail?id=6705
     private static final byte redPayloadType = 116;
     private static final byte ulpfecPayloadType = 117;
-    private static final byte vp8PayloadType = 100;
+    private static final byte vp8PayloadType = 96;
     private static final byte opusPayloadType = 111;
     private static final Format redFormat = new VideoFormat(Constants.RED);
     private static final Format ulpfecFormat = new VideoFormat(Constants.ULPFEC);

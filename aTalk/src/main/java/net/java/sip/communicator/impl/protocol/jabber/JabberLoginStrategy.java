@@ -81,5 +81,5 @@ interface JabberLoginStrategy
      *
      * @return The connection configuration builder configured for this login strategy.
      */
-    ConnectionConfiguration.Builder getConnectionConfigurationBuilder();
+    ConnectionConfiguration.Builder<?, ?> getConnectionConfigurationBuilder();
 }

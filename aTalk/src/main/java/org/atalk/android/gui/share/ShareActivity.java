@@ -65,7 +65,7 @@ public class ShareActivity extends ExitMenuActivity
     /**
      * mCategories is used in aTalk to sore msgContent if multiple type sharing is requested by user
      */
-    private class Share
+    private static class Share
     {
         Set<String> mCategories;
         ArrayList<Uri> uris = new ArrayList<>();
@@ -233,7 +233,7 @@ public class ShareActivity extends ExitMenuActivity
     /**
      * A simple pager adapter that represents 3 Screen Slide PageFragment objects, in sequence.
      */
-    private class SharePagerAdapter extends FragmentPagerAdapter
+    private static class SharePagerAdapter extends FragmentPagerAdapter
     {
         private SharePagerAdapter(FragmentManager fm)
         {

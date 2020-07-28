@@ -243,12 +243,14 @@ public abstract class CodecInfo
         String[] types = codecInfo.getSupportedTypes();
         for (String type : types) {
             try {
-                if (type.equals(MEDIA_CODEC_TYPE_H264))
-                    return new H264CodecInfo(codecInfo);
-                else if (type.equals(MEDIA_CODEC_TYPE_VP8))
-                    return new VP8CodecInfo(codecInfo);
-                else if (type.equals(MEDIA_CODEC_TYPE_VP9))
-                    return new VP9CodecInfo(codecInfo);
+                switch (type) {
+                    case MEDIA_CODEC_TYPE_H264:
+                        return new H264CodecInfo(codecInfo);
+                    case MEDIA_CODEC_TYPE_VP8:
+                        return new VP8CodecInfo(codecInfo);
+                    case MEDIA_CODEC_TYPE_VP9:
+                        return new VP9CodecInfo(codecInfo);
+                }
             } catch (IllegalArgumentException e) {
                 Timber.e(e, "Error initializing codec info: %s, type: %s", codecInfo.getName(), type);
             }
@@ -278,17 +280,15 @@ public abstract class CodecInfo
 
     public String getLibjitsiEncoding()
     {
-        if (mediaType.equals(MEDIA_CODEC_TYPE_H264)) {
-            return Constants.H264;
-        }
-        else if (mediaType.equals(MEDIA_CODEC_TYPE_VP8)) {
-            return Constants.VP8;
-        }
-        else if (mediaType.equals(MEDIA_CODEC_TYPE_VP9)) {
-            return Constants.VP9;
-        }
-        else {
-            return mediaType;
+        switch (mediaType) {
+            case MEDIA_CODEC_TYPE_H264:
+                return Constants.H264;
+            case MEDIA_CODEC_TYPE_VP8:
+                return Constants.VP8;
+            case MEDIA_CODEC_TYPE_VP9:
+                return Constants.VP9;
+            default:
+                return mediaType;
         }
     }
 

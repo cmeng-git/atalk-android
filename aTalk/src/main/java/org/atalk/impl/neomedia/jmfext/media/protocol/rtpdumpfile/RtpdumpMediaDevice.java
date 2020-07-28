@@ -37,8 +37,8 @@ public class RtpdumpMediaDevice
      * <tt>filePath</tt>, and which will have the encoding format <tt>encodingConstant</tt>.
      *
      * @param filePath the location of the rtpdump file
-     * @param rtpEncodingConstant the format this <tt>MediaDevice</tt> will have. You can find the list of possible
-     * format in the class <tt>Constants</tt> of libjitsi (ex : Constants.VP8_RTP).
+     * @param rtpEncodingConstant the format this <tt>MediaDevice</tt> will have. You can find the
+     * list of possible format in the class <tt>Constants</tt> of libjitsi (ex : Constants.VP8_RTP).
      * @param format the <tt>MediaFormat</tt> of the data contained in the payload of the recorded rtp
      * packet in the rtpdump file.
      * @return a <tt>MediaDevice</tt> that will read the rtpdump file given.

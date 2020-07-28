@@ -67,7 +67,7 @@ public class BoBExt implements ExtensionElement
      * algorithm used (e.g., "sha1" for the SHA-1 algorithm as specified in RFC 3174 [11]) and the
      * "hash" is the hex output of the algorithm applied to the binary data itself.
      */
-    private final BoBHash boBHash;
+    private final BoBHash bobHash;
 
     private final BoBData bobData;
 
@@ -94,12 +94,12 @@ public class BoBExt implements ExtensionElement
      * Creates a <tt>BoBExt</tt> packet, by specifying the content-ID, the maxAge, the type
      * of data and the data of the bob.
      *
-     * @param boBHash the content-ID used to identify this packet in the destination
+     * @param bobHash the content-ID used to identify this packet in the destination
      * @param bobData the Base64 of the raw image data
      */
-    public BoBExt(BoBHash boBHash, BoBData bobData)
+    public BoBExt(BoBHash bobHash, BoBData bobData)
     {
-        this.boBHash = boBHash;
+        this.bobHash = bobHash;
         this.bobData = bobData;
     }
 
@@ -108,9 +108,9 @@ public class BoBExt implements ExtensionElement
      *
      * @return the BoB hash
      */
-    public BoBHash getBoshHash()
+    public BoBHash getBoBHash()
     {
-        return boBHash;
+        return bobHash;
     }
 
     /**
@@ -159,7 +159,7 @@ public class BoBExt implements ExtensionElement
     public CharSequence toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.attribute(ATTR_CID, boBHash.getCid());
+        xml.attribute(ATTR_CID, bobHash.getCid());
 
         if (bobData != null) {
             xml.optIntAttribute(ATTR_MAX_AGE, bobData.getMaxAge());

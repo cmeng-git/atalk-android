@@ -147,6 +147,7 @@ public class MclStorageManager implements MetaContactListListener
             String persistentData = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PERSISTENT_DATA));
 
             Timber.d("### Fetching contact group: %s: %s for %s", parentProtoGroupUID, protoGroupUID, accountUuid);
+            // Must be the first item in the Table metaContactGroup where the ROOT_GROUP_UID is the tree root
             if (ContactGroup.ROOT_GROUP_UID.equals(groupUID)) {
                 metaGroup = mclServiceImpl.rootMetaGroup;
                 parentProtoGroup = null;
@@ -175,7 +176,7 @@ public class MclStorageManager implements MetaContactListListener
             String protoGroupUID = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PROTO_GROUP_UID));
             String contactAddress = cursor.getString(cursor.getColumnIndex(MetaContactGroup.CONTACT_JID));
             String displayName = cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_DISPLAY_NAME));
-            boolean isDisplayNameUserDefined = Boolean.valueOf(
+            boolean isDisplayNameUserDefined = Boolean.parseBoolean(
                     cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_USER_DEFINED)));
             String persistentData = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PERSISTENT_DATA));
             JSONObject details = new JSONObject();
@@ -1107,5 +1108,23 @@ public class MclStorageManager implements MetaContactListListener
     public void metaContactAvatarUpdated(MetaContactAvatarUpdateEvent evt)
     {
         // TODO Store MetaContact avatar.
+    }
+
+    /**
+     * Fills the metaContactGroup table with the rootGroup necessary for it to be filled properly
+     * as the meta contact list evolves. This must be executed on a new database creation.
+     */
+    public static void initMCLDataBase(SQLiteDatabase db)
+    {
+        ContentValues mclValues = new ContentValues();
+        // dummy account for root group
+        String accNodeName = "acc" + Long.toString(System.currentTimeMillis());
+
+        mclValues.put(MetaContactGroup.ACCOUNT_UUID, accNodeName);
+        mclValues.put(MetaContactGroup.PARENT_PROTO_GROUP_UID, ContactGroup.ROOT_NAME);
+        mclValues.put(MetaContactGroup.MC_GROUP_UID, ContactGroup.ROOT_GROUP_UID);
+        mclValues.put(MetaContactGroup.PROTO_GROUP_UID, ContactGroup.ROOT_PROTO_GROUP_UID);
+        mclValues.put(MetaContactGroup.MC_GROUP_NAME, ContactGroup.ROOT_GROUP_NAME);
+        db.insert(MetaContactGroup.TABLE_NAME, null, mclValues);
     }
 }

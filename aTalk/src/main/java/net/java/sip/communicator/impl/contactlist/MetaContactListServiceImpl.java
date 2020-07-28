@@ -2251,8 +2251,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             String metaContactGroupUID, String displayName)
     {
         // first check if the group exists already.
-        MetaContactGroupImpl newMetaGroup = (MetaContactGroupImpl) parentGroup
-                .getMetaContactSubgroupByUID(metaContactGroupUID);
+        MetaContactGroupImpl newMetaGroup
+                = (MetaContactGroupImpl) parentGroup.getMetaContactSubgroupByUID(metaContactGroupUID);
 
         // if the group exists then we have already loaded it for another
         // account and we should reuse the same instance.

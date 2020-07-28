@@ -6,8 +6,8 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.*;
+import android.os.Build;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
@@ -780,7 +780,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     private JabberLoginStrategy createLoginStrategy()
     {
-        ConnectionConfiguration.Builder<?,?> ccBuilder;
+        ConnectionConfiguration.Builder<?, ?> ccBuilder;
         if (mAccountID.isBOSHEnable()) {
             ccBuilder = BOSHConfiguration.builder();
         }
@@ -890,7 +890,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private ConnectState connectAndLogin(String userName, JabberLoginStrategy loginStrategy)
             throws XMPPException, SmackException
     {
-        ConnectionConfiguration.Builder<?,?> config = loginStrategy.getConnectionConfigurationBuilder();
+        ConnectionConfiguration.Builder<?, ?> config = loginStrategy.getConnectionConfigurationBuilder();
 
         // Set XmppDomain to serviceName - default for no server-overridden and Bosh connection.
         DomainBareJid serviceName = mAccountID.getXmppDomain();
@@ -1177,7 +1177,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * If account is not registered on server, send IB registration request to server if user
              * enable the option. Otherwise throw back to user and ask for InBand registration confirmation.
              */
-            if (errMsg.contains("not-authorized")) {
+            if (StringUtils.isNotEmpty(errMsg) && errMsg.contains("not-authorized")) {
                 if (mAccountID.isIbRegistration()) {
                     try {
                         // Server sends stream disconnect on "not-authorized". So perform manual connect again before
@@ -1205,7 +1205,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                                 loginStrategy.getClass().getName() + " requests abort");
 
                         errMsg = err.getMessage();
-                        if (!errMsg.contains("registration-required")) {
+                        if (StringUtils.isNotEmpty(errMsg) && !errMsg.contains("registration-required")) {
                             errMsg = aTalkApp.getResString(R.string.service_gui_REGISTRATION_REQUIRED, errMsg);
                             Timber.e("%s", errMsg);
                             StanzaError stanzaError = StanzaError.from(Condition.forbidden, errMsg).build();
@@ -1507,9 +1507,21 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         Context context = aTalkApp.getGlobalContext();
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = cm.getActiveNetworkInfo();
-        return (info != null && info.isConnected()
-                && info.getType() == ConnectivityManager.TYPE_MOBILE);
+        if (cm != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                final Network network = cm.getActiveNetwork();
+                if (network != null) {
+                    final NetworkCapabilities nc = cm.getNetworkCapabilities(network);
+                    return (nc != null) && nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
+                }
+            }
+            else {
+                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+                return (networkInfo != null && networkInfo.isConnected()
+                        && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE);
+            }
+        }
+        return false;
     }
 
     /**
@@ -2552,7 +2564,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         if ((failMode == SecurityAuthority.REASON_UNKNOWN)
                 || (failMode == SecurityAuthority.SECURITY_EXCEPTION)
                 || (failMode == SecurityAuthority.POLICY_VIOLATION)) {
-            if (TextUtils.isEmpty(reason))
+            if (TextUtils.isEmpty(reason) && (ex.getCause() != null))
                 reason = ex.getCause().getMessage();
             DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.service_gui_ERROR), reason);

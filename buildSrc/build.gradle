@@ -49,7 +49,6 @@ jarJarDeps.dependsOn(
 
         // smack-core
         classDelete 'org.jivesoftware.smack.provider.AbstractProvider'
-        classDelete 'org.jivesoftware.smack.util.StringUtils**'
     },
 
     jarjar.repackage {
@@ -73,9 +72,6 @@ jarJarDeps.dependsOn(
         // smack-extensions
         classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
         classDelete 'org.jivesoftware.smackx.xdata.form.FillableForm**'
-
-        // keep this change for next two aTalk versions release - for backward compatibility with old aTalk
-        classDelete 'org.jivesoftware.smackx.xdata.provider.DataFormProvider**'
     }
 )
 tasks.getByName("build").dependsOn(jarJarDeps)

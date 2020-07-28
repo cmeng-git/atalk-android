@@ -43,6 +43,7 @@ import timber.log.Timber;
  */
 public class X509CertificateView extends Dialog
 {
+    private static final String BYTE_FORMAT = "%02x:";
     private Certificate certificate;
     private Context mContext;
 
@@ -276,11 +277,11 @@ public class X509CertificateView extends Dialog
      * @param otherValue second line of value to print (wrapped)
      * @param wrap force-wrap after number of characters
      */
-    private void addField(StringBuilder sb, String field, String value,
-            String otherValue, int wrap)
+    private void addField(StringBuilder sb, String field, String value, String otherValue, int wrap)
     {
+        // use &bull; instead of &#8226; as sdk-29+ webview cannot accept &#xxxx coding.
         sb.append("<tr><td style='margin-right: 25pt;")
-                .append("white-space: nowrap' valign='top'>&#8226; ")
+                .append("white-space: nowrap' valign='top'>&bull; ")
                 .append(field).append("</td><td><span");
 
         if (otherValue != null) {
@@ -316,12 +317,9 @@ public class X509CertificateView extends Dialog
             return null;
 
         StringBuilder hex = new StringBuilder(2 * raw.length);
-        Formatter f = new Formatter(hex);
-        try {
+        try (Formatter f = new Formatter(hex)) {
             for (byte b : raw)
-                f.format("%02x:", b);
-        } finally {
-            f.close();
+                f.format(BYTE_FORMAT, b);
         }
         return hex.substring(0, hex.length() - 1);
     }
@@ -346,12 +344,9 @@ public class X509CertificateView extends Dialog
 
         byte[] encodedCert = cert.getEncoded();
         StringBuilder sb = new StringBuilder(encodedCert.length * 2);
-        Formatter f = new Formatter(sb);
-        try {
+        try (Formatter f = new Formatter(sb)) {
             for (byte b : digest.digest(encodedCert))
-                f.format("%02x:", b);
-        } finally {
-            f.close();
+                f.format(BYTE_FORMAT, b);
         }
 
         return sb.substring(0, sb.length() - 1);
