@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -113,10 +112,10 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
      */
     private static int scrollTopPosition;
 
-    private Activity mActivity = null;
+    private Context mContext = null;
 
     /**
-     * Creates new instance of <tt>ContactListFragment</tt>.
+     * Creates a new instance of <tt>ContactListFragment</tt>.
      */
     public ChatRoomListFragment()
     {
@@ -129,10 +128,10 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-        mActivity = activity;
+        super.onAttach(context);
+        mContext = context;
     }
 
     /**
@@ -265,7 +264,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         });
 
         SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(mActivity.getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 
         int id = searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
@@ -321,7 +320,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     public void showPopupMenu(View roomView, ChatRoomWrapper crWrapper)
     {
         // Inflate chatRoom list popup menu
-        PopupMenu popup = new PopupMenu(mActivity, roomView);
+        PopupMenu popup = new PopupMenu(mContext, roomView);
         Menu menu = popup.getMenu();
         popup.getMenuInflater().inflate(R.menu.chatroom_ctx_menu, menu);
         popup.setOnMenuItemClickListener(new PopupMenuItemClick());
@@ -395,15 +394,15 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                     return true;
 
                 case R.id.erase_chatroom_history:
-                    EntityListHelper.eraseEntityChatHistory(mActivity, mClickedChatRoom, null, null);
+                    EntityListHelper.eraseEntityChatHistory(mContext, mClickedChatRoom, null, null);
                     return true;
 
                 case R.id.erase_all_chatroom_history:
-                    EntityListHelper.eraseAllEntityHistory(mActivity);
+                    EntityListHelper.eraseAllEntityHistory(mContext);
                     return true;
 
                 case R.id.destroy_chatroom:
-                    new ChatRoomDestroyDialog().show(mActivity, mClickedChatRoom, chatPanel);
+                    new ChatRoomDestroyDialog().show(mContext, mClickedChatRoom, chatPanel);
                     return true;
 
                 case R.id.chatroom_info:

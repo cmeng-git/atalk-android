@@ -65,8 +65,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1133
-        versionName "2.3.3"
+        versionCode 1134
+        versionName "2.3.4"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -204,7 +204,14 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.2'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.5'
-    implementation 'com.splitwise:tokenautocomplete:3.0.2'
+    implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
+
+    // implementation 'cz.msebera.android:httpclient:4.5.8'
+    // implementation 'org.apache.httpcomponents.client5:httpclient5:5.0.1'
+
+    // implementation 'com.squareup.okhttp3:okhttp:4.8.0'
+    // implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.8.0'
+    // implementation 'com.squareup.okhttp3:okhttp-ws:3.4.2'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 
@@ -269,9 +276,9 @@ dependencies {
 
     /*
      * jarjar.repackage with generated dir/filename specified - default in build/jarjar/jarjar-xxx.jar
-     * filename must not contains colon i.e. ":" colon, treated as URL and will failed missing classes
+     * filename must not contains a colon i.e. ":" colon, treated as URL and will failed missing classes
      * destinationName may use relative i.e. "../../libs/fileName.jar to $buildDir/jarjar
-     * classDelete must check actual jar to see if end ** is required - due to multiple components
+     * classDelete must check the actual jar to see if end ** is required - due to multiple components
      * May use className and className$** to delete only the related, but excluding classes with same prefix
      */
     implementation jarjar.repackage {
@@ -393,6 +400,8 @@ task updateVersionFile(type: Copy) {
 // cmeng - need to perform setup libs (first time & after clean)
 tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn ndkBuild
+
+    // Uncomment below lines if you want to show all deprecated warnings
     // options.compilerArgs << '-Xlint:unchecked'
     // options.deprecation = true
 }

@@ -16,6 +16,7 @@ import net.java.sip.communicator.service.protocol.StunServerDescriptor;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
+import androidx.fragment.app.DialogFragment;
 
 import static net.java.sip.communicator.service.protocol.jabber.JabberAccountID.DEFAULT_STUN_PORT;
 

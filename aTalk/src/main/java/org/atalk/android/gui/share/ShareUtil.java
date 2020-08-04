@@ -129,19 +129,19 @@ public class ShareUtil
     /**
      * Generate a share intent with the given imageUris
      *
-     * @param activity a reference of the activity
+     * @param context a reference context of the activity
      * @param imageUris array of image uris for sharing
      * @return share intent of the given imageUris
      */
-    public static Intent share(Activity activity, ArrayList<Uri> imageUris)
+    public static Intent share(Context context, ArrayList<Uri> imageUris)
     {
         Intent shareIntent = null;
-        if ((activity != null) && !imageUris.isEmpty()) {
+        if ((context != null) && !imageUris.isEmpty()) {
             shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
             shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            String mimeType = getMimeType(activity, imageUris);
+            String mimeType = getMimeType(context, imageUris);
             shareIntent.setType(mimeType);
         }
         return shareIntent;
@@ -151,20 +151,20 @@ public class ShareUtil
      * Share of both text and images in a single intent for local forward only in aTalk
      * msgContent is saved intent.categories if both types are required; otherwise follow standard share method
      *
-     * @param activity a reference of the activity
-     * @param shareLocal a reference of the the ShareActivity
+     * @param context a reference context of the activity
+     * @param shareLocal a reference of the ShareActivity
      * @param msgContent text content for sharing
      * @param imageUris array of image uris for sharing
      */
-    public static Intent shareLocal(Activity activity, Intent shareLocal, String msgContent, ArrayList<Uri> imageUris)
+    public static Intent shareLocal(Context context, Intent shareLocal, String msgContent, ArrayList<Uri> imageUris)
     {
-        if ((activity != null) && (shareLocal != null)) {
+        if ((context != null) && (shareLocal != null)) {
 
             if (!imageUris.isEmpty()) {
                 shareLocal.setAction(Intent.ACTION_SEND_MULTIPLE);
                 shareLocal.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
                 shareLocal.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                String mimeType = getMimeType(activity, imageUris);
+                String mimeType = getMimeType(context, imageUris);
                 shareLocal.setType(mimeType);
 
                 // Pass the extra_text in intent.categories in this case
@@ -184,11 +184,11 @@ public class ShareUtil
     /**
      * Generate a common mime type for the given imageUris; reduce in resolution with more than one image types
      *
-     * @param activity a reference of the activity
+     * @param context a reference context of the activity
      * @param imageUris array of image uris for sharing
      * @return th common mime type for the given imageUris
      */
-    private static String getMimeType(Activity activity, ArrayList<Uri> imageUris)
+    private static String getMimeType(Context context, ArrayList<Uri> imageUris)
     {
         String tmp;
         String[] mimeTmp;
@@ -196,7 +196,7 @@ public class ShareUtil
 
         int first = 0;
         for (Uri uri : imageUris) {
-            tmp = FileBackend.getMimeType(activity, uri);
+            tmp = FileBackend.getMimeType(context, uri);
             if (tmp != null) {
                 mimeTmp = tmp.split("/");
                 if (first++ == 0) {

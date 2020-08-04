@@ -22,7 +22,7 @@ package net.java.sip.communicator.service.notification;
 public class VibrateNotificationAction extends NotificationAction
 {
     /**
-     * The patter of off/on intervals in millis that will be played.
+     * The pattern of off/on intervals in millis that will be played.
      */
     private final long[] pattern;
 

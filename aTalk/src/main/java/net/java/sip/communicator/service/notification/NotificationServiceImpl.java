@@ -983,8 +983,7 @@ class NotificationServiceImpl implements NotificationService
      * marks it as activated/deactivated.
      *
      * @param eventType the name of the event, which actions should be activated /deactivated.
-     * @param isActive indicates whether to activate or deactivate the actions related to the specified
-     * <tt>eventType</tt>.
+     * @param isActive indicates whether to activate or deactivate the actions related to the specified <tt>eventType</tt>.
      */
     public void setActive(String eventType, boolean isActive)
     {
@@ -997,8 +996,8 @@ class NotificationServiceImpl implements NotificationService
     }
 
     /**
-     * Stops a notification if notification is continuous, like playing sounds in loop. Do nothing
-     * if there are no such events currently processing.
+     * Stops a notification if notification is continuous, like playing sounds in loops.
+     * Do nothing if there are no such events currently processing.
      *
      * @param data the data that has been returned when firing the event..
      */
@@ -1006,7 +1005,7 @@ class NotificationServiceImpl implements NotificationService
     {
         Iterable<NotificationHandler> soundHandlers = getActionHandlers(NotificationAction.ACTION_SOUND);
 
-        // There could be no sound action handler for this event type
+        // There could be no sound action handler for this event type e.g. call ringtone
         if (soundHandlers != null) {
             for (NotificationHandler handler : soundHandlers) {
                 if (handler instanceof SoundNotificationHandler)

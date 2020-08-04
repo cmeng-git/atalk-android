@@ -116,7 +116,7 @@ public class OtrOutputStream extends FilterOutputStream implements Serialization
 	public void writeTlvData(byte[] b)
 			throws IOException
 	{
-		int len = (b == null || b.length < 0) ? 0 : b.length;
+		int len = (b == null) ? 0 : b.length;
 		writeNumber(len, TLV_LEN);
 		if (len > 0)
 			write(b);
@@ -163,6 +163,5 @@ public class OtrOutputStream extends FilterOutputStream implements Serialization
 		writeDHPublicKey(t.nextDH);
 		writeCtr(t.ctr);
 		writeData(t.encryptedMessage);
-
 	}
 }

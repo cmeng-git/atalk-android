@@ -35,7 +35,7 @@ public class AttachOptionDialog extends Dialog
 	public AttachOptionDialog(Context context) {
 		super(context);
 		mParent = (ChatActivity) context;
-		setTitle(R.string.title_activity_attach_option_dialog);
+		setTitle(R.string.service_gui_FILE_ATTACHMENT);
 	}
 
 	@Override

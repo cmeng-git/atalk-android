@@ -17,7 +17,6 @@
 package org.atalk.android.gui.chat;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.*;
 import android.graphics.drawable.AnimationDrawable;
@@ -217,7 +216,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      */
     private boolean historyLoaded = false;
 
-    private Activity mActivity = null;
+    private Context mContext = null;
     private ChatActivity mChatActivity;
 
     private boolean mSVP_Started;
@@ -228,11 +227,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-        mChatController = new ChatController(activity, this);
-        mActivity = activity;
+        super.onAttach(context);
+        mChatController = new ChatController(getActivity(), this);
+        mContext = context;
     }
 
     /**
@@ -732,8 +731,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                     if (R.id.chat_message_forward == item.getItemId()) {
                         Intent shareIntent = new Intent(mChatActivity, ShareActivity.class);
-                        shareIntent = ShareUtil.shareLocal(mActivity, shareIntent, sBuilder.toString(), imageUris);
-                        mActivity.startActivity(shareIntent);
+                        shareIntent = ShareUtil.shareLocal(mContext, shareIntent, sBuilder.toString(), imageUris);
+                        startActivity(shareIntent);
                         mode.finish();
                         // close current chat and show contact/chatRoom list view for content forward
                         mChatActivity.onBackPressed();
@@ -1825,7 +1824,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             public void onClick(View view)
             {
                 mSVP_Started = true;
-                svpApi.onSVPClick(mActivity, latitude, longitude);
+                svpApi.onSVPClick(mChatActivity, latitude, longitude);
             }
 
             /**
@@ -1846,7 +1845,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 }
                 if (!mLatLng.isEmpty()) {
                     mSVP_Started = true;
-                    svpApi.onSVPLongClick(mActivity, mLatLng);
+                    svpApi.onSVPLongClick(mChatActivity, mLatLng);
                 }
                 return true;
             }
@@ -2236,7 +2235,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             return;
         }
 
-        mActivity.runOnUiThread(() -> {
+        runOnUiThread(() -> {
             if (chatState != null) {
                 TextView chatStateTextView = chatStateView.findViewById(R.id.chatStateTextView);
                 ImageView chatStateImgView = chatStateView.findViewById(R.id.chatStateImageView);

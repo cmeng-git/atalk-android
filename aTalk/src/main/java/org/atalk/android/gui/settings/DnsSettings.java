@@ -13,8 +13,8 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
 /**
- * DNS settings activity. Reads default value for fallback ip from config and takes care of disabling parallel resolver
- * when DNSSEC is enabled.
+ * DNS settings activity. Reads default value for fallback ip from config and
+ * takes care of disabling parallel resolver when DNSSEC is enabled.
  *
  * @author Pawel Domas
  */

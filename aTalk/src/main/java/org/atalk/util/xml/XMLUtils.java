@@ -8,6 +8,7 @@ package org.atalk.util.xml;
 import android.text.TextUtils;
 
 import org.atalk.util.OSUtils;
+import org.atalk.util.StringUtils;
 import org.w3c.dom.*;
 
 import java.io.*;
@@ -25,7 +26,6 @@ import static javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static javax.xml.XMLConstants.XMLNS_ATTRIBUTE_NS_URI;
 import static javax.xml.XMLConstants.XML_NS_URI;
-import static org.atalk.util.StringUtils.fromString;
 
 /**
  * Common XML Tasks
@@ -606,7 +606,7 @@ public class XMLUtils
 
         DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
         if (!TextUtils.isEmpty(xml)) {
-            InputStream input = fromString(xml);
+            InputStream input = StringUtils.fromString(xml);
             return documentBuilder.parse(input);
         }
         else {

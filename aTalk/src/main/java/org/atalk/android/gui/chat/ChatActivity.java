@@ -539,7 +539,7 @@ public class ChatActivity extends OSGiActivity
                 return true;
 
             case R.id.erase_chat_history:
-                EntityListHelper.eraseEntityChatHistory(ChatActivity.this, descriptor, null, null);
+                EntityListHelper.eraseEntityChatHistory(this, descriptor, null, null);
                 return true;
 
             case R.id.send_location:
@@ -862,7 +862,7 @@ public class ChatActivity extends OSGiActivity
                 try {
                     startActivityForResult(intent, REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY);
                 } catch (SecurityException e) {
-                    aTalkApp.showToastMessage(R.string.all_permissions_denied_feedback);
+                    aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
                 }
                 break;
 
@@ -877,7 +877,7 @@ public class ChatActivity extends OSGiActivity
                 try {
                     startActivityForResult(intent, REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
                 } catch (SecurityException e) {
-                    aTalkApp.showToastMessage(R.string.all_permissions_denied_feedback);
+                    aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
                 }
                 break;
 

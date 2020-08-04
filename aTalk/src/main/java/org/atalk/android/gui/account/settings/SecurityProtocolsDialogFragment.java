@@ -15,7 +15,6 @@ import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.widgets.TouchInterceptor;
-import org.atalk.service.neomedia.SrtpControlType;
 
 import java.io.Serializable;
 import java.util.HashMap;

@@ -29,7 +29,7 @@ import org.atalk.util.OSUtils;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.*;
-import org.bouncycastle.x509.extension.X509ExtensionUtil;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -763,7 +763,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 if (aiaBytes == null)
                     break;
                 AuthorityInformationAccess aia
-                        = AuthorityInformationAccess.getInstance(X509ExtensionUtil.fromExtensionValue(aiaBytes));
+                        = AuthorityInformationAccess.getInstance(JcaX509ExtensionUtils.parseExtensionValue(aiaBytes));
 
                 // the AIA may contain different URLs and types, try all of them
                 for (AccessDescription ad : aia.getAccessDescriptions()) {

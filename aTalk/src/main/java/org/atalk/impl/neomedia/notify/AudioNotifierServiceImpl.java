@@ -80,8 +80,8 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
     }
 
     /**
-     * Creates an SCAudioClip from the given URI and adds it to the list of available audio-s. Uses
-     * notification device if any.
+     * Creates an SCAudioClip from the given URI and adds it to the list of available audio-s.
+     * Uses notification device if any.
      *
      * @param uri the path where the audio file could be found
      * @return a newly created <tt>SCAudioClip</tt> from <tt>uri</tt>
@@ -154,14 +154,11 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                      * Evaluates a specific <tt>loopCondition</tt> as defined by
                      * {@link SCAudioClip#play(int, Callable)}.
                      *
-                     * @param loopCondition
-                     *        the <tt>Callable&lt;Boolean&gt;</tt> which represents the
-                     *        <tt>loopCondition</tt> to be evaluated
-                     * @return {@link Boolean#FALSE} if <tt>loopCondition</tt> is <tt>null</tt>;
-                     *         otherwise, the value returned by invoking {@link Callable#call()} on
-                     *         the specified <tt>loopCondition</tt>
-                     * @throws Exception
-                     *         if the specified <tt>loopCondition</tt> throws an <tt>Exception</tt>
+                     * @param loopCondition the <tt>Callable&lt;Boolean&gt;</tt> which represents the
+                     * <tt>loopCondition</tt> to be evaluated
+                     * @return {@link Boolean#FALSE} if <tt>loopCondition</tt> is <tt>null</tt>; otherwise,
+                     * the value returned by invoking {@link Callable#call()} on the specified <tt>loopCondition</tt>
+                     * @throws Exception if the specified <tt>loopCondition</tt> throws an <tt>Exception</tt>
                      */
                     private Boolean evaluateLoopCondition(Callable<Boolean> loopCondition)
                             throws Exception
@@ -199,7 +196,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                          * SCAudioClip.play() is documented to behave as if loopInterval is
                          * negative and/or loopCondition is null. We have to take care that this
                          * instance does not get garbage collected until the finalAudio finishes
-                         * playing so  we will delegate to this instance's implementation of
+                         * playing so we will delegate to this instance's implementation of
                          * SCAudioClip.play(int,Callable<Boolean>) instead of to the finalAudio's.
                          */
                         play(-1, null);
@@ -214,14 +211,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                          * referenced during that time so we will use it to hold on to this
                          * instance.
                          */
-                        Callable<Boolean> loopCondition = new Callable<Boolean>()
-                        {
-                            public Boolean call()
-                                    throws Exception
-                            {
-                                return evaluateLoopCondition(finalLoopCondition);
-                            }
-                        };
+                        Callable<Boolean> loopCondition = () -> evaluateLoopCondition(finalLoopCondition);
                         finalAudio.play(loopInterval, loopCondition);
                     }
 

@@ -1,11 +1,7 @@
 package org.atalk.android.gui.call.telephony;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
-import android.content.Loader;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,12 +18,16 @@ import com.tokenautocomplete.TokenCompleteTextView;
 
 import org.apache.james.mime4j.util.CharsetUtil;
 import org.atalk.android.R;
+import org.atalk.android.gui.aTalk;
 
 import java.io.*;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.app.LoaderManager.LoaderCallbacks;
+import androidx.loader.content.Loader;
 import timber.log.Timber;
 
 public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectView.Recipient>
@@ -83,10 +83,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         setLongClickable(true);
 
         // cmeng - must init loaderManager in initView to take care of screen rotation
-        if (getContext() instanceof Activity) {
-            Activity activity = (Activity) getContext();
-            loaderManager = activity.getLoaderManager();
-        }
+        loaderManager = LoaderManager.getInstance(aTalk.getFragment(aTalk.CL_FRAGMENT));
     }
 
     @Override

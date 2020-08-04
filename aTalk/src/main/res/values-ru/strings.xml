@@ -77,7 +77,6 @@
     <string name="chatRoom_Subject">Тема</string>
     <string name="choose_file_activity_title">Выберите файл</string>
     <string name="menu_settings">Настройки</string>
-    <string name="title_activity_attach_option_dialog">Отправить вложение</string>
     <string name="title_activity_activation_view">Активация</string>
 
     <!-- General -->
@@ -349,7 +348,7 @@
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Операция открытого файла не поддерживается текущей платформой вашего устройства</string>
     <string name="service_gui_FILE_SEND_FAILED">Не удалось отправить файл: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Не удается отправить файл во время телефонной конференции!</string>
-    <string name="service_gui_FILE_SEND_TO">Отправить вложение</string>
+    <string name="service_gui_FILE_ATTACHMENT">Отправить вложение</string>
     <string name="service_gui_FILE_TOO_BIG">Размер файла превышает максимально допустимый для этого протокола: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Прерывание передачи файлов прерывается. Отслеживание состояния @ %1$s потеряно!</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Контактный клиент или сервер не поддерживает передачу файлов или требуемые протоколы</string>
@@ -1552,7 +1551,7 @@
     <string name="audio_permission_denied_feedback">Звуковой вызов не будет доступен, пока вы не предоставите запрос на разрешение</string>
 
     <string name="camera_permission_denied_dialog_title">Запрос разрешения камеры</string>
-    <string name="camera_permission_denied_feedback">Разрешение камеры требуется для настройки видеовызова. Видеовызов не будет доступен, пока вы не предоставите запрос на разрешение</string>
+    <string name="camera_permission_denied_feedback">Разрешение камеры: все связанные с камерой действия не будут доступны, пока вы не предоставите запрос на разрешение</string>
 
     <string name="contacts_permission_denied_dialog_title">Запрос на доступ к контактам</string>
     <string name="contacts_permission_denied_feedback">Требуется разрешение для доступа к телефону и настройки вызова</string>

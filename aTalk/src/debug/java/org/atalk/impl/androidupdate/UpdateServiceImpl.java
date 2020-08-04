@@ -31,7 +31,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Android update service implementation. It checks for update and schedules .apk download using <tt>DownloadManager</tt>.
+ * aTalk update service implementation. It checks for an update and schedules .apk download using <tt>DownloadManager</tt>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

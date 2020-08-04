@@ -77,7 +77,6 @@
     <string name="chatRoom_Subject">Betreff</string>
     <string name="choose_file_activity_title">Datei auswählen</string>
     <string name="menu_settings">Einstellungen</string>
-    <string name="title_activity_attach_option_dialog">Anhang schicken</string>
     <string name="title_activity_activation_view">Aktivierung</string>
 
     <!-- General -->
@@ -347,7 +346,7 @@
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Dein Mobiltelefon unterstützt das Öffnen von Dateien nicht.</string>
     <string name="service_gui_FILE_SEND_FAILED">Konnte Datei nicht senden: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Datei kann während einer Telefonkonferenz nicht gesendet werden!</string>
-    <string name="service_gui_FILE_SEND_TO">Anlagen senden</string>
+    <string name="service_gui_FILE_ATTACHMENT">Anlagen senden</string>
     <string name="service_gui_FILE_TOO_BIG">Die maximale Dateigrösse wurde überschritten: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Der laufende Dateitransfer wurde unterbrochen @ %1$s.</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Contact Client oder Server unterstützt keine Dateiübertragung oder erforderliche Protokolle</string>
@@ -1538,7 +1537,7 @@
     <string name="audio_permission_denied_feedback">Audioanrufe sind erst verfügbar, wenn du die Berechtigungsanforderung erteilst</string>
 
     <string name="camera_permission_denied_dialog_title">Kameraerlaubnisanforderung</string>
-    <string name="camera_permission_denied_feedback">Für Videoanrufe ist eine Kameraberechtigung erforderlich. Videoanrufe sind erst verfügbar, nachdem du die Berechtigungsanforderung erteilt hast.</string>
+    <string name="camera_permission_denied_feedback">Kamera-Berechtigung: Alle mit der Kamera verbundenen Aktivitäten sind erst verfügbar, wenn Sie die Berechtigungsanforderung erteilen</string>
 
     <string name="contacts_permission_denied_dialog_title">Kontaktberechtigungsanforderung</string>
     <string name="contacts_permission_denied_feedback">Die Zugriffsrechte für Kontakte sind für den Zugriff auf den Telefonstatus und die Anrufkonfiguration erforderlich</string>

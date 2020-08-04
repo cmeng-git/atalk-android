@@ -5,7 +5,7 @@
         android:id="@+id/send_file"
         android:icon="@drawable/ic_attach_dark"
         android:showAsAction="ifRoom"
-        android:title="@string/service_gui_FILE_SEND_TO" />
+        android:title="@string/service_gui_FILE_ATTACHMENT" />
     <item
         android:id="@+id/muc_invite"
         android:icon="@drawable/ic_add_to_chat_dark"

@@ -1,6 +1,35 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	08/05/2020
+Version:		2.3.4 (1134)
+- Fix Vibrator not stop after an incoming call is rejected or answered via JingleMessage.
+- 'Fatal signal 6 (SIGABRT)' throws by mm-qcamera-daemon (libc in Android 10; ONEPLUS A3003); fixed by camera permission denied.
+   Otherwise aTalk locks in splash screen (continuously restart by android OS in loops)
+  e.g: Dalvik/2.1.0 (Linux; U; Android 10; ONEPLUS A3003 Build/QQ3A.200705.002
+    07-29 11:21:00.261  7113  7160 F libc    : Fatal signal 6 (SIGABRT), code -6 (SI_TKILL) in tid 7160 (POSIX timer 0), pid 7113 (mm-qcamera-daem)
+    o7-29 11:21:00.277  7113  7113 I chatty  : uid=1006(camera) /system/vendor/bin/mm-qcamera-daemon expire 13 lines
+    07-29 11:21:00.407  7297  7297 I chatty  : uid=1006(camera) crash_dump32 expire 3 lines
+    07-29 11:21:00.408  2613  2613 I /system/bin/tombstoned: received crash request for pid 7160
+    07-29 11:21:00.422  7297  7297 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+    07-29 11:21:00.422  7297  7297 F DEBUG   : LineageOS Version: '17.1-20200727-NIGHTLY-oneplus3'
+    07-29 11:21:00.422  7297  7297 F DEBUG   : Build fingerprint: 'OnePlus/OnePlus3/OnePlus3:8.0.0/OPR1.170623.032/02281230:user/release-keys'
+    07-29 11:21:00.422  7297  7297 F DEBUG   : Revision: '0'
+    07-29 11:21:00.422  7297  7297 F DEBUG   : ABI: 'arm'
+    07-29 11:21:00.423  7297  7297 F DEBUG   : Timestamp: 2020-07-29 11:21:00+0200
+    07-29 11:21:00.423  7297  7297 F DEBUG   : pid: 7113, tid: 7160, name: POSIX timer 0  >>> /system/vendor/bin/mm-qcamera-daemon <<<
+
+- Eliminates the need to init and store the first entry i.e. Root MetalContact Group in metaContactGroup table.
+- Update Telephony RecipientSelectView to conform to "com.splitwise:tokenautocomplete:4.0.0-beta1", compatible with androidx library
+- Update otr source from jitsi repository
+- Port account misc settings e.g. Media Encoding, Jingle, Stun and serverList etc to use androidx libraries
+
+- Remove patches in MediaRecorderSystem and AndroidCameraSystem class i.e.
+  Obsolete properties for locator facing back if exist
+  Added in v2.1.6: remove obsolete/incorrect properties; to be removed in future release
+
+=========================================================================
+Author:         cmeng
 Upload Date:	07/28/2020
 Version:		2.3.3 (1133)
 
@@ -596,7 +625,7 @@ Upload Date:	11/28/2019
   e.g.This is an invalid http download link https://cmeng-git.github.io
 - Update aTalk#MainPagerAdapter method to allow others to findFragmentByTag
 - Remove all static references to context classes for contactListFragment and contactListAdapter in aTalkApp
-- Revert HttpUtils.java to use org.apache library and remove dependency cz.msebera.android:httpclient:4.5.8
+- Revert HttpUtils.java to use org.apache library and remove dependency cz.msebera.android:httpclient:4.5.8 (conflict with android library?)
 - Change online help link in About to use https://cmeng-git.github.io instead of https://atalk.sytes.net/atalk
 - Rename net.java.sip.communicator.service.protocol.Message => IMessage (avoid same naming as smack Message)
 - create FileBackend#copy(is, os) and remove dependency for 'org.apache.commons:commons-io:1.3.2'
@@ -1238,9 +1267,10 @@ Upload Date:	07/31/2018
 - Full implementation for [Telephony | Disable media calls (Jingle)] option in Account Settings
 - Display user warning alert when zero resource permission has been granted for aTalk operation
 - Disable media services when android OS aborts ffmpeg lib loading (Text-Relocation-Enforced-for-API-level-23)
+  see SettingActivity#disableMediaOptions()
 - see (https://android.googlesource.com/platform/bionic/+/master/android-changes-for-ndk-developers.md#Text-Relocations-Enforced-for-API-level-23)
 - Update Jitsi sources to jitsi-smack-4.2 (dated 20180720)
-- Improve chatroom join captcha challege and allow retry on entry error.
+- Improve chatroom join captcha challenge and allow retry on entry error.
 
 =========================================================================
 Version:		1.4.3 (1043)
@@ -2260,6 +2290,8 @@ Failed to employ OpenSSL (Crypto) for an optimized HMAC-SHA1 implementation:
 dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/org.jitsi-2/base.apk"],
 nativeLibraryDirectories=[/data/app/org.jitsi-2/lib/arm,
 /vendor/lib, /system/lib]]] couldn't find "libjnopenssl.so"
+
+
 
 =========================================================================
 Version:		0.4.5

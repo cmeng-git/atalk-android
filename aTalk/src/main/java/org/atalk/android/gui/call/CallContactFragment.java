@@ -197,7 +197,7 @@ public class CallContactFragment extends OSGiFragment
      * Creates new parametrized instance of <tt>CallContactFragment</tt>.
      *
      * @param phoneNumber optional phone number that will be filled.
-     * @return new parametrized instance of <tt>CallContactFragment</tt>.
+     * @return new parameterized instance of <tt>CallContactFragment</tt>.
      */
     public static CallContactFragment newInstance(String phoneNumber)
     {

@@ -36,7 +36,8 @@ import org.atalk.service.resources.ResourceManagementService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class NotificationDetails extends OSGiActivity implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel
+public class NotificationDetails extends OSGiActivity
+        implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel
 {
     private static final int SELECT_RING_TONE = 100;
 

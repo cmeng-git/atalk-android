@@ -373,7 +373,6 @@ public class DatabaseBackend extends SQLiteOpenHelper
         Timber.i("### Starting Database migration! ###");
         db.beginTransaction();
         try {
-            MclStorageManager.initMCLDataBase(db);
             db.setTransactionSuccessful();
             Timber.i("### Completed SQLite DataBase migration successfully! ###");
         } finally {
