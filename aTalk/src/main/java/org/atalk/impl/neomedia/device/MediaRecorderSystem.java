@@ -20,8 +20,8 @@ import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.util.MediaType;
 
 import java.util.*;
 
@@ -47,14 +47,12 @@ public class MediaRecorderSystem extends DeviceSystem
 
     private static BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
-    private ConfigurationService mConfig = null;
-
     /**
      * Initializes a new <tt>MediaRecorderSystem</tt> instance which discovers and registers
      * <tt>MediaRecorder</tt> capture devices with FMJ.
      *
-     * @throws Exception if anything goes wrong while discovering and registering <tt>MediaRecorder</tt>
-     * capture devices with FMJ
+     * @throws Exception if anything goes wrong while discovering and registering
+     * <tt>MediaRecorder</tt> capture devices with FMJ
      */
     public MediaRecorderSystem()
             throws Exception
@@ -64,36 +62,36 @@ public class MediaRecorderSystem extends DeviceSystem
 
     protected void doInitialize()
     {
-        int cameraCount = Camera.getNumberOfCameras();
-        // Re-init of MediaRecorderSystem is handled with AndroidCameraSystem
-        if (backgroundManager.isAppInBackground() || (cameraCount < 1) || isMediaRecorderInitialized
-                || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+        if (isMediaRecorderInitialized || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
-            if (backgroundManager.isAppInBackground()) {
-                Timber.w("Unable to initialize media recorder while in background #: %s;", cameraCount);
-            }
             return;
         }
-        mConfig = UtilActivator.getConfigurationService();
+        // Re-init of MediaRecorderSystem is handled within AndroidCameraSystem when app returns to Foreground
+        else if (backgroundManager.isAppInBackground()) {
+            Timber.w("Unable to initialize media recorder while in background");
+            return;
+        }
+
+        int cameraCount = Camera.getNumberOfCameras();
+        Timber.d("Number of cameras for MediaRecorder: %s", cameraCount);
+        if (cameraCount < 1) {
+            return;
+        }
+
+        ConfigurationService mConfig = UtilActivator.getConfigurationService();
         List<CaptureDeviceInfo> captureDevices = new LinkedList<>();
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 
         for (int cameraId = 0; cameraId < cameraCount; cameraId++) {
-            // to remove obsolete properties for locator facing back if exist
-            MediaLocator locator0 = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_MEDIARECORDER, cameraId, cameraInfo);
-
-            // create locator with camera id and its facing direction (cameraInfo)
+            // create a locator with camera id and its facing direction (cameraInfo)
             Camera.getCameraInfo(cameraId, cameraInfo);
             MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_MEDIARECORDER, cameraId, cameraInfo);
 
-            // Pick up the preferred sizes which is supported by the Camera.
+            // Init the preferred sizes which is supported by the Camera.
             List<Dimension> sizes = new ArrayList<>();
 
             String vs = mConfig.getString(locator + VIDEO_SIZE, null);
             if (!CameraUtils.getSupportedSizes(vs, sizes)) {
-                // Added in v2.1.6: remove obsolete/incorrect property; to be removed in future release
-                mConfig.setProperty(locator0 + VIDEO_SIZE, null);
-
                 Camera camera = null;
                 try {
                     camera = Camera.open(cameraId);

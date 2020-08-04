@@ -35,7 +35,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Eng Chong Meng
  */
-public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageHelper.FinishListener
+public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageHelper.CallEndListener
 {
     private ImageView peerAvatar;
 
@@ -104,11 +104,9 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
                             finish();
                         }
                 );
-
                 callButton.setVisibility(View.GONE);
             }
         }
-
         JingleMessageHelper.addFinishListener(this);
     }
 

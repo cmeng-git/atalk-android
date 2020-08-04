@@ -149,10 +149,10 @@ public class MediaEncodingActivity extends OSGiActivity
                 List<Integer> priorities = getPriorities(encodings, encodingConfiguration);
                 List<String> encodingsStrs = getEncodingsStr(encodings.iterator());
                 this.encodingsFragment = MediaEncodingsFragment.newInstance(encodingsStrs, priorities);
-                getFragmentManager().beginTransaction().replace(android.R.id.content, encodingsFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(android.R.id.content, encodingsFragment).commit();
             }
             else {
-                this.encodingsFragment = (MediaEncodingsFragment) getFragmentManager().findFragmentById(android.R.id.content);
+                this.encodingsFragment = (MediaEncodingsFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
             }
         }
     }

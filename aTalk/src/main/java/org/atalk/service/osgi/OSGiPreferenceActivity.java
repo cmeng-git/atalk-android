@@ -7,11 +7,18 @@ package org.atalk.service.osgi;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.core.app.NavUtils;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
@@ -23,7 +30,6 @@ import org.osgi.framework.BundleContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.core.app.NavUtils;
 import timber.log.Timber;
 
 /**

@@ -77,7 +77,6 @@
     <string name="chatRoom_Subject">Predmet</string>
     <string name="choose_file_activity_title">Vyberte súbor</string>
     <string name="menu_settings">Nastavenie</string>
-    <string name="title_activity_attach_option_dialog">Poslať prílohu</string>
     <string name="title_activity_activation_view">Aktivácia</string>
 
     <!-- General -->
@@ -348,7 +347,7 @@
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Operácia otvoreného súboru nie je súčasnou platformou zariadenia podporovaná</string>
     <string name="service_gui_FILE_SEND_FAILED">Nepodarilo sa odoslať súbor: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Počas konferenčného hovoru nie je možné odoslať súbor!</string>
-    <string name="service_gui_FILE_SEND_TO">Odoslať prílohu</string>
+    <string name="service_gui_FILE_ATTACHMENT">Odoslať prílohu</string>
     <string name="service_gui_FILE_TOO_BIG">Veľkosť súboru presahuje maximum povolené pre tento protokol: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Prebieha prenos súborov. Sledovanie stavu @%1$s sa stratilo!</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Obráťte sa na klienta alebo server nepodporuje prenos súborov ani požadované protokoly</string>
@@ -1565,7 +1564,7 @@
     <string name="audio_permission_denied_feedback">Zvukový hovor nebude k dispozícii, kým nevyhoviete žiadosti o povolenie</string>
 
     <string name="camera_permission_denied_dialog_title">Žiadosť o povolenie kamery</string>
-    <string name="camera_permission_denied_feedback">Na začatie videohovoru je potrebné povolenie kamery. Videohovor nebude k dispozícii, kým nevyhoviete žiadosti o povolenie</string>
+    <string name="camera_permission_denied_feedback">Povolenie kamery: všetky aktivity súvisiace s kamerou nebudú k dispozícii, kým nevydáte žiadosť o povolenie</string>
 
     <string name="contacts_permission_denied_dialog_title">Žiadosť o povolenie kontaktov</string>
     <string name="contacts_permission_denied_feedback">Na prístup do stavu telefónu a nastavenie hovoru je potrebné povolenie kontaktov</string>

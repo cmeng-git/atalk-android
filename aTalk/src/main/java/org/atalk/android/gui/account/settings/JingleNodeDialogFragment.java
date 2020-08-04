@@ -7,7 +7,6 @@ package org.atalk.android.gui.account.settings;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +23,11 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import androidx.fragment.app.DialogFragment;
+
 /**
- * The Jingle Node edit dialog. It used to edit or create new {@link JingleNodeDescriptor}. It serves as a "create new"
- * dialog when <tt>null</tt> is passed as a descriptor argument.
+ * The Jingle Node edit dialog. It used to edit or create new {@link JingleNodeDescriptor}.
+ * It serves as a "create new" dialog when <tt>null</tt> is passed as a descriptor argument.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -55,10 +56,10 @@ public class JingleNodeDialogFragment extends DialogFragment
      */
     public static JingleNodeDialogFragment newInstance(JingleNodeAdapter listener, JingleNodeDescriptor descriptor)
     {
-        JingleNodeDialogFragment fragmentJnd = new JingleNodeDialogFragment();
         if (listener == null)
             throw new NullPointerException();
 
+        JingleNodeDialogFragment fragmentJnd = new JingleNodeDialogFragment();
         fragmentJnd.listener = listener;
         fragmentJnd.descriptor = descriptor;
         return fragmentJnd;

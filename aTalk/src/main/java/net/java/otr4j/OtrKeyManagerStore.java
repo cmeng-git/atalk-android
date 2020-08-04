@@ -1,5 +1,8 @@
 package net.java.otr4j;
 
+/**
+ * @author George Politis
+ */
 public interface OtrKeyManagerStore {
 	 byte[] getPropertyBytes(String id);
 

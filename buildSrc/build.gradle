@@ -5,7 +5,6 @@ buildscript {
     }
 
     dependencies {
-        // working jarjar.repackage version
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1"
     }
 }
@@ -40,6 +39,7 @@ def jarJarDeps = task("jarJarDeps") {
  * May use className and className$** to delete only the related, but excluding classes with same prefix
  */
 jarJarDeps.dependsOn(
+
     jarjar.repackage {
         from("org.igniterealtime.smack:smack-core:$smackVersion") {
             transitive = false

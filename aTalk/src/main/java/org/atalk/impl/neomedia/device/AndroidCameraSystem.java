@@ -23,8 +23,8 @@ import org.atalk.impl.neomedia.codec.video.AndroidEncoder;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.util.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,24 +74,28 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
     @Override
     protected void doInitialize()
     {
-        int cameraCount = Camera.getNumberOfCameras();
-        if (backgroundManager.isAppInBackground() || (cameraCount < 1) || isCameraInitialized
-                || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+        if (isCameraInitialized || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
-            if (backgroundManager.isAppInBackground()) {
-                Timber.w("Unable to initialize android camera while in background #: %s;", cameraCount);
-                backgroundManager.registerListener(this);
-            }
             return;
         }
+        // Register the listener to re-init AndroidCameraSystem when aTalk returns to Foreground
+        else if (backgroundManager.isAppInBackground()) {
+            Timber.i(" Registered a listener to re-init AndroidCameraSystem when aTalk returns to Foreground");
+            backgroundManager.registerListener(this);
+            return;
+        }
+
+        int cameraCount = Camera.getNumberOfCameras();
+        Timber.d("Number of android cameras: %s", cameraCount);
+        if (cameraCount < 1) {
+            return;
+        }
+
         ConfigurationService mConfig = UtilActivator.getConfigurationService();
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
 
         for (int cameraId = 0; cameraId < cameraCount; cameraId++) {
-            // to remove obsolete properties for locator facing back if exist
-            MediaLocator locator0 = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
-
-            // create locator with camera id and its facing direction (cameraInfo)
+            // create a locator with camera id and its facing direction (cameraInfo)
             Camera.getCameraInfo(cameraId, cameraInfo);
             MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
 
@@ -112,10 +116,6 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
 
             String vSize = mConfig.getString(locator + VIDEO_SIZE, null);
             if (TextUtils.isEmpty(pFormat) || !CameraUtils.getSupportedSizes(vSize, sizes)) {
-                // Added in v2.1.6: remove obsolete/incorrect properties; to be removed in future release
-                mConfig.setProperty(locator0 + PREVIEW_FORMAT, null);
-                mConfig.setProperty(locator0 + VIDEO_SIZE, null);
-
                 Camera camera = null;
                 try {
                     // Pick up the preferred sizes which are supported by the Camera.
@@ -210,7 +210,7 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
 
     /*
      * Re-init all deviceSystem that are associated with camera when app returns to foreground.
-     * Must update VideoCaptureDevices() at end of re-init for system to start using them
+     * Must update VideoCaptureDevices() at the end of re-init for system to start using them
      * Unregister listener on completion.
      */
     @Override

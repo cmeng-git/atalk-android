@@ -32,6 +32,7 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.impl.androidnotification.VibrateHandlerImpl;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
@@ -62,8 +63,8 @@ public final class JingleMessageHelper implements JingleMessageListener
     private static final Map<XMPPConnection, JingleMessageHelper> INSTANCES = new WeakHashMap<>();
 
     /**
-     * A map of the JingleMessage id to FullJid/Jid: can be initiator or responder.
-     * The entry is removed after its final usage.
+     * A map of the JingleMessage (id == Jingle Sid) to FullJid/Jid: can be initiator or responder.
+     * The entry must be removed after its final usage.
      */
     private static final Map<String, Jid> mJingleCalls = new HashMap<>();
 
@@ -74,7 +75,7 @@ public final class JingleMessageHelper implements JingleMessageListener
 
     private static final Map<XMPPConnection, ProtocolProviderService> mProviders = new HashMap<>();
 
-    private static List<FinishListener> finishListeners = new ArrayList<>();
+    private static List<CallEndListener> callEndListeners = new ArrayList<>();
 
     private static boolean isVideoCall = false;
 
@@ -98,7 +99,7 @@ public final class JingleMessageHelper implements JingleMessageListener
     {
         JingleMessageManager jingleMessageManager = JingleMessageManager.getInstanceFor(connection);
         jingleMessageManager.addIncomingListener(this);
-        finishListeners.clear();
+        callEndListeners.clear();
     }
 
     //==================== Outgoing Call processes flow ====================//
@@ -214,7 +215,7 @@ public final class JingleMessageHelper implements JingleMessageListener
     public void onJingleMessageReject(XMPPConnection connection, JingleMessage jingleMessage, Message message)
     {
         closeCallInitActivity();
-        endCall(jingleMessage.getId(), R.string.service_gui_CALL_REJECTED, message.getFrom());
+        endJmCallProcess(jingleMessage.getId(), R.string.service_gui_CALL_REJECTED, message.getFrom());
     }
 
     /**
@@ -332,13 +333,13 @@ public final class JingleMessageHelper implements JingleMessageListener
                 sendJingleMessage(connection, msgProceed, message);
             }
             else {
-                endCall(jingleMessage.getId(), R.string.service_gui_CALL_ANSWER, message.getTo());
+                endJmCallProcess(jingleMessage.getId(), R.string.service_gui_CALL_ANSWER, message.getTo());
             }
         }
     }
 
     /**
-     * Prepare Jingle Message Retract and send it to the callee if call is retracted by caller
+     * Callee has rejected the call; prepare Jingle Message reject and send it to the caller
      *
      * @param id the intended Jingle Message call id
      */
@@ -355,13 +356,13 @@ public final class JingleMessageHelper implements JingleMessageListener
                     .to(connection.getUser());
 
             sendJingleMessage(connection, msgReject, messageBuilder.build());
-            cacheCleanUp(id);
+            endJmCallProcess(id,null);
         }
     }
 
     /**
      * Call from JingleMessageManager with the received original message and Retract JingleMessage
-     * i.e. when caller decides to abort the call. Send missed call notification
+     * i.e. when caller decides to abort the call. Send missed call notification.
      *
      * @param connection XMPPConnection
      * @param jingleMessage Retract received
@@ -375,7 +376,7 @@ public final class JingleMessageHelper implements JingleMessageListener
 
         Jid caller = mJingleCalls.get(id);
         if (caller != null) {
-            endCall(jingleMessage.getId(), R.string.service_gui_CALL_END, message.getFrom());
+            endJmCallProcess(jingleMessage.getId(), R.string.service_gui_CALL_END, message.getFrom());
 
             // fired a missed call notification
             Map<String, Object> extras = new HashMap<>();
@@ -445,9 +446,20 @@ public final class JingleMessageHelper implements JingleMessageListener
         return mJingleCalls.get(sid);
     }
 
-    private void endCall(String sid, int id, Object... arg)
+    /**
+     * This is called when the Jingle Message process cycle has ended i.e. accept, reject or retract.
+     * Jingle message must stop both the RingTone looping and vibrator independent of Jingle call.
+     *
+     * @param sid The jingle Message id (== Jingle Sid)
+     * @param id String id
+     * @param arg arg for the string format
+     */
+    private static void endJmCallProcess(String sid, Integer id, Object... arg)
     {
-        aTalkApp.showToastMessage(id, arg);
+        if (id != null)
+            aTalkApp.showToastMessage(id, arg);
+
+        new VibrateHandlerImpl().cancel();
         cacheCleanUp((sid));
     }
 
@@ -467,20 +479,20 @@ public final class JingleMessageHelper implements JingleMessageListener
      *
      * @param fl FinishListener to close activity
      */
-    public static void addFinishListener(FinishListener fl)
+    public static void addFinishListener(CallEndListener fl)
     {
-        finishListeners.add(fl);
+        callEndListeners.add(fl);
     }
 
     public void closeCallInitActivity()
     {
-        for (FinishListener fl : finishListeners) {
+        for (CallEndListener fl : callEndListeners) {
             fl.onRejectCallback();
         }
-        finishListeners.clear();
+        callEndListeners.clear();
     }
 
-    public interface FinishListener
+    public interface CallEndListener
     {
         void onRejectCallback();
     }

@@ -17,6 +17,7 @@
 package org.atalk.android.gui.chatroomslist;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.TextView;
@@ -70,24 +71,24 @@ public class ChatRoomDestroyDialog extends OSGiFragment
     /**
      * Create chatRoom destroy dialog
      *
-     * @param activity the parent <tt>Activity</tt>
+     * @param context the parent <tt>Context</tt>
      * @param chatRoomWrapper chatRoom wrapper
      * @param cPanel the chatPanel to send message
      */
-    public void show(Activity activity, ChatRoomWrapper crWrapper, ChatPanel cPanel)
+    public void show(Context context, ChatRoomWrapper crWrapper, ChatPanel cPanel)
     {
         chatRoomWrapper = crWrapper;
         chatPanel = cPanel;
 
-        String msgWarn = activity.getString(R.string.service_gui_CHATROOM_DESTROY_PROMPT,
+        String msgWarn = context.getString(R.string.service_gui_CHATROOM_DESTROY_PROMPT,
                 chatRoomWrapper.getUser(), chatRoomWrapper.getChatRoomID());
         Bundle fragmentBundle = new Bundle();
         fragmentBundle.putString(DialogActivity.EXTRA_MESSAGE, msgWarn);
 
-        DialogActivity.showCustomDialog(activity,
-                activity.getString(R.string.service_gui_CHATROOM_DESTROY_TITLE),
+        DialogActivity.showCustomDialog(context,
+                context.getString(R.string.service_gui_CHATROOM_DESTROY_TITLE),
                 ChatRoomDestroyDialog.class.getName(), fragmentBundle,
-                activity.getString(R.string.service_gui_REMOVE),
+                context.getString(R.string.service_gui_REMOVE),
                 new DialogListenerImpl(), null);
     }
 

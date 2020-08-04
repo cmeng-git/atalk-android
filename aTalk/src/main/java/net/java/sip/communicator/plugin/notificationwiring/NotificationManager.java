@@ -1430,8 +1430,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Stops all sounds for the given event type.
      *
-     * @param data the event type for which we should stop sounds. One of the static event types defined
-     * in this class.
+     * @param data the event type for which we should stop sounds. One of the static event types defined in this class.
      */
     private void stopSound(NotificationData data)
     {

@@ -5,7 +5,7 @@
  */
 package org.atalk.android.gui.actionbar;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,11 +52,10 @@ public class ActionBarToggleFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-
-        this.model = (ActionBarToggleModel) activity;
+        super.onAttach(context);
+        this.model = (ActionBarToggleModel) context;
     }
 
     /**

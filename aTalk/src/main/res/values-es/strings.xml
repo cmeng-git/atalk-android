@@ -81,7 +81,6 @@
     <string name="chatRoom_Subject">Tema</string>
     <string name="choose_file_activity_title">Elije un archivo</string>
     <string name="menu_settings">Ajustes</string>
-    <string name="title_activity_attach_option_dialog">Enviar archivo adjunto</string>
     <string name="title_activity_activation_view">Activación</string>
 
     <!-- General -->
@@ -353,7 +352,7 @@
 	<string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Lo sentimos, la operación para abrir el archivo no es compatible con la plataforma actual</string>
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
-	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
+	<string name="service_gui_FILE_ATTACHMENT">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
 	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado @ %1$s perdido!</string>
 	<string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">El cliente o servidor de contacto no admite la transferencia de archivos ni los protocolos necesarios</string>
@@ -1570,7 +1569,7 @@
     <string name="audio_permission_denied_feedback">La llamada de audio no estará disponible hasta que concedas la solicitud de permiso</string>
 
     <string name="camera_permission_denied_dialog_title">Solicitud de permiso de cámara</string>
-    <string name="camera_permission_denied_feedback">El permiso de la cámara es necesario para la configuración de la videollamada. La videollamada no estará disponible hasta que concedas la solicitud de permiso</string>
+    <string name="camera_permission_denied_feedback">Permiso de cámara: todas las actividades asociadas a la cámara no estarán disponibles hasta que otorgue la solicitud de permiso</string>
 
     <string name="contacts_permission_denied_dialog_title">Solicitud de permiso de contactos</string>
     <string name="contacts_permission_denied_feedback">El permiso de los contactos es necesario para el acceso al estado del teléfono y la configuración de llamadas.</string>

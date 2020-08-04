@@ -5,8 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import androidx.annotation.NonNull;
-
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.BackgroundManager;
 import org.atalk.impl.neomedia.MediaServiceImpl;
@@ -22,6 +20,7 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
@@ -210,8 +209,8 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * invoked if the <tt>DeviceSystem</tt> instance returns a set of flags from its
      * {@link #getFeatures()} which contains {@link #FEATURE_REINITIALIZE}.
      *
-     * @param classNames the names of the classes which extend the <tt>DeviceSystem</tt> class and instances of
-     * which are to be initialized
+     * @param classNames the names of the classes which extend the <tt>DeviceSystem</tt> class
+     * and instances of which are to be initialized.
      */
     private static void initializeDeviceSystems(String[] classNames)
     {
@@ -250,12 +249,14 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                     try {
                         o = Class.forName(className).newInstance();
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Timber.e("Class not found: %s", e.getMessage());
                     } catch (Throwable t) {
-                        if (t instanceof ThreadDeath)
+                        if (t instanceof ThreadDeath) {
+                            Timber.e("Fatal error while initialize Device Systems: %s; %s", className, t.getMessage());
                             throw (ThreadDeath) t;
+                        }
                         else {
-                            Timber.w(t, "Failed to initialize %s", className);
+                            Timber.w("Failed to initialize %s; %s", className, t.getMessage());
                         }
                     }
                     if (o instanceof DeviceSystem) {
@@ -273,10 +274,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                     try {
                         invokeDeviceSystemInitialize(deviceSystem);
                     } catch (Throwable t) {
-                        if (t instanceof ThreadDeath)
+                        if (t instanceof ThreadDeath) {
+                            Timber.e("Fatal error while initialize Device Systems: %s; %s", className, t.getMessage());
                             throw (ThreadDeath) t;
+                        }
                         else {
-                            Timber.w(t, "Failed to reinitialize %s", className);
+                            Timber.w("Failed to initialize %s; %s", className, t.getMessage());
                         }
                     }
                 }

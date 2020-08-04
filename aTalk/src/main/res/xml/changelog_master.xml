@@ -6,6 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.3.4 (08/05/2020)" versioncode="1134">
+        <change>Fix Vibrator not stop after an incoming call is rejected or answered via JingleMessage</change>
+        <change>'Fatal signal 6 (SIGABRT)' throws by mm-qcamera-daemon (libc in Android 10; ONEPLUS A3003); fixed by camera permission denied. Otherwise aTalk locks in splash screen</change>
+        <change>Eliminates the need to init and store the Root MetalContact Group in DB</change>
+        <change>Update Telephony RecipientSelectView to conform and compatible with androidx library</change>
+        <change>Remove patches in MediaRecorderSystem and AndroidCameraSystem class</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.3.3 (07/28/2020)" versioncode="1133">
         <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
         <change>Fix SQL table for saving contacts is not properly initialized in new database creation</change>

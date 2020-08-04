@@ -6,8 +6,8 @@
 package org.atalk.android.gui.account.settings;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.widget.BaseAdapter;
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Class is used in {@link ServerListActivity} to handle list model. It also provides the edit dialog fragment for it's

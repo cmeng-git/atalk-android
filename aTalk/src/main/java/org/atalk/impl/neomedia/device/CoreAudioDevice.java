@@ -39,17 +39,13 @@ public class CoreAudioDevice
                 System.loadLibrary("jnwincoreaudio");
                 isLoaded = true;
             }
-        } catch (NullPointerException npe) {
+        } catch (NullPointerException | UnsatisfiedLinkError | SecurityException npe) {
             /*
              * Swallow whatever exceptions are known to be thrown by System.loadLibrary() because
              * the class has to be loaded in order to not prevent the loading of its users and
              * isLoaded will remain false eventually.
              */
             Timber.i(npe, "Failed to load CoreAudioDevice library.");
-        } catch (SecurityException se) {
-            Timber.i(se, "Failed to load CoreAudioDevice library.");
-        } catch (UnsatisfiedLinkError ule) {
-            Timber.i(ule, "Failed to load CoreAudioDevice library.");
         }
 
         CoreAudioDevice.isLoaded = isLoaded;

@@ -77,7 +77,6 @@
     <string name="chatRoom_Subject">Subjek</string>
     <string name="choose_file_activity_title">Pilih fail</string>
     <string name="menu_settings">Pengaturan</string>
-    <string name="title_activity_attach_option_dialog">Kirim lampiran</string>
     <string name="title_activity_activation_view">Aktivasi</string>
 
     <!-- General -->
@@ -349,7 +348,7 @@
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Operasi fail terbuka tidak didukung oleh platform perangkat Anda saat ini</string>
     <string name="service_gui_FILE_SEND_FAILED">Gagal mengirim file: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Tidak dapat mengirim file selama panggilan konferensi!</string>
-    <string name="service_gui_FILE_SEND_TO">Kirim Lampiran</string>
+    <string name="service_gui_FILE_ATTACHMENT">Kirim Lampiran</string>
     <string name="service_gui_FILE_TOO_BIG">Ukuran fail melebihi batas maksimum yang diizinkan untuk protokol ini: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Transfer fail sedang diproses sedang terganggu. Pelacakan status @ %1$s hilang!</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Hubungi klien atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
@@ -1559,7 +1558,7 @@
     <string name="audio_permission_denied_feedback">Panggilan audio tidak akan tersedia sampai anda memberikan permintaan izin</string>
 
     <string name="camera_permission_denied_dialog_title">Permintaan izin kamera</string>
-    <string name="camera_permission_denied_feedback">Izin kamera diperlukan untuk pengaturan panggilan video. Panggilan video tidak akan tersedia sampai anda memberikan permintaan izin</string>
+    <string name="camera_permission_denied_feedback">Izin kamera: semua kegiatan yang terkait dengan kamera tidak akan tersedia sampai Anda mengabulkan permintaan izin</string>
 
     <string name="contacts_permission_denied_dialog_title">Permintaan izin kontak</string>
     <string name="contacts_permission_denied_feedback">Izin kontak diperlukan untuk akses status ponsel dan pengaturan panggilan</string>

@@ -36,10 +36,10 @@ public class EncodingSettings extends OSGiActivity
     {
         super.onCreate(savedInstanceState);
         String mediaTypeStr = getIntent().getStringExtra(EXTRA_MEDIA_TYPE);
-        if (mediaTypeStr.equals(MEDIA_TYPE_AUDIO)) {
+        if (MEDIA_TYPE_AUDIO.equals(mediaTypeStr)) {
             this.mediaType = MediaType.AUDIO;
         }
-        else if (mediaTypeStr.equals(MEDIA_TYPE_VIDEO)) {
+        else if (MEDIA_TYPE_VIDEO.equals(mediaTypeStr)) {
             this.mediaType = MediaType.VIDEO;
         }
 
@@ -53,11 +53,11 @@ public class EncodingSettings extends OSGiActivity
                 List<Integer> priorities = MediaEncodingActivity.getPriorities(formats, encConfig);
 
                 this.encodingsFragment = MediaEncodingsFragment.newInstance(encodings, priorities);
-                getFragmentManager().beginTransaction().add(android.R.id.content, encodingsFragment).commit();
+                getSupportFragmentManager().beginTransaction().add(android.R.id.content, encodingsFragment).commit();
             }
         }
         else {
-            this.encodingsFragment = (MediaEncodingsFragment) getFragmentManager().findFragmentById(android.R.id.content);
+            this.encodingsFragment = (MediaEncodingsFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
     }
 

@@ -1,6 +1,7 @@
 package org.atalk.android.gui.call.telephony;
 
-import android.content.*;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -14,6 +15,7 @@ import org.atalk.android.aTalkApp;
 import java.util.*;
 
 import androidx.annotation.Nullable;
+import androidx.loader.content.AsyncTaskLoader;
 
 public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Recipient>>
 {

@@ -26,7 +26,7 @@
     </item>
     <item
         android:id="@+id/send_chatroom_file"
-        android:title="@string/service_gui_FILE_SEND_TO"
+        android:title="@string/service_gui_FILE_ATTACHMENT"
         android:visible="false">
     </item>
     <item

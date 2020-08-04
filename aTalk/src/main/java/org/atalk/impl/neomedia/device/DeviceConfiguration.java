@@ -274,7 +274,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         setAudioSystemIsDisabled = (cfg != null)
                 && cfg.getBoolean(MediaServiceImpl.DISABLE_SET_AUDIO_SYSTEM_PNAME, false);
 
-        // these seem to be throwing exceptions every now and then so we'll blindly catch them for now
+        // Seem to be throwing exceptions randomly, so we'll blindly catch them for now
         try {
             DeviceSystem.initializeDeviceSystems();
             extractConfiguredCaptureDevices();

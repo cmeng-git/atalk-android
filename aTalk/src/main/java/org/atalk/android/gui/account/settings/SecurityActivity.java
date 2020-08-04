@@ -130,7 +130,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     /**
      * Fragment handles {@link Preference}s used for manipulating security settings.
      */
-    static public class SecurityPreferenceFragment extends PreferenceFragment
+    public static class SecurityPreferenceFragment extends PreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         private static final String STATE_SEC_REG = "security_reg";

@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import java.util.Iterator;
 
 /**
- * A <tt>ContactGroup</tt> is a collection of Contacts/Buddies/Subscriptions, stored by a
+ * A <tt>ContactGroup</tt> is a collection of Contacts/Buddies/Subscriptions, stored by
  * communications service (e.g. AIM/ICQ or Skype) returned by persistent presence operation sets.
  * A group may contain simple members or subgroups. Instances of <tt>ContactGroup</tt> cannot be
  * directly modified by users of the protocol provider service. In order to add buddies or subgroups to a
@@ -21,15 +21,11 @@ public interface ContactGroup
 {
     /**
      * MetaContactGroup root group constants
+     * Do not change these String constants; stored and used in metaContactGroup.
      */
     String ROOT_GROUP_UID = "RootMetaContactGroup";
     String ROOT_PROTO_GROUP_UID = "ContactListRoot";
     String VOLATILE_GROUP = "NotInContactList";
-
-    /**
-     * The name of the node that represents the contact list root.
-     */
-     String ROOT_NAME = "aTalk";
 
     /**
      * The default name of the root contact group
