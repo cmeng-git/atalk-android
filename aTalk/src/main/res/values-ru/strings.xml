@@ -483,7 +483,7 @@
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Произошла внутренняя ошибка. Скорее всего, Пожалуйста, сообщите об этом через журнал отладки.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Используемый протокол не поддерживает автономные сообщения. Вы можете попытаться достигнуть %1$s через другой протокол или подождать, пока он/она не станет онлайн.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Неизвестная ошибка произошла при доставке вашего сообщения.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Неподдерживаемая операция.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Неподдерживаемая операция.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Произошла сетевая проблема. Проверьте конфигурацию сети и повторите попытку.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s написал</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Вы должны сначала войти в систему, чтобы отправить сообщение.</string>
@@ -1045,14 +1045,10 @@
         поставщика услуг, чтобы сообщить им об этой проблеме. &lt;/DIV>&lt;/HTML></string>
 
     <!-- SSL Certificates -->
-	<string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Удалить сертификат</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Пожалуйста, подтвердите удаление сертификата для: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Менеджер сертификатов SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">Сертификат SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Удалить одобренные пользователем сертификаты для: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Удалить сертификат</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Управление сертификатами SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Сертификат SSL</string>
-
-    <string name="pref_remove_trusted_certificates_title">Удалить сертификат</string>
-    <string name="pref_remove_trusted_certificates_summary">Удаление утвержденных вручную сертификатов</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Клиентский сертификат TLS</string>

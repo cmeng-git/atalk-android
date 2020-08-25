@@ -488,7 +488,7 @@
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">El protocolo que estás utilizando no admite mensajes sin conexión.
         Se puede intentar llegar a %1$s a través de otro protocolo o esperar hasta que se conecte.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Se ha producido un error desconocido al enviar el mensaje.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Operación no admitida.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Operación no admitida.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Se ha producido un problema en la red. Compruebar la configuración de su red e inténtarlo de nuevo.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s escrito</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Se debes iniciar la sesión primero para enviar el mensaje.</string>
@@ -1063,14 +1063,10 @@
         proveedor de servicios para informarles sobre el problema.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Eliminar certificado</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Por favor, confirma la eliminación del certificado para: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Administrador de certificados SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">Certificado SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Purgar los certificados aprobados por el usuario para: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Eliminar certificado</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Administración de certificados SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Certificado SSL</string>
-
-    <string name="pref_remove_trusted_certificates_title">Eliminar certificado</string>
-    <string name="pref_remove_trusted_certificates_summary">Eliminar certificados aprobados manualmente</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>

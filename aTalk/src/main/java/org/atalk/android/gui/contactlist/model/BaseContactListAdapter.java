@@ -16,6 +16,7 @@ import net.java.sip.communicator.impl.protocol.jabber.ContactJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -287,6 +288,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         // Keeps reference to avoid future findViewById()
         ContactViewHolder contactViewHolder;
         Object child = getChild(groupPosition, childPosition);
+        // Timber.w("getChildView: %s:%s = %s", groupPosition, childPosition, child);
 
         if ((convertView == null) || !(convertView.getTag() instanceof ContactViewHolder)) {
             convertView = mInflater.inflate(R.layout.contact_list_row, parent, false);
@@ -314,8 +316,6 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             contactViewHolder.callVideoButton.setTag(contactViewHolder);
 
             contactViewHolder.buttonSeparatorView = convertView.findViewById(R.id.buttonSeparatorView);
-
-            convertView.setTag(contactViewHolder);
         }
         else {
             contactViewHolder = (ContactViewHolder) convertView.getTag();
@@ -409,13 +409,12 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         GroupViewHolder groupViewHolder;
         Object group = getGroup(groupPosition);
 
-        if (convertView == null) {
+        if ((convertView == null) || !(convertView.getTag() instanceof GroupViewHolder)) {
             convertView = mInflater.inflate(R.layout.contact_list_group_row, parent, false);
 
             groupViewHolder = new GroupViewHolder();
             groupViewHolder.groupName = convertView.findViewById(R.id.groupName);
             groupViewHolder.groupName.setOnLongClickListener(this);
-            groupViewHolder.groupName.setTag(group);
 
             groupViewHolder.indicator = convertView.findViewById(R.id.groupIndicatorView);
             convertView.setTag(groupViewHolder);
@@ -426,6 +425,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
         if (group instanceof MetaContactGroup) {
             UIGroupRenderer groupRenderer = getGroupRenderer(groupPosition);
+            groupViewHolder.groupName.setTag(group);
             groupViewHolder.groupName.setText(groupRenderer.getDisplayName(group));
         }
 
@@ -473,6 +473,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         ContactViewHolder viewHolder = null;
 
         Object object = view.getTag();
+
+        // Use by media call button activation
         if (object instanceof ContactViewHolder) {
             viewHolder = (ContactViewHolder) view.getTag();
             int groupPos = viewHolder.groupPosition;
@@ -562,7 +564,14 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         }
         else if (clicked instanceof MetaContactGroup) {
             if (view.getId() == R.id.groupName) {
-                contactListFragment.showPopUpMenuGroup(view, (MetaContactGroup) clicked);
+                if (ContactGroup.ROOT_GROUP_UID.equals(((MetaContactGroup) clicked).getMetaUID())
+                        || ContactGroup.VOLATILE_GROUP.equals(((MetaContactGroup) clicked).getGroupName())) {
+                    Timber.w("No action allowed for Group Name: %s", ((MetaContactGroup) clicked).getGroupName());
+                    aTalkApp.showToastMessage(R.string.service_gui_UNSUPPORTED_OPERATION);
+                }
+                else {
+                    contactListFragment.showPopUpMenuGroup(view, (MetaContactGroup) clicked);
+                }
                 return true;
             }
         }

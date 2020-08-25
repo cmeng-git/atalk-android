@@ -23,7 +23,7 @@ repositories {
 
 apply plugin: 'org.anarres.jarjar'
 
-def smackVersion = '4.4.0-alpha5'
+def smackVersion = '4.4.0-beta1'
 
 def jarJarDeps = task("jarJarDeps") {
     doFirst {
@@ -40,38 +40,42 @@ def jarJarDeps = task("jarJarDeps") {
  */
 jarJarDeps.dependsOn(
 
-    jarjar.repackage {
-        from("org.igniterealtime.smack:smack-core:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-core-jarjar/${smackVersion}")
-        destinationName "smack-core-jarjar-${smackVersion}.jar"
-
         // smack-core
-        classDelete 'org.jivesoftware.smack.provider.AbstractProvider'
-    },
+        jarjar.repackage {
+            from("org.igniterealtime.smack:smack-core:$smackVersion") {
+                transitive = false
+            }
+            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-core-jarjar/${smackVersion}")
+            destinationName "smack-core-jarjar-${smackVersion}.jar"
 
-    jarjar.repackage {
-        from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-experimental-jarjar/${smackVersion}")
-        destinationName "smack-experimental-jarjar-${smackVersion}.jar"
+            // need to patch AbstractProvider for it to accept aTalk Extension Element implementation
+            classDelete 'org.jivesoftware.smack.provider.AbstractProvider'
+            // Fix R8 Exception: @see https://issuetracker.google.com/issues/163264839
+            classDelete 'org.jivesoftware.smack.util.Function'
+        },
 
         // smack-experimental
-        classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
-    },
+        jarjar.repackage {
+            from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
+                transitive = false
+            }
+            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-experimental-jarjar/${smackVersion}")
+            destinationName "smack-experimental-jarjar-${smackVersion}.jar"
 
-    jarjar.repackage {
-        from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-extensions-jarjar/${smackVersion}")
-        destinationName "smack-extensions-jarjar-${smackVersion}.jar"
+            // Add support for media file sharing
+            classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
+        },
 
         // smack-extensions
-        classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
-        classDelete 'org.jivesoftware.smackx.xdata.form.FillableForm**'
-    }
+        jarjar.repackage {
+            from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
+                transitive = false
+            }
+            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-extensions-jarjar/${smackVersion}")
+            destinationName "smack-extensions-jarjar-${smackVersion}.jar"
+
+            // Add support for chatStat in conference room
+            classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
+        }
 )
 tasks.getByName("build").dependsOn(jarJarDeps)

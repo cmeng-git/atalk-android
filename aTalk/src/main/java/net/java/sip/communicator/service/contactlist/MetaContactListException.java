@@ -110,7 +110,6 @@ public class MetaContactListException extends RuntimeException
         this.errCode = code;
     }
 
-
     /**
      * Returns an int describing the nature of the exception.
      *

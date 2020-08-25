@@ -49,7 +49,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
     /**
      * A list of the contact groups encapsulated by this MetaContactGroup
      */
-    private Vector<ContactGroup> protoGroups = new Vector<>();
+    private Vector<ContactGroup> mProtoGroups = new Vector<>();
 
     /**
      * An id uniquely identifying the meta contact group in this contact list.
@@ -86,7 +86,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
 
     /**
      * The user-specific key-value associations stored in this instance.
-     * <p>
+     *
      * Like the Widget implementation of Eclipse SWT, the storage type takes into account that
      * there are likely to be many {@code MetaContactGroupImpl} instances and
      * {@code Map}s are thus likely to impose increased memory use. While an array may
@@ -125,7 +125,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
         this.mclServiceImpl = mclServiceImpl;
         this.groupName = groupName;
         this.groupUID = (mcgUID == null)
-                ? String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode()) : mcgUID;
+                ? System.currentTimeMillis() + String.valueOf(hashCode()) : mcgUID;
     }
 
     /**
@@ -164,7 +164,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
 
     /**
      * Returns the number of <tt>MetaContact</tt>s that this group contains.
-     * <p>
+     *
      *
      * @return the number of <tt>MetaContact</tt>s that this group contains.
      */
@@ -175,7 +175,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
 
     /**
      * Returns the number of online <tt>MetaContact</tt>s that this group contains.
-     * <p>
+     *
      *
      * @return the number of online <tt>MetaContact</tt>s that this group contains.
      */
@@ -202,13 +202,13 @@ public class MetaContactGroupImpl implements MetaContactGroup
 
     /**
      * Returns the number of <tt>ContactGroups</tt>s that this group encapsulates
-     * <p>
+     *
      *
      * @return an int indicating the number of ContactGroups-s that this group encapsulates.
      */
     public int countContactGroups()
     {
-        return protoGroups.size();
+        return mProtoGroups.size();
     }
 
     /**
@@ -224,10 +224,10 @@ public class MetaContactGroupImpl implements MetaContactGroup
     /**
      * Returns a <tt>java.util.Iterator</tt> over the <tt>MetaContact</tt>s contained in this
      * <tt>MetaContactGroup</tt>.
-     * <p>
+     *
      * In order to prevent problems with concurrency, the <tt>Iterator</tt> returned by this
      * method is not over the actual list of groups but over a copy of that list.
-     * <p>
+     *
      *
      * @return a <tt>java.util.Iterator</tt> over an empty contacts list.
      */
@@ -240,7 +240,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
      * Returns the contact with the specified identifier
      *
      * @param metaContactID a String identifier obtained through the <tt>MetaContact.getMetaUID()</tt> method.
-     * <p>
+     *
      * @return the <tt>MetaContact</tt> with the specified identifier.
      */
     public MetaContact getMetaContact(String metaContactID)
@@ -392,16 +392,16 @@ public class MetaContactGroupImpl implements MetaContactGroup
     /**
      * Returns an iterator over all the protocol specific groups that this contact group
      * represents.
-     * <p>
+     *
      * In order to prevent problems with concurrency, the <tt>Iterator</tt> returned by this
      * method is not over the actual list of groups but over a copy of that list.
-     * <p>
+     *
      *
      * @return an Iterator over the protocol specific groups that this group represents.
      */
     public Iterator<ContactGroup> getContactGroups()
     {
-        return new LinkedList<>(this.protoGroups).iterator();
+        return new LinkedList<>(mProtoGroups).iterator();
     }
 
     /**
@@ -432,29 +432,26 @@ public class MetaContactGroupImpl implements MetaContactGroup
 
     /**
      * Returns all protocol specific ContactGroups, encapsulated by this MetaContactGroup and
-     * coming from the indicated ProtocolProviderService. If none of the contacts encapsulated by
-     * this MetaContact is originating from the specified provider then an empty iterator is
-     * returned.
-     * <p>
+     * coming from the indicated ProtocolProviderService. If none of the contactGroups encapsulated by
+     * this MetaContact is originating from the specified provider then an empty iterator is returned.
      *
-     * @param provider a reference to the <tt>ProtocolProviderService</tt> whose ContactGroups we'd like to
-     * get.
+     * @param provider a reference to the <tt>ProtocolProviderService</tt> whose ContactGroups we'd like to get.
      * @return an <tt>Iterator</tt> over all contacts encapsulated in this <tt>MetaContact</tt>
      * and originating from the specified provider.
      */
     public Iterator<ContactGroup> getContactGroupsForProvider(ProtocolProviderService provider)
     {
         Iterator<ContactGroup> encapsulatedGroups = getContactGroups();
-        LinkedList<ContactGroup> protGroups = new LinkedList<>();
+        LinkedList<ContactGroup> protoGroups = new LinkedList<>();
 
         while (encapsulatedGroups.hasNext()) {
             ContactGroup group = encapsulatedGroups.next();
 
             if (group.getProtocolProvider() == provider) {
-                protGroups.add(group);
+                protoGroups.add(group);
             }
         }
-        return protGroups.iterator();
+        return protoGroups.iterator();
     }
 
     /**
@@ -462,11 +459,10 @@ public class MetaContactGroupImpl implements MetaContactGroup
      * coming from the provider matching the <tt>accountID</tt> param. If none of the contacts
      * encapsulated by this MetaContact is originating from the specified account then an
      * empty iterator is returned.
-     * <p>
+     *
      * Note to implementers: In order to prevent problems with concurrency, the <tt>Iterator</tt>
      * returned by this method should not be over the actual list of groups but rather over a
      * copy of that list.
-     * <p>
      *
      * @param accountID the id of the account whose contact groups we'd like to retrieve.
      * @return an <tt>Iterator</tt> over all contacts encapsulated in this <tt>MetaContact</tt>
@@ -568,7 +564,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
     public MetaContactGroupImpl findMetaContactGroupByContactGroup(ContactGroup protoContactGroup)
     {
         // first check here, in this meta group
-        if (protoGroups.contains(protoContactGroup))
+        if (mProtoGroups.contains(protoContactGroup))
             return this;
 
         // if we didn't find it here, let's try in the subgroups
@@ -588,7 +584,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
      *
      * @param index the index of the meta contact to return.
      * @return the MetaContact with the specified index,
-     * <p>
+     *
      * @throws IndexOutOfBoundsException in case <tt>index</tt> is not a valid index for this group.
      */
     public MetaContact getMetaContact(int index)
@@ -659,11 +655,11 @@ public class MetaContactGroupImpl implements MetaContactGroup
 
     /**
      * Returns the <tt>MetaContactGroup</tt> with the specified index.
-     * <p>
+     *
      *
      * @param index the index of the group to return.
      * @return the <tt>MetaContactGroup</tt> with the specified index.
-     * <p>
+     *
      * @throws IndexOutOfBoundsException if <tt>index</tt> is not a valid index.
      */
     public MetaContactGroup getMetaContactSubgroup(int index)
@@ -739,10 +735,10 @@ public class MetaContactGroupImpl implements MetaContactGroup
     /**
      * Returns an <tt>java.util.Iterator</tt> over the sub groups that this
      * <tt>MetaContactGroup</tt> contains.
-     * <p>
+     *
      * In order to prevent problems with concurrency, the <tt>Iterator</tt> returned by this
      * method is not over the actual list of groups but over a copy of that list.
-     * <p>
+     *
      *
      * @return a <tt>java.util.Iterator</tt> containing all subgroups.
      */
@@ -824,7 +820,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
      */
     void addProtoGroup(ContactGroup protoGroup)
     {
-        protoGroups.add(protoGroup);
+        mProtoGroups.add(protoGroup);
     }
 
     /**
@@ -835,7 +831,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
      */
     void removeProtoGroup(ContactGroup protoGroup)
     {
-        protoGroups.remove(protoGroup);
+        mProtoGroups.remove(protoGroup);
     }
 
     /**
@@ -999,15 +995,15 @@ public class MetaContactGroupImpl implements MetaContactGroup
      * Compares this meta contact group with the specified object for order. Returns a negative
      * integer, zero, or a positive integer as this meta contact group is less than, equal to, or
      * greater than the specified object.
-     * <p>
+     *
      * The result of this method is calculated the following way:
-     * <p>
+     *
      * + getGroupName().compareTo(o.getGroupName()) * 10 000 + getMetaUID().compareTo(o.getMetaUID
      * ())<br>
-     * <p>
+     *
      * Or in other words ordering of meta groups would be first done by display name, and finally
      * (in order to avoid equalities) be the fairly random meta contact group metaUID.
-     * <p>
+     *
      *
      * @param target the {@code MetaContactGroup} to be compared.
      * @return a negative integer, zero, or a positive integer as this object is less than, equal

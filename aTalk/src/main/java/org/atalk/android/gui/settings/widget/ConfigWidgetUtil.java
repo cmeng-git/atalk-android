@@ -82,7 +82,7 @@ class ConfigWidgetUtil
     void updateSummary(Object value)
     {
         if (mapSummary) {
-            String text = value != null ? value.toString() : "";
+            String text = (value != null) ? value.toString() : "";
             if (parent instanceof EditTextPreference) {
                 int inputType = ((EditTextPreference) parent).getEditText().getInputType();
 

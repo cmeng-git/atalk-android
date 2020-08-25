@@ -1,6 +1,68 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	08/25/2020
+Version:		2.4.0 (1140)
+- Removed and merged 'Remove certificate' option into SSL Certificate (Manage...) in Settings... menu.
+  Delete file CertificateDeleteDialog.java
+- Upgrade ZRTP library to zrtp4j:4.1.2:
+  # Fix ZRTP X25519 key exchange error
+  - https://github.com/jitsi/zrtp4j/commit/f7575bf6301927a997675726002d309b2acdd5d9
+  - Do not upgrade to bouncycastle v1.6.6 AS has problem: Failed to transform bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59
+  # Truncate ZRTP KDF output as per RFC
+  - https://github.com/jitsi/zrtp4j/commit/0baa502b9269d0d8a31247d032ee4896f945a344
+  - Revert earlier patch (v2.3.1) added in org/atalk/impl/neomedia/transform/zrtp/ZRTPTransformEngine.java
+
+- Cleanup contact 'Move to group' associated option handlers:
+  # Contact moved to newly created metaGroup only get reflected in contact list after resume
+    - Allow to addGroup(group) in addContacts(MetaContactGroup group) for zero contact group
+    - MetaContactListAdapter#metaContactGroupAdded must be performed immediately,
+      otherwise originalGroups and groups Lists do not get updated in metaContactMoved()
+  # Include root group as one of the groups selection i.e. 'No group' (Contacts)
+  # BaseContactListAdapter#getGroupView:
+    - must init with convertView.setTag(group); otherwise clicked object may not properly defined
+    - Must check for (convertView.getTag() instanceof GroupViewHolder) before using the view
+    - Must perform groupViewHolder.groupName.setTag(group) for reused and new View
+  # metaContactMoved(): Must add destination zero-child group to groups before proceeds.
+    if (!groups.contains(newParent)) {
+        Timber.w("Add missing move-to group: %s (%s)", destGroup, newParent.getMetaUID());
+        addGroup(newParent, false);
+    }
+    - ServerStoredContactListJabberImpl#ChangeListener must check for ContactGroup.ROOT_GROUP_NAME for reuse (do not create new)
+  # Change ROOT_PROTO_GROUP_UID = "Contacts"; Better defined as ContactListRoot
+    - MclStorageManager#processGroupContact: add patch to upgrade DB e.g. "ContactListRoot" to "Contacts" etc
+     (To be removed in future release)
+  # Block any rootGroup i.e. "Contacts" creation in DB metaContactGroup Table
+    - Do not allow removal of root group i.e. "Contacts" or VOLATILE_GROUP or non-empty group
+  # MetaContactListServiceImpl#resolveProtoPath() update to take care rootGroup
+
+- Smack 4.4.0-alpha5 does not immediately throws StreamErrorException to the calling app for action. Fixed in smack 4.4.0-beta1:
+  https://discourse.igniterealtime.org/t/smack-4-4-0-alpha5-does-not-immediately-throws-streamerrorexception-to-the-calling-app-for-action/88495
+
+- Fix TLS client certificate info display problem: API-29 webview has problem to display '#' character. So use string.replace("#", "&sharp;");
+
+- Upgrade HttpUtils: Migration to Apache HttpClient 5.0 replacing deprecated library. Remove SSLSocketFactoryEx.java
+  HttpUtils not fully tested (used by CertificateServiceImpl & ProvisioningServiceImpl) but not active in aTalk.
+  https://hc.apache.org/httpcomponents-client-4.5.x/android-port.html
+  https://ok2c.github.io/httpclient-migration-guide/migration-to-classic.html
+  https://stackoverflow.com/questions/29294479/android-deprecated-apache-module-httpclient-httpresponse-etc/37623038#37623038
+
+- Add new UI language support i.e. Português (Brasil)
+
+- Upgrade libraries and AS environment:
+  'com.karumi:dexter:5.0.0' => 6.2.1; 'com.github.yalantis:ucrop:2.2.2' => 2.2.5
+- classpath 'com.android.tools.build:gradle:4.0.1' => 4.1.0-beta05;  // Resolved key map error
+- distributionUrl=https://services.gradle.org/distributions/gradle-6.1.1-all.zip => gradle-6.5-all.zip
+  Re: Issue 162527853: android studio regularly but randomly throws error a jar file is missing in the map and stop during the build process
+  https://mail.google.com/mail/u/0/?zx=9buvzusctsa7#inbox/FMfcgxwJXCJPJxNvXVqcgqGMtsGKbMQZ
+
+- Resolved the following problem with 4.1.0-beta05 i.e. omit Function.java from lib and use aTalk local Function.java file instead
+  Compilation failed to complete, position: Lorg/jivesoftware/smack/util/Function;identity()Lorg/jivesoftware/smack/util/Function;,
+  origin: /home/cmeng/.gradle/caches/transforms-2/files-2.1/d486bd3eea9279be8fb8935015afbed5/jetified-smack-core-jarjar-4.4.0-alpha5.jar:org/jivesoftware/smack/util/Function.class
+  @see https://issuetracker.google.com/issues/162527853#comment21
+
+=========================================================================
+Author:         cmeng
 Upload Date:	08/05/2020
 Version:		2.3.4 (1134)
 - Fix Vibrator not stop after an incoming call is rejected or answered via JingleMessage.

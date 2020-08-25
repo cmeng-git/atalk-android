@@ -61,7 +61,7 @@ public final class AccountManager extends Manager {
     /**
      * The default value used by new account managers for <code>allowSensitiveOperationOverInsecureConnection</code>.
      *
-     * @param allow
+     * @param allow TODO javadoc me please
      * @see #sensitiveOperationOverInsecureConnection(boolean)
      * @since 4.1
      */
@@ -78,7 +78,7 @@ public final class AccountManager extends Manager {
      * unencrypted) connections.
      * </p>
      *
-     * @param allow
+     * @param allow TODO javadoc me please
      * @since 4.1
      */
     public void sensitiveOperationOverInsecureConnection(boolean allow) {
@@ -372,8 +372,7 @@ public final class AccountManager extends Manager {
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
 
-        ExtensionElement extensionElement = connection.getFeature(Registration.Feature.ELEMENT,
-                Registration.Feature.NAMESPACE);
+        ExtensionElement extensionElement = connection.getFeature(Registration.Feature.class);
         if (extensionElement != null) {
             return true;
         }
@@ -396,8 +395,7 @@ public final class AccountManager extends Manager {
      * @throws XMPPException if an error occurs.
      * @throws SmackException if there was no response from the server.
      */
-    private synchronized void _getRegistrationInfo() throws NoResponseException, XMPPErrorException,
-            NotConnectedException, InterruptedException {
+    private synchronized void _getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();
         reg.setTo(connection().getXMPPServiceDomain());
         info = createStanzaCollectorAndSend(reg).nextResultOrThrow();

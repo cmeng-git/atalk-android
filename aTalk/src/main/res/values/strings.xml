@@ -484,7 +484,7 @@
     <string name="service_gui_MOVE_CONTACT">Move Contact</string>
     <string name="service_gui_MOVE_CONTACT_ERROR">Contact cannot be moved</string>
     <string name="service_gui_MOVE_SUBCONTACT">Move contact</string>
-    <string name="service_gui_MOVE_SUBCONTACT_MSG">Select the contact or the group, where you would like to move the selected contact.</string>
+    <string name="service_gui_MOVE_SUBCONTACT_MSG">Select the contact or group, where you would like to move the selected contact.</string>
     <string name="service_gui_MOVE_SUBCONTACT_FAILED">The contact you have chosen is the same as\nthe source one. Please choose another contact!</string>
     <string name="service_gui_MOVE_SUBCONTACT_QUESTION">Are you sure you want to move %1$s to %2$s?</string>
     <string name="service_gui_MOVE_TO_GROUP">Move to group</string>
@@ -497,7 +497,7 @@
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">An internal error occurred. This is most probably a bug. Please report it via debug log.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">The protocol you are using does not support offline messages. You could try to reach %1$s through another protocol or wait until he/she becomes online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Unknown error has occurred while delivering your message.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Unsupported operation.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Unsupported operation.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">A network problem occurred. Please check your network configuration and try again.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s wrote</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">You must login first to send message.</string>
@@ -1061,14 +1061,10 @@
         service provider to inform them about the issue. &lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Remove Certificate</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Please confirm to delete certificate for: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">SSL Certificate Manager</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">SSL Certificate</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Purge user approved certificates for: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Remove Certificate</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Manage SSL Certificates</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">SSL Certificate</string>
-
-    <string name="pref_remove_trusted_certificates_title">Remove certificate</string>
-    <string name="pref_remove_trusted_certificates_summary">Delete manually approved certificates</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Client TLS certificate</string>

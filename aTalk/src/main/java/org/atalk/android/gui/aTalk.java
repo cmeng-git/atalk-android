@@ -23,13 +23,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.ViewGroup;
 
+import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
 import org.atalk.android.gui.call.CallHistoryFragment;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
@@ -132,7 +134,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         handleIntent(getIntent(), savedInstanceState);
 
-        // Purge obsoleted aTalk avatarcache directory and contents 2.2.0 (2020/03/13): To be removed in future release.
+        // Purge obsoleted aTalk avatarCache directory and contents 2.2.0 (2020/03/13): To be removed in future release.
         MigrateDir.purgeAvatarCache();
 
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active

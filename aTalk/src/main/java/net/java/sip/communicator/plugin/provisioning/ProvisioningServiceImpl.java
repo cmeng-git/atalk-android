@@ -1,15 +1,15 @@
 package net.java.sip.communicator.plugin.provisioning;
 
-import net.java.sip.communicator.service.httputil.HttpUtils;
 import net.java.sip.communicator.service.provisioning.ProvisioningService;
 import net.java.sip.communicator.util.OrderedProperties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.NameValuePair;
+import org.apache.hc.core5.http.NameValuePair;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.httputil.HttpUtils;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
 import org.osgi.framework.Bundle;
@@ -22,8 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;
-
-// disambiguation
 
 /**
  * Provisioning service.
@@ -64,10 +62,9 @@ public class ProvisioningServiceImpl implements ProvisioningService
     private static final String PROPERTY_PROVISIONING_MANDATORY = "provisioning.MANDATORY";
 
     /**
-     * Name of the property that contains enforce prefix list (separated by pipe) for the
-     * provisioning. The retrieved configuration properties will be checked against these
-     * prefixes to avoid having incorrect content in the configuration file (such as HTML content
-     * resulting of HTTP error).
+     * Name of the property that contains enforce prefix list (separated by pipe) for the provisioning.
+     * The retrieved configuration properties will be checked against these prefixes to avoid having
+     * incorrect content in the configuration file (such as HTML content resulting of HTTP error).
      */
     private static final String PROVISIONING_ALLOW_PREFIX_PROP = "provisioning.ALLOW_PREFIX";
 
@@ -79,7 +76,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
     /**
      * List of allowed configuration prefixes.
      */
-    private List<String> allowedPrefixes = new ArrayList<>();
+    private final List<String> allowedPrefixes = new ArrayList<>();
 
     /**
      * Authentication username.
@@ -244,7 +241,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     .getLocalHost(InetAddress.getByName(u.getHost()));
 
             // Get any system environment identified by ${env.xyz}
-            Pattern p = Pattern.compile("\\$\\{env\\.([^\\}]*)\\}");
+            Pattern p = Pattern.compile("\\$\\{env\\.([^}]*)}");
             Matcher m = p.matcher(url);
             StringBuffer sb = new StringBuffer();
             while (m.find()) {
@@ -257,7 +254,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
             url = sb.toString();
 
             // Get any system property variable identified by ${system.xyz}
-            p = Pattern.compile("\\$\\{system\\.([^\\}]*)\\}");
+            p = Pattern.compile("\\$\\{system\\.([^}]*)}");
             m = p.matcher(url);
             sb = new StringBuffer();
             while (m.find()) {
@@ -275,13 +272,13 @@ public class ProvisioningServiceImpl implements ProvisioningService
             }
 
             if (url.contains("${home.name}")) {
-                url = url.replace("${home.name}", ProvisioningActivator
-                        .getConfigurationService().getScHomeDirName());
+                url = url.replace("${home.name}",
+                        ProvisioningActivator.getConfigurationService().getScHomeDirName());
             }
 
             if (url.contains("${uuid}")) {
-                url = url.replace("${uuid}", (String) ProvisioningActivator
-                        .getConfigurationService().getProperty(PROVISIONING_UUID_PROP));
+                url = url.replace("${uuid}",
+                        (String) ProvisioningActivator.getConfigurationService().getProperty(PROVISIONING_UUID_PROP));
             }
 
             if (url.contains("${osname}")) {
@@ -344,7 +341,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
                         NetworkInterface iface = en.nextElement();
 
                         Enumeration<InetAddress> enInet = iface.getInetAddresses();
-
                         while (enInet.hasMoreElements()) {
                             InetAddress inet = enInet.nextElement();
 
@@ -359,7 +355,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
 
                                 for (byte h : hw) {
                                     int hi = h >= 0 ? h : h + 256;
-                                    String t = new String((hi <= 0xf) ? "0" : "");
+                                    String t = (hi <= 0xf) ? "0" : "";
                                     t += Integer.toHexString(hi);
                                     buf.append(t);
                                     buf.append(":");
@@ -393,8 +389,8 @@ public class ProvisioningServiceImpl implements ProvisioningService
             int passwordIx = -1;
 
             if (args != null && args.length > 0) {
-                paramNames = new ArrayList<String>(args.length);
-                paramValues = new ArrayList<String>(args.length);
+                paramNames = new ArrayList<>(args.length);
+                paramValues = new ArrayList<>(args.length);
 
                 String usernameParam = "${username}";
                 String passwordParam = "${password}";
@@ -664,13 +660,11 @@ public class ProvisioningServiceImpl implements ProvisioningService
     private void checkEnforcePrefix(String enforcePrefix)
     {
         ConfigurationService config = ProvisioningActivator.getConfigurationService();
-        String[] prefixes = null;
-
         if (enforcePrefix == null) {
             return;
         }
         /* must escape the | character */
-        prefixes = enforcePrefix.split("\\|");
+        String[] prefixes = enforcePrefix.split("\\|");
 
         /* get all properties */
         for (String key : config.getAllPropertyNames(enforcePrefix)) {

@@ -60,6 +60,10 @@ public class MediaRecorderSystem extends DeviceSystem
         super(MediaType.VIDEO, LOCATOR_PROTOCOL_MEDIARECORDER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void doInitialize()
     {
         if (isMediaRecorderInitialized || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
@@ -71,6 +75,9 @@ public class MediaRecorderSystem extends DeviceSystem
             Timber.w("Unable to initialize media recorder while in background");
             return;
         }
+
+        // cleanup camera properties messed up by camera2
+        // cleanMediaDB();
 
         int cameraCount = Camera.getNumberOfCameras();
         Timber.d("Number of cameras for MediaRecorder: %s", cameraCount);
@@ -170,5 +177,18 @@ public class MediaRecorderSystem extends DeviceSystem
                 CaptureDeviceManager.addDevice(captureDevice);
         }
         isMediaRecorderInitialized = true;
+    }
+
+    public static void cleanMediaDB()
+    {
+        String[] prefixes = new String[]{LOCATOR_PROTOCOL_MEDIARECORDER, LOCATOR_PROTOCOL_ANDROIDCAMERA};
+
+        ConfigurationService cs = UtilActivator.getConfigurationService();
+        for (String prefix : prefixes) {
+            List<String> mediaProperties = cs.getPropertyNamesByPrefix(prefix, false);
+            for (String property : mediaProperties) {
+                cs.setProperty(property, null);
+            }
+        }
     }
 }

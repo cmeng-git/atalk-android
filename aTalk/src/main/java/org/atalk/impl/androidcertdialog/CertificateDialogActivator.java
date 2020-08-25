@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 public class CertificateDialogActivator extends SimpleServiceActivator<CertificateDialogServiceImpl>
 {
     /**
-     * Creates new instance of CertificateDialogActivator.
+     * Creates a new instance of CertificateDialogActivator.
      */
     public CertificateDialogActivator()
     {

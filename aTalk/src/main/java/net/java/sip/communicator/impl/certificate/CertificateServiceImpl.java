@@ -20,11 +20,11 @@ import android.annotation.SuppressLint;
 import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
-import net.java.sip.communicator.service.httputil.HttpUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
+import org.atalk.service.httputil.HttpUtils;
 import org.atalk.util.OSUtils;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.x509.Extension;
@@ -94,6 +94,8 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
 
     public final static String CERT_TRUST_SERVER_SUBFIX = ".server.";
     public final static String CERT_TRUST_PARAM_SUBFIX = ".param.";
+
+    public final static String CERT_XMPP_CLIENT_SUBFIX = "_xmpp-client.";
 
     /**
      * Hash algorithm for the cert thumbprint
@@ -719,6 +721,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                                 String newValue = thumbprint;
                                 if (current != null)
                                     newValue += "," + current;
+                                // Timber.w(new Exception("Add Certificate To Trust: " + propName + ": " + newValue));
                                 config.setProperty(propName, newValue);
                             }
                             break;

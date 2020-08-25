@@ -154,11 +154,13 @@ public class SettingsActivity extends OSGiActivity
         private AudioSystem audioSystem;
 
         private static ConfigurationService mConfigService;
+        private PreferenceScreen preferenceScreen;
+        private SharedPreferences shPrefs;
 
         /**
          * Summary mapper used to display preferences values as summaries.
          */
-        private SummaryMapper summaryMapper = new SummaryMapper();
+        private final SummaryMapper summaryMapper = new SummaryMapper();
 
         /**
          * {@inheritDoc}
@@ -178,8 +180,10 @@ public class SettingsActivity extends OSGiActivity
         {
             super.onStart();
 
-            // FFR: v2.1.5 NPE; use UtilActivator instead of AndroidGUIActivator which was initialize much later
+            // FFR: v2.1.5 NPE; use UtilActivator instead of AndroidGUIActivator which was initialized much later
             mConfigService = UtilActivator.getConfigurationService();
+            preferenceScreen = getPreferenceScreen();
+            shPrefs = getPreferenceManager().getSharedPreferences();
 
             // init display locale and theme (not implemented)
             initLocale();
@@ -206,7 +210,6 @@ public class SettingsActivity extends OSGiActivity
                 disableMediaOptions();
             }
 
-            SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
             shPrefs.registerOnSharedPreferenceChangeListener(this);
             shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
         }
@@ -217,8 +220,6 @@ public class SettingsActivity extends OSGiActivity
         @Override
         public void onStop()
         {
-            SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
-
             shPrefs.unregisterOnSharedPreferenceChangeListener(this);
             shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
             super.onStop();
@@ -334,7 +335,6 @@ public class SettingsActivity extends OSGiActivity
         // Disable all media options when MediaServiceImpl is not initialized due to text-relocation in ffmpeg
         private void disableMediaOptions()
         {
-            PreferenceScreen preferenceScreen = getPreferenceScreen();
             PreferenceCategory myPrefCat = (PreferenceCategory) findPreference(PC_KEY_MEDIA_CALL);
             if (myPrefCat != null)
                 preferenceScreen.removePreference(myPrefCat);
@@ -367,28 +367,28 @@ public class SettingsActivity extends OSGiActivity
             // mhs may be null if user access settings before the mhs service is properly setup
             MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
             boolean isHistoryLoggingEnabled = (mhs != null) && mhs.isHistoryLoggingEnabled();
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_LOG_CHAT_HISTORY, isHistoryLoggingEnabled);
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_LOG_CHAT_HISTORY, isHistoryLoggingEnabled);
 
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_SHOW_HISTORY, ConfigurationUtils.isHistoryShown());
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_SHOW_HISTORY, ConfigurationUtils.isHistoryShown());
 
             // Updates displayed history size summary.
             EditTextPreference historySizePref = (EditTextPreference) findPreference(P_KEY_HISTORY_SIZE);
             historySizePref.setText("" + ConfigurationUtils.getChatHistorySize());
             updateHistorySizeSummary();
 
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_START,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_AUTO_START,
                     ConfigurationUtils.isAutoStartEnable());
 
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_MESSAGE_DELIVERY_RECEIPT,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_MESSAGE_DELIVERY_RECEIPT,
                     ConfigurationUtils.isSendMessageDeliveryReceipt());
 
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_CHAT_STATE_NOTIFICATIONS,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_CHAT_STATE_NOTIFICATIONS,
                     ConfigurationUtils.isSendChatStateNotifications());
 
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_XFER_THUMBNAIL_PREVIEW,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_XFER_THUMBNAIL_PREVIEW,
                     ConfigurationUtils.isSendThumbnail());
 
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_PRESENCE_SUBSCRIBE_MODE,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_PRESENCE_SUBSCRIBE_MODE,
                     ConfigurationUtils.isPresenceSubscribeAuto());
 
             initAutoAcceptFileSize();
@@ -434,7 +434,7 @@ public class SettingsActivity extends OSGiActivity
         private void initNotificationPreferences()
         {
             // Remove for android play store release
-            // PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_AUTO_UPDATE_CHECK_ENABLE,
+            // PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_AUTO_UPDATE_CHECK_ENABLE,
             //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
 
             BundleContext bc = AndroidGUIActivator.bundleContext;
@@ -468,14 +468,13 @@ public class SettingsActivity extends OSGiActivity
             summaryMapper.includePreference(handlerList, "Auto");
 
             // Quite hours enable
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_QUIET_HOURS_ENABLE,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_QUIET_HOURS_ENABLE,
                     ConfigurationUtils.isQuiteHoursEnable());
 
-            SharedPreferences.Editor editor = getPreferenceScreen().getEditor();
-            editor.putLong(P_KEY_QUIET_HOURS_START, ConfigurationUtils.getQuiteHoursStart());
-            editor.putLong(P_KEY_QUIET_HOURS_END, ConfigurationUtils.getQuiteHoursEnd());
+            ((TimePreference) findPreference(P_KEY_QUIET_HOURS_START)).setTime(ConfigurationUtils.getQuiteHoursStart());
+            ((TimePreference) findPreference(P_KEY_QUIET_HOURS_END)).setTime(ConfigurationUtils.getQuiteHoursEnd());
 
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_HEADS_UP_ENABLE,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_HEADS_UP_ENABLE,
                     ConfigurationUtils.isHeadsUpEnable());
         }
 
@@ -484,9 +483,9 @@ public class SettingsActivity extends OSGiActivity
          */
         private void initCallPreferences()
         {
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_NORMALIZE_PNUMBER,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_NORMALIZE_PNUMBER,
                     ConfigurationUtils.isNormalizePhoneNumber());
-            PreferenceUtil.setCheckboxVal(getPreferenceScreen(), P_KEY_ACCEPT_ALPHA_PNUMBERS,
+            PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_ACCEPT_ALPHA_PNUMBERS,
                     ConfigurationUtils.acceptPhoneNumberWithAlphaChars());
 
             MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();

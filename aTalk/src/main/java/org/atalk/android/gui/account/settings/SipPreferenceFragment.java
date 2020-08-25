@@ -219,7 +219,7 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
 
         AccountID accountID = getAccountID();
 
-        String currentCert = accountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
+        String currentCert = accountID.getTlsClientCertificate();
         if (!certList.contains(currentCert) && !isInitialized()) {
             // The empty one
             currentCert = certList.get(0);

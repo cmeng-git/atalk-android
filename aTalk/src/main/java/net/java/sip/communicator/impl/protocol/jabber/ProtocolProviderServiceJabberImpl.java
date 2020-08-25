@@ -10,6 +10,7 @@ import android.net.*;
 import android.os.Build;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.certificate.CertificateServiceImpl;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
@@ -792,7 +793,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             return new AnonymousLoginStrategy(mAccountID.getAuthorizationName(), ccBuilder);
         }
 
-        String clientCertId = mAccountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
+        String clientCertId = mAccountID.getTlsClientCertificate();
         if ((clientCertId != null) && !clientCertId.equals(CertificateConfigEntry.CERT_NONE.toString())) {
             return new LoginByClientCertificateStrategy(mAccountID, ccBuilder);
         }
@@ -1305,6 +1306,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             int regEvent = RegistrationStateChangeEvent.REASON_NOT_SPECIFIED;
             StanzaError.Condition seCondition = Condition.remote_server_not_found;
 
+            Timber.e("### Connection closed on error (StreamErrorException: %s) during XMPPConnection: %s",
+                    (exception instanceof StreamErrorException), errMsg);
             if (exception instanceof SSLException) {
                 regEvent = RegistrationStateChangeEvent.REASON_SERVER_NOT_FOUND;
             }
@@ -1536,7 +1539,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             throws GeneralSecurityException
     {
         return new HostTrustManager(
-                cvs.getTrustManager(Arrays.asList(serviceName.toString(), "_xmpp-client." + serviceName)));
+                cvs.getTrustManager(Arrays.asList(serviceName.toString(),
+                        CertificateServiceImpl.CERT_XMPP_CLIENT_SUBFIX + serviceName)));
     }
 
     /**

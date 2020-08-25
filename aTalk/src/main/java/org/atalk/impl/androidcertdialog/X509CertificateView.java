@@ -85,7 +85,8 @@ public class X509CertificateView extends Dialog
         settings.setDefaultFixedFontSize(10);
         settings.setBuiltInZoomControls(true);
 
-        String certHtml = toString(certificate);
+        // android API-29 cannot handle character "#", so replaced it with "&sharp;"
+        String certHtml = toString(certificate).replace("#", "&sharp;");
         certInfo.loadData(certHtml, "text/html", "utf-8");
     }
 

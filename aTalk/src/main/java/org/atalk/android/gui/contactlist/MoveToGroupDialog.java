@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import net.java.sip.communicator.service.contactlist.*;
+import net.java.sip.communicator.service.protocol.ContactGroup;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -76,13 +77,16 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
         TextView accountOwner = contentView.findViewById(R.id.accountOwner);
         accountOwner.setText(getString(R.string.service_gui_CONTACT_OWNER, UserId));
 
-        final AdapterView groupList = contentView.findViewById(R.id.selectGroupSpinner);
+        final AdapterView groupListView = contentView.findViewById(R.id.selectGroupSpinner);
         MetaContactGroupAdapter contactGroupAdapter
-                = new MetaContactGroupAdapter(getActivity(), groupList, false, true);
-        groupList.setAdapter(contactGroupAdapter);
+                = new MetaContactGroupAdapter(getActivity(), groupListView, true, true);
+        groupListView.setAdapter(contactGroupAdapter);
 
         contentView.findViewById(R.id.move).setOnClickListener(v -> {
-            moveContact((MetaContactGroup) groupList.getSelectedItem());
+            MetaContactGroup newGroup = (MetaContactGroup) groupListView.getSelectedItem();
+            if (!(newGroup.equals(metaContact.getParentMetaContactGroup()))) {
+                moveContact(newGroup);
+            }
             dismiss();
         });
 

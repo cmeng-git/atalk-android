@@ -134,6 +134,7 @@ public class CameraUtils
         for (int format : formats) {
             if (s.length() != 0)
                 s.append(", ");
+
             switch (format) {
                 case ImageFormat.YV12:
                     s.append("YV12");

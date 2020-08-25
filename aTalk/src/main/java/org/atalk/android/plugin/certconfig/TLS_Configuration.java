@@ -49,7 +49,7 @@ public class TLS_Configuration extends OSGiFragment
     /**
      * Certificate spinner list for selection
      */
-    private List<String> mCertList = new ArrayList<>();
+    private final List<String> mCertList = new ArrayList<>();
     private ArrayAdapter<String> certAdapter;
 
     private Spinner certSpinner;
@@ -58,7 +58,7 @@ public class TLS_Configuration extends OSGiFragment
     /**
      * A map of <row, CertificateConfigEntry>
      */
-    private Map<Integer, CertificateConfigEntry> mCertEntryList = new LinkedHashMap<>();
+    private final Map<Integer, CertificateConfigEntry> mCertEntryList = new LinkedHashMap<>();
 
     private CheckBox chkEnableOcsp;
 
