@@ -281,7 +281,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 errorMsg = aTalkApp.getResString(R.string.service_gui_CHATROOM_SEND_MSG_FORBIDDEN);
                 break;
             case MessageDeliveryFailedEvent.UNSUPPORTED_OPERATION:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION);
+                errorMsg = aTalkApp.getResString(R.string.service_gui_UNSUPPORTED_OPERATION);
                 break;
             case MessageDeliveryFailedEvent.OMEMO_SEND_ERROR:
             case MessageDeliveryFailedEvent.NOT_ACCEPTABLE:
@@ -863,7 +863,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
                 errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
                 break;
             case MessageDeliveryFailedEvent.UNSUPPORTED_OPERATION:
-                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION);
+                errorMsg = aTalkApp.getResString(R.string.service_gui_UNSUPPORTED_OPERATION);
                 break;
             default:
                 errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_UNKNOWN_ERROR);

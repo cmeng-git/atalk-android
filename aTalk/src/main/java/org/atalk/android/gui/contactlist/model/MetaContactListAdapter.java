@@ -9,11 +9,9 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.contactlist.event.*;
-import net.java.sip.communicator.service.gui.ContactListFilter;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSessionManager;
@@ -45,22 +43,22 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     /**
      * The list of contact list in original groups before filtered
      */
-    private LinkedList<MetaContactGroup> originalGroups;
+    private final LinkedList<MetaContactGroup> originalGroups;
 
     /**
      * The list of contact list groups for view display
      */
-    private LinkedList<MetaContactGroup> groups;
+    private final LinkedList<MetaContactGroup> groups;
 
     /**
      * The list of original contacts before filtered.
      */
-    private LinkedList<TreeSet<MetaContact>> originalContacts;
+    private final LinkedList<TreeSet<MetaContact>> originalContacts;
 
     /**
      * The list of contacts for view display.
      */
-    private LinkedList<TreeSet<MetaContact>> contacts;
+    private final LinkedList<TreeSet<MetaContact>> contacts;
 
     /**
      * The <tt>MetaContactListService</tt>, which is the back end of this contact list adapter.
@@ -77,16 +75,16 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public static final PresenceFilter presenceFilter = new PresenceFilter();
 
-    /**
-     * The default filter is initially set to the PresenceFilter. But anyone
-     * could change it by calling setDefaultFilter().
-     */
-    private ContactListFilter defaultFilter = presenceFilter;
+//    /**
+//     * The default filter is initially set to the PresenceFilter. But anyone
+//     * could change it by calling setDefaultFilter().
+//     */
+//    private final ContactListFilter defaultFilter = presenceFilter;
 
-    /**
-     * The current filter.
-     */
-    private ContactListFilter currentFilter = defaultFilter;
+//    /**
+//     * The current filter.
+//     */
+//    private final ContactListFilter currentFilter = defaultFilter;
 
     /**
      * The currently used filter query.
@@ -115,7 +113,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     {
         contactListService = AndroidGUIActivator.getContactListService();
         if (contactListService != null) {
-            addContacts(contactListService.getRoot());
+            addContacts(contactListService.getRoot(), true);
             contactListService.addMetaContactListListener(this);
         }
     }
@@ -252,10 +250,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      *
      * @param group the group, which child contacts to add
      */
-    private void addContacts(MetaContactGroup group)
+    private void addContacts(MetaContactGroup group, boolean filtered)
     {
-        if (group.countChildContacts() > 0) {
-            addGroup(group);
+        if (!filtered || (group.countChildContacts() > 0)) {
+            // Add the new metaGroup
+            addGroup(group, filtered);
 
             // Use Iterator to avoid ConcurrentModificationException on addContact()
             Iterator<MetaContact> childContacts = group.getChildContacts();
@@ -266,24 +265,27 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 
         Iterator<MetaContactGroup> subGroups = group.getSubgroups();
         while (subGroups.hasNext()) {
-            addContacts(subGroups.next());
+            addContacts(subGroups.next(), filtered);
         }
     }
 
     /**
      * Adds the given <tt>group</tt> to both the originalGroups and Groups with
-     * zero contact only if no existing group is found
+     * zero contact if no existing group is found
      *
      * @param metaGroup the <tt>MetaContactGroup</tt> to add
+     * @param filtered false will also create group if not found
      */
-    private void addGroup(MetaContactGroup metaGroup)
+    private void addGroup(MetaContactGroup metaGroup, boolean filtered)
     {
         if (!originalGroups.contains(metaGroup)) {
             originalGroups.add(metaGroup);
             originalContacts.add(new TreeSet<>());
         }
 
-        if (isMatching(metaGroup, currentFilterQuery) && !groups.contains(metaGroup)) {
+        // cmeng: invalidateView causes childContact to be null, contact list not properly updated
+        // add new group will have no contact; hence cannot remove the check for isMatching
+        if ((!filtered || isMatching(metaGroup, currentFilterQuery)) && !groups.contains(metaGroup)) {
             groups.add(metaGroup);
             contacts.add(new TreeSet<>());
         }
@@ -324,7 +326,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 
         // Add new group element and update both the Indexes (may be difference)
         if ((origGroupIndex < 0) || (isMatchingQuery && (groupIndex < 0))) {
-            addGroup(metaGroup);
+            addGroup(metaGroup, true);
             origGroupIndex = originalGroups.indexOf(metaGroup);
             groupIndex = groups.indexOf(metaGroup);
         }
@@ -491,44 +493,62 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactMoved(MetaContactMovedEvent evt)
     {
-        Timber.d("CONTACT MOVED: %s", evt.getSourceMetaContact());
-        uiHandler.post(() -> {
-            MetaContactGroup oldParent = evt.getOldParent();
-            MetaContactGroup newParent = evt.getNewParent();
-            // Modify original group
-            int oldGroupIdx = originalGroups.indexOf(oldParent);
-            int newGroupIdx = originalGroups.indexOf(newParent);
-            if (oldGroupIdx < 0 || newGroupIdx < 0) {
-                Timber.e("Move group error - original list, srcGroupIdx: %s, dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
+        final MetaContactGroup oldParent = evt.getOldParent();
+        final MetaContactGroup newParent = evt.getNewParent();
+
+        final MetaContact metaContact = evt.getSourceMetaContact();
+        final String destGroup = newParent.getGroupName();
+        Timber.d("CONTACT MOVED (%s): %s to %s", metaContact, oldParent, destGroup);
+
+        // Happen when a contact is moved to RootGroup i.e. "Contacts"; RootGroup is not ContactGroupJabberImpl
+        if (!groups.contains(newParent)) {
+            Timber.w("Add missing move-to group: %s (%s)", destGroup, newParent.getMetaUID());
+            addGroup(newParent, false);
+        }
+
+        // Modify original group
+        int oldGroupIdx = originalGroups.indexOf(oldParent);
+        int newGroupIdx = originalGroups.indexOf(newParent);
+        if (oldGroupIdx < 0 || newGroupIdx < 0) {
+            Timber.e("Move group error for originalGroups, srcGroupIdx: %s, dstGroupIdx: %s (%s)",
+                    oldGroupIdx, newGroupIdx, destGroup);
+        }
+        else {
+            TreeSet<MetaContact> srcGroup = getOriginalCList(oldGroupIdx);
+            if (srcGroup != null) {
+                srcGroup.remove(metaContact);
             }
-            else {
-                TreeSet<MetaContact> srcGroup = getOriginalCList(oldGroupIdx);
-                if (srcGroup != null) {
-                    srcGroup.remove(evt.getSourceMetaContact());
-                }
-                TreeSet<MetaContact> dstGroup = getOriginalCList(newGroupIdx);
-                if (dstGroup != null) {
-                    dstGroup.add(evt.getSourceMetaContact());
-                }
+            TreeSet<MetaContact> dstGroup = getOriginalCList(newGroupIdx);
+            if (dstGroup != null) {
+                dstGroup.add(metaContact);
             }
-            // Move search results group
-            oldGroupIdx = groups.indexOf(oldParent);
-            newGroupIdx = groups.indexOf(newParent);
-            if (oldGroupIdx < 0 || newGroupIdx < 0) {
-                Timber.e("Move group error, srcGroupIdx: %s. dstGroupIdx: %s", oldGroupIdx, newGroupIdx);
+        }
+
+        // Move results group
+        oldGroupIdx = groups.indexOf(oldParent);
+        newGroupIdx = groups.indexOf(newParent);
+        if (oldGroupIdx < 0 || newGroupIdx < 0) {
+            Timber.e("Move group error for groups, srcGroupIdx: %s. dstGroupIdx: %s (%s)",
+                    oldGroupIdx, newGroupIdx, destGroup);
+        }
+        else {
+            TreeSet<MetaContact> srcGroup = getContactList(oldGroupIdx);
+            if (srcGroup != null) {
+                srcGroup.remove(metaContact);
             }
-            else {
-                TreeSet<MetaContact> srcGroup = getContactList(oldGroupIdx);
-                if (srcGroup != null) {
-                    srcGroup.remove(evt.getSourceMetaContact());
-                }
-                TreeSet<MetaContact> dstGroup = getContactList(newGroupIdx);
-                if (dstGroup != null) {
-                    dstGroup.add(evt.getSourceMetaContact());
-                }
+            TreeSet<MetaContact> dstGroup = getContactList(newGroupIdx);
+            if (dstGroup != null) {
+                dstGroup.add(metaContact);
             }
-            notifyDataSetChanged();
-        });
+
+            // Hide oldParent if zero-contacts - not to do this to allow user delete empty new group
+            // if (oldParent.countChildContacts() == 0) {
+            //    groups.remove(oldParent);
+            // }
+        }
+
+        // Note: use refreshModelData - create other problems with contacts = null
+        uiHandler.post(this::notifyDataSetChanged);
     }
 
     /**
@@ -602,16 +622,20 @@ public class MetaContactListAdapter extends BaseContactListAdapter
 
     /**
      * Indicates that a <tt>MetaContactGroup</tt> has been added to the list.
+     * Need to do it asap, as this method is called as sub-dialog of the addContact and MoveContact
+     * Otherwise has problem in i.e. both the originalGroups and Groups do not contain the new metaGroup
      *
      * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @see #metaContactMoved(MetaContactMovedEvent)
      */
     public void metaContactGroupAdded(MetaContactGroupEvent evt)
     {
-        Timber.d("GROUP ADDED: %s", evt.getSourceMetaContactGroup());
-        uiHandler.post(() -> {
-            addContacts(evt.getSourceMetaContactGroup());
-            notifyDataSetChanged();
-        });
+        MetaContactGroup metaGroup = evt.getSourceMetaContactGroup();
+        Timber.d("META CONTACT GROUP ADDED: %s", metaGroup);
+        // filtered = false; to add new group to both originalGroups and Groups even with zero contact
+        addContacts(metaGroup, false);
+
+        uiHandler.post(this::notifyDataSetChanged);
     }
 
     /**
@@ -621,7 +645,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactGroupModified(MetaContactGroupEvent evt)
     {
-        Timber.d("GROUP MODIFIED: %s", evt.getSourceMetaContactGroup());
+        Timber.d("META CONTACT GROUP MODIFIED: %s", evt.getSourceMetaContactGroup());
         invalidateViews();
     }
 
@@ -632,7 +656,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      */
     public void metaContactGroupRemoved(MetaContactGroupEvent evt)
     {
-        Timber.d("GROUP REMOVED: %s", evt.getSourceMetaContactGroup());
+        Timber.d("META CONTACT GROUP REMOVED: %s", evt.getSourceMetaContactGroup());
         uiHandler.post(() -> {
             removeGroup(evt.getSourceMetaContactGroup());
             notifyDataSetChanged();
@@ -912,7 +936,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
         originalContacts.clear();
         groups.clear();
         contacts.clear();
-        addContacts(contactListService.getRoot());
+        addContacts(contactListService.getRoot(), true);
 
         if (!presenceFilter.isShowOffline()) {
             filterData("");

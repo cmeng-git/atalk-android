@@ -77,11 +77,10 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     private Spinner cboAlias;
 
     private KeyStore mKeyStore;
-    private List<KeyStoreType> keyStoreTypes = new ArrayList<>();
-    ;
+    private final List<KeyStoreType> keyStoreTypes = new ArrayList<>();
 
     private ArrayAdapter<String> aliasAdapter;
-    private List<String> mAliasList = new ArrayList<>();
+    private final List<String> mAliasList = new ArrayList<>();
 
     private Context mContext;
     private CertificateService cs;

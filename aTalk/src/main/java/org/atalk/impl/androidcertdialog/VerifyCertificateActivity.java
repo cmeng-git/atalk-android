@@ -18,8 +18,8 @@ import org.atalk.service.osgi.OSGiActivity;
 import timber.log.Timber;
 
 /**
- * Activity displays the certificate to the user and asks him whether to trust the certificate or
- * not. It also uses <tt>CertificateInfoDialog</tt> to display detailed information about the certificate.
+ * Activity displays the certificate to the user and asks him whether to trust the certificate.
+ * It also uses <tt>CertificateInfoDialog</tt> to display detailed information about the certificate.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -63,7 +63,7 @@ public class VerifyCertificateActivity extends OSGiActivity
             return;
         }
 
-        // Prevents from closing the dialog on outside touch
+        // Prevents from closing the dialog on outside window touch
         setFinishOnTouchOutside(false);
 
         setContentView(R.layout.verify_certificate);

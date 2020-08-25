@@ -21,6 +21,8 @@ import net.java.sip.communicator.service.contactlist.event.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.json.JSONObject;
 import org.osgi.framework.*;
@@ -337,52 +339,55 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     }
 
     /**
-     * Makes sure that directories in the whole path from the root to the specified group have
-     * corresponding directories in the protocol indicated by <tt>protoProvider</tt>. The method
-     * does not return before creating all groups has completed.
+     * Makes sure the directories in the whole path from the root to the specified group have
+     * corresponding directories in the protocol indicated by <tt>protoProvider</tt>.
+     * The method does not return before creating all groups has completed.
      *
      * @param protoProvider a reference to the protocol provider where the groups should be created.
-     * @param metaGroup a ref to the last group of the path that should be created in the specified
-     * <tt>protoProvider</tt>
+     * @param metaGroup a ref to the last group of the path that should be created in the specified <tt>protoProvider</tt>
      * @return e reference to the newly created <tt>ContactGroup</tt>
      */
-    private ContactGroup resolveProtoPath(ProtocolProviderService protoProvider,
-            MetaContactGroupImpl metaGroup)
+    private ContactGroup resolveProtoPath(ProtocolProviderService protoProvider, MetaContactGroupImpl metaGroup)
     {
-        Iterator<ContactGroup> contactGroupsForProv = metaGroup.getContactGroupsForProvider(protoProvider);
+        // NA for aTalk, as groups are stored in DB
+        // Iterator<ContactGroup> contactGroupsForPPS = metaGroup.getContactGroupsForProvider(protoProvider);
+        // if (contactGroupsForPPS.hasNext()) {
+            // we already have at least one group corresponding to the metaGroup
+        //     return contactGroupsForPPS.next();
+        // }
 
-        if (contactGroupsForProv.hasNext()) {
-            // we already have at least one group corresponding to the meta group
-            return contactGroupsForProv.next();
-        }
-        // we don't have a proto group here. obtain a ref to the parent proto group (which may be
-        // created along the way) and create it.
-        MetaContactGroupImpl parentMetaGroup = (MetaContactGroupImpl) findParentMetaContactGroup(metaGroup);
-        if (parentMetaGroup == null) {
-            Timber.d("Resolve failed at group %s", metaGroup);
-            throw new NullPointerException("Internal Error. Orphan group.");
-        }
         OperationSetPersistentPresence opSetPersPresence
                 = protoProvider.getOperationSet(OperationSetPersistentPresence.class);
 
-        // if persistent presence is not supported - just bail we should have verified this
-        // earlier anyway
+        // if persistent presence is not supported - just bail out as we should have verified this earlier anyway
         if (opSetPersPresence == null) {
             return null;
         }
 
         ContactGroup parentProtoGroup;
-        // special treatment for the root group (stop the recursion)
-        if (parentMetaGroup.getParentMetaContactGroup() == null) {
-            parentProtoGroup = opSetPersPresence.getServerStoredContactListRoot();
+        // MetaContactGroupImpl parentMetaGroup = (MetaContactGroupImpl) findParentMetaContactGroup(metaGroup);
+        MetaContactGroupImpl parentMetaGroup = (MetaContactGroupImpl) metaGroup.getParentMetaContactGroup();
+        // if (parentMetaGroup == null) {
+        //     Timber.d("Resolve failed at group %s", metaGroup);
+        //    throw new NullPointerException("Internal Error. Orphan group.");
+        // }
+
+        // special treatment for the root group (stop the recursion and return the root contactGroup
+        if (parentMetaGroup == null) {
+            Timber.d("Assume RootGroup, resolve parentMetaGroup failed: %s", metaGroup);
+            return opSetPersPresence.getServerStoredContactListRoot();
         }
         else {
             parentProtoGroup = resolveProtoPath(protoProvider, parentMetaGroup);
+
+            // Return the existing contactGroup if found.
+            ContactGroup contactGroup = parentProtoGroup.getGroup(metaGroup.getGroupName());
+            if (contactGroup != null)
+                return contactGroup;
         }
 
         // create the proto group
         BlockingGroupEventRetriever evtRetriever = new BlockingGroupEventRetriever(metaGroup.getGroupName());
-
         opSetPersPresence.addServerStoredGroupChangeListener(evtRetriever);
         addGroupToEventIgnoreList(metaGroup.getGroupName(), protoProvider);
 
@@ -393,20 +398,18 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             // wait for a confirmation event
             evtRetriever.waitForEvent(CONTACT_LIST_MODIFICATION_TIMEOUT);
         } catch (Exception ex) {
-            throw new MetaContactListException(
-                    "failed to create contact group " + metaGroup.getGroupName(), ex,
-                    MetaContactListException.CODE_NETWORK_ERROR);
+            throw new MetaContactListException("failed to create contact group " + metaGroup.getGroupName(),
+                    ex, MetaContactListException.CODE_NETWORK_ERROR);
         } finally {
-            // whatever happens we need to remove the event collector and the ignore filter.
+            // whatever happens we need to remove the event collector and ignore filter.
             removeGroupFromEventIgnoreList(metaGroup.getGroupName(), protoProvider);
             opSetPersPresence.removeServerStoredGroupChangeListener(evtRetriever);
         }
 
         // something went wrong.
         if (evtRetriever.mEvent == null) {
-            throw new MetaContactListException(
-                    "Failed to create a proto group named: " + metaGroup.getGroupName(), null,
-                    MetaContactListException.CODE_NETWORK_ERROR);
+            throw new MetaContactListException("Failed to create a proto group named: " + metaGroup.getGroupName(),
+                    null, MetaContactListException.CODE_NETWORK_ERROR);
         }
 
         // now add the proto group to the meta group.
@@ -861,28 +864,29 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             throw new IllegalArgumentException(metaContact + " is not a MetaContactImpl instance");
         }
 
-        // first remove the meta contact from its current parent:
-        MetaContactGroupImpl currentParent
-                = (MetaContactGroupImpl) findParentMetaContactGroup(metaContact);
-        if (currentParent != null)
-            currentParent.removeMetaContact((MetaContactImpl) metaContact);
+        MetaContactGroupImpl mcGroupImpl =  (MetaContactGroupImpl) newMetaGroup;
+        MetaContactImpl metaContactImpl = (MetaContactImpl) metaContact;
 
-        ((MetaContactGroupImpl) newMetaGroup).addMetaContact((MetaContactImpl) metaContact);
+        // first remove the meta contact from its current parent, then add to new metaGroup
+        MetaContactGroupImpl currentParent = (MetaContactGroupImpl) findParentMetaContactGroup(metaContact);
+        if (currentParent != null)
+            currentParent.removeMetaContact(metaContactImpl);
+
+        mcGroupImpl.addMetaContact(metaContactImpl);
 
         try {
-            // first make sure that the new meta contact group path is resolved against all
-            // protocols that the MetaContact requires. then move the meta contact in there and
-            // move all proto contacts inside it.
+            // first make sure the new meta contact group path is resolved against all
+            // protocols that the MetaContact requires.
+            // Then move the meta contact in there and move all proto contacts inside it.
             Iterator<Contact> contacts = metaContact.getContacts();
 
             while (contacts.hasNext()) {
                 Contact protoContact = contacts.next();
-                ContactGroup protoGroup = resolveProtoPath(protoContact.getProtocolProvider(),
-                        (MetaContactGroupImpl) newMetaGroup);
+                ContactGroup protoGroup = resolveProtoPath(protoContact.getProtocolProvider(), mcGroupImpl);
 
                 // get a persistent or non persistent presence operation set
-                OperationSetPersistentPresence opSetPresence = protoContact.getProtocolProvider()
-                        .getOperationSet(OperationSetPersistentPresence.class);
+                OperationSetPersistentPresence opSetPresence
+                        = protoContact.getProtocolProvider().getOperationSet(OperationSetPersistentPresence.class);
                 if (opSetPresence == null) {
                     /* @todo handle non persistent presence operation sets */
                 }
@@ -897,8 +901,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             Timber.e(ex, "Cannot move contact");
 
             // now move the contact to previous parent
-            ((MetaContactGroupImpl) newMetaGroup).removeMetaContact((MetaContactImpl) metaContact);
-            currentParent.addMetaContact((MetaContactImpl) metaContact);
+            mcGroupImpl.removeMetaContact(metaContactImpl);
+            currentParent.addMetaContact(metaContactImpl);
             throw new MetaContactListException(ex.getMessage(), MetaContactListException.CODE_MOVE_CONTACT_ERROR);
         }
         // fire the move event.
@@ -1055,8 +1059,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     // cmeng - SQLite will remove all decedent of the groupToRemove base on accountUuid etc
     // need to fireEvent for all listeners.
-    private void locallyRemoveAllContactsForProvider(MetaContactGroupImpl parentMetaGroup, ContactGroup
-            groupToRemove)
+    private void locallyRemoveAllContactsForProvider(MetaContactGroupImpl parentMetaGroup, ContactGroup groupToRemove)
     {
         Iterator<MetaContact> childrenContacts = parentMetaGroup.getChildContacts();
         // first go through all direct children.
@@ -1411,8 +1414,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         // add a presence status listener so that we could reorder contacts upon status change.
         // NOTE that we MUST NOT add the presence listener before extracting the locally stored
-        // contact list or otherwise we'll get events for all contacts that we have already
-        // extracted
+        // contact list or otherwise we'll get events for all contacts that we have already extracted
         if (opSetPersPresence != null)
             opSetPersPresence.addContactPresenceStatusListener(this);
 

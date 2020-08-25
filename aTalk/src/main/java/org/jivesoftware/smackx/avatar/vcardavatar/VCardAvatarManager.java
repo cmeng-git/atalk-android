@@ -66,7 +66,7 @@ public class VCardAvatarManager extends AvatarManager
     private static Map<XMPPConnection, VCardAvatarManager> instances = new WeakHashMap<>();
 
     /**
-     * Listeners to be informed if there is new avatar updated.
+     * Listeners to be informed if there is a new avatar updated.
      */
     private final List<VCardAvatarListener> mListeners = new LinkedList<>();
 
@@ -123,7 +123,7 @@ public class VCardAvatarManager extends AvatarManager
         vCardTempXUpdate = new VCardTempXUpdate(null);
         instances.put(connection, this);
 
-        connection.addConnectionListener(new AbstractConnectionListener()
+        connection.addConnectionListener(new ConnectionListener()
         {
             /**
              * Upon user authentication, update account avatarHash so it is ready for

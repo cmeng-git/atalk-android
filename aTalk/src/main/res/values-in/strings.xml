@@ -484,7 +484,7 @@
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Protokol yang Anda gunakan tidak mendukung pesan offline.
         Anda dapat mencoba menjangkau %1$s melalui protokol lain atau menunggu hingga dia online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Kesalahan tidak dikenal telah terjadi saat mengirim pesan Anda.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Operasi tidak didukung.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Operasi tidak didukung.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Terjadi masalah jaringan. Silakan periksa konfigurasi jaringan Anda dan coba lagi.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s menulis</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Anda harus login terlebih dahulu untuk mengirim pesan.</string>
@@ -1052,14 +1052,10 @@
         penyedia layanan untuk memberi tahu mereka tentang masalah ini.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Hapus sertifikat</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Harap konfirmasikan untuk menghapus sertifikat bagi: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Pengelola Sertifikat SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">Sertifikat SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Bersihkan sertifikat yang disetujui pengguna bagi: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Hapus sertifikat</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Kelola Sertifikat SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Sertifikat SSL</string>
-
-    <string name="pref_remove_trusted_certificates_title">Hapus sertifikat</string>
-    <string name="pref_remove_trusted_certificates_summary">Hapus sertifikat yang disetujui secara manual</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Sertifikat TLS Klien</string>

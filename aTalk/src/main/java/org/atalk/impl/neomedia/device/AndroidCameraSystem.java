@@ -45,11 +45,6 @@ import timber.log.Timber;
  */
 public class AndroidCameraSystem extends DeviceSystem implements BackgroundManager.Listener
 {
-    /**
-     * Locator protocol of this system.
-     */
-    private static final String LOCATOR_PROTOCOL = DeviceSystem.LOCATOR_PROTOCOL_ANDROIDCAMERA;
-
     private static final String VIDEO_SIZE = ".video.size";
     private static final String PREVIEW_FORMAT = ".preview.format";
 
@@ -58,14 +53,14 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
     private static BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
     /**
-     * Creates new instance of <tt>AndroidCameraSystem</tt>.
+     * Creates a new instance of <tt>AndroidCameraSystem</tt>.
      *
      * @throws Exception from super
      */
     public AndroidCameraSystem()
             throws Exception
     {
-        super(MediaType.VIDEO, LOCATOR_PROTOCOL);
+        super(MediaType.VIDEO, LOCATOR_PROTOCOL_ANDROIDCAMERA);
     }
 
     /**
@@ -97,7 +92,7 @@ public class AndroidCameraSystem extends DeviceSystem implements BackgroundManag
         for (int cameraId = 0; cameraId < cameraCount; cameraId++) {
             // create a locator with camera id and its facing direction (cameraInfo)
             Camera.getCameraInfo(cameraId, cameraInfo);
-            MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL, cameraId, cameraInfo);
+            MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_ANDROIDCAMERA, cameraId, cameraInfo);
 
             // Pick up the preferred sizes which is supported by the Camera.
             List<Dimension> sizes = new ArrayList<>();

@@ -248,6 +248,11 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             startJingleNodeListActivity();
             return true;
         });
+
+//        findPreference(P_KEY_USER_ID).setOnPreferenceClickListener(preference -> {
+//            startAccountEditor();
+//            return true;
+//        });
     }
 
     /**
@@ -266,7 +271,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         }
 
         AccountID accountID = getAccountID();
-        String currentCert = accountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
+        String currentCert = accountID.getTlsClientCertificate();
         if (!certList.contains(currentCert) && !isInitialized()) {
             // Use the empty one i.e. None cert
             currentCert = certList.get(0);
@@ -282,6 +287,18 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         if (!isInitialized())
             certPreference.setValue(currentCert);
     }
+
+//    private void startAccountEditor()
+//    {
+//        // Create AccountLoginFragment fragment
+//        String login = "swordfish@atalk.sytes.net";
+//        String password = "1234";
+//
+//        Intent intent = new Intent(getActivity(), AccountLoginActivity.class);
+//        intent.putExtra(AccountLoginFragment.ARG_USERNAME, login);
+//        intent.putExtra(AccountLoginFragment.ARG_PASSWORD, password);
+//        startActivity(intent);
+//    }
 
     /**
      * Starts {@link ServerListActivity} in order to edit STUN servers list

@@ -38,7 +38,7 @@ public class AndroidCamera extends CaptureDeviceInfo
     public static final int FACING_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
 
     /**
-     * Creates new instance of <tt>AndroidCamera</tt>
+     * Creates a new instance of <tt>AndroidCamera</tt>
      *
      * @param name human readable name of the camera e.g. front camera.
      * @param locator the <tt>MediaLocator</tt> identifying the camera and it's system.

@@ -135,7 +135,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     {
         private static final String STATE_SEC_REG = "security_reg";
 
-        private SummaryMapper summaryMapper = new SummaryMapper();
+        private final SummaryMapper summaryMapper = new SummaryMapper();
 
         /**
          * Flag indicating if any changes have been made in this activity

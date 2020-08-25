@@ -53,6 +53,7 @@
         android:icon="@drawable/ic_logo"
         android:label="@string/APPLICATION_NAME"
         android:logo="@drawable/ic_notification"
+        android:requestLegacyExternalStorage="true"
         android:networkSecurityConfig="@xml/network_security_configuration" >
 
         <!-- Apache HTTP client deprecation: (no effect so far)
@@ -273,16 +274,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.atalk.impl.androidcertdialog.CertificateDeleteDialog"
-            android:label="@string/pref_remove_trusted_certificates_title">
-            <intent-filter>
-                <action android:name=".impl.androidcertdialog.CertificateDeleteDialog" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="org.atalk.impl.androidcertdialog.ConnectionInfo"
-            android:label="@string/service_gui_settings_SSL_CERTIFICATE_MANAGER">
+            android:label="@string/service_gui_settings_SSL_CERTIFICATE">
             <intent-filter>
                 <action android:name=".impl.androidcertdialog.ConnectionInfo" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -346,19 +339,6 @@
                 <action android:name=".android.gui.settings.SipSettings" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-        <!-- Dns settings -->
-        <activity
-            android:name="org.atalk.android.gui.settings.DnsSettings"
-            android:label="@string/service_gui_settings_DNS">
-            <intent-filter>
-                <action android:name=".android.gui.settings.DnsSettings" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.preference"
-                android:resource="@xml/dns_preferences" />
         </activity>
         <!-- Provisioning settings -->
         <activity

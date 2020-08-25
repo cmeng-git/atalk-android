@@ -23,29 +23,24 @@ import org.atalk.service.configuration.ConfigurationService;
  * Provisioning preferences screen.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ProvisioningSettings extends BasicSettingsActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     /**
      * Used preference keys
      */
-    private final static String P_KEY_PROVISIONING_METHOD
-            = aTalkApp.getResString(R.string.pref_key_provisioning_METHOD);
+    private final static String P_KEY_PROVISIONING_METHOD = aTalkApp.getResString(R.string.pref_key_provisioning_METHOD);
 
-    private final static String P_KEY_USER
-            = aTalkApp.getResString(R.string.pref_key_provisioning_USERNAME);
+    private final static String P_KEY_USER = aTalkApp.getResString(R.string.pref_key_provisioning_USERNAME);
 
-    private final static String P_KEY_PASS
-            = aTalkApp.getResString(R.string.pref_key_provisioning_PASSWORD);
+    private final static String P_KEY_PASS = aTalkApp.getResString(R.string.pref_key_provisioning_PASSWORD);
 
-    private final static String P_KEY_FORGET_PASS
-            = aTalkApp.getResString(R.string.pref_key_provisioning_FORGET_PASSWORD);
+    private final static String P_KEY_FORGET_PASS = aTalkApp.getResString(R.string.pref_key_provisioning_FORGET_PASSWORD);
 
-    private final static String P_KEY_UUID
-            = aTalkApp.getResString(R.string.pref_key_provisioning_UUID);
+    private final static String P_KEY_UUID  = aTalkApp.getResString(R.string.pref_key_provisioning_UUID);
 
-    private final static String P_KEY_URL
-            = aTalkApp.getResString(R.string.pref_key_provisioning_URL);
+    private final static String P_KEY_URL = aTalkApp.getResString(R.string.pref_key_provisioning_URL);
 
     /**
      * Username edit text
@@ -88,14 +83,9 @@ public class ProvisioningSettings extends BasicSettingsActivity implements Share
             forgetPass.setEnabled(true);
         }
         // Forget password action handler
-        forgetPass.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override
-            public boolean onPreferenceClick(Preference preference)
-            {
-                askForgetPassword();
-                return false;
-            }
+        forgetPass.setOnPreferenceClickListener(preference -> {
+            askForgetPassword();
+            return false;
         });
 
         // Initialize username and password fields
@@ -130,7 +120,6 @@ public class ProvisioningSettings extends BasicSettingsActivity implements Share
     protected void onResume()
     {
         super.onResume();
-
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -141,7 +130,6 @@ public class ProvisioningSettings extends BasicSettingsActivity implements Share
     protected void onPause()
     {
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-
         super.onPause();
     }
 

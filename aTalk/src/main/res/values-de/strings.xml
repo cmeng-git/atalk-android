@@ -481,7 +481,7 @@
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Ein interner Fehler ist aufgetreten. Bitte melden Sie es per Debug-Protokoll.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Das verwendete Protokoll unterstützt keine Offline-Nachrichten. Du kannst versuchen %1$s über ein anderes Protokoll zu erreichen, oder warten, bis er/sie online ist.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Beim Zustellen der Nachricht ist ein unbekannter Fehler aufgetreten.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Nicht unterstützte Operation.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Nicht unterstützte Operation.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Ein Netzwerkproblem ist aufgetreten. Überprüfen die Netzwerkkonfiguration und versuche es erneut.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s schrieb</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Du musst dich zuerst anmelden, um eine Nachricht zu senden.</string>
@@ -1032,14 +1032,10 @@
         &lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Zertifikat entfernen</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Bitte bestätige das Löschen des Zertifikats für: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">SSL-Zertifikatsmanager</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">SSL-Zertifikat</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Vom Benutzer genehmigte Zertifikate löschen für: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Zertifikat entfernen</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">SSL-Zertifikate verwalten</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">SSL-Zertifikat</string>
-
-    <string name="pref_remove_trusted_certificates_title">Zertifikat entfernen</string>
-    <string name="pref_remove_trusted_certificates_summary">Lösche manuell genehmigte Zertifikate</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Client-TLS-Zertifikat</string>

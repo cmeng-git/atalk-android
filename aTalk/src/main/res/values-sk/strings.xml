@@ -496,7 +496,7 @@
     <string name="service_gui_MSG_DELIVERY_INTERNAL_ERROR">Vyskytla sa interná chyba. Toto je pravdepodobne chyba. Nahláste to prostredníctvom protokolu ladenia.</string>
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Protokol, ktorý používate, nepodporuje správy bez pripojenia. Mohli by ste sa pokúsiť dosiahnuť %1$s pomocou iného protokolu alebo počkať, kým sa nestane online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Pri doručovaní správy sa vyskytla neznáma chyba.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Nepodporovaná prevádzka.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Nepodporovaná prevádzka.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Vyskytol sa problém so sieťou. Skontrolujte konfiguráciu siete a skúste to znova.</string>
     <string name="service_gui_MSG_RECEIVED">Napísal (-a) %1$s</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Ak chcete poslať správu, musíte sa najprv prihlásiť.</string>
@@ -1058,14 +1058,10 @@
         service provider to inform them about the issue. &lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Odstráňte certifikát</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Potvrďte odstránenie certifikátu pre: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Správca certifikátov SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">Certifikát SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Vyčistiť certifikáty schválené používateľom pre: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Odstráňte certifikát</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Správa certifikátov SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Certifikát SSL</string>
-
-    <string name="pref_remove_trusted_certificates_title">Odstráňte certifikát</string>
-    <string name="pref_remove_trusted_certificates_summary">Odstrániť manuálne schválené certifikáty</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Certifikát TLS klienta</string>

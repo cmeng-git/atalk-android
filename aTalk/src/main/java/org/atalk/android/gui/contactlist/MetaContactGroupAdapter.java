@@ -128,21 +128,21 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
         MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
 
         MetaContactGroup root = contactListService.getRoot();
-        ArrayList<Object> merge = new ArrayList<>();
+        ArrayList<Object> groupList = new ArrayList<>();
         if (includeRoot) {
-            merge.add(root);
+            groupList.add(root);
         }
 
-        Iterator<MetaContactGroup> mcg = root.getSubgroups();
-        while (mcg.hasNext()) {
-            merge.add(mcg.next());
+        Iterator<MetaContactGroup> mcGroups = root.getSubgroups();
+        while (mcGroups.hasNext()) {
+            groupList.add(mcGroups.next());
         }
 
         // Add new group item
         if (includeCreateNew)
-            merge.add(ADD_NEW_OBJECT);
+            groupList.add(ADD_NEW_OBJECT);
 
-        return merge;
+        return groupList;
     }
 
     /**
@@ -160,7 +160,7 @@ public class MetaContactGroupAdapter extends CollectionAdapter<Object>
             tv.setText(R.string.service_gui_CREATE_GROUP);
         }
         else if (item.equals(AndroidGUIActivator.getContactListService().getRoot())) {
-            // Root
+            // Root - Contacts
             tv.setText(R.string.service_gui_SELECT_NO_GROUP);
         }
         else {

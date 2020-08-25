@@ -76,7 +76,7 @@ public class AvatarManager extends Manager
      */
     private static final LruCache<BareJid, String> cacheJidToAvatarId = new LruCache<>(1000);
 
-    private static Map<XMPPConnection, AvatarManager> instances = new WeakHashMap<>();
+    private static final Map<XMPPConnection, AvatarManager> instances = new WeakHashMap<>();
 
     /**
      * Use for the persistent JidToHash Index storage in additional to cacheJidToAvatarId
@@ -131,7 +131,7 @@ public class AvatarManager extends Manager
         mConnection = connection;
         instances.put(connection, this);
 
-        connection.addConnectionListener(new AbstractConnectionListener()
+        connection.addConnectionListener(new ConnectionListener()
         {
             @Override
             public void connected(XMPPConnection connection)

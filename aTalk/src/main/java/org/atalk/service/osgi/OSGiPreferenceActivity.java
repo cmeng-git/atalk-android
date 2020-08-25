@@ -51,12 +51,12 @@ public class OSGiPreferenceActivity extends PreferenceActivity
     /**
      * EXIT action listener that triggers closes the <tt>Activity</tt>
      */
-    private ExitActionListener exitListener = new ExitActionListener();
+    private final ExitActionListener exitListener = new ExitActionListener();
 
     /**
      * List of attached {@link OSGiUiPart}.
      */
-    private List<OSGiUiPart> osgiFrgaments = new ArrayList<OSGiUiPart>();
+    private final List<OSGiUiPart> osgiFrgaments = new ArrayList<>();
 
     /**
      * Starts this osgi activity.

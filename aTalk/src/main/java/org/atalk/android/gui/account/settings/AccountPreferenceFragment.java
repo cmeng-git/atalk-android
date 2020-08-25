@@ -21,8 +21,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
-import org.atalk.util.MediaType;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
+import org.atalk.util.MediaType;
 import org.osgi.framework.*;
 
 import timber.log.Timber;
@@ -37,9 +37,8 @@ import timber.log.Timber;
 public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-
     // PreferenceScreen and PreferenceCategories for Account Settings...
-    static private final String PC_KEY_TELEPHONY = aTalkApp.getResString(R.string.pref_screen_jbr_tele);
+    static private final String P_KEY_TELEPHONY = aTalkApp.getResString(R.string.pref_screen_jbr_tele);
     static private final String P_KEY_CALL_ENCRYPT = aTalkApp.getResString(R.string.pref_key_enable_encryption);
     static private final String P_KEY_AUDIO_ENC = aTalkApp.getResString(R.string.pref_cat_audio_encoding);
     static private final String P_KEY_VIDEO_ENC = aTalkApp.getResString(R.string.pref_cat_video_encoding);
@@ -272,7 +271,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
 
         if (aTalk.disableMediaServiceOnFault) {
             findPreference(P_KEY_CALL_ENCRYPT).setEnabled(false);
-            findPreference(PC_KEY_TELEPHONY).setEnabled(false);
+            findPreference(P_KEY_TELEPHONY).setEnabled(false);
             findPreference(P_KEY_AUDIO_ENC).setEnabled(false);
             findPreference(P_KEY_VIDEO_ENC).setEnabled(false);
         }
@@ -395,7 +394,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (requestCode == EDIT_ENCODINGS && resultCode == Activity.RESULT_OK) {
-            Boolean hasChanges = data.getBooleanExtra(MediaEncodingActivity.EXTRA_KEY_HAS_CHANGES, false);
+            boolean hasChanges = data.getBooleanExtra(MediaEncodingActivity.EXTRA_KEY_HAS_CHANGES, false);
             if (!hasChanges)
                 return;
 
@@ -408,7 +407,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
             uncommittedChanges = true;
         }
         else if (requestCode == EDIT_SECURITY && resultCode == Activity.RESULT_OK) {
-            Boolean hasChanges = data.getBooleanExtra(SecurityActivity.EXTR_KEY_HAS_CHANGES, false);
+            boolean hasChanges = data.getBooleanExtra(SecurityActivity.EXTR_KEY_HAS_CHANGES, false);
             if (!hasChanges)
                 return;
 

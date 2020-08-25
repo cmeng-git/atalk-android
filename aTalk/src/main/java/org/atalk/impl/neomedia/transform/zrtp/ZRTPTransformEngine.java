@@ -734,11 +734,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
 
     /**
      * Switch on the security for the defined part.
-     * 4.5.1.  The ZRTP Key Derivation Function
-     * The output of the KDF is truncated to the leftmost L bits
-     * 4.5.3.  Deriving the Rest of the Keys from s0
-     * ... AES-CM 128 or 256-bit key length, 112-bit session salt key length...
-     * (Need to performed here as it is not done in ZRtp class.
      *
      * @param secrets The secret keys and salt negotiated by ZRTP.
      * @param part An enum that defines sender, receiver, or both.
@@ -765,43 +760,22 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             cipher = SrtpPolicy.TWOFISH_ENCRYPTION;
         }
 
-        // Actually both Initiator and Responder have the same  masterKey and saltKey Length
-        int srtp_auth_tag_length = secrets.getSrtpAuthTagLen() / 8;
-        int initiator_cipher_key_length =  secrets.getInitKeyLen() / 8;
-        int initiator_cipher_salt_length =  secrets.getInitSaltLen() / 8;
-        int responder_cipher_key_length =  secrets.getRespKeyLen() / 8;
-        int responder_cipher_salt_length =  secrets.getRespSaltLen() / 8;
-
-        byte[] initiator_SRTP_master_key = new byte[initiator_cipher_key_length];
-        byte[] initiator_SRTP_master_salt = new byte[initiator_cipher_salt_length];
-        byte[] responder_SRTP_master_key = new byte[responder_cipher_key_length];
-        byte[] responder_SRTP_master_salt = new byte[responder_cipher_salt_length];
-
-        System.arraycopy(secrets.getKeyInitiator(), 0,
-                initiator_SRTP_master_key, 0, initiator_cipher_key_length);
-        System.arraycopy(secrets.getSaltInitiator(), 0,
-                initiator_SRTP_master_salt, 0, initiator_cipher_salt_length);
-        System.arraycopy(secrets.getKeyResponder(), 0,
-                responder_SRTP_master_key, 0, responder_cipher_key_length);
-        System.arraycopy(secrets.getSaltResponder(), 0,
-                responder_SRTP_master_salt, 0, responder_cipher_salt_length);
-
         if (part == EnableSecurity.ForSender) {
             // To encrypt packets: initiator uses initiator keys, responder uses responder keys
             // Create a "half baked" crypto context first and store it. This is
             // the main crypto context for the sending part of the connection.
             if (secrets.getRole() == Role.Initiator) {
                 srtpPolicy = new SrtpPolicy(cipher,
-                        initiator_cipher_key_length,
+                        secrets.getInitKeyLen() / 8,
                         authn, authKeyLen,
-                        srtp_auth_tag_length,
-                        initiator_cipher_salt_length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getInitSaltLen() / 8
                 );
 
                 SrtpContextFactory engine = new SrtpContextFactory(
                         true,
-                        initiator_SRTP_master_key,
-                        initiator_SRTP_master_salt,
+                        secrets.getKeyInitiator(),
+                        secrets.getSaltInitiator(),
                         srtpPolicy, srtpPolicy);
 
                 srtpOutTransformer = new SRTPTransformer(engine);
@@ -810,16 +784,16 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             else {
                 srtpPolicy = new SrtpPolicy(
                         cipher,
-                        responder_cipher_key_length,
+                        secrets.getRespKeyLen() / 8,
                         authn, authKeyLen,
-                        srtp_auth_tag_length,
-                        responder_cipher_salt_length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getRespSaltLen() / 8
                 );
 
                 SrtpContextFactory engine = new SrtpContextFactory(
                         true,
-                        responder_SRTP_master_key,
-                        responder_SRTP_master_salt,
+                        secrets.getKeyResponder(),
+                        secrets.getSaltResponder(),
                         srtpPolicy, srtpPolicy);
 
                 srtpOutTransformer = new SRTPTransformer(engine);
@@ -832,16 +806,16 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             if (secrets.getRole() == Role.Initiator) {
                 srtpPolicy = new SrtpPolicy(
                         cipher,
-                        responder_cipher_key_length,
+                        secrets.getRespKeyLen() / 8,
                         authn, authKeyLen,
-                        srtp_auth_tag_length,
-                        responder_cipher_salt_length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getRespSaltLen() / 8
                 );
 
                 SrtpContextFactory engine = new SrtpContextFactory(
                         false /* receiver */,
-                        responder_SRTP_master_key,
-                        responder_SRTP_master_salt,
+                        secrets.getKeyResponder(),
+                        secrets.getSaltResponder(),
                         srtpPolicy, srtpPolicy);
 
                 srtpInTransformer = new SRTPTransformer(engine);
@@ -851,16 +825,16 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
             else {
                 srtpPolicy = new SrtpPolicy(
                         cipher,
-                        initiator_cipher_key_length,
-                        authn, authKeyLen,
-                        srtp_auth_tag_length,
-                        initiator_cipher_salt_length
+                        secrets.getInitKeyLen() / 8,
+                        authn, authKeyLen, // auth key length
+                        secrets.getSrtpAuthTagLen() / 8,
+                        secrets.getInitSaltLen() / 8
                 );
 
                 SrtpContextFactory engine = new SrtpContextFactory(
                         false /* receiver */,
-                        initiator_SRTP_master_key,
-                        initiator_SRTP_master_salt,
+                        secrets.getKeyInitiator(),
+                        secrets.getSaltInitiator(),
                         srtpPolicy, srtpPolicy);
 
                 srtpInTransformer = new SRTPTransformer(engine);

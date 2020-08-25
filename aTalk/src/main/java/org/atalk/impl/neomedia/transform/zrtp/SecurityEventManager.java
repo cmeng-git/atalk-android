@@ -7,11 +7,10 @@ package org.atalk.impl.neomedia.transform.zrtp;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.resources.ResourceManagementService;
+import org.atalk.util.MediaType;
 
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -266,7 +265,7 @@ public class SecurityEventManager extends ZrtpUserCallback
         Iterator<?> ii = subCode.iterator();
         Object msgCode = ii.next();
 
-        Timber.w(new Exception(),"%s: ZRTP key negotiation failed, sub code: %s", sessionTypeToString(sessionType), msgCode);
+        Timber.w(new Exception(), "%s: ZRTP key negotiation failed, sub code: %s", sessionTypeToString(sessionType), msgCode);
     }
 
     /**

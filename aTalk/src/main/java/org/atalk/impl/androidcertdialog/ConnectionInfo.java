@@ -1,7 +1,18 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.impl.androidcertdialog;
 
@@ -13,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import net.java.sip.communicator.impl.certificate.CertificateServiceImpl;
-import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -25,21 +35,30 @@ import org.atalk.service.osgi.OSGiActivity;
 
 import java.net.InetSocketAddress;
 import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
- * Settings screen which displays protocolProvider connection info and servers SSL Certificates.
- * Allows user to revoke.
+ * Setting screen which displays protocolProvider connection info and servers SSL Certificates.
+ * Unregistered accounts without any approved certificates are not shown.
+ *
+ * a. Short click to display the SSL certificate for registered account.
+ * b. Long Click to delete any manually approved self signed SSL certificates if any.
  *
  * @author Eng Chong Meng
  */
 public class ConnectionInfo extends OSGiActivity
 {
+    /**
+     * List of AccountId to its array of manual approved self signed certificates
+     */
+    private final Map<AccountID, List<String>> certificateEntry = new Hashtable<>();
+
     /*
-     * Adapter used to displays connection info and SSL certificates for all protocolProviders.
+     * Adapter used to display connection info and SSL certificates for all protocolProviders.
      */
     private ConnectionInfoAdapter mCIAdapter;
+
+    private CertificateServiceImpl cvs;
 
     /*
      * X509 SSL Certificate view on dialog window
@@ -56,16 +75,21 @@ public class ConnectionInfo extends OSGiActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_layout);
+        ListView providerKeysList = findViewById(R.id.list);
 
-        ListView pProviderKeysList = findViewById(R.id.list);
-        List<ProtocolProviderService> protocolProviders = new ArrayList<>(AccountUtils.getRegisteredProviders());
+        cvs = (CertificateServiceImpl) JabberAccountRegistrationActivator.getCertificateService();
+        List<AccountID> accountIDS = initCertificateEntry();
 
-        this.mCIAdapter = new ConnectionInfoAdapter(protocolProviders);
-        pProviderKeysList.setAdapter(mCIAdapter);
+        this.mCIAdapter = new ConnectionInfoAdapter(accountIDS);
+        providerKeysList.setAdapter(mCIAdapter);
 
-        pProviderKeysList.setOnItemClickListener((parent, view, position, id)
-                -> showSslCertificate(position)
-        );
+        providerKeysList.setOnItemClickListener((parent, view, position, id)
+                -> showSslCertificate(position));
+
+        providerKeysList.setOnItemLongClickListener((parent, view, position, id) -> {
+            showSslCertificateDeleteAlert(position);
+            return true;
+        });
     }
 
     /*
@@ -86,43 +110,60 @@ public class ConnectionInfo extends OSGiActivity
     }
 
     /**
-     * Displays alert asking user if he wants to delete the selected SSL Certificate.
-     * Delete only the serviceName certificate but not the _xmpp-client.
+     * Init and populate AccountIDs with all registered accounts or
+     * account has manual approved self-signed certificate.
      *
-     * @param position the position of <tt>SSL Certificate</tt> in adapter's list which has to be used in the alert.
+     * @return a list of all accountIDs for display list
      */
-    private void showSslCertificateDeleteAlert(int position)
+    private List<AccountID> initCertificateEntry()
     {
-        ProtocolProviderService pps = (ProtocolProviderService) mCIAdapter.getItem(position);
-        AccountID account = pps.getAccountID();
-        final String bareJid = account.getAccountJid();
-        final String certificateEntry = CertificateServiceImpl.PNAME_CERT_TRUST_PREFIX
-                + CertificateServiceImpl.CERT_TRUST_PARAM_SUBFIX + account.getService();
+        certificateEntry.clear();
+        final List<String> certEntries = cvs.getAllServerAuthCertificates();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE)
-                .setMessage(getString(R.string.service_gui_settings_SSL_CERTIFICATE_DELETE, bareJid))
-                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
-                    CertificateServiceImpl cvs
-                            = (CertificateServiceImpl) JabberAccountRegistrationActivator.getCertificateService();
-                    cvs.removeCertificateEntry(certificateEntry);
-                    dialog.dismiss();
-                })
-                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss());
-        deleteDialog = builder.create();
-        deleteDialog.show();
+        // List of the accounts for display
+        final List<AccountID> accountIDS = new ArrayList<>();
+
+        // List of all local stored accounts
+        Collection<AccountID> userAccounts = AccountUtils.getStoredAccounts();
+
+        /*
+         * Iterate all the local stored accounts; add to display list if there are associated user approved
+         * certificates, or the account is registered for SSL certificate display.
+         */
+        for (AccountID accountId : userAccounts) {
+            ProtocolProviderService pps = accountId.getProtocolProvider();
+            String serviceName = accountId.getService();
+            List<String> sslCerts = new ArrayList<>();
+            for (String certEntry : certEntries) {
+                if (certEntry.contains(serviceName)) {
+                    sslCerts.add(certEntry);
+                }
+            }
+
+            if ((sslCerts.size() != 0) || ((pps != null) && pps.isRegistered())) {
+                accountIDS.add(accountId);
+                certificateEntry.put(accountId, sslCerts);
+
+                // remove any assigned certs from certEntries
+                for (String cert : sslCerts) {
+                    certEntries.remove(cert);
+                }
+            }
+        }
+        return accountIDS;
     }
 
     /**
      * Displays SSL Certificate information.
-     * Invoked when user clicks a link in the editor pane.
+     * Invoked when user short clicks a link in the editor pane.
      *
      * @param position the position of <tt>SSL Certificate</tt> in adapter's list which will be displayed.
      */
     public void showSslCertificate(int position)
     {
-        ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) mCIAdapter.getItem(position);
-        if (pps.isRegistered()) {
+        AccountID accountId = mCIAdapter.getItem(position);
+        ProtocolProviderService pps = accountId.getProtocolProvider();
+        if ((pps != null) && pps.isRegistered()) {
             OperationSetTLS opSetTLS = pps.getOperationSet(OperationSetTLS.class);
             Certificate[] chain = opSetTLS.getServerCertificates();
 
@@ -134,8 +175,41 @@ public class ConnectionInfo extends OSGiActivity
                 aTalkApp.showToastMessage(aTalkApp.getResString(R.string.service_gui_callinfo_TLS_CERTIFICATE_CONTENT) + ": null!");
         }
         else {
-            aTalkApp.showToastMessage(R.string.service_gui_ACCOUNT_UNREGISTERED, pps.getOurJID());
+            aTalkApp.showToastMessage(R.string.plugin_certconfig_SHOW_CERT_EXCEPTION, accountId);
         }
+    }
+
+    /**
+     * Displays alert asking user if he wants to delete the selected SSL Certificate. (Long click)
+     * Delete both the serviceName certificate and the _xmpp-client.serviceName
+     *
+     * @param position the position of <tt>SSL Certificate</tt> in adapter's list which has to be used in the alert.
+     */
+    private void showSslCertificateDeleteAlert(int position)
+    {
+        AccountID accountId = mCIAdapter.getItem(position);
+        List<String> certs = certificateEntry.get(accountId);
+        // Just display the SSL certificate info if none to delete
+        if (certs.size() == 0) {
+            showSslCertificate(position);
+            return;
+        }
+
+        final String bareJid = accountId.getAccountJid();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.service_gui_settings_SSL_CERTIFICATE_REMOVE)
+                .setMessage(getString(R.string.service_gui_settings_SSL_CERTIFICATE_PURGE, bareJid))
+                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
+                    for (String certEntry : certs)
+                        cvs.removeCertificateEntry(certEntry);
+
+                    // Update the adapter Account list after a deletion.
+                    mCIAdapter.setAccountIDs(initCertificateEntry());
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss());
+        deleteDialog = builder.create();
+        deleteDialog.show();
     }
 
     /**
@@ -199,24 +273,36 @@ public class ConnectionInfo extends OSGiActivity
     }
 
     /**
-     * Adapter which displays OTR private keys for given list of <tt>AccountID</tt>s.
+     * Adapter which displays Connection Info for list of <tt>ProtocolProvider</tt>s.
      */
     class ConnectionInfoAdapter extends BaseAdapter
     {
         /**
-         * List of <tt>protocolProviders</tt> for which the connection info and certificates are being displayed.
+         * List of <tt>AccountID</tt> for which the connection info and certificates are being displayed.
          */
-        private final List<ProtocolProviderService> protocolProviders;
+        private List<AccountID> accountIDs;
 
         /**
-         * Creates new instance of <tt>SslCertificateListAdapter</tt>.
+         * Creates a new instance of <tt>SslCertificateListAdapter</tt>.
          *
-         * @param pProviders the list of <tt>ProtocolProviderService</tt>s for which connection info and
+         * @param accountIDS the list of <tt>AccountId</tt>s for which connection info and
          * certificates will be displayed by this adapter.
          */
-        ConnectionInfoAdapter(List<ProtocolProviderService> pProviders)
+        ConnectionInfoAdapter(List<AccountID> accountIDS)
         {
-            protocolProviders = pProviders;
+            this.accountIDs = accountIDS;
+        }
+
+        /**
+         * Call to update the new List item; notify data change after update
+         *
+         * @param accountIDS the list of <tt>AccountId</tt>s for which connection info and
+         * certificates will be displayed by this adapter.
+         */
+        public void setAccountIDs(List<AccountID> accountIDS)
+        {
+            this.accountIDs = accountIDS;
+            notifyDataSetChanged();
         }
 
         /**
@@ -225,16 +311,16 @@ public class ConnectionInfo extends OSGiActivity
         @Override
         public int getCount()
         {
-            return protocolProviders.size();
+            return accountIDs.size();
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public Object getItem(int position)
+        public AccountID getItem(int position)
         {
-            return protocolProviders.get(position);
+            return accountIDs.get(position);
         }
 
         /**
@@ -257,7 +343,7 @@ public class ConnectionInfo extends OSGiActivity
             if (convertView == null) {
                 convertView = getLayoutInflater().inflate(R.layout.connection_info_list_row, parent, false);
                 ciViewHolder = new CIViewHolder();
-                ciViewHolder.pProtocolService = convertView.findViewById(R.id.protocolProvider);
+                ciViewHolder.protocolService = convertView.findViewById(R.id.protocolProvider);
                 ciViewHolder.connectionInfo = convertView.findViewById(R.id.connectionInfo);
                 convertView.setTag(ciViewHolder);
             }
@@ -265,19 +351,27 @@ public class ConnectionInfo extends OSGiActivity
                 ciViewHolder = (CIViewHolder) convertView.getTag();
             }
 
-            ProtocolProviderService pps = (ProtocolProviderService) getItem(position);
-            String accountName = "<u>" + pps.getAccountID().getDisplayName() + "</u>";
-            ciViewHolder.pProtocolService.setText(Html.fromHtml(accountName));
+            AccountID accountId = getItem(position);
+            String accountName = "<u>" + accountId + "</u>";
+            ciViewHolder.protocolService.setText(Html.fromHtml(accountName));
 
-            String certificateInfo = loadDetails(pps);
-            ciViewHolder.connectionInfo.setText(Html.fromHtml(certificateInfo));
+            String detailInfo;
+            ProtocolProviderService pps = accountId.getProtocolProvider();
+            if (pps != null) {
+                detailInfo = loadDetails(accountId.getProtocolProvider());
+            }
+            else {
+                detailInfo = getString(R.string.service_gui_ACCOUNT_UNREGISTERED, "&#8226; ");
+            }
+
+            ciViewHolder.connectionInfo.setText(Html.fromHtml(detailInfo));
             return convertView;
         }
     }
 
     private static class CIViewHolder
     {
-        TextView pProtocolService;
+        TextView protocolService;
         TextView connectionInfo;
     }
 }

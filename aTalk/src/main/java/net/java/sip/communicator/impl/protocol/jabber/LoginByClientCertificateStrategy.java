@@ -93,7 +93,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
     public SSLContext createSslContext(CertificateService certificateService, X509TrustManager trustManager)
             throws GeneralSecurityException
     {
-        String certConfigName = accountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
+        String certConfigName = accountID.getTlsClientCertificate();
         return certificateService.getSSLContext(certConfigName, trustManager);
     }
 

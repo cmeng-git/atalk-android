@@ -39,7 +39,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     private int cameraRotation;
 
     /**
-     * Creates new instance of <tt>PreviewStream</tt>.
+     * Creates a new instance of <tt>PreviewStream</tt>.
      *
      * @param dataSource parent <tt>DataSource</tt>.
      * @param formatControl format control used by this instance.
@@ -235,11 +235,11 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
 
     /**
      * Calculates YV12 image data bufferSize in bytes.
-     * The buffer is used to received the generated preview streaming data,
+     * The buffer is used to receive the generated preview streaming data,
      * hence need to consider when image is swap (rotated)
      *
      * @param previewSize camera preview size.
-     * @param swap indicate camera is rotated, and width and height must be swapped to get the buffer size
+     * @param swap indicate the camera is rotated, and width and height must be swapped to get the buffer size
      * @return YV12 image data size in bytes.
      */
     private static int calcYV12Size(Camera.Size previewSize, boolean swap)

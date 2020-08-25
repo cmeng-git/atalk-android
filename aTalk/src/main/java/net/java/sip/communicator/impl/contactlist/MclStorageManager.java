@@ -66,9 +66,9 @@ public class MclStorageManager implements MetaContactListListener
      */
     private MetaContactListServiceImpl mclServiceImpl = null;
 
-    private SQLiteDatabase mDB;
-    private ContentValues mcValues = new ContentValues();
-    private ContentValues ccValues = new ContentValues();
+    private static SQLiteDatabase mDB;
+    private final ContentValues mcValues = new ContentValues();
+    private final ContentValues ccValues = new ContentValues();
 
     /**
      * Initializes the storage manager to perform the initial loading and parsing of the
@@ -106,6 +106,38 @@ public class MclStorageManager implements MetaContactListListener
         this.mclServiceImpl.addMetaContactListListener(this);
     }
 
+    // #TODO: Rename of ROOT_PROTO_GROUP_UID to "Contacts" in v2.4.0 (20200817); need to remove on later version
+    public static void mcg_patch()
+    {
+        // Remove table row: ContactGroup.ROOT_GROUP_UID in Table metaContactGroup
+        String[] args = new String[]{ContactGroup.ROOT_GROUP_UID};
+        mDB.delete(MetaContactGroup.TABLE_NAME, MetaContactGroup.MC_GROUP_UID + "=?", args);
+
+        // Rename all "ContactListRoot" to "Contacts" in Table metaContactGroup
+        args = new String[]{"ContactListRoot"};
+        ContentValues values = new ContentValues();
+        values.put(MetaContactGroup.PARENT_PROTO_GROUP_UID, ContactGroup.ROOT_PROTO_GROUP_UID);
+        mDB.update(MetaContactGroup.TABLE_NAME, values,
+                MetaContactGroup.PARENT_PROTO_GROUP_UID + "=?", args);
+
+        // Rename all "ContactListRoot" to "Contacts" in Table childContacts
+        values.clear();
+        values.put(MetaContactGroup.PROTO_GROUP_UID, ContactGroup.ROOT_PROTO_GROUP_UID);
+        mDB.update(MetaContactGroup.TBL_CHILD_CONTACTS, values,
+                MetaContactGroup.PROTO_GROUP_UID + "=?", args);
+    }
+
+    // For data base garbage clean-up during testing
+    private void mcg_clean()
+    {
+        String[] Ids = new String[]{"83"};
+        for (String Id : Ids) {
+            String[] args = new String[]{Id};
+            mDB.delete(MetaContactGroup.TABLE_NAME, MetaContactGroup.ID + "=?", args);
+            // mDB.delete(MetaContactGroup.TBL_CHILD_CONTACTS, MetaContactGroup.ID + "=?", args);
+        }
+    }
+
     /**
      * Parses <tt>RootMetaContactGroup</tt> and all of its proto-groups, subgroups, and
      * child-contacts creating corresponding instances through <tt>mclServiceImpl</tt> as
@@ -128,6 +160,10 @@ public class MclStorageManager implements MetaContactListListener
         // Contact details attribute = value.
         List<StoredProtoContactDescriptor> protoContacts = new LinkedList<>();
         ContactGroup parentProtoGroup;
+
+        // mcg_clean();
+        // #TODO: Rename of ROOT_PROTO_GROUP_UID to "Contacts" in v2.4.0 (20200817); need to remove on later version
+        MclStorageManager.mcg_patch();
 
         /*
          * Initialize and create the Root MetalContact Group.
@@ -249,6 +285,12 @@ public class MclStorageManager implements MetaContactListListener
      */
     private void createProtoContactGroupEntry(ContactGroup protoGroup, MetaContactGroup metaGroup)
     {
+        // Do not create root group i.e. "Contacts", check of groupName == "Contacts"
+        if (ContactGroup.ROOT_GROUP_NAME.equals(metaGroup.getGroupName())) {
+            Timber.w("Not allowed! Root group creation: %s", metaGroup.getGroupName());
+            return;
+        }
+
         // Ignore if the group was created as an encapsulator of a non persistent proto group
         if ((protoGroup != null) && protoGroup.isPersistent()) {
             ContentValues mcgContent = new ContentValues();
@@ -377,7 +419,7 @@ public class MclStorageManager implements MetaContactListListener
         String mcGroupUid = mcGroup.getMetaUID();
         String mcGroupName = findMetaContactGroupEntry(mcGroupUid);
         if ((MetaContactGroupEvent.CONTACT_GROUP_ADDED_TO_META_GROUP != evt.getEventID()) && (mcGroupName == null)) {
-            Timber.d("Ignore debug ref: Failed to find modifying metaContactGroup: %s", mcGroup.getGroupName());
+            Timber.d("Debug ref only: Failed to find modifying metaContactGroup: %s", mcGroup.getGroupName());
             return;
         }
 
@@ -507,6 +549,14 @@ public class MclStorageManager implements MetaContactListListener
         String mcGroupUid = evt.getSourceMetaContactGroup().getMetaUID();
         String protoGroupUid = protoGroup.getUID();
         Timber.d("Removing contact ProtoGroup: %s: %s", protoGroupUid, accountUuid);
+
+        // Do not allow removal of root group i.e. "Contacts" or VOLATILE_GROUP or non-empty group
+        if (ContactGroup.ROOT_GROUP_UID.equals(mcGroupUid)
+                || ContactGroup.VOLATILE_GROUP.equals(protoGroupUid)
+                || protoGroup.countContacts() > 0) {
+            Timber.w("Not allowed! Group deletion for: %s (%s)", protoGroupUid, protoGroup.countContacts());
+            return;
+        }
 
         String[] args = {accountUuid, mcGroupUid, protoGroupUid};
         mDB.delete(MetaContactGroup.TABLE_NAME, MetaContactGroup.ACCOUNT_UUID + "=? AND "
@@ -690,7 +740,7 @@ public class MclStorageManager implements MetaContactListListener
         //			createMetaContactEntry(evt.getSourceMetaContact());
         //		}
         if (findMetaContactEntry(metaContactUid) == null) {
-            Timber.d("Ignore debug ref: MetaContact Uid cannot be null %s", metaContact.getDisplayName());
+            Timber.d("MetaContact Uid cannot be null: %s", metaContact.getDisplayName());
             return;
         }
 
@@ -698,8 +748,9 @@ public class MclStorageManager implements MetaContactListListener
         String newGroupName = newMCGroup.getGroupName();
         String newGroupUid = newMCGroup.getMetaUID();
 
-        // create new metaContactGroup if not exist (give warning if none found)
-        if (findMetaContactGroupEntry(newGroupUid) == null) {
+        // check if new metaContactGroup exist (give warning if none found); "Contacts" is not stored in DB
+        if (!ContactGroup.ROOT_GROUP_NAME.equals(newGroupName)
+                && findMetaContactGroupEntry(newGroupUid) == null) {
             Timber.w("Destination mcGroup for metaContact move not found: %s", newGroupName);
         }
 

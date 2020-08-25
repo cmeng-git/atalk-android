@@ -1,5 +1,5 @@
---- /home/cmeng/source/smack/Smack/trunk/smack-bosh/src/main/java/org/jivesoftware/smack/bosh/XMPPBOSHConnection.java	2019-09-26 05:45:29.000000000 
-+++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smack/bosh/XMPPBOSHConnection.java	2019-10-28 11:09:34.000000000 
+--- /home/cmeng/source/smack/Smack-4.4.0-beta1/org/jivesoftware/smack/bosh/XMPPBOSHConnection.java	2020-05-31 19:46:48.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smack/bosh/XMPPBOSHConnection.java	2020-07-04 11:07:21.000000000 
 @@ -37,13 +37,16 @@
  import org.jivesoftware.smack.packet.IQ;
  import org.jivesoftware.smack.packet.Message;
@@ -8,7 +8,7 @@
  import org.jivesoftware.smack.packet.Stanza;
  import org.jivesoftware.smack.packet.StanzaError;
 +import org.jivesoftware.smack.packet.StreamError;
-+import org.jivesoftware.smack.packet.XmlEnvironment;
++import org.jivesoftware.smack.roster.packet.RosterPacket;
  import org.jivesoftware.smack.util.CloseableUtil;
 +import org.jivesoftware.smack.util.Objects;
  import org.jivesoftware.smack.util.PacketParserUtils;
@@ -17,7 +17,7 @@
  import org.igniterealtime.jbosh.AbstractBody;
  import org.igniterealtime.jbosh.BOSHClient;
  import org.igniterealtime.jbosh.BOSHClientConfig;
-@@ -86,26 +89,20 @@
+@@ -86,26 +89,23 @@
      /**
       * Holds the initial configuration used while creating the connection.
       */
@@ -27,7 +27,9 @@
 -    // Some flags which provides some info about the current state.
 -    private boolean isFirstInitialization = true;
 -    private boolean done = false;
--
++    // a flag to indicate incomingStreamXmlEnvironment has been initialized
++    private boolean xmlLangInit = false;
+ 
      // The readerPipe and consumer thread are used for the debugger.
      private PipedWriter readerPipe;
      private Thread readerConsumer;
@@ -44,12 +46,12 @@
       *
       * @param username the username to use.
       * @param password the password to use.
-@@ -134,15 +131,13 @@
-     public XMPPBOSHConnection(BOSHConfiguration config) {
+@@ -135,15 +135,13 @@
          super(config);
          this.config = config;
      }
  
+     @SuppressWarnings("deprecation")
      @Override
 -    protected void connectInternal() throws SmackException, InterruptedException {
 -        done = false;
@@ -61,7 +63,7 @@
                  client.close();
                  client = null;
              }
-@@ -160,48 +155,32 @@
+@@ -161,48 +159,32 @@
              for (Map.Entry<String, String> h : config.getHttpHeaders().entrySet()) {
                  cfgBuilder.addHttpHeader(h.getKey(), h.getValue());
              }
@@ -87,7 +89,7 @@
                      .setAttribute(BodyQName.createWithPrefix(XMPP_BOSH_NS, "version", "xmpp"), "1.0")
                      .build());
          } catch (Exception e) {
-             throw new ConnectionException(e);
+             throw new GenericConnectionException(e);
          }
  
 -        // Wait for the response from the server
@@ -110,14 +112,14 @@
 -            throw new SmackException.SmackMessageException(errorMessage);
 -        }
 +        // Wait with SASL auth until the SASL mechanisms have been received
-+        saslFeatureReceived.checkIfSuccessOrWaitOrThrow();
++        waitForConditionOrThrowConnectionException(() -> saslFeatureReceived, "SASL mechanisms stream feature from server");
      }
  
      @Override
      public boolean isSecureConnection() {
          // TODO: Implement SSL usage
          return false;
-@@ -223,24 +202,21 @@
+@@ -224,24 +206,21 @@
  
          afterSuccessfulLogin(false);
      }
@@ -145,7 +147,7 @@
                  firePacketSendingListeners((Stanza) element);
              }
          }
-@@ -272,40 +248,39 @@
+@@ -273,40 +252,40 @@
      }
  
      @Override
@@ -181,6 +183,7 @@
       */
 -    protected void send(ComposableBody body) throws BOSHException {
 +    protected void send(ComposableBody body) throws BOSHException, NotConnectedException, IllegalArgumentException {
++
 +        Objects.requireNonNull(body, "Body must not be null");
          if (!connected) {
 -            throw new IllegalStateException("Not connected to a server!");
@@ -194,7 +197,7 @@
                      BodyQName.create(BOSH_URI, "sid"), sessionID).build();
          }
          client.send(body);
-@@ -363,12 +338,13 @@
+@@ -364,12 +343,13 @@
          client.addBOSHClientRequestListener(new BOSHClientRequestListener() {
              @Override
              public void requestSent(BOSHMessageEvent event) {
@@ -208,7 +211,7 @@
                  }
              }
          });
-@@ -379,13 +355,13 @@
+@@ -380,13 +360,13 @@
              private int bufferLength = 1024;
  
              @Override
@@ -223,7 +226,7 @@
                      // Ignore
                  }
              }
-@@ -396,80 +372,45 @@
+@@ -397,80 +377,45 @@
  
      @Override
      protected void afterSaslAuthenticationSuccess()
@@ -323,7 +326,7 @@
  
      /**
       * Listens for XML traffic from the BOSH connection manager and parses it into
-@@ -494,32 +435,39 @@
+@@ -495,32 +440,43 @@
                      }
                      if (streamId == null) {
                          streamId = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "authid"));
@@ -340,9 +343,12 @@
                              switch (name) {
 -                            case Message.ELEMENT:
                              case IQ.IQ_ELEMENT:
-+                                // cmeng: temporary fix to init incomingStreamXmlEnvironment for BOSHConnection (no stream:stream)
-+                                if ((incomingStreamXmlEnvironment == null) || (incomingStreamXmlEnvironment.getLanguage() == null))
-+                                    incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
++                                // cmeng: a temporary patch to init incomingStreamXmlEnvironment for BOSHConnection
++                                // BOSHConnection does not have a stream:stream Nonza.
++                                if (!xmlLangInit && body.toXML().contains(RosterPacket.NAMESPACE)) {
++                                    onStreamOpen(parser);
++                                    xmlLangInit = true;
++                                }
 +                            case Message.ELEMENT:
                              case Presence.ELEMENT:
                                  parseAndProcessStanza(parser);
@@ -358,14 +364,15 @@
 -                                } else {
 +                                // Some BOSH error isn't stream error. parser.getNamespace(null) <= http://jabber.org/protocol/httpbind
 +                                StreamError streamError = PacketParserUtils.parseStreamError(parser);
-+                                saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
++                                // saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
++                                // throwCurrentConnectionException();
 +
 +                                if (StreamError.NAMESPACE.equals(streamError.getNamespace())) {
 +                                    throw new StreamErrorException(streamError);
 +                                }
 +                                else {
-                                     StanzaError.Builder builder = PacketParserUtils.parseError(parser);
-                                     throw new XMPPException.XMPPErrorException(null, builder.build());
+                                     StanzaError stanzaError = PacketParserUtils.parseError(parser);
+                                     throw new XMPPException.XMPPErrorException(null, stanzaError);
                                  }
                              default:
                                  parseAndProcessNonza(parser);

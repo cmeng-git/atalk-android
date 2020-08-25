@@ -89,13 +89,14 @@ include ./speex/Android.mk
 # Reference only: sources-1.0.1j from site (Android_src.mk - build has error using AS ndk on Windows 7)
 
 LOCAL_PATH  := $(ROOT)
+include $(CLEAR_VARS)
 
 # https://github.com/aosp-mirror/platform_external_openssl/tree/android-5.1.1_r38
-# Local AS NDK built from source (OPENSSL_VERSION=1.0.1j) - build ok on Ubuntu Android Studio
+# Local AS NDK built from source (OPENSSL_VERSION=1.0.1j) - problem but build ok on Ubuntu Android Studio
 # include openssl/Android.mk
 
 ## Built static library from source (version 1.0.2u) on ubuntu 18.04
-# Built from static library (unable to build from source - #TODO)
-include openssl/Android_a.mk
+# Built from static library (unable to build from source in jni - #TODO)
+include ./openssl/Android_a.mk
 
 

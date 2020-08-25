@@ -24,7 +24,7 @@ public interface ContactGroup
      * Do not change these String constants; stored and used in metaContactGroup.
      */
     String ROOT_GROUP_UID = "RootMetaContactGroup";
-    String ROOT_PROTO_GROUP_UID = "ContactListRoot";
+    String ROOT_PROTO_GROUP_UID = "Contacts";
     String VOLATILE_GROUP = "NotInContactList";
 
     /**
@@ -33,7 +33,7 @@ public interface ContactGroup
      String ROOT_GROUP_NAME = "Contacts";
 
     /**
-     * Returns an iterator over the sub groups that this <tt>ContactGroup</tt> contains.
+     * Returns the sub-groups iterator that this <tt>ContactGroup</tt> contains.
      *
      * @return a java.util.Iterator over the <tt>ContactGroup</tt> children of this group (i.e. subgroups).
      */
@@ -101,8 +101,7 @@ public interface ContactGroup
     /**
      * Returns the protocol provider that this group belongs to.
      *
-     * @return a reference to the ProtocolProviderService instance that this ContactGroup belongs
-     * to.
+     * @return a reference to the ProtocolProviderService instance that this ContactGroup belongs to.
      */
     ProtocolProviderService getProtocolProvider();
 
@@ -150,7 +149,7 @@ public interface ContactGroup
      * contacts and groups are created through the createUnresolvedContactGroup() method in the
      * persistent presence operation set. The method may also return null if no such data is
      * required and the contact address is sufficient for restoring the contact group.
-     * <p>
+     *
      *
      * @return A <tt>String</tt> that could be used to create a unresolved instance of this contact
      * group during a next run of the application, before establishing network connectivity
