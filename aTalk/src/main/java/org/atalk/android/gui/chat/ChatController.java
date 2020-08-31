@@ -276,7 +276,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Method called by <tt>ChatFragment</tt> when it's no longer displayed to the user.
-     * This happens when user scroll pagerAdapter and the chat window is out of view
+     * This happens when user scroll pagerAdapter, and the chat window is out of view
      */
     public void onHide()
     {
@@ -428,7 +428,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Method fired when send message or cancel correction button's are clicked.
+     * Method fired when send a message or cancel correction button is clicked.
      * <p>
      * {@inheritDoc}
      */
@@ -466,7 +466,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                         if (quotedMessage != null) {
                             textEdit = quotedMessage + textEdit;
                         }
-                        // Send http link as xhtml to avoid being interpreted by receiver as http file download link
+                        // Send http link as xhtml to avoid being interpreted by the receiver as http file download link
                         else if (textEdit.matches("(?s)^http[s]:.*") && !textEdit.contains("\\s")) {
                             textEdit = aTalkApp.getResString(R.string.service_gui_CHAT_LINK, textEdit, textEdit);
                         }
@@ -518,7 +518,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Audio sending is disabled if permission.RECORD_AUDIO is denied.
-     * Audid chat message is allowed even for offline contact and in conference
+     * Audio chat message is allowed even for offline contact and in conference
      */
     @Override
     public boolean onLongClick(View v)
@@ -617,7 +617,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         return false;
     }
 
-    // Need to wait on new thread for animation to end
+    // Need to wait on a new thread for animation to end
     private void onAnimationEnd(final int wait)
     {
         new Thread(() -> {
@@ -676,8 +676,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     };
 
     /**
-     * Built-in speech to text recognition without soft keyboard popup.
-     * To use softkeybord mic, click on text entry and then click on mic.
+     * Built-in speech to text recognition without a soft keyboard popup.
+     * To use the soft keyboard mic, click on text entry and then click on mic.
      */
     private void speechToText()
     {
@@ -839,7 +839,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Update the view states of all send buttons based on the current available send contents.
-     * Send text button has higer priority over attachement if msgEdit is not empty
+     * Send text button has higher priority over attachment if msgEdit is not empty
      */
     public void updateSendModeState()
     {

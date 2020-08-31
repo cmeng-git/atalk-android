@@ -6,8 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.4.0 (08/25/2020)" versioncode="1140">
+    <release version="2.4.1 (08/31/2020)" versioncode="1141">
     <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Fix 'Unsupported path': android-Q enforces deprecated getExternalStorageDirectory() method, making it inaccessible to aTalk.</change>
+    </release>
+
+    <release version="2.4.0 (08/25/2020)" versioncode="1140">
         <change>Removed and merged 'Remove certificate' option into SSL Certificate (Manage...) in Settings... menu</change>
         <change>Upgrade to zrtp-light:4.1.2: Fix ZRTP X25519 key exchange error, and truncate ZRTP KDF output as per RFC</change>
         <change>Cleanup contact 'Move to group' associated option handlers</change>

@@ -553,7 +553,7 @@ public final class HttpFileUploadManager extends Manager {
                 try {
                     inputStream.close();
                 }
-                // Must include IllegalStateException: happen on Note-5
+                // Must include IllegalStateException: GCM cipher cannot be reused for encryption (happen on Note-5)
                 catch (IOException | IllegalStateException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing input stream", e);
                 }

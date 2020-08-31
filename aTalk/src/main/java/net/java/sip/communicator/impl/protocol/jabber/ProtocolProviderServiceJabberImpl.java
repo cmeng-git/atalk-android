@@ -1122,7 +1122,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             String errMsg = ex.getMessage();
             StanzaError stanzaError = StanzaError.from(Condition.service_unavailable, errMsg).build();
             throw new XMPPErrorException(null, stanzaError);
-        } catch (XMPPException | SmackException | IOException | InterruptedException ex) {
+        } catch (XMPPException | SmackException | IOException | InterruptedException | NullPointerException ex) {
 //            if (ex.getCause() instanceof SSLHandshakeException) {
 //                Timber.e(ex.getCause());
 //            }
@@ -1198,7 +1198,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                         Timber.e("Encounter problem during XMPPConnection: %s", errMsg);
                         StanzaError stanzaError = StanzaError.from(Condition.policy_violation, errMsg).build();
                         throw new XMPPErrorException(null, stanzaError);
-                    } catch (SmackException | XMPPException | InterruptedException | IOException err) {
+                    } catch (SmackException | XMPPException | InterruptedException | IOException | NullPointerException err) {
                         disconnectAndCleanConnection();
                         eventDuringLogin = null;
                         fireRegistrationStateChanged(getRegistrationState(), RegistrationState.CONNECTION_FAILED,

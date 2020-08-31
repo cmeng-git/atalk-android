@@ -342,7 +342,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
         messageViewHolder.timeView.setText(mDate);
         messageViewHolder.fileStatus.setText(aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSender));
-        Long jobId = download(uri);
+        long jobId = download(uri);
         if (jobId > 0) {
             previousDownloads.put(jobId, dnLink);
             updateView(FileTransferStatusChangeEvent.IN_PROGRESS, null);
