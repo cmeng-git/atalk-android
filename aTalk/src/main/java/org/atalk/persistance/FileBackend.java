@@ -51,6 +51,7 @@ public class FileBackend
      */
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
+    // android-Q accessible path to apk is: /storage/emulated/0/Android/data/org.atalk.android/files
     public static String FP_aTALK = "aTalk";
     public static String EXPROT_DB = "EXPORT_DB";
 
@@ -185,7 +186,7 @@ public class FileBackend
                     deleteRecursive(file);
                 }
             }
-            // Finally, delete the root directory now that all of the files in the directory have been properly deleted.
+            // Finally, delete the root directory, after all the files in the directory have been deleted.
             if (!filePath.delete()) {
                 throw new IOException("Could not deleteRecursive: " + filePath);
             }
@@ -193,11 +194,9 @@ public class FileBackend
     }
 
     /**
-     * Copy bytes from a large (over 2GB) <code>InputStream</code> to an
-     * <code>OutputStream</code>.
-     * <p>
-     * This method buffers the input internally, so there is no need to use a
-     * <code>BufferedInputStream</code>.
+     * Copy bytes from a large (over 2GB) <code>InputStream</code> to an <code>OutputStream</code>.
+     *
+     * This method buffers the input internally, so there is no need to use a <code>BufferedInputStream</code>.
      *
      * @param input the <code>InputStream</code> to read from
      * @param output the <code>OutputStream</code> to write to
@@ -231,7 +230,9 @@ public class FileBackend
         if (!TextUtils.isEmpty(subFolder))
             filePath += File.separator + subFolder;
 
-        File atalkDLDir = new File(Environment.getExternalStorageDirectory(), filePath);
+        // https://developer.android.com/reference/android/os/Environment#getExternalStorageDirectory()
+        // File atalkDLDir = new File(Environment.getExternalStorageDirectory(), filePath);
+        File atalkDLDir = aTalkApp.getGlobalContext().getExternalFilesDir(filePath);
         if (createNew && !atalkDLDir.exists() && !atalkDLDir.mkdirs()) {
             Timber.e("Could not create aTalk folder: %s", atalkDLDir);
         }
@@ -307,7 +308,7 @@ public class FileBackend
     }
 
     /**
-     * To guess the mime type of a given uri using the mimeMap or from path name
+     * To guess the mime type of the given uri using the mimeMap or from path name
      *
      * @param ctx the reference Context
      * @param uri content:// or file:// or whatever suitable Uri you want.
@@ -330,7 +331,7 @@ public class FileBackend
     }
 
     /**
-     * To guess the mime type of a given uri using the mimeMap or from path name
+     * To guess the mime type of the given uri using the mimeMap or from path name
      *
      * @param ctx the reference Context
      * @param uri content:// or file:// or whatever suitable Uri you want.
@@ -398,10 +399,10 @@ public class FileBackend
     /**
      * cmeng: modified from URLConnection class
      *
-     * Tries to determine the type of an input stream based on the characters at the beginning of the input stream.
+     * Try to determine the type of input stream based on the characters at the beginning of the input stream.
      * This method  be used by subclasses that override the {@code getContentType} method.
-     * <p>
-     * Ideally, this routine would not be needed. But many {@code http} servers return the incorrect content type;
+     *
+     * Ideally, this routine would not be needed, but many {@code http} servers return the incorrect content type;
      * in addition, there are many nonstandard extensions. Direct inspection of the bytes to determine the content
      * type is often more accurate than believing the content type claimed by the {@code http} server.
      *
@@ -458,8 +459,8 @@ public class FileBackend
 
             /*
              * File format used by digital cameras to store images.
-             * Exif Format can be read by any application supporting
-             * JPEG. Exif Spec can be found at:
+             * Exif Format can be read by any application supporting JPEG.
+             * Exif Spec can be found at:
              * http://www.pima.net/standards/it10/PIMA15740/Exif_2-1.PDF
              */
             if ((c4 == 0xE1) &&

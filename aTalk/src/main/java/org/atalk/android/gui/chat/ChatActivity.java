@@ -775,7 +775,7 @@ public class ChatActivity extends OSGiActivity
      */
     public void getLastSeen(PresenceStatus status)
     {
-        // cmeng: this happen if the contact remove presence subscription while still in chat session
+        // cmeng: this happens if the contact remove presence subscription while still in chat session
         if (mRecipient != null) {
             XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
 

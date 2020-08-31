@@ -1,6 +1,14 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	08/31/2020
+Version:		2.4.1 (1141)
+- Fix 'Unsupported path': android-Q enforces deprecated getExternalStorageDirectory() method, making it inaccessible to aTalk.
+  https://developer.android.com/reference/android/os/Environment#getExternalStorageDirectory()
+  https://github.com/cmeng-git/atalk-android/issues/164
+
+=========================================================================
+Author:         cmeng
 Upload Date:	08/25/2020
 Version:		2.4.0 (1140)
 - Removed and merged 'Remove certificate' option into SSL Certificate (Manage...) in Settings... menu.
@@ -974,7 +982,6 @@ Upload Date:	05/23/2019
   # armv7: requires unsupported dynamic reloc R_ARM_REL32;
   # x86: relocation R_386_GOTOFF against preemptible symbol ..
 - Simplify and use single script command for each jni library built
-
 
 =========================================================================
 Version:		1.8.2 (1082)

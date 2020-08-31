@@ -221,9 +221,9 @@ public class EntityListHelper
      */
     private static class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer>
     {
-        private TaskCompleted mCallback;
-        private boolean isPurgeMediaFile;
-        private List<String> msgUUIDs;
+        private final TaskCompleted mCallback;
+        private final boolean isPurgeMediaFile;
+        private final List<String> msgUUIDs;
         private List<File> msgFiles;
 
         private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles, boolean purgeMedia)
@@ -327,8 +327,8 @@ public class EntityListHelper
 
     private static class doEraseAllEntityHistory extends AsyncTask<Void, Void, Integer>
     {
-        private boolean isPurgeMediaFile;
-        private TaskCompleted mCallback;
+        private final boolean isPurgeMediaFile;
+        private final TaskCompleted mCallback;
 
         private doEraseAllEntityHistory(Context context, boolean purgeMedia)
         {
@@ -408,8 +408,8 @@ public class EntityListHelper
      */
     private static class doEraseEntityCallHistory extends AsyncTask<Void, Void, Integer>
     {
-        private EntityListHelper.TaskCompleted mCallback;
-        private List<String> callUUIDs;
+        private final EntityListHelper.TaskCompleted mCallback;
+        private final List<String> callUUIDs;
 
         private doEraseEntityCallHistory(CallHistoryFragment caller, List<String> callUUIDs)
         {

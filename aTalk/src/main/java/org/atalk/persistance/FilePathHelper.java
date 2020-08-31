@@ -28,6 +28,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.share.Attachment;
 
 import java.io.*;
@@ -255,7 +256,7 @@ public class FilePathHelper
                     Uri downloadUri = Uri.parse("content://downloads/public_downloads");
 
                     // Append download document id at uri end.
-                    Uri downloadUriAppendId = ContentUris.withAppendedId(downloadUri, Long.valueOf(documentId));
+                    Uri downloadUriAppendId = ContentUris.withAppendedId(downloadUri, Long.parseLong(documentId));
                     filePath = getRealPath(ctx.getContentResolver(), downloadUriAppendId, null);
 
                 }
@@ -266,7 +267,7 @@ public class FilePathHelper
                         String realDocId = idArr[1];
 
                         if ("primary".equalsIgnoreCase(type)) {
-                            filePath = Environment.getExternalStorageDirectory() + "/" + realDocId;
+                            filePath = ctx.getExternalFilesDir(realDocId).getAbsolutePath();
                         }
                     }
                 }

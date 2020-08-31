@@ -136,7 +136,8 @@ public class ChatSessionFragment extends OSGiFragment
         mMHS = MessageHistoryActivator.getMessageHistoryService();
 
         mucService = MUCActivator.getMUCService();
-        mucService.addChatRoomListChangeListener(this);
+        if (mucService != null)
+            mucService.addChatRoomListChangeListener(this);
     }
 
     /**

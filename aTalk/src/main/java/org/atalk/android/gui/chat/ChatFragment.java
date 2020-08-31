@@ -169,7 +169,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     public final static int MSGTYPE_MUC_NORMAL = 0x04;
 
     /**
-     *  bit-7 is used to hide session record from the UI if set.
+     * bit-7 is used to hide session record from the UI if set.
+     *
      * @see org.atalk.android.gui.chat.chatsession.ChatSessionFragment#SESSION_HIDDEN
      */
     public final static int MSGTYPE_MASK = 0x3F;
@@ -781,6 +782,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                             boolean isSafeDel = (ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE == chatMsgType);
 
                                             // Received or Sent file is in chatHistory fileRecord
+                                            /*
+                                             * Last received file does not get updated into the FileRecord if delete performed immediately after received.
+                                            // if (isSafeDel)
+                                            //    file = ((FileHttpDownloadConversation) chatListAdapter.getFileXfer(cPos)).getXferFile();
+                                            */
                                             if (chatMsg.getFileRecord() != null) {
                                                 file = chatMsg.getFileRecord().getFile();
                                                 isSafeDel = (file.getPath().contains("/tmp/")
