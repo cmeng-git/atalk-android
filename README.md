@@ -144,7 +144,7 @@ Libraries used in this project:
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 * [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)
-* [httpmime](https://hc.apache.org/httpcomponents-client-4.5.x/)
+* [httpcore](https://hc.apache.org/httpcomponents-client-4.5.x/)
 * [ice4j](https://github.com/jitsi/ice4j)
 * [jitsi](https://github.com/jitsi/jitsi)
 * [jitsi-android](https://github.com/jitsi/jitsi-android)

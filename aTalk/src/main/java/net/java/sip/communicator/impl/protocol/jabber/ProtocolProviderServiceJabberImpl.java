@@ -66,7 +66,7 @@ import org.jivesoftware.smackx.avatar.useravatar.provider.AvatarMetadataProvider
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jivesoftware.smackx.avatar.vcardavatar.provider.VCardTempXUpdateProvider;
-import org.jivesoftware.smackx.bob.packet.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBExt;
 import org.jivesoftware.smackx.bob.provider.BoBExtensionProvider;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;

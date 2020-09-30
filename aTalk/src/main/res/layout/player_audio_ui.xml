@@ -63,6 +63,6 @@
         android:layout_below="@+id/filename_audio"
         android:layout_alignParentEnd="true"
         android:background="@drawable/ic_player_play"
-        android:src="@drawable/player_start" />
+        android:src="@drawable/ic_play_stop" />
 
 </RelativeLayout>

@@ -147,7 +147,7 @@ public class ChatActivity extends OSGiActivity
     private String currentChatId;
     // Current chatMode see ChatSessionManager ChatMode variables
     private int currentChatMode;
-    // currently not implemented
+    // Not implemented currently
     private int mCurrentChatType;
 
     private ChatPanel selectedChatPanel;

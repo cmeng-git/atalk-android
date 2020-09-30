@@ -794,10 +794,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                             }
                                             // OR in chatMsg if yet to be received
                                             else if ((file = chatListAdapter.getFileName(cPos)) == null) {
-                                                // always include any in/out "voice-" file to be deleted
                                                 file = new File(chatMsg.getMessage());
                                             }
 
+                                            // always include any in/out "voice-" file to be deleted
                                             if (file.exists() && (isSafeDel || file.getName().startsWith("voice-"))) {
                                                 msgFilesDel.add(file);
                                             }

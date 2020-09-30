@@ -52,7 +52,7 @@ public class FileBackend
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     // android-Q accessible path to apk is: /storage/emulated/0/Android/data/org.atalk.android/files
-    public static String FP_aTALK = "aTalk";
+    public static String FP_aTALK = "/aTalk";
     public static String EXPROT_DB = "EXPORT_DB";
 
     public static String MEDIA = "Media";
@@ -231,8 +231,10 @@ public class FileBackend
             filePath += File.separator + subFolder;
 
         // https://developer.android.com/reference/android/os/Environment#getExternalStorageDirectory()
+        // File atalkDLDir = aTalkApp.getGlobalContext().getExternalFilesDir(filePath);
         // File atalkDLDir = new File(Environment.getExternalStorageDirectory(), filePath);
-        File atalkDLDir = aTalkApp.getGlobalContext().getExternalFilesDir(filePath);
+        File atalkDLDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + filePath);
+
         if (createNew && !atalkDLDir.exists() && !atalkDLDir.mkdirs()) {
             Timber.e("Could not create aTalk folder: %s", atalkDLDir);
         }

@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0-rc01'
+        classpath 'com.android.tools.build:gradle:4.1.0-rc03'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -26,7 +26,7 @@ project.ext {
 
     minSdkVersion = 21
     // SDK-29+ has SSL certificate webView problem (fixed by replacing &#8226; with &bull;)
-    compileSdkVersion = 29
+    compileSdkVersion = 30
     buildToolsVersion = '29.0.2'
     supportLibraryVersion = '1.0.0'
     gmsPlayServicesVersion = '17.0.0'

@@ -24,7 +24,7 @@ public interface VersionService
 	 */
 	Version getCurrentVersion();
 
-	int getCurrentVersionCode();
+	long getCurrentVersionCode();
 
 	String getCurrentVersionName();
 

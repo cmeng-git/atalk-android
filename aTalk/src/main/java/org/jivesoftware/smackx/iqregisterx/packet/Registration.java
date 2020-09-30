@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.iqregisterx.packet;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.bob.packet.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBExt;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import java.util.Map;

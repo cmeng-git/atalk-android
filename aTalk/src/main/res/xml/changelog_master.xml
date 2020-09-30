@@ -6,8 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.4.2 (09/30/2020)" versioncode="1142">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled</change>
+        <change>Update aTalk media player UI to distinguish between pause and stop states</change>
+        <change>Upgrade Smack to version 4.4.0-beta2</change>
+        <change>Upgrade aTalk to support android-11(R) API-30</change>
+    </release>
+
     <release version="2.4.1 (08/31/2020)" versioncode="1141">
-    <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
         <change>Fix 'Unsupported path': android-Q enforces deprecated getExternalStorageDirectory() method, making it inaccessible to aTalk.</change>
     </release>
 

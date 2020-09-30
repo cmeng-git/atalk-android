@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.bob.packet;
+package org.jivesoftware.smackx.bob.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.bob.BoBData;
-import org.jivesoftware.smackx.bob.BoBHash;
+import org.jivesoftware.smackx.bob.*;
 
 import javax.xml.namespace.QName;
 
@@ -41,7 +40,7 @@ public class BoBExt implements ExtensionElement
     /**
      * The names XMPP space that the thumbnail elements belong to.
      */
-    public static final String NAMESPACE = "urn:xmpp:bob";
+    public static final String NAMESPACE = BoBManager.NAMESPACE;
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
