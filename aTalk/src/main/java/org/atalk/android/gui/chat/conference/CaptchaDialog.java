@@ -33,7 +33,7 @@ import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Body;
-import org.jivesoftware.smackx.bob.packet.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBExt;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.muc.MultiUserChat;

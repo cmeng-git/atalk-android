@@ -468,7 +468,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                                 fis.close();
                                 outputStream.flush();
                                 cipherOutputStream.close();
-                                inFile.delete();
+                                // inFile.delete();
 
                                 mXferFile = outFile;
                                 updateView(FileTransferStatusChangeEvent.COMPLETED, null);
@@ -486,6 +486,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
                         // Timber.d("Downloaded fileSize: %s (%s)", outFile.length(), fileSize);
                         previousDownloads.remove(lastDownloadId);
+                        // Remove lastDownloadId from downloadManager record and delete the tmp file
                         downloadManager.remove(lastDownloadId);
                     }
                 }
@@ -507,7 +508,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      */
     private long getJobId(String dnLink)
     {
-        for (Map.Entry entry : previousDownloads.entrySet()) {
+        for (Map.Entry<Long, String> entry : previousDownloads.entrySet()) {
             if (entry.getValue().equals(dnLink)) {
                 return (long) entry.getKey();
             }
@@ -525,7 +526,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     private static final int MAX_IDLE_TIME = 60;
 
     private boolean isProgressCheckerRunning = false;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
     private long previousProgress;
     private int waitTime;

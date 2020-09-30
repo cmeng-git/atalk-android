@@ -11,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 
 import net.java.sip.communicator.service.update.UpdateService;
@@ -53,13 +54,13 @@ public class UpdateServiceImpl implements UpdateService
      * Current installed version string
      */
     private String currentVersion;
-    private int currentVersionCode;
+    private long currentVersionCode;
 
     /**
-     * Latest version string
+     * The latest version string / version code
      */
     private String latestVersion;
-    private int latestVersionCode;
+    private long latestVersionCode;
 
     /* DownloadManager Broadcast Receiver Handler */
     private DownloadReceiver downloadReceiver = null;
@@ -109,7 +110,7 @@ public class UpdateServiceImpl implements UpdateService
                     File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
 
                     // Ask the user if he wants to install if available and valid apk is found
-                    if (apkFile.exists() && isVersionCodeValid(apkFile, latestVersionCode)) {
+                    if (isValidApkVersion(apkFile, latestVersionCode)) {
                         askInstallDownloadedApk(fileUri);
                         return;
                     }
@@ -126,7 +127,7 @@ public class UpdateServiceImpl implements UpdateService
             AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_TITLE),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_MESSAGE,
-                            latestVersion, Integer.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME)),
+                            latestVersion, Long.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME)),
                     aTalkApp.getResString(R.string.plugin_updatechecker_BUTTON_DOWNLOAD),
                     new DialogActivity.DialogListener()
                     {
@@ -149,7 +150,7 @@ public class UpdateServiceImpl implements UpdateService
             AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_NOUPDATE_TITLE),
                     aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_NOUPDATE,
-                            currentVersion, Integer.toString(currentVersionCode)));
+                            currentVersion, Long.toString(currentVersionCode)));
         }
     }
 
@@ -170,13 +171,12 @@ public class UpdateServiceImpl implements UpdateService
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
                         // Need REQUEST_INSTALL_PACKAGES in manifest; Intent.ACTION_VIEW works for both
-                        // Intent intent;
-                        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                        //   intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                        // else
-                        //   intent = new Intent(Intent.ACTION_VIEW);
+                        Intent intent;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                            intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                        else
+                            intent = new Intent(Intent.ACTION_VIEW);
 
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         intent.setDataAndType(fileUri, APK_MIME_TYPE);
@@ -253,7 +253,7 @@ public class UpdateServiceImpl implements UpdateService
                     File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
 
                     // Ask the user if he wants to install if available and valid apk is found
-                    if (apkFile.exists() && isVersionCodeValid(apkFile, latestVersionCode)) {
+                    if (isValidApkVersion(apkFile, latestVersionCode)) {
                         askInstallDownloadedApk(fileUri);
                         return;
                     }
@@ -323,17 +323,23 @@ public class UpdateServiceImpl implements UpdateService
     }
 
     /**
-     * Validate the downloaded apk file for correct versionCode
+     * Validate the downloaded apk file for correct versionCode and its apk name
      *
      * @param apkFile apk File
      * @param versionCode apk versionCode
      * @return true if apkFile has the specified versionCode
      */
-    private boolean isVersionCodeValid(File apkFile, int versionCode)
+    private boolean isValidApkVersion(File apkFile, long versionCode)
     {
-        PackageManager pm = aTalkApp.getGlobalContext().getPackageManager();
-        PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), 0);
-        return (info != null) && (versionCode == info.versionCode);
+        boolean isValid = false;
+
+        if (apkFile.exists()) {
+            PackageManager pm = aTalkApp.getGlobalContext().getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), 0);
+            isValid = (info != null) && (versionCode == info.versionCode);
+        }
+
+        return isValid;
     }
 
     /**
@@ -413,7 +419,7 @@ public class UpdateServiceImpl implements UpdateService
 
             if (mProperties != null) {
                 latestVersion = mProperties.getProperty("last_version");
-                latestVersionCode = Integer.valueOf(mProperties.getProperty("last_version_code"));
+                latestVersionCode = Long.parseLong(mProperties.getProperty("last_version_code"));
                 if (BuildConfig.DEBUG) {
                     downloadLink = mProperties.getProperty("download_link-debug");
                 }

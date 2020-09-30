@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.bob.packet.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBExt;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smack.xml.XmlPullParser;

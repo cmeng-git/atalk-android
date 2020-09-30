@@ -23,7 +23,7 @@ repositories {
 
 apply plugin: 'org.anarres.jarjar'
 
-def smackVersion = '4.4.0-beta1'
+def smackVersion = '4.4.0-beta2'
 
 def jarJarDeps = task("jarJarDeps") {
     doFirst {

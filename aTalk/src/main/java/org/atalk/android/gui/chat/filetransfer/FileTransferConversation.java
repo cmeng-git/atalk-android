@@ -756,7 +756,6 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * SeekTo player new start play position
      *
-     * @param file media file for playback
      * @param position seek time position
      */
     private void playerSeek(int position)
@@ -810,7 +809,7 @@ public abstract class FileTransferConversation extends OSGiFragment
                         messageViewHolder.playbackSeekBar.setMax(audioDuration);
                         messageViewHolder.playbackSeekBar.setProgress(0);
 
-                        messageViewHolder.playbackPlay.setImageResource(R.drawable.player_start);
+                        messageViewHolder.playbackPlay.setImageResource(R.drawable.ic_play_stop);
                         mPlayerAnimate.stop();
                         break;
 
@@ -836,8 +835,9 @@ public abstract class FileTransferConversation extends OSGiFragment
                         messageViewHolder.playbackSeekBar.setMax(audioDuration);
                         messageViewHolder.playbackSeekBar.setProgress(position);
 
-                        messageViewHolder.playbackPlay.setImageResource(R.drawable.player_start);
                         mPlayerAnimate.stop();
+                        messageViewHolder.playbackPlay.setImageResource((playerState == STATE_PAUSE)
+                                ? R.drawable.ic_play_pause : R.drawable.ic_play_stop);
                         break;
                 }
             }

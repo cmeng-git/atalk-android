@@ -171,7 +171,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
         }
 
         /**
-         * This method blocks until the dialog activity finishes it's job.
+         * This method blocks until the dialog activity finishes its job.
          */
         public void waitForResponse()
         {

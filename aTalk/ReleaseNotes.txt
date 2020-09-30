@@ -1,6 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	09/30/2020
+Version:		2.4.2 (1142)
+- Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled
+- Update aTalk media player UI to distinguish between pause and stop states
+- Upgrade Smack to version 4.4.0-beta2
+- Upgrade aTalk to support android-11(R) API-30
+
+=========================================================================
+Author:         cmeng
 Upload Date:	08/31/2020
 Version:		2.4.1 (1141)
 - Fix 'Unsupported path': android-Q enforces deprecated getExternalStorageDirectory() method, making it inaccessible to aTalk.

@@ -43,7 +43,7 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smackx.bob.packet.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBExt;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
