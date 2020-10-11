@@ -16,7 +16,6 @@
 package org.atalk.impl.neomedia.transform.fec;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 
 import java.util.HashSet;
 import java.util.Map;

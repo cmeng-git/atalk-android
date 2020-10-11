@@ -5,9 +5,11 @@
  */
 package org.atalk.android.gui.call.notification;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
@@ -18,6 +20,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.CallManager;
 
 import java.util.Iterator;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * Class runs the thread that updates call control notification.
@@ -77,7 +81,7 @@ class CtrlNotificationThread
      */
     public void start()
     {
-        this.thread = new Thread(() -> notificationLoop());
+        this.thread = new Thread(this::notificationLoop);
         thread.start();
     }
 
@@ -85,6 +89,8 @@ class CtrlNotificationThread
     {
         NotificationManager mNotificationManager
                 = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        boolean micEnabled = ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO)
+                == PackageManager.PERMISSION_GRANTED;
 
         while (run) {
             // Timber.log(TimberLog.FINER, "Running control notification thread " + hashCode());
@@ -106,7 +112,8 @@ class CtrlNotificationThread
                     : R.drawable.call_receiver_on_dark);
 
             // Update notification call mute status
-            boolean isMute = CallManager.isMute(call);
+            boolean isMute = (!micEnabled || CallManager.isMute(call));
+
             notification.contentView.setImageViewResource(R.id.button_mute,
                     isMute ? R.drawable.call_microphone_mute_dark : R.drawable.call_microphone_dark);
 

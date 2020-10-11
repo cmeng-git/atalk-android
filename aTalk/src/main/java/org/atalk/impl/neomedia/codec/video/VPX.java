@@ -64,6 +64,9 @@ public class VPX
      * Corresponds to <tt>VPX_IMG_FMT_I420</tt> from <tt>vpx/vpx_image.h</tt>
      */
     public static final int IMG_FMT_I420 = 258;
+    public static final int IMG_FMT_I422 = 231;
+    public static final int IMG_FMT_I444 = 232;
+    public static final int IMG_FMT_I440 = 233;
 
     /**
      * Variable Bitrate mode.
@@ -101,6 +104,9 @@ public class VPX
      */
     public static final int DL_REALTIME = 1;
 
+    public static final int DL_GOOD_QUALITY = 1000000;
+    public static final int DL_BEST_QUALITY = 0;
+
     /**
      * Compressed video frame packet type.
      * Corresponds to <tt>VPX_CODEC_CX_FRAME_PKT</tt> from <tt>vpx/vpx_encoder.h</tt>
@@ -110,12 +116,22 @@ public class VPX
     /**
      * Constant for VP8 decoder interface
      */
-    public static final int INTEFACE_VP8_DEC = 0;
+    public static final int INTERFACE_VP8_DEC = 0;
 
     /**
      * Constant for VP8 encoder interface
      */
     public static final int INTERFACE_VP8_ENC = 1;
+
+    /**
+     * Constant for VP9 decoder interface
+     */
+    public static final int INTERFACE_VP9_DEC = 2;
+
+    /**
+     * Constant for VP9 encoder interface
+     */
+    public static final int INTERFACE_VP9_ENC = 3;
 
     /**
      * Allocates memory for a <tt>vpx_codec_ctx_t</tt> on the heap.
@@ -763,9 +779,9 @@ public class VPX
     {
         byte[] buf = new byte[100];
         codec_err_to_string(err, buf, buf.length);
-        return new String(buf);
-    }
 
+        return new String(buf).trim(); // Remove all null characters i.e. '0'
+    }
 
     static {
         System.loadLibrary("jnvpx");

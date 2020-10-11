@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.IQ;
 
 import java.io.UnsupportedEncodingException;
@@ -33,7 +33,7 @@ public class LogoutIq extends IQ
     /**
      * XML element name of logout IQ.
      */
-    public static final String ELEMENT_NAME = "logout";
+    public static final String ELEMENT = "logout";
 
     /**
      * XML namespace of logout IQ.
@@ -67,7 +67,7 @@ public class LogoutIq extends IQ
      */
     public LogoutIq()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -93,7 +93,7 @@ public class LogoutIq extends IQ
             IQChildElementXmlStringBuilder xml)
     {
         xml.optAttribute(SESSION_ID_ATTR, sessionId);
-        if (!StringUtils.isNullOrEmpty(logoutUrl)) {
+        if (StringUtils.isNotEmpty(logoutUrl)) {
             try {
                 String encodedUrl = URLEncoder.encode(logoutUrl, "UTF-8");
                 xml.attribute(LOGOUT_URL_ATTR, encodedUrl);

@@ -9,27 +9,30 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
+import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.settings.SettingsActivity;
+import org.atalk.android.gui.settings.TimePreference;
+import org.atalk.android.gui.util.LocaleHelper;
+import org.atalk.android.gui.util.ThemeHelper;
+import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
-import org.atalk.service.resources.ResourceManagementService;
-import org.atalk.util.StringUtils;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
@@ -38,6 +41,7 @@ import org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jxmpp.jid.Jid;
 import org.osgi.framework.ServiceReference;
 
 import java.beans.PropertyChangeEvent;
@@ -85,11 +89,6 @@ public class ConfigurationUtils
     private static String mWebPage;
 
     /**
-     * The aTalk UI language
-     */
-    private static String mLanguage;
-
-    /**
      * Indicates if the call panel is shown.
      */
     private static boolean isCallPanelShown = true;
@@ -113,6 +112,11 @@ public class ConfigurationUtils
      * Indicates if aTalk will auto start on device reboot.
      */
     private static boolean isAutoStartOnBoot = true;
+
+    /**
+     * Indicates if TTS is enable.
+     */
+    private static boolean isTtsEnable = false;
 
     /**
      * Indicates if message delivery receipt should be sent.
@@ -163,6 +167,12 @@ public class ConfigurationUtils
      * Indicates if the recent messages should be shown.
      */
     private static boolean isRecentMessagesShown = true;
+
+
+    /**
+     * Initial default wait time for incoming message alert to end before start TTS
+     */
+    private static int ttsDelay = 1200;
 
     /**
      * The size of the chat history to show in chat window.
@@ -263,6 +273,12 @@ public class ConfigurationUtils
      * Indicates if the pre set status messages are enabled.
      */
     private static boolean isPresetStatusMessagesEnabled;
+
+    private static boolean isQuiteHoursEnable = true;
+    private static Long quiteHoursStart = 0L;
+    private static Long quiteHoursEnd = 0L;
+
+    private static boolean isHeadsUpEnable = true;
 
     /**
      * The last directory used in file transfer.
@@ -410,29 +426,36 @@ public class ConfigurationUtils
     /**
      * The names of the configuration properties.
      */
-    public static String pAutoStart = "gui.AUTO_START_ON_REBOOT";
-    public static String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
-    private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
-    private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
-    private static String pMessageDeliveryReceipt = "gui.SEND_MESSAGE_DELIVERY_RECEIPT";
-    private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
-    private static String pSendThumbnail = "gui.sendThumbnail";
-    private static String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
-    private static String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
-    private static String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
-    private static String pMessageHistoryShown = "gui.IS_MESSAGE_HISTORY_SHOWN";
     private static String pAcceptFileSize = "gui.AUTO_ACCEPT_FILE_SIZE";
+    private static String pAutoAnswerDisableSubmenu = "gui.AUTO_ANSWER_DISABLE_SUBMENU";
+    private static String pAutoPopupNewMessage = "gui.AUTO_POPUP_NEW_MESSAGE";
+    public static String pAutoStart = "gui.AUTO_START_ON_REBOOT";
     private static String pChatHistorySize = "gui.MESSAGE_HISTORY_SIZE";
     private static String pChatWriteAreaSize = "gui.CHAT_WRITE_AREA_SIZE";
-    private static String pTransparentWindowEnabled = "gui.IS_TRANSPARENT_WINDOW_ENABLED";
-    private static String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
-    private static String pIsWindowDecorated = "gui.IS_WINDOW_DECORATED";
-    private static String pShowStatusChangedInChat = "gui.SHOW_STATUS_CHANGED_IN_CHAT";
-    private static String pRouteVideoAndDesktopUsingPhoneNumber = "gui.ROUTE_VIDEO_AND_DESKTOP_TO_PNONENUMBER";
     private static String pHideAccountMenu = "gui.HIDE_SELECTION_ON_SINGLE_ACCOUNT";
     private static String pHideAccountStatusSelectors = "gui.HIDE_ACCOUNT_STATUS_SELECTORS";
-    private static String pAutoAnswerDisableSubmenu = "gui.AUTO_ANSWER_DISABLE_SUBMENU";
     private static String pHideExtendedAwayStatus = "protocol.globalstatus.HIDE_EXTENDED_AWAY_STATUS";
+    private static String pIsWindowDecorated = "gui.IS_WINDOW_DECORATED";
+    public static String pLanguage = aTalkApp.getResString(R.string.pref_key_locale);
+    private static String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
+    private static String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
+    private static String pMessageDeliveryReceipt = "gui.SEND_MESSAGE_DELIVERY_RECEIPT";
+    private static String pMessageHistoryShown = "gui.IS_MESSAGE_HISTORY_SHOWN";
+    private static String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
+    private static String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
+    public static String pQuiteHoursEnable = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
+    public static String pQuiteHoursStart = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
+    public static String pQuiteHoursEnd = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
+    private static String pRouteVideoAndDesktopUsingPhoneNumber = "gui.ROUTE_VIDEO_AND_DESKTOP_TO_PNONENUMBER";
+    private static String pSendThumbnail = "gui.sendThumbnail";
+    private static String pShowStatusChangedInChat = "gui.SHOW_STATUS_CHANGED_IN_CHAT";
+    private static String pTransparentWindowEnabled = "gui.IS_TRANSPARENT_WINDOW_ENABLED";
+    public static String pTTSEnable = "gui.TTS_ENABLE";
+    public static String pTTSDelay = "gui.TTS_DELAY";
+    private static String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
+    public static String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
+    private static String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
+    private static String pHeadsUpEnable = aTalkApp.getResString(R.string.pref_key_heads_up_enable);
 
     /**
      * Indicates if phone numbers should be normalized before dialed.
@@ -481,29 +504,32 @@ public class ConfigurationUtils
         configService.addPropertyChangeListener(new ConfigurationChangeListener());
         mDB = DatabaseBackend.getWritableDB();
 
+        // Init the aTalk app Theme before any activity use
+        initAppTheme();
+
         // Load the UI language last selected by user or default to system language i.e. ""
-        mLanguage = configService.getString(aTalkApp.getResString(R.string.pref_key_locale, ""));
-        aTalk.setATLanguage(mLanguage);
+        String language = configService.getString(aTalkApp.getResString(R.string.pref_key_locale), "");
+        LocaleHelper.setLanguage(language);
 
         // Load the "webPage" property.
         mWebPage = configService.getString(pWebPage);
-        if (StringUtils.isNullOrEmpty(mWebPage))
+        if (StringUtils.isEmpty(mWebPage))
             mWebPage = aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY);
 
         // Load the "auPopupNewMessage" property.
         String autoPopup = configService.getString(pAutoPopupNewMessage);
-        if (StringUtils.isNullOrEmpty(autoPopup))
+        if (StringUtils.isEmpty(autoPopup))
             autoPopup = UtilActivator.getResources().getSettingsString(pAutoPopupNewMessage);
 
-        if (!StringUtils.isNullOrEmpty(autoPopup) && autoPopup.equalsIgnoreCase("yes"))
+        if (StringUtils.isNotEmpty(autoPopup) && autoPopup.equalsIgnoreCase("yes"))
             autoPopupNewMessage = true;
 
         // Load the "sendMessageCommand" property.
         String messageCommand = configService.getString(pMsgCommand);
-        if (StringUtils.isNullOrEmpty(messageCommand))
+        if (StringUtils.isEmpty(messageCommand))
             messageCommand = UtilActivator.getResources().getSettingsString(pMsgCommand);
 
-        if (!StringUtils.isNullOrEmpty(messageCommand))
+        if (StringUtils.isNotEmpty(messageCommand))
             sendMessageCommand = messageCommand;
 
         // Load the showCallPanel property.
@@ -511,6 +537,10 @@ public class ConfigurationUtils
 
         // Load the "isAutoStartOnBoot" property.
         isAutoStartOnBoot = configService.getBoolean(pAutoStart, isAutoStartOnBoot);
+
+        // Load the "isTtsEnable" and delay property.
+        isTtsEnable = configService.getBoolean(pTTSEnable, isTtsEnable());
+        ttsDelay = configService.getInt(pTTSDelay, ttsDelay);
 
         // Load the "showOffline" property.
         isShowOffline = configService.getBoolean("gui.showOffline", isShowOffline);
@@ -526,15 +556,15 @@ public class ConfigurationUtils
 
         // Load the "sendTypingNotifications" property.
         String isSendTypingNotification = configService.getString(pTypingNotification);
-        if (StringUtils.isNullOrEmpty(isSendTypingNotification))
+        if (StringUtils.isEmpty(isSendTypingNotification))
             isSendTypingNotification = UtilActivator.getResources().getSettingsString(pTypingNotification);
 
-        if (!StringUtils.isNullOrEmpty(isSendTypingNotification))
+        if (StringUtils.isNotEmpty(isSendTypingNotification))
             isSendChatStateNotifications = Boolean.parseBoolean(isSendTypingNotification);
 
         // Load the "sendThumbnail" property.
         String sendThumbNail = configService.getString(pSendThumbnail);
-        if (!StringUtils.isNullOrEmpty(sendThumbNail)) {
+        if (StringUtils.isNotEmpty(sendThumbNail)) {
             isSendThumbnail = Boolean.parseBoolean(sendThumbNail);
             FileTransferConversation.FT_THUMBNAIL_ENABLE = isSendThumbnail;
         }
@@ -546,17 +576,17 @@ public class ConfigurationUtils
         String isMoveContactConfirmationRequestedString
                 = configService.getString("gui.isMoveContactConfirmationRequested");
 
-        if (!StringUtils.isNullOrEmpty(isMoveContactConfirmationRequestedString)) {
+        if (StringUtils.isNotEmpty(isMoveContactConfirmationRequestedString)) {
             isMoveContactConfirmationRequested = Boolean.parseBoolean(isMoveContactConfirmationRequestedString);
         }
 
         // Load the "isMultiChatWindowEnabled" property.
         String isMultiChatWindowEnabledString = configService.getString(pMultiChatWindowEnabled);
 
-        if (StringUtils.isNullOrEmpty(isMultiChatWindowEnabledString))
+        if (StringUtils.isEmpty(isMultiChatWindowEnabledString))
             isMultiChatWindowEnabledString = UtilActivator.getResources().getSettingsString(pMultiChatWindowEnabled);
 
-        if (!StringUtils.isNullOrEmpty(isMultiChatWindowEnabledString)) {
+        if (StringUtils.isNotEmpty(isMultiChatWindowEnabledString)) {
             isMultiChatWindowEnabled = Boolean.parseBoolean(isMultiChatWindowEnabledString);
         }
 
@@ -565,21 +595,21 @@ public class ConfigurationUtils
 
         // Load the "isLeaveChatroomOnWindowCloseEnabled" property.
         String isLeaveChatRoomOnWindowCloseEnabledString = configService.getString(pLeaveChatRoomOnWindowClose);
-        if (StringUtils.isNullOrEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
+        if (StringUtils.isEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
             isLeaveChatRoomOnWindowCloseEnabledString
                     = UtilActivator.getResources().getSettingsString(pLeaveChatRoomOnWindowClose);
         }
 
-        if (!StringUtils.isNullOrEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
+        if (StringUtils.isNotEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
             isLeaveChatRoomOnWindowCloseEnabled = Boolean.parseBoolean(isLeaveChatRoomOnWindowCloseEnabledString);
         }
 
         // Load the "isHistoryShown" property.
         String isHistoryShownString = configService.getString(pMessageHistoryShown);
-        if (StringUtils.isNullOrEmpty(isHistoryShownString))
+        if (StringUtils.isEmpty(isHistoryShownString))
             isHistoryShownString = UtilActivator.getResources().getSettingsString(pMessageHistoryShown);
 
-        if (!StringUtils.isNullOrEmpty(isHistoryShownString)) {
+        if (StringUtils.isNotEmpty(isHistoryShownString)) {
             isHistoryShown = Boolean.parseBoolean(isHistoryShownString);
         }
 
@@ -593,47 +623,47 @@ public class ConfigurationUtils
 
         // Load the "chatHistorySize" property.
         String chatHistorySizeString = configService.getString(pChatHistorySize);
-        if (StringUtils.isNullOrEmpty(chatHistorySizeString))
+        if (StringUtils.isEmpty(chatHistorySizeString))
             chatHistorySizeString = UtilActivator.getResources().getSettingsString(pChatHistorySize);
 
-        if (!StringUtils.isNullOrEmpty(chatHistorySizeString)) {
+        if (StringUtils.isNotEmpty(chatHistorySizeString)) {
             chatHistorySize = Integer.parseInt(chatHistorySizeString);
         }
 
         // Load the "CHAT_WRITE_AREA_SIZE" property.
         String chatWriteAreaSizeString = configService.getString(pChatWriteAreaSize);
-        if (StringUtils.isNullOrEmpty(chatWriteAreaSizeString))
+        if (StringUtils.isEmpty(chatWriteAreaSizeString))
             chatWriteAreaSizeString = UtilActivator.getResources().getSettingsString(pChatWriteAreaSize);
 
-        if (!StringUtils.isNullOrEmpty(chatWriteAreaSizeString)) {
+        if (StringUtils.isNotEmpty(chatWriteAreaSizeString)) {
             chatWriteAreaSize = Integer.parseInt(chatWriteAreaSizeString);
         }
 
         // Load the "isTransparentWindowEnabled" property.
         String isTransparentWindowEnabledString = configService.getString(pTransparentWindowEnabled);
-        if (StringUtils.isNullOrEmpty(isTransparentWindowEnabledString))
+        if (StringUtils.isEmpty(isTransparentWindowEnabledString))
             isTransparentWindowEnabledString = UtilActivator.getResources().getSettingsString(pTransparentWindowEnabled);
 
-        if (!StringUtils.isNullOrEmpty(isTransparentWindowEnabledString)) {
+        if (StringUtils.isNotEmpty(isTransparentWindowEnabledString)) {
             isTransparentWindowEnabled = Boolean.parseBoolean(isTransparentWindowEnabledString);
         }
 
         // Load the "windowTransparency" property.
         String windowTransparencyString = configService.getString(pWindowTransparency);
-        if (StringUtils.isNullOrEmpty(windowTransparencyString))
+        if (StringUtils.isEmpty(windowTransparencyString))
             windowTransparencyString = UtilActivator.getResources().getSettingsString(pWindowTransparency);
 
-        if (!StringUtils.isNullOrEmpty(windowTransparencyString)) {
+        if (StringUtils.isNotEmpty(windowTransparencyString)) {
             windowTransparency = Integer.parseInt(windowTransparencyString);
         }
 
         // Load the "isWindowDecorated" property.
         String isWindowDecoratedString = configService.getString(pIsWindowDecorated);
 
-        if (StringUtils.isNullOrEmpty(isWindowDecoratedString))
+        if (StringUtils.isEmpty(isWindowDecoratedString))
             isWindowDecoratedString = UtilActivator.getResources().getSettingsString(pIsWindowDecorated);
 
-        if (!StringUtils.isNullOrEmpty(isWindowDecoratedString)) {
+        if (StringUtils.isNotEmpty(isWindowDecoratedString)) {
             isWindowDecorated = Boolean.parseBoolean(isWindowDecoratedString);
         }
 
@@ -689,7 +719,7 @@ public class ConfigurationUtils
                 = UtilActivator.getResources().getSettingsString("gui.account.ADVANCED_CONFIG_DISABLED");
 
         boolean isAdvancedConfigDisabled = false;
-        if (!StringUtils.isNullOrEmpty(advancedConfigDisabledDefaultProp))
+        if (StringUtils.isNotEmpty(advancedConfigDisabledDefaultProp))
             isAdvancedConfigDisabled = Boolean.parseBoolean(advancedConfigDisabledDefaultProp);
 
         // Load the advanced account configuration disabled.
@@ -700,7 +730,7 @@ public class ConfigurationUtils
         String singleInterfaceEnabledProp = UtilActivator.getResources().getSettingsString(SINGLE_WINDOW_INTERFACE_ENABLED);
 
         boolean isEnabled;
-        if (!StringUtils.isNullOrEmpty(singleInterfaceEnabledProp))
+        if (StringUtils.isNotEmpty(singleInterfaceEnabledProp))
             isEnabled = Boolean.parseBoolean(singleInterfaceEnabledProp);
         else
             isEnabled = Boolean.parseBoolean(UtilActivator.getResources().getSettingsString("gui.SINGLE_WINDOW_INTERFACE"));
@@ -734,7 +764,7 @@ public class ConfigurationUtils
         String showStatusChangedInChatDefault = UtilActivator.getResources().getSettingsString(pShowStatusChangedInChat);
 
         // if there is a default value use it
-        if (!StringUtils.isNullOrEmpty(showStatusChangedInChatDefault))
+        if (StringUtils.isNotEmpty(showStatusChangedInChatDefault))
             showStatusChangedInChat = Boolean.parseBoolean(showStatusChangedInChatDefault);
 
         showStatusChangedInChat = configService.getBoolean(pShowStatusChangedInChat, showStatusChangedInChat);
@@ -742,7 +772,7 @@ public class ConfigurationUtils
         String routeVideoAndDesktopUsingPhoneNumberDefault
                 = UtilActivator.getResources().getSettingsString(pRouteVideoAndDesktopUsingPhoneNumber);
 
-        if (!StringUtils.isNullOrEmpty(routeVideoAndDesktopUsingPhoneNumberDefault))
+        if (StringUtils.isNotEmpty(routeVideoAndDesktopUsingPhoneNumberDefault))
             routeVideoAndDesktopUsingPhoneNumber = Boolean.parseBoolean(routeVideoAndDesktopUsingPhoneNumberDefault);
 
         routeVideoAndDesktopUsingPhoneNumber
@@ -750,7 +780,7 @@ public class ConfigurationUtils
 
         String hideAccountMenuDefaultValue = UtilActivator.getResources().getSettingsString(pHideAccountMenu);
 
-        if (!StringUtils.isNullOrEmpty(hideAccountMenuDefaultValue))
+        if (StringUtils.isNotEmpty(hideAccountMenuDefaultValue))
             hideAccountSelectionWhenPossible = Boolean.parseBoolean(hideAccountMenuDefaultValue);
 
         hideAccountSelectionWhenPossible = configService.getBoolean(pHideAccountMenu, hideAccountSelectionWhenPossible);
@@ -758,7 +788,7 @@ public class ConfigurationUtils
         String hideAccountsStatusDefaultValue
                 = UtilActivator.getResources().getSettingsString(pHideAccountStatusSelectors);
 
-        if (!StringUtils.isNullOrEmpty(hideAccountsStatusDefaultValue))
+        if (StringUtils.isNotEmpty(hideAccountsStatusDefaultValue))
             hideAccountStatusSelectors = Boolean.parseBoolean(hideAccountsStatusDefaultValue);
 
         hideAccountStatusSelectors = configService.getBoolean(pHideAccountStatusSelectors,
@@ -767,7 +797,7 @@ public class ConfigurationUtils
         String autoAnswerDisableSubmenuDefaultValue
                 = UtilActivator.getResources().getSettingsString(pAutoAnswerDisableSubmenu);
 
-        if (!StringUtils.isNullOrEmpty(autoAnswerDisableSubmenuDefaultValue))
+        if (StringUtils.isNotEmpty(autoAnswerDisableSubmenuDefaultValue))
             autoAnswerDisableSubmenu = Boolean.parseBoolean(autoAnswerDisableSubmenuDefaultValue);
 
         autoAnswerDisableSubmenu = configService.getBoolean(pAutoAnswerDisableSubmenu, autoAnswerDisableSubmenu);
@@ -789,13 +819,20 @@ public class ConfigurationUtils
 
         String hideExtendedAwayStatusDefaultValue = UtilActivator.getResources().getSettingsString(pHideExtendedAwayStatus);
 
-        if (!StringUtils.isNullOrEmpty(hideExtendedAwayStatusDefaultValue))
+        if (StringUtils.isNotEmpty(hideExtendedAwayStatusDefaultValue))
             hideExtendedAwayStatus = Boolean.parseBoolean(hideExtendedAwayStatusDefaultValue);
 
         hideExtendedAwayStatus = configService.getBoolean(pHideExtendedAwayStatus, hideExtendedAwayStatus);
 
         isSmsNotifyTextDisabled = configService.getBoolean(SMS_MSG_NOTIFY_TEXT_DISABLED_PROP, isSmsNotifyTextDisabled);
         showMasterPasswordWarning = configService.getBoolean(MASTER_PASS_WARNING_PROP, true);
+
+        // Quite Time settings
+        isQuiteHoursEnable = configService.getBoolean(pQuiteHoursEnable, true);
+        quiteHoursStart = configService.getLong(pQuiteHoursStart, TimePreference.DEFAULT_VALUE);
+        quiteHoursEnd = configService.getLong(pQuiteHoursEnd, TimePreference.DEFAULT_VALUE);
+
+        isHeadsUpEnable = configService.getBoolean(pHeadsUpEnable, true);
     }
 
     /**
@@ -810,7 +847,7 @@ public class ConfigurationUtils
 
         String defaultSettingStr = UtilActivator.getResources().getSettingsString(fontDisabledProp);
 
-        if (!StringUtils.isNullOrEmpty(defaultSettingStr))
+        if (StringUtils.isNotEmpty(defaultSettingStr))
             defaultValue = Boolean.parseBoolean(defaultSettingStr);
 
         return configService.getBoolean(fontDisabledProp, defaultValue);
@@ -909,6 +946,45 @@ public class ConfigurationUtils
         configService.setProperty(pAutoStart, Boolean.toString(autoStart));
     }
 
+
+    /**
+     * Return TRUE if "isTtsEnable" property is true, otherwise - return FALSE.
+     * Indicates if TTS is enabled.
+     *
+     * @return TRUE if "isTtsEnable" property is true, otherwise - return FALSE.
+     */
+    public static boolean isTtsEnable()
+    {
+        return isTtsEnable;
+    }
+
+    /**
+     * Updates the "isTtsEnable" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param ttsEnable {@code true} to enable tts option
+     */
+    public static void setTtsEnable(boolean ttsEnable)
+    {
+        isTtsEnable = ttsEnable;
+        configService.setProperty(pTTSEnable, Boolean.toString(ttsEnable));
+    }
+
+    public static int getTtsDelay()
+    {
+        return ttsDelay;
+    }
+
+    /**
+     * Updates the "isTtsEnable" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param ttsEnable {@code true} to enable tts option
+     */
+    public static void setTtsDelay(int delay)
+    {
+        ttsDelay = delay;
+        configService.setProperty(pTTSDelay, delay);
+    }
+
     /**
      * Return TRUE if "sendMessageDeliveryReceipt" property is true, otherwise - return FALSE.
      * Indicates to the user interface whether message delivery receipts are enabled or disabled.
@@ -979,6 +1055,20 @@ public class ConfigurationUtils
         isSendThumbnail = sendThumbnail;
         configService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
         FileTransferConversation.FT_THUMBNAIL_ENABLE = sendThumbnail;
+    }
+
+    /**
+     * Check to see the file size specified is autoAcceptable:
+     * 1. size > 0
+     * 2. acceptFileSize != 0 (never)
+     * 3. size <= acceptFileSize
+     *
+     * @param size current file size
+     * @return true is auto aceept to download
+     */
+    public static boolean isAutoAcceptFile(long size)
+    {
+        return (size > 0) && (acceptFileSize != 0) && (size <= acceptFileSize);
     }
 
     /**
@@ -1337,7 +1427,7 @@ public class ConfigurationUtils
      */
     public static int getChatDefaultFontSize()
     {
-        if (!StringUtils.isNullOrEmpty(defaultFontSize))
+        if (StringUtils.isNotEmpty(defaultFontSize))
             return Integer.parseInt(defaultFontSize);
         return -1;
     }
@@ -1476,8 +1566,8 @@ public class ConfigurationUtils
     public static String getWebPage()
     {
         WebViewFragment.initWebView();
-        return StringUtils.isNullOrEmpty(mWebPage, true)?
-                aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
+        return StringUtils.isBlank(mWebPage)
+                ? aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
     }
 
     /**
@@ -1487,7 +1577,7 @@ public class ConfigurationUtils
      */
     public static void setWebPage(String webPage)
     {
-        mWebPage = StringUtils.isNullOrEmpty(webPage)? webPage: webPage.trim();
+        mWebPage = StringUtils.isEmpty(webPage) ? webPage : webPage.trim();
         configService.setProperty(pWebPage, webPage);
     }
 
@@ -1592,6 +1682,105 @@ public class ConfigurationUtils
     {
         alerterEnabled = isEnabled;
         configService.setProperty(ALERTER_ENABLED_PROP, Boolean.toString(isEnabled));
+    }
+
+    public static void setQuiteHour(String property, Object value)
+    {
+        if (value instanceof Boolean) {
+            setQuiteHoursEnable(Boolean.valueOf(value.toString()));
+        }
+        else if (pQuiteHoursStart.equals(property)) {
+            setQuiteHoursStart((Long) value);
+        }
+        else {
+            setQuiteHoursEnd((Long) value);
+        }
+    }
+
+    /**
+     * Returns {@code true} if Quite Hours is enabled
+     *
+     * @return {@code true} if Quite Hours is enables, {@code false} otherwise.
+     */
+    public static boolean isQuiteHoursEnable()
+    {
+        return isQuiteHoursEnable;
+    }
+
+    /**
+     * Updates the Quite Hours property.
+     *
+     * @param isEnabled indicates whether to enable or disable quite hours.
+     */
+    public static void setQuiteHoursEnable(boolean isEnabled)
+    {
+        isQuiteHoursEnable = isEnabled;
+        configService.setProperty(pQuiteHoursEnable, Boolean.toString(isEnabled));
+    }
+
+    /**
+     * Returns Quite Hours start time.
+     *
+     * @return {@code true} get the Quite Hours start time.
+     */
+    public static long getQuiteHoursStart()
+    {
+        return quiteHoursStart;
+    }
+
+    /**
+     * Updates the Quite Hours start time
+     *
+     * @param isEnabled set the quite hours start time.
+     */
+    public static void setQuiteHoursStart(long time)
+    {
+        quiteHoursStart = time;
+        configService.setProperty(pQuiteHoursStart, time);
+    }
+
+    /**
+     * Returns Quite Hours end time.
+     *
+     * @return {@code true} get the Quite Hours end time.
+     */
+    public static long getQuiteHoursEnd()
+    {
+        return quiteHoursEnd;
+    }
+
+    /**
+     * Updates the Quite Hours end time
+     *
+     * @param isEnabled set the quite hours end time.
+     */
+    public static void setQuiteHoursEnd(long time)
+    {
+        quiteHoursEnd = time;
+        configService.setProperty(pQuiteHoursEnd, time);
+    }
+
+    /**
+     * Return TRUE if "sendChatStateNotifications" property is true, otherwise - return FALSE.
+     * Indicates to the user interface whether chat state notifications are enabled or disabled.
+     *
+     * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
+     */
+    public static boolean isHeadsUpEnable()
+    {
+        return isHeadsUpEnable;
+    }
+
+    /**
+     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     *
+     * @param sendThumbnail {@code true} to indicate that chat state notifications are enabled,
+     * {@code false} otherwise.
+     */
+    public static void setHeadsUp(boolean headsUp)
+    {
+        isHeadsUpEnable = headsUp;
+        configService.setProperty(pHeadsUpEnable, Boolean.toString(isHeadsUpEnable));
     }
 
     /**
@@ -1988,27 +2177,95 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the current language configuration.
-     *
-     * @return the current locale
+     * Initialize aTalk app Theme;default to Theme.DARK if not defined
      */
-    public static Locale getCurrentLanguage()
+    public static void initAppTheme()
     {
-        String localeId = configService.getString(ResourceManagementService.DEFAULT_LOCALE_CONFIG);
-        return (localeId != null) ? ResourceManagementServiceUtils.getLocale(localeId) : Locale.getDefault();
+        Theme theme;
+        int themeValue = configService.getInt(SettingsActivity.P_KEY_THEME, Theme.DARK.ordinal());
+        if (themeValue == Theme.DARK.ordinal() || themeValue == android.R.style.Theme) {
+            theme = Theme.DARK;
+        }
+        else {
+            theme = Theme.LIGHT;
+        }
+        ThemeHelper.setAppTheme(theme);
     }
 
     /**
-     * Sets the current language configuration.
+     * Updates the value of a contact option property through the <tt>ConfigurationService</tt>.
+     * The property-value pair is stored a JSONObject element in contact options
      *
-     * @param locale the locale to set
+     * @param contactJid the identifier/BareJid of the contact table to update
+     * @param property the property name in the contact options
+     * @param value the value of the contact options property if null, property will be removed
      */
-    public static void setLanguage(Locale locale)
+    public static void updateContactProperty(Jid contactJid, String property, String value)
     {
-        String language = locale.getLanguage();
-        String country = locale.getCountry();
-        configService.setProperty(ResourceManagementService.DEFAULT_LOCALE_CONFIG,
-                (country.length() > 0) ? (language + '_' + country) : language);
+        JSONObject options = getContactOptions(contactJid);
+        try {
+            if (value == null)
+                options.remove(property);
+            else
+                options.put(property, value);
+        } catch (JSONException e) {
+            Timber.w("Contact property update failed: %s: %s", contactJid, property);
+        }
+
+        String[] args = {contactJid.toString()};
+        contentValues.clear();
+        contentValues.put(Contact.OPTIONS, options.toString());
+
+        mDB.update(Contact.TABLE_NAME, contentValues, Contact.CONTACT_JID + "=?", args);
+    }
+
+    /**
+     * Returns the contact options, saved via the <tt>ConfigurationService</tt>.
+     *
+     * @param contactJid the identifier/BareJid of the contact table to retrieve
+     * @param property the property name in the contact options
+     * @return the value of the contact options property, saved via the <tt>ConfigurationService</tt>.
+     */
+    public static String getContactProperty(Jid contactJid, String property)
+    {
+        JSONObject options = getContactOptions(contactJid);
+        try {
+            return options.getString(property);
+        } catch (JSONException e) {
+            // Timber.w("ChatRoom property not found for: " + chatRoomId + ": " + property);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the options saved in <tt>ConfigurationService</tt> associated with the <tt>Contact</tt>.
+     *
+     * @param contactJid the identifier/BareJid of the contact table to update
+     * @return the contact options saved in <tt>ConfigurationService</tt>.
+     */
+    private static JSONObject getContactOptions(Jid contactJid)
+    {
+        // mDB is null when access during restoring process
+        if (mDB == null)
+            mDB = DatabaseBackend.getWritableDB();
+
+        String[] columns = {Contact.OPTIONS};
+        String[] args = {contactJid.asBareJid().toString()};
+
+        Cursor cursor = mDB.query(Contact.TABLE_NAME, columns, Contact.CONTACT_JID + "=?", args,
+                null, null, null);
+
+        JSONObject options = new JSONObject();
+        while (cursor.moveToNext()) {
+            String value = cursor.getString(0);
+            try {
+                options = new JSONObject(value == null ? "" : value);
+            } catch (JSONException e) {
+                options = new JSONObject();
+            }
+        }
+        cursor.close();
+        return options;
     }
 
     /**
@@ -2081,7 +2338,7 @@ public class ConfigurationUtils
     public static void updateChatRoomStatus(ProtocolProviderService protocolProvider,
             String chatRoomId, String chatRoomStatus)
     {
-        updateChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.LAST_CHAT_ROOM_STATUS, chatRoomStatus);
+        updateChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.CHATROOM_LAST_STATUS, chatRoomStatus);
     }
 
     /**
@@ -2093,7 +2350,7 @@ public class ConfigurationUtils
      */
     public static String getChatRoomStatus(ProtocolProviderService protocolProvider, String chatRoomId)
     {
-        return getChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.LAST_CHAT_ROOM_STATUS);
+        return getChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.CHATROOM_LAST_STATUS);
     }
 
     /**
@@ -2141,7 +2398,7 @@ public class ConfigurationUtils
         try {
             return attributes.getString(property);
         } catch (JSONException e) {
-            // Timber.i("ChatRoom property not found for: " + chatRoomId + ": " + property);
+            // Timber.w("ChatRoom property not found for: " + chatRoomId + ": " + property);
         }
         return null;
     }
@@ -2197,7 +2454,7 @@ public class ConfigurationUtils
         MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
         String sessionUuid = mhs.getSessionUuidByJid(accountID, chatRoomID);
 
-        if (StringUtils.isNullOrEmpty(sessionUuid)) {
+        if (StringUtils.isEmpty(sessionUuid)) {
             Timber.w("Failed to get MUC prefix for chatRoom: %s", chatRoomID);
             return null;
         }
@@ -2419,7 +2676,7 @@ public class ConfigurationUtils
     public static String[] getEnabledSslProtocols()
     {
         String enabledSslProtocols = configService.getString("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
-        if (StringUtils.isNullOrEmpty(enabledSslProtocols, true)) {
+        if (StringUtils.isBlank(enabledSslProtocols)) {
             SSLSocket temp;
             try {
                 temp = (SSLSocket) SSLSocketFactory.getDefault().createSocket();
@@ -2530,7 +2787,9 @@ public class ConfigurationUtils
                 ServiceDiscoveryManager discoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
 
                 OperationSetContactCapabilitiesJabberImpl.setOperationSetChatStateFeatures(isChatStateEnable);
-                MetaContactChatTransport.setChatStateSupport(isChatStateEnable);
+                // cmeng: not required for both?
+                // MetaContactChatTransport.setChatStateSupport(isChatStateEnable);
+                // ConferenceChatTransport.setChatStateSupport(isChatStateEnable);
 
                 if (isChatStateEnable) {
                     discoveryManager.addFeature(ChatStateManager.NAMESPACE);
@@ -2540,5 +2799,25 @@ public class ConfigurationUtils
                 }
             }
         }
+    }
+
+    // ====================== Function use when aTalk app is not fully initialize e.g. init UI language =======================
+    // Note: aTalkApp get initialize much earlier than ConfigurationUtils
+
+    private static SQLiteConfigurationStore sqlStore = new SQLiteConfigurationStore(aTalkApp.getInstance());
+
+    /**
+     * Direct fetching of the property from SQLiteConfigurationStore on system startup
+     *
+     * @param propertyName of the value to retrieve
+     * @param defValue default value to use
+     * @return the retrieve value
+     */
+    public static String getProperty(String propertyName, String defValue)
+    {
+        Object objValue = sqlStore.getProperty(propertyName);
+        return (objValue == null)
+                ? defValue
+                : objValue.toString();
     }
 }

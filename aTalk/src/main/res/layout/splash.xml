@@ -30,15 +30,14 @@
         android:textColor="#ffff" />
 
     <TextView
-        android:id="@+id/restoring"
+        android:id="@+id/stateInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/clickable_toast_bg"
         android:layout_marginTop="@dimen/between_padding"
         android:padding="@dimen/between_padding"
-        android:text="@string/service_gui_RESTORING"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:visibility="invisible"/>
+        style="@style/LargeFont"
+        android:textColor="@color/textColorWhite"
+        android:text="@string/service_gui_WAITING" />
 
     <ProgressBar
         android:id="@+id/actionbar_progress"

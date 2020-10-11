@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:background="@color/theme_background"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding">
 
@@ -71,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="5dp">
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/password"
@@ -79,39 +78,29 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/password_label" />
+            android:text="@string/service_gui_PASSWORD" />
 
         <RelativeLayout
             android:id="@+id/pwdTypingArea"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/passwordField"
                 style="@style/EntryTextView"
                 android:layout_width="match_parent"
-                android:layout_marginBottom="@dimen/between_padding"
                 android:hint="@string/password"
                 android:inputType="textPassword" />
 
             <CheckBox
                 android:id="@+id/show_password"
+                android:button="@drawable/checkbox_password_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@id/passwordField"
-                android:layout_alignRight="@+id/passwordField" />
-
-            <ImageView
-                android:id="@+id/pwdviewImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/show_password"
-                android:layout_alignLeft="@id/show_password"
-                android:layout_alignStart="@id/show_password"
-                android:alpha="0.3"
-                android:src="@drawable/pwdview" />
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -127,7 +116,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="@string/service_gui_CHAT_ROOM" />
+            android:text="@string/service_gui_CHATROOM" />
 
         <CheckBox
             android:id="@+id/cb_bookmark"
@@ -149,8 +138,7 @@
 
     <Spinner
         android:id="@+id/chatRoom_Spinner"
-        style="@style/SpinnerView"
-        android:layout_width="match_parent" />
+        style="@style/SpinnerView" />
 
     <LinearLayout
         android:layout_width="match_parent"

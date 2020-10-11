@@ -1,11 +1,7 @@
 package org.atalk.android.gui.call.telephony;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
-import android.content.Loader;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,12 +18,16 @@ import com.tokenautocomplete.TokenCompleteTextView;
 
 import org.apache.james.mime4j.util.CharsetUtil;
 import org.atalk.android.R;
+import org.atalk.android.gui.aTalk;
 
 import java.io.*;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.app.LoaderManager.LoaderCallbacks;
+import androidx.loader.content.Loader;
 import timber.log.Timber;
 
 public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectView.Recipient>
@@ -83,10 +83,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
         setLongClickable(true);
 
         // cmeng - must init loaderManager in initView to take care of screen rotation
-        if (getContext() instanceof Activity) {
-            Activity activity = (Activity) getContext();
-            loaderManager = activity.getLoaderManager();
-        }
+        loaderManager = LoaderManager.getInstance(aTalk.getFragment(aTalk.CL_FRAGMENT));
     }
 
     @Override
@@ -227,13 +224,13 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     }
 
     @Override
-    protected void performFiltering(@NonNull CharSequence text, int start, int end, int keyCode)
+    protected void performFiltering(@NonNull CharSequence text, int keyCode)
     {
         if (loaderManager == null) {
             return;
         }
 
-        String query = text.subSequence(start, end).toString();
+        String query = text.toString();
         if (TextUtils.isEmpty(query) || query.length() < MINIMUM_LENGTH_FOR_FILTERING) {
             loaderManager.destroyLoader(LOADER_ID_FILTERING);
             return;
@@ -259,7 +256,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     public void addRecipients(Recipient... recipients)
     {
         for (Recipient recipient : recipients) {
-            addObject(recipient);
+            addObjectSync(recipient);
         }
     }
 
@@ -289,7 +286,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
 
     public void postShowAlternatesPopup(final List<Recipient> data)
     {
-        // We delay this call so the soft keyboard is gone by the time the popup is layouted
+        // We delay this call so the soft keyboard is gone by the time the popup is layout
         new Handler().post(() -> showAlternatesPopup(data));
     }
 
@@ -405,7 +402,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     public void onRecipientRemove(Recipient currentRecipient)
     {
         alternatesPopup.dismiss();
-        removeObject(currentRecipient);
+        removeObjectSync(currentRecipient);
     }
 
     @Override
@@ -448,7 +445,7 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
             return null;
         }
         View tokenView = getViewForObject(obj);
-        return new RecipientTokenSpan(tokenView, obj, (int) maxTextWidth());
+        return new RecipientTokenSpan(tokenView, obj);
     }
 
     /**
@@ -490,9 +487,9 @@ public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectVi
     {
         private final View view;
 
-        public RecipientTokenSpan(View view, Recipient recipient, int token)
+        public RecipientTokenSpan(View view, Recipient token)
         {
-            super(view, recipient, token);
+            super(view, token);
             this.view = view;
         }
     }

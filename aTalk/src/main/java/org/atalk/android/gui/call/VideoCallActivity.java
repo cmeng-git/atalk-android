@@ -5,8 +5,10 @@
  */
 package org.atalk.android.gui.call;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -23,16 +25,20 @@ import net.java.sip.communicator.util.call.CallPeerAdapter;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.notification.CallControl;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.controller.AutoHideController;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
+import org.atalk.impl.neomedia.transform.sdes.SDesControlImpl;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.util.MediaType;
 import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
@@ -40,10 +46,9 @@ import java.beans.PropertyChangeListener;
 import java.util.EventObject;
 import java.util.Iterator;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.*;
 import timber.log.Timber;
-
-import static androidx.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /**
  * The <tt>VideoCallActivity</tt> corresponds the call screen.
@@ -155,6 +160,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private boolean dtmfEnabled = true;
 
+    private boolean micEnabled;
+
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
@@ -167,12 +174,22 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_video_audio);
-        this.callIdentifier = getIntent().getExtras().getString(CallManager.CALL_IDENTIFIER);
 
-        call = CallManager.getActiveCall(callIdentifier);
-        if (call == null) {
-            Timber.e("There's no call with id: %s", callIdentifier);
-            return;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        );
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            this.callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
+
+            call = CallManager.getActiveCall(callIdentifier);
+            if (call == null) {
+                Timber.e("There's no call with id: %s", callIdentifier);
+                return;
+            }
         }
         // Registers as the call state listener
         call.addCallChangeListener(this);
@@ -190,6 +207,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         microphoneButton = findViewById(R.id.button_call_microphone);
         microphoneButton.setOnClickListener(this);
         microphoneButton.setOnLongClickListener(this);
+        micEnabled = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                == PackageManager.PERMISSION_GRANTED;
 
         findViewById(R.id.button_call_hold).setOnClickListener(this);
         findViewById(R.id.button_call_hangup).setOnClickListener(this);
@@ -293,6 +312,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             }
             return;
         }
+
         doUpdateHoldStatus();
         doUpdateMuteStatus();
         updateSpeakerphoneStatus();
@@ -417,7 +437,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 break;
 
             case R.id.button_call_microphone:
-                CallManager.setMute(call, !isMuted());
+                if (micEnabled)
+                    CallManager.setMute(call, !isMuted());
                 break;
 
             case R.id.button_call_hold:
@@ -428,11 +449,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
             case R.id.button_call_hangup:
                 // Start the hang up Thread, Activity will be closed later on call ended event
-                if (call != null)
+                if (call != null) {
                     CallManager.hangupCall(call);
-                    // if call thread is null, then just exit the activity
-                else
+                }
+                // if call thread is null, then just exit the activity
+                else {
                     finish();
+                }
                 break;
 
             case R.id.security_group:
@@ -463,8 +486,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
             // Create and show the mic gain control dialog.
             case R.id.button_call_microphone:
-                newFragment = VolumeControlDialog.createInputVolCtrlDialog();
-                newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                if (micEnabled) {
+                    newFragment = VolumeControlDialog.createInputVolCtrlDialog();
+                    newFragment.show(getSupportFragmentManager(), "vol_ctrl_dialog");
+                }
                 return true;
         }
         return false;
@@ -503,7 +528,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private void doUpdateMuteStatus()
     {
-        if (isMuted()) {
+        if (!micEnabled || isMuted()) {
             microphoneButton.setImageResource(R.drawable.call_microphone_mute_dark);
             microphoneButton.setBackgroundColor(0x50000000);
         }
@@ -516,8 +541,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * {@inheritDoc}
      */
+    @SuppressLint("RestrictedApi")
     @Override
-    // @SuppressLint("RestrictedApi")
     public boolean dispatchKeyEvent(KeyEvent event)
     {
         /*
@@ -791,8 +816,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void showZrtpInfoDialog()
     {
-        ZrtpInfoDialog zrtpInfo = ZrtpInfoDialog.newInstance(
-                getIntent().getStringExtra(CallManager.CALL_IDENTIFIER));
+        ZrtpInfoDialog zrtpInfo = ZrtpInfoDialog.newInstance(getIntent().getStringExtra(CallManager.CALL_IDENTIFIER));
         zrtpInfo.show(getSupportFragmentManager(), "zrtpinfo");
     }
 
@@ -983,6 +1007,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         boolean isSecure = false;
         boolean isVerified = false;
         ZrtpControl zrtpCtrl = null;
+        SrtpControlType srtpControlType = SrtpControlType.NULL;
 
         Iterator<? extends CallPeer> callPeers = call.getCallPeers();
         if (callPeers.hasNext()) {
@@ -990,21 +1015,30 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             if (cpCandidate instanceof MediaAwareCallPeer<?, ?, ?>) {
                 MediaAwareCallPeer<?, ?, ?> mediaAwarePeer = (MediaAwareCallPeer<?, ?, ?>) cpCandidate;
                 SrtpControl srtpCtrl = mediaAwarePeer.getMediaHandler().getEncryptionMethod(MediaType.AUDIO);
-                isSecure = srtpCtrl != null && srtpCtrl.getSecureCommunicationStatus();
+                isSecure = (srtpCtrl != null) && srtpCtrl.getSecureCommunicationStatus();
 
                 if (srtpCtrl instanceof ZrtpControl) {
+                    srtpControlType = SrtpControlType.ZRTP;
                     zrtpCtrl = (ZrtpControl) srtpCtrl;
                     isVerified = zrtpCtrl.isSecurityVerified();
                 }
-                else {
+                else if (srtpCtrl instanceof SDesControl) {
+                    srtpControlType = SrtpControlType.SDES;
+                    isVerified = true;
+                }
+                else if (srtpCtrl instanceof DtlsControl) {
+                    srtpControlType = SrtpControlType.DTLS_SRTP;
                     isVerified = true;
                 }
             }
         }
-        // Protocol name label
-        ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.security_protocol,
-                zrtpCtrl != null ? "zrtp" : "");
+
+        // Update padLock status and protocol name label (only if in secure mode) 
         doUpdatePadlockStatus(isSecure, isVerified);
+        if (isSecure) {
+            ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.security_protocol,
+                    srtpControlType.toString());
+        }
     }
 
     /**
@@ -1108,22 +1142,35 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         runOnUiThread(() -> {
             SrtpControl srtpCtrl = evt.getSecurityController();
+            boolean isVerified = false;
             ZrtpControl zrtpControl = null;
+            SrtpControlType srtpControlType = SrtpControlType.NULL;
+
             if (srtpCtrl instanceof ZrtpControl) {
+                srtpControlType = SrtpControlType.ZRTP;
                 zrtpControl = (ZrtpControl) srtpCtrl;
+
+                isVerified = zrtpControl.isSecurityVerified();
+                if (!isVerified) {
+                    String toastMsg = getString(R.string.service_gui_security_VERIFY_TOAST);
+                    sasToastController.showToast(false, toastMsg);
+                }
             }
-
-            boolean isVerified = zrtpControl != null && zrtpControl.isSecurityVerified();
-            doUpdatePadlockStatus(zrtpControl != null, isVerified);
-
-            // Protocol name label
-            ViewUtil.setTextViewValue(findViewById(android.R.id.content),
-                    R.id.security_protocol, zrtpControl != null ? "zrtp" : "sdes");
-
-            if (!isVerified && zrtpControl != null) {
-                String toastMsg = getString(R.string.service_gui_security_VERIFY_TOAST);
-                sasToastController.showToast(false, toastMsg);
+            else if (srtpCtrl instanceof SDesControlImpl) {
+                srtpControlType = SrtpControlType.SDES;
+                isVerified = true;
             }
+            else if (srtpCtrl instanceof DtlsControl) {
+                srtpControlType = SrtpControlType.DTLS_SRTP;
+                isVerified = true;
+            }
+            // Timber.d("SRTP Secure: %s = %s", isVerified, srtpControlType.toString());
+
+            // Update both secure padLock status and protocol name
+            doUpdatePadlockStatus(true, isVerified);
+            ViewUtil.setTextViewValue(findViewById(android.R.id.content), R.id.security_protocol,
+                    srtpControlType.toString());
+
         });
     }
 

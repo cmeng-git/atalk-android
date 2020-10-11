@@ -7,9 +7,9 @@
         android:id="@+id/scroller"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dip"
-        android:background="@color/theme_background"
-        android:fadingEdgeLength="5dip"
+        android:layout_marginTop="16dp"
+        android:background="?attr/colorBackground"
+        android:fadingEdgeLength="5dp"
         android:scrollbars="none">
 
         <LinearLayout
@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dip" />
+            android:padding="10dp" />
     </ScrollView>
 
     <ImageView
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/scroller"
-        android:layout_marginTop="-4dip"
+        android:layout_marginTop="-4dp"
         android:src="@drawable/arrow_down_light" />
 
 </RelativeLayout>

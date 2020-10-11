@@ -21,25 +21,25 @@ public interface ChatMessage
 {
     /* DB database column  fields */
     String TABLE_NAME = "messages";
-    String UUID = "uuid";
+    String UUID = "uuid";   // msg Unique identification in database (deletion Id)
     String SESSION_UUID = "chatSessionUuid"; // chatSession Uuid
     String TIME_STAMP = "timeStamp"; // TimeStamp
-    String ENTITY_JID = "entityJid"; // contactJid or chatRoomJid (nick)
-    String JID = "Jid";                // chatRoom member FullJid
-    String MSG_BODY = "msgBody";    // message content
-    String ENC_TYPE = "encType";    // see Message for the ENCRYPTION_xxx & MASK definitions
-    String MSG_TYPE = "msgType";    // as defined in below * message type *
-    String DIRECTION = "direction"; // in or out
-    String STATUS = "status";        // see STATUS_xxx
-    String FILE_PATH = "filePath";  // filepath
-    String FINGERPRINT = "OmemoFingerprint";    // rx fingerPrint
-    String STEALTH_TIMER = "stealthTimer";        // stealth timer
+    String ENTITY_JID = "entityJid"; // nick (muc); contact BareJid (others)
+    String JID = "Jid";              // chatRoom member: contact FullJid (msg out); user BareJid (msg in)
+    String MSG_BODY = "msgBody";     // message content
+    String ENC_TYPE = "encType";     // see IMessage for the ENCRYPTION_xxx & MASK definitions
+    String MSG_TYPE = "msgType";     // as defined in below * message type *
+    String DIRECTION = "direction";  // in or out
+    String STATUS = "status";        // Use by FileTransferStatusChangeEvent and FileRecord STATUS_xxx
+    String FILE_PATH = "filePath";   // filepath
+    String FINGERPRINT = "OmemoFingerprint"; // rx fingerPrint
+    String STEALTH_TIMER = "stealthTimer";   // stealth timer
     String CARBON = "carbon";
-    String READ = "read";        // read status
-    String OOB = "oob";            // 0
+    String READ = "read";            // read status
+    String OOB = "oob";              // 0
     String ERROR_MSG = "errorMsg";
-    String SERVER_MSG_ID = "serverMsgId";  // muc msg id???
-    String REMOTE_MSG_ID = "remoteMsgId";  // thread?
+    String SERVER_MSG_ID = "serverMsgId";    // chat msg Id - message out
+    String REMOTE_MSG_ID = "remoteMsgId";    // chat msg Id - message in
 
     String ME_COMMAND = "/me ";
 
@@ -47,19 +47,9 @@ public interface ChatMessage
      * @see ChatMessage defined constant below
      */
 
-    /* chat message status */
+    /* chat message or File transfer status - see FileRecord.STATUS_XXX */
     int STATUS_SEND = 0;
     int STATUS_RECEIVED = 1;
-
-    /* File transfer status */
-    int STATUS_COMPLETED = 10;   // completed
-    int STATUS_FAILED = 11;      // failed
-    int STATUS_CANCELED = 12;    // canceled
-    int STATUS_REFUSED = 13;     // refused
-    int STATUS_ACTIVE = 14;      // active
-    int STATUS_PREPARING = 15;   // preparing
-    int STATUS_IN_PROGRESS = 16; // in_progress
-
     int STATUS_DELETE = 99;  // to be deleted
 
     /* READ - message delivery status: Do not change the order, values used in MergedMessage */
@@ -192,18 +182,28 @@ public interface ChatMessage
     int MESSAGE_MUC_IN = 81;
 
     /**
-     * Returns the name of the contact sending the message.
+     * The display name of the message sender.
      *
-     * @return the name of the contact sending the message.
+     * Returns the string Id of the message sender.
+     * Actual value is pending on message type i.e.:
+     * a. userId: swordfish@atalk.org
+     * b. contactId: leopard@atalk.org
+     * c. chatRoom: conference@atalk.org
+     * d. nickName: leopard
+     *
+     * Exception as recipient:
+     * contactId: ChatMessage.MESSAGE_FILE_TRANSFER_SEND & ChatMessage.MESSAGE_STICKER_SEND:
+     *
+     * @return the string id of the message sender.
      */
-    String getContactName();
+    String getSender();
 
     /**
-     * Returns the display name of the contact sending the message.
+     * Returns the display name of the message sender.
      *
-     * @return the display name of the contact sending the message
+     * @return the display name of the message sender
      */
-    String getContactDisplayName();
+    String getSenderName();
 
     /**
      * Returns the date and time of the message.
@@ -241,6 +241,13 @@ public interface ChatMessage
     int getEncryptionType();
 
     /**
+     * Returns the HttpFileDownload file xfer status
+     *
+     * @return the HttpFileDownload file transfer status
+     */
+    int getXferStatus();
+
+    /**
      * Returns the message delivery receipt status
      *
      * @return the receipt status
@@ -276,8 +283,8 @@ public interface ChatMessage
     String getCorrectedMessageUID();
 
     /**
-     * Indicates if given <tt>nextMsg</tt> is a consecutive message or if the <tt>nextMsg</tt> is a replacement for this
-     * message.
+     * Indicates if given <tt>nextMsg</tt> is a consecutive message or if the <tt>nextMsg</tt>
+     * is a replacement for this message.
      *
      * @param nextMsg the next message to check
      * @return <tt>true</tt> if the given message is a consecutive or replacement message, <tt>false</tt> - otherwise
@@ -285,11 +292,11 @@ public interface ChatMessage
     boolean isConsecutiveMessage(ChatMessage nextMsg);
 
     /**
-     * Merges given message. If given message is consecutive to this one, then their contents will be merged. If given
-     * message is a replacement message for <tt>this</tt> one, then the replacement will be returned.
+     * Merges given message. If given message is consecutive to this one, then their contents will be merged.
+     * If given message is a replacement message for <tt>this</tt> one, then the replacement will be returned.
      *
-     * @param consecutiveMessage the next message to merge with <tt>this</tt> instance(it must be consecutive in terms of
-     * <tt>isConsecutiveMessage</tt> method).
+     * @param consecutiveMessage the next message to merge with <tt>this</tt> instance
+     * (it must be consecutive in terms of <tt>isConsecutiveMessage</tt> method).
      * @return merge operation result that should be used instead of this <tt>ChatMessage</tt> instance.
      */
     ChatMessage mergeMessage(ChatMessage consecutiveMessage);

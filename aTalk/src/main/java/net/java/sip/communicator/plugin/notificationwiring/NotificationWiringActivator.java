@@ -29,6 +29,23 @@ public class NotificationWiringActivator implements BundleActivator
     private static UIService uiService = null;
     private static MediaService mediaService;
 
+    public void start(BundleContext bc)
+            throws Exception
+    {
+        bundleContext = bc;
+        // Get the notification service implementation
+        ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
+        notificationService = (NotificationService) bundleContext.getService(notifReference);
+        new NotificationManager().init();
+        Timber.d("Notification wiring plugin ...[REGISTERED]");
+    }
+
+    public void stop(BundleContext bc)
+            throws Exception
+    {
+        Timber.d("Notification handler Service ...[STOPPED]");
+    }
+
     /**
      * Returns the <tt>NotificationService</tt> obtained from the bundle context.
      *
@@ -76,22 +93,5 @@ public class NotificationWiringActivator implements BundleActivator
             mediaService = ServiceUtils.getService(bundleContext, MediaService.class);
         }
         return mediaService;
-    }
-
-    public void start(BundleContext bc)
-            throws Exception
-    {
-        bundleContext = bc;
-        // Get the notification service implementation
-        ServiceReference notifReference = bundleContext.getServiceReference(NotificationService.class.getName());
-        notificationService = (NotificationService) bundleContext.getService(notifReference);
-        new NotificationManager().init();
-        Timber.i("Notification wiring plugin ...[REGISTERED]");
-    }
-
-    public void stop(BundleContext bc)
-            throws Exception
-    {
-        Timber.i("Notification handler Service ...[STOPPED]");
     }
 }

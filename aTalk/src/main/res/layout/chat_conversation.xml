@@ -17,7 +17,7 @@
     <LinearLayout
         android:id="@+id/chatStateView"
         android:layout_width="match_parent"
-        android:layout_height="20dip"
+        android:layout_height="20dp"
         android:layout_gravity="center"
         android:layout_margin="0dp"
         android:orientation="horizontal"
@@ -35,9 +35,8 @@
         <ImageView
             android:id="@+id/chatStateImageView"
             android:layout_width="wrap_content"
-            android:layout_height="0dip"
+            android:layout_height="0dp"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="@dimen/chat_text_margin"
             android:layout_marginStart="@dimen/chat_text_margin"
             android:src="@drawable/chat_state_drawable" />
     </LinearLayout>

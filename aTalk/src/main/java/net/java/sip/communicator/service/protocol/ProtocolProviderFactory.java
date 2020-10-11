@@ -28,6 +28,7 @@ import timber.log.Timber;
  * @author Emil Ivov
  * @author Lubomir Marinov
  * @author Eng Chong Meng
+ * @author MilanKral 
  */
 public abstract class ProtocolProviderFactory
 {
@@ -131,6 +132,16 @@ public abstract class ProtocolProviderFactory
      * Indicates if Proxy should be used.
      */
     public static final String IS_USE_PROXY = "PROXY_ENABLED";
+
+    /**
+     * Configures the URL which is to be used with BOSH transport.
+     */
+    public static final String BOSH_URL = "BOSH_URL";
+
+    /**
+     * Indicates HTTP proxy is enabled with BOSH protocol. Only HTTP proxy is allowwed with BOSH
+     */
+    public static final String BOSH_PROXY_HTTP_ENABLED = "BOSH_PROXY_HTTP_ENABLED";
 
     /**
      * The name of the property under which we store the the type of the proxy stored against the
@@ -389,6 +400,11 @@ public abstract class ProtocolProviderFactory
     public static final String STUN_PASSWORD = "PASSWORD";
 
     /**
+     * The base property name for protocol of additional STUN servers specified.
+     */
+    public static final String STUN_TURN_PROTOCOL = "TURN_PROTOCOL";
+
+    /**
      * The base property name for the turn supported property of additional STUN servers specified.
      */
     public static final String STUN_IS_TURN_SUPPORTED = "IS_TURN_SUPPORTED";
@@ -413,6 +429,11 @@ public abstract class ProtocolProviderFactory
      * used, if available and supported, for conference calls.
      */
     public static final String USE_JITSI_VIDEO_BRIDGE = "USE_JITSI_VIDEO_BRIDGE";
+
+    /**
+     * Minimum TLS protocol version.
+     */
+    public static final String MINUMUM_TLS_VERSION = "MINUMUM_TLS_VERSION";
 
     /**
      * Indicates if we allow non-TLS connection.
@@ -570,6 +591,11 @@ public abstract class ProtocolProviderFactory
      * The name of the property that defines the enabled/disabled state of message carbons.
      */
     public static final String IS_CARBON_DISABLED = "CARBON_DISABLED";
+
+    /**
+     * The name of the property that stores salt value for ZID computation.
+     */
+    public static final String ZID_SALT = "ZID_SALT";
 
     /**
      * Creates a new <tt>ProtocolProviderFactory</tt>.
@@ -802,8 +828,7 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Saves the password for the specified account after scrambling it a bit so that it is not
-     * visible from first sight. (The method remains highly insecure).
+     * Saves the dnssec Mode for the specified account.
      *
      * @param accountID the AccountID for the account whose password we're storing
      * @param dnssecMode see DNSSEC_MODE definition
@@ -1129,7 +1154,7 @@ public abstract class ProtocolProviderFactory
      *
      * @return <tt>AccountManager</tt> of the protocol
      */
-    private AccountManager getAccountManager()
+    public AccountManager getAccountManager()
     {
         BundleContext bundleContext = getBundleContext();
         ServiceReference<AccountManager> serviceReference = bundleContext.getServiceReference(AccountManager.class);

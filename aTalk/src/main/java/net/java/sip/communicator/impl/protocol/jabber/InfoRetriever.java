@@ -83,8 +83,8 @@ public class InfoRetriever
         List<GenericDetail> details = getUserDetails(uin);
         List<GenericDetail> result = new LinkedList<>();
 
-        // stop further retrieve from server if the details is empty to prevent ANR when return from Account Settings
-        if (details.isEmpty()) {
+        // stop further retrieve from server if details is null or empty to prevent ANR when return from Account Settings
+        if ((details == null) || details.isEmpty()) {
             retrievedDetails.put(uin, result);
         }
         else {
@@ -132,6 +132,8 @@ public class InfoRetriever
      */
     protected synchronized List<GenericDetail> retrieveDetails(BareJid bareJid)
     {
+        Timber.w(new Exception("Retrieve Details (debug-ignore): " + bareJid.toString()));
+
         List<GenericDetail> result = new LinkedList<>();
         XMPPConnection connection = jabberProvider.getConnection();
         if (connection == null || !connection.isAuthenticated())
@@ -140,7 +142,7 @@ public class InfoRetriever
         // Set the timeout to wait before considering vCard has time out - too long field ANR - use default instead
         // connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
 
-        Timber.i("Start loading VCard information for: %s", bareJid);
+        Timber.d("Start loading VCard information for: %s", bareJid);
         VCardAvatarManager vCardAvatarManager = VCardAvatarManager.getInstanceFor(connection);
         VCard card = vCardAvatarManager.downloadVCard(bareJid);
 
@@ -154,7 +156,7 @@ public class InfoRetriever
             return result;
         }
 
-        String msg = "Unable to load details for contact " + bareJid + " exception: ";
+        String errMessage = "Unable to load details for contact " + bareJid + "; Exception: ";
         String tmp;
         tmp = checkForFullName(card);
         if (tmp != null)
@@ -189,7 +191,7 @@ public class InfoRetriever
                     DateFormat dateFormatShort = new SimpleDateFormat(BDAY_FORMAT_SHORT, Locale.US);
                     birthDate = dateFormatShort.parse(tmp);
                 } catch (ParseException e) {
-                    Timber.w("%s %s",msg, ex.getMessage());
+                    Timber.w("%s %s",errMessage, ex.getMessage());
                 }
             }
 
@@ -337,7 +339,7 @@ public class InfoRetriever
                 result.add(new URLDetail("URL", new URL(tmp)));
         } catch (MalformedURLException ex) {
             result.add(new URLDetail("URL", tmp));
-            Timber.w("%s %s", msg, ex.getMessage());
+            Timber.w("%s %s", errMessage, ex.getMessage());
         }
 
         retrievedDetails.put(bareJid, result);

@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 /**
  * A implementation of a {@link ExtensionElement} for the jitsi-meet "stats-id" element.
  *
@@ -35,7 +37,9 @@ public class StatsId implements ExtensionElement
 {
     public static final String NAMESPACE = "jabber:client";
 
-    public static final String ELEMENT_NAME = "stats-id";
+    public static final String ELEMENT = "stats-id";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private String statsId = null;
 
@@ -74,7 +78,7 @@ public class StatsId implements ExtensionElement
      */
     public String getElementName()
     {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     /**
@@ -91,11 +95,9 @@ public class StatsId implements ExtensionElement
      * Returns xml representation of this extension.
      * @return xml representation of this extension.
      */
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        return new XmlStringBuilder()
-            .element(ELEMENT_NAME, getStatsId())
-            .toString();
+        return new XmlStringBuilder().element(ELEMENT, getStatsId());
     }
 
     /**

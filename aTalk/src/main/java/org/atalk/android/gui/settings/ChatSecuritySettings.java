@@ -11,10 +11,10 @@ import android.preference.PreferenceScreen;
 
 import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.PreferenceUtil;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.osgi.OSGiActivity;
@@ -70,7 +70,7 @@ public class ChatSecuritySettings extends OSGiActivity
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(org.atalk.android.R.xml.security_preferences);
+            addPreferencesFromResource(R.xml.security_preferences);
         }
 
         /**
@@ -81,7 +81,7 @@ public class ChatSecuritySettings extends OSGiActivity
         {
             super.onStart();
 
-            mConfig = AndroidGUIActivator.getConfigurationService();
+            mConfig = UtilActivator.getConfigurationService();
             OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
             PreferenceScreen screen = getPreferenceScreen();
             PreferenceUtil.setCheckboxVal(screen, P_KEY_CRYPTO_ENABLE, otrPolicy.getEnableManual());

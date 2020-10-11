@@ -23,10 +23,10 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            android:background="@color/white"
+            android:background="@color/background_light"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/personphoto" />
+            android:src="@drawable/person_photo" />
 
         <ImageView
             android:id="@+id/presenceStatusIcon"
@@ -89,7 +89,7 @@
                     android:id="@+id/ci_DisplayNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -111,7 +111,7 @@
                     android:id="@+id/ci_FirstNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -133,7 +133,7 @@
                     android:id="@+id/ci_MiddleNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -155,7 +155,7 @@
                     android:id="@+id/ci_LastNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -177,7 +177,7 @@
                     android:id="@+id/ci_NickNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -199,7 +199,7 @@
                     android:id="@+id/ci_URLField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -221,7 +221,7 @@
                     android:id="@+id/ci_GenderField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -244,7 +244,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -266,7 +266,7 @@
                     android:id="@+id/ci_AgeField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -288,7 +288,7 @@
                     android:id="@+id/ci_StreetAddressField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -310,7 +310,7 @@
                     android:id="@+id/ci_CityField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -332,7 +332,7 @@
                     android:id="@+id/ci_RegionField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -354,7 +354,7 @@
                     android:id="@+id/ci_PostalCodeField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -376,7 +376,7 @@
                     android:id="@+id/ci_CountryField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -398,7 +398,7 @@
                     android:id="@+id/ci_EMailField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -420,7 +420,7 @@
                     android:id="@+id/ci_WorkEmailField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -442,7 +442,7 @@
                     android:id="@+id/ci_PhoneField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -464,7 +464,7 @@
                     android:id="@+id/ci_WorkPhoneField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -486,7 +486,7 @@
                     android:id="@+id/ci_MobilePhoneField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -508,7 +508,7 @@
                     android:id="@+id/ci_OrganizationNameField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout
@@ -530,7 +530,7 @@
                     android:id="@+id/ci_JobTitleField"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/plugin_contactinfo_NOT_SPECIFIED" />
+                    android:text="@string/service_gui_INFO_NOT_SPECIFIED" />
             </LinearLayout>
 
             <LinearLayout

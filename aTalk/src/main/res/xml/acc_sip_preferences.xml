@@ -53,9 +53,9 @@
                     android:title="@string/service_gui_SIP_AUTH_NAME"
                     />
                 <ListPreference
-                    android:dialogTitle="@string/service_gui_SIP_TLS_CERT_PROMPT"
+                    android:dialogTitle="@string/service_gui_TLS_CERT_PROMPT"
                     android:key="@string/pref_key_client_tls_cert"
-                    android:title="@string/service_gui_SIP_TLS_CERT"
+                    android:title="@string/service_gui_TLS_CERT"
                     />
                 <ListPreference
                     android:dialogTitle="@string/service_gui_SIP_DTMF_TITLE"

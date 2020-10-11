@@ -29,8 +29,6 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.MigrationTo2;
 import org.atalk.service.fileaccess.FileCategory;
@@ -86,36 +84,20 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * @param createListener listener for contact group created event that will receive newly created instance of
      * the contact group or <tt>null</tt> in case user cancels the dialog.
      */
-    public static void showCreateGroupDialog(Activity parent,
-            EventListener<ProtocolProviderService> createListener)
+    public void show(Activity parent)
     {
         DialogActivity.showCustomDialog(parent,
                 parent.getString(R.string.service_gui_REFRESH_STORES),
                 ServerPersistentStoresRefreshDialog.class.getName(), null,
                 parent.getString(R.string.service_gui_REFRESH_APPLY),
-                new DialogListenerImpl(createListener), null);
+                new DialogListenerImpl(), null);
     }
 
     /**
      * Implements <tt>DialogActivity.DialogListener</tt> interface and handles refresh stores process.
      */
-    static class DialogListenerImpl implements DialogActivity.DialogListener
+    class DialogListenerImpl implements DialogActivity.DialogListener
     {
-        /**
-         * Contact created event listener.
-         */
-        private final EventListener<ProtocolProviderService> listener;
-
-        /**
-         * Creates new instance of <tt>DialogListenerImpl</tt>.
-         *
-         * @param createListener create group listener if any.
-         */
-        private DialogListenerImpl(EventListener<ProtocolProviderService> createListener)
-        {
-            this.listener = createListener;
-        }
-
         @Override
         public boolean onConfirmClicked(DialogActivity dialog)
         {
@@ -156,17 +138,6 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
             return true;
         }
 
-        /**
-         * Shows given error message as an alert.
-         *
-         * @param errorMessage the error message to show.
-         */
-        private void showErrorMessage(String errorMessage)
-        {
-            Context ctx = aTalkApp.getGlobalContext();
-            AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errorMessage);
-        }
-
         @Override
         public void onDialogCancelled(DialogActivity dialog)
         {
@@ -177,7 +148,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to refresh roster store for each registered account
      * Persistent Store for XEP-0237:Roster Versioning
      */
-    private static void refreshRosterStore()
+    private void refreshRosterStore()
     {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : ppServices) {
@@ -188,7 +159,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                 try {
                     FileBackend.deleteRecursive(rosterStoreDirectory);
                 } catch (IOException e) {
-                    Timber.e("Failed to purchase store for: %s",  R.string.service_gui_REFRESH_STORES_ROSTER);
+                    Timber.e("Failed to purchase store for: %s", R.string.service_gui_REFRESH_STORES_ROSTER);
                 }
                 jabberProvider.initRosterStore();
             }
@@ -199,7 +170,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to refresh the single Entity Capabilities store for all accounts
      * Persistent Store for XEP-0115:Entity Capabilities
      */
-    private static void refreshCapsStore()
+    private void refreshCapsStore()
     {
         // stop roster from accessing the store
         EntityCapsManager.setPersistentCache(null);
@@ -220,7 +191,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to refresh Disco#info store for each accounts
      * Persistent Store for XEP-0030:Service Discovery
      */
-    private static void refreshDiscoInfoStore()
+    private void refreshDiscoInfoStore()
     {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : ppServices) {
@@ -254,7 +225,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to clear the VCard Avatar Index and purge persistent storage for all accounts
      * XEP-0153: vCard-Based Avatars
      */
-    private static void purgeAvatarStorage()
+    private void purgeAvatarStorage()
     {
         VCardAvatarManager.clearPersistentStorage();
     }
@@ -263,7 +234,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to purge persistent storage for OMEMO_Store
      * XEP-0384: OMEMO Encryption
      */
-    public static void purgeOmemoStorage()
+    private void purgeOmemoStorage()
     {
         // accountID omemo key attributes
         String JSONKEY_REGISTRATION_ID = "omemoRegId";
@@ -285,7 +256,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         else {
             String OMEMO_Store = "OMEMO_Store";
             File omemoDir = new File(ctx.getFilesDir(), OMEMO_Store);
-            if ((omemoDir != null) && omemoDir.exists()) {
+            if (omemoDir.exists()) {
                 try {
                     FileBackend.deleteRecursive(omemoDir);
                 } catch (IOException e) {
@@ -304,7 +275,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         Timber.i("### Omemo store has been refreshed!");
     }
 
-    private static void exportDB()
+    private void exportDB()
     {
         String clFileName = "contactlist.xml";
         String OMEMO_Store = "OMEMO_Store";
@@ -321,7 +292,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         File appOmemoDir = new File(appFilesDir, OMEMO_Store);
         File appXmlFP = new File(appRootDir, clFileName);
 
-        File atalkExportDir = FileBackend.getaTalkStore(FileBackend.EXPROT_DB);
+        File atalkExportDir = FileBackend.getaTalkStore(FileBackend.EXPROT_DB, true);
         try {
             // Clean up old contents before create new
             FileBackend.deleteRecursive(atalkExportDir);
@@ -348,6 +319,10 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         }
     }
 
+    /**
+     * Warn: Delete the aTalk dataBase
+     * Static access from other module
+     */
     public static void deleteDB()
     {
         Context ctx = aTalkApp.getGlobalContext();
@@ -356,6 +331,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
 
     /**
      * Process to purge all debug log files in case it gets too large to handle
+     * Static access from other module
      */
     public static void purgeDebugLog()
     {

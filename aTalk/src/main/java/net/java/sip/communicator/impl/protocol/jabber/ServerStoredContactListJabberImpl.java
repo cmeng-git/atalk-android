@@ -8,17 +8,17 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl.ContactChangesListener;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.customavatar.CustomAvatarService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.jivesoftware.smack.SmackException.*;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.packet.*;
@@ -74,7 +74,7 @@ public class ServerStoredContactListJabberImpl
     /**
      * The provider that is on top of us.
      */
-    private final ProtocolProviderServiceJabberImpl jabberProvider;
+    private final ProtocolProviderServiceJabberImpl mPPS;
 
     /**
      * For multiple accounts support, RootGroup can be owned by any of pps at instance to add contact
@@ -133,8 +133,8 @@ public class ServerStoredContactListJabberImpl
     /**
      * Creates a ServerStoredContactList wrapper for the specified BuddyList.
      *
-     * @param parentOperationSet the operation set that created us and that we could use for dispatching subscription
-     * events
+     * @param parentOperationSet the operation set that created us and
+     * that we could use for dispatching subscription events
      * @param provider the provider that has instantiated us.
      * @param infoRetriever retrieve contact information.
      */
@@ -144,13 +144,13 @@ public class ServerStoredContactListJabberImpl
         // We need to init these as early as possible to ensure that the provider and the
         // operationsSet would not be null in the incoming events.
         this.parentOperationSet = parentOperationSet;
-        this.jabberProvider = provider;
-        this.rootGroup = new RootContactGroupJabberImpl(this.jabberProvider);
+        this.mPPS = provider;
+        this.rootGroup = new RootContactGroupJabberImpl(this.mPPS);
         this.infoRetriever = infoRetriever;
     }
 
     /**
-     * Returns the root group of the contact list.
+     * Returns the base of the root group i.e. ContactGroup.
      *
      * @return the root ContactGroup for the ContactList
      */
@@ -160,8 +160,8 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
-     * Returns the roster entry associated with the given XMPP address or <tt>null</tt> if the user
-     * is not an entry in the roster.
+     * Returns the roster entry associated with the given XMPP address or
+     * <tt>null</tt> if the user is not an entry in the roster.
      *
      * @param userJid the XMPP address of the user (e.g. "jsmith@example.com"). The address could be in any
      * valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
@@ -215,9 +215,10 @@ public class ServerStoredContactListJabberImpl
      * the source group has been removed, changed, renamed or whatever happened to it.
      *
      * @param group the ContactGroup that has been created/modified/removed
+     * i.e. RootContactGroupJabberImpl or ContactGroupJabberImpl
      * @param eventID the id of the event to generate.
      */
-    private void fireGroupEvent(ContactGroupJabberImpl group, int eventID)
+    private void fireGroupEvent(ContactGroup group, int eventID)
     {
         // bail out if no one's listening
         if (parentOperationSet == null) {
@@ -226,8 +227,7 @@ public class ServerStoredContactListJabberImpl
         }
 
         ServerStoredGroupEvent evt = new ServerStoredGroupEvent(group, eventID,
-                parentOperationSet.getServerStoredContactListRoot(), jabberProvider, parentOperationSet);
-
+                parentOperationSet.getServerStoredContactListRoot(), mPPS, parentOperationSet);
         Timber.log(TimberLog.FINER, "Will dispatch the following grp event: %s", evt);
 
         Iterable<ServerStoredGroupListener> listeners;
@@ -308,25 +308,24 @@ public class ServerStoredContactListJabberImpl
      */
     ProtocolProviderServiceJabberImpl getParentProvider()
     {
-        return jabberProvider;
+        return mPPS;
     }
 
     /**
      * Returns the ContactGroup with the specified name or null if no such group was found.
      *
-     * @param name the name of the group we're looking for.
-     * @return a reference to the ContactGroupJabberImpl instance we're looking for or null if no
-     * such group was found.
+     * @param groupName the name of the group we're looking for.
+     * @return a reference to the ContactGroupJabberImpl instance we're looking for or null if no such group was found.
      */
-    public ContactGroupJabberImpl findContactGroup(String name)
+    public ContactGroupJabberImpl findContactGroup(String groupName)
     {
-        Iterator<ContactGroup> contactGroups = rootGroup.subgroups();
-
         // make sure we ignore any whitespaces
-        name = name.trim();
+        groupName = groupName.trim();
+
+        Iterator<ContactGroup> contactGroups = rootGroup.subgroups();
         while (contactGroups.hasNext()) {
             ContactGroupJabberImpl contactGroup = (ContactGroupJabberImpl) contactGroups.next();
-            if (contactGroup.getGroupName().trim().equals(name))
+            if (contactGroup.getGroupName().trim().equals(groupName))
                 return contactGroup;
         }
         return null;
@@ -335,18 +334,18 @@ public class ServerStoredContactListJabberImpl
     /**
      * Find a group with the specified Copy of Name. Used to track when a group name has changed
      *
-     * @param name String
-     * @return ContactGroupJabberImpl
+     * @param groupName String
+     * @return a reference to the ContactGroup instance we're looking for or null if no such group was found.
      */
-    private ContactGroupJabberImpl findContactGroupByNameCopy(String name)
+    private ContactGroupJabberImpl findContactGroupByNameCopy(String groupName)
     {
-        Iterator<ContactGroup> contactGroups = rootGroup.subgroups();
-
         // make sure we ignore any whitespaces
-        name = name.trim();
+        groupName = groupName.trim();
+
+        Iterator<ContactGroup> contactGroups = rootGroup.subgroups();
         while (contactGroups.hasNext()) {
             ContactGroupJabberImpl contactGroup = (ContactGroupJabberImpl) contactGroups.next();
-            if ((contactGroup.getNameCopy() != null) && contactGroup.getNameCopy().trim().equals(name))
+            if ((contactGroup.getNameCopy() != null) && contactGroup.getNameCopy().trim().equals(groupName))
                 return contactGroup;
         }
         return null;
@@ -355,38 +354,39 @@ public class ServerStoredContactListJabberImpl
     /**
      * Returns the Contact with the specified id or null if no such id was found.
      *
-     * @param id the contactJid of the contact to find.
+     * @param id the contactJid of the contact to find (BareJid in actual search).
      * @return the <tt>Contact</tt> carrying the specified <tt>screenName</tt> or <tt>null</tt> if
      * no such contact exits.
      */
     public ContactJabberImpl findContactById(Jid id)
     {
+        if (id == null)
+            return null;
+
         Iterator<ContactGroup> contactGroups = rootGroup.subgroups();
-        ContactJabberImpl result;
-        BareJid userId = id.asBareJid();
+        ContactJabberImpl contact;
 
         while (contactGroups.hasNext()) {
             ContactGroupJabberImpl contactGroup = (ContactGroupJabberImpl) contactGroups.next();
-
-            result = contactGroup.findContact(userId);
-            if (result != null)
-                return result;
+            contact = contactGroup.findContact(id);
+            if (contact != null)
+                return contact;
         }
 
         // check for private contacts
         ContactGroupJabberImpl volatileGroup = getNonPersistentGroup();
         if (volatileGroup != null) {
-            result = volatileGroup.findContact(id);
-            if (result != null)
-                return result;
+            contact = volatileGroup.findContact(id);
+            if (contact != null)
+                return contact;
         }
-        // try the root group now
-        return rootGroup.findContact(userId);
+
+        // try the root group for non-group contact
+        return rootGroup.findContact(id);
     }
 
     /**
-     * Returns the ContactGroup containing the specified contact or null if no such group or
-     * contact exist.
+     * Returns the ContactGroup containing the specified contact or null if no such group or contact exist.
      *
      * @param child the contact whose parent group we're looking for.
      * @return the <tt>ContactGroup</tt> containing the specified <tt>contact</tt> or <tt>null</tt>
@@ -403,8 +403,11 @@ public class ServerStoredContactListJabberImpl
             if (contactGroup.findContact(contactJid) != null)
                 return contactGroup;
         }
+
+        // try the root group for non-grouped contact
         if (rootGroup.findContact(contactJid) != null)
             return rootGroup;
+
         return null;
     }
 
@@ -439,14 +442,20 @@ public class ServerStoredContactListJabberImpl
 
         // if the contact is already in the contact list and is not volatile, then only broadcast an event
         // Should also check new owner against existing old owner, not just bareJid.
-        String accountUuid;
-        if (parent != null && parent == getRootGroup()) {
-            accountUuid = rootGroupPPS.getAccountID().getAccountUuid();
+        String accountUuid = null;
+        String mcGroupName = null;
+        String[] parentNames = null;
+        if (parent != null) {
+            mcGroupName = parent.getGroupName();
+
+            if (parent == getRootGroup()) {
+                accountUuid = rootGroupPPS.getAccountID().getAccountUuid();
+            }
+            else {
+                accountUuid = parent.getProtocolProvider().getAccountID().getAccountUuid();
+                parentNames = new String[]{mcGroupName};
+            }
         }
-        else {
-            accountUuid = parent.getProtocolProvider().getAccountID().getAccountUuid();
-        }
-        String mcGroupName = parent.getGroupName();
 
         String[] args = {accountUuid, mcGroupName, contactJid.toString()};
         SQLiteDatabase mDB = DatabaseBackend.getWritableDB();
@@ -462,35 +471,24 @@ public class ServerStoredContactListJabberImpl
         }
         cursor.close();
 
-        String[] parentNames = null;
-        if (parent != getRootGroup()) {
-            parentNames = new String[]{parent.getGroupName()};
-        }
+        // @see <a href="https://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
+        xmppConnection.addPresenceInterceptor(presenceBuilder -> {
+            Presence presence = presenceBuilder.build();
+            if (presence.getTo().isParentOf(contactJid)) {
+                Nick nicknameExt = new Nick(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS));
+                presenceBuilder.addExtension(nicknameExt);
 
-        // @see <a href="http://xmpp.org/extensions/xep-0172.html">XEP-0172: User Nickname</a>
-        StanzaListener stanzaInterceptor = new StanzaListener()
-        {
-            @Override
-            public void processStanza(Stanza stanza)
-            {
-                Presence presence = (Presence) stanza;
-                if ((presence.getType() == Presence.Type.subscribe) && presence.getTo().isParentOf(contactJid)) {
-                    Nick nicknameExt
-                            = new Nick(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(jabberProvider));
-                    presence.addExtension(nicknameExt);
-
-                    // cmeng - End the listener once job is completed - otherwise receive multiple triggers.
-                    xmppConnection.removeStanzaInterceptor(this);
-                }
+                // cmeng - End the listener once job is completed
+                // xmppConnection.removePresenceInterceptor(this);
             }
-        };
-        xmppConnection.addStanzaInterceptor(stanzaInterceptor, PresenceTypeFilter.SUBSCRIBE);
+            Timber.w("Presence subscribe for: %s", contactJid);
+        }, PresenceTypeFilter.SUBSCRIBE::accept);
 
         /* Creates a new roster entry and presence subscription. The server will asynchronously
          * update the roster with the subscription status.
          */
         try {
-            mRoster.createEntry(contactJid, contactJid.toString(), parentNames);
+            mRoster.createItemAndRequestSubscription(contactJid, contactJid.toString(), parentNames);
         } catch (XMPPErrorException ex) {
             String errTxt = "Error adding new jabber roster entry";
             Timber.e(ex, "%s", errTxt);
@@ -526,6 +524,7 @@ public class ServerStoredContactListJabberImpl
      */
     ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact, String displayName)
     {
+        // Timber.w(new Exception(), "Create volatile contact: %s (%s)", id, displayName);
         VolatileContactJabberImpl newVolatileContact
                 = new VolatileContactJabberImpl(id, this, isPrivateMessagingContact, displayName);
 
@@ -534,8 +533,7 @@ public class ServerStoredContactListJabberImpl
 
         // if the parent group is null then add necessary to create the group
         if (theVolatileGroup == null) {
-            theVolatileGroup = new VolatileContactGroupJabberImpl(
-                    aTalkApp.getResString(R.string.service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME), this);
+            theVolatileGroup = new VolatileContactGroupJabberImpl(ContactGroup.VOLATILE_GROUP, this);
 
             theVolatileGroup.addContact(newVolatileContact);
             this.rootGroup.addSubGroup(theVolatileGroup);
@@ -552,8 +550,7 @@ public class ServerStoredContactListJabberImpl
      * Checks if the contact address is associated with private messaging contact or not.
      *
      * @param contactJid the address of the contact.
-     * @return <tt>true</tt> the contact address is associated with private messaging contact and
-     * <tt>false</tt> if not.
+     * @return <tt>true</tt> the contact address is associated with private messaging contact and <tt>false</tt> if not.
      */
     public boolean isPrivateMessagingContact(Jid contactJid)
     {
@@ -561,7 +558,7 @@ public class ServerStoredContactListJabberImpl
         if (theVolatileGroup == null)
             return false;
         ContactJabberImpl contact = theVolatileGroup.findContact(contactJid);
-        if ((contact == null) || !(contact instanceof VolatileContactJabberImpl))
+        if (!(contact instanceof VolatileContactJabberImpl))
             return false;
         return ((VolatileContactJabberImpl) contact).isPrivateMessagingContact();
     }
@@ -620,8 +617,8 @@ public class ServerStoredContactListJabberImpl
      * Creates the specified group on the server stored contact list.
      *
      * @param groupName a String containing the name of the new group.
-     * @throws OperationFailedException with code CONTACT_GROUP_ALREADY_EXISTS if the group we're trying to create is already
-     * in our contact list.
+     * @throws OperationFailedException with code CONTACT_GROUP_ALREADY_EXISTS if the group we're trying
+     * to create is already in our contact list.
      */
     public void createGroup(String groupName)
             throws OperationFailedException
@@ -637,7 +634,7 @@ public class ServerStoredContactListJabberImpl
 
         RosterGroup newRosterGroup = mRoster.createGroup(groupName);
         ContactGroupJabberImpl newGroup = new ContactGroupJabberImpl(newRosterGroup,
-                new ArrayList<RosterEntry>().iterator(), this, true);
+                Collections.emptyIterator(), this, true);
         rootGroup.addSubGroup(newGroup);
 
         fireGroupEvent(newGroup, ServerStoredGroupEvent.GROUP_CREATED_EVENT);
@@ -684,7 +681,13 @@ public class ServerStoredContactListJabberImpl
     void removeContact(ContactJabberImpl contactToRemove)
             throws OperationFailedException
     {
-        if (contactToRemove instanceof VolatileContactJabberImpl) {
+        // Allow direct removal of any VolatileContactJabberImpl if it is not DomainBareJid
+        if (contactToRemove.getJid() instanceof DomainBareJid)
+            return;
+
+        // aTalk implementation is ContactGroup.VOLATILE_GROUP is equivalent to "VolatileContactJabberImpl"
+        if ((contactToRemove instanceof VolatileContactJabberImpl) || ((contactToRemove.getParentContactGroup() != null)
+                && ContactGroup.VOLATILE_GROUP.equals(contactToRemove.getParentContactGroup().getGroupName()))) {
             contactDeleted(contactToRemove);
             return;
         }
@@ -763,10 +766,10 @@ public class ServerStoredContactListJabberImpl
 
         // create the entry with the new group so it can be removed from other groups if any.
         // modify our reply timeout because some XMPP may send "result" IQ late (> 5 seconds).
-        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
+        xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_30);
 
         try {
-            mRoster.createEntry(contact.getSourceEntry().getJid(), contact.getDisplayName(),
+            mRoster.createItemAndRequestSubscription(contact.getSourceEntry().getJid(), contact.getDisplayName(),
                     new String[]{newParent.getGroupName()});
             newParent.addContact(contact);
         } catch (XMPPException ex) {
@@ -774,10 +777,9 @@ public class ServerStoredContactListJabberImpl
             throw new OperationFailedException(ex.getMessage(), OperationFailedException.GENERAL_ERROR, ex);
         } catch (NotLoggedInException | NoResponseException | NotConnectedException | InterruptedException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             // Reset to default
-            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         }
     }
 
@@ -785,9 +787,11 @@ public class ServerStoredContactListJabberImpl
      * Sets a reference to the currently active and valid instance of roster that this list is to
      * be used for retrieving server stored information
      */
-    void init(OperationSetPersistentPresenceJabberImpl.ContactChangesListener presenceChangeListener)
+    void init(ContactChangesListener presenceChangeListener)
     {
-        xmppConnection = jabberProvider.getConnection();
+        // FFR: v2.1.6 Huawei nova 3i/Y9 prime (HWINE) android-9, xmppConnection == null
+        // This may be called when PPS is not-registered ???? called at RegistrationState.REGISTERED state
+        xmppConnection = mPPS.getConnection();
         mRoster = Roster.getInstanceFor(xmppConnection);
 
         initRoster();
@@ -808,6 +812,7 @@ public class ServerStoredContactListJabberImpl
         presenceChangeListener.processStoredEvents();
 
         rosterChangeListener = new ChangeListener();
+        // v2.2.2. mRoster => NPE
         mRoster.addRosterListener(rosterChangeListener);
     }
 
@@ -831,11 +836,13 @@ public class ServerStoredContactListJabberImpl
         }
         // Send <presence/> only we do not have OperationSetPersistentPresence feature, which are
         // more readily to support <Presence/> sending with <photo/> tag
-        else if (jabberProvider.getOperationSet(OperationSetPersistentPresence.class) == null) {
+        else if (mPPS.getOperationSet(OperationSetPersistentPresence.class) == null) {
+            Timber.w("Smack sending presence without OpSetPP support!");
             try {
-                Timber.w("Smack sending presence without OpSetPP support!");
-                Presence presence = new Presence(Presence.Type.available);
-                getParentProvider().getConnection().sendStanza(presence);
+                XMPPConnection connection = mPPS.getConnection();
+                PresenceBuilder presenceBuilder = connection.getStanzaFactory().buildPresenceStanza()
+                        .ofType(Presence.Type.available);
+                connection.sendStanza(presenceBuilder.build());
             } catch (NotConnectedException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -877,9 +884,9 @@ public class ServerStoredContactListJabberImpl
             for (RosterEntry item : mRoster.getUnfiledEntries()) {
                 ContactJabberImpl contact = findContactById(item.getJid());
 
-                // some services automatically add contacts from their address book to the roster
-                // and those contacts are with subscription none. If such already exist, remove
-                // them. This is typically our own contact
+                // some services automatically add contacts from their address book to the roster,
+                // and those contacts are with subscription none. If such already exist, remove them.
+                // This is typically our own contact
                 if (!isEntryDisplayable(item)) {
                     if (contact != null) {
                         ContactGroup parent = contact.getParentContactGroup();
@@ -957,15 +964,16 @@ public class ServerStoredContactListJabberImpl
             // group can be RootContactGroupJabberImpl or ContactGroupJabberImpl
             ContactGroupJabberImpl group = (ContactGroupJabberImpl) iterGroups.next();
 
-            // skip non persistent groups
-            if (!group.isPersistent())
+            // cmeng: all current aTalk groups are set to be persistent including volatileGroup (domainJid);
+            // Need to skip further checking to avoid removal on isResolved == false
+            // so invalid to skip non persistent groups if (!group.isPersistent())
+            if (ContactGroup.VOLATILE_GROUP.equals(group.getGroupName()))
                 continue;
 
             // cmeng - Must not remove root group in new SQLite database implementation.
             // Need special check here as all ContactGroups have been casted to
             // ContactGroupJabberImpl including RootContactGroupJabberImpl
-            if (!ContactGroup.ROOT_PROTO_GROUP_UID.equals(group.getGroupName())
-                    && !group.isResolved()) {
+            if (!ContactGroup.ROOT_PROTO_GROUP_UID.equals(group.getGroupName()) && !group.isResolved()) {
                 groupsToRemove.add(group);
             }
 
@@ -1015,15 +1023,15 @@ public class ServerStoredContactListJabberImpl
 
     /**
      * Returns the volatile group that we use when creating volatile contacts.
+     * VolatileGroup is now set to persistent to save to DB
      *
      * @return ContactGroupJabberImpl
      */
     ContactGroupJabberImpl getNonPersistentGroup()
     {
-        String groupName = aTalkApp.getResString(R.string.service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME);
         for (int i = 0; i < getRootGroup().countSubgroups(); i++) {
             ContactGroupJabberImpl gr = (ContactGroupJabberImpl) getRootGroup().getGroup(i);
-            if (!gr.isPersistent() && gr.getGroupName().equals(groupName))
+            if (ContactGroup.VOLATILE_GROUP.equals(gr.getGroupName()))
                 return gr;
         }
         return null;
@@ -1043,9 +1051,8 @@ public class ServerStoredContactListJabberImpl
             return;
         }
 
-        // if we are already registered (roster != null) and we are currently creating the contact
-        // list, presences maybe already received before we have created the contacts, so lets
-        // check
+        // if we are already registered (roster != null), and we are currently creating the contact list,
+        // presences maybe already received before we have created the contacts, so let's check
         if (mRoster != null) {
             parentOperationSet.firePresenceStatusChanged(mRoster.getPresence(contact.getJid().asBareJid()));
         }
@@ -1057,7 +1064,7 @@ public class ServerStoredContactListJabberImpl
     /**
      * Make the parent persistent presence operation set dispatch a contact resolved event.
      *
-     * @param parentGroup the group that the resolved contact belongs to.
+     * @param parentGroup the group the resolved contact belongs to.
      * @param contact the contact that was resolved
      */
     public void fireContactResolved(ContactGroup parentGroup, ContactJabberImpl contact)
@@ -1099,6 +1106,14 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
+     * @param enable if set enable the retrieval of avatar from server if null
+     */
+    public void setRetrieveOnStart(boolean enable)
+    {
+        infoRetrieveOnStart = enable;
+    }
+
+    /**
      * Some roster entries are not supposed to be seen. Like some services automatically add
      * contacts from their address book to the roster and those contacts are with subscription none.
      * Best practices in XEP-0162.
@@ -1116,7 +1131,7 @@ public class ServerStoredContactListJabberImpl
         }
         // cmeng = entry in rootGroup does not have group attribute ???
         else if ((entry.getType() == none || entry.getType() == from)
-                && (entry.isSubscriptionPending() || ((entry.getGroups() != null) && entry.getGroups().size() > 0))) {
+                && (entry.isSubscriptionPending() || entry.getGroups().size() > 0)) {
             return true;
         }
         return false;
@@ -1141,7 +1156,7 @@ public class ServerStoredContactListJabberImpl
             // remove the contact from parent group
             groupImpl.removeContact(contact);
 
-            // Remove groupImpl from rootGroup if empty and it is not the rootGroup.
+            // Remove groupImpl from rootGroup if it is empty list and it is not the rootGroup.
             // This deleted group will also be removed from server if empty
             if ((groupImpl.countContacts() == 0) && (groupImpl != getRootGroup())) {
                 rootGroup.removeSubGroup(groupImpl);
@@ -1159,18 +1174,18 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
-     * Receives changes in roster.
+     * Receive changes in the roster.
      */
     private class ChangeListener implements RosterListener
     {
         /**
-         * Received event when entry is added to the server stored list
+         * Received an event when entry is added to the server stored list
          *
-         * @param addresses Collection
+         * @param addresses Collection of contact Jid
          */
         public void entriesAdded(Collection<Jid> addresses)
         {
-            Timber.log(TimberLog.FINER, "entriesAdded %s", addresses);
+            Timber.log(TimberLog.FINER, "entries Added %s", addresses);
 
             for (Jid id : addresses) {
                 addEntryToContactList(id);
@@ -1204,7 +1219,7 @@ public class ServerStoredContactListJabberImpl
                 }
                 else if (contact instanceof VolatileContactJabberImpl) {
                     ContactGroup oldParentGroup = contact.getParentContactGroup();
-                    // if contact is in 'not in contact list' we must remove it from there in order
+                    // If contact is in 'notInContactList' we must remove it from there in order
                     // to correctly process adding contact this happens if we accept subscribe
                     // request not from sip-communicator
                     if (oldParentGroup instanceof ContactGroupJabberImpl && !oldParentGroup.isPersistent()) {
@@ -1216,8 +1231,9 @@ public class ServerStoredContactListJabberImpl
                     return contact;
             }
 
+            // Not in local group, then create and add new local contact
             contact = new ContactJabberImpl(entry, ServerStoredContactListJabberImpl.this, true, true);
-            if ((entry.getGroups() == null) || (entry.getGroups().size() == 0)) {
+            if (entry.getGroups().size() == 0) {
                 // no parent group so its in the root group
                 rootGroup.addContact(contact);
                 fireContactAdded(rootGroup, contact);
@@ -1240,7 +1256,7 @@ public class ServerStoredContactListJabberImpl
                     // tell listeners about the added group
                     fireGroupEvent(newGroup, ServerStoredGroupEvent.GROUP_CREATED_EVENT);
                 }
-                // as for now we only support contact only in one group
+                // as for now we only support contact in one group
                 return contact;
             }
             return contact;
@@ -1270,14 +1286,14 @@ public class ServerStoredContactListJabberImpl
         }
 
         /**
-         * Event when an entry is updated. Something for the entry data or have been added to a new
-         * group or removed from one
+         * Event when an entry is updated. Something new for the entry data
+         * or have been added to a new group or removed from one
          *
-         * @param addresses Collection
+         * @param addresses Collection of Contact Jid's
          */
         public void entriesUpdated(Collection<Jid> addresses)
         {
-            Timber.log(TimberLog.FINER, "entriesUpdated %s", addresses);
+            Timber.log(TimberLog.FINER, "entries Updated %s", addresses);
 
             // will search for group renamed
             for (Jid contactJid : addresses) {
@@ -1298,58 +1314,72 @@ public class ServerStoredContactListJabberImpl
 
                 for (RosterGroup gr : entry.getGroups()) {
                     ContactGroup cgr = findContactGroup(gr.getName());
+
+                    // Check for ROOT_GROUP_NAME if null
                     if (cgr == null) {
-                        // such group does not exist. so it must be renamed one
-                        ContactGroupJabberImpl group = findContactGroupByNameCopy(gr.getName());
-                        if (group != null) {
-                            // just change the source entry
-                            group.setSourceGroup(gr);
-                            fireGroupEvent(group, ServerStoredGroupEvent.GROUP_RENAMED_EVENT);
+                         // ROOT_GROUP_NAME (contacts) is not listed in subGroups() for search. Need special handle
+                        if (ContactGroup.ROOT_GROUP_NAME.equals(gr.getName())) {
+                            cgr =  getRootGroup();
                         }
+                        // Group does not exist. so it must be a renamed group
                         else {
-                            // the group was renamed on different location so we do not have it at
-                            // our side now lets find the group for the contact and rename it;
-                            // if it is the only contact in the group then rename, otherwise move
-                            ContactGroup currentParentGroup = contact.getParentContactGroup();
-                            if (currentParentGroup.countContacts() > 1) {
-                                cgr = currentParentGroup;
+                            ContactGroupJabberImpl group = findContactGroupByNameCopy(gr.getName());
+                            if (group != null) {
+                                // just change the source entry
+                                group.setSourceGroup(gr);
+                                fireGroupEvent(group, ServerStoredGroupEvent.GROUP_RENAMED_EVENT);
                             }
                             else {
-                                // make sure this group name is not present in entry groups
-                                boolean present = false;
-                                for (RosterGroup entryGr : entry.getGroups()) {
-                                    if (entryGr.getName().equals(currentParentGroup.getGroupName())) {
-                                        present = true;
-                                        break;
-                                    }
+                                // the group was renamed in a different location, so we do not have it at
+                                // our side now; let's find the group for the contact and rename it;
+                                // if it is the only contact in the group then rename, otherwise move
+                                ContactGroup currentParentGroup = contact.getParentContactGroup();
+                                if (currentParentGroup.countContacts() > 1) {
+                                    cgr = currentParentGroup;
                                 }
+                                else {
+                                    // make sure this group name is not present in entry groups
+                                    boolean present = false;
+                                    for (RosterGroup entryGr : entry.getGroups()) {
+                                        if (entryGr.getName().equals(currentParentGroup.getGroupName())) {
+                                            present = true;
+                                            break;
+                                        }
+                                    }
 
-                                if (!present && currentParentGroup instanceof ContactGroupJabberImpl) {
-                                    ContactGroupJabberImpl currentGroup = (ContactGroupJabberImpl) currentParentGroup;
-                                    currentGroup.setSourceGroup(gr);
-                                    fireGroupEvent(currentGroup, ServerStoredGroupEvent.GROUP_RENAMED_EVENT);
+                                    if (!present && currentParentGroup instanceof ContactGroupJabberImpl) {
+                                        ContactGroupJabberImpl currentGroup = (ContactGroupJabberImpl) currentParentGroup;
+                                        currentGroup.setSourceGroup(gr);
+                                        fireGroupEvent(currentGroup, ServerStoredGroupEvent.GROUP_RENAMED_EVENT);
+                                    }
                                 }
                             }
                         }
                     }
 
+                    // the group is found the contact may be moved from one group to another
                     if (cgr != null) {
-                        // the group is found the contact may be moved from one group to another
                         ContactGroup contactGroup = contact.getParentContactGroup();
 
+                        // contact parent group is different, then add it to the new one
                         if (!gr.getName().equals(contactGroup.getGroupName())) {
-                            // the add it to the new one
-                            ContactGroupJabberImpl newParentGroup = findContactGroup(gr.getName());
+                            ContactGroup newParentGroup = findContactGroup(gr.getName());
 
-                            // the new parent group maybe missing
+                            // Proceed to add the new parent group if none found
                             if (newParentGroup == null) {
-                                // create the group as it doesn't exist
-                                newParentGroup = new ContactGroupJabberImpl(gr, new ArrayList<RosterEntry>().iterator(),
-                                        ServerStoredContactListJabberImpl.this, true);
+                                // ROOT_GROUP_NAME (contacts) is not listed in subGroups() for search. Need special handle
+                                if (ContactGroup.ROOT_GROUP_NAME.equals(gr.getName())) {
+                                    newParentGroup = getRootGroup();
+                                }
+                                else {
+                                    // create the group as it doesn't exist
+                                    newParentGroup = new ContactGroupJabberImpl(gr, Collections.emptyIterator(),
+                                            ServerStoredContactListJabberImpl.this, true);
 
                                 rootGroup.addSubGroup(newParentGroup);
                                 // tell listeners about the added group
                                 fireGroupEvent(newParentGroup, ServerStoredGroupEvent.GROUP_CREATED_EVENT);
+                                }
                             }
                             contactMoved(contactGroup, newParentGroup, contact);
                         }
@@ -1384,15 +1414,15 @@ public class ServerStoredContactListJabberImpl
          *
          * @param addresses Collection
          */
+        @Override
         public void entriesDeleted(Collection<Jid> addresses)
         {
             for (Jid contactJid : addresses) {
                 Timber.log(TimberLog.FINER, "entry deleted %s", contactJid);
 
                 ContactJabberImpl contact = findContactById(contactJid);
-
                 if (contact == null) {
-                    Timber.log(TimberLog.FINER, "Could not find contact for deleted entry: %s", contactJid);
+                    Timber.d("Could not find contact for deleted entry: %s", contactJid);
                     continue;
                 }
                 contactDeleted(contact);
@@ -1574,7 +1604,7 @@ public class ServerStoredContactListJabberImpl
     private void contactMoved(ContactGroup oldGroup, ContactGroup newGroup,
             ContactJabberImpl contact)
     {
-        // The contact is moved to another group first before remove it from the original one
+        // The contact is moved to another group first, before removing it from the original one
         if (oldGroup instanceof ContactGroupJabberImpl)
             ((ContactGroupJabberImpl) oldGroup).removeContact(contact);
         else if (oldGroup instanceof RootContactGroupJabberImpl)
@@ -1605,25 +1635,25 @@ public class ServerStoredContactListJabberImpl
         try {
             Jid temp = JidCreate.from(id);
             if (!temp.hasLocalpart()) {
-                AccountID accountID = jabberProvider.getAccountID();
+                AccountID accountID = mPPS.getAccountID();
                 Jid accountJid = JidCreate.from(accountID.getUserID());
                 return JidCreate.entityBareFrom(Localpart.from(id), accountJid.getDomain());
             }
             return temp.asEntityBareJidOrThrow();
-        } catch (XmppStringprepException e) {
-            throw new OperationFailedException("Could not parse id", 0, e);
+        } catch (XmppStringprepException | IllegalArgumentException e) {
+            throw new OperationFailedException("Could not parse: " + id, 0, e);
         }
     }
 
     /**
-     * Return all the presences for the user.
+     * Return all the presences for the user or an EMPTY_LIST.
      *
      * @param userJid the bareJid of the user to check for presences.
-     * @return all the presences available for the user.
+     * @return all the presences available for the user or an EMPTY_LIST.
      */
     public List<Presence> getPresences(BareJid userJid)
     {
-        return mRoster.getPresences(userJid);
+        return ((mRoster == null) || (userJid == null)) ? Collections.EMPTY_LIST : mRoster.getPresences(userJid);
     }
 
     /**

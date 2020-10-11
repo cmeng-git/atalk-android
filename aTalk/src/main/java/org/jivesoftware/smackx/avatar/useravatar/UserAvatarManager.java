@@ -213,12 +213,11 @@ public class UserAvatarManager extends AvatarManager
         String node = AvatarData.NAMESPACE;
 
         try {
-            mPepManager.publish(item, node);
+            mPepManager.publish(node, item);
         } catch (SmackException.NotConnectedException
                 | InterruptedException
                 | SmackException.NoResponseException
                 | XMPPException.XMPPErrorException
-                | PubSubException.NotAPubSubNodeException
                 | PubSubException.NotALeafNodeException e) {
             nodePublish(item, node);
             LOGGER.log(Level.WARNING, "Use aTalk own nodePublish: " + e.getMessage());
@@ -238,13 +237,12 @@ public class UserAvatarManager extends AvatarManager
         String node = AvatarMetadata.NAMESPACE;
 
         try {
-            mPepManager.publish(item, node);
+            mPepManager.publish(node, item);
             return true;
         } catch (SmackException.NotConnectedException
                 | InterruptedException
                 | SmackException.NoResponseException
                 | XMPPException.XMPPErrorException
-                | PubSubException.NotAPubSubNodeException
                 | PubSubException.NotALeafNodeException e) {
             LOGGER.log(Level.WARNING, "Use aTalk own nodePublish: " + e.getMessage());
             return nodePublish(item, node);

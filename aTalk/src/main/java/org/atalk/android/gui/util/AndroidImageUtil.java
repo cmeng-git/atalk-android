@@ -12,9 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
-import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.osgi.resource.Resource;
 
 import java.io.*;
 
@@ -216,7 +214,8 @@ public class AndroidImageUtil
      * @param imageID The identifier of the image i.e. R.drawable.
      * @return The image bytes for the given identifier.
      */
-    public static byte[] getImageBytes(Context ctx, int imageID) {
+    public static byte[] getImageBytes(Context ctx, int imageID)
+    {
         Bitmap bitmap = BitmapFactory.decodeResource(ctx.getResources(), imageID);
         return convertToBytes(bitmap, 100);
     }
@@ -242,8 +241,8 @@ public class AndroidImageUtil
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
 
-        float rX = ((float) bitmap.getWidth()/2); // * factor;
-        float rY = ((float) bitmap.getHeight()/2); // * factor ;
+        float rX = ((float) bitmap.getWidth() / 2); // * factor;
+        float rY = ((float) bitmap.getHeight() / 2); // * factor ;
         // float r = (rX+rY)/2;
 
         //canvas.drawRoundRect(rectF, rX, rY, paint);

@@ -16,26 +16,15 @@
  */
 package org.atalk.crypto;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
+import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
-import net.java.sip.communicator.plugin.otr.OtrActivator;
-import net.java.sip.communicator.plugin.otr.OtrContactManager;
+import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -44,6 +33,8 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.util.ThemeHelper;
+import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
@@ -56,14 +47,7 @@ import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static org.atalk.android.R.id.fingerprint;
 
@@ -192,9 +176,9 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
         mTrust.setVisible(!isVerified && keyExists);
         mDistrust.setVisible(isVerified);
         if ((bareJid.startsWith(OMEMO))
-            && (isOwnOmemoDevice(bareJid) || !isOmemoDeviceActive(bareJid))) {
-                mTrust.setVisible(false);
-                mDistrust.setVisible(false);
+                && (isOwnOmemoDevice(bareJid) || !isOmemoDeviceActive(bareJid))) {
+            mTrust.setVisible(false);
+            mDistrust.setVisible(false);
         }
     }
 
@@ -253,6 +237,11 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
     }
 
     // ============== OMEMO Device FingerPrintStatus Handlers ================== //
+
+    /**
+     * Fetch the OMEMO FingerPrints for all the device
+     * Remove all those Devices has null fingerPrints
+     */
     private void getOmemoDeviceFingerprintStatus()
     {
         FingerprintStatus fpStatus;
@@ -329,6 +318,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
     }
 
     //==============================================================
+
     /**
      * Adapter displays fingerprints for given list of <tt>omemoDevices</tt>s and <tt>contacts</tt>.
      */
@@ -393,11 +383,14 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
 
             ViewUtil.setTextViewValue(rowView, R.id.protocolProvider, bareJid);
             ViewUtil.setTextViewValue(rowView, fingerprint, CryptoHelper.prettifyFingerprint(remoteFingerprint));
-            ViewUtil.setTextViewColor(rowView, fingerprint, R.color.white);
+
+            // Color for active fingerPrints
+            ViewUtil.setTextViewColor(rowView, fingerprint,
+                    ThemeHelper.isAppTheme(Theme.DARK) ? R.color.textColorWhite : R.color.textColorBlack);
 
             if (bareJid.startsWith(OMEMO)) {
                 if (isOwnOmemoDevice(bareJid))
-                    ViewUtil.setTextViewColor(rowView, fingerprint, R.color.light_blue);
+                    ViewUtil.setTextViewColor(rowView, fingerprint, R.color.blue);
                 else if (!isOmemoDeviceActive(bareJid))
                     ViewUtil.setTextViewColor(rowView, fingerprint, R.color.grey500);
 
@@ -411,6 +404,9 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
             int status = isVerified ? R.string.crypto_FINGERPRINT_VERIFIED : R.string.crypto_FINGERPRINT_NOT_VERIFIED;
             String verifyStatus = getString(R.string.crypto_FINGERPRINT_STATUS, getString(status));
             ViewUtil.setTextViewValue(rowView, R.id.fingerprint_status, verifyStatus);
+            ViewUtil.setTextViewColor(rowView, R.id.fingerprint_status, isVerified ?
+                    (ThemeHelper.isAppTheme(Theme.DARK) ? R.color.textColorWhite : R.color.textColorBlack)
+                    : R.color.orange500);
             return rowView;
         }
 

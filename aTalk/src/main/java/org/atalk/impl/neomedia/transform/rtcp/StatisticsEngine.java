@@ -31,8 +31,7 @@ import org.atalk.service.neomedia.control.FECDecoderControl;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.RTCPExtendedReport;
 import org.atalk.service.neomedia.rtp.RTCPReports;
-import org.atalk.util.RTCPUtils;
-import org.atalk.util.RTPUtils;
+import org.atalk.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -212,13 +211,11 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
                 System.arraycopy(buf, off, buf, off + extendedReportLen, end - off);
             }
 
-            // Write extendedReport into pkt.
-            DataOutputStream dataoutputstream
-                    = new DataOutputStream(new ByteBufferOutputStream(buf, off, extendedReportLen));
-
-            try {
-                extendedReport.assemble(dataoutputstream);
-                added = (dataoutputstream.size() == extendedReportLen);
+            // Write extendedReport into pkt with auto resource close
+            ByteBufferOutputStream bbos = new ByteBufferOutputStream(buf, off, extendedReportLen);
+            try (DataOutputStream dos = new DataOutputStream(bbos)) {
+                extendedReport.assemble(dos);
+                added = (dos.size() == extendedReportLen);
             } catch (IOException e) {
             }
             if (added) {
@@ -561,14 +558,16 @@ public class StatisticsEngine extends SinglePacketTransformer implements Transfo
             l >>= 8;
             burstDensity = (short) (l & 0xFFL);
             l >>= 8;
-            discardRate = l & 0xFFL;
+            short sDiscardRate = (short) (l & 0xFFL);
             l >>= 8;
-            lossRate = l & 0xFFL;
+            short sLossRate = (short) (l & 0xFFL);
 
             voipMetrics.setBurstDensity(burstDensity);
             voipMetrics.setGapDensity(gapDensity);
             voipMetrics.setBurstDuration(burstDuration);
             voipMetrics.setGapDuration(gapDuration);
+            voipMetrics.setDiscardRate(sDiscardRate);
+            voipMetrics.setLossRate(sLossRate);
 
             // Gmin
             voipMetrics.setGMin(burstMetrics.getGMin());

@@ -12,7 +12,7 @@ import android.os.IBinder;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
+import org.atalk.impl.androidnotification.AndroidNotifications;
 import org.atalk.impl.osgi.OSGiServiceImpl;
 
 import java.security.Security;
@@ -33,7 +33,8 @@ public class OSGiService extends Service
     private static int GENERAL_NOTIFICATION_ID = R.string.APPLICATION_NAME;
 
     /**
-     * Indicates that aTalk is running in foreground mode and it's icon is constantly displayed.
+     * Indicates that aTalk is running in foreground mode and its icon is being displayed on android notification tray.
+     * If user disable show aTalk icon, then running_foreground = false
      */
     private static boolean running_foreground = false;
 
@@ -139,7 +140,7 @@ public class OSGiService extends Service
     {
         String title = getResources().getString(R.string.APPLICATION_NAME);
         // The intent to launch when the user clicks the expanded notification
-        PendingIntent pendIntent = aTalkApp.getAtalkIconIntent();
+        PendingIntent pendIntent = aTalkApp.getaTalkIconIntent();
 
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
         nBuilder.setContentTitle(title)
@@ -175,6 +176,7 @@ public class OSGiService extends Service
 
     /**
      * Returns general notification ID that can be used to post notification bound to our global icon
+     * in android notification tray
      *
      * @return the notification ID greater than 0 or -1 if service is not running
      */

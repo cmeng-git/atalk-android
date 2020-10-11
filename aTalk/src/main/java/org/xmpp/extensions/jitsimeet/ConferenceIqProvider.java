@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -45,7 +45,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
     public ConferenceIqProvider()
     {
         // <conference>
-        ProviderManager.addIQProvider(ConferenceIq.ELEMENT_NAME, ConferenceIq.NAMESPACE, this);
+        ProviderManager.addIQProvider(ConferenceIq.ELEMENT, ConferenceIq.NAMESPACE, this);
     }
 
     @Override
@@ -62,29 +62,29 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
         String rootElement = parser.getName();
 
         ConferenceIq iq;
-        if (ConferenceIq.ELEMENT_NAME.equals(rootElement)) {
+        if (ConferenceIq.ELEMENT.equals(rootElement)) {
             iq = new ConferenceIq();
             EntityBareJid room = getRoomJid(parser.getAttributeValue("", ConferenceIq.ROOM_ATTR_NAME));
 
             iq.setRoom(room);
             String ready = parser.getAttributeValue("", ConferenceIq.READY_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(ready)) {
+            if (StringUtils.isNotEmpty(ready)) {
                 iq.setReady(Boolean.valueOf(ready));
             }
             String focusJid = parser.getAttributeValue("", ConferenceIq.FOCUS_JID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(focusJid)) {
+            if (StringUtils.isNotEmpty(focusJid)) {
                 iq.setFocusJid(focusJid);
             }
             String sessionId = parser.getAttributeValue("", ConferenceIq.SESSION_ID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(sessionId)) {
+            if (StringUtils.isNotEmpty(sessionId)) {
                 iq.setSessionId(sessionId);
             }
             String machineUID = parser.getAttributeValue("", ConferenceIq.MACHINE_UID_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(machineUID)) {
+            if (StringUtils.isNotEmpty(machineUID)) {
                 iq.setMachineUID(machineUID);
             }
             String identity = parser.getAttributeValue("", ConferenceIq.IDENTITY_ATTR_NAME);
-            if (!StringUtils.isNullOrEmpty(identity)) {
+            if (StringUtils.isNotEmpty(identity)) {
                 iq.setIdentity(identity);
             }
         }
@@ -104,7 +104,7 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
                     if (rootElement.equals(name)) {
                         done = true;
                     }
-                    else if (ConferenceIq.Property.ELEMENT_NAME.equals(name)) {
+                    else if (ConferenceIq.Property.ELEMENT.equals(name)) {
                         if (property != null) {
                             iq.addProperty(property);
                             property = null;
@@ -116,18 +116,18 @@ public class ConferenceIqProvider extends IQProvider<ConferenceIq>
                 case START_ELEMENT: {
                     String name = parser.getName();
 
-                    if (ConferenceIq.Property.ELEMENT_NAME.equals(name)) {
+                    if (ConferenceIq.Property.ELEMENT.equals(name)) {
                         property = new ConferenceIq.Property();
 
                         // Name
                         String propName = parser.getAttributeValue("", ConferenceIq.Property.NAME_ATTR_NAME);
-                        if (!StringUtils.isNullOrEmpty(propName)) {
+                        if (StringUtils.isNotEmpty(propName)) {
                             property.setName(propName);
                         }
 
                         // Value
                         String propValue = parser.getAttributeValue("", ConferenceIq.Property.VALUE_ATTR_NAME);
-                        if (!StringUtils.isNullOrEmpty(propValue)) {
+                        if (StringUtils.isNotEmpty(propValue)) {
                             property.setValue(propValue);
                         }
                     }

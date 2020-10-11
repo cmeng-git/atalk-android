@@ -1,5 +1,843 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Author:         cmeng
+Upload Date:	09/30/2020
+Version:		2.4.2 (1142)
+- Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled
+- Update aTalk media player UI to distinguish between pause and stop states
+- Upgrade Smack to version 4.4.0-beta2
+- Upgrade aTalk to support android-11(R) API-30
+
+=========================================================================
+Author:         cmeng
+Upload Date:	08/31/2020
+Version:		2.4.1 (1141)
+- Fix 'Unsupported path': android-Q enforces deprecated getExternalStorageDirectory() method, making it inaccessible to aTalk.
+  https://developer.android.com/reference/android/os/Environment#getExternalStorageDirectory()
+  https://github.com/cmeng-git/atalk-android/issues/164
+
+=========================================================================
+Author:         cmeng
+Upload Date:	08/25/2020
+Version:		2.4.0 (1140)
+- Removed and merged 'Remove certificate' option into SSL Certificate (Manage...) in Settings... menu.
+  Delete file CertificateDeleteDialog.java
+- Upgrade ZRTP library to zrtp4j:4.1.2:
+  # Fix ZRTP X25519 key exchange error
+  - https://github.com/jitsi/zrtp4j/commit/f7575bf6301927a997675726002d309b2acdd5d9
+  - Do not upgrade to bouncycastle v1.6.6 AS has problem: Failed to transform bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59
+  # Truncate ZRTP KDF output as per RFC
+  - https://github.com/jitsi/zrtp4j/commit/0baa502b9269d0d8a31247d032ee4896f945a344
+  - Revert earlier patch (v2.3.1) added in org/atalk/impl/neomedia/transform/zrtp/ZRTPTransformEngine.java
+
+- Cleanup contact 'Move to group' associated option handlers:
+  # Contact moved to newly created metaGroup only get reflected in contact list after resume
+    - Allow to addGroup(group) in addContacts(MetaContactGroup group) for zero contact group
+    - MetaContactListAdapter#metaContactGroupAdded must be performed immediately,
+      otherwise originalGroups and groups Lists do not get updated in metaContactMoved()
+  # Include root group as one of the groups selection i.e. 'No group' (Contacts)
+  # BaseContactListAdapter#getGroupView:
+    - must init with convertView.setTag(group); otherwise clicked object may not properly defined
+    - Must check for (convertView.getTag() instanceof GroupViewHolder) before using the view
+    - Must perform groupViewHolder.groupName.setTag(group) for reused and new View
+  # metaContactMoved(): Must add destination zero-child group to groups before proceeds.
+    if (!groups.contains(newParent)) {
+        Timber.w("Add missing move-to group: %s (%s)", destGroup, newParent.getMetaUID());
+        addGroup(newParent, false);
+    }
+    - ServerStoredContactListJabberImpl#ChangeListener must check for ContactGroup.ROOT_GROUP_NAME for reuse (do not create new)
+  # Change ROOT_PROTO_GROUP_UID = "Contacts"; Better defined as ContactListRoot
+    - MclStorageManager#processGroupContact: add patch to upgrade DB e.g. "ContactListRoot" to "Contacts" etc
+     (To be removed in future release)
+  # Block any rootGroup i.e. "Contacts" creation in DB metaContactGroup Table
+    - Do not allow removal of root group i.e. "Contacts" or VOLATILE_GROUP or non-empty group
+  # MetaContactListServiceImpl#resolveProtoPath() update to take care rootGroup
+
+- Smack 4.4.0-alpha5 does not immediately throws StreamErrorException to the calling app for action. Fixed in smack 4.4.0-beta1:
+  https://discourse.igniterealtime.org/t/smack-4-4-0-alpha5-does-not-immediately-throws-streamerrorexception-to-the-calling-app-for-action/88495
+
+- Fix TLS client certificate info display problem: API-29 webview has problem to display '#' character. So use string.replace("#", "&sharp;");
+
+- Upgrade HttpUtils: Migration to Apache HttpClient 5.0 replacing deprecated library. Remove SSLSocketFactoryEx.java
+  HttpUtils not fully tested (used by CertificateServiceImpl & ProvisioningServiceImpl) but not active in aTalk.
+  https://hc.apache.org/httpcomponents-client-4.5.x/android-port.html
+  https://ok2c.github.io/httpclient-migration-guide/migration-to-classic.html
+  https://stackoverflow.com/questions/29294479/android-deprecated-apache-module-httpclient-httpresponse-etc/37623038#37623038
+
+- Add new UI language support i.e. Português (Brasil)
+
+- Upgrade libraries and AS environment:
+  'com.karumi:dexter:5.0.0' => 6.2.1; 'com.github.yalantis:ucrop:2.2.2' => 2.2.5
+- classpath 'com.android.tools.build:gradle:4.0.1' => 4.1.0-beta05;  // Resolved key map error
+- distributionUrl=https://services.gradle.org/distributions/gradle-6.1.1-all.zip => gradle-6.5-all.zip
+  Re: Issue 162527853: android studio regularly but randomly throws error a jar file is missing in the map and stop during the build process
+  https://mail.google.com/mail/u/0/?zx=9buvzusctsa7#inbox/FMfcgxwJXCJPJxNvXVqcgqGMtsGKbMQZ
+
+- Resolved the following problem with 4.1.0-beta05 i.e. omit Function.java from lib and use aTalk local Function.java file instead
+  Compilation failed to complete, position: Lorg/jivesoftware/smack/util/Function;identity()Lorg/jivesoftware/smack/util/Function;,
+  origin: /home/cmeng/.gradle/caches/transforms-2/files-2.1/d486bd3eea9279be8fb8935015afbed5/jetified-smack-core-jarjar-4.4.0-alpha5.jar:org/jivesoftware/smack/util/Function.class
+  @see https://issuetracker.google.com/issues/162527853#comment21
+
+=========================================================================
+Author:         cmeng
+Upload Date:	08/05/2020
+Version:		2.3.4 (1134)
+- Fix Vibrator not stop after an incoming call is rejected or answered via JingleMessage.
+- 'Fatal signal 6 (SIGABRT)' throws by mm-qcamera-daemon (libc in Android 10; ONEPLUS A3003); fixed by camera permission denied.
+   Otherwise aTalk locks in splash screen (continuously restart by android OS in loops)
+  e.g: Dalvik/2.1.0 (Linux; U; Android 10; ONEPLUS A3003 Build/QQ3A.200705.002
+    07-29 11:21:00.261  7113  7160 F libc    : Fatal signal 6 (SIGABRT), code -6 (SI_TKILL) in tid 7160 (POSIX timer 0), pid 7113 (mm-qcamera-daem)
+    o7-29 11:21:00.277  7113  7113 I chatty  : uid=1006(camera) /system/vendor/bin/mm-qcamera-daemon expire 13 lines
+    07-29 11:21:00.407  7297  7297 I chatty  : uid=1006(camera) crash_dump32 expire 3 lines
+    07-29 11:21:00.408  2613  2613 I /system/bin/tombstoned: received crash request for pid 7160
+    07-29 11:21:00.422  7297  7297 F DEBUG   : *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+    07-29 11:21:00.422  7297  7297 F DEBUG   : LineageOS Version: '17.1-20200727-NIGHTLY-oneplus3'
+    07-29 11:21:00.422  7297  7297 F DEBUG   : Build fingerprint: 'OnePlus/OnePlus3/OnePlus3:8.0.0/OPR1.170623.032/02281230:user/release-keys'
+    07-29 11:21:00.422  7297  7297 F DEBUG   : Revision: '0'
+    07-29 11:21:00.422  7297  7297 F DEBUG   : ABI: 'arm'
+    07-29 11:21:00.423  7297  7297 F DEBUG   : Timestamp: 2020-07-29 11:21:00+0200
+    07-29 11:21:00.423  7297  7297 F DEBUG   : pid: 7113, tid: 7160, name: POSIX timer 0  >>> /system/vendor/bin/mm-qcamera-daemon <<<
+
+- Eliminates the need to init and store the first entry i.e. Root MetalContact Group in metaContactGroup table.
+- Update Telephony RecipientSelectView to conform to "com.splitwise:tokenautocomplete:4.0.0-beta1", compatible with androidx library
+- Update otr source from jitsi repository
+- Port account misc settings e.g. Media Encoding, Jingle, Stun and serverList etc to use androidx libraries
+
+- Remove patches in MediaRecorderSystem and AndroidCameraSystem class i.e.
+  Obsolete properties for locator facing back if exist
+  Added in v2.1.6: remove obsolete/incorrect properties; to be removed in future release
+
+=========================================================================
+Author:         cmeng
+Upload Date:	07/28/2020
+Version:		2.3.3 (1133)
+
+- Table metaContactGroup must be initialized to contain the RootMetaContactGroup on new database creation
+  Was accidentally removed when MigrateDir.aTalkDirMigrate() was removed.
+- Include 'Online help' and 'About' in newly installed account creation UI pull down menu.
+- Fix certificate view problem for compileSdkVersion = 29+; replacing &#8226; with &bull; in X509CertificateView
+- Update source to remove dependency on the obsoleted NetworkInfo class.
+
+- Upgrade compile SdkVersion to support API-29
+- Port to use build:gradle:4.0.1 and gradle-6.1.1
+- Move StringUtils.hexStringToByteArray() into AesgcmUrl.class; eliminating patched StringUtils
+- Update RecipientSelectView to conform to "com.splitwise:tokenautocomplete:3.0.2"
+
+=========================================================================
+Author:         cmeng
+Upload Date:	07/24/2020
+Version:		2.3.2 (1132)
+
+- Login failed when server override option is enabled; must include config.setCustomX509TrustManager(sslTrustManager) for smack-4.4.0-alpha5;
+- CallHisotry isShowVideoCallBtn() must check for valid MetaContact
+- Fix android device without the TextToSpeech engine implementation, catch ActivityNotFoundException
+  i.e. No Activity found to handle Intent { act=android.speech.tts.engine.CHECK_TTS_DATA }
+- Redefined ChatSession.STATUS to store ChatFragment#chatType and bit-7 to hide from session UI;
+  Redefine ChatFragment#MSGTYPE_XXX to support session record view
+- Remove "Do not store OTR as it is invalid on new session startup" in CryptoFragment;
+  for ((mChatType != MSGTYPE_OTR) && (mChatType != MSGTYPE_OTR_UA)), instead force to normal on retrieval
+- When a room is destroyed, purge all the chat messages and room chat session from the database; not further retrievable.
+- CallHistory list in descending order of the call timeStamp
+- Port to smack library new PresenceBuilder() replacing the deprecated new Presence()
+- upgrade libvpx to v1.8.2 (external build from libvpx-android)
+- upgrade 'org.jxmpp:jxmpp-jid:1.0.0'
+- Remove aTalk multidex implementation: android VM with version 2.1.0 has multidex support built in.
+- Remove: Migrate aTalk to new directory structure 2.1.4 (2019/12/18)
+  MigrateDir.aTalkDirMigrate();
+- Remove migrate support for original jitsi database and xml file records into SQL Lite databases
+
+=========================================================================
+Author:         cmeng
+Upload Date:	07/14/2020
+Version:		2.3.1 (1131)
+
+- Add chatRoom option to enable/disable info display for member presence status and subject change notification.
+- Error in sending two session-accept when call received via Jingle Message Initiation
+  * AndroidCallListener#onCallEvent: CALL_RECEIVED should handle both incoming call via Jingle Message Initiation or Jingle session-initiate
+  * CallJabberImpl#processSessionInitiate: Remove fireCallChangeEvent(CallChangeEvent.CALL_STATE_CHANGE, null, CallState.CALL_AUTO_ANSWER);
+  * Remove CallState.CALL_AUTO_ANSWER - not required
+- Make MetaContactGroupAdapter default to use aTalk defined i.e.
+  * itemLayout = R.layout.simple_spinner_item;
+  * dropDownLayout = R.layout.simple_spinner_dropdown_item;
+- Fix ChatRoomConfiguration incorrect setup in multiSelectionSpinner field items: i.e. setItems() and setSelection().
+  * Strange as it is still working in aTalk v2.2.5???
+  * text_private, text_single and text_multi must clear the text entry when user enter empty string, and also update the configUpdates
+- Add 'Online help' direct link access to FAQ web page
+
+Port to use smack-4.4.0-alpha5 release
+- ChatRoomJabberImpl#processOwnPresence() for room creation must include "http://jabber.org/protocol/muc#roomconfig" in form submit.
+  or mMultiUserChat.sendConfigurationForm(null) for instant Room creation.
+- Remove 'Fault Tolerance File Transfer' i.e. SOCK5 with IBB fallback support': not further supported in smack-4.4.0-alpha5<
+  * InBandBytestreamManager, InBandBytestreamSession, IBBTransferNegotiator and FaultTolerantNegotiator
+- Patch DataFormProvider class so it is backward compatible with earlier aTalk release for FileTransfer.
+  * Need to remove in future aTalk new release
+- smack Form class changes:
+  * Form list_single must pass in String only and not arrayList in smack 4.4.0-alpha5
+  * patch FillableForm to fix case error.
+  * Files affected: CaptchaDialog, ChatRoomConfiguration, and IBRCaptchaProcessDialog etc
+- Remove obsoleted disco spec:
+  * OMEMO not further advertised @see XEP-0384: OMEMO Encryption
+  * remove supportedFeatures.add(OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY);
+
+Update source per latest jitsi releases (20200630)
+- Port neomedia source
+  * zrtp4j-light-4.1.0-jitsi-1-SNAPSHOT to zrtp4j-light-4.1.1
+  * Remove bccontrib source directory and files, use bouncycastle libraries instead
+  * ch.imvs:sdes4j:1.1.4 to ch.imvs:sdes4j:1.1.5 (java.util.Base64 has problem on Note-5 - so revert the change)
+
+- Update libraries to use maven releases and sources i.e:
+  * fmj-1.0.0-jitsi
+  * jitsi-lgpl-dependencies-1.2-1-gfc49658
+  * jitsi-utils-1.0-39-gd481c98
+  * jitsi-srtp-1.0-24-g6823dfa
+- org.osgi.core-6.0.0
+- Revert removal of files: org.ice4j.util.CustomizableThreadFactory.java and ExecutorFactory.java
+- Removed unused class file: org.atalk.impl.neomedia.codec.video.Utils
+
+- Implemented VP9 codec but not working - still under investigation:
+  VPXEncoder: doProcess() -> (VPXEncoder.java:310)#doProcess: Failed to encode a frame: Invalid parameter
+  VPXDecoder: doProcess() ->
+  a. (VPXDecoder.java:177)#doProcess: Discarding a frame with decode error: Bitstream not supported by this decoder
+  b. (VPXDecoder.java:177)#doProcess: Discarding a frame with decode error: Unspecified internal error
+
+- Delete MediaPresenceExtension.class => move to use SourceExtension.class
+- Replace StringUtils with org.apache.commons.lang3.StringUtils;
+
+- Applied PR from libjitsi:
+  * Fixes plain VP9 #432 (committed but not in jitsi actual source)
+    https://github.com/jitsi/libjitsi/pull/432
+  * Fix code inspection issues #526 (+aTalk own changes)
+    https://github.com/jitsi/libjitsi/pull/526
+  * Update VP8 according to RFC 7741 #513
+    https://github.com/jitsi/libjitsi/pull/513
+  * Improved interpretation of DTMF tones in DtmfTransformEngine #433
+    https://github.com/jitsi/libjitsi/pull/433
+
+=========================================================================
+Author:         cmeng
+Upload Date:	06/15/2020
+Version:		2.3.0 (1130)
+
+- Remove 'Miss Call Notification' option from android notification channel; miss call is controlled via 'Call Notification'
+- Add popup notification option for NotificationManager.CALL_SECURITY_ERROR event independent of SECURITY_MESSAGE
+  * AndroidPopup: subCategorized mSmallIcon for WARNING_MESSAGE_TYPE, MISSED_CALL_MESSAGE_TYPE and Others e.g. SECURITY_MESSAGE
+  * PopupMessageNotificationHandlerImpl: int messageType
+- Do not fire missed call notifications if user dismissed the call:
+  CallPeerJabberImpl#hangup with reason code set to CallPeerChangeEvent.NORMAL_CALL_CLEARING
+
+- Show heads-up notification for an incoming message only if aTalk is in background.
+
+- Move NotificationHelper() init to aTalkApp onCreate, so to get ready earlier to avoid RemoteServiceException:
+  Bad notification for startForeground: RuntimeException: invalid channel for service notification:
+  Notification(channel=default pri=0 contentView=null vibrate=null sound=null defaults=0x0 flags=0x60 color=0x00000000 vis=PRIVATE semFlags=0x0 semPriority=0 semMissedCount=0)
+
+- Fix call problem with pidgin v2.13.0 having improper implementation sending 4 instances <jingle xmlns='urn:xmpp:jingle:1' action='session-accept'..>
+  * CallPeerJabberImpl#processSessionAccept(): accept only first one and ignore all others; otherwise creates havoc in aTalk i.e.:
+  * a. Accidentally stopZrtp() because of new audio stream (new accept), and this will clear all zrtp setup e.g. zrtpEngine == null (NPE)
+  * b. VideoActivity#doFinishActivity() does not hangup call properly and the send stream remains active even after call end
+  * c. Android system volume get stuck in call setOutputVolumeControl(audioStream, call) settings
+
+- Implement XEP-0353: Jingle Message Initiation: https://xmpp.org/extensions/xep-0353.htm
+  Block and skip handling of any incoming delayed Jingle Messages
+- Use common Jingle session id for Jingle <propose/>, session-initiate, and media Call etc for easy handling of call notifications and actions
+- Add new CallState#CALL_AUTO_ANSWER to handle call via Jingle Message Initiation.
+- Add PopupMessage#EvenType - the type of the event that the popup message for for better handling of the various popup messages.
+- Add new message type to SystrayService i.e. MISSED_CALL_MESSAGE_TYPE, JINGLE_INCOMING_CALL and JINGLE_INCOMING_CALL
+- Add CallState.CALL_AUTO_ANSWER action in CallListener class to handle Jingle Message Accept and future auto-answer support.
+- Change VideoCallActivity property to allow launching when device is in standby
+
+- Fix call compatibility with conversations:
+  * Conversation use Jingle Message Initiation for call setup - implement XEP-0353.
+  * Add missing 'setup' attribute for fingerprint extension in jingle session-initiate: XEP-0320: Use of DTLS-SRTP in Jingle Sessions
+    <fingerprint xmlns='urn:xmpp:jingle:apps:dtls:0' hash='sha-256' setup='actpass'/>
+  * Conversations only accept setup.ACTPASS when aTalk is the initiator; Aborted when use setup.PASSIVE
+  * Jingle session-initiate sid must be the same as the JingleMessage id, otherwise conversations will immediately terminate the call.
+    Copy the JingleMessage id value to CallJabberImpl for use when creating session-initiate
+  * Copy GroupExtension from session-initiate to session-accept - required by conversations
+    Conversations v2.8.5 expects transport-info trailing session-accept, otherwise gives warning:
+    W/conversations: hawk@atalk.sytes.net: no identification tags found in initial offer. we won't be able to calculate mLineIndices
+    hawk@atalk.sytes.net: received unhandled jingle action session-info
+  * conversations check for attributes ufrag and pwd in <transport/>; check unfrag (null) for space => error
+    aTalk must include the same values as specified in session-accept transport-info
+    <transport xmlns='urn:xmpp:jingle:transports:ice-udp:1' ufrag='aKw6' pwd='lMi0g0i9hPGJHPeb1TXlkZ9U'/>
+  * Rejected by conversation with whitespace in value for <parameter name='imageattr' value='send * recv *'/>
+    Negotiation of Generic Image Attributes in the Session Description Protocol (SDP); https://tools.ietf.org/html/rfc6236
+    3.2.  Considerations
+    3.2.1.  No imageattr in First Offer
+    When the initial offer does not contain the 'imageattr' attribute, the rules in Section 3.1.1.2 require the attribute to be absent in the answer.
+    Make aTalk compliance i.e. excluded 'imageattr' if none in the initial offer
+  * Caller aTalk rejected: conversations failed with bouncyCastle certificate verification stage - illegal parameter:
+    Certificate is signed with SignatureAlgorithm.ecdsa not supported by aTalk
+    TlsServerImpl.getCertificateRequest to include ClientCertificateType.ecdsa_sign i.e:
+    short[] certificateTypes = new short[]{ ClientCertificateType.rsa_sign, ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
+  * aTalk Video call with conversations cause conversations to crash for h264 codec:
+    eu.siacs.conversations W/System.err: java.lang.IllegalArgumentException: h264 is not a constant in org.webrtc.VideoCodecType
+     When remove H264 from codec offer, aTalk is then able to send/received VP8 video without problem;
+     However conversations still has problem decode and display VP8 video.
+     Reason: aTalk hardware codedc supported packetization-mode does not really match Conversations (no common codec): need more investigation
+     a. send from aalk:
+        <payload-type id='105' name='h264' clockrate='90000'>
+          <parameter name='profile-level-id' value='42E01f'/>
+          <parameter name='packetization-mode' value='1'/>
+        </payload-type>
+        <payload-type id='99' name='h264' clockrate='90000'>
+          <parameter name='profile-level-id' value='42E01f'/>
+        </payload-type>
+     b. send from Conversations:
+        <payload-type name='rtx' id='99' clockrate='90000'>
+          <parameter name='apt' value='98'/>
+        </payload-type>
+          <payload-type name='H264' id='100' clockrate='90000'>
+          <parameter name='level-asymmetry-allowed' value='1'/>
+          <parameter name='packetization-mode' value='1'/>
+          <parameter name='profile-level-id' value='42e01f'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' type='goog-remb'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' type='transport-cc'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' subtype='fir' type='ccm'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' type='nack'/>
+          <rtcp-fb xmlns='urn:xmpp:jingle:apps:rtp:rtcp-fb:0' subtype='pli' type='nack'/>
+        </payload-type>
+  * OperationSetAutoAnswerJabberImpl: Auto-accept call if call accept via Jingle Message <accept/>
+
+- jisti 2.11.5624/5611 compatibility (video call only work on 5611):
+  * jitsi does not respect the setting of <rtcp-mux/> in transport-info, continues to send non rtcp-mux transport info
+    aTalk will realign itself to jitsi non rtcp-mux after received first call from jitsi
+  * DTLS encryption failed with "cannot export keying material without "extended_master_secret" when aTalk is a server
+    Make aTalk backward compatible with jitsi
+
+- Support call via JingleMessage protocol or legacy if peer does not support XEP-0353: Jingle Message Initiation
+- Default Opus Codec with useinbandfec=1 and usedtx=0 in advertised transport-info
+  Not in rfc7587 specification: opusFormatParams.put("minptime", "10"), so not advertised
+
+- Ensure transport-info of session-accept must have the two attributes i.e. ufrag and pwd specified
+  * IceUdpTransportManager#createTransportPacketExtension must set both the attribute values
+  * IceUdpTransportManager#wrapupConnectivityEstablishment must not strip the two attributes if transport-info contains child elements
+
+- aTalk cannot handle Jingle transport-info properly when sent separately from session-initialize; session-accept with trailing transport-info
+  * Break processJingle() handler into Synchronized (callPeer == null) and Non-Synchronized (callPeer != null)
+  * Conversations sends trailing audio/video transport one after another for session-initiate and session-accept.
+    Merge session-initiate with trailing transport-info's before being processed by OperationSetBasicTelephonyJabberImpl#processJingle();
+    otherwise need to synchronously execute OperationSetBasicTelephonyJabberImpl#processJingle() to completion before process trailing transport-info
+  * Must not start generating/processing local transport candidates establishment, before remote transport-info are processed
+    - causing problem hold local transport until remote has completed.
+  * For session-accept, must consolidated both transport-info's i.e. audio & video before process;
+    Otherwise Ice4j#Agent#pruneNonMatchedStreams() prune video component when process the audio transport-info => creating problem.
+
+- Always enable <rtcp-mux/> mode for all calls.
+- NotificationServiceImpl#checkDefaultAgainstLoadedNotification: allow update of PopupMessageAction with new setting (no default)
+- Enhance NotificationService to support sub-category message Type for Notification event
+
+- Fix RtpDescriptionExtension implementation errors:
+  * RtcpmuxExtension is childElement of RtpDescriptionExtension and not IceUdpTransportExtension.
+    XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22) https://xmpp.org/extensions/xep-0167.html
+    <rtcp-mux/> specifies the ability to multiplex RTP Data and Control Packets on a single port as described in RFC 5761 [13].
+  * Multiplexing RTP Data and Control Packets on a Single Port (April 2010), also propose to be included in transport
+    https://tools.ietf.org/html/rfc5761 (5.1.3. Interactions with ICE)
+  * Fix incorrect ExtensionProvider specified for <description/>:<rtcp-mux/>
+    ProviderManager.addExtensionProvider( RtcpmuxExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+        new DefaultExtensionElementProvider<>(RtcpmuxExtension.class));
+  * CallPeerMediaHandlerJabberImpl#processOffer() must check for rtcpmux in RtpDescriptionExtension i.e.
+        boolean rtcpmux = false;
+        if (!description.getChildExtensionsOfType(RtcpmuxExtension.class).isEmpty() ||
+            !transport.getChildExtensionsOfType(RtcpmuxExtension.class).isEmpty()) {
+            rtcpmux = true;
+            getTransportManager().setRtcpmux(true);
+        }
+  * Add chileElement RtcpmuxExtension support in RtpDescriptionExtension
+  * Add parameter RtcpMux in JingleUtils#createDescription() for <rtcp-mux/> inclusion
+
+- Cleanup DtlsFingerprintExtension class removing obsoleted 'required' to confirm with
+  XEP-0320: Use of DTLS-SRTP in Jingle Sessions 0.3.1 (2015-10-15).
+
+- Android 10: incoming (audio or video) calls fail to wake android device in standby for ring tone alert.
+  Need to implement full-screen intent to start an activity from the background (standby)
+
+- srtp classes improvements
+  * DtlsPacketTransformer#initializeSRTPTransformer: use notifyHandshakeComplete() callback to init
+  * Report any handShaking alert if any via srtpListener.securityMessageReceived()
+  * Ensure the actual srtp security status is used for VideoActivity() encryption for display
+  * TlsServierImpl and TslCleintImple now use getSupportedCipherSuites() in bctls DefaultTls_xxx
+
+- OTR not interoperable with pidgin
+  * XEP-0201: Best Practices for Message Threads; recommended only but not implemented by pidgin
+  * OperationSetBasicInstantMessagingJabberImpl#getThreadIDForAddress(); create one if none found
+
+- NotificationHelper: Set all android notification channels' alert to have silent tone, as aTalk have its own event handler
+- Default Opus JNIEncoder#useDtx to false; MediaUtils=>opusFormatParams.put("useinbandfec", "1");
+- FFR: Prevent ChatRoomCreateDialog crash on newly installed aTalk where there is no local or server chatRoom.
+- Port to smack library new MessageBuilder() replacing the deprecated new Message()
+
+=========================================================================
+Author:         cmeng
+Upload Date:	05/13/2020
+Version:		2.2.5 (1125)
+
+- Fix STUN/TURN editor crashes when saved UserName or Password is null => NPE
+  * StunTurnDialogFragment => StunServerDescriptor must check for null in setName and setPassword
+- ChatActivity#sendAttachment need to catch SecurityException in case user has denied some resources access
+- ChatInviteDialog#inviteContacts skip inclusion of DomainJid if selected
+- Limit account_credentials reason field maxLines=6 to avoid 'Sign in' button get obscured
+- Highlight user selected item in contact, chatRoom and call history list window
+- MetaContactListAdapter: All contactList view update (from events) must be performed on UI thread handler => IllegalStateException
+- ServerStoredContactListJabberImpl#addContact: replace deprecated addInterceptor() with addPresenceInterceptor()
+
+- ChatRoomMemberJabberImpl.getContact(): must check for (jabberJid != null)
+  remote (anonymous) muc chatRoom members may not have local stored contacts;
+- ChatRoomJabberImpl: Use STATUS_110_PRESENCE_TO_SELF to check and process own chatRoom presence
+
+- Port ice4j-2.0.0-20181024.160538-12 to ice4j-2.0.0-20190607.184546-36
+  * Consumer was introduced in API 24: classRename 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
+  * Duration: added in API level 26; see https://github.com/JakeWharton/ThreeTenABP.
+    classRename 'java.time.Duration', 'org.threeten.bp.Duration' for < API-26 support
+  * Remove unused atalk local files: org.ice4j.util.CustomizableThreadFactory.java and ExecutorFactory.java
+
+- Port and upgrade all bouncycastle library jars from v1.62 to v1.65 and added new bctls-jdk15on:1.65.jar
+  * Changes to zrtp4j-light-4.1.0: org.bouncycastle.cryptozrtp.params.ECDomainParameters: GIn.getEncoded() => GIn.getEncoded(false)
+  * bctls-jdk15on_1.65.jar supports DTLS-SRTP TLSv12 protocol and additional CipherSuites
+  * DtlsPacketTransformer#DTLS_TRANSPORT_RECEIVE_WAITMILLIS = -1 not allowed
+
+- 20200501 fix or take action for all v2.2.4 / v2.2.3 FFR from the fields
+
+=========================================================================
+Version:		2.2.4 (1124)
+Author:         cmeng / MilanKral
+Upload Date:	04/30/2020
+- Display contacts sorted according to contacts' presence status in main contact list window.
+  When contact list is displayed for user multiple selection e.g. group chat invite dialog,
+  do not sort, as items selected by user is tracked by their list positions
+  see MetaContactListAdapter#contactPresenceStatusChanged()
+- Ensure hide offline contact list get updated when a contact presence status changes
+  see MetaContactListAdapter#refreshModelData()
+- Ensure Text to Speech when enabled remains active even when the chatSession is not in focus.
+- TTSActivity must check and blocked TTS access if TTS voice is not available on device
+- Display android device cameras sorted by name for user selection in Settings...
+  Camera name changed (Front Camera => Front): Must force valid in DeviceConfiguration#extractConfiguredVideoCaptureDevice to a valid value
+- Add new call history records display UI in main pager selection
+- Add new UI language support for Slovak
+
+- Ensure consistency in UI text display as per user selected language.
+  Implement LocaleHelper and ensure aTalkApp ContextWrapper mInstance is properly updated on startup and when UI language has changed
+- Fix user selected Language reset by WebView for android-N and above.
+  Must add new WebView(this).destroy(); in aTalkApp#onCreate(); prevents WebView changing UI back to system default
+  Android - WebView language changes abruptly on Android 7.0 and above:
+  https://stackoverflow.com/questions/40398528/android-webview-language-changes-abruptly-on-android-7-0-and-above
+
+- Fix ConfigurationUtils init aTalkApp#mLanguage to null => system crashes on user language selection
+- ProtocolContactSourceServiceImpl & MetaContactListServiceImpl: must not use R.string.service_gui_CONTACTS translated string in rootMetaGroup assignment.
+- FileBackend.isHttpFileDnLink checking mechanism must use [\\w-] in word character search i.e. include '-' as valid character for file path/name
+
+- Need to ignore FileHttpDownloadConversation#queryFileSize returns file size == 0 and continue to check further.
+- Implement ThemeHelper to hide implementation details and for easy maintenance
+- Change all class extends Activity/FragmentActivity to OsgiActivity to ease and ensure consistent in Theme
+- Fix TLS_Configuration and CertConfigEntryDialog crash on screen rotation
+
+- Cleanup and ensure proper call to smack Stanza#genExtension() and alike for Captcha and Nick etc
+  For 4.4.3-master (20200416), cannot use: presence.getExtension(Nick.class); => IllegalArgumentException
+  Instead must use Nick nickExt = (Nick) presence.getExtensionElement(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+  Add static QName QNAME = new QName(NAMESPACE, ELEMENT); for all aTalk extension classes
+- HttpFileUploadManager#upload(): inputStream.close() throws IllegalStateException on Note-5. Must include in catch
+
+=========================================================================
+Version:		2.2.3 (1123)
+Author:         cmeng
+Upload Date:	04/16/2020
+- Implement Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
+- Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection:
+  popup dropdown together with the user edited text in selector and hide softKeyboard
+  set dropdown width to match parent
+- Improve FileBackend.isHttpFileDnLink checking mechanism to minimize incorrect classification and display file download UI
+- Show video/call buttons if supported by any one contact login with multiple resources of different capabilities
+- Ensure ChatRoomConfiguration does not crash on screen rotation
+- FileHttpDownloadConversation, do not attempt to auto download if stored status is
+  FileRecord.STATUS_FAILED. Show Retry and let user decide; otherwise ANR
+
+- Fix problem that translated service_gui_settings_BOSH_PROXY is used as pref_key.
+- Add static method to hidKeyboard() in ViewUtil.java
+- Fix Create ChatRoom crashes when there is no registered user
+- Fix Add contact Create Group... but cancel => java.lang.ClassCastException: MetaGroup cast exception
+- Fix android developer FFR for aTalk ver 2.2.2
+- Ported smack library to smack-4.4.0-alpha-20204040 release; obsoleted classes or affected methods:
+  HostAddress, OmemoMessage.send#asMessage, Message => Message.Builder,
+  All ExtensionProvider.parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) must not return null
+  see https://discourse.igniterealtime.org/t/smack-4-4-0-alpha3-20200404-fail-to-parse-capsextension-from-the-received-presence-stanza/87694
+  Add public static final QName QNAME = new QName(NAMESPACE, ELEMENT) to ExtensionElement implementation class
+  MessageBuilder messageBuilder = StanzaBuilder.buildMessage() must not be reused for OMEMO xhtml generation
+- ConfirmIQ.appendErrorIfExists => final class in 4.4.0-alpha3 20200404: iqChildElement no logger supported
+- aTalk minimum android OS support is API-21 (android 5.0 Lollipop)
+
+=========================================================================
+Version:		2.2.2 (1122)
+Author:         cmeng / MilanKral
+Upload Date:	03/30/2020
+- Enhance create/join chat room UI: refresh all fields content and allow user password entry for the selected chatRoom
+- Allow saving and retrieving of the chat room protected password for later room auto-join or rejoin
+- Support joining room on cross domain server, and default new room creation with OMEMO chat support
+- Add support for room configuration by owner; re-init CryptoFragment OMEMO options after the room properties changed
+  Note: configured properties for no persistent room will be reset to default when last participant left
+- Display an error message in chat instead of a pop-up alert dialog when user canceled Captcha challenge on joining room
+- Fix CaptchaDialog race condition (~10ms) when user canceled challenge but still triggering a retry popup
+  Change execution order to ensure ChatRoomJabberImpl.mCaptchaState is updated before <presence/> exception is processed
+  Server sends <presence/> exception immediately after captcha error is sent.
+- Make fingerprinting of ZRTP connections harder by using a different ZID for each user callee
+
+- Implement MultiSelectionSpinner class
+- Checking of ChatMessageImpl#isConsecutiveMessage must consider both the previous and current new messages
+- Clear up all file transfer classes to use common updateXferFileViewState(), a view update for buttons and info state
+- Send a remote message when local user canceled file transfer (non-standard protocol support)
+- Update ComboBox class to support onItemClick() call back to update room field values
+- Update ComboBox per selected theme color for background and text
+- Use Spinner.setSelection(index, false) to avoid onSelectedItem get triggered on first init
+- Change aTalkApp.waitForFocus() to return current activity.
+- fixed NPE: 'boolean org.jxmpp.jid.parts.Resourcepart.equals(java.lang.Object)' on a null object reference
+          at ChatRoomJabberImpl$MemberListener.joined(ChatRoomJabberImpl.java:1287)
+- Patch in v2.1.7 for smack#MultiUserChat to fix chatRoom destroy update etc, but creates problem participant leave
+  state not being broadcast.
+
+=========================================================================
+Version:		2.2.1 (1121)
+Author:         cmeng / MilanKral
+Upload Date:	03/17/2020
+- Add user selectable Themes support
+- Implement user selectable option for heads-up notification.
+  Must ensure android Notification category 'show as pop-up' is also enabled for android-N.
+- Support download and display of url image in src tag embedded in xhtml message
+- Share of youtube and other social media links are tagged with thumbnail and title
+  see https://noembed.com
+- New features support for group chat: Erase chatRoom history and GPS location sending
+- Execute ChatActivity.getLastSeen() in new thread to avoid ANR
+- Upgrade glide library to v4.11.0 for better control of loadImage preview sizes for history and new media
+- Refresh Setting... immediately when user changes Language or Theme options
+
+- Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES-256 & TWOFISH-256, and enable elliptic curve crypto using Curve 25519
+- Enhance SDES encryption with AES 256 and AES 192
+- Enhance AES-256 acceleration using OpenSSL
+
+- SetTheme() in parent class OSGIActivity for all inherited class
+- Must always call setTheme() method before super.onCreate(savedInstanceState), otherwise not working
+- Top fragment must set android:clickable="true" and android:focusable="true" to prevent touch action falls through to underlying fragment
+  e.g. telephone.xml and cert_tls_config.xml
+
+- Do not resend last message if it is a system error. Add MessageDeliveryFailedEvent.MessageDeliveryFailedEvent (e.g invitation not allowed)
+- Change GeoLocation to use callback for returning the result.
+- Remove AvatarCacheUtils class, seems cache avatars may contain partial image; fallback all getAvatar to use AvatarManager instead.
+- Remove unnecessary access to fetch vCard from server with large amount of avatar data on first login.
+- Update MessageDeliveredEvent class to include sender EntityJid/Nick (string)
+- Remove resources support for ldpi resolution
+- Preference popMenu dialog layout not override due to too many private attributes (dialog is framed with a boundary overlay)
+  Need to move to API-21 and use Theme.AppCompat in next release
+- Fixed aTalk v2.2.0 FFR
+
+=========================================================================
+Version:		2.2.0 (1120)
+Author:         cmeng / MilanKral
+Upload Date:	02/28/2020
+- Implement XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates
+- Fix incorrect implementation in MessageSourceService#saveRecentMessageToHistory()
+- Contact list view item may not tagged with correct metaContact, causing incorrect chat session being launched
+  must always init and re-tagged in BaseContactListAdapter#getChildView() for new or reused views.
+- ChatRoom list view item may not tagged with correct chatRoomWrapper, causing incorrect chat session being launched
+  must always init and re-tagged in BaseChatRoomListAdapter#getChildView() for new or reused views.
+- Change the XMPP Connection reply timeout to smack default of 5 seconds under all normal operations.
+  Too many FFR on ANR at smack.StanzaCollector.nextResult (StanzaCollector.java:206) when server is not responding.
+- When aTalk is minimized or closed, generate an alert tone and wake aTalk and show join room dialog on receive an invitation
+- Move from chatRoomJabberImpl to OperationSetMultiUserChatJabberImpl#addAsyncStanzaListener() to to handle captcha and error messages from room
+- Complete redesign handler and enhanced UI for room with captcha protection:
+  Omit use of SMACK_REPLY_CAPTCHA_TIMEOUT(=60000), Otherwise 60s ANR occurs if aTalk is not in-focus.
+  Allow retry on user incorrect captcha code entry
+  Display captcha failed/passed result on chat view
+- Hide chatRoom option items that are invalid when user has not joined the room.
+- Do not highlight chat room in list when user cancel captcha challenge or failure to join chat room i.e. remove from active chatRoom list
+- Ensure all room created are non-anonymous and member-only to provide OMEMO encryption.
+
+- Implement auto-accept content download for file sharing via http file upload
+- Fix unable share unencrypted file between aTalk and Conversations see https://github.com/cmeng-git/atalk-android/issues/104
+  OperationSetFileTransferJabberImpl#sendFile() throws OperationNotSupportedException
+  if !(contactJid instanceof EntityFullJid) to allow caller to use alternative httpFileUpload
+
+- Revert change to ConferenceChatTransport#allowsChatStateNotifications to include chatRoom.isJoined() as one of the test condition
+  Not necessary as Check already included in sendChatStateNotification(). Otherwise in new captcha handler,
+  have problem in room with captcha protection, need to re-enter room to send chatState notification.
+- Implement LifecycleObserver to detect aTalk is in foreground or background
+  Must not launch any UI when aTalk is in background e.g. CaptchaDialog - system crash.
+- Implement TLS client certification configuration options
+- Fix incorrect implementation and clean up all various AuthWindow classes:
+  AuthWindowImpl.setVisible must not execute from main thread, otherwise "synchronized (notifyLock){}" blocks UI in startActivity()
+
+- Add silent notifications channel for snooze and chatState notification
+- Reclassified chatState popup notifications to Silent Notification i.e. no head-up notification.
+- Implement android Heads-up notification with 'Mark as read', 'Reply' and 'Snooze'
+- Implement quite hours to mute all notification alerts
+
+- Fix report problem in https://github.com/cmeng-git/atalk-android/issues/110:
+  Provide receipt status for each message in merged message view holder; prefix X mark on each undelivered message
+  Remove original message views of both send and receive corrected messages
+  Retain message multiple lines structure when doing edit
+- Allow message sending using CTRL-ENTER from physical keyboard
+- Compile and include online update service to debug version only
+- (MilanKral) Implement ZRTP-Hash element checking for the integrity of the ZRTP key exchange:
+  Fix https://github.com/cmeng-git/atalk-android/issues/101
+  Using <zrtp-hash/> element check the integrity of the ZRTP key exchange. #112
+- ZrtpControImpl: When advertise ZRTP Signalling option is enabled, access to ZRTP transform engine is called before it is being created
+- Initialize FortunaGenerator() default constructor with SecureRandom seed
+- Fix Field Failure Report (FFR) on ANR and Crash from v2.1.7
+
+=========================================================================
+Version:		2.1.7 (1117)
+Author:         cmeng
+Upload Date:	02/02/2020
+- Redesign ChatRoomListFragment to ensure all listeners are retained when a group chat session is opened
+- ChatRoomListAdapter.dispose() should only be executed onDestroy(). Otherwise all chatRoom listeners are removed
+- Enhance chatRoom destroy to support reason and alternate room entry to continue discussion
+  creating new ChatRoomDestroyDialog and remove chatRoom from EntityListHelper#removeEntity()
+- Fix incorrect implementation of chatRoom destroy alternateAddress i.e. new room to join (not implemented in v2.1.6)
+- Show Destroy chatRoom option only if user is the owner in ChatRoomList context and conference chat session
+  Save UserRole in database for later retrieval when user yet to join the chatRoom
+- Update getUserRole() and store userRole to DB for later retrieval for non-joined room
+- ChatRoomMemberRole: add method fromString to convert string to Enum value
+- ConferenceChatTransport#allowsChatStateNotifications to include chatRoom.isJoined() as one of the test condition
+  This happen when a joined room is destroyed, to prevent chatState init or sending
+- Do not send chatState when user left the room or room has already destroyed
+- Patch smack MultiUserChat so the room destroy state is properly delivered and user/charRoom status are sync and updated
+- Fix improper handling of ChatRoomJabberImpl#invitationDeclined() in sourceMember.getContact() may not be available causing:
+  IllegalArgumentException: Not a valid combination of localpart, domainpart and resource
+- Change ChatRoomInfoChangeDialog implementation to use DialogActivity.showCustomDialog().
+- Change context menu in ContactList and RoomList to use PopupMenu instead of android ContextMenu (clipped item lists)
+- ServerPersistentStoresRefreshDialog minimize use of the static in main class
+- ChatInviteDialog clean up: ensure correct highlight of selected contacts and Invite button state
+- Add user account option to specify Minimum TLS Version in connection setup (Default TLS 1.2)
+- Replace obsoleted SHA-1 with SHA-256 for use with DTLS as recommended by XEP-0414: Cryptographic Hash Function Recommendations for XMPP
+- Fix SDES encryption and ensure security protocol name and status are properly reflected in VideoCallActivity (zrtp, sdes etc).
+- Cleanup MetaHistoryServiceImpl passing Object descriptor should either be MetaContact or ChatRoom
+- Cleanup convertHistoryRecordToMessageEvent#convertHistoryRecordToMessageEvent and remove embedded ChatRoomMemberImpl class
+- Allow deletion of the any stray system messages in the chat session
+- Disable DTLS_SRTP option as the source is not compatible with BC1.6.2 (need further work on this)
+- Remove unused MUC classes i.e. CustomContactActionsService, MUCGroupCustomContactActionService and cleanup MUCActivator
+- Remove JabberChatRoomMember class, not much of use
+- upgrade to jbosh:0.9.2
+
+=========================================================================
+Version:		2.1.6 (1116)
+Author:         cmeng
+Upload Date:	01/21/2020
+- Implement embedded audio media player in chat view with functions: Play, Pause, Resume, Stop(long press) and Seek
+- Standardize dateTime format and layout in chat message and file transfer views
+- Toggle front/back camera: Must include Camera.getCameraInfo(cameraId, cameraInfo) to fetch camera facing for each camera in AndroidCameraSystem and MediaRecordSystem
+- Block user toggle camera via long press on camera icon in video call, if no alternate camera is available on the device.
+- ChatInviteDialog clean up: allow user group expansion, fixed incorrect highlight of selected contact onShow dialog.
+  use of new instance of ContactListFragment crashes aTalk on contact select. Revert to use aTalk clf
+- Fix partial deletion of last file sent and file received messages due to null message Uuid
+- Consolidate sendFile requests and add msgUuid for DB record identification and deletion - resolve partial deletion
+- Fix chat view scroll incorrectly to top when the last sent/received message is deleted
+- Catch Http File Download NPE when an invalid filename is specified
+- Patch android-28 sdk MimeTypeMap.getFileExtensionFromUri() returns empty ext for filename with unicode characters
+- Upgrade openssl jni libraries to version 1.0.2u: See https://www.openssl.org/news/vulnerabilities.html
+- Update shell built script for openSSL v1.0.2u: https://www.openssl.org/news/vulnerabilities.html
+- clean up string values for all file transferring states
+- Fix Field Failure Report from v2.1.5
+  FFR: ConcurrentModificationException at ChatRoomListAdapter.addChatRooms (ChatRoomListAdapter.java:256)
+  FFR: NPE at OmemoAuthenticateDialog.onCreate (OmemoAuthenticateDialog.java:97)
+  FFR: NPE at ChatFragment$ChatListAdapter.updateStatusAndAvatarView (ChatFragment.java:1519)
+  FFR: NPE at ContactListFragment.lambda$updateUnreadCount$0$ContactListFragment (ContactListFragment.java:680)
+  FFR: NPF at BaseChatRoomListAdapter.lambda$expandAllGroups$0$BaseChatRoomListAdapter (BaseChatRoomListAdapter.java:137)
+  FFR: NPE at SettingsActivity$SettingsFragment.initNotificationPreferences
+  FFR: NPE at ChatSecuritySettings$SettingsFragment.onStart (ChatSecuritySettings.java:85)
+  FFR: NPE at ChatSessionManager.removeActiveChat (ChatSessionManager.java:105)
+
+=========================================================================
+Version:		2.1.5 (1115)
+Author:         cmeng
+Upload Date:	12/28/2019
+- Rename share intent to aTalk and setCustomView() for ShareActivity actionBar; android uses activity label name for share intend.
+- Improve join chatRoom captcha challenge request handling and allow user retry on incorrect entry
+- Improve AEC effectiveness: see AudioTrackRenderer and DataSource#configureEffects()
+  must set audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION)
+- Cleanup ZrtpInfoDialog Cipher info has multiple string formats specified - incorrect display.
+- Must invalidate views in ChatRoomListAdapter after roomList has been updated, otherwise problem in Note-10 with zero item in list at time
+- Fix empty password in AndroidSecurityAuthority crashes system
+- Use small font for actionBar sub-title to allow more text characters display
+- Keep a reference copy of the last fetched activity in Contact to minimize network access
+- Cleanup FileHttpDownloadConversation in tmp and output files handling; use common setTransferFilePath() routine
+- Remove duplicate 'Audio codecs' settings in 'Expert settings'
+- Disable videoBridge feature init until actual implementation
+- update jitsi xmpp extensions jibri and colibri class
+- Update libjitsi to source dated 20191220
+  - Remove h263 codec support and clean up the source
+  - reverseTransformPacket - skip packet decryption to save resources when it is not needed
+
+=========================================================================
+Version:		2.1.4 (1114)
+Author:         cmeng
+Upload Date:	12/18/2019
+- Add support for Share, Quote and Forward for both message and media contents
+- Preview media contents of attachments for user confirmation before sending
+- Extend check for proper file extension on media file sharing; rename media file with best guess extension if possible
+- Full XEP-0071: XHTML-IM implementation for Omemo messages in send and receive
+- Fix ChatRoomBookmarksDialog crashes due to null value in either old or newly edited string
+- All Links entered are sent in XHTML extension to avoid treated incorrectly as HTTP File Download by receiver;
+  Apply more checks on links sent from other clients, see FileBackEnd#isHttpFileDnLink.
+- Include all received media and outgoing tmp files for user optional deletion
+- Return chat view to the top of last deleted message group after message deletion
+- Enhance file handler and consolidate all user aTalk files into aTalk new directory structure
+- Must remove '/n' when the sent/received message contains markup text
+- OperationSetMultiUserChatJabberImpl/OperationSetBasicInstantMessagingJabberImpl#onOmemoMessageReceived
+  : Do not proceed to process omemo message (i.e. body is empty) if decryptedMessage.isKeyTransportMessage() is true
+
+=========================================================================
+Version:		2.1.3 (1113)
+Author:         cmeng
+Upload Date:	11/28/2019
+- Support send and receive of instant messages that contain lightweight text markup (XEP-0071: XHTML-IM)
+- Send OMEMO lightweight text markup in message body instead of XHTML extension (work only with aTalk)
+- Enhance UI - add unread message badges for contacts and chatRooms list views
+- Block all notification events for muc history messages and from chatRooms with autoJoin options enabled
+- Add support for audio chat message with offline buddy and during conference
+- Port to use smack ChatStateManager and add enhancement to support group chat state notification
+- Enhance chatState notification event support for group chat.
+- Fixed missing Cancel and Apply buttons in account info view when running in android-9 (API-28);
+  Root cause problem in >= android-9 (API-28)
+  * Remove aboutMeArea.setEnabled(false) as it causes softKeyboard to auto-launch
+  * All view Dimensions are incorrectly init by android OS when soffKeyboard is auto launched.
+- Eliminate all potential "null object reference" in TextView.getText.toString() - lead to ChatRoomBookmarksDialog crashes
+- Improve ChatController UI on message correction and prevent text entry past boundary - combined correct and cancel as one
+- Ensure HtmlImageGetter.HtmlImageGetter() to check for valid 'Image resource id' before fetching drawable image
+- MessageReceivedEvent must check (getLastPathSegment() != null) before set eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD
+  e.g.This is an invalid http download link https://cmeng-git.github.io
+- Update aTalk#MainPagerAdapter method to allow others to findFragmentByTag
+- Remove all static references to context classes for contactListFragment and contactListAdapter in aTalkApp
+- Revert HttpUtils.java to use org.apache library and remove dependency cz.msebera.android:httpclient:4.5.8 (conflict with android library?)
+- Change online help link in About to use https://cmeng-git.github.io instead of https://atalk.sytes.net/atalk
+- Rename net.java.sip.communicator.service.protocol.Message => IMessage (avoid same naming as smack Message)
+- create FileBackend#copy(is, os) and remove dependency for 'org.apache.commons:commons-io:1.3.2'
+- Remove unused Html.java class; replacing it with StringEscapeUtils.escapeHtml4();
+- Change or bounce library versions for:
+  org.apache.commons:commons-lang3:3.8.1 => 'org.apache.commons:commons-text:1.8';
+  org.apache.james:apache-mime4j-core:0.8.2 => 0.8.3
+  org.bouncycastle:bcpkix-jdk15on:1.61 => 1.62
+- Change build.gradle to have smack libraries as individual jar for easy reference, instead of merged jarjar
+
+=========================================================================
+Version:		2.1.2 (1112)
+Author:         cmeng
+Upload Date:	11/07/2019
+- Modify MediaRecorderSystem and AndroidCameraSystem to save camera parameters to persistent store and limit camera.open to one time only.
+- Number front and back camera for identification, as android may have multiple cameras.
+- Do not create volatile contact for muc user - Block OperationSetChatStateNotificationsJabberImpl#stateChanged to createVolatileContact when getType == Type.group
+- Remove build.gradle unneeded "all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'". This also fixes fdroidDebug built with
+  Encounter problem during XMPP Connection: java.lang.IllegalStateException: Could not load org.igniterealtime.jbosh.HTTPSender implementation
+- update library for cz.msebera.android:httpclient:4.4.1.2 => 4.5.8
+
+=========================================================================
+Version:		2.1.1 (1111)
+Author:         cmeng
+Upload Date:	11/01/2019
+- Implement XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) & XEP-0206: XMPP Over BOSH standard; Certificates issue by android trusted CAs only
+- Note-5 API-21 does not support self signed certificate for BOSHConnection - failed in android OS - Alert (Level: Fatal, Description: Certificate Unknown)
+- Fix all problems in smack#XMPPBOSHConnection class for BOSH Connection support
+- PPS should disable TLS for Bosh connection; XEP-206: The client SHOULD ignore any Transport Layer Security (TLS) feature since BOSH channel encryption SHOULD be negotiated at the HTTP layer.
+- View certificate is not available for XMPPBOSHConnection - Show Toast message to user
+- Ensure all notification events parameters' changes are saved to persistent store (dB)
+- Fix non-loop ringtone prematurely stop during playback - always wait for 3 seconds to allow non-loop ringtone to play at
+  least once in AbstractSCAudioClip#runInPlayRingtoneThread before proceed; allow ringTonePlayBack throw Exception
+- Fix AndroidCallListener#fireMissedCallNotification() with incorrect eventType, must use NotificationManager.MISSED_CALL
+- Clean up NotificationServiceImpl#saveNotification implementation/coding
+- Playback ringtone in accordance with device ring tone volume adjusted or silent when muted.
+- Remove main menu android Notification Settings... option - use aTalk notification events instead
+- ChatFragment#SendFile(): Change to display actual send file exception message
+- Note-5 API-21 has media sharing error during inputStream.close() i.e. IllegalStateException: GCM cipher cannot be reused for encrypt - just ignored unimportant
+- UpdateServiceImpl.checkForUpdate must validate the downloaded apk is valid before install
+
+=========================================================================
+Version:		2.1.0 (1110)
+Author:         cmeng
+Upload Date:	10/08/2019
+- Enhance Event UI: allow user to pick android ringtone for playback and sort Events in ascending order for easy user reference
+- Add support for user defined ringTone. Modify AbstractSCAudioClip class for ringtone playback using android RingTone class;
+  AudioSystemClipImpl support only WAV format; android ringtone's are in ogg format etc
+- Add SoundProperties#getSoundDescriptor to get aTalk default ringTone included in user selection
+- Add support for user manual update the avatar in contactList - long press avatar (even when user is not online)
+- Launch login prompt when user is disconnected due to multiple instance login i.e. conflict: Replaced by new connection
+- Make xml error text more human readable and link clickable in login Reason field
+- Standardize pass parameters and event code between MessageDeliveryFailedEvent and ChatRoomMessageDeliveryFailedEvent
+- Add a temporary patch to purge obsoleted "missed_call" event in NotificationServiceImpl#loadNotifications
+  Will remove in later aTalk v2.1.x releases.
+- Update Thumbnail to confirm XEP-0264 Jingle Content Thumbnails v0.4 release i.e. change cid to uri; and implements ExtensionElement
+- Update smack library to v4.4.0-alpha3-SNAPSHOT release;
+- Remove dependency on XmlStringBuilder.prelude, use XmlStringBuilder xml = new XmlStringBuilder(this) instead
+- Remove unused FileUtils.java - change to use FileBackend.isMediaFile() with support to guess ContentType From FileInputStream
+
+=========================================================================
+Version:		2.0.6 (1106)
+Author:         cmeng
+Upload Date:	09/27/2019
+- Auto send last omemo message once all undecided omemoDevices are authenticated by user, else display error message.
+  supported by callback AuthenticateListener in OmemoAuthenticateDialog
+- Improve account UI allowing user to change userName during login and in Account Settings...; warn user if results in old messages being purged
+- Change DataBaseBackend#createAccount() to db.replace to allow accountID modification.
+- Avoid ChatPanel#messageDeliveryFailed error message being cleared when passing through multiple listeners
+- Hide contact context menu items i.e. 'Remove Contact' and 'Move to group' when user is not online
+- Allow removal of any contacts in NotInContactList (ie. VolatileContactJabberImpl) and if it is not DomainBareJid
+- Fix ANR and Exceptions from aTalk v2.0.5 release i.e.
+  Run in thread for checkDeliveryReceiptSupport() - ANR from field
+  Run in thread for ChatRoomListAdapter#initModelData to add chat rooms and avoid ANR
+- Restrict chatRoomJabberImpl#addAsyncStanzaListener() to handle only captcha and error messages from conference
+- Add support to display error messages received from conference room
+- MetaContactRenderer#getDisplayDetails changes order of equate to avoid NPE as OperationSetExtendedAuthorizationImpl#getSubscriptionStatus may return null
+- Catch exception for invalid RESOURCE_PRIORITY entry value to prevent system clashes.
+- Compile apk target for android-Q (android-10.0 API-29) - reverted has problem with webView
+- Add buildSrc build.gradle and restructure build.gradle's to conform to gradle-5.4.1 and build:gradle:3.5.0
+
+- Fix strictmode-java-lang-throwable-untagged-socket-detected with TrafficStats.setThreadStatsTag(THREAD_ID)
+ needed for UpdateServiceImpl
+
+=========================================================================
+Version:		2.0.5 (1105)
+Author:         cmeng
+Upload Date:	09/14/2019
+- Implement user options to cancel, Retry and display status progressBar during HTTP file downloading.
+- Modify FileRecord saved info in DB to support Http Download retry.
+- Implement 60sec idleTime in Http File Download to end and clean up all DownloadManager setup parameters
+  if user exit chat session without Cancel the file download in-progress.
+- Implement HttpFileDownloadJabberImpl.Cancel() for all in-progress HTTPFileTransfer when user delete Chat Session history.
+- Hide last message correction cancel button in normal text entry to avoid accidentally discard text entered.
+- Improve room UI in MUC session on participant join and subject change events
+  i.e. do not display participants in room at join time.
+- Do not show change subject message if this is the room original subject.
+- Add member role in chat room occupant info display and fix multiple info messages display.
+- Revert to chat NORMAL if current chat session cannot support the default chat OMEMO on open;
+  otherwise show error null on NoOmemoSupportException
+- Fix File transfer may incorrectly send to last registered user instead of intended recipient.
+- Store all volatileGroups/Contacts in DB for later retrieval after aTalk re-launch
+- DomainJid cannot be unsubscribed hence removal of DomainJid is not supported currently
+- Support the display of messages receive from server (DomainJid)
+- Allow file transfer from volatile contact.
+- Fix ANR and NPE etc feedback from field for aTalk v2.0.4
+- Iterate all system properties and outputs their names and values for debug log purposes.
+
+=========================================================================
+Version:		2.0.4 (1104)
+Author:         cmeng
+Upload Date:	08/31/2019
+- Improve preference settings UI according to user experience and add advance section
+- Improve UI for BOSH-Proxy - feature suspended until smack has fully implemented the BOSH login.
+- Fix error in Regenerate OMEMO identities - must only perform initialization on the current active omemoManager.
+  Otherwise, user needs to restart aTalk.
+- Extend OMEMO key bundles index range check to allow for prekey ID == 0
+- Do not process VCardTempXUpdate from <presence/> sent by participants in chatRoom - all resolves to chatRoom entity with no VCard record.
+- waitForDisplay() must have max time to avoid apk hangs when activity is null after shutdown.
+- Port to jnsapi-0.0.3 latest source and update to confirm to smack-4.4.0
+- Change mDB.storePreKey() to use pass-in preKeyId from storeOmemoPreKey(), instead of extracting it from PreKeyRecord.
+- Add common AccountInfoPresenceActivity#getText() to check for null to avoid null pointer reference
+- Add 'Save' option on exit AccountInfoPresenceActivity to allow user to save changes
+  (fix android-P bug not displaying the 'Apply' button in form)
+- Change user exit re-confirmation dialog UI.
+- Change show/hide password icon/UI and handler implementation.
+- remove obsoleted android feature i.e. requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+- Prevent aTalk from crashing when Storage permission is not granted to aTal (Report Bugs).
+- Prevent AuthorizationRequestedDialog and RequestAuthorizationDialog from closing when user touches outside the dialog or press BackKey
+- Show mic muted state in call if RECORD_AUDIO permission is not granted.
+- Update README.md file
+
+=========================================================================
 Version:		2.0.3 (1103)
 Author:         cmeng
 Upload Date:	08/14/2019
@@ -132,7 +970,7 @@ Upload Date:	06/05/2019
 Version:		1.8.3 (1083)
 Author:         cmeng
 Upload Date:	05/23/2019
-- Implement \'OMEMO Media Sharing\' to support end-to-end encrypted files and stickers sharing
+- Implement 'OMEMO Media Sharing' to support end-to-end encrypted files and stickers sharing
 - Include http file upload service in fault-tolerance file transfer implementation;
   to handle clients that do not support legacy SOCK5 and IBB protocols e.g. conversations
 - Support Stickers, Bitmoji and Emoji rich content sharing in chat room
@@ -153,7 +991,6 @@ Upload Date:	05/23/2019
   # armv7: requires unsupported dynamic reloc R_ARM_REL32;
   # x86: relocation R_386_GOTOFF against preemptible symbol ..
 - Simplify and use single script command for each jni library built
-
 
 =========================================================================
 Version:		1.8.2 (1082)
@@ -508,8 +1345,10 @@ Upload Date:	07/31/2018
 - Full implementation for [Telephony | Disable media calls (Jingle)] option in Account Settings
 - Display user warning alert when zero resource permission has been granted for aTalk operation
 - Disable media services when android OS aborts ffmpeg lib loading (Text-Relocation-Enforced-for-API-level-23)
+  see SettingActivity#disableMediaOptions()
 - see (https://android.googlesource.com/platform/bionic/+/master/android-changes-for-ndk-developers.md#Text-Relocations-Enforced-for-API-level-23)
 - Update Jitsi sources to jitsi-smack-4.2 (dated 20180720)
+- Improve chatroom join captcha challenge and allow retry on entry error.
 
 =========================================================================
 Version:		1.4.3 (1043)
@@ -792,6 +1631,7 @@ util.AvatarCacheUtils.cacheAvatar().340 Failed to store avatar. java.io.IOExcept
 /data/data/org.atalk.android/files/avatarcache/Jabber&_coxyz123@atalk.org/hawk@atalk.org
 at net.java.sip.communicator.util.AvatarCacheUtils.cacheAvatar(AvatarCacheUtils.java:319)
 TODO: actually cacheAvatar() is not necessary as it is already handled and stored by AvatarManager???
+Update 2020031: Removed AvatarCacheUtils and fall back to use AvatarManager
 
 =========================================================================
 Version:		1.0.1 (1001)
@@ -1528,6 +2368,8 @@ Failed to employ OpenSSL (Crypto) for an optimized HMAC-SHA1 implementation:
 dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/org.jitsi-2/base.apk"],
 nativeLibraryDirectories=[/data/app/org.jitsi-2/lib/arm,
 /vendor/lib, /system/lib]]] couldn't find "libjnopenssl.so"
+
+
 
 =========================================================================
 Version:		0.4.5

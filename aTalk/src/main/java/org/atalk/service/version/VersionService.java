@@ -22,11 +22,11 @@ public interface VersionService
 	 * @return a <tt>Version</tt> object containing version details of the SIP Communicator
 	 * version that we're currently running.
 	 */
-	public Version getCurrentVersion();
+	Version getCurrentVersion();
 
-	public int getCurrentVersionCode();
+	long getCurrentVersionCode();
 
-	public String getCurrentVersionName();
+	String getCurrentVersionName();
 
 	/**
 	 * Returns a Version instance corresponding to the <tt>version</tt> string.
@@ -35,5 +35,5 @@ public interface VersionService
 	 * 		a version String that we have obtained by calling a <tt>Version.toString()</tt> method.
 	 * @return the <tt>Version</tt> object corresponding to the <tt>version</tt> string.
 	 */
-	public Version parseVersionString(String version);
+	Version parseVersionString(String version);
 }

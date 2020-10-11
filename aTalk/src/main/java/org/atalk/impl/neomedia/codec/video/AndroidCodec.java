@@ -5,9 +5,7 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import android.annotation.TargetApi;
 import android.media.*;
-import android.os.Build;
 import android.view.Surface;
 
 import org.atalk.android.util.java.awt.Dimension;
@@ -27,7 +25,6 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 abstract class AndroidCodec extends AbstractCodec2
 {
     /**
@@ -57,16 +54,15 @@ abstract class AndroidCodec extends AbstractCodec2
 
     /**
      * <tt>BufferInfo</tt> object that stores codec's buffer information.
-     * Only available in API-16
      */
     MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
 
     /**
-     * Creates new instance of <tt>AndroidCodec</tt>.
+     * Creates a new instance of <tt>AndroidCodec</tt>.
      *
      * @param name the <tt>PlugIn</tt> name of the new instance
      * @param formatClass the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
-     * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output
+     * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output.
      */
     protected AndroidCodec(String name, Class<? extends Format> formatClass,
             Format[] supportedOutputFormats, boolean isEncoder)
@@ -90,8 +86,7 @@ abstract class AndroidCodec extends AbstractCodec2
     protected abstract Surface getSurface();
 
     /**
-     * Template method used to configure <tt>MediaCodec</tt> instance. Called before starting the
-     * codec.
+     * Template method used to configure <tt>MediaCodec</tt> instance. Called before starting the codec.
      *
      * @param codec <tt>MediaCodec</tt> instance to be configured.
      * @param codecType string codec media type.
@@ -107,8 +102,7 @@ abstract class AndroidCodec extends AbstractCodec2
      */
     protected int getColorFormat()
     {
-        return useSurface()
-                ? COLOR_FormatSurface : MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar;
+        return useSurface() ? COLOR_FormatSurface : MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar;
     }
 
     /**
@@ -119,20 +113,20 @@ abstract class AndroidCodec extends AbstractCodec2
             throws ResourceUnavailableException
     {
         String codecType;
-        String encoding = isEncoder
-                ? outputFormat.getEncoding() : inputFormat.getEncoding();
+        String encoding = isEncoder ? outputFormat.getEncoding() : inputFormat.getEncoding();
 
-        if (encoding.equals(Constants.VP8)) {
-            codecType = CodecInfo.MEDIA_CODEC_TYPE_VP8;
-        }
-        else if (encoding.equals(Constants.H263P)) {
-            codecType = CodecInfo.MEDIA_CODEC_TYPE_H263;
-        }
-        else if (encoding.equals(Constants.H264)) {
-            codecType = CodecInfo.MEDIA_CODEC_TYPE_H264;
-        }
-        else {
-            throw new RuntimeException("Unsupported encoding: " + encoding);
+        switch (encoding) {
+            case Constants.VP9:
+                codecType = CodecInfo.MEDIA_CODEC_TYPE_VP9;
+                break;
+            case Constants.VP8:
+                codecType = CodecInfo.MEDIA_CODEC_TYPE_VP8;
+                break;
+            case Constants.H264:
+                codecType = CodecInfo.MEDIA_CODEC_TYPE_H264;
+                break;
+            default:
+                throw new RuntimeException("Unsupported encoding: " + encoding);
         }
 
         CodecInfo codecInfo = CodecInfo.getCodecForType(codecType, isEncoder);
@@ -290,7 +284,7 @@ abstract class AndroidCodec extends AbstractCodec2
                         /* flags */0);
 
                 processed &= ~INPUT_BUFFER_NOT_CONSUMED;
-                Timber.d("Fed input with %s bytes of data.",inputLen);
+                Timber.d("Fed input with %s bytes of data.", inputLen);
             }
             else if (mediaCodecInputIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
                 Timber.d("Input not available - try again later");

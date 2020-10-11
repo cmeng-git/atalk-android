@@ -79,8 +79,7 @@ class VerifyCertDialog implements VerifyCertificateDialogService.VerifyCertifica
     public void setVisible(boolean b)
     {
         if (!b) {
-            // Currently method is always called with true and
-            // it's expected to block until dialog finishes its job.
+            // Currently, method is always called with true  it's expected to block until dialog finishes its job.
             return;
         }
 

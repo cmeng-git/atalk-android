@@ -29,7 +29,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     /**
      * The encryption protocols managed by this dialog.
      */
-    // public static final String[] encryptionProtocols = {"ZRTP", "SDES"};
+   // public static final String[] encryptionProtocols = {"ZRTP", "SDES"};
 
     public static final String ARG_ENCRYPTIONS = "arg_encryptions";
 
@@ -158,10 +158,10 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         /**
          * Maps the on/off status to every protocol
          */
-        protected Map<String, Boolean> statusMap = new HashMap<String, Boolean>();
+        protected Map<String, Boolean> statusMap = new HashMap<>();
 
         /**
-         * Creates new instance of {@link ProtocolsAdapter}
+         * Creates a new instance of {@link ProtocolsAdapter}
          *
          * @param encryptions
          * @param statusMap
@@ -208,22 +208,20 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         public View getView(int i, View view, ViewGroup viewGroup)
         {
             final String encryption = (String) getItem(i);
+
             LayoutInflater li = getActivity().getLayoutInflater();
             View v = li.inflate(R.layout.encoding_item, viewGroup, false);
 
             TextView tv = v.findViewById(android.R.id.text1);
             tv.setText(encryption);
 
-            CompoundButton cb = (CompoundButton) v.findViewById(android.R.id.checkbox);
+            CheckBox cb = v.findViewById(android.R.id.checkbox);
             cb.setChecked(statusMap.containsKey(encryption) && statusMap.get(encryption));
-            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-            {
-                public void onCheckedChanged(CompoundButton cb, boolean b)
-                {
-                    statusMap.put(encryption, b);
-                    hasChanges = true;
-                }
+            cb.setOnCheckedChangeListener((cb1, state) -> {
+                statusMap.put(encryption, state);
+                hasChanges = true;
             });
+
             return v;
         }
 
@@ -240,7 +238,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
             encryptions[to] = encryptions[from];
             encryptions[from] = swap;
 
-            getActivity().runOnUiThread(() -> notifyDataSetChanged());
+            getActivity().runOnUiThread(this::notifyDataSetChanged);
         }
     }
 }

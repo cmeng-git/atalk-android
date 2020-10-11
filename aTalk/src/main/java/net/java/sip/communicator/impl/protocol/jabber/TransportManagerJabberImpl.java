@@ -5,17 +5,19 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
+import org.xmpp.extensions.colibri.ColibriConferenceIQ;
+import org.xmpp.extensions.jingle.IceUdpTransportExtension;
+import org.xmpp.extensions.jingle.RtpDescriptionExtension;
 import org.xmpp.extensions.jingle.element.JingleContent;
 
 import java.net.InetAddress;
@@ -152,20 +154,20 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * transport-related information which has been received from the remote peer and which
      * is to be sent to the associated Jitsi Videobridge
      */
-    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransportExtensionElement> map)
+    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransportExtension> map)
             throws OperationFailedException
     {
         CallPeerJabberImpl peer = getCallPeer();
         boolean initiator = !peer.isInitiator();
         ColibriConferenceIQ conferenceRequest = null;
 
-        for (Map.Entry<String, IceUdpTransportExtensionElement> e : map.entrySet()) {
+        for (Map.Entry<String, IceUdpTransportExtension> e : map.entrySet()) {
             String media = e.getKey();
             MediaType mediaType = MediaType.parseString(media);
             ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, false /* remote */);
 
             if (channel != null) {
-                IceUdpTransportExtensionElement transport;
+                IceUdpTransportExtension transport;
                 try {
                     transport = cloneTransportAndCandidates(e.getValue());
                 } catch (OperationFailedException ofe) {
@@ -232,10 +234,10 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * executed in a separate thread. Candidate harvest would then need to be concluded in the
      * {@link #wrapupCandidateHarvest()} method which would be called once we absolutely need the candidates.
      *
-     * @param theirOffer a media description offer that we've received from the remote party and that we should
-     * use in case we need to know what transports our peer is using.
-     * @param ourAnswer the content descriptions that we should be adding our transport lists to (although not
-     * necessarily in this very instance).
+     * @param theirOffer a media description offer that we've received from the remote party
+     * and that we should use in case we need to know what transports our peer is using.
+     * @param ourAnswer the content descriptions that we should be adding our transport lists to.
+     * This is used i.e. when their offer is null, for sending the Jingle session-initiate offer.
      * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
      * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
      * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
@@ -339,8 +341,8 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
             if (ourContent != null) {
                 JingleContent theirContent = (theirOffer == null)
                         ? null : findContentByName(theirOffer, contentName);
-                RtpDescriptionExtensionElement rtpDesc
-                        = ourContent.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+                RtpDescriptionExtension rtpDesc
+                        = ourContent.getFirstChildOfType(RtpDescriptionExtension.class);
                 String media = rtpDesc.getMedia();
                 ExtensionElement pe = startCandidateHarvest(theirContent, ourContent, transportInfoSender, media);
 
@@ -348,28 +350,6 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                     ourContent.addChildExtension(pe);
             }
         }
-    }
-
-    /**
-     * Starts transport candidate harvest. This method should complete rapidly and, in case of
-     * lengthy procedures like STUN/TURN/UPnP candidate harvests are necessary, they should be
-     * executed in a separate thread. Candidate harvest would then need to be concluded in the
-     * {@link #wrapupCandidateHarvest()} method which would be called once we absolutely need the candidates.
-     *
-     * @param ourOffer the content descriptions that we should be adding our transport lists to (although not
-     * necessarily in this very instance).
-     * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
-     * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
-     * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
-     * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
-     * included in the result of {@link #wrapupCandidateHarvest()}.
-     * @throws OperationFailedException if we fail to allocate a port number.
-     */
-    public void startCandidateHarvest(List<JingleContent> ourOffer, TransportInfoSender transportInfoSender)
-            throws OperationFailedException
-    {
-        startCandidateHarvest(null, ourOffer, transportInfoSender);
     }
 
     /**
@@ -428,7 +408,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * do not perform connectivity checks (e.g. raw UDP) should return <tt>true</tt>. The
      * default implementation does not perform connectivity checks and always returns <tt>true</tt>.
      */
-    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtensionElement> remote)
+    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtension> remote)
     {
         return true;
     }
@@ -493,11 +473,11 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * type, attributes, namespace, text and candidates as the specified <tt>src</tt>
      * @throws OperationFailedException if an error occurs during the cloing of the specified <tt>src</tt> and its candidates
      */
-    static IceUdpTransportExtensionElement cloneTransportAndCandidates(IceUdpTransportExtensionElement src)
+    static IceUdpTransportExtension cloneTransportAndCandidates(IceUdpTransportExtension src)
             throws OperationFailedException
     {
         try {
-            return IceUdpTransportExtensionElement.cloneTransportAndCandidates(src);
+            return IceUdpTransportExtension.cloneTransportAndCandidates(src);
         } catch (Exception e) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
                     "Failed to close transport and candidates.", OperationFailedException.GENERAL_ERROR, e);
@@ -730,4 +710,9 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * Sets the flag which indicates whether to use rtcpmux or not.
      */
     public abstract void setRtcpmux(boolean rtcpmux);
+
+    public boolean isRtcpmux()
+    {
+        return false;
+    }
 }

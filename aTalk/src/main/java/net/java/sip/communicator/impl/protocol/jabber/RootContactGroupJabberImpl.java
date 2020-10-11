@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.jivesoftware.smack.roster.RosterGroup;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -23,22 +24,22 @@ import java.util.*;
 public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 {
     /**
-     * Maps all JIDs in our roster to the actual contacts so that we could easily search the set of
-     * existing contacts. Note that we only store lower case strings in the left column because
-     * JIDs in XMPP are not case sensitive.
+     * Maps all Jid in our roster to the actual contacts so that we could easily search the set of
+     * existing contacts. Note that we only store lower case strings in the left column because JIDs
+     * in XMPP are not case-sensitive.
      */
-    private List<ContactGroup> subGroups = new LinkedList<>();
+    private final Map<Jid, Contact> contacts = new Hashtable<>();
 
     /**
      * Root group is always assumed resolved to avoid accidentally removal.
      */
-    private boolean isResolved = true;
+    private final boolean isResolved = true;
 
     /**
-     * Maps all JIDs in our roster to the actual contacts - not applicable to rootGroup
-     * An empty list that we use when returning an iterator.
+     * A list of all the groups in the root tree.
+     * subGroups also include itself.
      */
-    private Map<Jid, Contact> contacts = new Hashtable<>();
+    private final List<ContactGroup> subGroups = new LinkedList<>();
 
     /**
      * The provider.
@@ -46,11 +47,14 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     private final ProtocolProviderServiceJabberImpl protocolProvider;
 
     /**
-     * Creates a ContactGroup instance.
+     * Creates a ContactGroup instance; and include itself into the subGroups list.
      */
     RootContactGroupJabberImpl(ProtocolProviderServiceJabberImpl protocolProvider)
     {
         this.protocolProvider = protocolProvider;
+
+        // Do not add itself to subGroups => problem. Hanlder in code
+        // subGroups.add(this);
     }
 
     /**
@@ -88,19 +92,19 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      *
      * @param contact the contact to remove.
      */
-    void removeContact(ContactJabberImpl contact)
+    public void removeContact(ContactJabberImpl contact)
     {
         contacts.remove(contact.getJid());
     }
 
     /**
-     * Returns an iterator over the sub groups that this <tt>ContactGroup</tt> contains.
+     * Returns an Iterator over all contacts, member of this <tt>ContactGroup</tt>.
      *
-     * @return a java.util.Iterator over the <tt>ContactGroup</tt> children of this group (i.e. subgroups).
+     * @return a java.util.Iterator over all contacts inside this <tt>ContactGroup</tt>
      */
-    public Iterator<ContactGroup> subgroups()
+    public Iterator<Contact> contacts()
     {
-        return new ArrayList<>(subGroups).iterator();
+        return contacts.values().iterator();
     }
 
     /**
@@ -113,9 +117,20 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     {
         try {
             return findContact(JidCreate.from(id));
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             return null;
         }
+    }
+
+    /**
+     * Returns the contact encapsulating with the specified name or null if no such contact was found.
+     *
+     * @param id the id for the contact we're looking for.
+     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified jid or null if no such contact existed.
+     */
+    public ContactJabberImpl findContact(Jid id)
+    {
+        return (id == null) ? null : (ContactJabberImpl) contacts.get(id.asBareJid());
     }
 
     /**
@@ -164,18 +179,17 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
             if (grp.getGroupName().equals(groupName))
                 return grp;
         }
-
         return null;
     }
 
     /**
-     * Returns an Iterator over all contacts, member of this <tt>ContactGroup</tt>.
+     * Returns an iterator over the sub groups that this <tt>ContactGroup</tt> contains.
      *
-     * @return a java.util.Iterator over all contacts inside this <tt>ContactGroup</tt>
+     * @return a java.util.Iterator over the <tt>ContactGroup</tt> children of this group (i.e. subgroups).
      */
-    public Iterator<Contact> contacts()
+    public Iterator<ContactGroup> subgroups()
     {
-        return contacts.values().iterator();
+        return new ArrayList<>(subGroups).iterator();
     }
 
     /**
@@ -190,10 +204,11 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
     /**
      * Adds the specified group to the end of the list of sub groups.
+     * Include the rootGroup, so change to pass-in para to ContactGroup
      *
      * @param group the group to add.
      */
-    void addSubGroup(ContactGroupJabberImpl group)
+    void addSubGroup(ContactGroup group)
     {
         subGroups.add(group);
     }
@@ -230,14 +245,15 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
     /**
      * Returns a string representation of the root contact group that contains all subGroups and subContacts of this group.
+     * Ensure group.toString() does not end in endless loop under all circumstances
      *
      * @return a string representation of this root contact group.
      */
     @Override
     public String toString()
     {
-        StringBuffer buff = new StringBuffer(getGroupName());
-        buff.append(".subGroups=" + countSubgroups() + ":\n");
+        StringBuilder buff = new StringBuilder(getGroupName());
+        buff.append(".subGroups=").append(countSubgroups()).append(":\n");
 
         Iterator<ContactGroup> subGroups = subgroups();
         while (subGroups.hasNext()) {
@@ -247,7 +263,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
                 buff.append("\n");
         }
 
-        buff.append(".rootContacts=" + countContacts() + ":\n");
+        buff.append(".rootContacts=").append(countContacts()).append(":\n");
 
         Iterator<Contact> contactsIter = contacts();
         while (contactsIter.hasNext()) {
@@ -258,19 +274,6 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
         return buff.toString();
     }
-
-
-    /**
-     * Returns the contact encapsulating with the specified name or null if no such contact was found.
-     *
-     * @param id the id for the contact we're looking for.
-     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified jid or null if no such contact existed.
-     */
-    ContactJabberImpl findContact(Jid id)
-    {
-        return (id == null) ? null : (ContactJabberImpl) contacts.get(id);
-    }
-
 
     /**
      * Determines whether or not this contact group is being stored by the server. Non persistent

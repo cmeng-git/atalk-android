@@ -5,8 +5,11 @@
  */
 package org.atalk.android.gui.util;
 
+import android.content.Context;
 import android.os.Handler;
+import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
 import org.atalk.android.aTalkApp;
@@ -53,9 +56,15 @@ public class ViewUtil
         tv.setTextColor(aTalkApp.getAppResources().getColor(color));
     }
 
+    public static void setTextViewAlpha(View container, int id, float alpha)
+    {
+        TextView tv = container.findViewById(id);
+        tv.setAlpha(alpha);
+    }
+
     public static String getTextViewValue(View container, int id)
     {
-        return ((TextView) container.findViewById(id)).getText().toString();
+        return toString(container.findViewById(id));
     }
 
     public static boolean isCompoundChecked(View container, int id)
@@ -162,5 +171,61 @@ public class ViewUtil
         }
 
         viewHandler.post(() -> view.setVisibility(newState));
+    }
+
+    /**
+     * get the textView string value or null (length == 0)
+     *
+     * @param textView TextView or EditText
+     * @return String or null
+     */
+    public static String toString(final TextView textView)
+    {
+        CharSequence editText = (textView == null) ? null : textView.getText();
+        String text = (editText == null) ? null : editText.toString().trim();
+        return ((text == null) || (text.length() == 0)) ? null : text;
+    }
+
+    /**
+     * get the textView string value or null (length == 0)
+     *
+     * @param textView TextView or EditText
+     * @return String or null
+     */
+    public static char[] toCharArray(final TextView textView)
+    {
+        String text = toString(textView);
+        return (text == null) ? null : text.toCharArray();
+    }
+
+    /**
+     * Show or hide password
+     *
+     * @param view the password EditText view
+     * @param show <tt>true</tt> set password visible to user
+     */
+    public static void showPassword(final EditText view, final boolean show)
+    {
+        int cursorPosition = view.getSelectionStart();
+        if (show) {
+            view.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+        else {
+            view.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+        view.setSelection(cursorPosition);
+    }
+
+    /**
+     * Hide soft keyboard
+     *
+     * @param context context
+     * @param view the reference view
+     */
+    public static void hideKeyboard(Context context, View view)
+    {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

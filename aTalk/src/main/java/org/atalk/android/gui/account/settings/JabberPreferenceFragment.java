@@ -8,17 +8,30 @@ package org.atalk.android.gui.account.settings;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
+import android.preference.*;
+import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.plugin.jabberaccregwizz.AccountRegistrationImpl;
+import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.settings.util.SummaryMapper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import timber.log.Timber;
 
@@ -31,6 +44,7 @@ import timber.log.Timber;
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class JabberPreferenceFragment extends AccountPreferenceFragment
 {
@@ -50,11 +64,19 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     private static final String P_KEY_STORE_PASSWORD = aTalkApp.getResString(R.string.pref_key_store_password);
     static private final String P_KEY_DNSSEC_MODE = aTalkApp.getResString(R.string.pref_key_dnssec_mode);
 
+    // Client TLS certificate
+    private static final String P_KEY_TLS_CERT_ID = aTalkApp.getResString(R.string.pref_key_client_tls_cert);
+
     // Account General
     private static final String P_KEY_GMAIL_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_gmail_notifications);
     private static final String P_KEY_GOOGLE_CONTACTS_ENABLED
             = aTalkApp.getResString(R.string.pref_key_google_contact_enabled);
     private static final String P_KEY_DTMF_METHOD = aTalkApp.getResString(R.string.pref_key_dtmf_method);
+
+    // Jabber Resource
+    private static final String P_KEY_AUTO_GEN_RESOURCE = aTalkApp.getResString(R.string.pref_key_auto_gen_resource);
+    private static final String P_KEY_RESOURCE_NAME = aTalkApp.getResString(R.string.pref_key_resource_name);
+    private static final String P_KEY_RESOURCE_PRIORITY = aTalkApp.getResString(R.string.pref_key_resource_priority);
 
     // Server Options
     private static final String P_KEY_IS_KEEP_ALIVE_ENABLE
@@ -66,21 +88,11 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             = aTalkApp.getResString(R.string.pref_key_is_server_overridden);
     public static final String P_KEY_SERVER_ADDRESS = aTalkApp.getResString(R.string.pref_key_server_address);
     public static final String P_KEY_SERVER_PORT = aTalkApp.getResString(R.string.pref_key_server_port);
-    private static final String P_KEY_ALLOW_NON_SECURE_CONN = aTalkApp.getAppResources()
-            .getString(R.string.pref_key_allow_non_secure_conn);
-
-    // Jabber Resource
-    private static final String P_KEY_AUTO_GEN_RESOURCE = aTalkApp.getResString(R.string.pref_key_auto_gen_resource);
-    private static final String P_KEY_RESOURCE_NAME = aTalkApp.getResString(R.string.pref_key_resource_name);
-    private static final String P_KEY_RESOURCE_PRIORITY = aTalkApp.getResString(R.string.pref_key_resource_priority);
+    private static final String P_KEY_ALLOW_NON_SECURE_CONN = aTalkApp.getResString(R.string.pref_key_allow_non_secure_conn);
+    private static final String P_KEY_MINIMUM_TLS_VERSION = aTalkApp.getResString(R.string.pref_key_minimum_TLS_version);
 
     // Proxy
-    private static final String P_KEY_PROXY_ENABLE = aTalkApp.getResString(R.string.pref_key_proxy_enable);
-    private static final String P_KEY_PROXY_TYPE = aTalkApp.getResString(R.string.pref_key_proxy_type);
-    private static final String P_KEY_PROXY_ADDRESS = aTalkApp.getResString(R.string.pref_key_proxy_address);
-    private static final String P_KEY_PROXY_PORT = aTalkApp.getResString(R.string.pref_key_proxy_port);
-    private static final String P_KEY_PROXY_USERNAME = aTalkApp.getResString(R.string.pref_key_proxy_username);
-    private static final String P_KEY_PROXY_PASSWORD = aTalkApp.getResString(R.string.pref_key_proxy_password);
+    private static final String P_KEY_PROXY_CONFIG = aTalkApp.getResString(R.string.pref_key_bosh_configuration);
 
     // ICE (General)
     private static final String P_KEY_ICE_ENABLED = aTalkApp.getResString(R.string.pref_key_ice_enabled);
@@ -96,9 +108,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
 
     // Telephony
     private static final String P_KEY_CALLING_DISABLED = aTalkApp.getResString(R.string.pref_key_calling_disabled);
-    private static final String P_KEY_OVERRIDE_PHONE_SUFFIX = aTalkApp.getAppResources()
-            .getString(R.string.pref_key_override_phone_suffix);
-    private static final String P_KEY_TELE_BYPASS_GTALK_CAPS
+    private static final String P_KEY_OVERRIDE_PHONE_SUFFIX = aTalkApp.getResString(R.string.pref_key_override_phone_suffix);
+    private static final String P_KEY_TEL_BYPASS_GTALK_CAPS
             = aTalkApp.getResString(R.string.pref_key_tele_bypass_gtalk_caps);
 
     /*
@@ -108,7 +119,17 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     private static JabberAccountRegistration jbrReg;
 
     /**
-     * Creates new instance of <tt>JabberPreferenceFragment</tt>
+     * Current user userName which is being edited.
+     */
+    private String userNameEdited;
+
+    /**
+     * user last entered userName to check for anymore new changes in userName
+     */
+    private String userNameLastEdited;
+
+    /**
+     * Creates a new instance of <tt>JabberPreferenceFragment</tt>
      */
     public JabberPreferenceFragment()
     {
@@ -155,14 +176,19 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         SharedPreferences.Editor editor = preferences.edit();
 
         // User name and password
-        editor.putString(P_KEY_USER_ID, jbrReg.getUserID());
+        userNameEdited = jbrReg.getUserID();
+        userNameLastEdited = userNameEdited;
+
+        editor.putString(P_KEY_USER_ID, userNameEdited);
         editor.putString(P_KEY_PASSWORD, jbrReg.getPassword());
         editor.putBoolean(P_KEY_STORE_PASSWORD, jbrReg.isRememberPassword());
         editor.putString(P_KEY_DNSSEC_MODE, jbrReg.getDnssMode());
+        editor.putString(P_KEY_TLS_CERT_ID, jbrReg.getTlsClientCertificate());
 
         // Connection
         editor.putBoolean(P_KEY_GMAIL_NOTIFICATIONS, jbrReg.isGmailNotificationEnabled());
         editor.putBoolean(P_KEY_GOOGLE_CONTACTS_ENABLED, jbrReg.isGoogleContactsEnabled());
+        editor.putString(P_KEY_MINIMUM_TLS_VERSION, jbrReg.getMinimumTLSversion());
         editor.putBoolean(P_KEY_ALLOW_NON_SECURE_CONN, jbrReg.isAllowNonSecure());
         editor.putString(P_KEY_DTMF_METHOD, jbrReg.getDTMFMethod());
 
@@ -181,14 +207,6 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         editor.putString(P_KEY_RESOURCE_NAME, jbrReg.getResource());
         editor.putString(P_KEY_RESOURCE_PRIORITY, "" + jbrReg.getPriority());
 
-        // Proxy options
-        editor.putBoolean(P_KEY_PROXY_ENABLE, jbrReg.isUseProxy());
-        editor.putString(P_KEY_PROXY_TYPE, jbrReg.getProxyType());
-        editor.putString(P_KEY_PROXY_ADDRESS, jbrReg.getProxyAddress());
-        editor.putString(P_KEY_PROXY_PORT, jbrReg.getProxyPort());
-        editor.putString(P_KEY_PROXY_USERNAME, jbrReg.getProxyUserName());
-        editor.putString(P_KEY_PROXY_PASSWORD, jbrReg.getProxyPassword());
-
         // ICE options
         editor.putBoolean(P_KEY_ICE_ENABLED, jbrReg.isUseIce());
         editor.putBoolean(P_KEY_UPNP_ENABLED, jbrReg.isUseUPNP());
@@ -201,7 +219,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         // Telephony
         editor.putBoolean(P_KEY_CALLING_DISABLED, jbrReg.isJingleDisabled());
         editor.putString(P_KEY_OVERRIDE_PHONE_SUFFIX, jbrReg.getOverridePhoneSuffix());
-        editor.putString(P_KEY_TELE_BYPASS_GTALK_CAPS, jbrReg.getTelephonyDomainBypassCaps());
+        editor.putString(P_KEY_TEL_BYPASS_GTALK_CAPS, jbrReg.getTelephonyDomainBypassCaps());
 
         editor.apply();
     }
@@ -213,27 +231,74 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     protected void onPreferencesCreated()
     {
         super.onPreferencesCreated();
+        initTLSCert();
 
-        findPreference(P_KEY_STUN_TURN_SERVERS).setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener()
-                {
-                    public boolean onPreferenceClick(Preference pref)
-                    {
-                        startStunServerListActivity();
-                        return true;
-                    }
-                });
+        findPreference(P_KEY_PROXY_CONFIG).setOnPreferenceClickListener(pref -> {
+            BoshProxyDialog boshProxy = new BoshProxyDialog(getActivity(), jbrReg);
+            boshProxy.show();
+            return true;
+        });
 
-        findPreference(P_KEY_JINGLE_NODES_LIST).setOnPreferenceClickListener(
-                new Preference.OnPreferenceClickListener()
-                {
-                    public boolean onPreferenceClick(Preference pref)
-                    {
-                        startJingleNodeListActivity();
-                        return true;
-                    }
-                });
+        findPreference(P_KEY_STUN_TURN_SERVERS).setOnPreferenceClickListener(pref -> {
+            startStunServerListActivity();
+            return true;
+        });
+
+        findPreference(P_KEY_JINGLE_NODES_LIST).setOnPreferenceClickListener(pref -> {
+            startJingleNodeListActivity();
+            return true;
+        });
+
+//        findPreference(P_KEY_USER_ID).setOnPreferenceClickListener(preference -> {
+//            startAccountEditor();
+//            return true;
+//        });
     }
+
+    /**
+     * Initialize the client TLS certificate selection list
+     */
+    private void initTLSCert()
+    {
+        List<String> certList = new ArrayList<>();
+
+        CertificateService cvs = JabberAccountRegistrationActivator.getCertificateService();
+        List<CertificateConfigEntry> certEntries = cvs.getClientAuthCertificateConfigs();
+        certEntries.add(0, CertificateConfigEntry.CERT_NONE);
+
+        for (CertificateConfigEntry e : certEntries) {
+            certList.add(e.toString());
+        }
+
+        AccountID accountID = getAccountID();
+        String currentCert = accountID.getTlsClientCertificate();
+        if (!certList.contains(currentCert) && !isInitialized()) {
+            // Use the empty one i.e. None cert
+            currentCert = certList.get(0);
+            getPreferenceManager().getSharedPreferences().edit().putString(P_KEY_TLS_CERT_ID, currentCert).apply();
+        }
+
+        String[] entries = new String[certList.size()];
+        entries = certList.toArray(entries);
+        ListPreference certPreference = (ListPreference) findPreference(P_KEY_TLS_CERT_ID);
+        certPreference.setEntries(entries);
+        certPreference.setEntryValues(entries);
+
+        if (!isInitialized())
+            certPreference.setValue(currentCert);
+    }
+
+//    private void startAccountEditor()
+//    {
+//        // Create AccountLoginFragment fragment
+//        String login = "swordfish@atalk.sytes.net";
+//        String password = "1234";
+//
+//        Intent intent = new Intent(getActivity(), AccountLoginActivity.class);
+//        intent.putExtra(AccountLoginFragment.ARG_USERNAME, login);
+//        intent.putExtra(AccountLoginFragment.ARG_PASSWORD, password);
+//        startActivity(intent);
+//    }
 
     /**
      * Starts {@link ServerListActivity} in order to edit STUN servers list
@@ -270,10 +335,13 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         summaryMapper.includePreference(findPreference(P_KEY_USER_ID), emptyStr);
         summaryMapper.includePreference(findPreference(P_KEY_PASSWORD), emptyStr, new SummaryMapper.PasswordMask());
         summaryMapper.includePreference(findPreference(P_KEY_DNSSEC_MODE), emptyStr);
+        summaryMapper.includePreference(findPreference(P_KEY_TLS_CERT_ID), emptyStr);
 
-        // Connection
-        summaryMapper.includePreference(findPreference(P_KEY_DTMF_METHOD), emptyStr);
-
+        // DTMF Option
+        summaryMapper.includePreference(findPreference(P_KEY_DTMF_METHOD), emptyStr, input -> {
+            ListPreference lp = (ListPreference) findPreference(P_KEY_DTMF_METHOD);
+            return lp.getEntry().toString();
+        });
         // Ping interval
         summaryMapper.includePreference(findPreference(P_KEY_PING_INTERVAL), emptyStr);
 
@@ -281,20 +349,13 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         summaryMapper.includePreference(findPreference(P_KEY_SERVER_ADDRESS), emptyStr);
         summaryMapper.includePreference(findPreference(P_KEY_SERVER_PORT), emptyStr);
 
-        // Proxy options
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_TYPE), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_ADDRESS), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_PORT), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_USERNAME), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_PROXY_PASSWORD), emptyStr, new SummaryMapper.PasswordMask());
-
         // Resource
         summaryMapper.includePreference(findPreference(P_KEY_RESOURCE_NAME), emptyStr);
         summaryMapper.includePreference(findPreference(P_KEY_RESOURCE_PRIORITY), emptyStr);
 
         // Telephony
         summaryMapper.includePreference(findPreference(P_KEY_OVERRIDE_PHONE_SUFFIX), emptyStr);
-        summaryMapper.includePreference(findPreference(P_KEY_TELE_BYPASS_GTALK_CAPS), emptyStr);
+        summaryMapper.includePreference(findPreference(P_KEY_TEL_BYPASS_GTALK_CAPS), emptyStr);
     }
 
     /**
@@ -336,7 +397,10 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             return;
 
         super.onSharedPreferenceChanged(shPrefs, key);
-        if (key.equals(P_KEY_PASSWORD)) {
+        if (key.equals(P_KEY_USER_ID)) {
+            getUserConfirmation(shPrefs);
+        }
+        else if (key.equals(P_KEY_PASSWORD)) {
             // seems the encrypted password is not save to DB but work?- need further investigation in signin if have problem
             jbrReg.setPassword(shPrefs.getString(P_KEY_PASSWORD, null));
         }
@@ -348,11 +412,34 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
                     getResources().getStringArray(R.array.dnssec_Mode_value)[0]);
             jbrReg.setDnssMode(dnssecMode);
         }
+        else if (key.equals(P_KEY_TLS_CERT_ID)) {
+            jbrReg.setTlsClientCertificate(shPrefs.getString(P_KEY_TLS_CERT_ID, null));
+        }
         else if (key.equals(P_KEY_GMAIL_NOTIFICATIONS)) {
             jbrReg.setGmailNotificationEnabled(shPrefs.getBoolean(P_KEY_GMAIL_NOTIFICATIONS, false));
         }
         else if (key.equals(P_KEY_GOOGLE_CONTACTS_ENABLED)) {
             jbrReg.setGoogleContactsEnabled(shPrefs.getBoolean(P_KEY_GOOGLE_CONTACTS_ENABLED, false));
+        }
+        else if (key.equals(P_KEY_MINIMUM_TLS_VERSION)) {
+            String newMinimumTLSVersion = shPrefs.getString(P_KEY_MINIMUM_TLS_VERSION,
+                    ProtocolProviderServiceJabberImpl.defaultMinimumTLSversion);
+            boolean isSupported = false;
+            try {
+                String[] supportedProtocols
+                        = ((SSLSocket) SSLSocketFactory.getDefault().createSocket()).getSupportedProtocols();
+                for (String suppProto : supportedProtocols) {
+                    if (suppProto.equals(newMinimumTLSVersion)) {
+                        isSupported = true;
+                        break;
+                    }
+                }
+            } catch (IOException ignore) {
+            }
+            if (!isSupported) {
+                newMinimumTLSVersion = ProtocolProviderServiceJabberImpl.defaultMinimumTLSversion;
+            }
+            jbrReg.setMinimumTLSversion(newMinimumTLSVersion);
         }
         else if (key.equals(P_KEY_ALLOW_NON_SECURE_CONN)) {
             jbrReg.setAllowNonSecure(shPrefs.getBoolean(P_KEY_ALLOW_NON_SECURE_CONN, false));
@@ -377,7 +464,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             jbrReg.setServerAddress(shPrefs.getString(P_KEY_SERVER_ADDRESS, null));
         }
         else if (key.equals(P_KEY_SERVER_PORT)) {
-            jbrReg.setServerPort(shPrefs.getString(P_KEY_SERVER_PORT, null));
+            jbrReg.setServerPort(shPrefs.getString(P_KEY_SERVER_PORT,
+                    Integer.toString(ProtocolProviderServiceJabberImpl.DEFAULT_PORT)));
         }
         else if (key.equals(P_KEY_AUTO_GEN_RESOURCE)) {
             jbrReg.setResourceAutoGenerated(shPrefs.getBoolean(P_KEY_AUTO_GEN_RESOURCE, false));
@@ -386,25 +474,11 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             jbrReg.setResource(shPrefs.getString(P_KEY_RESOURCE_NAME, null));
         }
         else if (key.equals(P_KEY_RESOURCE_PRIORITY)) {
-            jbrReg.setPriority(Integer.valueOf(shPrefs.getString(P_KEY_RESOURCE_PRIORITY, null)));
-        }
-        else if (key.equals(P_KEY_PROXY_ENABLE)) {
-            jbrReg.setUseProxy(shPrefs.getBoolean(P_KEY_PROXY_ENABLE, false));
-        }
-        else if (key.equals(P_KEY_PROXY_TYPE)) {
-            jbrReg.setProxyType(shPrefs.getString(P_KEY_PROXY_TYPE, null));
-        }
-        else if (key.equals(P_KEY_PROXY_ADDRESS)) {
-            jbrReg.setProxyAddress(shPrefs.getString(P_KEY_PROXY_ADDRESS, null));
-        }
-        else if (key.equals(P_KEY_PROXY_PORT)) {
-            jbrReg.setProxyPort(shPrefs.getString(P_KEY_PROXY_PORT, null));
-        }
-        else if (key.equals(P_KEY_PROXY_USERNAME)) {
-            jbrReg.setProxyUserName(shPrefs.getString(P_KEY_PROXY_USERNAME, null));
-        }
-        else if (key.equals(P_KEY_PROXY_PASSWORD)) {
-            jbrReg.setProxyPassword(shPrefs.getString(P_KEY_PROXY_PASSWORD, null));
+            try {
+                jbrReg.setPriority(shPrefs.getInt(P_KEY_RESOURCE_PRIORITY, 30));
+            } catch (Exception ex) {
+                Timber.w("Invalid resource priority: %s", ex.getMessage());
+            }
         }
         else if (key.equals(P_KEY_ICE_ENABLED)) {
             jbrReg.setUseIce(shPrefs.getBoolean(P_KEY_ICE_ENABLED, true));
@@ -427,8 +501,65 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         else if (key.equals(P_KEY_OVERRIDE_PHONE_SUFFIX)) {
             jbrReg.setOverridePhoneSuffix(shPrefs.getString(P_KEY_OVERRIDE_PHONE_SUFFIX, null));
         }
-        else if (key.equals(P_KEY_TELE_BYPASS_GTALK_CAPS)) {
-            jbrReg.setTelephonyDomainBypassCaps(shPrefs.getString(P_KEY_TELE_BYPASS_GTALK_CAPS, null));
+        else if (key.equals(P_KEY_TEL_BYPASS_GTALK_CAPS)) {
+            jbrReg.setTelephonyDomainBypassCaps(shPrefs.getString(P_KEY_TEL_BYPASS_GTALK_CAPS, null));
+        }
+    }
+
+    /**
+     * Warn and get user confirmation if changes of userName will lead to removal of any old messages
+     * of the old account. It also checks for valid userName entry.
+     *
+     * @param shPrefs SharedPreferences
+     */
+    private void getUserConfirmation(SharedPreferences shPrefs)
+    {
+        final String userName = shPrefs.getString(P_KEY_USER_ID, null);
+        if (!TextUtils.isEmpty(userName) && userName.contains("@")) {
+            String editedAccUid = jbrReg.getAccountUniqueID();
+            if (userNameEdited.equals(userName)) {
+                jbrReg.setUserID(userName);
+                userNameLastEdited = userName;
+            }
+            else if (!userNameLastEdited.equals(userName)) {
+                MessageHistoryServiceImpl mhs = MessageHistoryActivator.getMessageHistoryService();
+                int msgCount = mhs.getMessageCountForAccountUuid(editedAccUid);
+                if (msgCount > 0) {
+                    String msgPrompt = aTalkApp.getResString(R.string.service_gui_USERNAME_CHANGE_WARN,
+                            userName, msgCount, userNameEdited);
+                    DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                            aTalkApp.getResString(R.string.service_gui_WARNING), msgPrompt,
+                            aTalkApp.getResString(R.string.service_gui_PROCEED), new DialogActivity.DialogListener()
+                            {
+                                @Override
+                                public boolean onConfirmClicked(DialogActivity dialog)
+                                {
+                                    jbrReg.setUserID(userName);
+                                    userNameLastEdited = userName;
+                                    return true;
+                                }
+
+                                @Override
+                                public void onDialogCancelled(DialogActivity dialog)
+                                {
+                                    jbrReg.setUserID(userNameEdited);
+                                    userNameLastEdited = userNameEdited;
+                                    SharedPreferences.Editor editor = shPrefs.edit();
+                                    editor.putString(P_KEY_USER_ID, jbrReg.getUserID());
+                                    editor.apply();
+                                }
+                            });
+
+                }
+                else {
+                    jbrReg.setUserID(userName);
+                    userNameLastEdited = userName;
+                }
+            }
+        }
+        else {
+            userNameLastEdited = userNameEdited;
+            aTalkApp.showToastMessage(R.string.service_gui_USERNAME_NULL);
         }
     }
 

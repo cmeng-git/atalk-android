@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/between_padding"
     android:minHeight="?android:listPreferredItemHeight"
+    android:background="?attr/colorBackground"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:minHeight="?android:listPreferredItemHeight"
         android:gravity="center"
+        android:layout_marginLeft="10dp"
         android:orientation="horizontal"
         android:background="?android:selectableItemBackground"
         android:id="@+id/alternate_container_header" >
@@ -27,8 +29,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dip"
-                android:layout_marginStart="6dip"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
                 android:singleLine="true"
                 android:ellipsize="end"
                 tools:text="Mr. Firstname Lastname" />
@@ -38,8 +40,8 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dip"
-                android:layout_marginStart="6dip"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
                 android:singleLine="true"
                 android:ellipsize="end"
                 tools:text="Other" />
@@ -59,6 +61,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:minHeight="?android:listPreferredItemHeight"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -81,8 +84,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingLeft="6dip"
-            android:paddingRight="6dip"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
             android:singleLine="true"
             android:ellipsize="end"
             tools:text="address@example.com" />

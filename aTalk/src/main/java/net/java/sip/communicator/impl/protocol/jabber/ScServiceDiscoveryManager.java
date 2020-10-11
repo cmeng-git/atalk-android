@@ -5,8 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import org.jivesoftware.smack.*;
 import org.jxmpp.jid.*;
-import org.xmpp.extensions.caps.UserCapsNodeListener;
+import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
 
 import org.atalk.android.aTalkApp;
@@ -14,12 +15,9 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaListener;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.EntityCapsManager.NodeVerHash;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
@@ -84,9 +82,9 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     private DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
 
     /**
-     * The {@link XMPPTCPConnection} that this manager is responsible for.
+     * The {@link XMPPConnection} that this manager is responsible for.
      */
-    private final XMPPTCPConnection connection;
+    private final XMPPConnection connection;
 
     /**
      * A {@link List} of the identities we use in our disco answers.
@@ -134,7 +132,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * and to the <tt>ServiceDiscoveryManager</tt> of the specified <tt>connection</tt> which
      * is to be wrapped by the new instance
      */
-    public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider, XMPPTCPConnection connection,
+    public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider, XMPPConnection connection,
             String[] featuresToRemove, String[] featuresToAdd, boolean cacheNonCaps)
     {
         this.parentProvider = parentProvider;
@@ -307,7 +305,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
         // Not found: Then discover by requesting the information from the remote entity allowing only 10S for blocking access
         discoverInfo = getRemoteDiscoverInfo(entityJid,
-                ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+                ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         if (discoverInfo != null) {
             // store in local nonCapsCache only if (nvh == null)
             if ((nvh == null) && cacheNonCaps) {
@@ -373,7 +371,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         Timber.w("### Remote discovery for: %s", entityJid);
         DiscoverInfo discoInfo = discoveryManager.discoverInfo(entityJid);
 
-        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         return discoInfo;
     }
 
@@ -681,7 +679,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
         private OperationSetContactCapabilitiesJabberImpl capabilitiesOpSet;
 
         /**
-         * Runs in different thread.
+         * Runs in a different thread.
          */
         public void run()
         {
@@ -722,7 +720,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                 // Discover by requesting the information from the remote entity;
                 // will return null if no nvh in JID_TO_NODEVER_CACHE=>CAPS_CACHE
                 DiscoverInfo discoverInfo = getRemoteDiscoverInfo(entityJid,
-                        ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_EXTENDED_TIMEOUT_30);
+                        ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_30);
 
                 // (discoverInfo = null) if iq result with "item-not-found"
                 if (discoverInfo != null) {

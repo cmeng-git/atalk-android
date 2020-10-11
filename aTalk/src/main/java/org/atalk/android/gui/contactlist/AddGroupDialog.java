@@ -9,16 +9,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.EditText;
 
 import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiFragment;
 
@@ -96,11 +95,9 @@ public class AddGroupDialog extends OSGiFragment
             if (createThread != null)
                 return false;
 
-            AddGroupDialog content = (AddGroupDialog) dialog.getContentFragment();
-            EditText editText = content.getView().findViewById(R.id.editText);
-
-            String groupName = editText.getText().toString().trim();
-            if (groupName.length() == 0) {
+            View view = dialog.getContentFragment().getView();
+            String groupName = (view == null) ? null : ViewUtil.toString(view.findViewById(R.id.editText));
+            if (groupName == null) {
                 showErrorMessage(dialog.getString(R.string.service_gui_ADD_GROUP_EMPTY_NAME));
                 return false;
             }
@@ -140,29 +137,6 @@ public class AddGroupDialog extends OSGiFragment
         public void onDialogCancelled(DialogActivity dialog)
         {
         }
-
-        /**
-         * Shows the "in progress" dialog
-         */
-        /*
-         * private void displayOperationInProgressDialog(DialogActivity dialog) { Context context
-         * = dialog; CharSequence
-         * title = context.getText( R.string.service_gui_COMMIT_PROGRESS_TITLE); CharSequence msg
-         * = context.getText(
-         * R.string.service_gui_COMMIT_PROGRESS_MSG);
-         *
-         * this.progressDialog = ProgressDialog.show( context, title, msg, true, false); //
-         * Display the progress dialog
-         * progressDialog.show(); }
-         */
-
-        /**
-         * Hides the "in progress" dialog
-         */
-        /*
-         * private void hideOperationInProgressDialog() { if(progressDialog != null) {progressDialog.dismiss();
-         * progressDialog = null; } }
-         */
 
         /**
          * Creates a new meta contact group in a separate thread.

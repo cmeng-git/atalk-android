@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import net.java.sip.communicator.service.contactlist.*;
+import net.java.sip.communicator.service.protocol.ContactGroup;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -27,8 +28,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MoveToGroupDialog extends OSGiDialogFragment
-        implements DialogInterface.OnClickListener
+public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInterface.OnClickListener
 {
     /**
      * Meta UID arg key.
@@ -45,27 +45,48 @@ public class MoveToGroupDialog extends OSGiDialogFragment
      */
     private MetaContact metaContact;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    /**
+     * Creates a new instance of <tt>MoveToGroupDialog</tt>.
+     *
+     * @param metaContact the contact that will be moved.
+     * @return parametrized instance of <tt>MoveToGroupDialog</tt>.
+     */
+    public static MoveToGroupDialog getInstance(MetaContact metaContact)
     {
+        MoveToGroupDialog dialog = new MoveToGroupDialog();
+
+        Bundle args = new Bundle();
+        String userName = metaContact.getDefaultContact().getProtocolProvider().getAccountID().getUserID();
+        args.putString(USER_ID, userName);
+        args.putString(META_CONTACT_UID, metaContact.getMetaUID());
+
+        dialog.setArguments(args);
+        return dialog;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View contentView = inflater.inflate(R.layout.move_to_group, container, false);
+
         getDialog().setTitle(R.string.service_gui_MOVE_CONTACT);
         this.metaContact = AndroidGUIActivator.getContactListService()
                 .findMetaContactByMetaUID(getArguments().getString(META_CONTACT_UID));
-
-        View contentView = inflater.inflate(R.layout.move_to_group, container, false);
 
         String UserId = getArguments().getString(USER_ID);
         TextView accountOwner = contentView.findViewById(R.id.accountOwner);
         accountOwner.setText(getString(R.string.service_gui_CONTACT_OWNER, UserId));
 
-        final AdapterView groupList = contentView.findViewById(R.id.selectGroupSpinner);
+        final AdapterView groupListView = contentView.findViewById(R.id.selectGroupSpinner);
         MetaContactGroupAdapter contactGroupAdapter
-                = new MetaContactGroupAdapter(getActivity(), groupList, false, true);
-        groupList.setAdapter(contactGroupAdapter);
+                = new MetaContactGroupAdapter(getActivity(), groupListView, true, true);
+        groupListView.setAdapter(contactGroupAdapter);
 
         contentView.findViewById(R.id.move).setOnClickListener(v -> {
-            moveContact((MetaContactGroup) groupList.getSelectedItem());
+            MetaContactGroup newGroup = (MetaContactGroup) groupListView.getSelectedItem();
+            if (!(newGroup.equals(metaContact.getParentMetaContactGroup()))) {
+                moveContact(newGroup);
+            }
             dismiss();
         });
 
@@ -93,24 +114,5 @@ public class MoveToGroupDialog extends OSGiDialogFragment
     @Override
     public void onClick(DialogInterface dialog, int which)
     {
-    }
-
-    /**
-     * Creates new instance of <tt>MoveToGroupDialog</tt>.
-     *
-     * @param metaContact the contact that will be moved.
-     * @return parametrized instance of <tt>MoveToGroupDialog</tt>.
-     */
-    public static MoveToGroupDialog getInstance(MetaContact metaContact)
-    {
-        Bundle args = new Bundle();
-        String userName = metaContact.getDefaultContact().getProtocolProvider().getAccountID().getUserID();
-        args.putString(USER_ID, userName);
-        args.putString(META_CONTACT_UID, metaContact.getMetaUID());
-
-        MoveToGroupDialog dialog = new MoveToGroupDialog();
-        dialog.setArguments(args);
-
-        return dialog;
     }
 }

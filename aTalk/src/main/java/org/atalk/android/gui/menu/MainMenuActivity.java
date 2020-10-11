@@ -21,10 +21,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.*;
 
 import net.java.sip.communicator.service.protocol.*;
@@ -36,23 +33,27 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.*;
-import org.atalk.android.gui.About;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountsListActivity;
-import org.atalk.android.gui.call.conference.ConferenceInviteDialog;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
+import org.atalk.android.gui.chat.conference.ConferenceCallInviteDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
+import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.plugin.textspeech.TTSActivity;
 import org.atalk.android.plugin.geolocation.GeoLocation;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
@@ -64,14 +65,10 @@ import java.util.*;
  */
 
 @SuppressLint("Registered")
-public class MainMenuActivity extends ExitMenuActivity
-        implements ServiceListener, ContactPresenceStatusListener
+public class MainMenuActivity extends ExitMenuActivity implements ServiceListener, ContactPresenceStatusListener
 {
     private MenuItem mShowHideOffline;
     private MenuItem mOnOffLine;
-
-    // Default to system locale language
-    private static String mLanguage = "";
 
     /**
      * Video bridge conference call menu. In the case of more than one account.
@@ -103,20 +100,17 @@ public class MainMenuActivity extends ExitMenuActivity
     {
         super.onCreate(savedInstanceState);
         mContext = this;
-
-        setLanguage(mContext, mLanguage);
-
-        // cmeng - not implemented yet, do not set
-        // setTheme(aTalkApp.getAppThemeResourceId());
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        AndroidGUIActivator.bundleContext.addServiceListener(this);
-        if ((videoBridgeMenuItem != null) && (menuVbItem == null)) {
-            initVideoBridge();
+        if (AndroidGUIActivator.bundleContext != null) {
+            AndroidGUIActivator.bundleContext.addServiceListener(this);
+            if ((videoBridgeMenuItem != null) && (menuVbItem == null)) {
+                initVideoBridge();
+            }
         }
     }
 
@@ -142,55 +136,27 @@ public class MainMenuActivity extends ExitMenuActivity
             menu.removeItem(R.id.show_location);
         }
 
-        this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
+        // cmeng: 20191220 <= disable videoBridge until implementation
+        // this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
         /* Need this on first start up */
-        initVideoBridge();
-        videoBridgeMenuItem.setEnabled(true);
+        // initVideoBridge();
+        // videoBridgeMenuItem.setEnabled(true);
 
         mShowHideOffline = menu.findItem(R.id.show_hide_offline);
         int itemId = ConfigurationUtils.isShowOffline()
-                ? R.string.service_gui_HIDE_OFFLINE_CONTACTS
-                : R.string.service_gui_SHOW_OFFLINE_CONTACTS;
-        mShowHideOffline.setTitle(getString(itemId));
+                ? R.string.service_gui_CONTACTS_OFFLINE_HIDE
+                : R.string.service_gui_CONTACTS_OFFLINE_SHOW;
+        mShowHideOffline.setTitle(itemId);
 
         mOnOffLine = menu.findItem(R.id.sign_in_off);
         itemId = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this))
                 ? R.string.service_gui_SIGN_IN
                 : R.string.service_gui_SIGN_OUT;
-        mOnOffLine.setTitle(getString(itemId));
+        mOnOffLine.setTitle(itemId);
 
         // Adds exit option from super class
         super.onCreateOptionsMenu(menu);
         return true;
-    }
-
-    public static void setLanguage(Context context, String language)
-    {
-        Locale locale;
-        if (TextUtils.isEmpty(language)) {
-            locale = Resources.getSystem().getConfiguration().locale;
-        }
-        else if (language.length() == 5 && language.charAt(2) == '_') {
-            // language is in the form: en_US
-            locale = new Locale(language.substring(0, 2), language.substring(3));
-        }
-        else {
-            locale = new Locale(language);
-        }
-        Resources resources = context.getResources();
-        Configuration config = resources.getConfiguration();
-        config.locale = locale;
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-    }
-
-    public static String getATLanguage()
-    {
-        return mLanguage;
-    }
-
-    public static void setATLanguage(String language)
-    {
-        mLanguage = language;
     }
 
     /**
@@ -200,7 +166,7 @@ public class MainMenuActivity extends ExitMenuActivity
      */
     private void initVideoBridge_task()
     {
-        final Boolean enableMenu;
+        final boolean enableMenu;
         if (menuVbItem == null)
             this.menuVbItem = new VideoBridgeProviderMenuItem();
 
@@ -299,39 +265,45 @@ public class MainMenuActivity extends ExitMenuActivity
                 else
                     menuVbItem.actionPerformed();
                 break;
-            case R.id.muc_bookmarks:
-                ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
-                chatRoomBookmarksDialog.show();
-                break;
-            case R.id.show_hide_offline:
-                boolean isShowOffline = ConfigurationUtils.isShowOffline();
-                MetaContactListAdapter.presenceFilter.setShowOffline(!isShowOffline);
-                MetaContactListAdapter contactListAdapter = aTalkApp.getContactListAdapter();
-                contactListAdapter.filterData("");
-
-                String onOffLine = aTalkApp.getResString(!isShowOffline
-                        ? R.string.service_gui_HIDE_OFFLINE_CONTACTS : R.string.service_gui_SHOW_OFFLINE_CONTACTS);
-                mShowHideOffline.setTitle(onOffLine);
-                break;
-            case R.id.add_contact:
-                startActivity(AddContactActivity.class);
+            case R.id.show_location:
+                Intent intent = new Intent(this, GeoLocation.class);
+                intent.putExtra(GeoLocation.SEND_LOCATION, false);
+                startActivity(intent);
                 break;
             case R.id.telephony:
                 TelephonyFragment extPhone = new TelephonyFragment();
                 getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
                 break;
-            case R.id.show_location:
-                if (!BuildConfig.FLAVOR.equals("fdroid")) {
-                    Intent intent = new Intent(this, GeoLocation.class);
-                    intent.putExtra(GeoLocation.SEND_LOCATION, false);
-                    startActivity(intent);
-                }
+            case R.id.muc_bookmarks:
+                ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
+                chatRoomBookmarksDialog.show();
+                break;
+            case R.id.add_contact:
+                startActivity(AddContactActivity.class);
                 break;
             case R.id.main_settings:
                 startActivity(SettingsActivity.class);
                 break;
             case R.id.account_settings:
                 startActivity(AccountsListActivity.class);
+                break;
+            case R.id.tts_settings:
+                Intent ttsIntent = new Intent(this, TTSActivity.class);
+                startActivity(ttsIntent);
+                break;
+            case R.id.show_hide_offline:
+                boolean isShowOffline = !ConfigurationUtils.isShowOffline(); // toggle
+                MetaContactListAdapter.presenceFilter.setShowOffline(isShowOffline);
+                Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
+                if (clf instanceof ContactListFragment) {
+                    MetaContactListAdapter contactListAdapter = ((ContactListFragment) clf).getContactListAdapter();
+                    contactListAdapter.filterData("");
+                }
+                int itemId = isShowOffline
+                        ? R.string.service_gui_CONTACTS_OFFLINE_HIDE
+                        : R.string.service_gui_CONTACTS_OFFLINE_SHOW;
+                mShowHideOffline.setTitle(itemId);
+
                 break;
             case R.id.notification_setting:
                 openNotificationSettings();
@@ -345,15 +317,13 @@ public class MainMenuActivity extends ExitMenuActivity
                 else
                     globalStatusService.publishStatus(GlobalStatusEnum.OFFLINE);
                 break;
-            case R.id.about:
-                startActivity(About.class);
-                // showAboutDialog();
-                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
     }
+
+    //========================================================
 
     /**
      * The <tt>VideoBridgeProviderMenuItem</tt> for each protocol provider.
@@ -380,11 +350,11 @@ public class MainMenuActivity extends ExitMenuActivity
          */
         public void actionPerformed()
         {
-            ConferenceInviteDialog inviteDialog = null;
+            ConferenceCallInviteDialog inviteDialog = null;
             if (preselectedProvider != null)
-                inviteDialog = new ConferenceInviteDialog(mContext, preselectedProvider, true);
+                inviteDialog = new ConferenceCallInviteDialog(mContext, preselectedProvider, true);
             else if (videoBridgeProviders != null)
-                inviteDialog = new ConferenceInviteDialog(mContext, videoBridgeProviders, true);
+                inviteDialog = new ConferenceCallInviteDialog(mContext, videoBridgeProviders, true);
 
             if (inviteDialog != null)
                 inviteDialog.show();

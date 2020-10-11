@@ -74,7 +74,7 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
-            if (call.getCallID().equals(callid))
+            if (call.getCallId().equals(callid))
                 return call;
         }
         return null;
@@ -100,7 +100,7 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
     }
 
     /**
-     * Returns the {@link CallPeerJabberImpl} whose session-init's ID has the specified IQ <tt>id</tt>.
+     * Returns the {@link CallPeerJabberImpl} whose session-initiate's ID has the specified IQ <tt>id</tt>.
      *
      * @param id the IQ <tt>id</tt> we're looking for.
      * @return the {@link CallPeerJabberImpl} with the specified <tt>id</tt>

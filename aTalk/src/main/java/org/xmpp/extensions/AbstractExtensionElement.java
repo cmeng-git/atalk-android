@@ -5,13 +5,12 @@
  */
 package org.xmpp.extensions;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
-import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -35,16 +34,14 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @param src the <tt>AbstractExtensionElement</tt> to be cloned
      * @return a new <tt>AbstractExtensionElement</tt> instance of the run-time type of the specified
      * <tt>src</tt> which has the same attributes, namespace and text
-     * @throws Exception if an error occurs during the cloning of the specified <tt>src</tt>
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressWarnings("unchecked")
     public static <T extends AbstractExtensionElement> T clone(T src)
     {
-        T dst = null;
+        T dst;
         try {
-            dst = (T) src.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            dst = (T) src.getClass().getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
@@ -69,7 +66,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * The name space of this packet extension. Should remain <tt>null</tt> if there's no namespace
      * associated with this element.
      */
-    private final String elementName;
+    private final String element;
 
     /**
      * A map of all attributes that this extension is currently using.
@@ -90,11 +87,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Creates an {@link AbstractExtensionElement} instance for the specified <tt>namespace</tt> and <tt>elementName</tt> .
      *
      * @param namespace the XML namespace for this element.
-     * @param elementName the name of the element
+     * @param element the name of the element
      */
-    protected AbstractExtensionElement(String elementName, String namespace)
+    protected AbstractExtensionElement(String element, String namespace)
     {
-        this.elementName = elementName;
+        this.element = element;
         this.namespace = namespace;
     }
 
@@ -103,9 +100,10 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return the name of the <tt>encryption</tt> element.
      */
+    @Override
     public String getElementName()
     {
-        return elementName;
+        return element;
     }
 
     /**
@@ -123,6 +121,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return the XML namespace for this element or <tt>null</tt> if the element does not live in a namespace of its own.
      */
+    @Override
     public String getNamespace()
     {
         return namespace;
@@ -133,10 +132,10 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return an XML representation of this extension.
      */
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.prelude(getElementName(), getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
@@ -148,9 +147,8 @@ public abstract class AbstractExtensionElement implements ExtensionElement
         String text = getText();
         XmlStringBuilder childBuilder = getChildElementBuilder();
 
-
         if (childElements.isEmpty() && childBuilder.length() == 0) {
-            if (StringUtils.isNullOrEmpty(text)) {
+            if (StringUtils.isEmpty(text)) {
                 return xml.closeEmptyElement();
             }
             else
@@ -159,7 +157,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
         else {
             synchronized (childElements) {
                 if (childElements.isEmpty() && (childBuilder.length() == 0)
-                        && (StringUtils.isNullOrEmpty(text))) {
+                        && (StringUtils.isEmpty(text))) {
                     return xml.closeEmptyElement();
                 }
                 else {
@@ -170,10 +168,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
                 }
             }
         }
-
-        // text content if any
-        if(!StringUtils.isNullOrEmpty(text))
-            xml.optEscape(text);
+        xml.optEscape(text);
 
         xml.closeElement(getElementName());
         return xml;
@@ -181,6 +176,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
 
     /**
      * This method must be overwritten by subclasses to create their child content.
+     *
      * @return the xml builder for the content.
      */
     public XmlStringBuilder getChildElementBuilder()

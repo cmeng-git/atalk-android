@@ -21,8 +21,7 @@ import org.atalk.service.neomedia.control.FECDecoderControl;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.*;
 import org.atalk.service.neomedia.stats.TrackStats;
-import org.atalk.util.LRUCache;
-import org.atalk.util.TimeUtils;
+import org.atalk.util.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -924,7 +923,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
         MediaStreamTarget mediaStreamTarget = mediaStreamImpl.getTarget();
 
         // Gets this stream IP address endpoint. Stops if the endpoint is disconnected.
-        return (mediaStreamTarget == null)
+        return ((mediaStreamTarget == null) || (mediaStreamTarget.getDataAddress() == null))
                 ? null : mediaStreamTarget.getDataAddress().getAddress().getHostAddress();
     }
 
@@ -1289,7 +1288,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     public void srReceived(RTCPSRPacket sr)
     {
         if (sr != null) {
-            long emissionTime = TimeUtils.toNtpShortFormat(TimeUtils.constuctNtp(sr.ntptimestampmsw, sr.ntptimestamplsw));
+            long emissionTime = TimeUtils.toNtpShortFormat(TimeUtils.constructNtp(sr.ntptimestampmsw, sr.ntptimestamplsw));
 
             long arrivalTime = TimeUtils.toNtpShortFormat(TimeUtils.toNtpTime(System.currentTimeMillis()));
             emission2reception.put(emissionTime, arrivalTime);

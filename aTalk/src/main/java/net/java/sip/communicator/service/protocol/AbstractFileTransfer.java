@@ -33,9 +33,10 @@ public abstract class AbstractFileTransfer implements FileTransfer
     final private Vector<FileTransferProgressListener> progressListeners = new Vector<>();
 
     /*
-     * current Status for keeping track if there is changes
+     * current file transfer Status for keeping track if there is changes
      */
-    private int mStatus;
+    protected int mStatus;
+
     /*
      * current progress of byte transferred for keeping track if there is changes
      */
@@ -109,6 +110,9 @@ public abstract class AbstractFileTransfer implements FileTransfer
      * Returns the current status of the transfer. This information could be used from the user
      * interface to show a progress bar indicating the file transfer status.
      *
+     * @see FileTransferStatusChangeEvent (Active xfer status)
+     * @see net.java.sip.communicator.service.filehistory.FileRecord (End of xfer status)
+     *
      * @return the current status of the transfer
      */
     public int getStatus()
@@ -127,7 +131,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occured.
+     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occurred.
      *
      * @param newStatus the new status
      * @param reason the reason of the status change

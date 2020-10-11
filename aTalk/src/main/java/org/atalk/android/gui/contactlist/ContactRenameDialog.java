@@ -15,12 +15,13 @@ import android.widget.TextView;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactListException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiDialogFragment;
-import org.atalk.util.StringUtils;
 
 import timber.log.Timber;
 
@@ -69,12 +70,12 @@ public class ContactRenameDialog extends OSGiDialogFragment
 
         mEditName = contentView.findViewById(R.id.editName);
         String contactNick = getArguments().getString(CONTACT_NICK);
-        if (!StringUtils.isNullOrEmpty(contactNick))
+        if (StringUtils.isNotEmpty(contactNick))
             mEditName.setText(contactNick);
 
         contentView.findViewById(R.id.rename).setOnClickListener(v -> {
-            String displayName = mEditName.getText().toString().trim();
-            if (displayName.length() == 0) {
+            String displayName = ViewUtil.toString(mEditName);
+            if (displayName == null) {
                 showErrorMessage(getString(R.string.service_gui_CONTACT_NAME_EMPTY));
             }
             else

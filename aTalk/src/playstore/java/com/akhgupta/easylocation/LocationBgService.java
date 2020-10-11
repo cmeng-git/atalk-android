@@ -2,35 +2,26 @@ package com.akhgupta.easylocation;
 
 import android.app.Service;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.IBinder;
-import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import android.location.*;
+import android.os.*;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.*;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import org.atalk.android.aTalkApp;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
-public class LocationBgService extends Service {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+public class LocationBgService extends Service
+{
     private final String TAG = LocationBgService.class.getSimpleName();
     private static final long NO_FALLBACK = 0;
     private boolean mAddressRequest;
@@ -62,19 +53,23 @@ public class LocationBgService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(Intent intent)
+    {
         return null;
     }
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
 
         mServiceHandler = new Handler();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mLocationCallback = new LocationCallback() {
+        mLocationCallback = new LocationCallback()
+        {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
+            public void onLocationResult(LocationResult locationResult)
+            {
                 super.onLocationResult(locationResult);
                 onNewLocation(locationResult.getLastLocation());
             }
@@ -83,7 +78,8 @@ public class LocationBgService extends Service {
 
     @SuppressWarnings("MissingPermission")
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
         super.onStartCommand(intent, flags, startId);
 
         String actionIintent = intent.getAction();
@@ -101,7 +97,8 @@ public class LocationBgService extends Service {
             if (mLocationRequest == null)
                 throw new IllegalStateException("Location request can't be null");
             requestLocationUpdates();
-        } else if (actionIintent.equals(AppConstants.ACTION_LOCATION_FETCH_STOP)) {
+        }
+        else if (actionIintent.equals(AppConstants.ACTION_LOCATION_FETCH_STOP)) {
             stopLocationService();
         }
 
@@ -110,7 +107,8 @@ public class LocationBgService extends Service {
     }
 
     @SuppressWarnings("MissingPermission")
-    private void requestLocationUpdates() {
+    private void requestLocationUpdates()
+    {
         Log.i(TAG, "Requesting location updates");
         if (mLocationRequest != null) {
             startFallbackToLastLocationTimer();
@@ -126,26 +124,33 @@ public class LocationBgService extends Service {
     }
 
     @SuppressWarnings("MissingPermission")
-    private void startFallbackToLastLocationTimer() {
+    private void startFallbackToLastLocationTimer()
+    {
         if (fallBackToLastLocationTime != NO_FALLBACK) {
             mServiceHandler.removeCallbacksAndMessages(null);
-            mServiceHandler.postDelayed(new Runnable() {
+            mServiceHandler.postDelayed(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     getLastLocation();
                 }
             }, fallBackToLastLocationTime);
         }
     }
 
-    private void getLastLocation() {
+    private void getLastLocation()
+    {
         try {
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<Location> task) {
+                public void onComplete(@NonNull Task<Location> task)
+                {
                     if (task.isSuccessful() && task.getResult() != null) {
                         mLocation = task.getResult();
-                    } else {
+                    }
+                    else {
                         aTalkApp.showToastMessage("Failed to get GPS location information!");
                         Log.w(TAG, "Failed to get location.");
                     }
@@ -167,7 +172,8 @@ public class LocationBgService extends Service {
      * Removes location updates. Note that in this sample we merely log the
      * {@link SecurityException}.
      */
-    private void stopLocationService() {
+    private void stopLocationService()
+    {
         if (mServiceHandler != null)
             mServiceHandler.removeCallbacksAndMessages(null);
 
@@ -182,7 +188,8 @@ public class LocationBgService extends Service {
         stopSelf();
     }
 
-    private void onNewLocation(Location location) {
+    private void onNewLocation(Location location)
+    {
         Log.i(TAG, "New location received: " + location);
         mLocation = location;
         if (location != null) {
@@ -199,7 +206,8 @@ public class LocationBgService extends Service {
             }
             intent.putExtra(IntentKey.ADDRESS, locAddress);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        } else {
+        }
+        else {
             Intent intent = new Intent();
             intent.setAction(AppConstants.INTENT_NO_LOCATION_RECEIVED);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -212,7 +220,8 @@ public class LocationBgService extends Service {
     /**
      * To get address location from coordinates
      */
-    private String getLocationAddress(Location loc) {
+    private String getLocationAddress(Location loc)
+    {
         String locAddress = "No service available or no address found";
         Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
         List<Address> addresses;

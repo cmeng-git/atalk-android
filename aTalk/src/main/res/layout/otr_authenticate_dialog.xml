@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/theme_background"
+        android:background="?attr/colorBackground"
         android:padding="@dimen/screen_padding">
 
         <TextView
@@ -51,7 +51,6 @@
                 android:id="@+id/actionTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:gravity="center_vertical"
                 android:text="@string/plugin_otr_authbuddydialog_VERIFY_ACTION" />

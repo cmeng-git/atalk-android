@@ -14,22 +14,21 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.SourceExtensionElement;
+import org.xmpp.extensions.colibri.SourceExtension;
 import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.JingleContent.Senders;
 import org.xmpp.extensions.jingle.element.*;
-import org.xmpp.extensions.jitsimeet.MediaPresenceExtensionElement;
-import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
+import org.xmpp.extensions.jingle.element.JingleContent.Senders;
+import org.xmpp.extensions.jitsimeet.SSRCInfoExtension;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
@@ -59,7 +58,7 @@ public class CallPeerJabberImpl
     private final Object candSyncRoot = new Object();
 
     /**
-     * If the content-add does not contains candidates.
+     * If the content-add does not contain candidates.
      */
     private boolean contentAddWithNoCands = false;
 
@@ -67,6 +66,11 @@ public class CallPeerJabberImpl
      * If we have processed the session initiate.
      */
     private boolean sessionInitiateProcessed = false;
+
+    /**
+     * If we have processed the session accept.
+     */
+    private boolean sessionAcceptProcessed = false;
 
     /**
      * Synchronization object. Jingle transport-info processes are hold in waiting state until
@@ -99,8 +103,7 @@ public class CallPeerJabberImpl
     private DiscoverInfo discoverInfo;
 
     /**
-     * The indicator which determines whether this peer has initiated the
-     * session.
+     * The indicator which determines whether this peer has initiated the session.
      */
     private boolean initiator = false;
 
@@ -114,7 +117,7 @@ public class CallPeerJabberImpl
      */
     private Jingle sessionInitIQ;
 
-    private XMPPTCPConnection mConnection;
+    private XMPPConnection mConnection;
 
     /**
      * Creates a new call peer with address <tt>peerAddress</tt>.
@@ -153,20 +156,22 @@ public class CallPeerJabberImpl
         Iterable<JingleContent> answer;
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
 
+        // cmeng: added to end ring tone when call from Conversations
+        setState(CallPeerState.CONNECTING_INCOMING_CALL);
         try {
             mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
             answer = mediaHandler.generateSessionAccept();
-            for (JingleContent c : answer)
+            for (JingleContent c : answer) {
                 setSenders(getMediaType(c), c.getSenders());
+            }
         } catch (Exception exc) {
-            Timber.i(exc, "Failed to answer an incoming call");
+            Timber.e(exc, "Failed to answer an incoming call");
 
             // send an error response
             String reasonText = "Error: " + exc.getMessage();
             Jingle errResp = JingleUtil.createSessionTerminate(
                     mConnection.getUser(), sessionInitIQ.getInitiator(), sessionInitIQ.getSid(),
                     Reason.FAILED_APPLICATION, reasonText);
-
 
             setState(CallPeerState.FAILED, reasonText);
             try {
@@ -178,16 +183,14 @@ public class CallPeerJabberImpl
             return;
         }
 
-        Jingle response = JingleUtil.createSessionAccept(
-                mConnection.getUser(), sessionInitIQ.getInitiator(), getSid(), answer);
-
-
-        // send the packet first and start the stream later in case the media relay needs to see it
-        // before letting hole punching techniques through.
+        // Send the session-accept first and start the stream later in case the
+        // media relay needs to see it before letting hole punching techniques through.
+        // Timber.w(new Exception("Create session accept"));
+        Jingle response = JingleUtil.createSessionAccept(mConnection.getUser(), sessionInitIQ, answer);
         try {
             mConnection.sendStanza(response);
         } catch (NotConnectedException | InterruptedException e1) {
-            throw new OperationFailedException("Could not send session accept",
+            throw new OperationFailedException("Could not send session-accept",
                     OperationFailedException.REGISTRATION_REQUIRED, e1);
         }
 
@@ -260,12 +263,14 @@ public class CallPeerJabberImpl
             return;
         }
 
-        setState(failed ? CallPeerState.FAILED : CallPeerState.DISCONNECTED, reasonText);
-        Jingle responseIQ = null;
+        // User hang up call, set reason code == NORMAL_CALL_CLEARING to stop missed call notification fired.
+        setState(failed ? CallPeerState.FAILED : CallPeerState.DISCONNECTED, reasonText,
+                CallPeerChangeEvent.NORMAL_CALL_CLEARING);
 
+        Jingle responseIQ = null;
         if (prevPeerState.equals(CallPeerState.CONNECTED)
                 || CallPeerState.isOnHold(prevPeerState)) {
-            responseIQ = JingleUtil.createSessionTerminateSuccess(mProtocolProvider.getOurJID(), mPeerJid, getSid());
+            responseIQ = JingleUtil.createSessionTerminateSuccess(mPPS.getOurJID(), mPeerJid, getSid());
         }
         else if (CallPeerState.CONNECTING.equals(prevPeerState)
                 || CallPeerState.CONNECTING_WITH_EARLY_MEDIA.equals(prevPeerState)
@@ -280,10 +285,10 @@ public class CallPeerJabberImpl
                     return;
                 }
             }
-            responseIQ = JingleUtil.createSessionTerminateCancel(mProtocolProvider.getOurJID(), mPeerJid, getSid());
+            responseIQ = JingleUtil.createSessionTerminateCancel(mPPS.getOurJID(), mPeerJid, getSid());
         }
         else if (prevPeerState.equals(CallPeerState.INCOMING_CALL)) {
-            responseIQ = JingleUtil.createSessionTerminateBusy(mProtocolProvider.getOurJID(), mPeerJid, getSid());
+            responseIQ = JingleUtil.createSessionTerminateBusy(mPPS.getOurJID(), mPeerJid, getSid());
         }
         else if (prevPeerState.equals(CallPeerState.BUSY)
                 || prevPeerState.equals(CallPeerState.FAILED)) {
@@ -295,8 +300,7 @@ public class CallPeerJabberImpl
 
         if (responseIQ != null) {
             if (reasonOtherExtension != null) {
-                JingleReason reason
-                        = responseIQ.getExtension(JingleReason.ELEMENT, JingleReason.NAMESPACE);
+                JingleReason reason = responseIQ.getExtension(JingleReason.class);
 
                 if (reason != null) {
                     reason.setOtherExtension(reasonOtherExtension);
@@ -312,12 +316,13 @@ public class CallPeerJabberImpl
     /**
      * Creates and sends a session-initiate {@link Jingle}.
      *
-     * @param sessionInitiateExtensions a collection of additional and optional <tt>ExtensionElement</tt>s to be
-     * added to the <tt>session-initiate</tt> {@link Jingle} which is to initiate the session with this
-     * <tt>CallPeerJabberImpl</tt>
+     * @param sessionInitiateExtensions a collection of additional and optional <tt>ExtensionElement</tt>s
+     * to be added to the <tt>session-initiate</tt>;
+     * {@link Jingle} which is to initiate the session with this <tt>CallPeerJabberImpl</tt>
+     * @param sid The session-initiate sid, must be the same as in Jingle Message id if call is init from 'proceed'
      * @throws OperationFailedException exception
      */
-    protected synchronized void initiateSession(Iterable<ExtensionElement> sessionInitiateExtensions)
+    protected synchronized void initiateSession(Iterable<ExtensionElement> sessionInitiateExtensions, String sid)
             throws OperationFailedException
     {
         initiator = false;
@@ -326,8 +331,7 @@ public class CallPeerJabberImpl
         List<JingleContent> offer = getMediaHandler().createContentList();
 
         synchronized (sidSyncRoot) {
-            sessionInitIQ = JingleUtil.createSessionInitiate(mProtocolProvider.getOurJID(),
-                    mPeerJid, Jingle.generateSid(), offer);
+            sessionInitIQ = JingleUtil.createSessionInitiate(mPPS.getOurJID(), mPeerJid, sid, offer);
 
             if (cancelled) {
                 // we cancelled the call too early so no need to send the session-initiate to peer
@@ -351,8 +355,8 @@ public class CallPeerJabberImpl
     }
 
     /**
-     * Notifies this instance that a specific <tt>ColibriConferenceIQ</tt> has been received. This
-     * <tt>CallPeerJabberImpl</tt> uses the part of the information provided in the specified
+     * Notifies this instance that a specific <tt>ColibriConferenceIQ</tt> has been received.
+     * This <tt>CallPeerJabberImpl</tt> uses the part of the information provided in the specified
      * <tt>conferenceIQ</tt> which concerns it only.
      *
      * @param conferenceIQ the <tt>ColibriConferenceIQ</tt> which has been received
@@ -389,7 +393,7 @@ public class CallPeerJabberImpl
             // Send an error response.
             String reason = "Error: " + e.getMessage();
             Jingle errResp = JingleUtil.createSessionTerminate(
-                    mProtocolProvider.getOurJID(), mPeerJid, sessionInitIQ.getSid(),
+                    mPPS.getOurJID(), mPeerJid, sessionInitIQ.getSid(),
                     Reason.INCOMPATIBLE_PARAMETERS, reason);
 
             setState(CallPeerState.FAILED, reason);
@@ -438,7 +442,7 @@ public class CallPeerJabberImpl
                     {
                         try {
                             synchronized (candSyncRoot) {
-                                candSyncRoot.wait();
+                                candSyncRoot.wait(1000);
                                 contentAddWithNoCands = false;
                             }
                             processContentAdd(content);
@@ -458,14 +462,12 @@ public class CallPeerJabberImpl
         } catch (Exception e) {
             Timber.w(e, "Exception occurred");
             answerContents = null;
-            contentIQ = JingleUtil.createContentReject(mProtocolProvider.getOurJID(),
-                    mPeerJid, getSid(), answerContents);
+            contentIQ = JingleUtil.createContentReject(mPPS.getOurJID(), mPeerJid, getSid(), answerContents);
         }
 
         if (contentIQ == null) {
             /* send content-accept */
-            contentIQ = JingleUtil.createContentAccept(mProtocolProvider.getOurJID(),
-                    mPeerJid, getSid(), answerContents);
+            contentIQ = JingleUtil.createContentAccept(mPPS.getOurJID(), mPeerJid, getSid(), answerContents);
             for (JingleContent c : answerContents)
                 setSenders(getMediaType(c), c.getSenders());
         }
@@ -502,7 +504,7 @@ public class CallPeerJabberImpl
         MediaType mediaType = getMediaType(ext);
 
         try {
-            boolean modify = (ext.getFirstChildOfType(RtpDescriptionExtensionElement.class) != null);
+            boolean modify = (ext.getFirstChildOfType(RtpDescriptionExtension.class) != null);
             getMediaHandler().reinitContent(ext.getName(), ext, modify);
             setSenders(mediaType, ext.getSenders());
 
@@ -514,8 +516,7 @@ public class CallPeerJabberImpl
             // Send an error response.
             String reason = "Error: " + e.getMessage();
             Jingle errResp = JingleUtil.createSessionTerminate(
-                    mProtocolProvider.getOurJID(), mPeerJid, sessionInitIQ.getSid(),
-                    Reason.INCOMPATIBLE_PARAMETERS, reason);
+                    mPPS.getOurJID(), mPeerJid, sessionInitIQ.getSid(), Reason.INCOMPATIBLE_PARAMETERS, reason);
 
             setState(CallPeerState.FAILED, reason);
             mConnection.sendStanza(errResp);
@@ -563,7 +564,6 @@ public class CallPeerJabberImpl
                 if (MediaType.VIDEO.equals(mediaType))
                     videoContentRemoved = true;
             }
-
             /*
              * TODO XEP-0166: Jingle says: If the content-remove results in zero content definitions
              * for the session, the entity that receives the content-remove SHOULD send a
@@ -590,6 +590,11 @@ public class CallPeerJabberImpl
     public void processSessionAccept(Jingle sessionInitIQ)
             throws NotConnectedException, InterruptedException
     {
+        if (sessionAcceptProcessed) {
+            Timber.w("Ignore multiple session-accept received from: %s", this);
+            return;
+        }
+
         this.sessionInitIQ = sessionInitIQ;
         /*
          * Session-accept contentList request may contains both audio and video requests e.g.
@@ -597,19 +602,20 @@ public class CallPeerJabberImpl
          * <content creator='initiator' name='video' senders='both'>
          */
         List<JingleContent> contentList = sessionInitIQ.getContents();
-
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
+
         try {
             TransportManagerJabberImpl transportManager = mediaHandler.getTransportManager();
             if (transportManager == null)
                 throw new Exception("No available transport manager to process session-accept!");
 
+            sessionAcceptProcessed = true;
             transportManager.wrapupConnectivityEstablishment();
             mediaHandler.processSessionAcceptContent(contentList);
             for (JingleContent c : contentList)
                 setSenders(getMediaType(c), c.getSenders());
         } catch (Exception exc) {
-            Timber.i(exc, "Failed to process a session-accept");
+            Timber.w(exc, "Failed to process a session-accept");
 
             // send an error response;
             Jingle errResp = JingleUtil.createSessionTerminate(
@@ -638,9 +644,9 @@ public class CallPeerJabberImpl
     /**
      * Handles the specified session <tt>info</tt> packet according to its content.
      *
-     * @param info the {@link SessionInfoExtensionElement} that we just received.
+     * @param info the {@link SessionInfoExtension} that we just received.
      */
-    public void processSessionInfo(SessionInfoExtensionElement info)
+    public void processSessionInfo(SessionInfoExtension info)
             throws NotConnectedException, InterruptedException
     {
         switch (info.getType()) {
@@ -675,27 +681,27 @@ public class CallPeerJabberImpl
         this.sessionInitIQ = sessionInitIQ;
         this.initiator = true;
 
-        // This is the SDP offer that came from the initial session-initiate. Contrary to SIP,
-        // we are guaranteed to have content because
-        // XEP-0166says: "A session consists of at least one content type at a time."
+        // This is the SDP offer that came from the initial session-initiate.
+        // Contrary to SIP, we are guaranteed to have content because
+        // XEP-0166 says: "A session consists of at least one content type at a time."
         List<JingleContent> offer = sessionInitIQ.getContents();
         try {
             getMediaHandler().processOffer(offer);
-            CoinExtensionElement coin = null;
 
+            CoinExtension coin = null;
             for (ExtensionElement ext : sessionInitIQ.getExtensions()) {
-                if (ext.getElementName().equals(CoinExtensionElement.ELEMENT)) {
-                    coin = (CoinExtensionElement) ext;
+                if (ext.getElementName().equals(CoinExtension.ELEMENT)) {
+                    coin = (CoinExtension) ext;
                     break;
                 }
             }
 
-            /* does the call peer acts as a conference focus ? */
+            /* Does the call peer acts as a conference focus ? */
             if (coin != null) {
                 setConferenceFocus(Boolean.parseBoolean((String) coin.getAttribute("isfocus")));
             }
         } catch (Exception ex) {
-            Timber.i(ex, "Failed to process an incoming session initiate");
+            Timber.w(ex, "Failed to process an incoming session initiate");
 
             // send an error response;
             String reasonText = "Error: " + ex.getMessage();
@@ -716,11 +722,11 @@ public class CallPeerJabberImpl
             retrieveDiscoveryInfo(calleeURI);
         }
 
-        // send a ringing response
+        // send a ringing response; cmeng??? what about auto-answer
         Timber.log(TimberLog.FINER, "Will send ringing response.");
         mConnection.sendStanza(JingleUtil.createRinging(sessionInitIQ));
 
-        // set flag to indicates that session-initiate process has completed.
+        // set flag to indicate that session-initiate process has completed.
         synchronized (sessionInitiateSyncRoot) {
             sessionInitiateProcessed = true;
             // cmeng - Importance: must notifyAll as there are multiple transport-info's on waiting
@@ -733,11 +739,9 @@ public class CallPeerJabberImpl
         if ((discoverInfo != null)
                 && discoverInfo.containsFeature(ProtocolProviderServiceJabberImpl.URN_IETF_RFC_3264)) {
             mConnection.sendStanza(JingleUtil.createDescriptionInfo(
-                    mConnection.getUser(),
-                    sessionInitIQ.getInitiator(),
-                    sessionInitIQ.getSid(),
-                    getMediaHandler().getLocalContentList()));
+                    mConnection.getUser(), sessionInitIQ, getMediaHandler().getLocalContentList()));
         }
+
         // process members if any
         processSourceAdd(sessionInitIQ);
     }
@@ -771,18 +775,18 @@ public class CallPeerJabberImpl
      * @throws OperationFailedException if anything goes wrong while processing the specified <tt>transfer</tt>
      * packet (extension)
      */
-    public void processTransfer(TransferExtensionElement transfer)
+    public void processTransfer(TransferExtension transfer)
             throws OperationFailedException
     {
         Jid attendantAddress = transfer.getFrom();
         if (attendantAddress == null) {
-            throw new OperationFailedException("Session transfer must contain a \'from\' attribute value.",
+            throw new OperationFailedException("Session transfer must contain a 'from' attribute value.",
                     OperationFailedException.ILLEGAL_ARGUMENT);
         }
 
         Jid calleeAddress = transfer.getTo();
         if (calleeAddress == null) {
-            throw new OperationFailedException("Session transfer must contain a \'to\' attribute value.",
+            throw new OperationFailedException("Session transfer must contain a 'to' attribute value.",
                     OperationFailedException.ILLEGAL_ARGUMENT);
         }
 
@@ -796,9 +800,9 @@ public class CallPeerJabberImpl
         }
 
         OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
-                mProtocolProvider.getOperationSet(OperationSetBasicTelephony.class);
-        CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony);
-        TransferExtensionElement calleeTransfer = new TransferExtensionElement();
+                mPPS.getOperationSet(OperationSetBasicTelephony.class);
+        CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony, transfer.getSid());
+        TransferExtension calleeTransfer = new TransferExtension();
         String sid = transfer.getSid();
 
         calleeTransfer.setFrom(attendantAddress);
@@ -811,37 +815,42 @@ public class CallPeerJabberImpl
     }
 
     /**
-     * Processes the <tt>transport-info</tt> {@link Jingle}.
+     * Processes the offered remote <tt>transport-info</tt> {@link Jingle}.
      *
-     * @param jingle the <tt>transport-info</tt> {@link Jingle} to process
+     * @param jingle containing the <tt>transport-info</tt> {@link Jingle} to be processed.
      */
-    public void processTransportInfo(Jingle jingle)
+    public void processOfferTransportInfo(Jingle jingle)
             throws NotConnectedException, InterruptedException
     {
-        /*
-         * The transport-info action is used to exchange transport candidates so it only concerns the mediaHandler.
-         */
+        // The transport-info is used to exchange transport candidates for mediaHandler.
         try {
             if (isInitiator()) {
                 synchronized (sessionInitiateSyncRoot) {
                     if (!sessionInitiateProcessed) {
                         try {
-                            // wait for session initialization to complete before start transport-info handling
-                            sessionInitiateSyncRoot.wait();
+                            // wait for session-initiate (1000ms max) to complete before start transport-info handling
+                            sessionInitiateSyncRoot.wait(1000);
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
                     }
                 }
             }
-            getMediaHandler().processTransportInfo(jingle.getContents());
+
+            List<JingleContent> jingleContents = jingle.getContents();
+            List<String> media = new ArrayList<>();
+            for (JingleContent jingleContent : jingleContents) {
+                media.add(jingleContent.getName());
+            }
+            Timber.d("### Processing Jingle IQ (transport-info) for media: %s", media);
+            getMediaHandler().processTransportInfo(jingleContents);
         } catch (OperationFailedException ofe) {
             Timber.w(ofe, "Failed to process an incoming transport-info");
 
             // send an error response
             String reasonText = "Error: " + ofe.getMessage();
             Jingle errResp = JingleUtil.createSessionTerminate(
-                    mProtocolProvider.getOurJID(),
+                    mPPS.getOurJID(),
                     mPeerJid,
                     sessionInitIQ.getSid(),
                     Reason.GENERAL_ERROR, reasonText);
@@ -851,7 +860,7 @@ public class CallPeerJabberImpl
             return;
         }
         synchronized (candSyncRoot) {
-            candSyncRoot.notify();
+            candSyncRoot.notifyAll();
         }
     }
 
@@ -879,7 +888,7 @@ public class CallPeerJabberImpl
         // spoiling it all with an exception while sending the packet :).
         reevalLocalHoldStatus();
         Jingle onHoldIQ = JingleUtil.createSessionInfo(
-                mProtocolProvider.getOurJID(),
+                mPPS.getOurJID(),
                 mPeerJid,
                 getSid(),
                 type);
@@ -905,8 +914,7 @@ public class CallPeerJabberImpl
             return;
         }
 
-        Jingle contentIQ = JingleUtil.createContentAdd(mProtocolProvider.getOurJID(),
-                mPeerJid, getSid(), contents);
+        Jingle contentIQ = JingleUtil.createContentAdd(mPPS.getOurJID(), mPeerJid, getSid(), contents);
         mConnection.sendStanza(contentIQ);
     }
 
@@ -917,19 +925,17 @@ public class CallPeerJabberImpl
     public void sendCoinSessionInfo()
             throws NotConnectedException, InterruptedException
     {
-        Jingle sessionInfoIQ = JingleUtil.createSessionInfo(mProtocolProvider.getOurJID(),
-                mPeerJid, getSid());
-        CoinExtensionElement coinExt = new CoinExtensionElement(getCall().isConferenceFocus());
+        Jingle sessionInfoIQ = JingleUtil.createSessionInfo(mPPS.getOurJID(), mPeerJid, getSid());
+        CoinExtension coinExt = new CoinExtension(getCall().isConferenceFocus());
 
         sessionInfoIQ.addExtension(coinExt);
         mConnection.sendStanza(sessionInfoIQ);
     }
 
     /**
-     * Returns the <tt>MediaDirection</tt> that should be set for the content of type
-     * <tt>mediaType</tt> in the Jingle session for this <tt>CallPeer</tt>. If we are the focus of a
-     * conference and are doing RTP translation, takes into account the other <tt>CallPeer</tt>s in
-     * the <tt>Call</tt>.
+     * Returns the <tt>MediaDirection</tt> that should be set for the content of type <tt>mediaType</tt>
+     * in the Jingle session for this <tt>CallPeer</tt>. If we are the focus of a conference and are doing
+     * RTP translation, takes into account the other <tt>CallPeer</tt>s in the <tt>Call</tt>.
      *
      * @param mediaType the <tt>MediaType</tt> for which to return the <tt>MediaDirection</tt>
      * @return the <tt>MediaDirection</tt> that should be used for the content of type
@@ -1038,8 +1044,7 @@ public class CallPeerJabberImpl
             // cmeng: must update local videoSenders for content-modify
             setSenders(MediaType.VIDEO, newSenders);
 
-            Jingle contentIQ = JingleUtil.createContentModify(
-                    mProtocolProvider.getOurJID(), mPeerJid, getSid(), ext);
+            Jingle contentIQ = JingleUtil.createContentModify(mPPS.getOurJID(), mPeerJid, getSid(), ext);
             mConnection.sendStanza(contentIQ);
         }
 
@@ -1077,8 +1082,7 @@ public class CallPeerJabberImpl
         if (senders != null)
             content.setSenders(senders);
 
-        Jingle contentIQ = JingleUtil.createContentModify(mProtocolProvider.getOurJID(),
-                mPeerJid, getSid(), content);
+        Jingle contentIQ = JingleUtil.createContentModify(mPPS.getOurJID(), mPeerJid, getSid(), content);
         mConnection.sendStanza(contentIQ);
 
         try {
@@ -1107,8 +1111,8 @@ public class CallPeerJabberImpl
         content.setCreator(remoteContent.getCreator());
         content.setSenders(remoteContent.getSenders());
 
-        Jingle contentIQ = JingleUtil.createContentRemove(mProtocolProvider.getOurJID(),
-                mPeerJid, getSid(), Collections.singletonList(content));
+        Jingle contentIQ = JingleUtil.createContentRemove(mPPS.getOurJID(), mPeerJid, getSid(),
+                Collections.singletonList(content));
         mConnection.sendStanza(contentIQ);
         mediaHandler.removeContent(remoteContentName);
         setSenders(MediaType.VIDEO, Senders.none);
@@ -1124,7 +1128,7 @@ public class CallPeerJabberImpl
     protected void sendTransportInfo(Iterable<JingleContent> contents)
             throws NotConnectedException, InterruptedException
     {
-        // if the call is canceled, do not start sending candidates in transport-info
+        // if the call is canceled, do not start sending candidates in transport-info.
         if (cancelled)
             return;
 
@@ -1133,7 +1137,7 @@ public class CallPeerJabberImpl
         for (JingleContent content : contents)
             transportInfo.addContent(content);
 
-        transportInfo.setFrom(mProtocolProvider.getOurJID());
+        transportInfo.setFrom(mPPS.getOurJID());
         transportInfo.setTo(mPeerJid);
         transportInfo.setType(IQ.Type.set);
 
@@ -1190,11 +1194,11 @@ public class CallPeerJabberImpl
             throws OperationFailedException
     {
         Jingle transferSessionInfo = new Jingle(JingleAction.SESSION_INFO, getSid());
-        transferSessionInfo.setFrom(mProtocolProvider.getOurJID());
+        transferSessionInfo.setFrom(mPPS.getOurJID());
         transferSessionInfo.setTo(mPeerJid);
         transferSessionInfo.setType(IQ.Type.set);
 
-        TransferExtensionElement transfer = new TransferExtensionElement();
+        TransferExtension transfer = new TransferExtension();
         // Attended transfer.
         if (sid != null) {
             /*
@@ -1202,12 +1206,12 @@ public class CallPeerJabberImpl
              * should be but the examples in "XEP-0251: Jingle Session Transfer" has it in the case
              * of attended transfer.
              */
-            transfer.setFrom(mProtocolProvider.getOurJID());
+            transfer.setFrom(mPPS.getOurJID());
             transfer.setSID(sid);
 
             // Puts on hold the 2 calls before making the attended transfer.
             OperationSetBasicTelephonyJabberImpl basicTelephony
-                    = (OperationSetBasicTelephonyJabberImpl) mProtocolProvider.getOperationSet(OperationSetBasicTelephony.class);
+                    = (OperationSetBasicTelephonyJabberImpl) mPPS.getOperationSet(OperationSetBasicTelephony.class);
             CallPeerJabberImpl callPeer = basicTelephony.getActiveCallPeer(sid);
             if (callPeer != null) {
                 if (!CallPeerState.isOnHold(callPeer.getState())) {
@@ -1246,7 +1250,7 @@ public class CallPeerJabberImpl
         // Implements the SIP behavior: once the transfer is accepted, the current call is closed.
         try {
             hangup(false, message, new JingleReason(Reason.SUCCESS, message,
-                    new TransferredExtensionElement()));
+                    new TransferredExtension()));
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send transfer", 0, e);
         }
@@ -1310,7 +1314,7 @@ public class CallPeerJabberImpl
      * <tt>mediaType</tt> in the Jingle session with this <tt>CallPeer</tt>
      *
      * @param mediaType the <tt>MediaType</tt> for which to get the current value of the <tt>senders</tt> field.
-     * @param senders the value to set
+     * @param senders the value to set.
      */
     private void setSenders(MediaType mediaType, Senders senders)
     {
@@ -1375,10 +1379,11 @@ public class CallPeerJabberImpl
                 continue;
             }
 
-            RtpDescriptionExtensionElement rtpDesc = JingleUtils.getRtpDescription(c);
-            for (MediaPresenceExtensionElement.Source src
-                    : rtpDesc.getChildExtensionsOfType(MediaPresenceExtensionElement.Source.class)) {
-                SSRCInfoExtensionElement ssrcInfo = src.getFirstChildOfType(SSRCInfoExtensionElement.class);
+            RtpDescriptionExtension rtpDesc = JingleUtils.getRtpDescription(c);
+
+            // for (MediaPresenceExtension.Source src : rtpDesc.getChildExtensionsOfType(MediaPresenceExtension.Source.class)) {
+            for (SourceExtension src : rtpDesc.getChildExtensionsOfType(SourceExtension.class)) {
+                SSRCInfoExtension ssrcInfo = src.getFirstChildOfType(SSRCInfoExtension.class);
                 if (ssrcInfo == null)
                     continue;
 
@@ -1391,7 +1396,7 @@ public class CallPeerJabberImpl
                     member = new AbstractConferenceMember(this, owner.toString());
                     this.addConferenceMember(member);
                 }
-                member.setAudioSsrc(Long.valueOf(src.getSSRC()));
+                member.setAudioSsrc(src.getSSRC());
             }
         }
     }
@@ -1412,9 +1417,9 @@ public class CallPeerJabberImpl
                 continue;
             }
 
-            RtpDescriptionExtensionElement rtpDesc = JingleUtils.getRtpDescription(c);
-            for (SourceExtensionElement src : rtpDesc.getChildExtensionsOfType(SourceExtensionElement.class)) {
-                SSRCInfoExtensionElement ssrcInfo = src.getFirstChildOfType(SSRCInfoExtensionElement.class);
+            RtpDescriptionExtension rtpDesc = JingleUtils.getRtpDescription(c);
+            for (SourceExtension src : rtpDesc.getChildExtensionsOfType(SourceExtension.class)) {
+                SSRCInfoExtension ssrcInfo = src.getFirstChildOfType(SSRCInfoExtension.class);
 
                 if (ssrcInfo == null)
                     continue;
@@ -1470,7 +1475,7 @@ public class CallPeerJabberImpl
     public Contact getContact()
     {
         OperationSetPresence presence = getProtocolProvider().getOperationSet(OperationSetPresence.class);
-        return (presence == null) ? null : presence.findContactByID(getAddress());
+        return (presence == null) ? null : presence.findContactByJid(mPeerJid);
     }
 
     /**
@@ -1528,7 +1533,7 @@ public class CallPeerJabberImpl
     private void retrieveDiscoveryInfo(Jid calleeURI)
     {
         try {
-            DiscoverInfo discoveryInfo = mProtocolProvider.getDiscoveryManager().discoverInfo(calleeURI);
+            DiscoverInfo discoveryInfo = mPPS.getDiscoveryManager().discoverInfo(calleeURI);
             if (discoveryInfo != null)
                 setDiscoveryInfo(discoveryInfo);
         } catch (XMPPException

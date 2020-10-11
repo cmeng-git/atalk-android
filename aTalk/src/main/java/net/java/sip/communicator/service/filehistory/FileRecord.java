@@ -8,9 +8,10 @@ package net.java.sip.communicator.service.filehistory;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 
+import org.atalk.android.gui.chat.ChatMessage;
+
 import java.io.File;
-import java.util.Date;
-import java.util.EventObject;
+import java.util.*;
 
 /**
  * Structure used for encapsulating data when writing or reading File History Data.
@@ -24,57 +25,72 @@ public class FileRecord extends EventObject
      * Direction of the transfer: out
      */
     public final static String OUT = "out";
-
     /**
      * Direction of the transfer: in
      */
     public final static String IN = "in";
 
+    /* ===============================================================
+     File transfer status - save in message status for file transfer
+      ===============================================================*/
     /**
      * Status indicating that the file transfer has been completed.
      */
-    public static final String COMPLETED = "completed";
-
-    /**
-     * Status indicating that the file transfer has been canceled.
-     */
-    public static final String CANCELED = "canceled";
-
+    public static final int STATUS_COMPLETED = 10;
     /**
      * Status indicating that the file transfer has failed.
      */
-    public static final String FAILED = "failed";
-
+    public static final int STATUS_FAILED = 11;
+    /**
+     * Status indicating that the file transfer has been canceled.
+     */
+    public static final int STATUS_CANCELED = 12;
     /**
      * Status indicating that the file transfer has been refused.
      */
-    public static final String REFUSED = "refused";
-
-    /**
-     * Status indicating that the file transfer has been refused.
-     */
-    public static final String PREPARING = "preparing";
-    /**
-     * Status indicating that the file transfer has been refused.
-     */
-    public static final String IN_PROGRESS = "in_progress";
+    public static final int STATUS_REFUSED = 13;
     /**
      * Status indicating that the file transfer was in active state.
      */
-    public static final String ACTIVE = "active";
-
+    public static final int STATUS_ACTIVE = 14;
     /**
-     * Special case where downloaded file cannot be found
+     * Status indicating that the file transfer is preparing state.
      */
-    public static final String NOT_FOUND = "no_found";
+    public static final int STATUS_PREPARING = 15;
+    /**
+     * Status indicating that the file transfer is in-progress state.
+     */
+    public static final int STATUS_IN_PROGRESS = 16;
+    /**
+     * Status indicating that the file transfer state is unknown.
+     */
+    public static final int STATUS_UNKNOWN = -1;
+
+    // Special case where downloaded file cannot be found
+    public static final int FILE_NOT_FOUND = -1;
 
     private String direction = null;
     private Date date;
     private File file = null;
-    private String mStatus;
+    private int mXferStatus;  // File transfer status
     private Object mEntityJid;  // Contact or ChatRoom
     private String id = null;
     private int mEncType;
+
+    /**
+     * A map between File transfer status to status descriptive text
+     */
+    public static final HashMap<Integer, String> statusMap = new HashMap<Integer, String>()
+    {{
+        put(STATUS_COMPLETED, "completed");
+        put(STATUS_FAILED, "failed");
+        put(STATUS_CANCELED, "canceled");
+        put(STATUS_REFUSED, "refused");
+        put(STATUS_ACTIVE, "active");
+        put(STATUS_PREPARING, "preparing");
+        put(STATUS_IN_PROGRESS, "in_progress");
+    }};
+
     /**
      * Constructs new FileRecord
      *
@@ -85,7 +101,7 @@ public class FileRecord extends EventObject
      * @param file the file name
      * @param status Status of the fileTransfer
      */
-    public FileRecord(String id, Object entityJid, String direction, Date date, File file, int encType, String status)
+    public FileRecord(String id, Object entityJid, String direction, Date date, File file, int encType, int status)
     {
         super(file);
         this.id = id;
@@ -94,7 +110,7 @@ public class FileRecord extends EventObject
         this.date = date;
         this.file = file;
         this.mEncType = encType;
-        this.mStatus = status;
+        this.mXferStatus = status;
     }
 
     /**
@@ -138,13 +154,13 @@ public class FileRecord extends EventObject
     }
 
     /**
-     * The status of the transfer.
+     * The status of the file transfer.
      *
      * @return the status
      */
-    public String getStatus()
+    public int getStatus()
     {
-        return mStatus;
+        return mXferStatus;
     }
 
     /**

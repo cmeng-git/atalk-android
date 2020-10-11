@@ -15,9 +15,20 @@
  */
 package net.java.sip.communicator.service.callhistory;
 
+import android.icu.text.MeasureFormat;
+import android.icu.util.Measure;
+import android.icu.util.MeasureUnit;
+import android.os.Build;
+import android.text.format.DateUtils;
+
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.text.DateFormat;
 import java.util.*;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * Structure used for encapsulating data when writing or reading Call History Data. Also these
@@ -40,24 +51,29 @@ public class CallRecord
     public final static String IN = "in";
 
     /**
-     * Indicates the direction of the call - IN or OUT.
-     */
-    protected String direction = null;
-
-    /**
      * A list of all peer records corresponding to this call record.
      */
     protected final List<CallPeerRecord> peerRecords = new Vector<>();
 
     /**
+     * The id that uniquely identifies the call record.
+     */
+    protected String uuid;
+
+    /**
+     * Indicates the direction of the call - IN or OUT.
+     */
+    protected String direction;
+
+    /**
      * The start call date.
      */
-    protected Date startTime = null;
+    protected Date startTime;
 
     /**
      * The end call date.
      */
-    protected Date endTime = null;
+    protected Date endTime;
 
     /**
      * The protocol provider (accountUid) through which the call was made.
@@ -70,21 +86,21 @@ public class CallRecord
     protected int endReason = -1;
 
     /**
-     * Creates CallRecord
-     */
-    public CallRecord()
-    {
-    }
-
-    /**
      * Creates Call Record
      *
+     * @param uuid String
      * @param direction String
      * @param startTime Date
      * @param endTime Date
      */
-    public CallRecord(String direction, Date startTime, Date endTime)
+    public CallRecord(String uuid, String direction, Date startTime, Date endTime)
     {
+        if (uuid == null) {
+            Date date = new Date();
+            uuid = String.valueOf(date.getTime()) + Math.abs(date.hashCode());
+        }
+
+        this.uuid = uuid;
         this.direction = direction;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -103,6 +119,16 @@ public class CallRecord
                 return item;
         }
         return null;
+    }
+
+    /**
+     * Returns the direction of the call IN or OUT
+     *
+     * @return String
+     */
+    public String getCallUuid()
+    {
+        return uuid;
     }
 
     /**
@@ -163,5 +189,59 @@ public class CallRecord
     public int getEndReason()
     {
         return endReason;
+    }
+
+    @NotNull
+    public String toString()
+    {
+        String callStart;
+
+        long start = startTime.getTime();
+        if (DateUtils.isToday(start)) {
+            DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+            callStart = df.format(startTime);
+        }
+        else {
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+            callStart = df.format(startTime);
+        }
+
+        Long callTime = (endTime.getTime() - start);
+        CharSequence callDuration = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            callDuration = formatDuration(callTime);
+        }
+        else {
+            callDuration = Long.toString(callTime / 1000);
+        }
+
+        StringBuilder callInfo = new StringBuilder()
+                .append(callStart)
+                .append(" (")
+                .append(callDuration)
+                .append(")");
+
+        return callInfo.toString();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static CharSequence formatDuration(long millis)
+    {
+        final MeasureFormat.FormatWidth width;
+        width = MeasureFormat.FormatWidth.SHORT;
+
+        final MeasureFormat formatter = MeasureFormat.getInstance(Locale.getDefault(), width);
+        if (millis >= DateUtils.HOUR_IN_MILLIS) {
+            final int hours = (int) ((millis + 1800000) / DateUtils.HOUR_IN_MILLIS);
+            return formatter.format(new Measure(hours, MeasureUnit.HOUR));
+        }
+        else if (millis >= DateUtils.MINUTE_IN_MILLIS) {
+            final int minutes = (int) ((millis + 30000) / DateUtils.MINUTE_IN_MILLIS);
+            return formatter.format(new Measure(minutes, MeasureUnit.MINUTE));
+        }
+        else {
+            final int seconds = (int) ((millis + 500) / DateUtils.SECOND_IN_MILLIS);
+            return formatter.format(new Measure(seconds, MeasureUnit.SECOND));
+        }
     }
 }

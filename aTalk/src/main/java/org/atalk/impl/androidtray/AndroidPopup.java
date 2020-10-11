@@ -12,11 +12,14 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.systray.PopupMessage;
+import net.java.sip.communicator.service.systray.SystrayService;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -25,10 +28,9 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidImageUtil;
-import org.atalk.android.plugin.notificationwiring.AndroidNotifications;
+import org.atalk.impl.androidnotification.AndroidNotifications;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import androidx.core.app.NotificationCompat;
 import timber.log.Timber;
@@ -79,6 +81,12 @@ public class AndroidPopup
     private Context mContext;
 
     /**
+     * Stores all the endMuteTime for each notification Id.
+     */
+    private final static Hashtable<Integer, Long> snoozeEndTimes = new Hashtable<>();
+    private Long muteEndTime;
+
+    /**
      * Creates new instance of <tt>AndroidPopup</tt>.
      *
      * @param handler parent notifications handler that manages displayed notifications.
@@ -90,28 +98,51 @@ public class AndroidPopup
         this.popupMessage = popupMessage;
         mContext = aTalkApp.getGlobalContext();
 
-        // Default aTalk icon
-        mSmallIcon = R.drawable.ic_notification;
         group = popupMessage.getGroup();
+        id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
 
-        // default group is sharing general notification icon
-        if (AndroidNotifications.DEFAULT_GROUP.equals(group)) {
-            // By default all notifications share aTalk icon
-            id = SystrayServiceImpl.getGeneralNotificationId();
-        }
-        else {
-            // Generate separate notification
-            id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
-            // Set message icon
-            if (AndroidNotifications.MESSAGE_GROUP.equals(group)) {
+        // set separate notification icon for each group of notification
+        switch (group) {
+            case AndroidNotifications.MESSAGE_GROUP:
                 mSmallIcon = R.drawable.incoming_message;
-            }
-            else if (AndroidNotifications.FILE_GROUP.equals(group)) {
-                mSmallIcon = R.drawable.incoming_file;
-            }
-            else if (AndroidNotifications.CALL_GROUP.equals(group)) {
-                mSmallIcon = R.drawable.missed_call;
-            }
+                break;
+
+            case AndroidNotifications.SILENT_GROUP:
+                mSmallIcon = R.drawable.incoming_message;
+                break;
+
+            case AndroidNotifications.FILE_GROUP:
+                mSmallIcon = R.drawable.ic_attach_dark;
+                break;
+
+            case AndroidNotifications.CALL_GROUP:
+                switch (popupMessage.getMessageType()) {
+                    case SystrayService.WARNING_MESSAGE_TYPE:
+                        mSmallIcon = R.drawable.ic_alert_dark;
+                        break;
+
+                    case SystrayService.JINGLE_INCOMING_CALL:
+                    case SystrayService.JINGLE_MESSAGE_PROPOSE:
+                        mSmallIcon = R.drawable.call_incoming;
+                        break;
+
+                    case SystrayService.MISSED_CALL_MESSAGE_TYPE:
+                        mSmallIcon = R.drawable.call_incoming_missed;
+                        break;
+
+                    default:
+                        mSmallIcon = R.drawable.ic_info_dark;
+                        break;
+                }
+                break;
+
+            // default group is sharing general notification icon
+            // By default all notifications share aTalk icon
+            case AndroidNotifications.DEFAULT_GROUP:
+            default:
+                id = SystrayServiceImpl.getGeneralNotificationId();
+                mSmallIcon = R.drawable.ic_notification;
+                break;
         }
         // Extract contained chat descriptor if any
         mDescriptor = popupMessage.getTag();
@@ -127,12 +158,18 @@ public class AndroidPopup
         return popupMessage;
     }
 
+    public int getPopupIcon()
+    {
+        return mSmallIcon;
+    }
+
     /**
      * Removes this notification.
      */
-    public void removeNotification()
+    public void removeNotification(int nId)
     {
         cancelTimeout();
+        snoozeEndTimes.remove(nId);
         NotificationManager notifyManager = aTalkApp.getNotificationManager();
         notifyManager.cancel(id);
     }
@@ -252,47 +289,55 @@ public class AndroidPopup
     }
 
     /**
-     * Builds notification and returns the builder object which can be used to extend the
-     * notification.
+     * Builds notification and returns the builder object which can be used to extend the notification.
      *
      * @return builder object describing current notification.
      */
-    NotificationCompat.Builder buildNotification()
+    NotificationCompat.Builder buildNotification(int nId)
     {
         NotificationCompat.Builder builder;
-        builder = new NotificationCompat.Builder(mContext, group);
+        // Do not show head-up notification when user has put the id notification in snooze
+        if (isSnooze(nId) || !ConfigurationUtils.isHeadsUpEnable()) {
+            builder = new NotificationCompat.Builder(mContext, AndroidNotifications.SILENT_GROUP);
+        }
+        else {
+            builder = new NotificationCompat.Builder(mContext, group);
+        }
 
         builder.setSmallIcon(mSmallIcon)
                 .setContentTitle(popupMessage.getMessageTitle())
                 .setContentText(getMessage())
-                .setAutoCancel(true) // will be cancelled once clicked
-                .setVibrate(new long[]{}) // no vibration
-                .setSound(null); // no sound
+                .setAutoCancel(true)        // will be cancelled once clicked
+                .setVibrate(new long[]{})   // no vibration
+                .setSound(null);            // no sound
 
         Resources res = aTalkApp.getAppResources();
         // Preferred size
         int prefWidth = (int) res.getDimension(android.R.dimen.notification_large_icon_width);
         int prefHeight = (int) res.getDimension(android.R.dimen.notification_large_icon_height);
 
-        // Use popup icon if any
+        // Use popup icon if provided
         Bitmap iconBmp = null;
         byte[] icon = popupMessage.getIcon();
         if (icon != null) {
             iconBmp = AndroidImageUtil.scaledBitmapFromBytes(icon, prefWidth, prefHeight);
         }
-        // Set default avatar
+
+        // Set default avatar if none provided
         if (iconBmp == null && mDescriptor != null) {
             if (mDescriptor instanceof ChatRoom)
                 iconBmp = AndroidImageUtil.scaledBitmapFromResource(res, R.drawable.ic_chatroom, prefWidth, prefHeight);
             else
                 iconBmp = AndroidImageUtil.scaledBitmapFromResource(res, R.drawable.contact_avatar, prefWidth, prefHeight);
         }
+
         if (iconBmp != null) {
             if (iconBmp.getWidth() > prefWidth || iconBmp.getHeight() > prefHeight) {
                 iconBmp = Bitmap.createScaledBitmap(iconBmp, prefWidth, prefHeight, true);
             }
             builder.setLargeIcon(iconBmp);
         }
+
         // Build inbox style
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         onBuildInboxStyle(inboxStyle);
@@ -305,7 +350,7 @@ public class AndroidPopup
      *
      * @return the <tt>PendingIntent</tt> that should be trigger by notification
      */
-    public PendingIntent constructIntent()
+    public PendingIntent createContentIntent()
     {
         Intent targetIntent = null;
         PopupMessage message = getPopupMessage();
@@ -326,7 +371,7 @@ public class AndroidPopup
             else if (tag instanceof ChatRoomJabberImpl) {
                 ChatRoomJabberImpl chatRoom = (ChatRoomJabberImpl) tag;
                 ChatRoomWrapper chatRoomWrapper
-                        = AndroidGUIActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, true);
+                        = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, true);
                 if (chatRoomWrapper == null) {
                     Timber.e("ChatRoomWrapper not found for %s", chatRoom.getIdentifier());
                 }
@@ -341,14 +386,10 @@ public class AndroidPopup
                     message.getMessageTitle(), message.getMessage());
         }
 
-        if (targetIntent == null) {
-            return null;
-        }
-        else {
-            // Must be unique for each, so use the notification id as the request code
-            return PendingIntent.getActivity(aTalkApp.getGlobalContext(), getId(), targetIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-        }
+        // Must be unique for each, so use the notification id as the request code
+        return (targetIntent == null)
+                ? null : PendingIntent.getActivity(aTalkApp.getGlobalContext(), getId(), targetIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -358,7 +399,7 @@ public class AndroidPopup
      */
     protected void onBuildInboxStyle(NotificationCompat.InboxStyle inboxStyle)
     {
-        inboxStyle.addLine(popupMessage.getMessage());
+        inboxStyle.addLine(getMessage());
         // Summary
         if (mDescriptor instanceof Contact) {
             ProtocolProviderService pps = ((Contact) mDescriptor).getProtocolProvider();
@@ -376,10 +417,43 @@ public class AndroidPopup
         // Remove timeout handler
         if (timeoutHandler != null) {
             Timber.d("Removing timeout from notification: %s", id);
-
+            // FFR: NPE: 2.1.5 AndroidPopup.cancelTimeout (AndroidPopup.java:379) ?
             timeoutHandler.cancel();
             timeoutHandler = null;
         }
+    }
+
+    /**
+     * Enable snooze for the next 30 minutes
+     */
+    protected void setSnooze(int nId)
+    {
+        muteEndTime = (System.currentTimeMillis() + 30 * 60 * 1000);  // 30 minutes
+        snoozeEndTimes.put(nId, muteEndTime);
+    }
+
+    /**
+     * Check if the given notification ID is still in snooze period
+     *
+     * @param nId Notification id
+     * @return true if it is still in snooze
+     */
+    protected boolean isSnooze(int nId)
+    {
+        muteEndTime = snoozeEndTimes.get(nId);
+        return (muteEndTime != null) && (System.currentTimeMillis() < muteEndTime);
+
+    }
+
+    /**
+     * Check if the android head-up notification allowed
+     *
+     * @return true if the group is MESSAGE_GROUP
+     */
+    public boolean isHeadUpNotificationAllow()
+    {
+        return ConfigurationUtils.isHeadsUpEnable() &&
+                (AndroidNotifications.MESSAGE_GROUP.equals(group) || AndroidNotifications.CALL_GROUP.equals(group));
     }
 
     /**

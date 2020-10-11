@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * The listener interface for receiving geolocation events. The class that is interested in
@@ -22,18 +22,18 @@ import java.util.*;
  * method. When a geolocation event occurs, that object's <code>contactGeolocationChanged</code>
  * method is invoked.
  *
- * @see GeolocationEvent
- *
  * @author Guillaume Schreiner
+ * @author Eng Chong Meng
+ *
+ * @see GeolocationEvent
  */
 public interface GeolocationListener extends EventListener
 {
-	/**
-	 * Called whenever a change occurs in the GeolocationPresence of one of the contacts that we
-	 * have subscribed for.
-	 *
-	 * @param evt
-	 *        the ContactGeolocationPresenceChangeEvent describing the status change.
-	 */
-	public void contactGeolocationChanged(GeolocationEvent evt);
+    /**
+     * Called whenever a change occurs in the GeolocationPresence of one of the contacts that we
+     * have subscribed for.
+     *
+     * @param evt the ContactGeolocationPresenceChangeEvent describing the status change.
+     */
+    void contactGeolocationChanged(GeolocationEvent evt);
 }

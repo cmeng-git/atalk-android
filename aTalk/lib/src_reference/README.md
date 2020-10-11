@@ -1,4 +1,7 @@
-## lib/bundles directory
+The info herein is only kept for reference. All the libraries mentioned here have officially released to maven.
+Therefore they are not further for aTalk built.
+
+## lib/bundles directory (has been removed)
 contain Jitsi jar libraries that are used in aTalk project built. These jar libraries are <br/>
 available online, however not release to jcenter() nor maven(), to allow standard gradle <br/>
 fetch during project built. Gradle has problem fetching the libraries from jitsi custom <br/>

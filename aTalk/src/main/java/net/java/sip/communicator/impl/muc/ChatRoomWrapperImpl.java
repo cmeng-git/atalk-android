@@ -21,9 +21,10 @@ import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.util.StringUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -54,6 +55,11 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     private final ProtocolProviderService mPPS;
 
     /**
+     * The number of unread messages
+     */
+    private int unreadCount = 0;
+
+    /**
      * The room that is wrapped.
      */
     private ChatRoom chatRoom;
@@ -73,12 +79,23 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      */
     private static final String BOOKMARK_PROPERTY_NAME = "bookmark";
 
+    private static final String TTS_ENABLE = "tts_Enable";
+
+    /**
+     * ChatRoom member presence status change
+     */
+    private static final String ROOM_STATUS_ENABLE = "room_status_Enable";
+
     /**
      * The participant nickName.
      */
-    private String nickName = null;
+    private String mNickName = null;
 
     private String bookmarkName = null;
+
+    private Boolean isTtsEnable = null;
+
+    private Boolean isRoomStatusEnable = null;
 
     /**
      * As isAutoJoin can be called from GUI many times we store its value once retrieved to
@@ -195,6 +212,36 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
+     * Get the account User BareJid
+     *
+     * @return the account user BareJid
+     */
+    public BareJid getUser()
+    {
+        return mPPS.getConnection().getUser().asBareJid();
+    }
+
+    /**
+     * Set the unread message count for this wrapper represent
+     *
+     * @param count unread message count
+     */
+    public void setUnreadCount(int count)
+    {
+        unreadCount = count;
+    }
+
+    /**
+     * Returns the unread message count for this chat room
+     *
+     * @return the unread message count
+     */
+    public int getUnreadCount()
+    {
+        return unreadCount;
+    }
+
+    /**
      * Returns the chat room EntityBareJid.
      *
      * @return the chat room EntityBareJid
@@ -221,6 +268,16 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     public ChatRoomProviderWrapper getParentProvider()
     {
         return this.parentProvider;
+    }
+
+    /**
+     * Returns the protocol provider service.
+     *
+     * @return the protocol provider service
+     */
+    public ProtocolProviderService getProtocolProvider()
+    {
+        return mPPS;
     }
 
     /**
@@ -300,12 +357,12 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      */
     public String getNickName()
     {
-        if (StringUtils.isNullOrEmpty(nickName)) {
-            nickName = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME);
-            if (StringUtils.isNullOrEmpty(nickName))
-                nickName = getDefaultNickname(mPPS);
+        if (StringUtils.isEmpty(mNickName)) {
+            mNickName = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME);
+            if (StringUtils.isEmpty(mNickName))
+                mNickName = getDefaultNickname(mPPS);
         }
-        return nickName;
+        return mNickName;
     }
 
     /**
@@ -325,16 +382,16 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     /**
      * Stores the nickName for the member.
      *
-     * @param value the nickName to store
+     * @param nickName the nickName to store
      */
-    public void setNickName(String value)
+    public void setNickName(String nickName)
     {
-        nickName = value;
+        mNickName = nickName;
         if (!isPersistent()) {
             setPersistent(true);
             ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
         }
-        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME, null);
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME, nickName);
     }
 
     /**
@@ -344,7 +401,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      */
     public String getBookmarkName()
     {
-        return StringUtils.isNullOrEmpty(bookmarkName) ? "" : bookmarkName;
+        return StringUtils.isEmpty(bookmarkName) ? "" : bookmarkName;
     }
 
     /**
@@ -359,7 +416,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
             setPersistent(true);
             ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
         }
-        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.CHAT_ROOM_NAME, null);
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ChatRoom.CHATROOM_NAME, null);
     }
 
     /**
@@ -371,7 +428,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     {
         if (autoJoin == null) {
             String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME);
-            autoJoin = StringUtils.isNullOrEmpty(val) ? false : Boolean.valueOf(val);
+            autoJoin = StringUtils.isEmpty(val) ? false : Boolean.valueOf(val);
         }
         return autoJoin;
     }
@@ -412,7 +469,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     {
         if (bookmark == null) {
             String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME);
-            bookmark = StringUtils.isNullOrEmpty(val) ? false : Boolean.valueOf(val);
+            bookmark = StringUtils.isEmpty(val) ? false : Boolean.valueOf(val);
         }
         return bookmark;
     }
@@ -440,6 +497,75 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
         }
         else {
             ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME, null);
+        }
+    }
+
+    /**
+     * When access on start-up, return ttsEnable may be null.
+     *
+     * @return true if chatroom tts is enabled.
+     */
+    public boolean isTtsEnable()
+    {
+        if (isTtsEnable == null) {
+            String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, TTS_ENABLE);
+            isTtsEnable = StringUtils.isNotEmpty(val) && Boolean.parseBoolean(val);
+        }
+        return isTtsEnable;
+    }
+
+    /**
+     * Change chatroom tts enable value in configuration service.
+     * Null value in DB is considered as false.
+     *
+     * @param value change of tts enable property.
+     */
+    public void setTtsEnable(boolean value)
+    {
+        if (isTtsEnable() == value)
+            return;
+
+        isTtsEnable = value;
+        if (value) {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, TTS_ENABLE, Boolean.toString(isTtsEnable));
+        }
+        else {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, TTS_ENABLE, null);
+        }
+    }
+
+    /**
+     * When access on start-up, return roomStatusEnable may be null.
+     *
+     * @return true if chatroom tts is enabled.
+     */
+    public boolean isRoomStatusEnable()
+    {
+        if (isRoomStatusEnable == null) {
+            String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE);
+            isRoomStatusEnable = StringUtils.isEmpty(val) || Boolean.parseBoolean(val);
+        }
+        return isRoomStatusEnable;
+    }
+
+    /**
+     * Change chatroom status enable value in configuration service.
+     * Null value in DB is considered as true.
+     *
+     * @param value change of room status enable property.
+     */
+    public void setRoomStatusEnable(boolean value)
+    {
+        if (isRoomStatusEnable() == value)
+            return;
+
+        isRoomStatusEnable = value;
+        if (value) {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE, null);
+        }
+        else {
+            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE,
+                    Boolean.toString(isRoomStatusEnable));
         }
     }
 

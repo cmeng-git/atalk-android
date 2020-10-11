@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="@dimen/status_spin_height_small"
+    style="@style/SpinnerItem.DropDownItem"
     android:orientation="horizontal">
 
     <ImageView
@@ -10,7 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start|center_vertical"
-        android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:src="@drawable/jabber_status_ffc" />
 
@@ -20,6 +19,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp" />
 </LinearLayout>

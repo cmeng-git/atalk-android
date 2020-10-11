@@ -65,7 +65,8 @@ public class NotificationActionTypeEvent extends EventObject
 	 * @param actionHandler
 	 *        the <tt>NotificationActionHandler</tt> that handles the given action
 	 */
-	public NotificationActionTypeEvent(NotificationService source, String eventType, String sourceEventType, NotificationAction actionHandler) {
+	public NotificationActionTypeEvent(NotificationService source, String eventType,
+            String sourceEventType, NotificationAction actionHandler) {
 		super(source);
 
 		this.eventType = eventType;

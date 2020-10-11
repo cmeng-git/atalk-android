@@ -19,7 +19,7 @@ package org.atalk.crypto.omemo;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -66,20 +66,20 @@ public class FingerprintStatus implements Comparable<FingerprintStatus>
     public static FingerprintStatus fromCursor(Cursor cursor) {
         final FingerprintStatus status = new FingerprintStatus();
         try {
-            int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             BareJid bareJid = JidCreate.bareFrom(cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.BARE_JID)));
+            int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             status.mDevice = new OmemoDevice(bareJid, deviceId);
         }
         catch (XmppStringprepException e) {
             e.printStackTrace();
         }
         status.mFingerPrint = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.FINGERPRINT));
-        if (StringUtils.isNullOrEmpty(status.mFingerPrint ))
+        if (StringUtils.isEmpty(status.mFingerPrint ))
             return null;
 
         try {
             String trust = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.TRUST));
-            if (StringUtils.isNullOrEmpty(trust))
+            if (StringUtils.isEmpty(trust))
                 status.trust = Trust.UNDECIDED;
             else
                 status.trust = Trust.valueOf(trust);

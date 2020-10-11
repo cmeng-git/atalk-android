@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
+import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
 import java.util.*;
@@ -32,7 +33,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
     /**
      * The provider that created us.
      */
-    protected final T parentProvider;
+    protected final T mPPS;
 
     /**
      * A list of listeners registered for <tt>ProviderPresenceStatusChangeEvent</tt>s.
@@ -53,11 +54,11 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * Initializes a new <tt>AbstractOperationSetPersistentPresence</tt> instance created by a
      * specific <tt>ProtocolProviderService</tt> .
      *
-     * @param parentProvider the <tt>ProtocolProviderService</tt> which created the new instance
+     * @param pps the <tt>ProtocolProviderService</tt> which created the new instance
      */
-    protected AbstractOperationSetPersistentPresence(T parentProvider)
+    protected AbstractOperationSetPersistentPresence(T pps)
     {
-        this.parentProvider = parentProvider;
+        this.mPPS = pps;
     }
 
     /**
@@ -111,39 +112,38 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * Notifies all registered listeners of the new event.
      *
      * @param source the contact that has caused the event.
+     * @param jid the specific contact FullJid that has caused the event.
      * @param parentGroup the group that contains the source contact.
      * @param oldValue the status that the source contact detained before changing it.
      */
-    protected void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup,
+    protected void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
             PresenceStatus oldValue)
     {
         PresenceStatus newValue = source.getPresenceStatus();
-
         if (oldValue.equals(newValue)) {
             Timber.d("Ignored prov status change evt. old==new: %s", oldValue);
             return;
         }
-
-        fireContactPresenceStatusChangeEvent(source, parentGroup, oldValue, newValue);
+        fireContactPresenceStatusChangeEvent(source, jid, parentGroup, oldValue, newValue);
     }
 
-    public void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup,
+    public void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
             PresenceStatus oldValue, PresenceStatus newValue)
     {
-        this.fireContactPresenceStatusChangeEvent(source, parentGroup, oldValue, newValue, false);
+        this.fireContactPresenceStatusChangeEvent(source, jid, parentGroup, oldValue, newValue, false);
     }
 
-    public void fireContactPresenceStatusChangeEvent(Contact source, ContactGroup parentGroup,
+    public void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
             PresenceStatus oldValue, PresenceStatus newValue, boolean isResourceChange)
     {
-        ContactPresenceStatusChangeEvent evt = new ContactPresenceStatusChangeEvent(source,
-                parentProvider, parentGroup, oldValue, newValue, isResourceChange);
+        ContactPresenceStatusChangeEvent evt = new ContactPresenceStatusChangeEvent(source, jid,
+                mPPS, parentGroup, oldValue, newValue, isResourceChange);
 
         Collection<ContactPresenceStatusListener> listeners;
         synchronized (contactPresenceStatusListeners) {
             listeners = new ArrayList<>(contactPresenceStatusListeners);
         }
-        Timber.d("Dispatching Contact Status Change. Listeners = %s evt = %s", listeners.size(), evt);
+        // Timber.d("Dispatching Contact Status Change. Listeners = %s evt = %s", listeners.size(), evt);
 
         for (ContactPresenceStatusListener listener : listeners)
             listener.contactPresenceStatusChanged(evt);
@@ -165,7 +165,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (subscriptionListeners) {
             listeners = new ArrayList<>(subscriptionListeners);
         }
-        Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S", listeners.size(), evt);
+        // Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S", listeners.size(), evt);
         for (SubscriptionListener listener : listeners)
             listener.contactModified(evt);
     }
@@ -188,7 +188,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      */
     protected void fireProviderStatusChangeEvent(PresenceStatus oldValue, PresenceStatus newValue)
     {
-        ProviderPresenceStatusChangeEvent evt = new ProviderPresenceStatusChangeEvent(parentProvider, oldValue, newValue);
+        ProviderPresenceStatusChangeEvent evt = new ProviderPresenceStatusChangeEvent(mPPS, oldValue, newValue);
 
         Collection<ProviderPresenceStatusListener> listeners;
         synchronized (providerPresenceStatusListeners) {
@@ -208,7 +208,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      */
     protected void fireProviderStatusMessageChangeEvent(String oldStatusMessage, String newStatusMessage)
     {
-        PropertyChangeEvent evt = new PropertyChangeEvent(parentProvider,
+        PropertyChangeEvent evt = new PropertyChangeEvent(mPPS,
                 ProviderPresenceStatusListener.STATUS_MESSAGE, oldStatusMessage, newStatusMessage);
 
         Collection<ProviderPresenceStatusListener> listeners;
@@ -230,7 +230,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
     protected void fireServerStoredGroupEvent(ContactGroup source, int eventID)
     {
         ServerStoredGroupEvent evt = new ServerStoredGroupEvent(source, eventID,
-                source.getParentContactGroup(), parentProvider, this);
+                source.getParentContactGroup(), mPPS, this);
 
         Iterable<ServerStoredGroupListener> listeners;
         synchronized (serverStoredGroupListeners) {
@@ -260,14 +260,13 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      */
     public void fireSubscriptionEvent(Contact source, ContactGroup parentGroup, int eventID)
     {
-        fireSubscriptionEvent(source, parentGroup, eventID, SubscriptionEvent.ERROR_UNSPECIFIED,
-                null);
+        fireSubscriptionEvent(source, parentGroup, eventID, SubscriptionEvent.ERROR_UNSPECIFIED, null);
     }
 
     public void fireSubscriptionEvent(Contact source, ContactGroup parentGroup, int eventID,
             int errorCode, String errorReason)
     {
-        SubscriptionEvent evt = new SubscriptionEvent(source, parentProvider, parentGroup, eventID,
+        SubscriptionEvent evt = new SubscriptionEvent(source, mPPS, parentGroup, eventID,
                 errorCode, errorReason);
 
         Collection<SubscriptionListener> listeners;
@@ -300,11 +299,9 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * @param oldParent the group where the contact was located before being moved.
      * @param newParent the group where the contact has been moved.
      */
-    public void fireSubscriptionMovedEvent(Contact source, ContactGroup oldParent,
-            ContactGroup newParent)
+    public void fireSubscriptionMovedEvent(Contact source, ContactGroup oldParent, ContactGroup newParent)
     {
-        SubscriptionMovedEvent evt = new SubscriptionMovedEvent(source, parentProvider, oldParent,
-                newParent);
+        SubscriptionMovedEvent evt = new SubscriptionMovedEvent(source, mPPS, oldParent, newParent);
 
         Collection<SubscriptionListener> listeners;
         synchronized (subscriptionListeners) {

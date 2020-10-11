@@ -19,45 +19,49 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.contactlist.MetaContactGroup;
-import net.java.sip.communicator.service.contactsource.SourceContact;
-import net.java.sip.communicator.service.gui.ContactList;
-import net.java.sip.communicator.service.gui.UIContact;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.*;
+import org.atalk.android.gui.util.ViewUtil;
+import org.jxmpp.jid.DomainJid;
+import org.jxmpp.jid.Jid;
 
 import java.util.*;
 
-import androidx.annotation.NonNull;
-import timber.log.Timber;
-
 /**
  * The invite dialog is the one shown when the user clicks on the conference button in the chat toolbar.
+ * this
  *
  * @author Eng Chong Meng
  */
 public class ChatInviteDialog extends Dialog
         implements OnChildClickListener, OnGroupClickListener, DialogInterface.OnShowListener
 {
+    /**
+     * Allow offline contact selection for invitation
+     */
     private static boolean MUC_OFFLINE_ALLOW = true;
 
-    private ChatActivity mParent;
     private final ChatPanel chatPanel;
-    private ChatTransport inviteChatTransport;
+    private final ChatTransport inviteChatTransport;
 
-    private EditText reasonText;
-    private Button mInviteButton;
+    /**
+     * A reference map of all invitees i.e. MetaContact UID to MetaContact .
+     */
+    private static final Map<String, MetaContact> mucContactInviteList = new LinkedHashMap<>();
 
     /**
      * Contact list data model.
@@ -65,29 +69,11 @@ public class ChatInviteDialog extends Dialog
     private MetaContactListAdapter contactListAdapter;
 
     /**
-     * Meta contact groups expand memory.
-     */
-    private MetaGroupExpandHandler listExpandHandler;
-
-    /**
      * The contact list view.
      */
-    protected ExpandableListView contactListView;
+    private ExpandableListView contactListView;
 
-    /**
-     * Stores last clicked <tt>MetaContact</tt>.
-     */
-    private MetaContact clickedContact;
-
-    /**
-     * Stores recently clicked contact group.
-     */
-    private MetaContactGroup clickedGroup;
-
-    /**
-     * A map of all active chats i.e. metaContactChat, MUC etc.
-     */
-    private static final Map<String, MetaContact> mucContactList = new LinkedHashMap<>();
+    private Button mInviteButton;
 
     /**
      * Constructs the <tt>ChatInviteDialog</tt>.
@@ -97,7 +83,6 @@ public class ChatInviteDialog extends Dialog
     public ChatInviteDialog(Context mContext, ChatPanel mChatPanel)
     {
         super(mContext);
-        this.mParent = (ChatActivity) mContext;
         this.chatPanel = mChatPanel;
         this.inviteChatTransport = chatPanel.findInviteChatTransport();
         setOnShowListener(this);
@@ -110,34 +95,43 @@ public class ChatInviteDialog extends Dialog
         setTitle(R.string.service_gui_INVITE_CONTACT_TO_CHAT);
 
         this.setContentView(R.layout.muc_invite_dialog);
-        reasonText = this.findViewById(R.id.text_reason);
 
         contactListView = this.findViewById(R.id.ContactListView);
-        contactListView.setSelector(R.drawable.array_list_selector);
+        contactListView.setSelector(R.drawable.list_selector_state);
         contactListView.setOnChildClickListener(this);
         contactListView.setOnGroupClickListener(this);
-
-        // Adds context menu for contact list items
-        registerForContextMenu(contactListView);
         initListAdapter();
 
         mInviteButton = this.findViewById(R.id.button_invite);
-        if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
-            mucContactList.put(chatPanel.getMetaContact().getMetaUID(), chatPanel.getMetaContact());
-            mInviteButton.setEnabled(true);
-        }
-        else {
-            mInviteButton.setAlpha(.3f);
-        }
-
         mInviteButton.setOnClickListener(v -> {
             inviteContacts();
             closeDialog();
         });
 
+        // Default to include the current contact of the MetaContactChatSession to be invited
+        if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
+            MetaContact mContact = chatPanel.getMetaContact();
+            mucContactInviteList.put(mContact.getMetaUID(), mContact);
+        }
+        updateInviteState();
+
         Button mCancelButton = this.findViewById(R.id.buttonCancel);
         mCancelButton.setOnClickListener(v -> closeDialog());
-        // this.initContactListData();
+    }
+
+    /**
+     * Enable the Invite button if mucContactInviteList is not empty
+     */
+    private void updateInviteState()
+    {
+        if (mucContactInviteList.isEmpty()) {
+            mInviteButton.setEnabled(false);
+            mInviteButton.setAlpha(.3f);
+        }
+        else {
+            mInviteButton.setEnabled(true);
+            mInviteButton.setAlpha(1.0f);
+        }
     }
 
     private void initListAdapter()
@@ -145,7 +139,7 @@ public class ChatInviteDialog extends Dialog
         contactListView.setAdapter(getContactListAdapter());
 
         // Attach contact groups expand memory
-        listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
+        MetaGroupExpandHandler listExpandHandler = new MetaGroupExpandHandler(contactListAdapter, contactListView);
         listExpandHandler.bindAndRestore();
 
         // setDialogMode to true to avoid contacts being filtered
@@ -155,169 +149,57 @@ public class ChatInviteDialog extends Dialog
         contactListAdapter.invalidateViews();
     }
 
-    private void closeDialog()
-    {
-        // must clear dialogMode on exit dialog
-        contactListAdapter.setDialogMode(false);
-        this.cancel();
-    }
-
     private MetaContactListAdapter getContactListAdapter()
     {
-        ContactListFragment clf = aTalkApp.getContactListFragment();
         if (contactListAdapter == null) {
+            // FFR: clf may be null; use new instance will crash dialog on select contact
+            ContactListFragment clf = (ContactListFragment) aTalk.getFragment(aTalk.CL_FRAGMENT);
             contactListAdapter = new MetaContactListAdapter(clf, false);
             contactListAdapter.initModelData();
         }
+        // Do not include groups with zero member in main contact list
         contactListAdapter.nonZeroContactGroupList();
+
         return contactListAdapter;
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (contactListView.getExpandableListAdapter() != getContactListAdapter()) {
-            return;
-        }
-
-        ExpandableListView.ExpandableListContextMenuInfo info
-                = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
-        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-        int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
-        int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
-
-        // Only create a context menu for child items
-        MenuInflater inflater = mParent.getMenuInflater();
-        if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-            createGroupCtxMenu(menu, inflater, group);
-        }
-        else if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-            createContactCtxMenu(menu, inflater, group, child);
-        }
-    }
-
-    /**
-     * Inflates group context menu.
+     * Callback method to be invoked when a child in this expandable list has been clicked.
      *
-     * @param menu the menu to inflate into.
-     * @param inflater the inflater.
-     * @param group clicked group index.
-     */
-    private void createGroupCtxMenu(ContextMenu menu, MenuInflater inflater, int group)
-    {
-        this.clickedGroup = (MetaContactGroup) contactListAdapter.getGroup(group);
-
-        // Inflate contact list context menu
-        inflater.inflate(R.menu.group_menu, menu);
-        menu.setHeaderTitle(clickedGroup.getGroupName());
-    }
-
-    /**
-     * Inflates contact context menu.
-     *
-     * @param menu the menu to inflate into.
-     * @param inflater the menu inflater.
-     * @param group clicked group index.
-     * @param child clicked contact index.
-     */
-    private void createContactCtxMenu(ContextMenu menu, MenuInflater inflater, int group, int child)
-    {
-        // Inflate muc contact list context menu
-        inflater.inflate(R.menu.muc_menu, menu);
-
-        // Remembers clicked contact
-        clickedContact = ((MetaContact) contactListAdapter.getChild(group, child));
-        menu.setHeaderTitle(clickedContact.getDisplayName());
-        Contact contact = clickedContact.getDefaultContact();
-        if (contact == null) {
-            Timber.w("No default contact for: %s", clickedContact);
-            return;
-        }
-
-        ProtocolProviderService pps = contact.getProtocolProvider();
-        if (pps == null) {
-            Timber.w("No protocol provider found for: %s", contact);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case R.id.muc_Kick:
-                return true;
-            case R.id.muc_PrivateMessage:
-                // EntityListHelper.eraseEntityChatHistory(ChatActivity.this, clickedContact);
-                return true;
-            case R.id.muc_send_file:
-                // ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
-                // FragmentActivity parent = getActivity();
-                // AttachOptionDialog attachOptionDialog = new AttachOptionDialog(parent,
-                // clickedContact);
-                // attachOptionDialog.show();
-                return true;
-        }
-        return super.onContextItemSelected(item);
-    }
-
-    /**
-     * Returns the contact list view.
-     *
-     * @return the contact list view
-     */
-    public ExpandableListView getContactListView()
-    {
-        return contactListView;
-    }
-
-    /**
-     *
+     * @param parent The ExpandableListView where the click happened
+     * @param v The view within the expandable list/ListView that was clicked
+     * @param groupPosition The group position that contains the child that was clicked
+     * @param childPosition The child position within the group
+     * @param id The row id of the child that was clicked
+     * @return True if the click was handled
      */
     @Override
     public boolean onChildClick(ExpandableListView listView, View v, int groupPosition, int childPosition, long id)
     {
-        BaseContactListAdapter adapter = (BaseContactListAdapter) listView.getExpandableListAdapter();
-        int position = adapter.getListIndex(groupPosition, childPosition);
-        contactListView.setSelection(position);
-        // adapter.invalidateViews();
-
         // Get v index for multiple selection highlight
         int index = listView.getFlatListPosition(
                 ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
 
+        BaseContactListAdapter adapter = (BaseContactListAdapter) listView.getExpandableListAdapter();
         Object clicked = adapter.getChild(groupPosition, childPosition);
         if ((clicked instanceof MetaContact)) {
             MetaContact metaContact = (MetaContact) clicked;
+
             if (MUC_OFFLINE_ALLOW
                     || !metaContact.getContactsForOperationSet(OperationSetMultiUserChat.class).isEmpty()) {
                 // Toggle muc Contact Selection
                 String key = metaContact.getMetaUID();
-                if (mucContactList.containsKey(key)) {
-                    mucContactList.remove(key);
+                if (mucContactInviteList.containsKey(key)) {
+                    mucContactInviteList.remove(key);
                     listView.setItemChecked(index, false);
                     // v.setSelected(false);
                 }
                 else {
-                    mucContactList.put(key, metaContact);
+                    mucContactInviteList.put(key, metaContact);
                     listView.setItemChecked(index, true);
                     // v.setSelected(true); for single item selection only
                 }
-
-                if (mucContactList.isEmpty()) {
-                    mInviteButton.setEnabled(false);
-                    mInviteButton.setAlpha(.3f);
-                }
-                else {
-                    mInviteButton.setEnabled(true);
-                    mInviteButton.setAlpha(1.0f);
-                }
+                updateInviteState();
                 return true;
             }
             return false;
@@ -328,6 +210,9 @@ public class ChatInviteDialog extends Dialog
     /**
      * Expands/collapses the group given by <tt>groupPosition</tt>.
      *
+     * Group collapse will clear all highlight of selected contacts; On expansion
+     * allow time for view to expand before proceed to refresh the selected contacts' highlight
+     *
      * @param parent the parent expandable list view
      * @param v the view
      * @param groupPosition the position of the group
@@ -337,60 +222,46 @@ public class ChatInviteDialog extends Dialog
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
     {
-        // cmeng - group collapse will destroy sub-contacts selected
-        // if (contactListView.isGroupExpanded(groupPosition))
-        // contactListView.collapseGroup(groupPosition);
-        // else {
-        // // Expand animation is supported since API14
-        // if (AndroidUtils.hasAPI(14)) {
-        // contactListView.expandGroup(groupPosition, true);
-        // }
-        // else {
-        // contactListView.expandGroup(groupPosition);
-        // }
-        // }
+        if (contactListView.isGroupExpanded(groupPosition))
+            contactListView.collapseGroup(groupPosition);
+        else {
+            contactListView.expandGroup(groupPosition, true);
+            new Handler().postDelayed(() -> {
+                refreshContactSelected(groupPosition);
+            }, 500);
+        }
         return true;
     }
 
-    /**
-     * Returns the reason of this invite, if the user has specified one.
-     *
-     * @return the reason of this invite
-     */
-    public String getReason()
-    {
-        return reasonText.getText().toString();
-    }
-
-    /**
-     * The <tt>ChatInviteContactListFilter</tt> is <tt>InviteContactListFilter</tt> which doesn't list
-     * contact that don't have persistence addresses (for example private messaging contacts are not listed).
-     */
-    private class ChatInviteContactListFilter // extends InviteContactListFilter
-    {
-        /**
-         * The Multi User Chat operation set instance.
-         */
-        private OperationSetMultiUserChat opSetMUC;
-
-        /**
-         * Creates an instance of <tt>InviteContactListFilter</tt>.
-         *
-         * @param sourceContactList the contact list to filter
-         */
-        public ChatInviteContactListFilter(ContactList sourceContactList)
-        {
-            // super(sourceContactList);
-            opSetMUC = inviteChatTransport.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
-        }
-
-        // @Override
-        public boolean isMatching(UIContact uiContact)
-        {
-            SourceContact contact = (SourceContact) uiContact.getDescriptor();
-            return !opSetMUC.isPrivateMessagingContact(contact.getContactAddress());
-        }
-    }
+//    /**
+//     * The <tt>ChatInviteContactListFilter</tt> is <tt>InviteContactListFilter</tt> which doesn't list
+//     * contact that don't have persistence addresses (for example private messaging contacts are not listed).
+//     */
+//    private class ChatInviteContactListFilter // extends InviteContactListFilter
+//    {
+//        /**
+//         * The Multi User Chat operation set instance.
+//         */
+//        private OperationSetMultiUserChat opSetMUC;
+//
+//        /**
+//         * Creates an instance of <tt>InviteContactListFilter</tt>.
+//         *
+//         * @param sourceContactList the contact list to filter
+//         */
+//        public ChatInviteContactListFilter(ContactList sourceContactList)
+//        {
+//            // super(sourceContactList);
+//            opSetMUC = inviteChatTransport.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
+//        }
+//
+//        // @Override
+//        public boolean isMatching(UIContact uiContact)
+//        {
+//            SourceContact contact = (SourceContact) uiContact.getDescriptor();
+//            return !opSetMUC.isPrivateMessagingContact(contact.getContactAddress());
+//        }
+//    }
 
     /**
      * Invites the contacts to the chat conference.
@@ -399,14 +270,15 @@ public class ChatInviteDialog extends Dialog
     {
         Collection<String> selectedContactAddresses = new ArrayList<>();
 
-        List<MetaContact> selectedContacts = new LinkedList<>(mucContactList.values());
+        List<MetaContact> selectedContacts = new LinkedList<>(mucContactInviteList.values());
         if (selectedContacts.size() == 0)
             return;
 
         // Obtain selected contacts.
         for (MetaContact uiContact : selectedContacts) {
             // skip server/system account
-            if (uiContact.getDefaultContact().getJid() == null) {
+            Jid jid =  uiContact.getDefaultContact().getJid();
+            if ((jid == null) || (jid instanceof DomainJid)) {
                 aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, uiContact.getDisplayName());
                 continue;
             }
@@ -416,25 +288,55 @@ public class ChatInviteDialog extends Dialog
 
         // Invite all selected.
         if (selectedContactAddresses.size() > 0) {
-            chatPanel.inviteContacts(inviteChatTransport, selectedContactAddresses, this.getReason());
+            chatPanel.inviteContacts(inviteChatTransport, selectedContactAddresses,
+                    ViewUtil.toString(this.findViewById(R.id.text_reason)));
+        }
+    }
+
+    /**
+     * Refresh highlight for all the selected contacts when:
+     * a. Dialog onShow
+     * b. User collapse and expand group
+     *
+     * @param grpPosition the contact list group position
+     */
+    private void refreshContactSelected(int grpPosition)
+    {
+        Collection<MetaContact> mContactList = mucContactInviteList.values();
+        int lastIndex = contactListView.getCount();
+
+        for (int index = 0; index <= lastIndex; index++) {
+            long lPosition = contactListView.getExpandableListPosition(index);
+
+            int groupPosition = ExpandableListView.getPackedPositionGroup(lPosition);
+            if ((grpPosition == -1) || (groupPosition == grpPosition)) {
+                int childPosition = ExpandableListView.getPackedPositionChild(lPosition);
+                MetaContact mContact = ((MetaContact) contactListAdapter.getChild(groupPosition, childPosition));
+                if (mContact == null)
+                    continue;
+
+                for (MetaContact metaContact : mContactList) {
+                    if (metaContact.equals(mContact)) {
+                        contactListView.setItemChecked(index, true);
+                        break;
+                    }
+                }
+            }
         }
     }
 
     @Override
     public void onShow(DialogInterface arg0)
     {
-        List<MetaContact> mContacts = new LinkedList<>(mucContactList.values());
         int indexes = contactListAdapter.getGroupCount();
-        for (MetaContact mContact : mContacts) {
-            int childIdx;
-            for (int gIdx = 0; gIdx < indexes; gIdx++) {
-                childIdx = contactListAdapter.getChildIndex(gIdx, mContact);
-                if (childIdx != -1) {
-                    childIdx += gIdx + 1;
-                    contactListView.setItemChecked(childIdx, true);
-                    break;
-                }
-            }
-        }
+        refreshContactSelected(-1);
+        updateInviteState();
+    }
+
+    private void closeDialog()
+    {
+        // must clear dialogMode on exit dialog
+        contactListAdapter.setDialogMode(false);
+        this.cancel();
     }
 }

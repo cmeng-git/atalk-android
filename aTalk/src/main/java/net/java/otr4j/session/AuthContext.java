@@ -20,7 +20,6 @@ import net.java.otr4j.io.messages.RevealSignatureMessage;
 import net.java.otr4j.io.messages.SignatureMessage;
 
 /**
- * 
  * @author George Politis
  */
 abstract class AuthContext

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/theme_background"
     android:padding="@dimen/screen_padding">
 
     <TextView
@@ -22,12 +21,12 @@
         android:textAppearance="@style/MediumFont"
         android:textStyle="normal|bold" />
 
-    <TextView
+    <EditText
         android:id="@+id/textInvitation"
+        style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="@string/service_gui_INVITE_REASON"
-        android:textAppearance="@style/MediumFont" />
+        android:enabled="false" />
 
     <TextView
         android:id="@+id/textReason"
@@ -40,15 +39,14 @@
 
     <EditText
         android:id="@+id/rejectReasonTextArea"
+        style="@style/EntryTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:hint="@string/service_gui_INVITE_REJECT_REASON" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:baselineAligned="false"
+        android:paddingTop="10dp"
         android:orientation="horizontal">
 
         <Button
@@ -57,25 +55,13 @@
             android:enabled="true"
             android:text="@string/service_gui_IGNORE" />
 
-        <View
-            android:id="@+id/centerShim"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:visibility="invisible" />
-
         <Button
             android:id="@+id/button_Reject"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_REJECT" />
-
-        <View
-            android:id="@+id/centerShim2"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:visibility="invisible" />
+            android:text="@string/service_gui_REJECT"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"/>
 
         <Button
             android:id="@+id/button_Accept"

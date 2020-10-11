@@ -31,10 +31,14 @@ extern "C" {
 #define org_atalk_impl_neomedia_codec_video_VPX_DL_REALTIME 1L
 #undef org_atalk_impl_neomedia_codec_video_VPX_CODEC_CX_FRAME_PKT
 #define org_atalk_impl_neomedia_codec_video_VPX_CODEC_CX_FRAME_PKT 0L
-#undef org_atalk_impl_neomedia_codec_video_VPX_INTEFACE_VP8_DEC
-#define org_atalk_impl_neomedia_codec_video_VPX_INTEFACE_VP8_DEC 0L
+#undef org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_DEC
+#define org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_DEC 0L
 #undef org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_ENC
 #define org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_ENC 1L
+#undef org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP9_DEC
+#define org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP9_DEC 2L
+#undef org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP9_ENC
+#define org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP9_ENC 3L
 /*
  * Class:     org_atalk_impl_neomedia_codec_video_VPX
  * Method:    codec_ctx_malloc

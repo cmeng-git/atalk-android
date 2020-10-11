@@ -28,19 +28,19 @@ public class AdHocChatRoomListChangeEvent extends EventObject
 	 * Indicates that the AdHocChatRoomListChangeEvent instance was triggered by adding a
 	 * AdHocChatRoom in the gui.
 	 */
-	public static final int AD_HOC_CHAT_ROOM_ADDED = 1;
+	public static final int AD_HOC_CHATROOM_ADDED = 1;
 
 	/**
 	 * Indicates that the AdHocChatRoomListChangeEvent instance was triggered by removing a
 	 * AdHocChatRoom from the gui.
 	 */
-	public static final int AD_HOC_CHAT_ROOM_REMOVED = 2;
+	public static final int AD_HOC_CHATROOM_REMOVED = 2;
 
 	/**
 	 * Indicates that the AdHocChatRoomListChangeEvent instance was triggered by changing a
 	 * AdHocChatRoom in the gui (like changing its status, etc.).
 	 */
-	public static final int AD_HOC_CHAT_ROOM_CHANGED = 3;
+	public static final int AD_HOC_CHATROOM_CHANGED = 3;
 
 	/**
 	 * Creates a new <tt>AdHocChatRoom</tt> event according to the specified parameters.
@@ -48,7 +48,7 @@ public class AdHocChatRoomListChangeEvent extends EventObject
 	 * @param source
 	 * 		the <tt>AdHocChatRoom</tt> instance that is added to the AdHocChatRoomsList
 	 * @param eventID
-	 * 		one of the AD_HOC_CHAT_ROOM_XXX static fields indicating the nature of the event.
+	 * 		one of the AD_HOC_CHATROOM_XXX static fields indicating the nature of the event.
 	 */
 	public AdHocChatRoomListChangeEvent(AdHocChatRoomWrapper source, int eventID)
 	{

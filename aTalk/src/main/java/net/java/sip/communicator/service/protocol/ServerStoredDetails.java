@@ -5,8 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import org.atalk.android.util.ApiLib;
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.*;
@@ -128,8 +127,8 @@ public class ServerStoredDetails
                     && // equals not null values
                     ((this.value != null && (other.getDetailValue() != null)
                             && this.value.equals(other.getDetailValue()))
-                            || (StringUtils.isNullOrEmpty((String) this.value)
-                            && StringUtils.isNullOrEmpty((String) other.getDetailValue()))))
+                            || (StringUtils.isEmpty((String) this.value)
+                            && StringUtils.isEmpty((String) other.getDetailValue()))))
                 return true;
             else
                 return false;
@@ -138,7 +137,7 @@ public class ServerStoredDetails
         @Override
         public int hashCode()
         {
-            return ApiLib.hash(detailDisplayName, value);
+            return Objects.hash(detailDisplayName, value);
         }
     }
 
@@ -691,6 +690,7 @@ public class ServerStoredDetails
     }
 
     // -------------------------------- Date & Time ---------------------------------
+
     /**
      * A generic detail meant to represent any date (calendar) associated details. Protocols that
      * support separate fields for year, month, day and time, or even age should try their best to
@@ -716,7 +716,7 @@ public class ServerStoredDetails
     {
         public BirthDateDetail(Object date)
         {
-                super("Birth Date", date);
+            super("Birth Date", date);
         }
 
         /**
@@ -750,7 +750,8 @@ public class ServerStoredDetails
                     boolean dayEquals = ((Calendar) this.value).get(Calendar.DAY_OF_MONTH)
                             == ((Calendar) other.value).get(Calendar.DAY_OF_MONTH);
                     return yearEquals && monthEquals && dayEquals;
-                } else {
+                }
+                else {
                     return this.value.equals(other.value);
                 }
             }

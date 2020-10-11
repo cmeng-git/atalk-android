@@ -5,14 +5,12 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackConfiguration;
+import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -57,7 +55,7 @@ public class JingleNodesServiceDiscovery implements Runnable
     /**
      * The connection, must be connected.
      */
-    private final XMPPTCPConnection connection;
+    private final XMPPConnection connection;
 
     /**
      * Our account.
@@ -72,7 +70,7 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @param accountID our account.
      * @param syncRoot the synchronization object while discovering.
      */
-    JingleNodesServiceDiscovery(SmackServiceNode service, XMPPTCPConnection connection,
+    JingleNodesServiceDiscovery(SmackServiceNode service, XMPPConnection connection,
             JabberAccountIDImpl accountID, Object syncRoot)
     {
         this.jingleNodesSyncRoot = syncRoot;
@@ -134,7 +132,7 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @return
      */
     private SmackServiceNode.MappedNodes searchServicesWithPrefix(SmackServiceNode service,
-            XMPPTCPConnection xmppConnection, int maxEntries, int maxDepth, int maxSearchNodes,
+            XMPPConnection xmppConnection, int maxEntries, int maxDepth, int maxSearchNodes,
             String protocol, boolean searchBuddies, boolean autoDiscover, String prefix)
             throws NotConnectedException, InterruptedException
     {
@@ -162,7 +160,7 @@ public class JingleNodesServiceDiscovery implements Runnable
                 try {
                     SmackServiceNode.deepSearch(xmppConnection, maxEntries, JidCreate.from(xmppConnection.getHost()),
                             mappedNodes, maxDepth - 1, maxSearchNodes, protocol, visited);
-                } catch (XmppStringprepException e) {
+                } catch (XmppStringprepException | IllegalArgumentException e) {
                     e.printStackTrace();
                 }
 
@@ -200,7 +198,7 @@ public class JingleNodesServiceDiscovery implements Runnable
      * @return
      */
     private static boolean searchDiscoItems(SmackServiceNode service,
-            XMPPTCPConnection xmppConnection, int maxEntries, Jid startPoint,
+            XMPPConnection xmppConnection, int maxEntries, Jid startPoint,
             SmackServiceNode.MappedNodes mappedNodes, int maxDepth, int maxSearchNodes,
             String protocol, ConcurrentHashMap<Jid, Jid> visited, String prefix)
             throws InterruptedException, NotConnectedException
@@ -234,7 +232,7 @@ public class JingleNodesServiceDiscovery implements Runnable
             for (DiscoverItems.Item item : result.getItems()) {
                 if (item != null) {
                     for (String pref : prefixes) {
-                        if (!StringUtils.isNullOrEmpty(pref) && item.getEntityID().toString().startsWith(pref.trim())) {
+                        if (StringUtils.isNotEmpty(pref) && item.getEntityID().toString().startsWith(pref.trim())) {
                             SmackServiceNode.deepSearch(xmppConnection, maxEntries, item.getEntityID(),
                                     mappedNodes, maxDepth, maxSearchNodes, protocol, visited);
 

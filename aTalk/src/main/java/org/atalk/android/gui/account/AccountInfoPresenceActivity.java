@@ -5,7 +5,8 @@
  */
 package org.atalk.android.gui.account;
 
-import android.app.*;
+import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,12 +30,13 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.contactlist.ContactInfoActivity;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.SoftKeyboard;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.osgi.framework.BundleContext;
 
@@ -50,8 +52,8 @@ import java.util.concurrent.ExecutionException;
 import timber.log.Timber;
 
 /**
- * Activity allows user to set presence status, status message, change the avatar
- * and all the vCard-temp information for the {@link #mAccount}.
+ * Activity allows user to set presence status, status message, change the user avatar
+ * and all the vCard-temp information for the {@link #Account}.
  *
  * The main panel that allows users to view and edit their account information.
  * Different instances of this class are created for every registered
@@ -68,7 +70,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class AccountInfoPresenceActivity extends OSGiActivity
-        implements EventListener<AccountEvent>, AdapterView.OnItemSelectedListener,
+        implements EventListener<AccountEvent>, DialogActivity.DialogListener,
         SoftKeyboard.SoftKeyboardChanged, CalendarDatePickerDialogFragment.OnDateSetListener
 {
     /**
@@ -115,8 +117,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * Flag indicates if there were any uncommitted status changes that shall be applied on exit
      */
     private boolean hasStatusChanges = false;
-
-    private boolean firstInit = true;
 
     /**
      * Mapping between all supported by this plugin <tt>ServerStoredDetails</tt> and their
@@ -217,14 +217,14 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         if (accountInfoOpSet != null) {
             initSummaryPanel();
 
-            // account may still be in unregistered state after returning from account preference editing
+            // May still be in logging if user enters preference edit immediately after account is enabled
             if (!protocolProvider.isRegistered()) {
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     Timber.e("Account Registration State wait error: %s", protocolProvider.getRegistrationState());
                 }
-                Timber.w("Account Registration State: %s", protocolProvider.getRegistrationState());
+                Timber.d("Account Registration State: %s", protocolProvider.getRegistrationState());
             }
 
             isRegistered = protocolProvider.isRegistered();
@@ -243,10 +243,18 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             throws Exception
     {
         super.stop(bundleContext);
-        softKeyboard.unRegisterSoftKeyboardCallback();
-
         if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (softKeyboard != null) {
+            softKeyboard.unRegisterSoftKeyboardCallback();
+            softKeyboard = null;
+        }
     }
 
     @Override
@@ -275,7 +283,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
         }
 
-        firstInit = true;
         // Account properties
         String title = mAccount.getAccountName();
         ActionBarUtil.setTitle(this, title);
@@ -293,8 +300,20 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         PresenceStatus presenceStatus = accountPresence.getPresenceStatus();
         ActionBarUtil.setStatus(this, presenceStatus.getStatusIcon());
 
-        statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus));
-        statusSpinner.setOnItemSelectedListener(this);
+        statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus), false);
+        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
+            {
+                hasStatusChanges = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView)
+            {
+            }
+        });
 
         // Sets current status message
         EditText statusMessageEdit = findViewById(R.id.statusMessage);
@@ -316,7 +335,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText displayNameField = findViewById(R.id.ai_DisplayNameField);
         View displayNameContainer = findViewById(R.id.ai_DisplayName_Container);
-        displayNameContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(DisplayNameDetail.class)) {
             displayNameContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(DisplayNameDetail.class, displayNameField);
@@ -333,7 +351,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText nicknameField = findViewById(R.id.ai_NickNameField);
         View nickNameContainer = findViewById(R.id.ai_NickName_Container);
-        nickNameContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(NicknameDetail.class)) {
             nickNameContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(NicknameDetail.class, nicknameField);
@@ -341,7 +358,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         urlField = findViewById(R.id.ai_URLField);
         View urlContainer = findViewById(R.id.ai_URL_Container);
-        urlContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(URLDetail.class)) {
             urlContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(URLDetail.class, urlField);
@@ -349,7 +365,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText genderField = findViewById(R.id.ai_GenderField);
         View genderContainer = findViewById(R.id.ai_Gender_Container);
-        genderContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(GenderDetail.class)) {
             genderContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(GenderDetail.class, genderField);
@@ -364,7 +379,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText streetAddressField = findViewById(R.id.ai_StreetAddressField);
         View streetAddressContainer = findViewById(R.id.ai_StreetAddress_Container);
-        streetAddressContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(AddressDetail.class)) {
             streetAddressContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(AddressDetail.class, streetAddressField);
@@ -372,7 +386,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText cityField = findViewById(R.id.ai_CityField);
         View cityContainer = findViewById(R.id.ai_City_Container);
-        cityContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(CityDetail.class)) {
             cityContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(CityDetail.class, cityField);
@@ -380,7 +393,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText regionField = findViewById(R.id.ai_RegionField);
         View regionContainer = findViewById(R.id.ai_Region_Container);
-        regionContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(ProvinceDetail.class)) {
             regionContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(ProvinceDetail.class, regionField);
@@ -388,7 +400,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText postalCodeField = findViewById(R.id.ai_PostalCodeField);
         View postalCodeContainer = findViewById(R.id.ai_PostalCode_Container);
-        postalCodeContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(PostalCodeDetail.class)) {
             postalCodeContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(PostalCodeDetail.class, postalCodeField);
@@ -396,7 +407,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText countryField = findViewById(R.id.ai_CountryField);
         View countryContainer = findViewById(R.id.ai_Country_Container);
-        countryContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(CountryDetail.class)) {
             countryContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(CountryDetail.class, countryField);
@@ -407,7 +417,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText workEmailField = findViewById(R.id.ai_WorkEmailField);
         View workEmailContainer = findViewById(R.id.ai_WorkEmail_Container);
-        workEmailContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(WorkEmailAddressDetail.class)) {
             workEmailContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(WorkEmailAddressDetail.class, workEmailField);
@@ -418,7 +427,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText workPhoneField = findViewById(R.id.ai_WorkPhoneField);
         View workPhoneContainer = findViewById(R.id.ai_WorkPhone_Container);
-        workPhoneContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(WorkPhoneDetail.class)) {
             workPhoneContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(WorkPhoneDetail.class, workPhoneField);
@@ -426,7 +434,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText mobilePhoneField = findViewById(R.id.ai_MobilePhoneField);
         View mobileContainer = findViewById(R.id.ai_MobilePhone_Container);
-        mobileContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(MobilePhoneDetail.class)) {
             mobileContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(MobilePhoneDetail.class, mobilePhoneField);
@@ -434,7 +441,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText organizationField = findViewById(R.id.ai_OrganizationNameField);
         View organizationNameContainer = findViewById(R.id.ai_OrganizationName_Container);
-        organizationNameContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(WorkOrganizationNameDetail.class)) {
             organizationNameContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(WorkOrganizationNameDetail.class, organizationField);
@@ -442,7 +448,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         EditText jobTitleField = findViewById(R.id.ai_JobTitleField);
         View jobDetailContainer = findViewById(R.id.ai_JobTitle_Container);
-        jobDetailContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(JobTitleDetail.class)) {
             jobDetailContainer.setVisibility(View.VISIBLE);
             detailToTextField.put(JobTitleDetail.class, jobTitleField);
@@ -450,16 +455,15 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         aboutMeArea = findViewById(R.id.ai_AboutMeField);
         View aboutMeContainer = findViewById(R.id.ai_AboutMe_Container);
-        aboutMeContainer.setVisibility(View.GONE);
         if (accountInfoOpSet.isDetailClassSupported(AboutMeDetail.class)) {
             aboutMeContainer.setVisibility(View.VISIBLE);
-            aboutMeArea.setEnabled(false);
+            detailToTextField.put(AboutMeDetail.class, aboutMeArea);
 
+            // aboutMeArea.setEnabled(false); cause auto-launch of softKeyboard creating problem
             InputFilter[] filterArray = new InputFilter[1];
             filterArray[0] = new InputFilter.LengthFilter(ContactInfoActivity.ABOUT_ME_MAX_CHARACTERS);
             aboutMeArea.setFilters(filterArray);
             aboutMeArea.setBackgroundResource(R.drawable.alpha_blue_01);
-            detailToTextField.put(AboutMeDetail.class, aboutMeArea);
         }
 
         // Setup and initialize birthday calendar basic parameters
@@ -495,22 +499,40 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         mCancelButton.setOnClickListener(v -> checkUnsavedChanges());
     }
 
+    /**
+     * check for any unsaved changes and alert user
+     */
     private void checkUnsavedChanges()
     {
         if (hasChanges) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.service_gui_UNSAVED_CHANGES_TITLE)
-                    .setMessage(R.string.service_gui_UNSAVED_CHANGES)
-                    .setPositiveButton(R.string.service_gui_EXIT, (dialog, which) -> finish())
-                    .setNegativeButton(R.string.service_gui_SAVE, (dialog, which) -> {
-                        mApplyButton.performClick();
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            DialogActivity.showConfirmDialog(this,
+                    R.string.service_gui_UNSAVED_CHANGES_TITLE,
+                    R.string.service_gui_UNSAVED_CHANGES,
+                    R.string.service_gui_SAVE, this);
         }
         else {
             finish();
         }
+    }
+
+    /**
+     * Fired when user clicks the dialog's confirm button.
+     *
+     * @param dialog source <tt>DialogActivity</tt>.
+     */
+    public boolean onConfirmClicked(DialogActivity dialog)
+    {
+        return mApplyButton.performClick();
+    }
+
+    /**
+     * Fired when user dismisses the dialog.
+     *
+     * @param dialog source <tt>DialogActivity</tt>
+     */
+    public void onDialogCancelled(DialogActivity dialog)
+    {
+        finish();
     }
 
     @Override  // CalendarDatePickerDialogFragment callback
@@ -525,7 +547,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 && (mDate.get(Calendar.DAY_OF_MONTH) < dayOfMonth))
             age--;
 
-        String ageDetail = Integer.toString(age).trim();
+        String ageDetail = Integer.toString(age);
         ageField.setText(ageDetail);
 
         mDate.set(year, monthOfYear, dayOfMonth);
@@ -594,7 +616,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             try {
                 allDetails = get();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                Timber.w("Exception in loading account details: %s", e.getMessage());
             }
 
             if (allDetails != null) {
@@ -696,8 +718,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                     lastNameDetail = (LastNameDetail) detail;
                 else if (detail.getClass().equals(NicknameDetail.class))
                     nicknameDetail = (NicknameDetail) detail;
-                else if (detail.getClass().equals(URLDetail.class))
-                    urlDetail = (URLDetail) detail;
                 else if (detail.getClass().equals(GenderDetail.class))
                     genderDetail = (GenderDetail) detail;
                 else if (detail.getClass().equals(AddressDetail.class))
@@ -742,7 +762,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             avatarView.setImageBitmap(bitmap);
         }
         else {
-            avatarView.setImageResource(R.drawable.personphoto);
+            avatarView.setImageResource(R.drawable.person_photo);
         }
     }
 
@@ -756,8 +776,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
 
         if (accountInfoOpSet.isDetailClassSupported(ImageDetail.class)) {
-            String sCommand = imageUrlField.getText().toString();
-            if (!TextUtils.isEmpty(sCommand)) {
+            String sCommand = ViewUtil.toString(imageUrlField);
+            if (sCommand != null) {
                 ImageDetail newDetail;
 
                 /*
@@ -792,10 +812,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(DisplayNameDetail.class)) {
-            String text = detailToTextField.get(DisplayNameDetail.class).getText().toString();
+            String text = getText(DisplayNameDetail.class);
 
             DisplayNameDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new DisplayNameDetail(text);
 
             if (displayNameDetail != null || newDetail != null)
@@ -803,10 +823,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(FirstNameDetail.class)) {
-            String text = detailToTextField.get(FirstNameDetail.class).getText().toString();
+            String text = getText(FirstNameDetail.class);
 
             FirstNameDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new FirstNameDetail(text);
 
             if (firstNameDetail != null || newDetail != null)
@@ -814,10 +834,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(MiddleNameDetail.class)) {
-            String text = detailToTextField.get(MiddleNameDetail.class).getText().toString();
+            String text = getText(MiddleNameDetail.class);
 
             MiddleNameDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new MiddleNameDetail(text);
 
             if (middleNameDetail != null || newDetail != null)
@@ -825,10 +845,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(LastNameDetail.class)) {
-            String text = detailToTextField.get(LastNameDetail.class).getText().toString();
+            String text = getText(LastNameDetail.class);
             LastNameDetail newDetail = null;
 
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new LastNameDetail(text);
 
             if (lastNameDetail != null || newDetail != null)
@@ -836,10 +856,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(NicknameDetail.class)) {
-            String text = detailToTextField.get(NicknameDetail.class).getText().toString();
+            String text = getText(NicknameDetail.class);
 
             NicknameDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new NicknameDetail(text);
 
             if (nicknameDetail != null || newDetail != null)
@@ -847,12 +867,12 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(URLDetail.class)) {
-            String text = detailToTextField.get(URLDetail.class).getText().toString().trim();
+            String text = getText(URLDetail.class);
 
-            URL url = null;
+            URL url;
             URLDetail newDetail = null;
 
-            if (!StringUtils.isNullOrEmpty(text, true)) {
+            if (text != null) {
                 try {
                     url = new URL(text);
                     newDetail = new URLDetail("URL", url);
@@ -866,10 +886,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(GenderDetail.class)) {
-            String text = detailToTextField.get(GenderDetail.class).getText().toString();
+            String text = getText(GenderDetail.class);
             GenderDetail newDetail = null;
 
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new GenderDetail(text);
 
             if (genderDetail != null || newDetail != null)
@@ -877,10 +897,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(BirthDateDetail.class)) {
-            String text = birthDateField.getText().toString();
+            String text = ViewUtil.toString(birthDateField);
             BirthDateDetail newDetail = null;
 
-            if (!StringUtils.isNullOrEmpty(text, true)) {
+            if (text != null) {
                 Calendar birthDate = Calendar.getInstance();
                 try {
                     Date mDate = dateFormat.parse(text);
@@ -896,10 +916,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(AddressDetail.class)) {
-            String text = detailToTextField.get(AddressDetail.class).getText().toString();
+            String text = getText(AddressDetail.class);
 
             AddressDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new AddressDetail(text);
 
             if (streetAddressDetail != null || newDetail != null)
@@ -907,10 +927,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(CityDetail.class)) {
-            String text = detailToTextField.get(CityDetail.class).getText().toString();
+            String text = getText(CityDetail.class);
 
             CityDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new CityDetail(text);
 
             if (cityDetail != null || newDetail != null)
@@ -918,10 +938,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(ProvinceDetail.class)) {
-            String text = detailToTextField.get(ProvinceDetail.class).getText().toString();
+            String text = getText(ProvinceDetail.class);
 
             ProvinceDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new ProvinceDetail(text);
 
             if (regionDetail != null || newDetail != null)
@@ -929,10 +949,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(PostalCodeDetail.class)) {
-            String text = detailToTextField.get(PostalCodeDetail.class).getText().toString();
+            String text = getText(PostalCodeDetail.class);
 
             PostalCodeDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new PostalCodeDetail(text);
 
             if (postalCodeDetail != null || newDetail != null)
@@ -940,10 +960,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(CountryDetail.class)) {
-            String text = detailToTextField.get(CountryDetail.class).getText().toString();
+            String text = getText(CountryDetail.class);
 
             CountryDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new CountryDetail(text);
 
             if (countryDetail != null || newDetail != null)
@@ -951,10 +971,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(EmailAddressDetail.class)) {
-            String text = detailToTextField.get(EmailAddressDetail.class).getText().toString();
+            String text = getText(EmailAddressDetail.class);
 
             EmailAddressDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new EmailAddressDetail(text);
 
             if (emailDetail != null || newDetail != null)
@@ -962,10 +982,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(WorkEmailAddressDetail.class)) {
-            String text = detailToTextField.get(WorkEmailAddressDetail.class).getText().toString();
+            String text = getText(WorkEmailAddressDetail.class);
 
             WorkEmailAddressDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new WorkEmailAddressDetail(text);
 
             if (workEmailDetail != null || newDetail != null)
@@ -973,10 +993,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(PhoneNumberDetail.class)) {
-            String text = detailToTextField.get(PhoneNumberDetail.class).getText().toString();
+            String text = getText(PhoneNumberDetail.class);
 
             PhoneNumberDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new PhoneNumberDetail(text);
 
             if (phoneDetail != null || newDetail != null)
@@ -984,22 +1004,21 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(WorkPhoneDetail.class)) {
-            String text = detailToTextField.get(WorkPhoneDetail.class).getText().toString();
+            String text = getText(WorkPhoneDetail.class);
 
             WorkPhoneDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new WorkPhoneDetail(text);
 
             if (workPhoneDetail != null || newDetail != null)
                 changeDetail(workPhoneDetail, newDetail);
         }
 
-        if (accountInfoOpSet.isDetailClassSupported(
-                MobilePhoneDetail.class)) {
-            String text = detailToTextField.get(MobilePhoneDetail.class).getText().toString();
+        if (accountInfoOpSet.isDetailClassSupported(MobilePhoneDetail.class)) {
+            String text = getText(MobilePhoneDetail.class);
 
             MobilePhoneDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new MobilePhoneDetail(text);
 
             if (mobilePhoneDetail != null || newDetail != null)
@@ -1007,11 +1026,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(WorkOrganizationNameDetail.class)) {
-            String text = detailToTextField.get(WorkOrganizationNameDetail.class)
-                    .getText().toString();
+            String text = getText(WorkOrganizationNameDetail.class);
 
             WorkOrganizationNameDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new WorkOrganizationNameDetail(text);
 
             if (organizationDetail != null || newDetail != null)
@@ -1019,10 +1037,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(JobTitleDetail.class)) {
-            String text = detailToTextField.get(JobTitleDetail.class).getText().toString();
+            String text = getText(JobTitleDetail.class);
 
             JobTitleDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new JobTitleDetail(text);
 
             if (jobTitleDetail != null || newDetail != null)
@@ -1030,10 +1048,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         if (accountInfoOpSet.isDetailClassSupported(AboutMeDetail.class)) {
-            String text = aboutMeArea.getText().toString();
+            String text = ViewUtil.toString(aboutMeArea);
 
             AboutMeDetail newDetail = null;
-            if (!StringUtils.isNullOrEmpty(text, true))
+            if (text != null)
                 newDetail = new AboutMeDetail(text);
 
             if (aboutMeDetail != null || newDetail != null)
@@ -1046,6 +1064,18 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         } catch (OperationFailedException e1) {
             showAvatarChangeError();
         }
+    }
+
+    /**
+     * get the class's editText string value or null (length == 0)
+     *
+     * @param className Class Name
+     * @return String or null if string length == 0
+     */
+    private String getText(Class<? extends GenericDetail> className)
+    {
+        EditText editText = detailToTextField.get(className);
+        return ViewUtil.toString(editText);
     }
 
     /**
@@ -1091,18 +1121,12 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     {
         int id = item.getItemId();
         if (id == R.id.remove) {
-            RemoveAccountDialog.create(this, mAccount,
-                    new RemoveAccountDialog.OnAccountRemovedListener()
-                    {
-                        @Override
-                        public void onAccountRemoved(Account accID)
-                        {
-                            // Prevent from submitting status
-                            hasStatusChanges = false;
-                            hasChanges = false;
-                            finish();
-                        }
-                    }).show();
+            RemoveAccountDialog.create(this, mAccount, accID -> {
+                // Prevent from submitting status
+                hasStatusChanges = false;
+                hasChanges = false;
+                finish();
+            }).show();
             return true;
         }
         else if (id == R.id.account_settings) {
@@ -1131,7 +1155,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 return true;
             case R.id.avatar_RemovePicture:
                 imageUrlField.setText(AVATAR_ICON_REMOVE);
-                avatarView.setImageResource(R.drawable.personphoto);
+                avatarView.setImageResource(R.drawable.person_photo);
                 hasChanges = true;
                 return true;
             case R.id.avatar_Cancel:
@@ -1154,11 +1178,11 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
         }
         // Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-        Intent gallIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        gallIntent.setType("image/*");
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
         // Intent camIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-        gallIntent.putExtra(Intent.EXTRA_TITLE, R.string.service_gui_SELECT_AVATAR);
-        startActivityForResult(gallIntent, SELECT_IMAGE);
+        intent.putExtra(Intent.EXTRA_TITLE, R.string.service_gui_SELECT_AVATAR);
+        startActivityForResult(intent, SELECT_IMAGE);
     }
 
     /**
@@ -1170,6 +1194,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK)
             return;
 
@@ -1288,10 +1313,9 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     {
         if (hasStatusChanges) {
             Spinner statusSpinner = findViewById(R.id.presenceStatusSpinner);
-            EditText statusMessageEdit = findViewById(R.id.statusMessage);
 
             PresenceStatus selectedStatus = (PresenceStatus) statusSpinner.getSelectedItem();
-            String statusMessageText = statusMessageEdit.getText().toString();
+            String statusMessageText = ViewUtil.toString(findViewById(R.id.statusMessage));
 
             if ((selectedStatus.getStatus() == PresenceStatus.OFFLINE) && (hasChanges)) {
                 // abort all account info changes if user goes offline
@@ -1304,28 +1328,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             // Publish status in new thread
             publishStatus(selectedStatus, statusMessageText);
         }
-    }
-
-    /**
-     * Fired when new presence status is selected
-     *
-     * @param adapterView clicked adapter's View
-     * @param view selected item's View
-     * @param i items position
-     * @param l item's id
-     */
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-    {
-        // Need to ignore the first trigger when adapter is being first init
-        if (!firstInit)
-            hasStatusChanges = true;
-        else
-            firstInit = false;
-    }
-
-    public void onNothingSelected(AdapterView<?> adapterView)
-    {
-        // Should not happen in single selection mode
     }
 
     /**
@@ -1351,18 +1353,21 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }).start();
     }
 
-    /**
-     * SoftKeyboard event handler to show/hide view buttons to give more space
-     * for fields' text entry.
+    /*
+     * cmeng 20191118 - manipulate android softKeyboard may cause problem in >= android-9 (API-28)
+     * all view Dimensions are incorrectly init when soffKeyboard is auto launched.
+     * aboutMeArea.setEnabled(false); cause softKeyboard to auto-launch
+     *
+     * SoftKeyboard event handler to show/hide view buttons to give more space for fields' text entry.
      * # init to handle when softKeyboard is hided/shown
      */
     private void initSoftKeyboard()
     {
         LinearLayout mainLayout = findViewById(R.id.accountInfo_layout);
-        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
 
         /*  Instantiate and pass a callback */
-        softKeyboard = new SoftKeyboard(mainLayout, im);
+        softKeyboard = new SoftKeyboard(mainLayout, imm);
         softKeyboard.setSoftKeyboardCallback(this);
     }
 

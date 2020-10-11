@@ -19,6 +19,7 @@ import org.atalk.service.neomedia.control.AdvancedAttributesAwareCodec;
 import org.atalk.service.neomedia.control.FormatParametersAwareCodec;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
@@ -55,15 +56,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     public static final String OUTPUT_DATA_SOURCE = "OUTPUT_DATA_SOURCE";
 
     /**
-     * The name of the property that corresponds to the array of SSRC identifiers that we store in
-     * this <tt>MediaDeviceSession</tt> instance and that we update upon adding and removing
-     * <tt>ReceiveStream</tt>
+     * The name of the property that corresponds to the array of SSRC identifiers that we store in this
+     * <tt>MediaDeviceSession</tt> instance and that we update upon adding and removing <tt>ReceiveStream</tt>
      */
     public static final String SSRC_LIST = "SSRC_LIST";
 
     /**
-     * The JMF <tt>DataSource</tt> of {@link #device} through which this instance accesses the
-     * media captured by it.
+     * The JMF <tt>DataSource</tt> of {@link #device} through which this instance accesses the media captured by it.
      */
     private DataSource captureDevice;
 
@@ -104,14 +103,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     private final List<Playback> playbacks = new LinkedList<>();
 
     /**
-     * The <tt>ReadWriteLock</tt> which is used to synchronize the (read and write) accesses to
-     * {@link #playbacks}.
+     * The <tt>ReadWriteLock</tt> which is used to synchronize the (read and write) accesses to {@link #playbacks}.
      */
     private final ReadWriteLock playbacksLock = new ReentrantReadWriteLock();
 
     /**
-     * The <tt>ControllerListener</tt> which listens to the <tt>Player</tt>s of {@link #playbacks}
-     * for <tt>ControllerEvent</tt>s.
+     * The <tt>ControllerListener</tt> which listens to the <tt>Player</tt>s of
+     * {@link #playbacks} for <tt>ControllerEvent</tt>s.
      */
     private final ControllerListener playerControllerListener = new ControllerListener()
     {
@@ -119,13 +117,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
          * Notifies this <tt>ControllerListener</tt> that the <tt>Controller</tt> which it is
          * registered with has generated an event.
          *
-         * @param ev
-         *        the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt> which is the
-         *        source of the event and the very type of the event
+         * @param ev the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt> which is
+         * the source of the event, and the very type of the event.
          * @see ControllerListener#controllerUpdate(ControllerEvent)
          */
         public void controllerUpdate(ControllerEvent ev)
         {
+            // Timber.w("Media device session controller updated: %s", ev.getSource());
             playerControllerUpdate(ev);
         }
     };
@@ -240,7 +238,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * For JPEG and H263, we know that they only work for particular sizes. So we'll perform extra
+     * For JPEG, we know that they only work for particular sizes. So we'll perform extra
      * checking here to make sure they are of the right sizes.
      *
      * @param sourceFormat the original format to check the size of
@@ -257,25 +255,6 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             // For JPEG, make sure width and height are divisible by 8.
             width = (size.width % 8 == 0) ? size.width : ((size.width / 8) * 8);
             height = (size.height % 8 == 0) ? size.height : ((size.height / 8) * 8);
-        }
-        // H.263
-        else if (sourceFormat.matches(new Format(VideoFormat.H263_RTP))) {
-            // For H.263, we only support some specific sizes.
-            //            if (size.width < 128)
-            //            {
-            //                width = 128;
-            //                height = 96;
-            //            }
-            //            else if (size.width < 176)
-            //            {
-            //                width = 176;
-            //                height = 144;
-            //            }
-            //            else
-            //            {
-            width = 352;
-            height = 288;
-            //            }
         }
         else {
             // For other video format, we'll just leave it alone then.

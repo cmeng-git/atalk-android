@@ -11,6 +11,7 @@ import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchPr
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.chatsession.ChatSessionRecord;
 
 import java.util.*;
 
@@ -162,13 +163,22 @@ public interface MessageHistoryService
     Collection<EventObject> findLastMessagesBefore(MetaContact contact, Date date, int count);
 
     /**
+     * Returns all the chat session record created by the supplied accountUid before the given date
+     *
+     * @param accountUid Account Uid
+     * @param endDate end date for the session creation
+     * @return Collection of ChatSessionRecord
+     */
+    Collection<ChatSessionRecord> findSessionByEndDate(String accountUid, Date endDate);
+
+    /**
      * Returns the messages for the recently contacted <tt>count</tt> contacts.
      *
      * @param count contacts count
-     * @param providerToFilter can be filtered by provider e.g. Jabber:abc123@atalk.org, or <tt>null</tt> to search
-     * for all  providers
-     * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org, or <tt>null</tt> to search for all
-     * contacts
+     * @param providerToFilter can be filtered by provider e.g. Jabber:abc123@atalk.org,
+     * or <tt>null</tt> to search for all  providers
+     * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org,
+     * or <tt>null</tt> to search for all contacts
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
@@ -310,19 +320,20 @@ public interface MessageHistoryService
     Collection<EventObject> findLastMessagesBefore(ChatRoom room, Date date, int count);
 
     /**
-     * Permanently removes all locally stored message history.
+     * Permanently removes all locally stored message history for the specified chatMode.
+     * @param chatMode i.e. ChatSession.MODE_SINGLE or ChatSession.MODE_MULTI
      */
-    void eraseLocallyStoredHistory();
+    void eraseLocallyStoredChatHistory(int chatMode);
 
     /**
      * Permanently removes locally stored message history for the metaContact.
      */
-    void eraseLocallyStoredHistory(MetaContact metaContact, List<String> messageUUIDs);
+    void eraseLocallyStoredChatHistory(MetaContact metaContact, List<String> messageUUIDs);
 
     /**
      * Permanently removes locally stored message history for the chatRoom.
      */
-    void eraseLocallyStoredHistory(ChatRoom room, List<String> messageUUIDs);
+    void eraseLocallyStoredChatHistory(ChatRoom room, List<String> messageUUIDs);
 
     /**
      * Fetch the attached file paths for all the messages of the specified descriptor.

@@ -41,8 +41,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * Returns the default protocol specific <tt>Contact</tt> to use when
      * communicating with this <tt>MetaContact</tt>.
      *
-     * @return the default <tt>Contact</tt> to use when communicating with
-     * this <tt>MetaContact</tt>
+     * @return the default <tt>Contact</tt> to use when communicating with this <tt>MetaContact</tt>
      */
     Contact getDefaultContact();
 
@@ -54,6 +53,18 @@ public interface MetaContact extends Comparable<MetaContact>
      * @return the default contact for the specified operation.
      */
     Contact getDefaultContact(Class<? extends OperationSet> operationSet);
+
+    /**
+     * Returns the first found protocol specific <tt>Contact</tt> of the <tt>MetaContact</tt>
+     * that support a precise operation (IM, call, ...).
+     * Currently the main use is to display the call button for user access
+     *
+     * @param operationSet the operation for which the metacontact is supported
+     * @return the first contact for the specified operation supported.
+     */
+    Contact getOpSetSupportedContact(Class<? extends OperationSet> operationSet);
+
+    boolean isFeatureSupported(String feature);
 
     /**
      * Returns a <tt>java.util.Iterator</tt> with all protocol specific
@@ -93,8 +104,7 @@ public interface MetaContact extends Comparable<MetaContact>
     boolean containsContact(Contact protocolContact);
 
     /**
-     * Returns the number of protocol specific <tt>Contact</tt>s that this
-     * <tt>MetaContact</tt> contains.
+     * Returns the number of protocol specific <tt>Contact</tt>s that this <tt>MetaContact</tt> contains.
      *
      * @return an int indicating the number of protocol specific contacts merged
      * in this <tt>MetaContact</tt>
@@ -145,12 +155,25 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns a String identifier (the actual contents is left to
-     * implementations) that uniquely represents this <tt>MetaContact</tt>
-     * in the containing <tt>MetaContactList</tt>
+     * implementations) that uniquely represents this <tt>MetaContact</tt> in the containing <tt>MetaContactList</tt>
      *
      * @return String
      */
     String getMetaUID();
+
+    /**
+     * Set the unread message count for this metaCount represent
+     *
+     * @param count unread message count
+     */
+    void setUnreadCount(int count);
+
+    /**
+     * Returns the unread message count for this metaContact
+     *
+     * @return the unread message count
+     */
+    int getUnreadCount();
 
     /**
      * Returns a characteristic display name that can be used when including
@@ -246,8 +269,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * specified <tt>value</tt>.
      * <p>
      * The user-defined association created by this method and stored in this
-     * instance is not serialized by this instance and is thus only meant for
-     * runtime use.
+     * instance is not serialized by this instance and is thus only meant for runtime use.
      * </p>
      * <p>
      * The storage of the user data is implementation-specific and is thus not

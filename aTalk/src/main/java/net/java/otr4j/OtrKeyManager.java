@@ -3,7 +3,9 @@ package net.java.otr4j;
 import net.java.otr4j.session.SessionID;
 
 import java.security.*;
-
+/**
+ * @author George Politis
+ */
 public interface OtrKeyManager {
 
 	void addListener(OtrKeyManagerListener l);

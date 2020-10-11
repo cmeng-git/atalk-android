@@ -7,7 +7,9 @@ package net.java.sip.communicator.service.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
+import org.jivesoftware.smack.util.TLSUtils;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
@@ -35,12 +37,6 @@ public class JabberAccountID extends AccountID
      * Uses anonymous XMPP login if set to <tt>true</tt>.
      */
     public static final String ANONYMOUS_AUTH = "ANONYMOUS_AUTH";
-
-    /**
-     * Configures the URL which is to be used with BOSH transport. If the value
-     * is <tt>null</tt> or empty then the TCP transport will be used instead.
-     */
-    public static final String BOSH_URL = "BOSH_URL";
 
     /**
      * Account suffix for Google service.
@@ -91,19 +87,21 @@ public class JabberAccountID extends AccountID
     /**
      * Creates an account id from the specified id and account properties.
      *
-     * @param id the id identifying this account i.e hawk@example.org
+     * @param userId the id identifying this account i.e hawk@example.org
      * @param accountProperties any other properties necessary for the account.
      */
-    public JabberAccountID(String id, Map<String, String> accountProperties)
+    public JabberAccountID(String userId, Map<String, String> accountProperties)
+            throws IllegalArgumentException
     {
-        super(id, accountProperties, ProtocolNames.JABBER, getServiceName(accountProperties));
+        super(userId, accountProperties, ProtocolNames.JABBER, getServiceName(accountProperties));
 
         // id can be null on initial startup
-        if (id != null) {
+        if (userId != null) {
             try {
-                userBareJid = JidCreate.bareFrom(id);
+                userBareJid = JidCreate.bareFrom(userId);
             } catch (XmppStringprepException e) {
-                Timber.e("Unable to create BareJid for user account: %s", id);
+                Timber.e("Unable to create BareJid for user account: %s", userId);
+                throw new IllegalArgumentException("User ID is not a valid xmpp BareJid");
             }
         }
     }
@@ -117,25 +115,74 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Returns the BOSH URL which should be used to connect to the XMPP server.
-     * If the value is set then BOSH transport instead of TCP will be used.
+     * change to the new userId for the current AccountID. Mainly use of userId change in account settings
+     * Need to change the userID, userBareJid, accountUID; and mAccountProperties.USER_ID if Account ID changed
      *
-     * @return a <tt>String</tt> with the URL which should be used for BOSH
-     * transport or <tt>null</tt> if disabled.
+     * @param userId new userId
+     */
+    public void updateJabberAccountID(String userId)
+    {
+        if (userId != null) {
+            this.userID = userId;
+            this.accountUID = getProtocolName() + ":" + userID;
+            mAccountProperties.put(USER_ID, userId);
+            try {
+                userBareJid = JidCreate.bareFrom(userId);
+            } catch (XmppStringprepException e) {
+                Timber.e("Unable to create BareJid for user account: %s", userId);
+            }
+        }
+    }
+
+    /**
+     * Returns the BOSH URL which should be used to connect to the XMPP server.
+     * The value must not be null if BOSH transport is enabled.
+     *
+     * @return a <tt>String</tt> with the URL which should be used for BOSH transport
      */
     public String getBoshUrl()
     {
-        return getAccountPropertyString(BOSH_URL);
+        return getAccountPropertyString(ProtocolProviderFactory.BOSH_URL);
     }
 
     /**
      * Sets new URL which should be used for the BOSH transport.
      *
-     * @param boshPath a <tt>String</tt> with the new BOSH URL or <tt>null</tt> to disable BOSH.
+     * @param boshPath a <tt>String</tt> with the new BOSH URL
      */
     public void setBoshUrl(String boshPath)
     {
-        putAccountProperty(BOSH_URL, boshPath);
+        putAccountProperty(ProtocolProviderFactory.BOSH_URL, boshPath);
+    }
+
+    /**
+     * Returns true is Type is BOSH else false.
+     *
+     * @return <tt>true</tt> if (Type == BOSH) else false
+     */
+    public boolean isBOSHEnable()
+    {
+        return BoshProxyDialog.BOSH.equals(getAccountPropertyString(ProtocolProviderFactory.PROXY_TYPE));
+    }
+
+    /**
+     * Indicates if HTTP proxy should be used for with BOSH protocol. Only HTTP proxy is supported for BOSH
+     *
+     * @return <tt>true</tt> if Bosh Http Proxy should be used, otherwise returns <tt>false</tt>
+     */
+    public boolean isBoshHttpProxyEnabled()
+    {
+        return getAccountPropertyBoolean(ProtocolProviderFactory.BOSH_PROXY_HTTP_ENABLED, false);
+    }
+
+    /**
+     * set HTTP proxy should be used for with BOSH protocol.
+     *
+     * @param isBoshHttp <code>true to enable HTTP proxy for BOSH</code>
+     */
+    public void setBoshHttpProxyEnabled(boolean isBoshHttp)
+    {
+        putAccountProperty(ProtocolProviderFactory.BOSH_PROXY_HTTP_ENABLED, isBoshHttp);
     }
 
     /**
@@ -363,41 +410,40 @@ public class JabberAccountID extends AccountID
     /**
      * Sets the <tt>autoDiscoverStun</tt> property.
      *
-     * @param autoDiscoverStun <tt>true</tt> to indicate that stun server should be auto-discovered, <tt>false</tt> -
+     * @param isAutoDiscover <tt>true</tt> to indicate that stun server should be auto-discovered, <tt>false</tt> -
      * otherwise.
      */
-    public void setAutoDiscoverStun(boolean autoDiscoverStun)
+    public void setAutoDiscoverStun(boolean isAutoDiscover)
     {
-        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_STUN, autoDiscoverStun);
+        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_STUN, isAutoDiscover);
     }
 
     /**
      * Sets the <tt>useDefaultStunServer</tt> property.
      *
-     * @param useDefaultStunServer <tt>true</tt> to indicate that default stun server should be used if no others are
+     * @param isUseDefaultStunServer <tt>true</tt> to indicate that default stun server should be used if no others are
      * available, <tt>false</tt> otherwise.
      */
-    public void setUseDefaultStunServer(boolean useDefaultStunServer)
+    public void setUseDefaultStunServer(boolean isUseDefaultStunServer)
     {
-        putAccountProperty(ProtocolProviderFactory.USE_DEFAULT_STUN_SERVER, useDefaultStunServer);
+        putAccountProperty(ProtocolProviderFactory.USE_DEFAULT_STUN_SERVER, isUseDefaultStunServer);
     }
 
     /**
      * Sets the <tt>autoDiscoverJingleNodes</tt> property.
      *
-     * @param autoDiscoverJingleNodes <tt>true</tt> to indicate that relay server should be auto-discovered,
+     * @param isAutoDiscoverJingleNodes <tt>true</tt> to indicate that relay server should be auto-discovered,
      * <tt>false</tt> - otherwise.
      */
-    public void setAutoDiscoverJingleNodes(boolean autoDiscoverJingleNodes)
+    public void setAutoDiscoverJingleNodes(boolean isAutoDiscoverJingleNodes)
     {
-        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_JINGLE_NODES, autoDiscoverJingleNodes);
+        putAccountProperty(ProtocolProviderFactory.AUTO_DISCOVER_JINGLE_NODES, isAutoDiscoverJingleNodes);
     }
 
     /**
      * Indicates if the JingleNodes relay server should be automatically discovered.
      *
-     * @return <tt>true</tt> if the relay server should be automatically discovered, otherwise
-     * returns <tt>false</tt>.
+     * @return <tt>true</tt> if the relay server should be automatically discovered, otherwise returns <tt>false</tt>.
      */
     public boolean isAutoDiscoverJingleNodes()
     {
@@ -438,12 +484,31 @@ public class JabberAccountID extends AccountID
     /**
      * Sets the <tt>useUPNP</tt> property.
      *
-     * @param isUseUPNP <tt>true</tt> to indicate that UPnP should be used for this account,
-     * <tt>false</tt> - otherwise.
+     * @param isUseUPNP <tt>true</tt> to indicate that UPnP should be used for this account, <tt>false</tt> - otherwise.
      */
     public void setUseUPNP(boolean isUseUPNP)
     {
         putAccountProperty(ProtocolProviderFactory.IS_USE_UPNP, isUseUPNP);
+    }
+
+    /**
+     * Minimum TLS protocol version used for TLS connections.
+     *
+     * @return minimum TLS protocol version. Default TLS 1.2
+     */
+    public String getMinimumTLSversion()
+    {
+        return getAccountPropertyString(ProtocolProviderFactory.MINUMUM_TLS_VERSION, TLSUtils.PROTO_TLSV1_2);
+    }
+
+    /**
+     * Sets the <tt>minimumTLSversion</tt> property.
+     *
+     * @param minimumTLSversion minimum TLS protocol version
+     */
+    public void setMinimumTLSversion(String minimumTLSversion)
+    {
+        putAccountProperty(ProtocolProviderFactory.MINUMUM_TLS_VERSION, minimumTLSversion);
     }
 
     /**

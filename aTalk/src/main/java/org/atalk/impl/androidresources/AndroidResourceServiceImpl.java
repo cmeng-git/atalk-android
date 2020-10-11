@@ -42,8 +42,7 @@ import timber.log.Timber;
  *
  * Sounds - are stored in res/raw folder. The mappings are read from the sounds.properties or
  * other SoundPack's provided. Properties should point to sound file names without the extension.
- * For example:
- * BUSY=busy (points to /res/raw/busy.wav)
+ * For example: BUSY=busy (points to /res/raw/busy.wav)
  *
  * Images - images work the same as sounds except they are stored in drawable folders.
  *
@@ -65,6 +64,12 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * Path to the .properties file containing image path's translations to android drawable resources
      */
     private static final String IMAGE_PATH_RESOURCE = "resources.images.image_path";
+
+    /**
+     * android resource path prefix for /res/raw
+     */
+    public static final String PROTOCOL = "atalk.resource";
+
     /**
      * Android image path translation resource TODO: Remove direct path requests for resources
      */
@@ -76,7 +81,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     private static Resources resources = null;
 
     /**
-     * The application package name(org.atalk)
+     * The application package name(org.atalk.android)
      */
     private String packageName;
 
@@ -282,7 +287,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
         if (id == 0)
             return null;
 
-        return AndroidResourceURLHandlerFactory.PROTOCOL + "://" + id;
+        return PROTOCOL + "://" + id;
     }
 
     /**
@@ -371,8 +376,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the path for given <tt>soundKey</tt>. It's formatted with protocol name in the URI
-     * format.
+     * Returns the path for given <tt>soundKey</tt>. It's formatted with protocol name in the URI format.
      *
      * @param soundKey the key, for the sound path
      */
@@ -390,7 +394,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
             Timber.e("No sound defined for: %s", soundKey);
             return null;
         }
-        return AndroidResourceURLHandlerFactory.PROTOCOL + "://" + id;
+        return PROTOCOL + "://" + id;
     }
 
     /**
@@ -408,13 +412,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
 
     /**
      * Some kind of hack to be able to produce URLs pointing to Android resources. It allows to
-     * produce URL with protocol name of {@link #PROTOCOL} that will be later handled by this
-     * factory.
+     * produce URL with protocol name of {@link #PROTOCOL} that will be later handled by this factory.
      */
     static private class AndroidResourceURLHandlerFactory implements URLStreamHandlerFactory
     {
-        public static final String PROTOCOL = "jitsi.resource";
-
         public URLStreamHandler createURLStreamHandler(String s)
         {
             if (s.equals(PROTOCOL)) {

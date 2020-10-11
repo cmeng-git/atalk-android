@@ -16,6 +16,7 @@ import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

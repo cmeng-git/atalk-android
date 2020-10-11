@@ -45,16 +45,6 @@ public class FFmpeg
     public static final int CODEC_FLAG_AC_PRED = 0x02000000;
 
     /**
-     * H263+ slice struct flag.
-     */
-    public static final int CODEC_FLAG_H263P_SLICE_STRUCT = 0x10000000;
-
-    /**
-     * H263+ UMV flag.
-     */
-    public static final int CODEC_FLAG_H263P_UMV = 0x01000000 ;
-
-    /**
      * Loop filter flag.
      */
     public static final int CODEC_FLAG_LOOP_FILTER = 0x00000800;
@@ -78,16 +68,6 @@ public class FFmpeg
      * AMR-WB codec ID
      */
     public static final int CODEC_ID_AMR_WB = CODEC_ID_AMR_NB + 1;
-
-    /**
-     * H263 codec ID.
-     */
-    public static final int CODEC_ID_H263 = 5;
-
-    /**
-     * H263+ codec ID.
-     */
-    public static final int CODEC_ID_H263P = 20;
 
     /**
      * H264 codec ID.
@@ -154,14 +134,14 @@ public class FFmpeg
     public static final int PIX_FMT_BGR24_1 = 3;
 
     /**
-     * BGR32 format handled in endian specific manner. It is stored as ABGR on big-endian and RGBA
-     * on little-endian.
+     * BGR32 format handled in endian specific manner.
+     * It is stored as ABGR on big-endian and RGBA on little-endian.
      */
     public static final int PIX_FMT_BGR32;
 
     /**
-     * BGR32_1 format handled in endian specific manner. It is stored as BGRA on big-endian and ARGB
-     * on little-endian.
+     * BGR32_1 format handled in endian specific manner.
+     * It is stored as BGRA on big-endian and ARGB on little-endian.
      */
     public static final int PIX_FMT_BGR32_1;
 
@@ -176,8 +156,8 @@ public class FFmpeg
     public static final int PIX_FMT_NV12 = 25;
 
     /**
-     * RGB24 format handled in endian specific manner. It is stored as RGB on big-endian and BGR on
-     * little-endian.
+     * RGB24 format handled in endian specific manner.
+     * It is stored as RGB on big-endian and BGR on little-endian.
      */
     public static final int PIX_FMT_RGB24;
 
@@ -187,14 +167,14 @@ public class FFmpeg
     public static final int PIX_FMT_RGB24_1 = 2;
 
     /**
-     * RGB32 format handled in endian specific manner. It is stored as ARGB on big-endian and BGRA
-     * on little-endian.
+     * RGB32 format handled in endian specific manner.
+     * It is stored as ARGB on big-endian and BGRA on little-endian.
      */
     public static final int PIX_FMT_RGB32;
 
     /**
-     * RGB32_1 format handled in endian specific manner. It is stored as RGBA on big-endian and ABGR
-     * on little-endian.
+     * RGB32_1 format handled in endian specific manner.
+     * It is stored as RGBA on big-endian and ABGR on little-endian.
      */
     public static final int PIX_FMT_RGB32_1;
 

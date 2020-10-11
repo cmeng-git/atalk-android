@@ -13,7 +13,7 @@ import org.atalk.impl.neomedia.format.*;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
@@ -25,6 +25,8 @@ import javax.media.Format;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 import javax.sdp.SdpConstants;
+
+import timber.log.Timber;
 
 /**
  * Implements static utility methods used by media classes.
@@ -69,8 +71,7 @@ public class MediaUtils
     private static final List<MediaFormat> rtpPayloadTypelessMediaFormats = new ArrayList<>();
 
     /**
-     * The <tt>Map</tt> of RTP payload types (expressed as <tt>String</tt>s) to
-     * <tt>MediaFormat</tt>s.
+     * The <tt>Map</tt> of RTP payload types (expressed as <tt>String</tt>s) to <tt>MediaFormat</tt>s.
      */
     private static final Map<String, MediaFormat[]> rtpPayloadTypeStrToMediaFormats = new HashMap<>();
 
@@ -124,12 +125,12 @@ public class MediaUtils
                 MediaType.AUDIO,
                 Constants.SPEEX_RTP,
                 8000, 16000, 32000);
-        //		 addMediaFormats(
-        //		 		(byte) SdpConstants.G722,
-        //				 "G722",
-        //				 MediaType.AUDIO,
-        //				 Constants.G722_RTP,
-        //				 8000);
+//		 addMediaFormats(
+//		 		(byte) SdpConstants.G722,
+//				 "G722",
+//				 MediaType.AUDIO,
+//				 Constants.G722_RTP,
+//				 8000);
         if (EncodingConfigurationImpl.G729) {
             Map<String, String> g729FormatParams = new HashMap<>();
             g729FormatParams.put("annexb", "no");
@@ -184,19 +185,35 @@ public class MediaUtils
                 null,
                 8000, 12000, 16000, 24000);
 
+        /*
+         * RTP Payload Format for the Opus Speech and Audio Codec (June 2015)
+         * https://tools.ietf.org/html/rfc7587
+         */
         Map<String, String> opusFormatParams = new HashMap<>();
-        boolean opusFec = cfg.getBoolean(Constants.PROP_OPUS_FEC, true);
-        if (!opusFec)
-            opusFormatParams.put("useinbandfec", "0");
-
-        boolean opusDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, true);
-        if (opusDtx)
-            opusFormatParams.put("usedtx", "1");
+        // not in rfc7587
         // opusFormatParams.put("minptime", "10");
 
+        /*
+         * Decoder support for FEC SHOULD be indicated at the time a session is setup.
+         */
+        boolean opusFec = cfg.getBoolean(Constants.PROP_OPUS_FEC, true);
+        if (opusFec)
+            opusFormatParams.put("useinbandfec", "1");
+
+        /*
+         * DTX can be used with both variable and constant bitrate.  It will have a slightly lower speech
+         * or audio quality than continuous transmission.  Therefore, using continuous transmission is
+         * RECOMMENDED unless constraints on available network bandwidth are severe.
+         * If no value is specified, the default is 0.
+         */
+        boolean opusDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, false);
+        if (opusDtx)
+            opusFormatParams.put("usedtx", "1");
+
         Map<String, String> opusAdvancedParams = new HashMap<>();
-        String packetizationTime = Constants.PTIME;
-        opusAdvancedParams.put(packetizationTime, "20");
+        /* The preferred duration of media represented by a packet that a decoder wants to receive, in milliseconds
+         */
+        opusAdvancedParams.put(Constants.PTIME, "20");
 
         addMediaFormats(
                 MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
@@ -208,42 +225,37 @@ public class MediaUtils
                 opusAdvancedParams,
                 48000);
 
-        // Adaptive Multi-Rate Wideband (AMR-WB)
-        addMediaFormats(
-                MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
-                Constants.AMR_WB,
-                MediaType.AUDIO,
-                Constants.AMR_WB_RTP,
-                16000);
+        boolean enableFfmpeg = cfg.getBoolean(MediaService.ENABLE_FFMPEG_CODECS_PNAME, false);
 
-        /*
-         * We don't really support these.
-         *
-        addMediaFormats(
-            (byte) SdpConstants.JPEG,
-            "JPEG",
-            MediaType.VIDEO,
-            VideoFormat.JPEG_RTP);
-        addMediaFormats(
-            (byte) SdpConstants.H263,
-            "H263",
-            MediaType.VIDEO,
-            VideoFormat.H263_RTP);
-        addMediaFormats(
-            (byte) SdpConstants.H261,
-            "H261",
-            MediaType.VIDEO,
-            VideoFormat.H261_RTP);
-            */
+        // Adaptive Multi-Rate Wideband (AMR-WB)
+        // Checks whether ffmpeg is enabled and whether AMR-WB is available in the provided binaries
+        boolean amrwbEnabled = false;
+        if (enableFfmpeg) {
+            try {
+                amrwbEnabled = (FFmpeg.avcodec_find_encoder(FFmpeg.CODEC_ID_AMR_WB) != 0);
+            } catch (Throwable t) {
+                Timber.d("AMR-WB codec not found %s", t.getMessage());
+            }
+        }
+
+        if (amrwbEnabled) {
+            addMediaFormats(
+                    MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
+                    Constants.AMR_WB,
+                    MediaType.AUDIO,
+                    Constants.AMR_WB_RTP,
+                    16000);
+        }
 
         /* H264 */
         // Checks whether ffmpeg is enabled and whether h264 is available in the provided binaries
-        boolean enableFfmpeg = cfg.getBoolean(MediaService.ENABLE_FFMPEG_CODECS_PNAME, false);
         boolean h264Enabled = false;
         if (enableFfmpeg) {
-            long avcodec = FFmpeg.avcodec_find_encoder(FFmpeg.CODEC_ID_H264);
-            if (avcodec != 0)
-                h264Enabled = true;
+            try {
+                h264Enabled = FFmpeg.avcodec_find_encoder(FFmpeg.CODEC_ID_H264) != 0;
+            } catch (Throwable t) {
+                Timber.d("H264 codec not found: %s", t.getMessage());
+            }
         }
 
         // register h264 media formats if codec is present or there is
@@ -280,10 +292,9 @@ public class MediaUtils
                 h264FormatParams.put("profile-level-id", "42E01f");
             }
 
-            //		if (cfg.getBoolean("neomedia.codec.video.h264.enabled", false)) {
+            // if (cfg.getBoolean("neomedia.codec.video.h264.enabled", false)) {
             // By default, packetization-mode=1 is enabled.
-            if ((cfg == null)
-                    || cfg.getBoolean("neomedia.codec.video.h264.packetization-mode-1.enabled", true)) {
+            if (cfg.getBoolean("neomedia.codec.video.h264.packetization-mode-1.enabled", true)) {
                 // packetization-mode=1
                 h264FormatParams.put(packetizationMode, "1");
                 addMediaFormats(
@@ -315,26 +326,6 @@ public class MediaUtils
                     h264AdvancedAttributes
             );
         }
-
-        /* H263+
-		Map<String, String> h263FormatParams = new HashMap<>();
-        Map<String, String> h263AdvancedAttributes = new LinkedHashMap<>();
-
-         // The maximum resolution we can receive is the size of our screen device.
-        if (res != null)
-            h263FormatParams.put("CUSTOM", res.width + "," + res.height + ",2");
-        h263FormatParams.put("VGA", "2");
-        h263FormatParams.put("CIF", "1");
-        h263FormatParams.put("QCIF", "1");
-
-        addMediaFormats(
-                MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
-                "H263-1998",
-                MediaType.VIDEO,
-                Constants.H263P_RTP,
-                h263FormatParams,
-                h263AdvancedAttributes);
-		*/
 
         addMediaFormats(
                 MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
@@ -574,7 +565,7 @@ public class MediaUtils
 
     /**
      * Creates value of an imgattr.
-     * <p>
+     *
      * https://tools.ietf.org/html/rfc6236
      *
      * @param sendSize maximum size peer can send
@@ -698,9 +689,10 @@ public class MediaUtils
      */
     public static MediaFormat getMediaFormat(String encoding, double clockRate, Map<String, String> fmtps)
     {
-        for (MediaFormat format : getMediaFormats(encoding))
+        for (MediaFormat format : getMediaFormats(encoding)) {
             if ((format.getClockRate() == clockRate) && format.formatParametersMatch(fmtps))
                 return format;
+        }
         return null;
     }
 
@@ -746,13 +738,16 @@ public class MediaUtils
     {
         List<MediaFormat> mediaFormats = new ArrayList<>();
 
-        for (MediaFormat[] formats : rtpPayloadTypeStrToMediaFormats.values())
-            for (MediaFormat format : formats)
+        for (MediaFormat[] formats : rtpPayloadTypeStrToMediaFormats.values()) {
+            for (MediaFormat format : formats) {
                 if (format.getMediaType().equals(mediaType))
                     mediaFormats.add(format);
-        for (MediaFormat format : rtpPayloadTypelessMediaFormats)
+            }
+        }
+        for (MediaFormat format : rtpPayloadTypelessMediaFormats) {
             if (format.getMediaType().equals(mediaType))
                 mediaFormats.add(format);
+        }
         return mediaFormats.toArray(EMPTY_MEDIA_FORMATS);
     }
 
@@ -770,27 +765,29 @@ public class MediaUtils
     {
         String jmfEncoding = null;
 
-        for (Map.Entry<String, String> jmfEncodingToEncoding : jmfEncodingToEncodings.entrySet())
+        for (Map.Entry<String, String> jmfEncodingToEncoding : jmfEncodingToEncodings.entrySet()) {
             if (jmfEncodingToEncoding.getValue().equalsIgnoreCase(encoding)) {
                 jmfEncoding = jmfEncodingToEncoding.getKey();
                 break;
             }
+        }
 
         List<MediaFormat> mediaFormats = new ArrayList<>();
 
         if (jmfEncoding != null) {
-            for (MediaFormat[] rtpPayloadTypeMediaFormats
-                    : rtpPayloadTypeStrToMediaFormats.values())
-                for (MediaFormat rtpPayloadTypeMediaFormat : rtpPayloadTypeMediaFormats)
+            for (MediaFormat[] rtpPayloadTypeMediaFormats : rtpPayloadTypeStrToMediaFormats.values()) {
+                for (MediaFormat rtpPayloadTypeMediaFormat : rtpPayloadTypeMediaFormats) {
                     if (((MediaFormatImpl<? extends Format>) rtpPayloadTypeMediaFormat)
                             .getJMFEncoding().equals(jmfEncoding))
                         mediaFormats.add(rtpPayloadTypeMediaFormat);
-
+                }
+            }
             if (mediaFormats.size() < 1) {
-                for (MediaFormat rtpPayloadTypelessMediaFormat : rtpPayloadTypelessMediaFormats)
+                for (MediaFormat rtpPayloadTypelessMediaFormat : rtpPayloadTypelessMediaFormats) {
                     if (((MediaFormatImpl<? extends Format>) rtpPayloadTypelessMediaFormat)
                             .getJMFEncoding().equals(jmfEncoding))
                         mediaFormats.add(rtpPayloadTypelessMediaFormat);
+                }
             }
         }
         return mediaFormats;
@@ -854,9 +851,6 @@ public class MediaUtils
         }
         else if (jmfEncoding.equals(AudioFormat.G729_RTP)) {
             return SdpConstants.G729;
-        }
-        else if (jmfEncoding.equals(VideoFormat.H263_RTP)) {
-            return SdpConstants.H263;
         }
         else if (jmfEncoding.equals(VideoFormat.JPEG_RTP)) {
             return SdpConstants.JPEG;

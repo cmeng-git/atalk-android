@@ -8,6 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
@@ -59,10 +60,12 @@ public class OperationSetExtendedAuthorizationsJabberImpl implements OperationSe
         if (!(contact instanceof ContactJabberImpl))
             throw new IllegalArgumentException("The specified contact is not an jabber contact." + contact);
 
-        Presence responsePacket = new Presence(Presence.Type.subscribed);
+        XMPPConnection connection = parentProvider.getConnection();
+        Presence responsePacket = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.subscribed).build();
         responsePacket.setTo(contact.getJid());
         try {
-            parentProvider.getConnection().sendStanza(responsePacket);
+            connection.sendStanza(responsePacket);
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send authorize",
                 OperationFailedException.NETWORK_FAILURE, e);
@@ -83,10 +86,12 @@ public class OperationSetExtendedAuthorizationsJabberImpl implements OperationSe
         if (!(contact instanceof ContactJabberImpl))
             throw new IllegalArgumentException("The specified contact is not an jabber contact: " + contact);
 
-        Presence responsePacket = new Presence(Presence.Type.subscribe);
+        XMPPConnection connection = parentProvider.getConnection();
+        Presence responsePacket = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.subscribed).build();
         responsePacket.setTo(contact.getJid());
         try {
-            parentProvider.getConnection().sendStanza(responsePacket);
+            connection.sendStanza(responsePacket);
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send subscribe packet",
                 OperationFailedException.NETWORK_FAILURE, e);

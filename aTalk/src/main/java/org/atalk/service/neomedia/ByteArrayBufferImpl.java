@@ -15,10 +15,13 @@
  */
 package org.atalk.service.neomedia;
 
-import org.atalk.android.util.ApiLib;
+import org.atalk.util.ByteArrayBuffer;
+
+import java.util.Objects;
 
 /**
  * Implements {@link ByteArrayBuffer}.
+ *
  * @author Boris Grozev
  */
 public class ByteArrayBufferImpl implements ByteArrayBuffer
@@ -26,7 +29,7 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
     /**
      * The byte array represented by this {@link ByteArrayBufferImpl}.
      */
-    private byte[] buffer;
+    protected byte[] buffer;
 
     /**
      * The offset in the byte buffer where the actual data starts.
@@ -40,13 +43,14 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
 
     /**
      * Initializes a new {@link ByteArrayBufferImpl} instance.
+     *
      * @param buffer
      * @param offset
      * @param length
      */
     public ByteArrayBufferImpl(byte[] buffer, int offset, int length)
     {
-        this.buffer = ApiLib.requireNonNull(buffer, "buffer");
+        this.buffer = Objects.requireNonNull(buffer, "buffer");
         if (offset + length > buffer.length || length < 0 || offset < 0) {
             throw new IllegalArgumentException("length or offset");
         }
@@ -57,12 +61,12 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
     /**
      * Initializes a new {@link ByteArrayBufferImpl} based on a newly allocated
      * byte array with the given size.
+     *
      * @param size the size of the underlying byte array.
      */
     public ByteArrayBufferImpl(int size)
     {
-        if (size < 0)
-        {
+        if (size < 0) {
             throw new IllegalArgumentException("size");
         }
         buffer = new byte[size];
@@ -111,8 +115,7 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
     @Override
     public void setLength(int length)
     {
-        if (offset + length > buffer.length || length < 0)
-        {
+        if (offset + length > buffer.length || length < 0) {
             throw new IllegalArgumentException("length");
         }
         this.length = length;
@@ -124,8 +127,7 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
     @Override
     public void setOffset(int offset)
     {
-        if (offset + length > buffer.length || offset < 0)
-        {
+        if (offset + length > buffer.length || offset < 0) {
             throw new IllegalArgumentException("offset");
         }
         this.offset = offset;
@@ -133,13 +135,13 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
 
     /**
      * Sets the offset and the length of this {@link ByteArrayBuffer}
+     *
      * @param offset the offset to set.
      * @param length the length to set.
      */
     public void setOffsetLength(int offset, int length)
     {
-        if (offset + length > buffer.length || length < 0 || offset < 0)
-        {
+        if (offset + length > buffer.length || length < 0 || offset < 0) {
             throw new IllegalArgumentException("length or offset");
         }
         this.offset = offset;
@@ -153,5 +155,74 @@ public class ByteArrayBufferImpl implements ByteArrayBuffer
     public boolean isInvalid()
     {
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void readRegionToBuff(int off, int len, byte[] outBuff)
+    {
+        int startOffset = this.offset + off;
+        if (off < 0 || len <= 0 || startOffset + len > this.buffer.length) {
+            return;
+        }
+
+        if (outBuff.length < len) {
+            return;
+        }
+
+        System.arraycopy(this.buffer, startOffset, outBuff, 0, len);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void grow(int howMuch)
+    {
+        if (howMuch < 0)
+            throw new IllegalArgumentException("howMuch");
+
+        int newLength = length + howMuch;
+
+        if (newLength > buffer.length - offset) {
+            byte[] newBuffer = new byte[newLength];
+
+            System.arraycopy(buffer, offset, newBuffer, 0, length);
+            offset = 0;
+            buffer = newBuffer;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void append(byte[] data, int len)
+    {
+        if (data == null || len == 0) {
+            return;
+        }
+
+        // Ensure the internal buffer is long enough to accommodate data. (The
+        // method grow will re-allocate the internal buffer if it's too short.)
+        grow(len);
+        // Append data.
+        System.arraycopy(data, 0, buffer, length + offset, len);
+        length += len;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void shrink(int len)
+    {
+        if (len <= 0) {
+            return;
+        }
+
+        length = Math.max(0, length - len);
     }
 }

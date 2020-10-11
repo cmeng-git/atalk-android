@@ -1,0 +1,81 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.anarres.jarjar:jarjar-gradle:1.0.1"
+    }
+}
+
+plugins {
+    id 'base'
+}
+
+repositories {
+    google()
+    jcenter()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+apply plugin: 'org.anarres.jarjar'
+
+def smackVersion = '4.4.0-beta2'
+
+def jarJarDeps = task("jarJarDeps") {
+    doFirst {
+        println "Fixed dependencies"
+    }
+}
+
+/*
+ * jarjar.repackage with generated dir/filename specified - default in build/jarjar/jarjar-xxx.jar
+ * destinationDir may use relative i.e. "../../libs to $buildDir/jarjar or as per below
+ * filename must not contains colon i.e. ":" colon, treated as URL and will failed missing classes
+ * classDelete must check actual jar to see if end ** is required - due to multiple components
+ * May use className and className$** to delete only the related, but excluding classes with same prefix
+ */
+jarJarDeps.dependsOn(
+
+        // smack-core
+        jarjar.repackage {
+            from("org.igniterealtime.smack:smack-core:$smackVersion") {
+                transitive = false
+            }
+            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-core-jarjar/${smackVersion}")
+            destinationName "smack-core-jarjar-${smackVersion}.jar"
+
+            // need to patch AbstractProvider for it to accept aTalk Extension Element implementation
+            classDelete 'org.jivesoftware.smack.provider.AbstractProvider'
+            // Fix R8 Exception: @see https://issuetracker.google.com/issues/163264839
+            classDelete 'org.jivesoftware.smack.util.Function'
+        },
+
+        // smack-experimental
+        jarjar.repackage {
+            from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
+                transitive = false
+            }
+            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-experimental-jarjar/${smackVersion}")
+            destinationName "smack-experimental-jarjar-${smackVersion}.jar"
+
+            // Add support for media file sharing
+            classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
+        },
+
+        // smack-extensions
+        jarjar.repackage {
+            from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
+                transitive = false
+            }
+            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-extensions-jarjar/${smackVersion}")
+            destinationName "smack-extensions-jarjar-${smackVersion}.jar"
+
+            // Add support for chatStat in conference room
+            classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
+        }
+)
+tasks.getByName("build").dependsOn(jarJarDeps)

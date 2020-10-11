@@ -5,21 +5,27 @@
  */
 package net.java.sip.communicator.plugin.notificationwiring;
 
+import android.text.Html;
+
+import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.UIService;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.service.resources.ImageID;
+import net.java.sip.communicator.service.systray.SystrayService;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.AndroidUIServiceImpl;
+import org.atalk.android.gui.*;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
+import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
+import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.SrtpControl;
@@ -33,20 +39,24 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.Callable;
 
+import androidx.fragment.app.Fragment;
 import timber.log.Timber;
 
 /**
  * Listens to various events which are related to the display and/or playback of notifications
  * and shows/starts or hides/stops the notifications in question.
  *
+ * @see #registerDefaultNotifications
+ * This is where all the events actions e.g. notification popup, vibrate and alert are defined for each notification
+ *
  * @author Damian Minkov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class NotificationManager implements AdHocChatRoomMessageListener, CallChangeListener, CallListener,
-        CallPeerConferenceListener, CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener,
-        ScFileTransferListener, LocalUserAdHocChatRoomPresenceListener, LocalUserChatRoomPresenceListener,
-        MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener
+public class NotificationManager implements CallChangeListener, CallListener, CallPeerConferenceListener,
+        CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener, LocalUserChatRoomPresenceListener,
+        AdHocChatRoomMessageListener, LocalUserAdHocChatRoomPresenceListener,
+        ScFileTransferListener, MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener
 {
     /**
      * Default event type for a busy call.
@@ -69,12 +79,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     public static final String CALL_SECURITY_ON = "CallSecurityOn";
 
     /**
-     * The image used, when a contact has no photo specified.
-     */
-    public static final ImageID DEFAULT_USER_PHOTO
-            = new ImageID(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
-
-    /**
      * Default event type for dialing.
      */
     public static final String DIALING = "Dialing";
@@ -95,9 +99,20 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     public static final String INCOMING_FILE = "IncomingFile";
 
     /**
+     * Default event type for incoming invitation received.
+     */
+    public static final String INCOMING_INVITATION = "IncomingInvitation";
+
+    /**
      * Default event type for receiving messages.
      */
     public static final String INCOMING_MESSAGE = "IncomingMessage";
+
+    /**
+     * Default event type for missed call.
+     */
+    public static final String MISSED_CALL = "MissedCall";
+
     /**
      * Default event type for outgoing calls.
      */
@@ -118,11 +133,10 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     /**
      * The pseudo timer which is used to delay multiple composing notifications before receiving the message.
      */
-    private final Map<Contact, Long> proactiveTimer = new HashMap<>();
+    private final Map<Object, Long> proactiveTimer = new HashMap<>();
 
     /**
-     * Fires a chat message notification for the given event type through the
-     * <tt>NotificationService</tt>.
+     * Fires a chat message notification for the given event type through the <tt>NotificationService</tt>.
      *
      * @param chatDescriptor the chat contact to which the chat message corresponds; the chat contact could be a
      * Contact or a ChatRoom.
@@ -131,8 +145,8 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * @param message the content of the message
      * @param messageUID the message UID
      */
-    public static void fireChatNotification(Object chatDescriptor, String eventType,
-            String messageTitle, String message, String messageUID)
+    public static void fireChatNotification(Object chatDescriptor, String eventType, String messageTitle,
+            String message, String messageUID)
     {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService == null)
@@ -151,8 +165,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
 
             contactIcon = contact.getImage();
             if (contactIcon == null) {
-                // contactIcon = NotificationWiringActivator.getImageLoaderService().getImageBytes(DEFAULT_USER_PHOTO);
-                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.personphoto);
+                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.person_photo);
             }
         }
         else if (chatDescriptor instanceof ChatRoom) {
@@ -167,20 +180,18 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             }
         }
 
-        // cmeng - pop up message for MESSAGE_INCOMING & INCOMING_FILE
-        if (chatPanel != null) {
-            if (chatPanel.isChatFocused() && ((eventType.equals(INCOMING_MESSAGE) || eventType.equals(INCOMING_FILE)))) {
-                // if (chatPanel.isChatFocused() && eventType.equals(MESSAGE_INCOMING)) {
-                popupActionHandler = notificationService.getEventNotificationAction(eventType,
-                        NotificationAction.ACTION_POPUP_MESSAGE);
-                // Disable pop message notification if the chatPanel is focused
-                popupActionHandler.setEnabled(false);
-            }
+        // Do not popup notification if the chatPanel is focused and for INCOMING_MESSAGE or INCOMING_FILE
+        if ((chatPanel != null) && chatPanel.isChatFocused()
+                && (eventType.equals(INCOMING_MESSAGE) || eventType.equals(INCOMING_FILE))) {
+            popupActionHandler
+                    = notificationService.getEventNotificationAction(eventType, NotificationAction.ACTION_POPUP_MESSAGE);
+            popupActionHandler.setEnabled(false);
         }
 
         Map<String, Object> extras = new HashMap<>();
         extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, chatDescriptor);
-        notificationService.fireNotification(eventType, messageTitle, message, contactIcon, extras);
+        notificationService.fireNotification(eventType, SystrayService.INFORMATION_MESSAGE_TYPE,
+                messageTitle, message, contactIcon, extras);
 
         // Reset the popupActionHandler to enable for ACTION_POPUP_MESSAGE for incomingMessage if it was disabled
         if (popupActionHandler != null)
@@ -191,15 +202,14 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * Fires a notification for the given event type through the <tt>NotificationService</tt>. The
      * event type is one of the static constants defined in the <tt>NotificationManager</tt> class.
      *
-     * <b>Note</b>: The uses of the method at the time of this writing do not take measures to
-     * stop looping sounds if the respective notifications use them i.e. there is implicit
-     * agreement that the notifications fired through the method do not loop sounds.
-     * Consequently, the method passes arguments to <tt>NotificationService</tt> so that sounds
-     * are played once only.
+     * <b>Note</b>: The uses of the method at the time of this writing do not take measures to stop looping sounds
+     * if the respective notifications use them i.e. there is implicit agreement that the notifications fired through
+     * the method do not loop sounds. Consequently, the method passes arguments to <tt>NotificationService</tt>
+     * so that sounds are played once only.
      *
      * @param eventType the event type for which we want to fire a notification
      */
-    private static void fireNotification(String eventType)
+    public static void fireNotification(String eventType)
     {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null)
@@ -230,21 +240,21 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * the method passes arguments to <tt>NotificationService</tt> so that sounds are played once only.
      *
      * @param eventType the event type of the notification to be fired
+     * @param msgType the notification sub-category message type
      * @param messageTitle the title of the message to be displayed by the notification to be fired if such a
      * display is supported
      * @param message the message to be displayed by the notification to be fired if such a display is supported
      */
-    private static void fireNotification(String eventType, String messageTitle, String message)
+    private static void fireNotification(String eventType, int msgType, String messageTitle, String message)
     {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null) {
-            notificationService.fireNotification(eventType, messageTitle, message, null);
+            notificationService.fireNotification(eventType, msgType, messageTitle, message, null);
         }
     }
 
     /**
-     * Fires a message notification for the given event type through the
-     * <tt>NotificationService</tt>.
+     * Fires a message notification for the given event type through the <tt>NotificationService</tt>.
      *
      * @param eventType the event type for which we fire a notification
      * @param messageTitle the title of the message
@@ -269,7 +279,8 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (loopCondition != null) {
                 extras.put(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA, loopCondition);
             }
-            return notificationService.fireNotification(eventType, messageTitle, message, null, extras);
+            return notificationService.fireNotification(eventType,
+                    SystrayService.INFORMATION_MESSAGE_TYPE, messageTitle, message, null, extras);
         }
     }
 
@@ -334,20 +345,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      * {@code ChatRoom} is obviously not private and (2) a {@code ChatRoom} is private
      * if it has only one {@code ChatRoomMember} who is not the local user.
      *
-     * @return <tt>true</tt> if the specified {@code ChatRoom} is private; otherwise, <tt>false</tt>
-     */
-    private static boolean isPrivate()
-    {
-        return isPrivate();
-    }
-
-    /**
-     * Determines whether a specific {@code ChatRoom} is private i.e. represents a one-to-one
-     * conversation which is not a channel. Since the interface {@link ChatRoom} does not expose
-     * the private property, an heuristic is used as a workaround: (1) a system
-     * {@code ChatRoom} is obviously not private and (2) a {@code ChatRoom} is private
-     * if it has only one {@code ChatRoomMember} who is not the local user.
-     *
      * @param chatRoom the {@code ChatRoom} to be determined as private or not
      * @return <tt>true</tt> if the specified {@code ChatRoom} is private; otherwise, <tt>false</tt>
      */
@@ -356,9 +353,10 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         if (!chatRoom.isSystem() && chatRoom.isJoined() && (chatRoom.getMembersCount() == 1)) {
             String nickname = chatRoom.getUserNickname().toString();
 
-            for (ChatRoomMember member : chatRoom.getMembers())
+            for (ChatRoomMember member : chatRoom.getMembers()) {
                 if (nickname.equals(member.getNickName()))
                     return false;
+            }
             return true;
         }
         return false;
@@ -419,20 +417,19 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     /**
      * Implements CallListener.callEnded. Stops sounds that are playing at the moment if there're any.
      *
-     * @param ev the <tt>CallEvent</tt>
+     * @param evt the <tt>CallEvent</tt>
      */
-    public void callEnded(CallEvent ev)
+    public void callEnded(CallEvent evt)
     {
         try {
             // Stop all telephony related sounds.
             // stopAllTelephonySounds();
-            NotificationData notification = callNotifications.get(ev.getSourceCall());
-
+            NotificationData notification = callNotifications.get(evt.getSourceCall());
             if (notification != null)
                 stopSound(notification);
 
-            // Play the hangup sound.
-            fireNotification(HANG_UP);
+            // Play the hangup sound - Let peerStateChanged() fire HANG_UP; else double firing
+            // fireNotification(HANG_UP);
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;
@@ -479,7 +476,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void callStateChanged(CallChangeEvent ev)
+    public void callStateChanged(CallChangeEvent evt)
     {
     }
 
@@ -488,7 +485,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void conferenceFocusChanged(CallPeerConferenceEvent ev)
+    public void conferenceFocusChanged(CallPeerConferenceEvent evt)
     {
     }
 
@@ -519,7 +516,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void conferenceMemberErrorReceived(CallPeerConferenceEvent ev)
+    public void conferenceMemberErrorReceived(CallPeerConferenceEvent evt)
     {
     }
 
@@ -528,7 +525,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void conferenceMemberRemoved(CallPeerConferenceEvent ev)
+    public void conferenceMemberRemoved(CallPeerConferenceEvent evt)
     {
     }
 
@@ -537,7 +534,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void fileTransferCreated(FileTransferCreatedEvent ev)
+    public void fileTransferCreated(FileTransferCreatedEvent evt)
     {
     }
 
@@ -546,7 +543,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void fileTransferRequestCanceled(FileTransferRequestEvent ev)
+    public void fileTransferRequestCanceled(FileTransferRequestEvent evt)
     {
     }
 
@@ -564,7 +561,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             Contact sourceContact = request.getSender();
 
             // Fire notification
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM,
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM,
                     sourceContact.getDisplayName());
             fireChatNotification(sourceContact, INCOMING_FILE, title, message, request.getID());
         } catch (Throwable t) {
@@ -577,7 +574,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void fileTransferRequestRejected(FileTransferRequestEvent ev)
+    public void fileTransferRequestRejected(FileTransferRequestEvent evt)
     {
     }
 
@@ -637,7 +634,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (multiChatOpSet != null) {
                 multiChatOpSet.addPresenceListener(this);
                 multiChatOpSet.addInvitationListener(conferenceChatManager);
-                multiChatOpSet.addInvitationRejectionListener(conferenceChatManager);
                 multiChatOpSet.addPresenceListener(conferenceChatManager);
             }
 
@@ -647,7 +643,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (adHocMultiChatOpSet != null) {
                 adHocMultiChatOpSet.addPresenceListener(this);
                 adHocMultiChatOpSet.addInvitationListener(conferenceChatManager);
-                adHocMultiChatOpSet.addInvitationRejectionListener(conferenceChatManager);
                 adHocMultiChatOpSet.addPresenceListener(conferenceChatManager);
             }
         }
@@ -704,7 +699,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         if (multiChatOpSet != null) {
             multiChatOpSet.removePresenceListener(this);
             multiChatOpSet.removeInvitationListener(conferenceChatManager);
-            multiChatOpSet.removeInvitationRejectionListener(conferenceChatManager);
             multiChatOpSet.removePresenceListener(conferenceChatManager);
         }
 
@@ -713,7 +707,6 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         if (multiAdHocChatOpSet != null) {
             multiAdHocChatOpSet.removePresenceListener(this);
             multiAdHocChatOpSet.removeInvitationListener(conferenceChatManager);
-            multiAdHocChatOpSet.removeInvitationRejectionListener(conferenceChatManager);
             multiAdHocChatOpSet.removePresenceListener(conferenceChatManager);
         }
 
@@ -727,18 +720,18 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     }
 
     /**
-     * Implements CallListener.incomingCallReceived. When a call is received plays the ring phone
-     * sound to the user and gathers caller information that may be used by a user-specified
-     * command (incomingCall event trigger).
+     * Implements CallListener.incomingCallReceived. Upon received a call, plays the phone ring tone to the user
+     * and gathers caller information that may be used by a user-specified command (incomingCall event trigger).
      *
-     * @param ev the <tt>CallEvent</tt>
+     * @param evt the <tt>CallEvent</tt>
      */
-    public void incomingCallReceived(CallEvent ev)
+    public void incomingCallReceived(CallEvent evt)
     {
         try {
-            Call call = ev.getSourceCall();
-            CallPeer peer = call.getCallPeers().next();
             Map<String, String> peerInfo = new HashMap<>();
+
+            Call call = evt.getSourceCall();
+            CallPeer peer = call.getCallPeers().next();
             String peerName = peer.getDisplayName();
 
             peerInfo.put("caller.uri", peer.getURI());
@@ -752,8 +745,9 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
              * to stop it then. That's why the loopCondition will weakly reference the call.
              */
             final WeakReference<Call> weakCall = new WeakReference<>(call);
+
             NotificationData notification = fireNotification(INCOMING_CALL, "",
-                    aTalkApp.getResString(R.string.service_gui_INCOMING_CALL, peerName), peerInfo, () -> {
+                    aTalkApp.getResString(R.string.service_gui_CALL_INCOMING, peerName), peerInfo, () -> {
                         Call call1 = weakCall.get();
                         if (call1 == null)
                             return false;
@@ -860,6 +854,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     }
 
     /**
+     * cmeng: should remove this from here
      * Implements the <tt>LocalUserChatRoomPresenceListener.localUserPresenceChanged</tt> method.
      *
      * @param evt the <tt>LocalUserChatRoomPresenceChangeEvent</tt> that notified us
@@ -884,7 +879,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent ev)
+    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt)
     {
     }
 
@@ -893,7 +888,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void messageDelivered(ChatRoomMessageDeliveredEvent ev)
+    public void messageDelivered(ChatRoomMessageDeliveredEvent evt)
     {
     }
 
@@ -902,7 +897,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used
      */
-    public void messageDelivered(MessageDeliveredEvent ev)
+    public void messageDelivered(MessageDeliveredEvent evt)
     {
     }
 
@@ -911,7 +906,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent ev)
+    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
     {
     }
 
@@ -920,7 +915,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent ev)
+    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
     {
     }
 
@@ -929,7 +924,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void messageDeliveryFailed(MessageDeliveryFailedEvent ev)
+    public void messageDeliveryFailed(MessageDeliveryFailedEvent evt)
     {
     }
 
@@ -943,7 +938,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         // Fire notification as INCOMING_FILE is found
         AdHocChatRoom chatRoom = evt.getSourceChatRoom();
         String sourceParticipant = evt.getSourceChatRoomParticipant().getDisplayName();
-        final Message message = evt.getMessage();
+        final IMessage message = evt.getMessage();
         String msgBody = message.getContent();
         String msgUid = message.getMessageUID();
 
@@ -951,7 +946,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             String filePath = msgBody.split("#")[0];
             String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
 
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, sourceParticipant);
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, sourceParticipant);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
         }
         else {
@@ -961,8 +956,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             fireChatNotification = (nickname == null) || msgBody.toLowerCase().contains(nickname.toLowerCase());
             if (fireChatNotification) {
                 String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, sourceParticipant);
-                final String htmlContent;
-                if (!(Message.ENCODE_HTML == evt.getMessage().getMimeType())) {
+                if (!(IMessage.ENCODE_HTML == evt.getMessage().getMimeType())) {
                     msgBody = StringEscapeUtils.escapeHtml4(msgBody);
                 }
                 fireChatNotification(chatRoom, INCOMING_MESSAGE, title, msgBody, evt.getMessage().getMessageUID());
@@ -980,8 +974,8 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     {
         // Fire notification as INCOMING_FILE is found
         ChatRoom chatRoom = evt.getSourceChatRoom();
-        String nickName = evt.getSourceChatRoomMember().getNickName();
-        final Message message = evt.getMessage();
+        String nickName = evt.getSourceChatRoomMember().getNickName();  // sender
+        final IMessage message = evt.getMessage();
         String msgBody = message.getContent();
         String msgUid = message.getMessageUID();
 
@@ -989,11 +983,12 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             String filePath = msgBody.split("#")[0];
             String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
 
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, nickName);
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, nickName);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
         }
         else {
             boolean fireChatNotification;
+
             /*
              * It is uncommon for IRC clients to display popup notifications for messages which
              * are sent to public channels and which do not mention the nickname of the local user.
@@ -1001,14 +996,33 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             if (chatRoom.isSystem() || isPrivate(chatRoom) || (msgBody == null))
                 fireChatNotification = true;
             else {
-                fireChatNotification = (chatRoom.getUserNickname() != null);
+                fireChatNotification = (chatRoom.getUserNickname() != null);  // recipient
             }
+
             if (fireChatNotification) {
-                String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, nickName);
-                if (!(Message.ENCODE_HTML == message.getMimeType())) {
-                    msgBody = StringEscapeUtils.escapeHtml4(msgBody);
+                // Block notification event if isHistoryMessage() and from autoJoined chatRoom
+                if (!(evt.isHistoryMessage() && evt.isAutoJoin())) {
+                    String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, nickName);
+                    // cmeng - extract only the msg body for notification display
+                    if (!(IMessage.ENCODE_HTML == message.getMimeType())) {
+                        msgBody = StringEscapeUtils.escapeHtml4(msgBody);
+                    }
+                    fireChatNotification(chatRoom, INCOMING_MESSAGE, title, msgBody, msgUid);
                 }
-                fireChatNotification(chatRoom, INCOMING_MESSAGE, title, msgBody, msgUid);
+
+                // update unread count for fired notification
+                // Must pre-stored in ChatRoomWrapper attribute as crlf is null when aTalk is closed
+                MUCServiceImpl mucService = MUCActivator.getMUCService();
+                ChatRoomWrapper crWrapper = mucService.getChatRoomWrapperByChatRoom(chatRoom, false);
+                if (crWrapper != null) {
+                    int unreadCount = crWrapper.getUnreadCount() + 1;
+                    crWrapper.setUnreadCount(unreadCount);
+
+                    Fragment crlf = aTalk.getFragment(aTalk.CRL_FRAGMENT);
+                    if (crlf instanceof ChatRoomListFragment) {
+                        ((ChatRoomListFragment) crlf).updateUnreadCount(crWrapper);
+                    }
+                }
             }
         }
     }
@@ -1022,7 +1036,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     {
         // Fire notification as INCOMING_FILE is found
         Contact contact = evt.getSourceContact();
-        final Message message = evt.getSourceMessage();
+        final IMessage message = evt.getSourceMessage();
         String msgBody = message.getContent();
         String msgUid = message.getMessageUID();
 
@@ -1030,17 +1044,31 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             String filePath = msgBody.split("#")[0];
             String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
 
-            String title = aTalkApp.getResString(R.string.service_gui_FILE_RECEIVING_FROM, contact.getAddress());
+            String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, contact.getAddress());
             fireChatNotification(contact, INCOMING_FILE, title, fileName, msgUid);
         }
         else {
             // Fire as message notification
             String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, contact.getAddress());
 
-            if (!(Message.ENCODE_HTML == message.getMimeType())) {
+            // cmeng - extract only the msg body for notification display
+            if (!(IMessage.ENCODE_HTML == message.getMimeType())) {
                 msgBody = StringEscapeUtils.escapeHtml4(message.getContent());
             }
             fireChatNotification(contact, INCOMING_MESSAGE, title, msgBody, msgUid);
+
+            // update unread count for fired notification.
+            // Must pre-stored in metaContact attribute as clf is null when aTalk is closed
+            MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
+            if (metaContact != null) {
+                int unreadCount = metaContact.getUnreadCount() + 1;
+                metaContact.setUnreadCount(unreadCount);
+
+                Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
+                if (clf instanceof ContactListFragment) {
+                    ((ContactListFragment) clf).updateUnreadCount(metaContact);
+                }
+            }
         }
     }
 
@@ -1067,7 +1095,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void peerAddressChanged(CallPeerChangeEvent ev)
+    public void peerAddressChanged(CallPeerChangeEvent evt)
     {
     }
 
@@ -1076,7 +1104,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void peerDisplayNameChanged(CallPeerChangeEvent ev)
+    public void peerDisplayNameChanged(CallPeerChangeEvent evt)
     {
     }
 
@@ -1085,32 +1113,32 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void peerImageChanged(CallPeerChangeEvent ev)
+    public void peerImageChanged(CallPeerChangeEvent evt)
     {
     }
 
     /**
-     * Fired when peer's state is changed
+     * Fired when peer's state has changed
      *
-     * @param ev fired CallPeerEvent
+     * @param evt fired CallPeerEvent
      */
-    public void peerStateChanged(CallPeerChangeEvent ev)
+    public void peerStateChanged(CallPeerChangeEvent evt)
     {
         try {
-            CallPeer peer = ev.getSourceCallPeer();
+            CallPeer peer = evt.getSourceCallPeer();
             Call call = peer.getCall();
-            CallPeerState newState = (CallPeerState) ev.getNewValue();
-            CallPeerState oldState = (CallPeerState) ev.getOldValue();
+            CallPeerState newState = (CallPeerState) evt.getNewValue();
+            CallPeerState oldState = (CallPeerState) evt.getOldValue();
+            Timber.d("Peer State Changed to %s", newState);
 
             // Play the dialing audio when in connecting and initiating call state.
             // Stop the dialing audio when we enter any other state.
             if ((newState == CallPeerState.INITIATING_CALL)
                     || (newState == CallPeerState.CONNECTING)) {
                 /*
-                 * The loopCondition will stay with the notification sound until the latter is
-                 * stopped. If by any chance the sound fails to stop by the time the peer is no
-                 * longer referenced, do try to stop it then. That's why the loopCondition will
-                 * weakly reference the peer.
+                 * The loopCondition will stay with the notification sound until the latter is being stopped.
+                 * If by any chance the sound fails to stop by the time the peer is no longer referenced,
+                 * do try to stop it then. That's why the loopCondition will weakly reference the peer.
                  */
                 final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
 
@@ -1125,14 +1153,13 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             }
             else {
                 NotificationData notification = callNotifications.get(call);
-
                 if (notification != null)
                     stopSound(notification);
             }
 
+            // If we were already in state of CONNECTING_WITH_EARLY_MEDIA, then the server has already
+            // taking care of playing the notification, so we don't need to fire a notification here.
             if (newState == CallPeerState.ALERTING_REMOTE_SIDE
-                    // if we were already in state CONNECTING_WITH_EARLY_MEDIA the server is already taking care
-                    // of playing the notifications so we don't need to fire a notification here.
                     && oldState != CallPeerState.CONNECTING_WITH_EARLY_MEDIA) {
                 final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
                 NotificationData notification = fireNotification(OUTGOING_CALL, () -> {
@@ -1172,7 +1199,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void peerTransportAddressChanged(CallPeerChangeEvent ev)
+    public void peerTransportAddressChanged(CallPeerChangeEvent evt)
     {
     }
 
@@ -1186,7 +1213,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     {
         try {
             ResourceManagementService resources = NotificationWiringActivator.getResources();
-            fireNotification(CALL_SAVED,
+            fireNotification(CALL_SAVED, SystrayService.NONE_MESSAGE_TYPE,
                     aTalkApp.getResString(R.string.plugin_callrecordingconfig_CALL_SAVED),
                     aTalkApp.getResString(R.string.plugin_callrecordingconfig_CALL_SAVED_TO, recorder.getFilename()));
         } catch (Throwable t) {
@@ -1212,8 +1239,8 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         notificationService.registerDefaultNotificationForEvent(INCOMING_MESSAGE,
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
         notificationService.registerDefaultNotificationForEvent(INCOMING_MESSAGE,
-                new SoundNotificationAction(SoundProperties.INCOMING_MESSAGE, -1, true,
-                        false, false));
+                new SoundNotificationAction(SoundProperties.INCOMING_MESSAGE, -1,
+                        true, false, false));
 
         // Register incoming call notifications.
         notificationService.registerDefaultNotificationForEvent(INCOMING_CALL,
@@ -1247,22 +1274,24 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
         notificationService.registerDefaultNotificationForEvent(SECURITY_MESSAGE,
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
 
-        // Register sound notification for security state on during a call.
-        notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ON,
-                new SoundNotificationAction(SoundProperties.CALL_SECURITY_ON, -1, false,
-                        true, false));
-
         // Register sound notification for security state off during a call.
         notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ERROR,
+                NotificationAction.ACTION_POPUP_MESSAGE, null, null);
+        notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ERROR,
                 new SoundNotificationAction(SoundProperties.CALL_SECURITY_ERROR, -1,
+                        false, true, false));
+
+        // Register sound notification for security state on during a call.
+        notificationService.registerDefaultNotificationForEvent(CALL_SECURITY_ON,
+                new SoundNotificationAction(SoundProperties.CALL_SECURITY_ON, -1,
                         false, true, false));
 
         // Register sound notification for incoming files.
         notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
                 NotificationAction.ACTION_POPUP_MESSAGE, null, null);
         notificationService.registerDefaultNotificationForEvent(INCOMING_FILE,
-                new SoundNotificationAction(SoundProperties.INCOMING_FILE, -1, true, false,
-                        false));
+                new SoundNotificationAction(SoundProperties.INCOMING_FILE, -1,
+                        true, false, false));
 
         // Register notification for saved calls.
         notificationService.registerDefaultNotificationForEvent(CALL_SAVED,
@@ -1270,39 +1299,44 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     }
 
     /**
-     * Processes the received security message.
+     * Processes the received security message and security errors.
      *
-     * @param ev the event we received
+     * @param evt the event we received
      */
-    public void securityMessageReceived(CallPeerSecurityMessageEvent ev)
+    public void securityMessageReceived(CallPeerSecurityMessageEvent evt)
     {
         try {
             String messageTitleKey;
+            // Android notification cannot support html tags
+            String message = Html.fromHtml(evt.getI18nMessage()).toString();
 
-            switch (ev.getEventSeverity()) {
+            switch (evt.getEventSeverity()) {
                 // Don't play alert sound for Info or warning.
                 case SrtpListener.INFORMATION:
                     messageTitleKey = "service.gui.SECURITY_INFO";
-                    break;
+                    aTalkApp.showToastMessage(message);
+                    return;
 
                 case SrtpListener.WARNING:
                     messageTitleKey = "service.gui.SECURITY_WARNING";
                     break;
 
-                // Security cannot be established! Play an alert sound.
+                // Security cannot be established! Play an alert sound and popup message
                 case SrtpListener.SEVERE:
                 case SrtpListener.ERROR:
                     messageTitleKey = "service.gui.SECURITY_ERROR";
-                    fireNotification(CALL_SECURITY_ERROR);
-                    break;
+                    fireNotification(CALL_SECURITY_ERROR, SystrayService.WARNING_MESSAGE_TYPE,
+                            NotificationWiringActivator.getResources().getI18NString(messageTitleKey), message);
+                    return;
 
                 default:
-                    // Whatever other severity there is or will be, we do not how to react to it yet.
+                    // Whatever other severity there is or will be, we do not know how to react to it yet.
                     messageTitleKey = null;
             }
+
             if (messageTitleKey != null) {
-                fireNotification(SECURITY_MESSAGE,
-                        NotificationWiringActivator.getResources().getI18NString(messageTitleKey), ev.getI18nMessage());
+                fireNotification(SECURITY_MESSAGE, SystrayService.INFORMATION_MESSAGE_TYPE,
+                        NotificationWiringActivator.getResources().getI18NString(messageTitleKey), message);
             }
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
@@ -1318,7 +1352,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent ev)
+    public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent evt)
     {
     }
 
@@ -1327,20 +1361,20 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void securityOff(CallPeerSecurityOffEvent ev)
+    public void securityOff(CallPeerSecurityOffEvent evt)
     {
     }
 
     /**
      * When a <tt>securityOnEvent</tt> is received.
      *
-     * @param ev the event we received
+     * @param evt the event we received
      */
-    public void securityOn(CallPeerSecurityOnEvent ev)
+    public void securityOn(CallPeerSecurityOnEvent evt)
     {
         try {
-            SrtpControl securityController = ev.getSecurityController();
-            CallPeer peer = (CallPeer) ev.getSource();
+            SrtpControl securityController = evt.getSecurityController();
+            CallPeer peer = (CallPeer) evt.getSource();
 
             if (!securityController.requiresSecureSignalingTransport()
                     || peer.getProtocolProvider().isSignalingTransportSecure()) {
@@ -1360,7 +1394,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void securityTimeout(CallPeerSecurityTimeoutEvent ev)
+    public void securityTimeout(CallPeerSecurityTimeoutEvent evt)
     {
     }
 
@@ -1396,8 +1430,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
     /**
      * Stops all sounds for the given event type.
      *
-     * @param data the event type for which we should stop sounds. One of the static event types defined
-     * in this class.
+     * @param data the event type for which we should stop sounds. One of the static event types defined in this class.
      */
     private void stopSound(NotificationData data)
     {
@@ -1405,9 +1438,7 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
             return;
 
         try {
-            NotificationService notificationService
-                    = NotificationWiringActivator.getNotificationService();
-
+            NotificationService notificationService = NotificationWiringActivator.getNotificationService();
             if (notificationService != null)
                 notificationService.stopNotification(data);
         } finally {
@@ -1430,48 +1461,57 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
      *
      * Not used.
      */
-    public void chatStateNotificationDeliveryFailed(ChatStateNotificationEvent ev)
+    public void chatStateNotificationDeliveryFailed(ChatStateNotificationEvent evt)
     {
     }
 
     /**
      * Informs the user what is the chat state of his chat contacts.
      *
-     * @param ev the event containing details on the chat state notification
+     * @param evt the event containing details on the chat state notification
      */
-    public void chatStateNotificationReceived(ChatStateNotificationEvent ev)
+    public void chatStateNotificationReceived(ChatStateNotificationEvent evt)
     {
         try {
-            Contact contact = ev.getSourceContact();
-
             // we don't care for proactive notifications, different than chat state sometimes after
-            // closing chat we can see someone is composing us its just server sanding that the
+            // closing chat we can see someone is composing, usually it's just server sanding that the
             // chat is inactive (ChatState.inactive)
-            if (ev.getChatState() != ChatState.composing) {
+            if (evt.getChatState() != ChatState.composing) {
                 return;
             }
 
-            // check whether the current chat window shows the chat we received a chat state info
-            // for and in such case don't show notifications
+            // check whether the current chat window is showing the chat we received
+            // a chat state info for; in such case don't show notifications
+            Object chatDescriptor = evt.getChatDescriptor();
             UIService uiService = NotificationWiringActivator.getUIService();
-
             if (uiService != null) {
                 Chat chat = uiService.getCurrentChat();
-                if ((chat != null) && (((ChatPanel) chat).getChatSession() instanceof MetaContactChatSession)) {
-                    MetaContact metaContact = uiService.getChatContact(chat);
-                    if ((metaContact != null) && metaContact.containsContact(contact) && chat.isChatFocused()) {
+                if ((chat != null) && chat.isChatFocused()) {
+                    ChatTransport chatTransport = ((ChatPanel) chat).getChatSession().getCurrentChatTransport();
+                    if (chatDescriptor.equals(chatTransport.getDescriptor()))
                         return;
-                    }
+
+//                    ChatSession chatSession = ((ChatPanel) chat).getChatSession();
+//                    if (chatSession instanceof MetaContactChatSession) {
+//                        MetaContact metaContact = uiService.getChatContact(chat);
+//                        if ((metaContact != null) && metaContact.containsContact((Contact) chatDescriptor)) {
+//                            return;
+//                        }
+//                    }
+//                    if (chatSession instanceof ConferenceChatSession) {
+//                      if (((ChatRoomWrapper) chatSession.getDescriptor()).getChatRoom().equals(chatDescriptor))
+//                            return;
+//                    }
                 }
             }
 
             long currentTime = System.currentTimeMillis();
+            String fromJid = evt.getMessage().getFrom().toString();
             if (proactiveTimer.size() > 0) {
-                // first remove contacts that have been here longer than the timeout to avoid memory leaks
-                Iterator<Map.Entry<Contact, Long>> entries = proactiveTimer.entrySet().iterator();
-
+                // first remove chatDescriptors that have been here longer than the timeout to avoid memory leaks
+                Iterator<Map.Entry<Object, Long>> entries = proactiveTimer.entrySet().iterator();
                 while (entries.hasNext()) {
-                    Map.Entry<Contact, Long> entry = entries.next();
+                    Map.Entry<Object, Long> entry = entries.next();
                     Long lastNotificationDate = entry.getValue();
 
                     // The entry is outdated
@@ -1480,15 +1520,14 @@ public class NotificationManager implements AdHocChatRoomMessageListener, CallCh
                     }
                 }
 
-                // Now, check if the contact is still in the map
-                if (proactiveTimer.containsKey(contact)) {
-                    // We already notified the others about this
+                // Now, check if the chatDescriptor is still in the map; We already notified the others about this
+                if (proactiveTimer.containsKey(chatDescriptor)) {
                     return;
                 }
             }
 
-            proactiveTimer.put(contact, currentTime);
-            fireChatNotification(contact, PROACTIVE_NOTIFICATION, contact.getDisplayName(),
+            proactiveTimer.put(chatDescriptor, currentTime);
+            fireChatNotification(chatDescriptor, PROACTIVE_NOTIFICATION, fromJid,
                     aTalkApp.getResString(R.string.service_gui_PROACTIVE_NOTIFICATION), null);
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)

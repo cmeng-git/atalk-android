@@ -53,6 +53,11 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
         openHelper = DatabaseBackend.getInstance(context);
     }
 
+    public SQLiteConfigurationStore(Context context)
+    {
+        openHelper = DatabaseBackend.getInstance(context);
+    }
+
     /**
      * Overrides {@link HashtableConfigurationStore#getProperty(String)}. If this
      * <tt>ConfigurationStore</tt> contains a value associated with the specified property name,
@@ -222,7 +227,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
                 Timber.e("Failed to set non-system property: %s", name);
         }
 
-        // cmeng to take care of properties and accountproperties ????
+        // cmeng to take care of properties and accountProperties ????
         super.setNonSystemProperty(name, value);
         Timber.log(TimberLog.FINER, "### Set setNonSystem Property: %s: %s", name, value);
     }

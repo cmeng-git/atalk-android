@@ -17,7 +17,7 @@
 if [[ $# -eq 1 ]]; then
   LIB_OPENSSL_GIT=$1
 else
-  LIB_OPENSSL_GIT="openssl-1.0.2r"
+  LIB_OPENSSL_GIT="openssl-1.0.2u"
 fi
 
 LIB_OPENSSL="openssl"

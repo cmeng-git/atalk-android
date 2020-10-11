@@ -6,6 +6,301 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.4.2 (09/30/2020)" versioncode="1142">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled</change>
+        <change>Update aTalk media player UI to distinguish between pause and stop states</change>
+        <change>Upgrade Smack to version 4.4.0-beta2</change>
+        <change>Upgrade aTalk to support android-11(R) API-30</change>
+    </release>
+
+    <release version="2.4.1 (08/31/2020)" versioncode="1141">
+        <change>Fix 'Unsupported path': android-Q enforces deprecated getExternalStorageDirectory() method, making it inaccessible to aTalk.</change>
+    </release>
+
+    <release version="2.4.0 (08/25/2020)" versioncode="1140">
+        <change>Removed and merged 'Remove certificate' option into SSL Certificate (Manage...) in Settings... menu</change>
+        <change>Upgrade to zrtp-light:4.1.2: Fix ZRTP X25519 key exchange error, and truncate ZRTP KDF output as per RFC</change>
+        <change>Cleanup contact 'Move to group' associated option handlers</change>
+        <change>Upgrade to smack 4.4.0-beta1: bug fix and enhancement</change>
+        <change>Fix TLS client certificate info display problem: API-29 webview has problem to display '#' character</change>
+        <change>Upgrade HttpUtils: Migration to Apache HttpClient 5.0 replacing deprecated library</change>
+        <change>Add new UI language support i.e. Português (Brasil)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.3.4 (08/05/2020)" versioncode="1134">
+        <change>Fix Vibrator not stop after an incoming call is rejected or answered via JingleMessage</change>
+        <change>'Fatal signal 6 (SIGABRT)' throws by mm-qcamera-daemon (libc in Android 10; ONEPLUS A3003); fixed by camera permission denied. Otherwise aTalk locks in splash screen</change>
+        <change>Eliminates the need to init and store the Root MetalContact Group in DB</change>
+        <change>Update Telephony RecipientSelectView to conform and compatible with androidx library</change>
+        <change>Remove patches in MediaRecorderSystem and AndroidCameraSystem class</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.3.3 (07/28/2020)" versioncode="1133">
+        <change>Fix SQL table for saving contacts is not properly initialized in new database creation</change>
+        <change>Include 'Online help' and 'About' in newly installed account creation UI pull down menu</change>
+        <change>Upgrade aTalk compile Sdk Version to support API-29 (Android-10)</change>
+        <change>Update 'Telephopy Recipient Select View' to conform to com.splitwise:tokenautocomplete:3.0.2 release</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.3.2 (07/24/2020)" versioncode="1132">
+        <change>Add new recent conversations UI in main pager slider</change>
+        <change>Fix login failure when server override option is enabled</change>
+        <change>When a chat room is destroyed, all associated chat messages and session are purged from database.</change>
+        <change>Show callHistory list in descending order of the call timeStamp</change>
+        <change>upgrade libvpx to v1.8.2</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.3.1 (07/14/2020)" versioncode="1131">
+        <change>Add chatRoom option to enable/disable member presence status and subject change notification info display</change>
+        <change>Fix dual session-accept sending when call received via Jingle Message Initiation</change>
+        <change>Fix 'Add contact' group pull down menu items display blank when light theme is selected</change>
+        <change>Fix 'ChatRoomConfiguration' incorrect setup in multiSelectionSpinner field items</change>
+        <change>Port to use smack-4.4.0-alpha5 release</change>
+        <change>Update libraries to use maven releases: fmj-1.0.0-jitsi, zrtp4j-light-4.1.1 etc.</change>
+        <change>Library ZRTP (v4.1.1) update is not backward compatible with previous aTalk releases &lt;= v2.3.0</change>
+        <change>Add 'Online help' in the main menu for direct access to online FAQ web page</change>
+        <change>Remove 'Fault Tolerance File Transfer' i.e. SOCK5 with IBB fallback support': not further supported in smack-4.4.0-alpha5</change>
+        <change>Remove obsoleted disco info for OMEMO, not further advertised (XEP-0384: OMEMO Encryption)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.3.0 (06/15/2020)" versioncode="1130">
+        <change>Implement full-screen intent for compliance with android-10; allowing incoming call to wake device from standby and start up call UI</change>
+        <change>Implement XEP-0353: Jingle Message Initiation; better handling of Jingle session invitation to buddy with multiple resources' login</change>
+        <change>Support call via JingleMessage protocol or legacy Jingle if peer does not support Jingle Message Initiation</change>
+        <change>Answer call via android heads-up notification; Android 'Call Notification' settings: Enable 'Alert (Sound-Silent)' and 'Show as pop-up'</change>
+        <change>Default to use RTP/RTCP channel multiplexing for media call; auto realign for clients without 'rtcp-mux' support</change>
+        <change>Enhance DTLS-SRTP encryption handling and allow backward compatible for clients with old DTLS protocol implementation</change>
+        <change>Enhance and make media call compatibility with Conversations (DTLS encryption etc); h264 codec not compatible.</change>
+        <change>Fix call problem with pidgin (v2.13.0) having improper implementation by sending 4 instances of 'session-accept' to caller</change>
+        <change>Make OTR interoperable with pidgin implementation (OTR message does not include Thread Id)</change>
+        <change>Remove 'Miss Call Notification' from android notification channel; miss call alert handling is via 'Call Notification'</change>
+        <change>Do not show 'missed call' notification if user dismissed the call</change>
+        <change>Show heads-up notification for an incoming message only if aTalk is in background</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.2.5 (05/13/2020)" versioncode="1125">
+        <change>Implemented DTLS_SRTP call encryption DTLSv12/DTLSv10 protocols and additional CipherSuites support</change>
+        <change>Ensure camera resource permission is granted when required in chat attachments i.e. picture and video</change>
+        <change>Fix STUN/TURN editor crashes when saved UserName and/or Password are null</change>
+        <change>Limit account login credentials reason field maxLines to 6 to avoid 'Sign in' button get obscured</change>
+        <change>Highlight user selected item in contact, chatRoom and call history list window</change>
+        <change>Fix crash when create/join a remote server chat room with pre-occupied members</change>
+        <change>Port and upgrade library for ice4j-2.0.0-20181024.160538-12 to the latest ice4j-2.0.0-20190607.184546-36</change>
+        <change>Port and upgrade all org.bouncycastle libraries from jdk15on_1.62 to jdk15on_1.65</change>
+        <change>Migrate to bctls-jdk15on_1.65.jar library for DTLS-SRTP DTLSv12 protocol compatibility and additional CipherSuites support</change>
+        <change>Fix crashes in aTalk releases for v2.2.4/v2.2.3 FFR from the fields</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.2.4 (04/30/2020)" versioncode="1124">
+        <change>Display contacts sorted according to contacts' presence status in main contact list window</change>
+        <change>Ensure hide offline contact list get updated when a contact presence status changes</change>
+        <change>Ensure Text to Speech when enabled remains active even when the chatSession is not in focus</change>
+        <change>TTS setup must check and block TTS access if TTS voice is not available on device</change>
+        <change>Ensure consistency in UI text display as per user selected language</change>
+        <change>Fix user selected Language reset by WebView for android-N and above</change>
+        <change>Display android device cameras sorted by name for user selection in Settings...</change>
+        <change>Add new call history records display UI in main pager selection</change>
+        <change>Add new UI language support for Slovak</change>
+        <change>Cleanup and ensure proper call to smack Stanza#genExtension() and alike for Captcha and Nick etc</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.2.3 (04/16/2020)" versioncode="1123">
+        <change>Implement Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)</change>
+        <change>Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection</change>
+        <change>Do not retry on entry to chat session for Http Download files that have previously failed (ANR)</change>
+        <change>Improve isHttpFileDnLink checking mechanism to minimize incorrect classification and display file download UI</change>
+        <change>Fix ChatRoom Configuration UI crashes on screen rotation</change>
+        <change>Show video/call buttons if supported by any one contact login with multiple resources of different capabilities</change>
+        <change>Port aTalk source to be compatible with samck-4.4.0-alpha3 (20200404) release</change>
+        <change>aTalk minimum android OS support is API-21 (android 5.0 Lollipop)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.2.2 (03/30/2020)" versioncode="1122">
+        <change>Enhance create/join chat room UI: refresh field contents and allow user password entry</change>
+        <change>Allow saving and retrieving of the chat room protected password for later room auto-join or rejoin</change>
+        <change>Support joining room on cross domain server, and default new room creation with OMEMO chat support</change>
+        <change>Support room configuration by the owner. Update OMEMO encrypt option after the changes</change>
+        <change>Display an error message in chat instead of a pop-up alert dialog when user canceled Captcha challenge on joining room</change>
+        <change>Fix CaptchaDialog race condition when user canceled challenge but still triggering a retry popup</change>
+        <change>Make fingerprinting of ZRTP connections harder with different ZID per user callee</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.2.1 (03/17/2020)" versioncode="1121">
+        <change>Add user selectable Themes support</change>
+        <change>Implement user selectable option for heads-up notification</change>
+        <change>Support download and display of url image in src tag embedded in xhtml message</change>
+        <change>Share of youtube and other social media links are tagged with thumbnail and title</change>
+        <change>New features support for group chat: Erase chatRoom history and GPS location sending</change>
+        <change>Upgrade glide library to v4.11.0 for better control of image preview sizes for history and new media</change>
+        <change>Execute getLastSeen for contacts in new thread to avoid ANR</change>
+        <change>Refresh Setting... immediately when user changes Language or Theme options</change>
+        <change>Upgrade security in crypto algorithms used for ZRTP i.e. use SHA-2 384, 256 bit ciphers AES256 &amp; TWOFISH-256, and enable elliptic curve crypto using Curve 25519</change>
+        <change>Enhance SDES encryption with AES256 and AES192</change>
+        <change>Enhance AES-256 acceleration using OpenSSL</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.2.0 (02/28/2020)" versioncode="1120">
+        <change>Implement XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication (experimental)</change>
+        <change>Implement TLS client certification configuration options</change>
+        <change>Implement auto-accept content download for file sharing via http file upload protocol</change>
+        <change>When aTalk is minimized, gives alert notification and show join room dialog on receive an invitation</change>
+        <change>Redesign handler and enhanced UI for room with captcha protection; remove timeout timer, allow retry and show result in chat etc.</change>
+        <change>Implement android heads-up notification with 'Reply', 'Mark as read' and 'Snooze'</change>
+        <change>Implement quite hours to mute all notification alerts</change>
+        <change>Provide receipt status for each message in merged message view holder; prefix X mark on each undelivered message</change>
+        <change>Remove original message view of both send and receive corrected message</change>
+        <change>Retain message multiple lines structure when doing edit</change>
+        <change>Allow message sending using CTRL-ENTER from physical keyboard</change>
+        <change>Reduce xmppConnection replyTimeout to 5s in normal operation. Reduce ANR wait when server is not responding.</change>
+        <change>Implement ZRTP-Hash element checking for the integrity of the ZRTP key exchange</change>
+        <change>Ensure ZRTP transform engine is created prior to any ZRTP function call</change>
+        <change>Fix file share error for unencrypted file between aTalk and Conversations</change>
+        <change>Fix launching of incorrect chat session on the selected contact/chatroom in main list view</change>
+        <change>Ensure all room created are non-anonymous and member-only to provide OMEMO encryption</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.7 (02/02/2020)" versioncode="1117">
+        <change>Redesign chatRoom classes to improve UI, support new room features and correct implementations</change>
+        <change>Enhance chatRoom destroy option to support reason and alternate venue entry</change>
+        <change>Show destroy chatRoom option only if user is the room owner</change>
+        <change>Fix improper handling of chatRoom invitation declined and show user decline message</change>
+        <change>Improve Chat Invite Dialog to ensure correct highlight of selected contacts and Invite button state</change>
+        <change>Change context menu in ContactList and RoomList to use PopupMenu instead of android ContextMenu (clipped item lists)</change>
+        <change>Fix SDES encryption and ensure security protocol name and status are properly reflected during video call</change>
+        <change>Add user account option to specify Minimum TLS Version for connection setup (Default TLS 1.2)</change>
+        <change>Replace obsoleted SHA1 with SHA-256 for DTLS Cryptographic Hash Function as recommended by XEP-0414</change>
+        <change>Temporary disable DTLS_SRTP option as aTalk source is not compatible with BC v1.6.2</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.6 (01/21/2020)" versioncode="1116">
+        <change>Implement embedded audio media player in chat view with functions: Play, Pause, Resume, Stop(long press) and Seek</change>
+        <change>Standardize dateTime format and layout in chat message and file transfer views</change>
+        <change>Chat Invite Dialog: allow user group expansion, fix incorrect highlight of selected contact onShow dialog and system crash</change>
+        <change>Fix camera setup error for front and back camera toggling - aTalk may abort on long press camera tool icon</change>
+        <change>Fix partial deletion of last file sent and file received messages due to null message Uuid</change>
+        <change>Fix chat view scroll incorrectly to top when the last sent/received message is deleted</change>
+        <change>Fix incorrect mimeType detection for file with unicode characters (patch android-28 sdk library)</change>
+        <change>Fix NPE in HTTP File Download when an invalid filename is specified</change>
+        <change>Fix exceptions from Field Failure Report for aTalk v2.1.5</change>
+        <change>Upgrade openSSL to version 1.0.2u: https://www.openssl.org/news/vulnerabilities.html</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.5 (12/28/2019)" versioncode="1115">
+        <change>Rename share intent to aTalk and use CustomView for ShareActivity actionBar</change>
+        <change>Improve join chatRoom captcha challenge request handling and allow user retry on incorrect entry</change>
+        <change>Improve android AEC performance to minimize audio howling during speakerPhone mode</change>
+        <change>Cleanup ZRTP Cipher info incorrect display due to multiple string formats being specified</change>
+        <change>Fix chatRoom list view with empty item being displayed at times</change>
+        <change>Fix system crash when user login with empty password</change>
+        <change>Use small font for actionBar sub-title to allow more text characters display</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.4 (12/18/2019)" versioncode="1114">
+        <change>Add support for Share, Quote and Forward for both message and media contents</change>
+        <change>Preview media contents of attachments for user confirmation before sending</change>
+        <change>Extend check for proper file extension on media file sharing; rename media file with best guess extension if possible</change>
+        <change>Full XEP-0071: XHTML-IM implementation for Omemo messages in send and receive</change>
+        <change>Fix ChatRoomBookmarksDialog crashes due to null value in either old or newly edited string</change>
+        <change>All Links entered are sent in XHTML extension to avoid treated incorrectly as HTTP File Download by receiver</change>
+        <change>Include all received media and outgoing tmp files for user optional deletion</change>
+        <change>Return chat view to the top of last deleted message group after message deletion</change>
+        <change>Enhance file handler and consolidate all user aTalk files into aTalk new directory structure</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.3 (11/28/2019)" versioncode="1113">
+        <change>Support send and receive of instant messages that contain lightweight text markup (XEP-0071: XHTML-IM) e.g &lt;em>Wow&lt;/em>, I&apos;m &lt;span style='color:green'>green&lt;/span></change>
+        <change>Enhance UI to add unread message badges in contact and chatRoom list views</change>
+        <change>Block all notification events for muc history messages and from chatRooms with autoJoin options enabled</change>
+        <change>Support audio chat messages with offline buddy and during conference</change>
+        <change>Enhance chatState notification event support for group chat</change>
+        <change>Fix missing 'Cancel' and 'Apply' buttons in account info view when running in android-9 (API-28)</change>
+        <change>Fix menu 'ChatRoom Bookmark' crashes - eliminate all potential 'null object reference'</change>
+        <change>Improve UI on message correction and prevent text entry past defined boundary</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.2 (11/07/2019)" versioncode="1112">
+        <change>Fix Fdroid built to support BOSH connectivity option</change>
+        <change>Save camera parameters to persistent store hence limit camera access setup to one time only</change>
+        <change>Number cameras for identification in preference selection as android devices may have multiple cameras</change>
+        <change>Do not create volatile contact in NotInContactList section for conference users</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.1 (11/01/2019)" versioncode="1111">
+        <change>Implement Bidirectional-streams Over Synchronous HTTP (BOSH); Certificates issue by android trusted CAs only</change>
+        <change>Ensure all notification events parameters' changes are saved to persistent store</change>
+        <change>Fix non-loop ringtone prematurely stop during playback</change>
+        <change>Fix miss-call event not properly fire to trigger event notifications</change>
+        <change>Remove main menu android Notification Settings... option - use aTalk notification events instead</change>
+        <change>Fix Omemo media sharing problem on android earlier OS e.g. API-21</change>
+        <change>Checking for debug apk update must validate the downloaded apk is valid before installation</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.1.0 (10/08/2019)" versioncode="1110">
+        <change>Enhance Event UI: sort event names in ascending order for easy user reference and add ringtone entry field</change>
+        <change>Add support allowing user to pick android predefined ring tone for the event - playback via android RingTone class</change>
+        <change>Allow user to manual update avatar in contact list when user is not online - access via long press avatar</change>
+        <change>Make xml error messages more human readable and link clickable in login Reason field</change>
+        <change>Launch login prompt when user is disconnected due to multiple instances login i.e. conflict: replaced by new connection</change>
+        <change>Enhance isMediaFile check with support to guess content type from FileInputStream</change>
+        <change>Update Thumbnail class to confirm to XEP-0264 Jingle Content Thumbnails v0.4 release</change>
+        <change>Update smack library to v4.4.0-alpha3-SNAPSHOT release</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.0.6 (09/27/2019)" versioncode="1106">
+        <change>Auto send last omemo message once all undecided omemoDevices are authenticated by user, else display error message</change>
+        <change>Improve account UI allowing user to change userName during login and in Account Settings...; warn user if resulted in old messages being purged</change>
+        <change>Hide contact context menu i.e. 'Remove Contact' and 'Move to group' when user is not online</change>
+        <change>Allow user removal of contacts in NotInContactList with exception of DomainBareJid; User need to manual purge the associated messages prior to remove contact if desired.</change>
+        <change>Add support to display error messages received from conference room</change>
+        <change>Avoid message 'Delivery Failed' error message being cleared when passing through multiple listeners</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.0.5 (09/14/2019)" versioncode="1105">
+        <change>Implement user options to cancel, retry and display status progressBar during Http file downloading</change>
+        <change>Ensure proper Http File Download clean up if user exit chat session without cancel file transfer in progress</change>
+        <change>Fix file transfer may incorrectly send to last registered user instead of intended recipient</change>
+        <change>Improve room UI in MUC session on participant join and subject change events</change>
+        <change>Add member role in chat room occupant info display and fix multiple info messages display</change>
+        <change>Revert to chat NORMAL if current chat session cannot support the default chat OMEMO on open</change>
+        <change>Hide last message correction cancel button in normal text entry to avoid accidentally discard text entered</change>
+        <change>Support the display of messages receive from server</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.0.4 (08/31/2019)" versioncode="1104">
+        <change>Improve preference settings UI according to user experience and add advance section</change>
+        <change>Change Regenerate OMEMO identities implementation to have change take effect without restart app</change>
+        <change>Extend OMEMO key bundles index range check to allow for prekey ID = 0</change>
+        <change>Fix aTalk hangs in endless loop when user exit while an unsuccessful login is still in progress</change>
+        <change>Close Subscription Authorization Request Dialog only on user response to prompt options</change>
+        <change>Show mic muted state in media call if RECORD_AUDIO permission is not granted</change>
+        <change>Do not process vCard update when \'presence\' is sent by participant in chatRoom</change>
+        <change>Add \'Save\' option on exit Account Info to allow user to save changes (fix android-P bug not displaying \'Apply\' button in form)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.0.3 (08/14/2019)" versioncode="1103">
         <change>Implement XEP-0184: Message Delivery Receipts support with user enable/disable option</change>
         <change>Implement XEP-0012: Last Activity support to show the time of the last activity associated with a contact</change>

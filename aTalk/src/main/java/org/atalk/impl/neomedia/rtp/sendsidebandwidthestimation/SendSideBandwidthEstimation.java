@@ -22,7 +22,8 @@ import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.rtp.BandwidthEstimator;
 import org.atalk.util.IntSummaryStatistics;
 import org.atalk.util.LongSummaryStatistics;
-import org.atalk.util.*;
+import org.atalk.util.logging.DiagnosticContext;
+import org.atalk.util.logging.TimeSeriesLogger;
 
 import java.util.*;
 

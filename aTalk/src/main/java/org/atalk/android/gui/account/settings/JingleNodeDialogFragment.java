@@ -7,8 +7,6 @@ package org.atalk.android.gui.account.settings;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +18,16 @@ import android.widget.Toast;
 import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import androidx.fragment.app.DialogFragment;
+
 /**
- * The Jingle Node edit dialog. It used to edit or create new {@link JingleNodeDescriptor}. It serves as a "create new"
- * dialog when <tt>null</tt> is passed as a descriptor argument.
+ * The Jingle Node edit dialog. It used to edit or create new {@link JingleNodeDescriptor}.
+ * It serves as a "create new" dialog when <tt>null</tt> is passed as a descriptor argument.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -55,10 +56,10 @@ public class JingleNodeDialogFragment extends DialogFragment
      */
     public static JingleNodeDialogFragment newInstance(JingleNodeAdapter listener, JingleNodeDescriptor descriptor)
     {
-        JingleNodeDialogFragment fragmentJnd = new JingleNodeDialogFragment();
         if (listener == null)
             throw new NullPointerException();
 
+        JingleNodeDialogFragment fragmentJnd = new JingleNodeDialogFragment();
         fragmentJnd.listener = listener;
         fragmentJnd.descriptor = descriptor;
         return fragmentJnd;
@@ -90,22 +91,18 @@ public class JingleNodeDialogFragment extends DialogFragment
         }
 
         final AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(new DialogInterface.OnShowListener()
-        {
-            public void onShow(DialogInterface dialogInterface)
-            {
-                Button pos = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                pos.setOnClickListener(view -> {
-                    if (saveChanges())
-                        dismiss();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button pos = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            pos.setOnClickListener(view -> {
+                if (saveChanges())
+                    dismiss();
+            });
+            Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+            if (neg != null) {
+                neg.setOnClickListener(view -> {
+                    listener.removeJingleNode(descriptor);
+                    dismiss();
                 });
-                Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                if (neg != null) {
-                    neg.setOnClickListener(view -> {
-                        listener.removeJingleNode(descriptor);
-                        dismiss();
-                    });
-                }
             }
         });
         return dialog;
@@ -120,17 +117,17 @@ public class JingleNodeDialogFragment extends DialogFragment
     {
         Dialog dialog = getDialog();
         boolean relaySupport = ((CompoundButton) dialog.findViewById(R.id.relaySupportCheckbox)).isChecked();
-        String jingleAddress = ((TextView) dialog.findViewById(R.id.jidAddress)).getText().toString();
+        String jingleAddress = ViewUtil.toString(dialog.findViewById(R.id.jidAddress));
 
-        if (jingleAddress.isEmpty()) {
-            Toast.makeText(getActivity(), "The JID address can not be empty", Toast.LENGTH_LONG).show();
+        if (jingleAddress == null) {
+            Toast.makeText(getActivity(), "The Jid address can not be empty", Toast.LENGTH_LONG).show();
             return false;
         }
 
         Jid jidAddress = null;
         try {
             jidAddress = JidCreate.from(jingleAddress);
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             e.printStackTrace();
         }
 

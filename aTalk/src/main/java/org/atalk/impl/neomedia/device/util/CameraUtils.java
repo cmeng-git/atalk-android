@@ -7,6 +7,7 @@ package org.atalk.impl.neomedia.device.util;
 
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
+import android.text.TextUtils;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
@@ -26,6 +27,7 @@ import javax.media.MediaLocator;
  * between <tt>MediaRecorder</tt> and <tt>AndroidCamera</tt> device systems.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 @SuppressWarnings("deprecation")
 public class CameraUtils
@@ -100,6 +102,26 @@ public class CameraUtils
     }
 
     /**
+     * Constructs a <tt>String</tt> representation of a specific <tt>Iterable</tt> of
+     * <tt>Dimension</tt>s. The elements of the specified <tt>Iterable</tt> are delimited by &quot;,
+     * &quot;. The method has been introduced to match {@link CameraUtils#cameraSizesToString(Iterable)}.
+     *
+     * @param sizes the <tt>Iterable</tt> of <tt>Dimension</tt>s which is to be represented as a
+     * human-readable <tt>String</tt>
+     * @return the human-readable <tt>String</tt> representation of the specified <tt>sizes</tt>
+     */
+    public static String dimensionsToString(Iterable<Dimension> sizes)
+    {
+        StringBuilder s = new StringBuilder();
+        for (Dimension size : sizes) {
+            if (s.length() != 0)
+                s.append(", ");
+            s.append(size.width).append('x').append(size.height);
+        }
+        return s.toString();
+    }
+
+    /**
      * Returns the string representation of the formats contained in given list.
      *
      * @param formats the list of image formats integers defined in <tt>ImageFormat</tt> class.
@@ -112,6 +134,7 @@ public class CameraUtils
         for (int format : formats) {
             if (s.length() != 0)
                 s.append(", ");
+
             switch (format) {
                 case ImageFormat.YV12:
                     s.append("YV12");
@@ -163,13 +186,8 @@ public class CameraUtils
             Camera.Parameters params = camera.getParameters();
             setRecordingHint.invoke(params, Boolean.TRUE);
             camera.setParameters(params);
-        } catch (IllegalAccessException iae) {
-            // Ignore because we only tried to set a hint.
-        } catch (IllegalArgumentException iae) {
-            // Ignore because we only tried to set a hint.
-        } catch (InvocationTargetException ite) {
-            // Ignore because we only tried to set a hint.
-        } catch (NoSuchMethodException nsme) {
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException
+                | NoSuchMethodException iae) {
             // Ignore because we only tried to set a hint.
         }
         return camera;
@@ -183,14 +201,6 @@ public class CameraUtils
     public static void setPreviewSurfaceProvider(PreviewSurfaceProvider provider)
     {
         surfaceProvider = provider;
-    }
-
-    /**
-     * get current display orientation
-     **/
-    public static int getDisplayOrientation()
-    {
-        return surfaceProvider.getDisplayRotation();
     }
 
     /**
@@ -327,5 +337,23 @@ public class CameraUtils
     public static List<Camera.Size> getSupportSizeForCameraId(int cameraId)
     {
         return cameraSupportSize.get(cameraId);
+    }
+
+    public static boolean getSupportedSizes(String vs, List<Dimension> sizes)
+    {
+        if (!TextUtils.isEmpty(vs)) {
+            String[] videoSizes = vs.split(", ");
+            for (String videoSize : videoSizes) {
+                if (!TextUtils.isEmpty(videoSize) && videoSize.contains("x")) {
+                    String[] wh = videoSize.split("x");
+                    Dimension candidate = new Dimension(Integer.parseInt(wh[0]), Integer.parseInt(wh[1]));
+                    if (CameraUtils.isPreferredSize(candidate)) {
+                        sizes.add(candidate);
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }

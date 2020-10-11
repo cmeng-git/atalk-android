@@ -44,7 +44,6 @@ public abstract class AbstractEncodedMessage extends AbstractMessage
 		this.receiverInstanceTag = recipientInstanceTag;
 	}
 
-	// Methods.
 	@Override
 	public int hashCode()
 	{

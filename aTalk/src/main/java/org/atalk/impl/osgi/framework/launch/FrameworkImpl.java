@@ -25,7 +25,7 @@ import timber.log.Timber;
  */
 public class FrameworkImpl extends BundleImpl implements Framework
 {
-    private final List<BundleImpl> bundles = new LinkedList<BundleImpl>();
+    private final List<BundleImpl> bundles = new LinkedList<>();
 
     private final Map<String, String> configuration;
 
@@ -126,7 +126,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
 
     private List<BundleImpl> getBundlesByStartLevel(int startLevel)
     {
-        List<BundleImpl> bundles = new LinkedList<BundleImpl>();
+        List<BundleImpl> bundles = new LinkedList<>();
 
         synchronized (this.bundles) {
             for (BundleImpl bundle : this.bundles) {

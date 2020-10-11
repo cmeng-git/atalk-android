@@ -11,6 +11,7 @@ import android.media.audiofx.*;
 import android.os.Build;
 import android.os.Process;
 
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
@@ -107,6 +108,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
                 for (Object stream : streams)
                     ((AudioRecordStream) stream).disconnect();
         }
+        aTalkApp.getAudioManager().setMode(AudioManager.MODE_NORMAL);
         super.doDisconnect();
     }
 
@@ -125,16 +127,11 @@ public class DataSource extends AbstractPullBufferCaptureDevice
      */
     public static void setThreadPriority(int threadPriority)
     {
-        Throwable exception = null;
         try {
             Process.setThreadPriority(threadPriority);
-        } catch (IllegalArgumentException iae) {
-            exception = iae;
-        } catch (SecurityException se) {
-            exception = se;
+        } catch (IllegalArgumentException | SecurityException ex) {
+            Timber.w("Failed to set thread priority: %s", ex.getMessage());
         }
-        if (exception != null)
-            Timber.w(exception, "Failed to set thread priority.");
     }
 
     /**
@@ -168,8 +165,8 @@ public class DataSource extends AbstractPullBufferCaptureDevice
     /**
      * Implements an audio <tt>PullBufferStream</tt> using {@link AudioRecord}.
      */
-    private static class AudioRecordStream extends AbstractPullBufferStream<DataSource> implements
-            AudioEffect.OnEnableStatusChangeListener
+    private static class AudioRecordStream extends AbstractPullBufferStream<DataSource>
+            implements AudioEffect.OnEnableStatusChangeListener
     {
         /**
          * The <tt>android.media.AudioRecord</tt> which does the actual capturing of audio.
@@ -248,7 +245,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 
             double sampleRate = af.getSampleRate();
             length = (int) Math.round(20 /* milliseconds */
-                    * (sampleRate / 1000) * channels * (sampleSizeInBits / 8));
+                    * (sampleRate / 1000) * channels * (sampleSizeInBits / 8.0));
 
             /*
              * Apart from the thread in which #read(Buffer) is executed, use the thread priority for
@@ -264,9 +261,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
                 // tries to configure audio effects if available
                 configureEffects();
             } catch (IllegalArgumentException iae) {
-                IOException ioe = new IOException();
-                ioe.initCause(iae);
-                throw ioe;
+                throw new IOException(iae);
             }
             setThreadPriority = true;
         }
@@ -280,6 +275,8 @@ public class DataSource extends AbstractPullBufferCaptureDevice
             if (!AndroidUtils.hasAPI(16))
                 return;
 
+            // Must enable to improve AEC to avoid audio howling on speaker phone enabled
+            aTalkApp.getAudioManager().setMode(AudioManager.MODE_IN_COMMUNICATION);
             AudioSystem audioSystem = AudioSystem.getAudioSystem(AudioSystem.LOCATOR_PROTOCOL_AUDIORECORD);
 
             // Creates echo canceler if available
@@ -400,6 +397,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 
         /**
          * Starts the transfer of media data from this <tt>AbstractBufferStream</tt>.
+         * WIll not proceed if mState == STATE_UNINITIALIZED (when mic is disabled)
          *
          * @throws IOException if anything goes wrong while starting the transfer of media data from this
          * <tt>AbstractBufferStream</tt>
@@ -420,7 +418,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 
             super.start();
             synchronized (this) {
-                if (audioRecord != null) {
+                if ((audioRecord != null)  && (audioRecord.getState() == AudioRecord.STATE_INITIALIZED)) {
                     setThreadPriority = true;
                     audioRecord.startRecording();
                 }
@@ -439,7 +437,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
                 throws IOException
         {
             synchronized (this) {
-                if (audioRecord != null) {
+                if ((audioRecord != null)  && (audioRecord.getState() == AudioRecord.STATE_INITIALIZED)) {
                     audioRecord.stop();
                     setThreadPriority = true;
                 }

@@ -17,45 +17,45 @@ import java.io.IOException;
  *
  * @author Sebastien Vincent
  */
-public class StateProvider extends ExtensionElementProvider<StateExtensionElement>
+public class StateProvider extends ExtensionElementProvider<StateExtension>
 {
     /**
-     * Parses a state extension sub-packet and creates a {@link StateExtensionElement} instance. At
+     * Parses a state extension sub-packet and creates a {@link StateExtension} instance. At
      * the beginning of the method call, the xml parser will be positioned on the opening element of
      * the packet extension. As required by the smack API, at the end of the method call, the parser
      * will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>State</tt> element.
-     * @return a new {@link StateExtensionElement} instance.
+     * @return a new {@link StateExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     @Override
-    public StateExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public StateExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
 
-        StateExtensionElement ext = new StateExtensionElement();
+        StateExtension ext = new StateExtension();
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                if (elementName.equals(StateExtensionElement.ELEMENT_ACTIVE)) {
+                if (elementName.equals(StateExtension.ELEMENT_ACTIVE)) {
                     ext.setActive(Boolean.parseBoolean(CoinIQProvider.parseText(parser)) ? 1 : 0);
                 }
-                else if (elementName.equals(StateExtensionElement.ELEMENT_LOCKED)) {
+                else if (elementName.equals(StateExtension.ELEMENT_LOCKED)) {
                     ext.setLocked(Boolean.parseBoolean(CoinIQProvider.parseText(parser)) ? 1 : 0);
                 }
-                if (elementName.equals(StateExtensionElement.ELEMENT_USER_COUNT)) {
+                if (elementName.equals(StateExtension.ELEMENT_USER_COUNT)) {
                     ext.setUserCount(Integer.parseInt(CoinIQProvider.parseText(parser)));
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(StateExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(StateExtension.ELEMENT)) {
                     done = true;
                 }
             }

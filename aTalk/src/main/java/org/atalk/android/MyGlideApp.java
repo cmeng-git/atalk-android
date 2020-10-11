@@ -1,9 +1,6 @@
 package org.atalk.android;
 
 import android.content.Context;
-import android.net.Uri;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.annotation.GlideModule;
@@ -16,59 +13,42 @@ import java.io.File;
 @GlideModule
 public class MyGlideApp extends AppGlideModule
 {
-    private static String TAG = MyGlideApp.class.toString();
-
-    public static void loadImage(ImageView viewHolder, File filePath, Boolean isHistory)
+    /**
+     * Display file as thumbnail preview if it is a media file
+     *
+     * @param viewHolder image preview holder
+     * @param file the image file
+     * @param isHistory History file image view is only a small preview
+     * @param isTypeMedia True if pre-determined mimeType from caller is a media file
+     */
+    public static void loadImage(ImageView viewHolder, File file, Boolean isHistory)
     {
-        if (!filePath.exists()) {
+        if (!file.exists()) {
             viewHolder.setImageDrawable(null);
             return;
         }
 
         Context ctx = aTalkApp.getGlobalContext();
-        if (isMediaFile(ctx, filePath)) {
-            // History file image view is only a small preview
+        if (FileBackend.isMediaFile(file)) {
+            // History file image view is only a small preview (192 px max height)
             if (isHistory) {
                 GlideApp.with(ctx)
-                        .load(filePath)
-                        .centerCrop()
+                        .load(file)
+                        .override(640, 192)
                         .placeholder(R.drawable.ic_file_open)
                         .into(viewHolder);
             }
-            // sent or received file will be full image
+            // sent or received file will be large image
             else {
                 GlideApp.with(ctx)
-                        .load(filePath)
+                        .load(file)
+                        .override(1280, 608)
                         .error(R.drawable.ic_file_open)
                         .into(viewHolder);
             }
         }
         else {
             viewHolder.setImageResource(R.drawable.ic_file_open);
-        }
-    }
-
-    /*
-     * Check if the file has media content
-     */
-    private static boolean isMediaFile(Context ctx, File file)
-    {
-        Uri uri = FileBackend.getUriForFile(ctx, file);
-        String mimeType = FileBackend.getMimeType(ctx, uri);
-
-        // mimeType is null if file contains no ext on old android or else "application/octet-stream"
-        if (TextUtils.isEmpty(mimeType)) {
-            Log.e(TAG, "File mimeType is null: " + file.getPath());
-            return false;
-        }
-
-        // Android return 3gp and vidoe/3gp
-        if (!mimeType.contains("3gp") && (mimeType.contains("image") || mimeType.contains("video"))) {
-            return true;
-        }
-        else {
-            // Log.e(TAG, "File mimeType is " + file.getPath() + ": " + mimeType);
-            return false;
         }
     }
 }

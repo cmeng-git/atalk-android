@@ -16,6 +16,7 @@ package org.xmpp.extensions.thumbnail;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
@@ -102,7 +103,8 @@ public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiati
                 // the SI response of Empathy contains an invalid, empty file-tag.
                 else if (elementName.equals("file") && (name != null)) {
                     long fileSize = 0;
-                    if (size != null && size.trim().length() != 0) {
+                    size = StringUtils.returnIfNotEmptyTrimmed(size);
+                    if (size != null) {
                         try {
                             fileSize = Long.parseLong(size);
                         } catch (NumberFormatException e) {

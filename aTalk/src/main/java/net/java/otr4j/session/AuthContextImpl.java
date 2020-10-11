@@ -31,7 +31,6 @@ import timber.log.Timber;
  */
 class AuthContextImpl extends AuthContext
 {
-
     private Session session;
     private int authenticationState;
 
@@ -65,7 +64,6 @@ class AuthContextImpl extends AuthContext
 
     class MessageFactoryImpl extends MessageFactory
     {
-
         @Override
         QueryMessage getQueryMessage()
         {
@@ -101,26 +99,22 @@ class AuthContextImpl extends AuthContext
         {
             try {
                 SignatureM m = new SignatureM((DHPublicKey) getLocalDHKeyPair().getPublic(),
-                        getRemoteDHPublicKey(), getLocalLongTermKeyPair().getPublic(),
-                        getLocalDHKeyPairID());
+                        getRemoteDHPublicKey(), getLocalLongTermKeyPair().getPublic(), getLocalDHKeyPairID());
 
                 OtrCryptoEngine otrCryptoEngine = new OtrCryptoEngineImpl();
-                byte[] mhash
-                        = otrCryptoEngine.sha256Hmac(SerializationUtils.toByteArray(m), getM1());
-                byte[] signature
-                        = otrCryptoEngine.sign(mhash, getLocalLongTermKeyPair().getPrivate());
+                byte[] mhash = otrCryptoEngine.sha256Hmac(SerializationUtils.toByteArray(m), getM1());
+                byte[] signature = otrCryptoEngine.sign(mhash, getLocalLongTermKeyPair().getPrivate());
 
-                SignatureX mysteriousX = new SignatureX(getLocalLongTermKeyPair().getPublic(),
-                        getLocalDHKeyPairID(), signature);
-                byte[] xEncrypted = otrCryptoEngine.aesEncrypt(getC(), null,
-                        SerializationUtils.toByteArray(mysteriousX));
+                SignatureX mysteriousX
+                        = new SignatureX(getLocalLongTermKeyPair().getPublic(), getLocalDHKeyPairID(), signature);
+                byte[] xEncrypted
+                        = otrCryptoEngine.aesEncrypt(getC(), null, SerializationUtils.toByteArray(mysteriousX));
 
                 byte[] tmp = SerializationUtils.writeData(xEncrypted);
                 byte[] xEncryptedHash = otrCryptoEngine.sha256Hmac160(tmp, getM2());
 
                 RevealSignatureMessage revealSignatureMessage
-                        = new RevealSignatureMessage(getSession().getProtocolVersion(),
-                        xEncrypted, xEncryptedHash, getR());
+                        = new RevealSignatureMessage(getSession().getProtocolVersion(), xEncrypted, xEncryptedHash, getR());
                 revealSignatureMessage.senderInstanceTag
                         = getSession().getSenderInstanceTag().getValue();
                 revealSignatureMessage.receiverInstanceTag
@@ -136,8 +130,7 @@ class AuthContextImpl extends AuthContext
                 throws OtrException
         {
             SignatureM m = new SignatureM((DHPublicKey) getLocalDHKeyPair().getPublic(),
-                    getRemoteDHPublicKey(), getLocalLongTermKeyPair().getPublic(),
-                    getLocalDHKeyPairID());
+                    getRemoteDHPublicKey(), getLocalLongTermKeyPair().getPublic(), getLocalDHKeyPairID());
 
             OtrCryptoEngine otrCryptoEngine = new OtrCryptoEngineImpl();
             byte[] mhash;
@@ -148,22 +141,18 @@ class AuthContextImpl extends AuthContext
             }
 
             byte[] signature = otrCryptoEngine.sign(mhash, getLocalLongTermKeyPair().getPrivate());
-            SignatureX mysteriousX = new SignatureX(getLocalLongTermKeyPair().getPublic(),
-                    getLocalDHKeyPairID(), signature);
+            SignatureX mysteriousX
+                    = new SignatureX(getLocalLongTermKeyPair().getPublic(), getLocalDHKeyPairID(), signature);
 
             byte[] xEncrypted;
             try {
-                xEncrypted = otrCryptoEngine.aesEncrypt(getCp(), null,
-                        SerializationUtils.toByteArray(mysteriousX));
+                xEncrypted = otrCryptoEngine.aesEncrypt(getCp(), null, SerializationUtils.toByteArray(mysteriousX));
                 byte[] tmp = SerializationUtils.writeData(xEncrypted);
                 byte[] xEncryptedHash = otrCryptoEngine.sha256Hmac160(tmp, getM2p());
                 SignatureMessage signatureMessage
-                        = new SignatureMessage(getSession().getProtocolVersion(),
-                        xEncrypted, xEncryptedHash);
-                signatureMessage.senderInstanceTag
-                        = getSession().getSenderInstanceTag().getValue();
-                signatureMessage.receiverInstanceTag
-                        = getSession().getReceiverInstanceTag().getValue();
+                        = new SignatureMessage(getSession().getProtocolVersion(), xEncrypted, xEncryptedHash);
+                signatureMessage.senderInstanceTag = getSession().getSenderInstanceTag().getValue();
+                signatureMessage.receiverInstanceTag = getSession().getReceiverInstanceTag().getValue();
                 return signatureMessage;
             } catch (IOException e) {
                 throw new OtrException(e);
@@ -244,6 +233,7 @@ class AuthContextImpl extends AuthContext
         this.remoteDHPublicKey = dhPublicKey;
     }
 
+	@Override
     public DHPublicKey getRemoteDHPublicKey()
     {
         return remoteDHPublicKey;
@@ -291,8 +281,7 @@ class AuthContextImpl extends AuthContext
             throws OtrException
     {
         if (localDHPublicKeyHash == null) {
-            localDHPublicKeyHash
-                    = new OtrCryptoEngineImpl().sha256Hash(getLocalDHPublicKeyBytes());
+            localDHPublicKeyHash = new OtrCryptoEngineImpl().sha256Hash(getLocalDHPublicKeyBytes());
             Timber.log(TimberLog.FINER, "Hashed local D-H public key.");
         }
         return localDHPublicKeyHash;
@@ -302,8 +291,7 @@ class AuthContextImpl extends AuthContext
             throws OtrException
     {
         if (localDHPublicKeyEncrypted == null) {
-            localDHPublicKeyEncrypted = new OtrCryptoEngineImpl().aesEncrypt(getR(),
-                    null, getLocalDHPublicKeyBytes());
+            localDHPublicKeyEncrypted = new OtrCryptoEngineImpl().aesEncrypt(getR(), null, getLocalDHPublicKeyBytes());
             Timber.log(TimberLog.FINER, "Encrypted our D-H public key.");
         }
         return localDHPublicKeyEncrypted;
@@ -314,8 +302,7 @@ class AuthContextImpl extends AuthContext
             throws OtrException
     {
         if (s == null) {
-            s = new OtrCryptoEngineImpl().generateSecret(this.getLocalDHKeyPair().getPrivate(),
-                    this.getRemoteDHPublicKey());
+            s = new OtrCryptoEngineImpl().generateSecret(this.getLocalDHKeyPair().getPrivate(), this.getRemoteDHPublicKey());
             Timber.log(TimberLog.FINER, "Generated shared secret.");
         }
         return s;
@@ -509,9 +496,8 @@ class AuthContextImpl extends AuthContext
                 && mySession.getSenderInstanceTag().getValue() != m.receiverInstanceTag
                 && (m.messageType != AbstractEncodedMessage.MESSAGE_DH_COMMIT
                 || m.receiverInstanceTag != 0))
-        // from the protocol specification: "For a commit
-        // message this will often be 0, since the other party may not have identified their
-        // instance tag yet."
+                // from the protocol specification: "For a commit message this will often be 0,
+                // since the other party may not have identified their instance tag yet."
         {
             Timber.log(TimberLog.FINER, "Received a %s Message with receiver instance tag that is different from ours, ignore this message",
                     messageTypeName);
@@ -550,13 +536,11 @@ class AuthContextImpl extends AuthContext
                 // Verify signature.
                 byte[] signature;
                 try {
-                    signature = otrCryptoEngine.sha256Hmac(SerializationUtils.toByteArray(remoteM),
-                            this.getM1p());
+                    signature = otrCryptoEngine.sha256Hmac(SerializationUtils.toByteArray(remoteM), this.getM1p());
                 } catch (IOException e) {
                     throw new OtrException(e);
                 }
-                if (!otrCryptoEngine.verify(signature, localRemoteLongTermPublicKey,
-                        remoteX.signature)) {
+                if (!otrCryptoEngine.verify(signature, localRemoteLongTermPublicKey, remoteX.signature)) {
                     Timber.log(TimberLog.FINER, "Signature verification failed.");
                     return;
                 }
@@ -583,8 +567,7 @@ class AuthContextImpl extends AuthContext
                 // * Reply with a Signature Message.
                 // * Transition authstate to AUTHSTATE_NONE.
                 // * Transition msgstate to MSGSTATE_ENCRYPTED.
-                // * TODO If there is a recent stored message, encrypt it and send
-                // it as a Data Message.
+                // * TODO If there is a recent stored message, encrypt it and send it as a Data Message.
 
                 OtrCryptoEngine otrCryptoEngine = new OtrCryptoEngineImpl();
                 // Uses r to decrypt the value of gx sent earlier
@@ -592,8 +575,7 @@ class AuthContextImpl extends AuthContext
                         null, this.getRemoteDHPublicKeyEncrypted());
 
                 // Verifies that HASH(gx) matches the value sent earlier
-                byte[] remoteDHPublicKeyHash
-                        = otrCryptoEngine.sha256Hash(remoteDHPublicKeyDecrypted);
+                byte[] remoteDHPublicKeyHash = otrCryptoEngine.sha256Hash(remoteDHPublicKeyDecrypted);
                 if (!Arrays.equals(remoteDHPublicKeyHash, this.getRemoteDHPublicKeyHash())) {
                     Timber.log(TimberLog.FINER, "Hashes don't match, ignoring message.");
                     return;
@@ -633,14 +615,12 @@ class AuthContextImpl extends AuthContext
                 // Verify signature.
                 byte[] signature;
                 try {
-                    signature = otrCryptoEngine.sha256Hmac(SerializationUtils.toByteArray(remoteM),
-                            this.getM1());
+                    signature = otrCryptoEngine.sha256Hmac(SerializationUtils.toByteArray(remoteM), this.getM1());
                 } catch (IOException e) {
                     throw new OtrException(e);
                 }
 
-                if (!otrCryptoEngine.verify(signature, remoteLongTermPublicKey,
-                        remoteX.signature)) {
+                if (!otrCryptoEngine.verify(signature, remoteLongTermPublicKey, remoteX.signature)) {
                     Timber.log(TimberLog.FINER, "Signature verification failed.");
                     return;
                 }
@@ -664,8 +644,7 @@ class AuthContextImpl extends AuthContext
         switch (this.getAuthenticationState()) {
             case NONE:
             case AWAITING_DHKEY:
-                // Reply with a Reveal Signature Message and transition
-                // authstate to AUTHSTATE_AWAITING_SIG
+                // Reply with a Reveal Signature Message and transition authstate to AUTHSTATE_AWAITING_SIG
                 this.setRemoteDHPublicKey(m.dhPublicKey);
                 this.setAuthenticationState(AuthContext.AWAITING_SIG);
                 getSession().injectMessage(messageFactory.getRevealSignatureMessage());
@@ -676,8 +655,7 @@ class AuthContextImpl extends AuthContext
                 if (m.dhPublicKey.getY().equals(this.getRemoteDHPublicKey().getY())) {
                     // If this D-H Key message is the same the one you received
                     // earlier (when you entered AUTHSTATE_AWAITING_SIG):
-                    // Retransmit
-                    // your Reveal Signature Message.
+                    // Retransmit your Reveal Signature Message.
                     getSession().injectMessage(messageFactory.getRevealSignatureMessage());
                     Timber.log(TimberLog.FINER, "Resent Reveal Signature.");
                 }
@@ -698,8 +676,7 @@ class AuthContextImpl extends AuthContext
         getSession().setReceiverInstanceTag(new InstanceTag(m.senderInstanceTag));
         switch (this.getAuthenticationState()) {
             case NONE:
-                // Reply with a D-H Key Message, and transition authstate to
-                // AUTHSTATE_AWAITING_REVEALSIG.
+                // Reply with a D-H Key Message, and transition authstate to AUTHSTATE_AWAITING_REVEALSIG.
                 this.reset();
                 getSession().setProtocolVersion(m.protocolVersion);
                 this.setRemoteDHPublicKeyEncrypted(m.dhPublicKeyEncrypted);
@@ -720,7 +697,7 @@ class AuthContextImpl extends AuthContext
                 BigInteger ourHash = new BigInteger(1, this.getLocalDHPublicKeyHash());
                 BigInteger theirHash = new BigInteger(1, m.dhPublicKeyHash);
 
-                if (theirHash.compareTo(ourHash) < 0) {
+    			if (theirHash.compareTo(ourHash) == -1) {
                     // Ignore the incoming D-H Commit message, but resend your D-H
                     // Commit message.
                     getSession().injectMessage(messageFactory.getDHCommitMessage());
@@ -753,8 +730,7 @@ class AuthContextImpl extends AuthContext
                 Timber.log(TimberLog.FINER, "Sent D-H key.");
                 break;
             case AWAITING_SIG:
-                // Reply with a new D-H Key message, and transition authstate to
-                // AUTHSTATE_AWAITING_REVEALSIG
+                // Reply with a new D-H Key message, and transition authstate to AUTHSTATE_AWAITING_REVEALSIG
                 this.reset();
                 this.setRemoteDHPublicKeyEncrypted(m.dhPublicKeyEncrypted);
                 this.setRemoteDHPublicKeyHash(m.dhPublicKeyHash);

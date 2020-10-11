@@ -5,12 +5,10 @@
  */
 package org.atalk.android.gui.util;
 
-import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 
 import org.atalk.android.aTalkApp;
 
@@ -42,7 +40,6 @@ public class DrawableCache
         final int cacheSize = maxMemory / 8;
         cache = new LruCache<String, BitmapDrawable>(cacheSize)
         {
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
             @Override
             protected int sizeOf(String key, BitmapDrawable value)
             {

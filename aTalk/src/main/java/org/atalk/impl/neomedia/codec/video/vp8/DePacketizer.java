@@ -8,8 +8,8 @@ package org.atalk.impl.neomedia.codec.video.vp8;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTPUtils;
 
 import java.util.*;
@@ -23,7 +23,7 @@ import timber.log.Timber;
 
 /**
  * A depacketizer from VP8.
- * See {@link "http://tools.ietf.org/html/draft-ietf-payload-vp8-11"}
+ * See {@link "https://tools.ietf.org/html/rfc7741"}
  *
  * @author Boris Grozev
  * @author George Politis
@@ -32,16 +32,15 @@ import timber.log.Timber;
 public class DePacketizer extends AbstractCodec2
 {
     /**
-     * Stores the RTP payloads (VP8 payload descriptor stripped) from RTP packets
-     * belonging to a single VP8 compressed frame.
-     * Maps an RTP sequence number to a buffer which contains the payload.
+     * Stores the RTP payloads (VP8 payload descriptor stripped) from RTP packets belonging to a
+     * single VP8 compressed frame. Maps an RTP sequence number to a buffer which contains the payload.
      */
     private SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
 
     /**
      * Stores unused <tt>Container</tt>'s.
      */
-    private Queue<Container> free = new ArrayBlockingQueue<Container>(100);
+    private Queue<Container> free = new ArrayBlockingQueue<>(100);
 
     /**
      * Stores the first (earliest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
@@ -123,8 +122,7 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Re-initializes the fields which store information about the currently
-     * held data. Empties <tt>data</tt>.
+     * Re-initializes the fields which store information about the currently held data. Empties <tt>data</tt>.
      */
     private void reinit()
     {
@@ -349,7 +347,7 @@ public class DePacketizer extends AbstractCodec2
 
     /**
      * A class that represents the VP8 Payload Descriptor structure defined
-     * in {@link "http://tools.ietf.org/html/draft-ietf-payload-vp8-10"}
+     * in {@link "https://tools.ietf.org/html/rfc7741"}
      */
     public static class VP8PayloadDescriptor
     {
@@ -406,6 +404,47 @@ public class DePacketizer extends AbstractCodec2
         private static final byte N_BIT = (byte) 0x20;
 
         /**
+         * The bitmask for the temporal-layer index
+         */
+        private static final byte TID_MASK = (byte) 0xC0;
+
+        /**
+         * Y bit from the TID/Y/KEYIDX extension byte.
+         */
+        private static final byte Y_BIT = (byte) 0x20;
+
+        /**
+         * The bitmask for the temporal key frame index
+         */
+        private static final byte KEYIDX_MASK = (byte) 0x1F;
+
+        /**
+         * Gets the TID/Y/KEYIDX extension byte if available
+         *
+         * @param buf the byte buffer that holds the VP8 packet.
+         * @param off the offset in the byte buffer where the VP8 packet starts.
+         * @param len the length of the VP8 packet.
+         * @return the TID/Y/KEYIDX extension byte, if that's set, -1 otherwise.
+         */
+        private static byte getTidYKeyIdxExtensionByte(byte[] buf, int off, int len)
+        {
+            if (buf == null || buf.length < off + len || len < 2) {
+                return -1;
+            }
+
+            if ((buf[off] & X_BIT) == 0 || (buf[off + 1] & (T_BIT | K_BIT)) == 0) {
+                return -1;
+            }
+
+            int sz = getSize(buf, off, len);
+            if (buf.length < off + sz || sz < 1) {
+                return -1;
+            }
+
+            return (byte) (buf[off + sz - 1] & 0xFF);
+        }
+
+        /**
          * Gets the temporal layer index (TID), if that's set.
          *
          * @param buf the byte buffer that holds the VP8 packet.
@@ -415,20 +454,39 @@ public class DePacketizer extends AbstractCodec2
          */
         public static int getTemporalLayerIndex(byte[] buf, int off, int len)
         {
-            if (buf == null || buf.length < off + len || len < 2) {
-                return -1;
-            }
+            byte tidYKeyIdxByte = getTidYKeyIdxExtensionByte(buf, off, len);
 
-            if ((buf[off] & X_BIT) == 0 || (buf[off + 1] & T_BIT) == 0) {
-                return -1;
-            }
+            return tidYKeyIdxByte != -1 && (buf[off + 1] & T_BIT) != 0 ? (tidYKeyIdxByte & TID_MASK) >> 6 : tidYKeyIdxByte;
+        }
 
-            int sz = getSize(buf, off, len);
-            if (buf.length < off + sz || sz < 1) {
-                return -1;
-            }
+        /**
+         * Gets the 1 layer sync bit (Y BIT), if that's set.
+         *
+         * @param buf the byte buffer that holds the VP8 packet.
+         * @param off the offset in the byte buffer where the VP8 packet starts.
+         * @param len the length of the VP8 packet.
+         * @return the 1 layer sync bit (Y BIT), if that's set, -1 otherwise.
+         */
+        public static int getFirstLayerSyncBit(byte[] buf, int off, int len)
+        {
+            byte tidYKeyIdxByte = getTidYKeyIdxExtensionByte(buf, off, len);
 
-            return (buf[off + sz - 1] & 0xc0) >> 6;
+            return tidYKeyIdxByte != -1 ? (tidYKeyIdxByte & Y_BIT) >> 5 : tidYKeyIdxByte;
+        }
+
+        /**
+         * Gets the temporal key frame index (KEYIDX), if that's set.
+         *
+         * @param buf the byte buffer that holds the VP8 packet.
+         * @param off the offset in the byte buffer where the VP8 packet starts.
+         * @param len the length of the VP8 packet.
+         * @return the temporal key frame index (KEYIDX), if that's set, -1 otherwise.
+         */
+        public static int getTemporalKeyFrameIndex(byte[] buf, int off, int len)
+        {
+            byte tidYKeyIdxByte = getTidYKeyIdxExtensionByte(buf, off, len);
+
+            return tidYKeyIdxByte != -1 && (buf[off + 1] & K_BIT) != 0 ? (tidYKeyIdxByte & KEYIDX_MASK) : tidYKeyIdxByte;
         }
 
         /**
@@ -460,7 +518,6 @@ public class DePacketizer extends AbstractCodec2
             if (baf == null) {
                 return -1;
             }
-
             return getSize(baf.getBuffer(), baf.getOffset(), baf.getLength());
         }
 
@@ -489,7 +546,7 @@ public class DePacketizer extends AbstractCodec2
                 if ((input[offset + 2] & M_BIT) != 0)
                     size++;
             }
-            if ((input[offset + 1] & L_BIT) != 0)
+            if ((input[offset + 1] & (L_BIT | T_BIT)) != 0)
                 size++;
             if ((input[offset + 1] & (T_BIT | K_BIT)) != 0)
                 size++;
@@ -602,9 +659,9 @@ public class DePacketizer extends AbstractCodec2
         /**
          * Checks whether the arguments specify a valid buffer.
          *
-         * @param buf
-         * @param off
-         * @param len
+         * @param buf the byte buffer that contains the VP8 payload.
+         * @param off the offset in the byte buffer where the VP8 payload starts.
+         * @param len the length of the VP8 payload in the byte buffer.
          * @return true if the arguments specify a valid buffer, false
          * otherwise.
          */
@@ -632,8 +689,8 @@ public class DePacketizer extends AbstractCodec2
          * is set and the <tt>PID</tt> fields has value 0 in the VP8 Payload
          * Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
          *
-         * @param input
-         * @param offset
+         * @param input input
+         * @param offset offset
          * @return <tt>true</tt> if both the '<tt>start of partition</tt>' bit
          * is set and the <tt>PID</tt> fields has value 0 in the VP8 Payload
          * Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
@@ -648,8 +705,8 @@ public class DePacketizer extends AbstractCodec2
          * Returns the value of the <tt>PID</tt> (partition ID) field of the
          * VP8 Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
          *
-         * @param input
-         * @param offset
+         * @param input input
+         * @param offset offset
          * @return the value of the <tt>PID</tt> (partition ID) field of the
          * VP8 Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
          */
@@ -664,7 +721,6 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
          * @param len the length of the payload descriptor in the byte buffer.
-         *
          * @return true if the non-reference bit is NOT set, false otherwise.
          */
         public static boolean isReference(byte[] buf, int off, int len)
@@ -678,31 +734,50 @@ public class DePacketizer extends AbstractCodec2
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
          * @param len the length of the payload descriptor in the byte buffer.
-         *
          * @return the TL0PICIDX from the payload descriptor.
          */
         public static int getTL0PICIDX(byte[] buf, int off, int len)
         {
             int sz = getSize(buf, off, len);
-            if (sz < 1)
-            {
+            if (sz < 1) {
                 return -1;
             }
 
             return buf[off + sz - 2] & 0xff;
         }
+
+        /**
+         * Provides a string description of the VP8 descriptor that can be used
+         * for debugging purposes.
+         *
+         * @param buf the byte buffer that holds the VP8 payload descriptor.
+         * @param off the offset in the byte buffer where the payload descriptor starts.
+         * @param len the length of the payload descriptor in the byte buffer.
+         * @return Descriptive string of the vp8 info
+         */
+        public static String toString(byte[] buf, int off, int len)
+        {
+            return "VP8PayloadDescriptor" +
+                    "[size=" + getSize(buf, off, len) +
+                    ", tid=" + getTemporalLayerIndex(buf, off, len) +
+                    ", tl0picidx=" + getTL0PICIDX(buf, off, len) +
+                    ", pid=" + getPictureId(buf, off) +
+                    ", isExtended=" + hasExtendedPictureId(buf, off, len) +
+                    ", hex=" + RTPUtils.toHexString(buf, off, Math.min(len, MAX_LENGTH), false) +
+                    "]";
+        }
     }
 
     /**
      * A class that represents the VP8 Payload Header structure defined
-     * in {@link "http://tools.ietf.org/html/draft-ietf-payload-vp8-10"}
+     * in {@link "https://tools.ietf.org/html/rfc7741"}
      */
     public static class VP8PayloadHeader
     {
         /**
-         * S bit of the Payload Descriptor.
+         * P bit of the Payload Descriptor.
          */
-        private static final byte S_BIT = (byte) 0x01;
+        private static final byte P_BIT = (byte) 0x01;
 
         /**
          * Returns true if the <tt>P</tt> (inverse key frame flag) field of the
@@ -715,11 +790,11 @@ public class DePacketizer extends AbstractCodec2
         public static boolean isKeyFrame(byte[] input, int offset)
         {
             // When set to 0 the current frame is a key frame.  When set to 1
-            // the current frame is an inter-frame. Defined in [RFC6386]
-            return (input[offset] & S_BIT) == 0;
+            // the current frame is an interframe. Defined in [RFC6386]
+
+            return (input[offset] & P_BIT) == 0;
         }
     }
-
 
     /**
      * A class that represents a keyframe header structure (see RFC 6386, paragraph 9.1).
@@ -728,14 +803,16 @@ public class DePacketizer extends AbstractCodec2
      */
     public static class VP8KeyframeHeader
     {
-        // From RFC 6386, the keyframe header has this format.
-        //
-        // Start code byte 0     0x9d
-        // Start code byte 1     0x01
-        // Start code byte 2     0x2a
-        //
-        // 16 bits      :     (2 bits Horizontal Scale << 14) | Width (14 bits)
-        // 16 bits      :     (2 bits Vertical Scale << 14) | Height (14 bits)
+        /*
+         * From RFC 6386, the keyframe header has this format.
+         *
+         * Start code byte 0: 0x9d
+         * Start code byte 1: 0x01
+         * Start code byte 2: 0x2a
+         *
+         * 16 bits : (2 bits Horizontal Scale << 14) | Width (14 bits)
+         * 16 bits : (2 bits Vertical Scale << 14) | Height (14 bits)
+         */
 
         /**
          * @return the height of this instance.

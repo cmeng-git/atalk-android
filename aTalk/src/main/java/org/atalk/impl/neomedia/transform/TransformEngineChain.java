@@ -323,8 +323,7 @@ public class TransformEngineChain implements TransformEngine
 						= rtp ? engine.getRTPTransformer() : engine.getRTCPTransformer();
 
 				// the packet transformer may be null if for example the engine
-				// only does RTP transformations and this is an RTCP
-				// transformer.
+				// only does RTP transformations and this is an RTCP transformer.
 				if (pTransformer != null)
 					pkts = pTransformer.reverseTransform(pkts);
 			}

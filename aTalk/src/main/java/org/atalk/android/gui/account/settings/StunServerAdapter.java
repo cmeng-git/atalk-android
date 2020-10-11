@@ -6,7 +6,6 @@
 package org.atalk.android.gui.account.settings;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.view.*;
 import android.widget.TextView;
 
@@ -15,6 +14,8 @@ import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistrati
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+
+import androidx.fragment.app.DialogFragment;
 
 /**
  * List model for STUN servers. Is used to edit STUN servers preferences of Jabber account. It's also responsible for

@@ -14,10 +14,10 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.util.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -85,7 +85,7 @@ public class MetaContactChatSession extends ChatSession
     public String getChatEntity()
     {
         String entityJid = metaContact.getDefaultContact().getAddress();
-        if (StringUtils.isNullOrEmpty(entityJid))
+        if (StringUtils.isEmpty(entityJid))
             entityJid = aTalkApp.getResString(R.string.service_gui_UNKNOWN);
         return entityJid;
     }
@@ -463,7 +463,7 @@ public class MetaContactChatSession extends ChatSession
     /**
      * Returns the descriptor of this chat session.
      *
-     * @return the descriptor of this chat session.
+     * @return the descriptor i.e. MetaContact of this chat session.
      */
     @Override
     public Object getDescriptor()
@@ -676,8 +676,8 @@ public class MetaContactChatSession extends ChatSession
     {
         if (currentChatTransport != null) {
             boolean isSelectedContact = ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
-            boolean isResourceSelected = isSelectedContact && (currentChatTransport.getResourceName() != null);
             String resourceName = currentChatTransport.getResourceName();
+            boolean isResourceSelected = isSelectedContact && (resourceName != null);
 
             removeChatTransports(contact);
             if (isResourceSelected)

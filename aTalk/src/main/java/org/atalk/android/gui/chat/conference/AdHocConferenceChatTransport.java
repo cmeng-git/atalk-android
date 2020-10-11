@@ -12,7 +12,7 @@ import net.java.sip.communicator.service.protocol.event.MessageListener;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.*;
-import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -146,7 +146,8 @@ public class AdHocConferenceChatTransport implements ChatTransport
      * @return {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}
      */
-    public boolean allowsMessageDeliveryReceipt() {
+    public boolean allowsMessageDeliveryReceipt()
+    {
         return false;
     }
 
@@ -158,14 +159,16 @@ public class AdHocConferenceChatTransport implements ChatTransport
     public boolean allowsChatStateNotifications()
     {
         Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
+        // isJoined as one of the condition???
         return tnOpSet != null;
+
     }
 
     /**
      * Sends the given instant message trough this chat transport, by specifying the mime type (html or plain text).
      *
      * @param messageText The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
     public void sendInstantMessage(String messageText, int encType)
     {
@@ -175,8 +178,8 @@ public class AdHocConferenceChatTransport implements ChatTransport
             return;
         }
 
-        Message message = adHocChatRoom.createMessage(messageText, encType, null);
-        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_MASK)) {
+        IMessage message = adHocChatRoom.createMessage(messageText, encType, null);
+        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             adHocChatRoom.sendMessage(message, omemoManager);
         }
@@ -190,7 +193,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
      * mime type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      * @see ChatMessage Encryption Type
      */
@@ -207,7 +210,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
     public boolean isContentTypeSupported(int mimeType)
     {
         // we only support plain text for chat rooms for now
-        return (Message.ENCODE_PLAIN == mimeType);
+        return (IMessage.ENCODE_PLAIN == mimeType);
     }
 
     /**
@@ -234,9 +237,15 @@ public class AdHocConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sending sticker messages is not supported by this chat transport implementation.
+     * Sends the given sticker through this chat transport file will always use http file upload
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon and instance of #FileSendConversation
+     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @throws Exception if anything goes wrong
      */
-    public Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         return sendFile(file, chatType, xferCon);
@@ -261,8 +270,14 @@ public class AdHocConferenceChatTransport implements ChatTransport
 
     /**
      * Sending files through a chat room will always use http file upload
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon and instance of #FileSendConversation
+     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @throws Exception if anything goes wrong
      */
-    public Object sendFile(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendFile(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // If this chat transport does not support file transfer we do nothing and just return.
@@ -275,16 +290,16 @@ public class AdHocConferenceChatTransport implements ChatTransport
     /**
      * Http file upload if supported by the server
      */
-    private Object httpFileUpload(File file, int chatType, FileTransferConversation xferCon)
+    private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (httpFileUploadManager.isUploadServiceDiscovered()) {
-            int encType = Message.ENCRYPTION_NONE;
+            int encType = IMessage.ENCRYPTION_NONE;
             Object url;
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    encType = Message.ENCRYPTION_OMEMO;
+                    encType = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
                 }
                 else {

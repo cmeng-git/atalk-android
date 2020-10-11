@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.ChatActivity;
 
 import timber.log.Timber;
 
@@ -47,6 +46,7 @@ public class GeoLocation extends EasyLocationActivity
 
     private boolean demo = false;
     private float delta = 0; // for demo
+    private static LocationListener mCallBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -255,8 +255,7 @@ public class GeoLocation extends EasyLocationActivity
 
         if (needUpdate) {
             if (sendLocation) {
-                String msg = locAddress + " \nLatLng: " + mLatitude + "," + mLongitude;
-                ChatActivity.sendLocation(msg);
+                mCallBack.onResult(location, locAddress);
             }
 
             if (!sendContinuous) {
@@ -352,5 +351,15 @@ public class GeoLocation extends EasyLocationActivity
     private void showToast(String message)
     {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void registeredLocationListener(LocationListener listener)
+    {
+        mCallBack = listener;
+    }
+
+    public interface LocationListener
+    {
+        void onResult(Location location, String locAddress);
     }
 }

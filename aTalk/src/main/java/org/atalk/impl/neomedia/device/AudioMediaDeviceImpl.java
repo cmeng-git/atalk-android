@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia.device;
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.conference.AudioMixer;
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 
 import java.io.IOException;

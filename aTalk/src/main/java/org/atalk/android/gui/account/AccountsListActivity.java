@@ -23,22 +23,23 @@ import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.dialogs.ProgressDialogFragment;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.plugin.certconfig.TLS_Configuration;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
+import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**
- * The activity display list of currently stored accounts showing it's protocol and current status.
+ * The activity display list of currently stored accounts showing the associated protocol and current status.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -87,10 +88,11 @@ public class AccountsListActivity extends OSGiActivity
     @Override
     protected void onResume()
     {
+        super.onResume();
+
         // Need to refresh the list each time in case account might be removed in other Activity.
         // Also it can't be removed on "unregistered" event, because on/off buttons will cause the account to disappear
         accountsInit();
-        super.onResume();
     }
 
     @Override
@@ -125,12 +127,22 @@ public class AccountsListActivity extends OSGiActivity
             case R.id.add_account:
                 startActivity(AccountLoginActivity.class);
                 return true;
+
             case R.id.add_group:
                 AddGroupDialog.showCreateGroupDialog(this, null);
                 return true;
-            case R.id.purge_stores:
-                ServerPersistentStoresRefreshDialog.showCreateGroupDialog(this, null);
+
+            case R.id.TLS_Configuration:
+                TLS_Configuration tlsConfiguration = new TLS_Configuration();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                ft.replace(android.R.id.content, tlsConfiguration).commit();
                 return true;
+
+            case R.id.refresh_database:
+                new ServerPersistentStoresRefreshDialog().show(this);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -177,8 +189,7 @@ public class AccountsListActivity extends OSGiActivity
     {
         int id = item.getItemId();
         if (id == R.id.remove) {
-            RemoveAccountDialog.create(this, clickedAccount,
-                    account -> listAdapter.remove(account)).show();
+            RemoveAccountDialog.create(this, clickedAccount, account -> listAdapter.remove(account)).show();
             return true;
         }
         else if (id == R.id.account_settings) {

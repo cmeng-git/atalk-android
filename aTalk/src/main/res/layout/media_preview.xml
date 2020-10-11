@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/media_preview_item"
+            android:layout_width="@dimen/media_preview_size"
+            android:layout_height="@dimen/media_preview_size"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:background="@color/background_light"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_logo" />
+
+        <ImageButton
+            android:id="@+id/delete_button"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:scaleType="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_cancel" />
+    </RelativeLayout>
+</layout>

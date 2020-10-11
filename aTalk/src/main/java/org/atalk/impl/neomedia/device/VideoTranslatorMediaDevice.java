@@ -12,6 +12,7 @@ import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.*;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.*;
 
 import java.util.*;

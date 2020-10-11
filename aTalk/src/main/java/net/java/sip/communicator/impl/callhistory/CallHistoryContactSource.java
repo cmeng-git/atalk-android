@@ -123,7 +123,7 @@ public class CallHistoryContactSource implements ContactSourceService
 
             while (recordsIter.hasNext() && status != QUERY_CANCELED) {
                 sourceContacts.add(
-                        new CallHistorySourceContact( CallHistoryContactSource.this, recordsIter.next()));
+                        new CallHistorySourceContact(CallHistoryContactSource.this, recordsIter.next()));
             }
             showMoreLabelAllowed = false;
         }

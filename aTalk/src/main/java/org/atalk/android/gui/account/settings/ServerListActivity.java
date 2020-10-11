@@ -5,7 +5,7 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import android.app.*;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
@@ -17,10 +17,13 @@ import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.BundleContext;
 
+import androidx.fragment.app.*;
+
 /**
  * The activity allows user to edit STUN or Jingle Nodes list of the Jabber account.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ServerListActivity extends OSGiActivity
 {
@@ -76,7 +79,7 @@ public class ServerListActivity extends OSGiActivity
         ListFragment listFragment = new ServerListFragment();
         listFragment.setListAdapter(adapter);
         // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, listFragment)
                 .commit();
 
@@ -112,7 +115,7 @@ public class ServerListActivity extends OSGiActivity
     {
         DialogFragment securityDialog = adapter.createItemEditDialogFragment(listPosition);
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         securityDialog.show(ft, "ServerItemDialogFragment");
     }
 
@@ -134,7 +137,6 @@ public class ServerListActivity extends OSGiActivity
      */
     static public class ServerListFragment extends ListFragment
     {
-
         @Override
         public void onActivityCreated(Bundle savedInstanceState)
         {

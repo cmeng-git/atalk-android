@@ -3,7 +3,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/theme_background"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding_small">
 
@@ -20,7 +19,7 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="@string/username_label" />
+            android:text="@string/service_gui_USERNAME" />
 
         <ImageView
             android:id="@+id/star1"
@@ -57,14 +56,13 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="@string/password_label" />
+            android:text="@string/service_gui_PASSWORD" />
 
         <ImageView
             android:id="@+id/star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/password_label"
-            android:layout_toRightOf="@id/password_label"
             android:src="@drawable/ic_star" />
 
         <EditText
@@ -72,28 +70,17 @@
             style="@style/EntryTextView"
             android:layout_width="match_parent"
             android:layout_toEndOf="@id/star"
-            android:layout_toRightOf="@id/star"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
         <CheckBox
             android:id="@+id/show_password"
+            android:button="@drawable/checkbox_password_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@id/password"
-            android:layout_alignRight="@id/password"
-            android:layout_alignTop="@id/password" />
-
-        <ImageView
-            android:id="@+id/pwdviewImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/show_password"
-            android:layout_alignLeft="@id/show_password"
-            android:layout_alignStart="@id/show_password"
-            android:alpha="0.3"
-            android:src="@drawable/pwdview" />
-
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp" />
     </RelativeLayout>
 
     <ScrollView
@@ -131,7 +118,6 @@
                     android:id="@+id/serverPortField"
                     style="@style/EntryTextView"
                     android:layout_width="0dp"
-                    android:layout_marginLeft="@dimen/between_padding"
                     android:layout_marginStart="@dimen/between_padding"
                     android:layout_weight=".30"
                     android:inputType="textNoSuggestions"
@@ -143,7 +129,7 @@
                 style="@style/MediumFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/reason_label" />
+                android:text="@string/service_gui_REASON_LABEL" />
 
             <TextView
                 android:id="@+id/reason_field"

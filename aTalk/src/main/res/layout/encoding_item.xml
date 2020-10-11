@@ -10,15 +10,13 @@
         android:id="@id/dragHandle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
-        android:src="@drawable/drag_sq" />
+        android:src="@drawable/ic_drag" />
 
     <CheckBox
         android:id="@android:id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="45dp"
         android:layout_marginStart="45dp" />
 
     <TextView
@@ -26,7 +24,6 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
 
         android:gravity="center_horizontal"

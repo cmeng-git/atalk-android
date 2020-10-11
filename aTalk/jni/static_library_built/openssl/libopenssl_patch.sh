@@ -27,7 +27,7 @@ fi
 if [[ -f "${LIB_OPENSSL}/Makefile" ]]; then
   version="$(grep '^VERSION=' < ${LIB_OPENSSL}/Makefile | sed 's/^.*=\([1-9]\.[0-9]\.[0-9][a-z]\).*$/v\1/')"
 else
-  version='v1.0.2r'
+  version='v1.0.2u'
 fi
 
 echo -e "\n*** Applying patches for: ${LIB_OPENSSL} (${version}) ***"

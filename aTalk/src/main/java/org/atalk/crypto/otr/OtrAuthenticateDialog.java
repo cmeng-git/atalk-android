@@ -12,7 +12,7 @@ import android.view.View;
 import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -101,7 +101,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
             String sender = contact.getDisplayName();
             String message = getString(R.string.plugin_otr_activator_sessionstared, sender + resourceName);
             OtrActivator.uiService.getChat(contact).addMessage(sender, new Date(), ChatMessage.MESSAGE_SYSTEM,
-                    Message.ENCODE_HTML, message);
+                    IMessage.ENCODE_HTML, message);
         }
         else {
             keyManager.unverify(otrContact, remoteFingerprint);

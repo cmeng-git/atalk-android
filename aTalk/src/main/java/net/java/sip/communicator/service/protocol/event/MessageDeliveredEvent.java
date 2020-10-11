@@ -61,7 +61,7 @@ public class MessageDeliveredEvent extends EventObject
      * @param source message source
      * @param to the "to" contact
      */
-    public MessageDeliveredEvent(Message source, Contact to)
+    public MessageDeliveredEvent(IMessage source, Contact to)
     {
         this(source, to, new Date());
     }
@@ -70,11 +70,11 @@ public class MessageDeliveredEvent extends EventObject
      * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
      * to the specified <tt>to</tt> contact.
      *
-     * @param source the <tt>Message</tt> whose delivery this event represents.
+     * @param source the <tt>IMessage</tt> whose delivery this event represents.
      * @param to the <tt>Contact</tt> that this message was sent to.
      * @param correctedMessageUID The ID of the message being corrected.
      */
-    public MessageDeliveredEvent(Message source, Contact to, String correctedMessageUID)
+    public MessageDeliveredEvent(IMessage source, Contact to, String correctedMessageUID)
     {
         this(source, to, new Date());
         this.correctedMessageUID = correctedMessageUID;
@@ -84,11 +84,11 @@ public class MessageDeliveredEvent extends EventObject
      * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
      * to the specified <tt>to</tt> contact.
      *
-     * @param source the <tt>Message</tt> whose delivery this event represents.
+     * @param source the <tt>IMessage</tt> whose delivery this event represents.
      * @param to the <tt>Contact</tt> that this message was sent to.
      * @param timestamp a date indicating the exact moment when the event occurred
      */
-    public MessageDeliveredEvent(Message source, Contact to, Date timestamp)
+    public MessageDeliveredEvent(IMessage source, Contact to, Date timestamp)
     {
         super(source);
         this.to = to;
@@ -99,11 +99,11 @@ public class MessageDeliveredEvent extends EventObject
      * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
      * to the specified <tt>to</tt> contact.
      *
-     * @param source the <tt>Message</tt> whose delivery this event represents.
+     * @param source the <tt>IMessage</tt> whose delivery this event represents.
      * @param to the <tt>Contact</tt> that this message was sent to.
      * @param timestamp a date indicating the exact moment when the event occurred
      */
-    public MessageDeliveredEvent(Message source, Contact to, ContactResource toResource, Date timestamp)
+    public MessageDeliveredEvent(IMessage source, Contact to, ContactResource toResource, Date timestamp)
     {
         super(source);
         this.to = to;
@@ -115,20 +115,20 @@ public class MessageDeliveredEvent extends EventObject
      * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
      * to the specified <tt>to</tt> contact.
      *
-     * @param source the <tt>Message</tt> whose delivery this event represents.
+     * @param source the <tt>IMessage</tt> whose delivery this event represents.
      * @param to the <tt>Contact</tt> that this message was sent to.
      * @param toResource the <tt>Contact</tt> resource that this message was sent to
      */
-    public MessageDeliveredEvent(Message source, Contact to, ContactResource toResource)
+    public MessageDeliveredEvent(IMessage source, Contact to, ContactResource toResource)
     {
         this(source, to, new Date());
         this.toResource = toResource;
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that <tt>Message</tt> was sent to.
+     * Returns a reference to the <tt>Contact</tt> that <tt>IMessage</tt> was sent to.
      *
-     * @return a reference to the <tt>Contact</tt> that has send the <tt>Message</tt> whose
+     * @return a reference to the <tt>Contact</tt> that has send the <tt>IMessage</tt> whose
      * reception this event represents.
      */
     public Contact getDestinationContact()
@@ -139,11 +139,11 @@ public class MessageDeliveredEvent extends EventObject
     /**
      * Returns the message that triggered this event
      *
-     * @return the <tt>Message</tt> that triggered this event.
+     * @return the <tt>IMessage</tt> that triggered this event.
      */
-    public Message getSourceMessage()
+    public IMessage getSourceMessage()
     {
-        return (Message) getSource();
+        return (IMessage) getSource();
     }
 
     /**
@@ -210,10 +210,10 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>ContactResource</tt> that has sent the <tt>Message</tt> whose
+     * Returns a reference to the <tt>ContactResource</tt> that has sent the <tt>IMessage</tt> whose
      * reception this event represents.
      *
-     * @return a reference to the <tt>ContactResource</tt> that has sent the <tt>Message</tt> whose
+     * @return a reference to the <tt>ContactResource</tt> that has sent the <tt>IMessage</tt> whose
      * reception this event represents.
      */
     public ContactResource getContactResource()

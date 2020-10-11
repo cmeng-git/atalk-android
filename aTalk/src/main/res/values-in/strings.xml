@@ -49,9 +49,9 @@
     <string name="in_call_with">Panggilan dengan</string>
     <string name="network">Jaringan</string>
     <string name="notification_setting">Pengaturan pemberitahuan&#8230;</string>
+    <string name="no_application_found_to_open_file">Tidak ada yang menambahkan aplikasi untuk perangkat lunak untuk arsip</string>
     <string name="password">kata sandi</string>
-    <string name="password_label">Kata Sandi:</string>
-    <string name="reason_label">Alasan:</string>
+    <string name="service_gui_PASSWORD">Kata Sandi:</string>
     <string name="send_process_signal">Kirim Sinyal Proses</string>
     <string name="show_call_info">Info panggilan</string>
     <string name="show_call_zrtp_info">"Panggil info ZRTP</string>
@@ -59,23 +59,24 @@
     <string name="store_password">Simpan kata sandi</string>
     <string name="system_settings">Pengaturan&#8230;</string>
     <string name="username_hint">namapengguna@contoh.com</string>
-    <string name="username_label">Nama pengguna:</string>
-    <string name="video_resolution">Resolusi video</string>
+    <string name="service_gui_USERNAME">Nama pengguna:</string>
 
     <string name="attachOptionDialog_picture">Gambar</string>
     <string name="attachOptionDialog_camera">Ambil gambar</string>
     <string name="attachOptionDialog_Videos">Video</string>
     <string name="attachOptionDialog_videoRecord">Rekam video</string>
     <string name="attachOptionDialog_shareFile">Bagikan Fail</string>
-    <string name="chat_fileTransferButton">Buka</string>
-    <string name="chat_message_del">Hapus pesan</string>
-    <string name="chat_message_edit">Meredaksi</string>
+    <string name="service_gui_COPY">Duplikat</string>
+    <string name="service_gui_DELETE">Hapuskan</string>
+    <string name="service_gui_EDIT">Meredaksi</string>
+    <string name="service_gui_FORWARD">Teruskan…</string>
     <string name="chat_message_long_press_hint">Hindari mengklik dalam area pesan untuk operasi pemilihan multi-item</string>
-    <string name="chat_message_select_all">Pilih semua</string>
+    <string name="service_gui_QUOTE">Mengutip</string>
+    <string name="service_gui_REPLY">Jawab</string>
+    <string name="service_gui_SELECT_ALL">Pilih semua</string>
     <string name="chatRoom_Subject">Subjek</string>
     <string name="choose_file_activity_title">Pilih fail</string>
     <string name="menu_settings">Pengaturan</string>
-    <string name="title_activity_attach_option_dialog">Kirim lampiran</string>
     <string name="title_activity_activation_view">Aktivasi</string>
 
     <!-- General -->
@@ -101,8 +102,10 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">Nama grup tidak boleh kosong.</string>
     <string name="service_gui_ADD_GROUP">Bikin grup</string>
     <string name="service_gui_ADD_GROUP_HINT">Masukkan nama grup</string>
+    <string name="service_gui_ANSWER">Jawab</string>
     <string name="service_gui_APPLY">Terapkan</string>
     <string name="service_gui_APPLY_CHANGES">Menerapkan perubahan akun (~60S) &#8230;</string>
+    <string name="service_gui_AT">di</string>
     <string name="service_gui_AUTHORIZE">Otorisasi</string>
     <string name="service_gui_AUTHORIZATION_ACCEPTED">kontak telah menerima permintaan otorisasi Anda.</string>
     <string name="service_gui_AUTHENTICATION_FAILED">Autentikasi gagal untuk %1$s. Kata sandi yang Anda masukkan tidak sah.</string>
@@ -116,25 +119,44 @@
     <string name="service_gui_AVATAR_HINT">Ikon direkomendasikan: 64 * 64 (96 * 96 px maks persegi)</string>
     <string name="service_gui_AWAY_STATUS">Meninggal</string>
     <string name="service_gui_AVATAR_SET_ERROR">Gagal mengatur avatar untuk %1$s</string>
+    <string name="service_gui_AVATAR_RETRIEVING">Mengambil avatar untuk %1$s</string>
 
     <string name="service_gui_BUSY_STATUS">Sibuk</string>
     <string name="service_gui_CALL">Panggilan audio</string>
-    <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
-    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat panggilan</string>
+    <string name="service_gui_CALL_ANSWER">%1$s telah menjawab panggilan.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk gagal menginisialisasi %1$s\nSemua panggilan/layanan media akan dinonaktifkan.\n%2$s</string>
-    <string name="service_gui_CALL_WITH">Panggil dengan</string>
+    <string name="service_gui_CALL_END">Penelepon jarak jauh telah mengakhiri panggilan: %1$s</string>
+    <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
+    <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat Panggilan</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin membersihkan semua catatan panggilan yang dipilih?</string>
+    <string name="service_gui_CALL_INCOMING">Panggilan masuk diterima dari: %1$s</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Panggilan masuk</string>
+    <string name="service_gui_CALL_INITIATING_STATUS">Memulai panggilan</string>
+    <string name="service_gui_CALL_REJECTED">%1$s telah menolak panggilan.</string>
+	<string name="service_gui_CALL_MISSED_CALL">Panggilan tidak terjawab dari:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Kami tidak dapat menemukan perangkat Audio/Video yang aktif sehingga tidak dapat membuat panggilan.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Tidak ada perangkat audio yang dikonfigurasi.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Tidak ada codec audio yang diaktifkan.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Perangkat %1$s atau codec tidak sepenuhnya terkonfigurasi di\'Pengaturan…\'. Silakan periksa dan siapkan.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Apakah Anda ingin melanjutkan panggilan?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Tidak ada format media yang cocok yang ditemukan terhadap penawaran %1$s untuk menerima panggilan. Harap verifikasi pengaturan perangkat dan codec di\'Pengaturan…\'.</string>
+    <string name="service_gui_CALL_OUTGOING">Panggilan keluar</string>
+    <string name="service_gui_CALL_OUTGOING_MSG">Melakukan panggilan dengan %1$s&#8230;</string>
     <string name="service_gui_CALL_VIA">Hubungi dengan: %1$s</string>
     <string name="service_gui_CALL_VIDEO">Panggilan video</string>
+    <string name="service_gui_CALL_WITH">Panggil dengan</string>
+
     <string name="service_gui_CANCEL">Tamatkan</string>
     <string name="service_gui_CONTACT_INVALID">Kontak yang dipilih tidak dikenali: %1$s</string>
-    <string name="service_gui_Contacts">Kontak</string>
+    <string name="service_gui_DISMISS">Tolak</string>
     <string name="service_gui_DONE">Selesai</string>
+    <string name="service_gui_MAS">tandai membaca</string>
+    <string name="service_gui_REASON_LABEL">Alasan:</string>
+    <string name="service_gui_SET">Set</string>
+    <string name="service_gui_SHARE">Bagikan…</string>
+    <string name="service_gui_SHARE_TEXT">Bagikan teks&#8230;</string>
+    <string name="service_gui_SHARE_FILE">Bagikan file&#8230;</string>
+    <string name="service_gui_SNOOZE">Tunda</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
@@ -145,37 +167,36 @@
     <string name="service_gui_CHANGE_NICKNAME_LABEL">Pada bidang di bawah ini, Anda dapat memasukkan nama panggilan baru Anda.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">Konten bidang Nama Nick tidak boleh nol</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Ubah Info Ruang obrolan</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT">Ubah ruang subjek&#8230;</string>
-    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Pada bidang di bawah ini, Anda dapat memasukkan subjek baru untuk ruangan ini.</string>
+    <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">Di bidang di bawah ini, Anda dapat memasukkan subjek baru untuk ruangan ini.</string>
     <string name="service_gui_CHANGE_VIDEO_QUALITY">Ubah kualitas video jarak jauh</string>
     <string name="service_gui_CHAT_CONFERENCE_ITEM_LABEL">konferensi %1$s \</string>
     <string name="service_gui_CHAT_CONFERENCE_LABEL">Konferensi</string>
-    <string name="service_gui_CHAT_ROOM_ALREADY_JOINED">Anda telah bergabung dengan ruang obrolan %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION">%1$s konfigurasi ruang obrolan</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FAILED">Gagal mendapatkan %1$s formulir konfigurasi ruang obrolan.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_FORBIDDEN">Tidak dapat memperoleh %1$s formulir konfigurasi ruang obrolan. Hanya pemilik ruang obrolan yang dapat melihat dan mengubah formulir konfigurasi.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Daftar di sebelah kanan berisi pengguna yang memiliki peran anggota di ruang obrolan ini. Ketika ruang obrolan adalah \'Anggota-hanya\' mereka akan menjadi pengguna yang diizinkan untuk bergabung.</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Ubah Daftar Anggota</string>
-    <string name="service_gui_CHAT_ROOM_CONFIGURATION_SUBMIT_FAILED">Terjadi kesalahan saat mencoba mengirimkan formulir konfigurasi untuk ruang obrolan %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_JOIN">Bergabung dengan Ruang Obrolan</string>
-    <string name="service_gui_CHAT_ROOM_REMOVE_BUTTON_TOOLTIP">Menghapus ruang yang dipilih dari daftar ruang yang disimpan</string>
-    <string name="service_gui_CHAT_ROOM_SAVE_BUTTON_TOOLTIP">Menyimpan ruang obrolan untuk penggunaan selanjutnya</string>
-    <string name="service_gui_CHAT_ROOM_SEND_MSG_FORBIDDEN">Pengiriman pesan dilarang (suara dicabut)</string>
-    <string name="service_gui_CHAT_ROOM_USER_JOINED">telah bergabung dengan %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_KICKED">telah ditendang dari %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_LEFT">telah meninggalkan %1$s</string>
-    <string name="service_gui_CHAT_ROOM_USER_QUIT">telah berhenti %1$s</string>
-    <string name="service_gui_CHAT_ROOM_NAME">Nama ruang obrolan</string>
-    <string name="service_gui_CHAT_ROOM_NAME_INFO">Di kolom di bawah ini masukkan nama ruang obrolan yang ingin Anda buat.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_EXIST">Ruangan %1$s tidak ditemukan di server %2$s. Harap verifikasi jika nama yang Anda ketikkan benar.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_CONNECTED">Anda harus online untuk bergabung dengan ruang obrolan %1$s.</string>
-    <string name="service_gui_CHAT_ROOM_LEAVE_NOT_CONNECTED">Anda harus online untuk meninggalkan ruang obrolan.</string>
-    <string name="service_gui_CHAT_ROOM_NOT_JOINED">Anda harus bergabung dengan ruang obrolan untuk melakukan operasi lebih lanjut dengannya.</string>
-    <string name="service_gui_CHAT_ROOM_OPTIONS">Opsi ruang obrolan</string>
-    <string name="service_gui_CHAT_ROOM_REQUIRES_PASSWORD">Ruang obrolan %1$s telah meminta kata sandi.</string>
-    <string name="service_gui_CHAT_ROOM">Ruang Chat</string>
-    <string name="service_gui_CHAT_ROOM_SUBJECT_CHANGED">%1$s telah mengubah subjek menjadi %2$s</string>
-    <string name="service_gui_CHAT_ROOM_ALTERNATE_ADDRESS">Anda dapat melanjutkan percakapan di ruang obrolan berikut: %1$s</string>
+    <string name="service_gui_CHATROOM">Ruang Chat</string>
+    <string name="service_gui_CHATROOM_ALREADY_JOINED">Anda telah bergabung dengan ruang obrolan %1$s.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION">konfigurasi ruang obrolan</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FAILED">Gagal mendapatkan %1$s formulir konfigurasi ruang obrolan.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_FORBIDDEN">Tidak dapat memperoleh %1$s formulir konfigurasi ruang obrolan. Hanya pemilik ruang obrolan yang dapat melihat dan mengubah formulir konfigurasi.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_DESCRIPTION">Daftar di sebelah kanan berisi pengguna yang memiliki peran anggota di ruang obrolan ini. Ketika ruang obrolan adalah \'Anggota-hanya\' mereka akan menjadi pengguna yang diizinkan untuk bergabung.</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Ubah Daftar Anggota</string>
+    <string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">Terjadi kesalahan saat mencoba mengirimkan formulir konfigurasi untuk ruang obrolan %1$s.</string>
+    <string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">Menghapus ruang yang dipilih dari daftar ruang yang disimpan</string>
+    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Menyimpan ruang obrolan untuk penggunaan selanjutnya</string>
+    <string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">Pengiriman pesan dilarang (suara dicabut)</string>
+    <string name="service_gui_CHATROOM_USER_JOINED">telah bergabung dengan %1$s</string>
+    <string name="service_gui_CHATROOM_USER_KICKED">telah ditendang dari %1$s</string>
+    <string name="service_gui_CHATROOM_USER_LEFT">telah meninggalkan %1$s</string>
+    <string name="service_gui_CHATROOM_USER_QUIT">telah berhenti %1$s</string>
+    <string name="service_gui_CHATROOM_NAME">Nama ruang obrolan</string>
+    <string name="service_gui_CHATROOM_NAME_INFO">Di kolom di bawah ini masukkan nama ruang obrolan yang ingin Anda buat.</string>
+    <string name="service_gui_CHATROOM_NOT_EXIST">Ruangan %1$s tidak ditemukan di server %2$s. Harap verifikasi jika nama yang Anda ketikkan benar.</string>
+    <string name="service_gui_CHATROOM_NOT_CONNECTED">Anda harus online untuk bergabung dengan ruang obrolan %1$s.</string>
+    <string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">Anda harus online untuk meninggalkan ruang obrolan.</string>
+    <string name="service_gui_CHATROOM_NOT_JOINED">Anda harus bergabung dengan ruang obrolan untuk melakukan operasi lebih lanjut dengannya.</string>
+    <string name="service_gui_CHATROOM_OPTIONS">Opsi ruang obrolan</string>
+    <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">Ruang obrolan %1$s telah meminta kata sandi.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Nonaktifkan Status Kamar</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Aktifkan Status Kamar</string>
+    <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Subjek kamar berubah: \'%1$s\' => \'%2$s\'</string>
     <string name="service_gui_CHAT_ROOMS">Ruang obrolan</string>
     <string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s sekarang dikenal sebagai %2$s</string>
     <string name="service_gui_CLEAR_CUSTOM_MESSAGES">Hapus pesan khusus</string>
@@ -201,29 +222,28 @@
     <string name="service_gui_CONTACT_RENAME_HINT">Masukkan Nama kontak baru</string>
     <string name="service_gui_CONTACT_RENAME_TITLE">Ubah Nama Kontak</string>
     <string name="service_gui_CONTACTS">Kontak</string>
+    <string name="service_gui_CONTACTS_OFFLINE_HIDE">Sembunyikan kontak offline</string>
+    <string name="service_gui_CONTACTS_OFFLINE_SHOW">Tunjukkan kontak offline</string>
     <string name="service_gui_COPY_MESSAGE_TEXT">Salin teks pesan</string>
 
     <string name="service_gui_CREATE">Buat</string>
     <string name="service_gui_CREATE_CALL_FAILED">Gagal membuat panggilan.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM">Bikin ruang obrolan&#8230;</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_ERROR">Gagal membuat ruang obrolan:\n%1$s.</string>
-    <string name="service_gui_CREATE_CHAT_ROOM_WIZARD">Bikin wizard ruang chat</string>
     <string name="service_gui_CREATE_CONFERENCE_CALL">Bikin panggilan konferensi&#8230;</string>
     <string name="service_gui_CREATE_CONFERENCE_CHAT">Bikin obrolan konferensi&#8230;</string>
     <string name="service_gui_CREATE_GROUP">Bikin grup&#8230;</string>
+    <string name="service_gui_CREATE_GROUP_INVALID">Nama grup tidak betul: %1$s</string>
     <string name="service_gui_CREATE_GROUP_NAME">Pada bidang di bawah, masukkan nama grup yang ingin Anda buat.</string>
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Daftar kontak Anda tidak berisi grup apa pun. Harap buat grup terlebih dahulu (Fail/Buat grup).</string>
-    <string name="service_gui_ROOM_NAME">ruang obrolan</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_Copyright">Hak Cipta @ 2014, atalk.org\nSemua hak dilindungi undang-undang.</string>
-    <string name="AboutDialog_help"><a href="http://atalk.sytes.net">Bantuan Online</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Bantuan online</a></string>
     <string name="AboutDialog_title">Tentang</string>
     <string name="AboutDialog_Version">Versi %1$s</string>
     <string name="About_action">Tentang</string>
     <string name="About_help">Bantuan</string>
     <string name="check_new_version">Periksa Pembaruan</string>
     <string name="show_history_log">Log Riwayat</string>
+    <string name="Online_help">Bantuan online</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">Permintaan Otorisasi HTTP</string>
@@ -238,9 +258,7 @@
     <!-- PTT Chat -->
     <string name="chat_noaudio_buddyOffline">Obrolan audio dengan penerima offline tidak diizinkan.</string>
     <string name="chat_RecordCancel">&lt; geser ke kiri\nuntuk membatalkan</string>
-    <string name="chat_soundRecordCancelButton">Batalkan</string>
     <string name="chat_soundRecordStartButton">Mulai Merekam</string>
-    <string name="chat_soundRecordStopButton">Selesai</string>
 
     <!-- GPS Location -->
     <string name="service_gui_GEO_LATITUDE">Latitud:</string>
@@ -286,39 +304,38 @@
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Buat jembatan video</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Buat/Gabung konferensi video</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Buat konferensi video baru untuk ruang obrolan ini</string>
-    <string name="service_gui_DEVICE_VIDEO_PROTRAIT_NOT_SUPPORTED">Gagal menyetel pratinjau kamera perangkat ke: %1$s; Pengecualian: %2$s.</string>
+    <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Gagal menyetel pratinjau kamera perangkat ke: %1$s; Pengecualian: %2$s.</string>
     <string name="service_gui_DISCONNECTED_STATUS">Terputus</string>
     <string name="service_gui_DISCONNECTING_ACCOUNT">Memutuskan sambungan %1$s</string>
     <string name="service_gui_DENY">Tolak</string>
-    <string name="service_gui_DISPLAY_NAME">Nama Tampilan Kontak</string>
+    <string name="service_gui_DISPLAY_NAME">Nama Tampilan</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Nama Tampilan Kontak</string>
     <string name="service_gui_DND_STATUS">Jangan ganggu</string>
     <string name="service_gui_DURATION">durasi</string>
 
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Setel status pesan</string>
-    <string name="service_gui_EDITED_AT">diedit pada %1$s</string>
+    <string name="service_gui_EDITED">meredaksi</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Masukkan nama atau nomor</string>
     <string name="service_gui_ERROR">Kesalahan</string>
     <string name="service_gui_ERROR_WAS">Kesalahannya adalah: %1$s</string>
-    <string name="service_gui_EXIT">Tinggal</string>
+    <string name="service_gui_EXIT">Tamat</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Meninggal lama</string>
-    <string name="service_gui_FAILED_STATUS">Panggilan gagal</string>
-    <string name="service_gui_FAILED_TO_JOIN_CHAT_ROOM">Gagal bergabung ke ruang obrolan dengan nama: %1$s.</string>
     <string name="service_gui_FFC_STATUS">Gratis untuk obrolan</string>
 
     <!-- File Transfer (xFile prefix with date) -->
     <string name="xFile_FILE_BYTE_SENT">%1$s dikirim</string>
-    <string name="xFile_FILE_RECEIVE_COMPLETED">%1$s:\nFail telah diterima dari %2$s</string>
-    <string name="xFile_FILE_RECEIVE_FAILED">%1$s:\n Terjadi kesalahan saat mentransfer fail dari %2$s\n%3$s</string>
-    <string name="xFile_FILE_RECEIVING_FROM">%1$s:\nMenerima fail dari %2$s</string>
-    <string name="xFile_FILE_SEND_COMPLETED">%1$s:\nFail telah berhasil dikirim ke %2$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s:\n %2$s telah menolak fail ini</string>
-    <string name="xFile_FILE_SENDING_TO">%1$s:\nMengirim fail ke %2$s</string>
-    <string name="xFile_FILE_TRANSFER_CANCELED">%1$s:\nFail transfer telah dibatalkan</string>
-    <string name="xFile_FILE_TRANSFER_PREPARING">%1$s:\nMempersiapkan transfer fail dengan %2$s. Harap tunggu&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">%1$s:\nFail transfer telah ditolak</string>
-    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s:\n %2$s berbagi fail dengan Anda</string>
-    <string name="xFile_FILE_UNABLE_TO_SEND">%1$s:\n Terjadi kesalahan saat mengirim fail ke %2$s</string>
-    <string name="xFile_FILE_WAITING_TO_ACCEPT">%1$s:\nMenunggu untuk %2$s untuk menerima fail Anda</string>
+    <string name="xFile_FILE_RECEIVE_COMPLETED">Fail telah diterima dari %1$s</string>
+    <string name="xFile_FILE_RECEIVE_FAILED">Terjadi kesalahan saat mentransfer fail dari %1$s</string>
+    <string name="xFile_FILE_RECEIVING_FROM">Menerima fail dari %1$s</string>
+    <string name="xFile_FILE_SEND_COMPLETED">Fail telah berhasil dikirim ke %1$s</string>
+    <string name="xFile_FILE_SEND_REFUSED">%1$s telah menolak fail ini</string>
+    <string name="xFile_FILE_SENDING_TO">Mengirim fail ke %1$s</string>
+    <string name="xFile_FILE_TRANSFER_CANCELED">Fail transfer telah dibatalkan</string>
+    <string name="xFile_FILE_TRANSFER_PREPARING">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
+    <string name="xFile_FILE_TRANSFER_REFUSED">Fail transfer telah ditolak</string>
+    <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s berbagi fail dengan Anda</string>
+    <string name="xFile_FILE_UNABLE_TO_SEND">Terjadi kesalahan saat mengirim fail ke %1$s</string>
+    <string name="xFile_FILE_WAITING_TO_ACCEPT">Menunggu untuk %1$s untuk menerima fail Anda</string>
 
     <string name="service_gui_PURGE">Bersihkan</string>
     <string name="service_gui_ESTIMATED_TIME">Perkiraan waktu: %1$s</string>
@@ -329,24 +346,12 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Kami tidak dapat menemukan aplikasi yang terkait dengan jenis fail ini</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Anda tidak memiliki izin yang cukup untuk membuka fail ini. Silakan periksa izin baca Anda dan coba lagi</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Operasi fail terbuka tidak didukung oleh platform perangkat Anda saat ini</string>
-    <string name="service_gui_FILE_RECEIVE_COMPLETED">Fail telah diterima dari %1$s</string>
-    <string name="service_gui_FILE_RECEIVE_FAILED">Terjadi kesalahan saat mentransfer fail dari %1$s</string>
-    <string name="service_gui_FILE_RECEIVING_FROM">Menerima fail dari %1$s</string>
-    <string name="service_gui_FILE_SEND_COMPLETED">Fail telah berhasil dikirim ke %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Gagal mengirim file: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Tidak dapat mengirim file selama panggilan konferensi!</string>
-    <string name="service_gui_FILE_SEND_REFUSED">%1$s telah menolak fail ini</string>
-    <string name="service_gui_FILE_SEND_TO">Kirim Lampiran</string>
-    <string name="service_gui_FILE_SENDING_TO">Mengirim fail ke %1$s</string>
+    <string name="service_gui_FILE_ATTACHMENT">Kirim Lampiran</string>
     <string name="service_gui_FILE_TOO_BIG">Ukuran fail melebihi batas maksimum yang diizinkan untuk protokol ini: %1$s</string>
     <string name="service_gui_FILE_TRANSFER_ACTIVE">Transfer fail sedang diproses sedang terganggu. Pelacakan status @ %1$s hilang!</string>
-    <string name="service_gui_FILE_TRANSFER_CANCELED">Transfer fail telah dibatalkan</string>
     <string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">Hubungi klien atau server tidak mendukung transfer file atau protokol yang diperlukan</string>
-    <string name="service_gui_FILE_TRANSFER_PREPARING">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
-    <string name="service_gui_FILE_TRANSFER_REQUEST_RECEIVED">%1$s berbagi fail dengan Anda</string>
-    <string name="service_gui_FILE_TRANSFER_REFUSED">Transfer fail telah ditolak</string>
-    <string name="service_gui_FILE_UNABLE_TO_SEND">Terjadi kesalahan saat mengirim fail ke %1$s</string>
-    <string name="service_gui_FILE_WAITING_TO_ACCEPT">Menunggu %1$s untuk menerima fail Anda</string>
 
     <string name="service_gui_FINISH">Selesai</string>
     <string name="service_gui_FOLDER_DOES_NOT_EXIST">Folder yang berisi fail ini tidak dapat ditemukan. Itu dihapus atau dipindahkan</string>
@@ -355,7 +360,6 @@
     <string name="service_gui_FOLDER_OPEN_NO_APPLICATION">Kami tidak dapat menemukan aplikasi untuk membuka folder ini</string>
     <string name="service_gui_GROUP_CHAT">Obrolan Grup</string>
     <string name="service_gui_HIDE">Sembunyikan</string>
-    <string name="service_gui_HIDE_OFFLINE_CONTACTS">Sembunyikan kontak offline</string>
     <string name="service_gui_HISTORY">Riwayat</string>
     <string name="service_gui_HISTORY_CONTACT">Sejarah - %1$s</string>
     <string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Matikan histori untuk kontak ini</string>
@@ -363,32 +367,53 @@
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Hapus riwayat kontak ini</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Hapus semua riwayat obrolan kontak</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Anda yakin ingin menghapus semua pesan untuk %1$s?</string>
-    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua kontak?</string>
+    <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua entitas?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
 
-     <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Bookmark ChatRoom</string>
+    <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Bilik Alternatif:</string>
+    <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Anda dapat melanjutkan percakapan di ruang obrolan berikut: %1$s</string>
+    <string name="service_gui_CHATROOM_BOOKMARK_TITLE">Bookmark ChatRoom</string>
     <string name="service_gui_CHATROOM_BOOKMARK">Bookmark</string>
     <string name="service_gui_CHATROOM_AUTOJOIN">Hubung Oto</string>
     <string name="service_gui_CHATROOM_BOOKMARK_UPDATE_FAILED">Gagal memperbarui Bookmark untuk %1$s: %2$s</string>
 
-       <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
+    <string name="service_gui_CHATROOM_OCCUPANT">Penghuni ruang obrolan</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_PER">Hapus obrolan iniRiwayat riwayat</string>
     <string name="service_gui_CHATROOM_HISTORY_ERASE_ALL">Hapus semua riwayat chatRooms</string>
     <string name="service_gui_CHATROOM_HISTORY_TOGGLE_PER">Matikan histori untuk chatRoom ini</string>
     <string name="service_gui_CHATROOM_INFO">Info ChatRoom</string>
 
-    <string name="service_gui_DESTROY_CHATROOM">Hancurkan chatRoom ini</string>
-    <string name="service_gui_DESTROY_CHATROOM_EXCEPTION">Terjadi kesalahan saat menghancurkan ruang obrolan:\n%1$s</string>
-     <string name="service_gui_DESTROY_CHATROOM_ERROR">Gagal menghapus chatRoom di server:\n\'%1$s\'\n%2$s\n\nLanjutkan untuk menghapus chatRoom lokal\nAnda masih dapat membuat/bergabung kembali dengan chatRoom nanti.</string>
-       <string name="service_gui_DESTROY_CHATROOM_TEXT">Pemilik akun: %1$s.\nApakah Anda yakin ingin menghancurkan\n\'%2$s\'\ndan semua riwayat obrolannya?</string>
-    <string name="service_gui_DESTROY_CHATROOM_TITLE">Hancurkan chatRoom</string>
-    <string name="service_gui_DESTROYED_CHATROOM">\'%1$s\'telah dihapus Berhasil!</string>
+    <string name="service_gui_CHATROOM_CREATE">Bikin ruang obrolan&#8230;</string>
+    <string name="service_gui_CHATROOM_CREATE_ERROR">Gagal membuat ruang obrolan:\n%1$s.</string>
+    <string name="service_gui_CHATROOM_CREATE_JOIN">Buah / Bergabung ruang obrolan</string>
+    <string name="service_gui_CHATROOM_CREATE_WIZARD">Bikin wizard ruang chat</string>
 
-    <string name="service_gui_INCOMING_CALL">Panggilan masuk diterima dari: %1$s</string>
-    <string name="service_gui_INCOMING_CALL_STATUS">Panggilan masuk</string>
-    <string name="service_gui_INITIATING_CALL_STATUS">Memulai panggilan</string>
-    <string name="service_gui_INVITATION">Teks undangan:</string>
+    <string name="service_gui_CHATROOM_DESTROY">Hancurkan chatRoom ini</string>
+    <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">Terjadi kesalahan saat menghancurkan ruang obrolan:\n%1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_ERROR">Gagal menghapus chatRoom di server:\n\'%1$s\'\n%2$s\n\nLanjutkan untuk menghapus chatRoom lokal.</string>
+    <string name="service_gui_CHATROOM_DESTROY_MESSAGE">Obrolan grup ini telah dihancurkan!\nAlasan: %1$s</string>
+    <string name="service_gui_CHATROOM_DESTROY_NOTE">Untuk memberi tahu peserta lain, silakan masukkan alasan dan tempat chatRoom alternatif untuk bergabung.</string>
+    <string name="service_gui_CHATROOM_DESTROY_PROMPT">Pemilik akun: %1$s.\nApakah Anda yakin ingin menghancurkan\n\'%2$s\'\ndan semua riwayat obrolannya?</string>
+    <string name="service_gui_CHATROOM_DESTROY_REASON">obrolan grup tidak aktif</string>
+        <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\'telah dihapus Berhasil!</string>
+    <string name="service_gui_CHATROOM_DESTROY_TITLE">Hancurkan chatRoom</string>
+
+    <string name="service_gui_CHATROOM_JOIN_FAILED">Gagal bergabung ke kamar dengan nama panggilan: %1$s\n%2$s.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REASON">Gagal bergabung ke ruang obrolan %1$s:\n%2$s</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Ruang obrolan meminta kata sandi.</string>
+    <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Ruang obrolan membutuhkan registrasi.</string>
+    <string name="service_gui_CHATROOM_JOIN_TITLE">Bergabung dengan ruang obrolan</string>
+    <string name="service_gui_CHATROOM_JOIN_NAME">Masukkan nama ruang obrolan yang ingin Anda ikuti.</string>
+    <string name="service_gui_CHATROOM_JOIN_WIZARD">Bergabung dengan wizard ruang chat</string>
+
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Tantangan Captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Ruang obrolan dilindungi dengan tantangan captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Verifikasi CAPTCHA betul</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
+
+    <string name="service_gui_INVITATION">Pesan undangan:</string>
     <string name="service_gui_INVITATION_RECEIVED">Undangan diterima</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s telah mengundang Anda untuk bergabung dengan ruang obrolan %2$s. Anda dapat menerima, menolak, atau mengabaikan undangan ini.</string>
     <string name="service_gui_INVITATION_REJECTED">%1$s telah menolak undangan Anda untuk bergabung dengan ruang obrolan. Alasan: %2$s.</string>
@@ -406,7 +431,6 @@
 
 	<string name="service_gui_ADDRESS">Alamat</string>
     <string name="service_gui_CITY">Kota</string>
-    <string name="service_gui_CLOSE_CHAT_ROOM_DIALOG">Tutup</string>
     <string name="service_gui_COUNTRY">Negara</string>
     <string name="service_gui_EMAIL">Email</string>
     <string name="service_gui_EMAILS">Email</string>
@@ -419,19 +443,6 @@
 	<string name="service_gui_JOIN_EXISTING_VIDEO_CONFERENCE">Bergabung dengan konferensi video yang ada</string>
 	<string name="service_gui_JOIN_VIDEO">Bergabung dengan video</string>
 	<string name="service_gui_JOB_TITLE">Judul pekerjaan</string>
-	<string name="service_gui_JOIN_CHAT_ROOM">Bergabung dengan ruang obrolan&#8230;</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED">Gagal bergabung ke kamar %1$s dengan nama panggilan: %2$s.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_PASSWORD">Ruang obrolan meminta kata sandi.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_FAILED_REGISTRATION">Ruang obrolan membutuhkan registrasi.</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_TITLE">Bergabung dengan ruang obrolan</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_NAME">Masukkan nama ruang obrolan yang ingin Anda ikuti.</string>
-	<string name="service_gui_JOIN_CHAT_ROOM_WIZARD">Bergabung dengan wizard ruang chat</string>
-
-    <string name="captcha_challenge">Tantangan Captcha</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_PROTECTED">Ruang obrolan dilindungi dengan tantangan captcha</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_VALID">Verifikasi CAPTCHA betul</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
-    <string name="service_gui_JOIN_CHAT_ROOM_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
 
 	<string name="service_gui_JOIN_AUTOMATICALLY">Gabung otomatis</string>
 	<string name="service_gui_DONT_JOIN_AUTOMATICALLY">Jangan bergabung secara otomatis</string>
@@ -446,7 +457,6 @@
     <string name="service_gui_LAST_SEEN">Harini: %s</string>
 	<string name="service_gui_LEAVE">Tinggalkan</string>
     <string name="service_gui_LEAVE_ROOM">Tinggalkan chatRoom</string>
-    <string name="service_gui_LOADING">Memuat</string>
     <string name="service_gui_LOCALLY_ON_HOLD_STATUS">Lokal ditahan</string>
     <string name="service_gui_LOGIN_CREDENTIAL">Login Kredensial Pengguna</string>
     <string name="service_gui_LOGIN_FAILED">Login gagal</string>
@@ -474,11 +484,11 @@
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">Protokol yang Anda gunakan tidak mendukung pesan offline.
         Anda dapat mencoba menjangkau %1$s melalui protokol lain atau menunggu hingga dia online.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Kesalahan tidak dikenal telah terjadi saat mengirim pesan Anda.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Operasi tidak didukung.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Operasi tidak didukung.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Terjadi masalah jaringan. Silakan periksa konfigurasi jaringan Anda dan coba lagi.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s menulis</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Anda harus login terlebih dahulu untuk mengirim pesan.</string>
-	<string name="service_gui_MISSED_CALLS_TOOL_TIP">Panggilan tidak terjawab dari:</string>
+
     <string name="service_gui_MULTIPLE_LOGIN">Beberapa instans masuk tidak diizinkan. Akun berikut: Nama pengguna: %1$s, Nama server: %2$s telah diputuskan.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Saling Menerus Saat</string>
     <string name="service_gui_NAME">Nama</string>
@@ -488,7 +498,7 @@
     <string name="service_gui_NO">Tidak ada</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Setidaknya satu akun telepon online diperlukan untuk melakukan panggilan. Silakan masuk ke salah satu akun telepon Anda dan coba lagi.</string>
     <string name="service_gui_NOT_AUTHORIZED">Tidak diotorisasi</string>
-    <string name="service_gui_NOT_IN_CONTACT_LIST_GROUP_NAME">TidakDalamDaftarKontak</string>
+    <string name="service_gui_NOT_AUTHORIZED_HINT">Anda tidak berwenang mengakses server. Periksa pengaturan akun, kata sandi atau aktifkan Registrasi IB dan coba lagi:\n%s"</string>
     <string name="service_gui_OFF">Tidak aktif</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
@@ -501,8 +511,10 @@
     <string name="service_gui_ORGANIZATION">Organisasi</string>
     <string name="service_gui_PHONE">Telepon</string>
     <string name="service_gui_PHONES">Ponsel</string>
+    <string name="service_gui_PLAY">Main</string>
     <string name="service_gui_POSTAL_CODE">Kode Pos</string>
-    <string name="service_gui_RENAME">Ganti nama</string>
+    <string name="service_gui_RENAME">Nama baru</string>
+    <string name="service_gui_REGISTRATION_REQUIRED">Kesalahan dalam pendaftaran akun di server:\n%s"</string>
     <string name="service_gui_SAVE">Simpan</string>
     <string name="service_gui_SHOW_STACK_TRACE">Tampilkan tumpukan Jejak</string>
     <string name="service_gui_STREET">Jalan</string>
@@ -510,13 +522,12 @@
     <string name="service_gui_USER_LOGIN">Silahkan masuk</string>
     <string name="service_gui_VIDEO_PHONE">Video</string>
     <string name="service_gui_WORK_PHONE">Bekerja</string>
+    <string name="service_gui_XMPP_EXCEPTION">Menemukan masalah selama koneksi XMPP:\n%s"</string>
 
     <!-- Call -->
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Alihkan video</string>
     <string name="service_gui_MIC_CONTROL_TITLE">Tingkat penguatan mikrofon</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Sesuaikan suara mikrofon</string>
-    <string name="service_gui_OUTGOING_CALL">Panggilan keluar</string>
-    <string name="service_gui_OUTGOING_CALL_MSG">Melakukan panggilan dengan %1$s&#8230;</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Keberadaan tidak didukung oleh %1$s</string>
     <string name="service_gui_PROACTIVE_NOTIFICATION">sedang menulis pesan</string>
     <string name="service_gui_RECENT_MESSAGES">Percakapan terbaru</string>
@@ -555,6 +566,10 @@
     <string name="service_gui_SEND_LOGS_QUESTION">aTalk baru saja pulih setelah kecelakaan serius. Apakah Anda ingin melaporkan bug ke devepers?</string>
     <string name="service_gui_SEND_LOGS_SUBJECT">laporan bug aTalk</string>
     <string name="service_gui_SEND_LOGS_TITLE">laporan bug aTalk melalui email</string>
+    <string name="service_gui_SEND_LOGS_INFO">Info di bawah ini dapat membantu pengembang memperbaiki masalah:\n\n
+         1. Apa hal terakhir yang Anda lakukan sebelum masalah terjadi?\n\n\n
+         2. Apa masalah yang Anda lihat, sertakan snapshot tampilan jika tersedia?\n\n\n
+         3. Bisakah Anda atau bagaimana mereproduksi masalah?</string>
 
     <string name="service_gui_SEND_MESSAGE">Kirim pesan</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Gagal mengirim pesan: %1$s</string>
@@ -564,7 +579,6 @@
     <string name="service_gui_SEND_VIA">Kirim via</string>
     <string name="service_gui_SENT">mengirim</string>
     <string name="service_gui_SERVER_CHAT_ROOMS">Ruang Obrolan Server</string>
-    <string name="service_gui_SHOW_OFFLINE_CONTACTS">Tunjukkan kontak offline</string>
     <string name="service_gui_SHUTDOWN_IN_PROGRESS">mematikan&#8230;</string>
     <string name="service_gui_STATUS">Status</string>
     <string name="service_gui_TYPE_YOUR_REQUEST">Ketikkan alasan permintaan Anda</string>
@@ -597,7 +611,8 @@
     <string name="service_gui_SECURITY_ERROR">Kesalahan keamanan</string>
     <string name="service_gui_SECURITY_INFO">Informasi keamanan</string>
     <string name="service_gui_SECURITY_WARNING">Peringatan keamanan</string>
-    <string name="service_gui_USERNAME_NULL">Silakan isi nama pengguna dan kata sandi Anda.</string>
+    <string name="service_gui_USERNAME_NULL">Silakan isi nama pengguna atau/dan kata sandi yang tepat.</string>
+    <string name="service_gui_USERNAME_CHANGE_WARN">Peringatan: Mengubah nama pengguna akun menjadi \'%1$s\' juga akan membersihkan pesan %2$s untuk akun yang ada \'%3$s\'. Memproses?</string>
     <string name="service_gui_USER_EXISTS_ERROR">Pengguna ini sudah ada di jaringan yang dipilih. Silakan pilih pengguna atau jaringan lain.</string>
 
 	<string name="service_gui_JANUARY">Jan</string>
@@ -670,47 +685,47 @@
     <string name="service_gui_ALWAYS_TRUST">Selalu percaya sertifikat ini</string>
     <string name="service_gui_CERT_DIALOG_TITLE">Verifikasi Sertifikat</string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT">&lt;html>%1$s tidak dapat memverifikasi identitas server saat terhubung ke&lt;br/>&lt;b>%2$s&lt;/b>&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_DESCRIPTION_TXT_NOHOST">&lt;html>%1$s tidak dapat memverifikasi
         identitas sertifikat server\'\.&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa server\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
-    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>{0} tidak dapat memverifikasi
+    <string name="service_gui_CERT_DIALOG_CLIENT_DESCRIPTION_TXT">&lt;html>%1$s tidak dapat memverifikasi
         identitas klien yang terhubung.&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa klien\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa klien\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
     <string name="service_gui_CERT_DIALOG_PEER_DESCRIPTION_TXT">&lt;html>%1$s tidak dapat memverifikasi
         identitas rekan %2$s.&lt;br/>&lt;br/>
-        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa rekan\'\'s
+        Sertifikat tidak dipercaya (sertifikat yang ditandatangani sendiri), yang berarti bahwa rekan\'s
         identitas tidak dapat diverifikasi secara otomatis.&lt;br/>&lt;br/>
         Lanjutkan dengan koneksi hanya untuk contoh ini?&lt;br/>
         Untuk opsi dan info lebih lanjut, klik "Tampilkan Sertifikat".&lt;/html></string>
        <string name="service_gui_PROCEED">Lanjutkan</string>
-    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;html>&lt;b>Dikeluarkan ke&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_TO">&lt;b>Dikeluarkan ke&lt;/b></string>
     <string name="service_gui_CERT_INFO_CHAIN">Rantai Sertifikat:</string>
     <string name="service_gui_CERT_INFO_CN">Nama Umum:</string>
     <string name="service_gui_CERT_INFO_O">Organisasi:</string>
     <string name="service_gui_CERT_INFO_C">Nama Negara:</string>
     <string name="service_gui_CERT_INFO_ST">Nama Negara atau Provinsi:</string>
     <string name="service_gui_CERT_INFO_L">Nama Lokalitas:</string>
-    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;html>&lt;b>Dikeluarkan Oleh&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_ISSUED_BY">&lt;b>Dikeluarkan Oleh&lt;/b></string>
     <string name="service_gui_CERT_INFO_OU">Unit Organisasi:</string>
-    <string name="service_gui_CERT_INFO_VALIDITY">&lt;html>&lt;b>Validitas&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_VALIDITY">&lt;b>Validitas&lt;/b></string>
     <string name="service_gui_CERT_INFO_ISSUED_ON">Diterbitkan Pada:</string>
     <string name="service_gui_CERT_INFO_EXPIRES_ON">Kedaluwarsa pada:</string>
-    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;html>&lt;b>Sidik Jari&lt;/b>&lt;/html></string>
-    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;html>&lt;b>Info Sertifikat&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_FINGERPRINTS">&lt;b>Sidik Jari&lt;/b></string>
+    <string name="service_gui_CERT_INFO_CERT_DETAILS">&lt;b>Info Sertifikat&lt;/b></string>
     <string name="service_gui_CERT_INFO_SER_NUM">Nomor Seri:</string>
     <string name="service_gui_CERT_INFO_VER">Versi:</string>
     <string name="service_gui_CERT_INFO_SIGN_ALG">Algoritme Tanda Tangan:</string>
-    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;html>&lt;b>Info Tombol Publik&lt;/b>&lt;/html></string>
+    <string name="service_gui_CERT_INFO_PUB_KEY_INFO">&lt;b>Info Tombol Publik&lt;/b></string>
     <string name="service_gui_CERT_INFO_ALG">Algoritma:</string>
     <string name="service_gui_CERT_INFO_PUB_KEY">Kunci Publik:</string>
     <string name="service_gui_CERT_INFO_KEY_BYTES_PRINT">%1$s byte: %2$s</string>
@@ -721,7 +736,7 @@
     <string name="service_gui_CONTINUE">Lanjutkan</string>
     <string name="service_gui_SHOW_CERT">Tampilkan Sertifikat</string>
     <string name="service_gui_HIDE_CERT">Sembunyikan Sertifikat</string>
-    <string name="service_gui_UNSAVED_CHANGES">Anda memiliki perubahan yang belum disimpan. Buang perubahan dan keluar?</string>
+    <string name="service_gui_UNSAVED_CHANGES">Anda memiliki perubahan yang belum disimpan. Simpan atau Batal dan keluar</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">Perubahan Tidak Tersimpan</string>
     <string name="service_gui_WAITING">Harap tunggu&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Mengambil server yang diiklankan fitur/info&#8230;</string>
@@ -731,7 +746,7 @@
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Panggilan tidak aman.</string>
     <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Tekan di sini untuk membandingkan rahasia keamanan dengan pasangan Anda.</string>
     <string name="service_gui_security_CALL_SECURED_TOOLTIP">Panggil aman. Untuk informasi lebih lanjut, tekan di sini.</string>
-    <string name="service_gui_security_CIPHER">Cipher: {0}</string>
+    <string name="service_gui_security_CIPHER">Cipher: %1$s</string>
     <string name="service_gui_security_CLEAR">Bersihkan</string>
     <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Bandingkan dengan mitra:</string>
     <string name="service_gui_security_CONFIRM">Konfirmasikan</string>
@@ -740,7 +755,7 @@
     <string name="service_gui_security_SECURE_AUDIO">Audio aman</string>
     <string name="service_gui_security_SECURE_VIDEO">Video aman</string>
     <string name="service_gui_security_SECURITY_ALERT">Mencoba untuk mengamankan panggilan. Akan terputus di</string>
-    <string name="service_gui_security_STRING_COMPARED">String dibandingkan!</string>
+    <string name="service_gui_security_STRING_COMPARED">String dibandingkan:</string>
     <string name="service_gui_security_VERIFY_TOAST">Keamanan panggilan diaktifkan! Ketuk untuk membandingkan string keamanan sekarang atau gunakan menu nanti.</string>
     <string name="service_gui_security_VIDEO_NOT_SECURED">Video tidak aman</string>
     <string name="service_gui_avatar_CHOOSE_ICON">Pilih gambar</string>
@@ -796,6 +811,26 @@
     <string name="plugin_accountinfo_WORK_EMAIL">E-mail Kerja:</string>
     <string name="plugin_accountinfo_WORK_PHONE">Telepon Kerja:</string>
 
+    <!-- Certificate configuration plugin -->
+    <string name="plugin_certconfig_TITLE">Konfigurasi TLS</string>
+    <string name="plugin_certconfig_TRUSTSTORE_CONFIG">Sumber sertifikat akar tepercaya</string>
+    <string name="plugin_certconfig_CERT_LIST_TITLE">Konfigurasi otentikasi klien TLS</string>
+    <string name="plugin_certconfig_CERT_LIST_DESCRIPTION">Konfigurasi yang dikelola di sini dapat dipilih sebagai sertifikat TLS klien dalam konfigurasi akun (mis. Untuk mengautentikasi dengan sertifikat terhadap penyedia SIP Anda alih-alih nama pengguna dan kata sandi).</string>
+    <string name="plugin_certconfig_ALIAS">Nama alias di KeyStore</string>
+    <string name="plugin_certconfig_KEYSTORE_TYPE">Jenis</string>
+    <string name="plugin_certconfig_CERT_ENTRY_TITLE">Сертификат клиента TLS</string>
+    <string name="plugin_certconfig_KEYSTORE">File</string>
+    <string name="plugin_certconfig_KEYSTORE_PASSWORD">Kata sandi</string>
+    <string name="plugin_certconfig_INCOMPLETE">Silakan masukkan nilai untuk semua bidang</string>
+    <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">Tidak dapat menampilkan sertifikat (%1$s).</string>
+    <string name="plugin_certconfig_KEYSTORE_EXCEPTION">Tidak dapat memuat keystore (%1$s).</string>
+    <string name="plugin_certconfig_FILE_TYPE_DESCRIPTION">Certificate stores (PKCS#11 Module, PKCS#12 files, Java ks Keystore)</string>
+    <string name="plugin_certconfig_ALIAS_LOAD_EXCEPTION">Tidak dapat memperoleh alias dari keystore (%1$s).</string>
+    <string name="plugin_certconfig_INVALID_KEYSTORE_TYPE">Jenis Keystore yang dipilih tampaknya tidak valid (%1$s).</string>
+    <string name="plugin_certconfig_REVOCATION_TITLE">Opsi pencabutan sertifikat</string>
+    <string name="plugin_certconfig_REVOCATION_CHECK_ENABLED">Pemeriksaan CRL (Daftar Pencabutan Sertifikat) diaktifkan</string>
+    <string name="plugin_certconfig_REVOCATION_OCSP_ENABLED">Pemeriksaan OCSP (Online Certificate Status Protocol) diaktifkan</string>
+
     <!-- connection info -->
 	<string name="plugin_connectioninfo_TITLE">Info Koneksi</string>
 
@@ -803,7 +838,7 @@
     <string name="plugin_contactinfo_TITLE">Detail kontak</string>
     <string name="plugin_contactinfo_CONTACT_SUMMARY_DESCRIPTION">Ringkasan info kontak untuk</string>
     <string name="plugin_contactinfo_CONTACT_EXTENDED_DESCRIPTION">Info kontak yang diperluas untuk</string>
-    <string name="plugin_contactinfo_NOT_SPECIFIED">[Tidak ditentukan]</string>
+    <string name="service_gui_INFO_NOT_SPECIFIED">[Tidak ditentukan]</string>
     <string name="plugin_contactinfo_USER_PICTURES">Gambar pengguna</string>
     <string name="plugin_contactinfo_USER_STATUS_MESSAGE">Pesan Status</string>
 
@@ -822,10 +857,11 @@
     <string name="plugin_notificationconfig_event_IncomingCall">Panggilan Masuk</string>
     <string name="plugin_notificationconfig_event_IncomingCall_description">Deskripsi panggilan masuk.</string>
     <string name="plugin_notificationconfig_event_IncomingFile">Fail Masuk</string>
+    <string name="plugin_notificationconfig_event_IncomingInvitation">Undangan Masuk</string>
     <string name="plugin_notificationconfig_event_IncomingMessage">Pesan Masuk</string>
     <string name="plugin_notificationconfig_event_IncomingMessage_description">Deskripsi pesan masuk</string>
     <string name="plugin_notificationconfig_event_LogFilesArchived">Fail Log Diarsipkan</string>
-    <string name="plugin_notificationconfig_event_missed_call">Panggilan Tak Terjawab</string>
+    <string name="plugin_notificationconfig_event_MissedCall">Panggilan Tak Terjawab</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications">Pemberitahuan Jaringan</string>
     <string name="plugin_notificationconfig_event_NetworkNotifications_description">Deskripsi notifikasi jaringan</string>
     <string name="plugin_notificationconfig_event_ProactiveNotification">Pemberitahuan Pengetikan</string>
@@ -838,8 +874,9 @@
     <string name="plugin_notificationconfig_playback_sound">​​Suara pada perangkat pemutaran</string>
     <string name="plugin_notificationconfig_popup_notification">Pemberitahuan popup</string>
     <string name="plugin_notificationconfig_vibration">Getaran</string>
+    <string name="plugin_notificationconfig_sound_file">File suara:</string>
 
-    <!-- call recordingconfig -->
+    <!-- call recording config -->
     <string name="plugin_callrecordingconfig_CALL_SAVED">Panggilan berhasil disimpan</string>
     <string name="plugin_callrecordingconfig_CALL_SAVED_TO">Simpan ke: %1$s</string>
 
@@ -853,10 +890,13 @@
     <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Terjadi kesalahan protokol internal.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan: %1$s&lt;/html ></string>
     <string name="impl_media_security_SECURITY_OFF">Dukungan enkripsi panggilan dimatikan</string>
     <string name="impl_media_security_SECURITY_ON">Dukungan enkripsi panggilan pada</string>
-    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Masalah keamanan yang parah terdeteksi.&lt;br/>&lt;br/>Kode kesalahan: {0}&lt;/html></string>
+    <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Masalah keamanan yang parah terdeteksi.&lt;br/>&lt;br/>Kode kesalahan: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Tidak ada rahasia bersama yang dipertahankan.&lt;br/>&lt;b>Verifikasi SAS direkomendasikan&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Rahasia bersama retensi yang diharapkan tidak ada.&lt;br/>&lt;b>Verifikasi SAS diperlukan&lt;/b>&lt;br/>Jika kode SAS tidak cocok, maka hangup dan coba lagi&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Masalah ZRTP parah terdeteksi.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan : %1$s&lt;/html></string>
+
+    <!-- DTLS-SRTP Securing -->
+    <string name="imp_media_security_ENCRYPTION_ENDED">Enkripsi panggilan telah berakhir: %1$s</string>
 
     <!-- OTR plugin -->
     <string name="plugin_otr_menu_AUTHENTICATE_BUDDY">Otentikasi teman</string>
@@ -905,11 +945,12 @@
     <string name="plugin_otr_configform_MY_PRIVATE_KEYS">Tombol Pribadi Saya</string>
     <string name="plugin_otr_configform_REGENERATE">Menghasilkan kembali</string>
     <string name="plugin_otr_configform_VERIFY_STATUS">Diverifikasi: %1$s</string>
+
     <string name="plugin_otr_activator_fallbackmessage">&lt;span style="font-weight: bold;">%1$s sedang mencoba untuk menginisiasi enkripsi
-        &lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        &lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
         Percakapan Off-The-Record&lt;/a>dengan Anda. Namun perangkat lunak Anda tidak mendukung
-        Perpesanan Off-The-Record. Untuk informasi lebih lanjut, lihat&lt;a href="http://en.wikipedia.org/wiki/Off-the-Record_Messaging">
-        http://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
+        Perpesanan Off-The-Record. Untuk informasi lebih lanjut, lihat&lt;a href="https://en.wikipedia.org/wiki/Off-the-Record_Messaging">
+        https://en.wikipedia.org/wiki/Off-the-Record_Messaging&lt;/a>&lt;/span></string>
     <string name="plugin_otr_activator_historyoff">%1$s TIDAK merekam percakapan ini. Anda dapat&lt;a href=\"atalk://%2$s/%3$s \">mengaktifkan riwayat obrolan di sini&lt;/a>.</string>
     <string name="plugin_otr_activator_historyon">%1$s merekam percakapan ini di perangkat Anda. Anda dapat&lt;a href=\"atalk://%2$s/%3$s \">mematikan riwayat obrolan di sini&lt;/a>.</string>
     <string name="plugin_otr_activator_msgfromanotherinstance">Pesan yang diterima dari instance percakapan OTR lain dengan %1$s terdeteksi.</string>
@@ -947,25 +988,17 @@
     <string name="omemo_rebuild_session">Rekonstruksi sesi baru karena hilang: %1$s</string>
     <string name="omemo_purge_inactive_device_error">Gagal menghapus perangkat omemo yang tidak aktif untuk: %1$s.</string>
 
-    <!-- Global proxy plugin -->
-    <string name="service_gui_settings_PROXY">Proksi global</string>
-    <string name="service_gui_settings_PROXY_SUMMARY">Konfigurasikan opsi proxy&#8230;</string>
-    <string name="plugin_globalproxy_PROXY_ADDRESS">Server Proksi</string>
-    <string name="plugin_globalproxy_PROXY_PASSWORD">Kata sandi proxy</string>
-    <string name="plugin_globalproxy_PROXY_PORT">Port proxy</string>
-    <string name="plugin_globalproxy_PROXY_TYPE">Tipe Proksi</string>
-    <string name="plugin_globalproxy_PROXY_USERNAME">Nama pengguna proxy</string>
+    <!-- Account proxy settings -->
+    <string name="service_gui_settings_BOSH_PROXY">Konfigurasi Proksi</string>
+    <string name="service_gui_settings_BOSH_PROXY_SUMMARY">konfigurasikan koneksi melalui BOSH/Proxy untuk akun</string>
+    <string name="plugin_proxy_BOSHURL_NULL">Konten bidang URL BOSH tidak boleh kosong</string>
+    <string name="plugin_proxy_HOST_PORT_NULL">Konten Proxy Host dan Port tidak boleh kosong</string>
 
-    <!-- Account proxy plugin -->
-    <string name="service_gui_settings_ACCOUNT_PROXY">Konfigurasi Proksi</string>
-    <string name="service_gui_settings_ACCOUNT_PROXY_SUMMARY">Konfigurasikan opsi proxy akun&#8230;</string>
-    <string name="plugin_proxy_PROXY_ADDRESS">Proxy Server</string>
-    <string name="plugin_proxy_PROXY_ENABLE">Gunakan Proxy</string>
-    <string name="plugin_proxy_PROXY_ENABLE_SUMMARY">Aktifkan koneksi melalui proxy untuk akun</string>
-    <string name="plugin_proxy_PROXY_PASSWORD">Kata sandi proxy</string>
+    <string name="plugin_bosh_proxy_TYPE">Tipe Proksi</string>
+    <string name="plugin_proxy_PROXY_BOSH_URL">BOSH URL:</string>
+    <string name="plugin_proxy_PROXY_BOSH_USE_HTTP">Gunakan Proxy HTTP</string>
+    <string name="plugin_proxy_PROXY_HOST">Proxy Server</string>
     <string name="plugin_proxy_PROXY_PORT">Port proxy</string>
-    <string name="plugin_proxy_PROXY_TYPE">Tipe Proksi</string>
-    <string name="plugin_proxy_PROXY_USERNAME">Nama pengguna proxy</string>
 
     <!-- Provisioning Plugin-->
     <string name="plugin_provisioning_AUTO">Secara otomatis menemukan URI penyediaan</string>
@@ -979,14 +1012,14 @@
     <string name="plugin_provisioning_MANUAL">Secara manual menentukan URI penyediaan</string>
     <string name="plugin_provisioning_METHOD">Metode Provisioning</string>
     <string name="plugin_provisioning_PROV_FAILED">Penyediaan gagal</string>
-    <string name="plugin_provisioning_PROV_FAILED_MSG"><html>Penyediaan gagal. %1$s!<br/>Silakan, coba lagi nanti atau hubungi administrator Anda.</html></string>
+    <string name="plugin_provisioning_PROV_FAILED_MSG">&lt;html>Penyediaan gagal. %1$s!&lt;br/>Silakan, coba lagi nanti atau hubungi administrator Anda.&lt;/html></string>
     <string name="plugin_provisioning_PROVISIONING">Provisioning</string>
     <string name="plugin_provisioning_PROVISIONING_SUMMARY">Konfigurasikan pengaturan penyediaan</string>
     <string name="plugin_provisioning_REMOVE_CREDENTIALS_MESSAGE">Anda yakin ingin menghapus kata sandi provisioning?</string>
     <string name="plugin_provisioning_RESTART_WARNING">Perhatikan bahwa perubahan Anda hanya akan berlaku pada saat Anda memulai aTalk!</string>
 
     <!-- DNS config -->
-	<string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE Security</string>
+    <string name="service_gui_settings_DNSSEC_DANE">SSL/DNSSEC/DANE Security</string>
     <string name="service_gui_settings_DNS">DNS</string>
     <string name="service_gui_settings_DNS_SUMMARY">Konfigurasikan pengaturan DNS</string>
     <string name="plugin_dnsconfig_DNSSEC">Keamanan DNS (DNSSEC)</string>
@@ -994,13 +1027,13 @@
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">Perubahan status gagal</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">Perubahan status yang diaktifkan DNSSEC telah gagal.</string>
     <string name="plugin_dnsconfig_dnssec_MODE">Perilaku</string>
-    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING"><html>Perhatikan bahwa mengaktifkan atau menonaktifkan DNSSEC akan menonaktifkan resolver paralel dan hanya akan berlaku pada saat Anda memulai aTalk.</html></string>
+    <string name="plugin_dnsconfig_dnssec_RESTART_WARNING">&lt;html>Perhatikan bahwa mengaktifkan atau menonaktifkan DNSSEC akan menonaktifkan resolver paralel dan hanya akan berlaku pada saat Anda memulai aTalk.&lt;/html></string>
     <string name="plugin_dnsconfig_border_TITLE">Penyelesai cadangan</string>
     <string name="plugin_dnsconfig_dnssec_chkAbsolute">Perlakukan semua nama domain sebagai absolut</string>
     <string name="plugin_dnsconfig_dnssec_chkEnabled">Aktifkan penyelesai DNSSEC</string>
     <string name="plugin_dnsconfig_dnssec_lblDefault">Perilaku default</string>
     <string name="plugin_dnsconfig_dnssec_lblNameservers">Server nama khusus</string>
-    <string name="plugin_dnsconfig_dnssec_lblNameserversHint"><html>Beberapa server dapat dipisahkan dengan koma, mis. 149.20.64.20, 149.20.64.21 (OARC\'s Buka DNSSEC Validating Resolver)</html></string>
+    <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Beberapa server dapat dipisahkan dengan koma, mis. 149.20.64.20, 149.20.64.21 (OARC\'s Buka DNSSEC Validating Resolver)&lt;/html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">Kegagalan DNSSEC</string>
     <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">Jawaban DNS untuk %1$s tidak aman.</string>
@@ -1019,29 +1052,33 @@
         penyedia layanan untuk memberi tahu mereka tentang masalah ini.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Hapus sertifikat</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Harap konfirmasikan untuk menghapus sertifikat bagi: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Pengelola Sertifikat SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">Sertifikat SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Bersihkan sertifikat yang disetujui pengguna bagi: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Hapus sertifikat</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Kelola Sertifikat SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Sertifikat SSL</string>
 
-    <string name="pref_remove_trusted_certificates_title">Hapus sertifikat</string>
-    <string name="pref_remove_trusted_certificates_summary">Hapus sertifikat yang disetujui secara manual</string>
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Sertifikat TLS Klien</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Harap pilih sertifikat TLS</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Penggunaan sertifikat dalam otentikasi pengguna dengan server</string>
+
+    <!-- Reset ZID -->
+    <string name="reset_ZID_summary">Setel ulang pengidentifikasi ZRTP berumur panjang</string>
+    <string name="reset_ZID_title">Setel ulang ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID telah diatur ulang</string>
 
     <!-- Settings -->
     <string name="service_gui_COMMIT_PROGRESS_MSG">Menyimpan perubahan akun, harap tunggu&#8230;</string>
     <string name="service_gui_COMMIT_PROGRESS_TITLE">"Berkomitmen&#8230;"</string>
     <string name="service_gui_SETTINGS_NOT_SET">(Tidak ditentukan)</string>
     
-    <!-- Connection settings -->
-    <string name="service_gui_CONN_NO_CERT">Tidak ada</string>
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Enkode audio</string>
     <string name="service_gui_ENC_OVERRIDE_GLOBAL">Ganti global</string>
     <string name="service_gui_ENC_VIDEO_TITLE">Enkode video</string>
 
     <!-- Security protocols dialog -->
-    <string name="service_gui_LIST_EMPTY">Tidak ada</string>
+    <string name="service_gui_LIST_NONE">Tidak ada</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Enkripsi</string>
     <string name="service_gui_SEC_PROTOCOLS_TITLE">Protokol keamanan</string>
     <string name="service_gui_SEC_PROTOCOLS_MSG">Silakan pilih protokol yang diinginkan agar</string>
@@ -1066,7 +1103,7 @@
     <string name="service_gui_STUN_EDIT_PASSWORD">Kata Sandi</string>
     <string name="service_gui_STUN_EDIT_PORT">Port server</string>
     <string name="service_gui_STUN_EDIT_SUPPORT_TURN">Dukungan TURN</string>
-    <string name="service_gui_STUN_EDIT_TURN_USER">TURN nama pengguna</string>
+    <string name="service_gui_STUN_EDIT_TURN_USER">Nama</string>
  
     <!-- Security preferences -->
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Aktifkan enkripsi panggilan</string>
@@ -1118,8 +1155,6 @@
     <string name="service_gui_SIP_PROXY_ADDR">Alamat proxy</string>
     <string name="service_gui_SIP_PROXY_PORT">Port proxy</string>
     <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_TLS_CERT">Sertifikat TLS Klien</string>
-    <string name="service_gui_SIP_TLS_CERT_PROMPT">Harap pilih sertifikat TLS</string>
     <string name="service_gui_SIP_SUBSCRIPTION_DUR">Durasi langganan default (dalam s.)</string>
     <string name="service_gui_SIP_USER">ID CRYPTO</string>
     <string name="service_gui_SIP_VOICEMAIL">Voicemail</string>
@@ -1136,7 +1171,6 @@
 
     <!-- Jabber preferences -->
     <string name="service_gui_JBR_ADVANCED">Lanjutan</string>
-    <string name="service_gui_JBR_ALLOW_NON_SECURE">Izinkan koneksi tidak aman</string>
     <string name="service_gui_JBR_AUTO_SIGNIN">Terhubung saat Memulai</string>
     <string name="service_gui_JBR_AUTO_STUN_DICOVERY">Menemukan server STUN/TURN otomatis</string>
     <string name="service_gui_JBR_CONN_GENERAL">Umum</string>
@@ -1159,6 +1193,10 @@
     <string name="service_gui_JBR_KEEP_ALIVE">Tetap hidup</string>
     <string name="service_gui_JBR_KEEP_ALIVE_ENABLE">Aktifkan opsi Keep Alive</string>
     <string name="service_gui_JBR_KEEP_ALIVE_SUMMARY">Aktifkan jika mengalami pemutusan jaringan seluler yang sering</string>
+    <string name="service_gui_JBR_MINIMUM_TLS">Versi TLS minimum</string>
+    <string name="service_gui_JBR_MINIMUM_TLS_SUMMARY">Hubungkan menggunakan ini atau versi protokol TLS yang lebih tinggi</string>
+    <string name="service_gui_JBR_NON_SECURE_ALLOW">Izinkan koneksi tidak aman</string>
+    <string name="service_gui_JBR_NON_SSL_SUMMARY">Nonaktifkan enkripsi koneksi server SSL/TLS</string>
     <string name="service_gui_JBR_OVERRIDE_SERVER">Ganti opsi default server</string>
     <string name="service_gui_JBR_PASSWORD">Masukkan Kata Sandi</string>
     <string name="service_gui_JBR_PING_INTERVAL">Interval Ping (1~3600 detik)</string>
@@ -1172,7 +1210,6 @@
     <string name="service_gui_JBR_RESURCE_NAME">Nama sumber daya</string>
     <string name="service_gui_JBR_SERVER">Hubungkan Server IP</string>
     <string name="service_gui_JBR_SERVER_OPTIONS">Opsi server</string>
-    <string name="service_gui_JBR_SSL_SUMMARY">Nonaktifkan enkripsi koneksi server SSL/TLS</string>
     <string name="service_gui_JBR_STORE_PASSWORD">Menyimpan kata sandi</string>
     <string name="service_gui_JBR_STORE_PASSWORD_SUMMARY">Simpan kata sandi untuk masuk otomatis saat aplikasi memulai</string>
     <string name="service_gui_JBR_STUN_LIST">Server STUN/TURN tambahan&#8230;</string>
@@ -1207,7 +1244,7 @@
     <string name="service_gui_settings_WEBVIEW_DLG_TITLE">Masuk ke halaman akses default webView:</string>
     <string name="service_gui_settings_WEBVIEW_TITLE">Halaman Akses Web</string>
 
-    <!-- Message settings -->
+    <!-- Messaging settings -->
     <string name="service_gui_settings_MSG">Messaging</string>
 
     <!-- Group messages in one window -->
@@ -1249,6 +1286,7 @@
     <string name="service_gui_settings_CHAT_ALERTS">Tampilkan pemberitahuan bilah status</string>
 
     <!-- Leave chat rooms when closing window(omitted on Android for now) -->
+
     <!-- Auto away -->
     <!-- Not sure how to implement it on android - leave for now -->
 
@@ -1259,6 +1297,9 @@
     <string name="service_gui_settings_auto_update_check_status">Aktifkan pemeriksaan pembaruan SW otomatis</string>
     <string name="service_gui_settings_POPUP_HANDLER">Jenis notifikasi popup</string>
 
+    <string name="pref_headsup_notifications">Pemberitahuan Head-up</string>
+    <string name="pref_headsup_notifications_summary">Tampilkan Pemberitahuan Head-up</string>
+
     <!-- Status bar notifications handler -->
     <string name="impl_popup_auto">Otomatis</string>
     <string name="impl_popup_status_bar">Pemberitahuan bilah status</string>
@@ -1266,6 +1307,13 @@
     <!-- Events -->
     <string name="service_gui_settings_EVENTS_SUMMARY">Konfigurasikan pemberitahuan individual</string>
     <string name="service_gui_settings_EVENTS_TITLE">Acara</string>
+
+    <!-- Quite hour settings -->
+    <string name="title_pref_quiet_hours">Jam Tenang</string>
+    <string name="title_pref_quiet_hours_start_time">Waktu mulai</string>
+    <string name="title_pref_quiet_hours_end_time">Akhir waktu</string>
+    <string name="title_pref_enable_quiet_hours">Aktifkan jam tenang</string>
+    <string name="pref_quiet_hours_summary">Pemberitahuan akan dibungkam selama jam tenang</string>
 
     <!-- aTalk icon -->
     <string name="service_gui_settings_SHOW_ICON">Tunjukkan ikon aTalk</string>
@@ -1286,6 +1334,16 @@
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_label">Tema</string>
 
+    <!-- TTS Language -->
+    <string name="service_gui_TTS_DELAY">Pesan Teks ke Speech delay (ms)</string>
+    <string name="service_gui_TTS_SETTINGS">Pengaturan TTS umum&#8230;</string>
+    <string name="service_gui_TTS_DISABLE">Nonaktifkan Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_ENABLE">Aktifkan Text &#x27A1; Speech</string>
+    <string name="service_gui_TTS_SYNTHESIS">Isikan teks untuk berbicara atau disintesis dan simpan ke file:</string>
+    <string name="service_gui_TTS_VOICE">Suara TTS default:</string>
+
+    <string name="service_gui_LOADING">Sedang memuat, harap tunggu…</string>
+
     <!-- Remove special characters from phone number -->
     <string name="service_gui_settings_NORMALIZE_NUMBER">Simbol khusus dalam nomor telepon</string>
     <string name="service_gui_settings_NORMALIZE_OFF">Tidak ada modifikasi nomor telepon</string>
@@ -1296,6 +1354,7 @@
 
     <!-- Call settings -->
     <string name="service_gui_settings_CALL">Panggil</string>
+    <string name="service_gui_settings_MEDIA_CALL">Panggilan media</string>
 
     <!-- Audio settings -->
     <string name="service_gui_settings_AUDIO">Audio</string>
@@ -1323,9 +1382,7 @@
     <string name="service_gui_settings_SYSTEM_MEDIARECORDER">MediaRecorder</string>
 
     <!-- Camera used -->
-    <string name="service_gui_settings_BACK_CAMERA">Kamera belakang</string>
     <string name="service_gui_settings_CAMERA">Kamera</string>
-    <string name="service_gui_settings_FRONT_CAMERA">Kamera depan</string>
     <string name="service_gui_settings_NO_CAMERA">Tidak ditemukan perangkat kamera</string>
     <string name="service_gui_settings_USE_BACK_CAMERA">Gunakan kamera belakang</string>
     <string name="service_gui_settings_USE_FRONT_CAMERA">Gunakan kamera depan</string>
@@ -1385,9 +1442,10 @@
     <string name="pref_omemo_purge_devices_title">Membersihkan identitas yang tidak digunakan</string>
     <string name="service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">Perangkat OMEMO Hapus</string>
 
-    <!-- Key &FingerPrint security category -->
+    <!-- Key & FingerPrint security category -->
     <string name="pref_cat_KEY_FINGERPRINT_SECURITY">Kunci &amp; Keamanan Cap Jari</string>
     <!-- Crypto private Keys screen -->
+    <string name="service_gui_settings_CRYPTO_PRIV_KEYS_EMPTY">Ditemukan nol pengguna terdaftar</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY">Kelola sidik jari pribadi kripto</string>
     <string name="service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">Kunci pribadi Crypto</string>
     <!-- Crypto fingerprints screen -->
@@ -1428,6 +1486,9 @@
 
     <!-- Advanced settings category -->
     <string name="service_gui_settings_ADVANCED">Lanjutan</string>
+    <string name="service_gui_settings_EXPERT">Pengaturan ahli</string>
+    <string name="service_gui_settings_EXPERT_SUMMARY">Harap berhati-hati dengan ini</string>
+    <string name="service_gui_settings_OTHER">Lain2</string>
 
     <!-- Protocol category -->
     <string name="service_gui_settings_ADDRESS">Alamat</string>
@@ -1475,7 +1536,6 @@
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">Info Aplikasi</string>
-    <string name="app_name2">Dexter</string>
     <string name="ask_for_all_permissions_button">Meminta semua</string>
     <string name="ask_for_audio_permission_button">Audio</string>
     <string name="ask_for_camera_permission_button">Camera</string>
@@ -1494,7 +1554,7 @@
     <string name="audio_permission_denied_feedback">Panggilan audio tidak akan tersedia sampai anda memberikan permintaan izin</string>
 
     <string name="camera_permission_denied_dialog_title">Permintaan izin kamera</string>
-    <string name="camera_permission_denied_feedback">Izin kamera diperlukan untuk pengaturan panggilan video. Panggilan video tidak akan tersedia sampai anda memberikan permintaan izin</string>
+    <string name="camera_permission_denied_feedback">Izin kamera: semua kegiatan yang terkait dengan kamera tidak akan tersedia sampai Anda mengabulkan permintaan izin</string>
 
     <string name="contacts_permission_denied_dialog_title">Permintaan izin kontak</string>
     <string name="contacts_permission_denied_feedback">Izin kontak diperlukan untuk akses status ponsel dan pengaturan panggilan</string>
@@ -1506,7 +1566,7 @@
     <string name="phone_permission_denied_feedback">Fitur telepon tidak akan tersedia sampai anda memberikan permintaan izin</string>
 
     <string name="storage_permission_denied_dialog_title">Permintaan izin penyimpanan</string>
-    <string name="storage_permission_denied_feedback">Menyimpan konten yang diterima di penyimpanan eksternal tidak akan diizinkan sampai anda mengabulkan permintaan izin</string>
+    <string name="storage_permission_denied_feedback">Menyimpan konten yang dikirim dan diterima dalam penyimpanan tidak akan diizinkan sampai Anda mengabulkan permintaan izin</string>
 
     <string name="all_permission_denied_dialog_title">Semua permintaan izin</string>
     <string name="all_permissions_denied_feedback">aTalk mungkin tidak berfungsi dengan benar atau mungkin memiliki perilaku tidak terduga karena beberapa layanan telah ditolak!\nJika anda telah memilih \"Jangan tanyakan lagi \" pilihan, anda harus pergi ke Pengaturan Android - >INFO APP bagi aTalk untuk mengaktifkan izin akses sumber daya</string>
@@ -1520,4 +1580,5 @@
     <string name="location_permission_dialog_message">Aktifkan izin Lokasi sekarang?</string>
     <string name="location_services_off">Layanan lokasi diTutup</string>
     <string name="open_location_settings">Aktifkan layanan lokasi sekarang?</string>
+
 </resources>

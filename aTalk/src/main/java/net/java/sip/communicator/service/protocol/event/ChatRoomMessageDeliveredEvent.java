@@ -14,7 +14,7 @@
 package net.java.sip.communicator.service.protocol.event;
 
 import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import java.util.Date;
 import java.util.EventObject;
@@ -38,9 +38,9 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     private final Date timestamp;
 
     /**
-     * The received <tt>Message</tt>.
+     * The received <tt>IMessage</tt>.
      */
-    private Message message = null;
+    private IMessage message = null;
 
     /**
      * The type of message event that this instance represents.
@@ -62,7 +62,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      * @param eventType indicating the type of the delivered event. It's either an ACTION_MESSAGE_DELIVERED or
      * a CONVERSATION_MESSAGE_DELIVERED.
      */
-    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, Message message, int eventType)
+    public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, IMessage message, int eventType)
     {
         super(source);
         this.timestamp = timestamp;
@@ -73,9 +73,9 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>Message</tt> that triggered this event.
+     * @return the <tt>IMessage</tt> that triggered this event.
      */
-    public Message getMessage()
+    public IMessage getMessage()
     {
         return message;
     }
@@ -101,7 +101,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Returns the type of message event represented by this event instance. Message event type is
+     * Returns the type of message event represented by this event instance. IMessage event type is
      * one of the XXX_MESSAGE_DELIVERED fields of this class.
      *
      * @return one of the XXX_MESSAGE_DELIVERED fields of this class indicating the type of this event.

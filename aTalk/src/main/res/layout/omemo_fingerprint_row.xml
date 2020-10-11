@@ -3,7 +3,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/theme_background"
     android:orientation="vertical"
     android:padding="@dimen/list_padding">
 
@@ -20,10 +19,9 @@
         style="@style/MediumFont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:button="@null"
         android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
-        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
         android:text="{private key text}" />
 
 </LinearLayout>

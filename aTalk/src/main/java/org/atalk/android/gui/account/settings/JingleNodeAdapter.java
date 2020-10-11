@@ -6,7 +6,6 @@
 package org.atalk.android.gui.account.settings;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +14,14 @@ import android.widget.TextView;
 import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 
+import androidx.fragment.app.DialogFragment;
+
 /**
  * Implements list model for Jingle Nodes list of {@link JabberAccountRegistration}.
  *
  * @see ServerItemAdapter
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class JingleNodeAdapter extends ServerItemAdapter
 {

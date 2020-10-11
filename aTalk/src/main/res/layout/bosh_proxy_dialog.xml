@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/plugin_bosh_proxy_TYPE" />
+
+        <Spinner
+            android:id="@+id/boshProxyType"
+            style="@style/SpinnerView"
+            android:layout_width="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/boshURL_setting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
+
+            <TextView
+                style="@style/MediumFont"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/plugin_proxy_PROXY_BOSH_URL" />
+
+            <EditText
+                android:id="@+id/boshURL"
+                style="@style/EntryTextView"
+                android:layout_width="match_parent"
+                android:hint="@string/service_gui_PROXY_BOSH_URL_HINT"/>
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cbHttpProxy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/plugin_proxy_PROXY_BOSH_USE_HTTP" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/plugin_proxy_PROXY_HOST" />
+
+        <EditText
+            android:id="@+id/proxyHost"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/plugin_proxy_PROXY_PORT" />
+
+        <EditText
+            android:id="@+id/proxyPort"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_USERNAME" />
+
+        <EditText
+            android:id="@+id/proxyUsername"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_PASSWORD" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/proxyPassword"
+                style="@style/EntryTextView"
+                android:layout_width="match_parent"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+            <CheckBox
+                android:id="@+id/show_password"
+                android:button="@drawable/checkbox_password_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/proxyPassword"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/between_padding"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_Cancel"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_CANCEL" />
+
+        <Button
+            android:id="@+id/button_Apply"
+            style="@style/ButtonTop"
+            android:layout_marginLeft="2dp"
+            android:text="@string/service_gui_APPLY" />
+    </LinearLayout>
+</LinearLayout>

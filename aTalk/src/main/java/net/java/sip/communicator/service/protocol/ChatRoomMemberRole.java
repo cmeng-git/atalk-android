@@ -5,12 +5,17 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Indicates roles that a chat room member detains in its containing chat room.
  *
  * @author Emil Ivov
  * @author Valentin Martinet
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public enum ChatRoomMemberRole implements Comparable<ChatRoomMemberRole> {
 	/**
@@ -64,6 +69,16 @@ public enum ChatRoomMemberRole implements Comparable<ChatRoomMemberRole> {
 	 * Resource name for localization.
 	 */
 	private final String resourceName;
+
+    private static final Map<String,ChatRoomMemberRole> ENUM_MAP;
+
+    static {
+        Map<String,ChatRoomMemberRole> map = new ConcurrentHashMap<>();
+        for (ChatRoomMemberRole roleName : ChatRoomMemberRole.values()) {
+            map.put(roleName.getRoleName(), roleName);
+        }
+        ENUM_MAP = Collections.unmodifiableMap(map);
+    }
 
 	/**
 	 * Creates a role with the specified <tt>roleName</tt>. The constructor is protected in case
@@ -124,4 +139,13 @@ public enum ChatRoomMemberRole implements Comparable<ChatRoomMemberRole> {
 	{
 		return roleIndex;
 	}
+
+    /**
+     * Get the ChatRoomMemberRole for a given roleName
+     * @param roleName
+     * @return ChatRoomMemberRole
+     */
+    public static ChatRoomMemberRole fromString(String roleName) {
+        return ENUM_MAP.get(roleName);
+    }
 }

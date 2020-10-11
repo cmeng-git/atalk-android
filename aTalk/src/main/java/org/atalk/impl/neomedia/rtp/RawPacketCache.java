@@ -20,7 +20,7 @@ import org.atalk.impl.neomedia.transform.CachingTransformer;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
+import org.atalk.util.logging.Logger;
 import org.atalk.util.concurrent.MonotonicAtomicLong;
 
 import java.util.*;

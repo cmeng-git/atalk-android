@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/online_help"
+        android:icon="?attr/iconActionAbout"
+        android:title="@string/Online_help" />
+    <item
+        android:id="@+id/about"
+        android:icon="?attr/iconActionAbout"
+        android:title="@string/About_action" />
     <item android:id="@+id/menu_exit"
           android:title="@string/service_gui_EXIT">
     </item>

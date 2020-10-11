@@ -16,8 +16,7 @@ import java.util.List;
 /**
  * Represents an ad-hoc rendezvous point where multiple chat users could communicate together. This
  * interface describes the main methods used by some protocols for multi user chat, without useless
- * methods (such as kicking a participant) which aren't supported by these protocols (MSN, ICQ
- * etc.).
+ * methods (such as kicking a participant) which aren't supported by these protocols (MSN, ICQ etc.).
  * <p>
  * <tt>AdHocChatRoom</tt> acts like a simplified <tt>ChatRoom</tt>.
  *
@@ -78,8 +77,7 @@ public interface AdHocChatRoom
      * Invites another <tt>Contact</tt> to this ad-hoc chat room.
      *
      * @param userAddress the address of the <tt>Contact</tt> of the user to invite to the ad-hoc room.
-     * @param reason a reason, subject, or welcome message that would tell users why they are being
-     * invited.
+     * @param reason a reason, subject, or welcome message that would tell users why they are being invited.
      */
     void invite(EntityBareJid userAddress, String reason);
 
@@ -99,38 +97,37 @@ public interface AdHocChatRoom
     int getParticipantsCount();
 
     /**
-     * Create a <tt>Message</tt> instance for sending a simple text messages with default
+     * Create a <tt>IMessage</tt> instance for sending a simple text messages with default
      * (text/plain) content type and encoding.
      *
      * @param messageText the string content of the message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    Message createMessage(String messageText);
+    IMessage createMessage(String messageText);
 
     /**
-     * Create a Message instance for sending arbitrary MIME-encoding content.
+     * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    Message createMessage(String content, int encType, String subject);
+    IMessage createMessage(String content, int encType, String subject);
 
     /**
-     * Sends the <tt>Message</tt> to this ad-hoc chat room.
+     * Sends the <tt>IMessage</tt> to this ad-hoc chat room.
      *
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      */
-    void sendMessage(Message message);
+    void sendMessage(IMessage message);
 
-    void sendMessage(Message message, OmemoManager omemoManager);
+    void sendMessage(IMessage message, OmemoManager omemoManager);
 
     /**
      * Returns a reference to the provider that created this room.
      *
-     * @return a reference to the <tt>ProtocolProviderService</tt> instance that created this
-     * ad-hoc room.
+     * @return a reference to the <tt>ProtocolProviderService</tt> instance that created this ad-hoc room.
      */
     ProtocolProviderService getParentProvider();
 

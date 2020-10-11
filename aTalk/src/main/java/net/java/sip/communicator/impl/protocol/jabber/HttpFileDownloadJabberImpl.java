@@ -16,13 +16,17 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import android.content.BroadcastReceiver;
 import android.net.Uri;
 
 import net.java.sip.communicator.service.protocol.*;
 
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
 
 import java.io.File;
+
+import timber.log.Timber;
 
 /**
  * The Jabber protocol HttpFileDownloadJabberImpl extension of the <tt>AbstractFileTransfer</tt>.
@@ -31,6 +35,7 @@ import java.io.File;
  */
 public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
 {
+    private BroadcastReceiver downloadReceiver = null;
     private final String msgUuid;
     private final Contact mSender;
 
@@ -41,7 +46,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
     /*
      * Transfer file encryption type
      */
-    protected int mEncryption = Message.ENCRYPTION_NONE;
+    protected int mEncryption;
 
     /**
      * Creates an <tt>IncomingFileTransferJabberImpl</tt>.
@@ -50,9 +55,10 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
      * @param id the message Uuid uniquely identify  record in DB
      * @param dnLinkDescription the download link may contains other options e.g. file.length()
      */
-    public HttpFileDownloadJabberImpl(Contact sender, String id, String dnLinkDescription)
+    public HttpFileDownloadJabberImpl(Contact sender, String id, String dnLinkDescription, int xferStatus)
     {
         mSender = sender;
+        mStatus = xferStatus;
 
         // Create a new msg Uuid if none provided
         msgUuid = (id == null) ? String.valueOf(System.currentTimeMillis()) + hashCode() : id;
@@ -63,15 +69,16 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
         if (dnLink.matches("^aesgcm:.*")) {
             AesgcmUrl aesgcmUrl = new AesgcmUrl(dnLink);
             url = aesgcmUrl.getDownloadUrl().toString();
-            mEncryption = Message.ENCRYPTION_OMEMO;
+            mEncryption = IMessage.ENCRYPTION_OMEMO;
         }
         else {
             url = dnLink;
-            mEncryption = Message.ENCRYPTION_NONE;
+            mEncryption = IMessage.ENCRYPTION_NONE;
         }
+
         Uri uri = Uri.parse(url);
         mFileName = uri.getLastPathSegment();
-        mFile = new File(mFileName);
+        mFile = (mFileName != null) ? new File(mFileName) : null;
 
         if (dnLinkInfos.length > 1 && "fileSize".matches(dnLinkInfos[1])) {
             fileSize = Long.parseLong(dnLinkInfos[1].split("[:=]")[1]);
@@ -80,13 +87,24 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
             fileSize = -1;
     }
 
+    public void setDownloadReceiver (BroadcastReceiver receiver) {
+        downloadReceiver = receiver;
+    }
+
     /**
-     * Cancels the file transfer.
+     * Unregister the HttpDownload transfer downloadReceiver.
      */
     @Override
     public void cancel()
     {
-        // jabberTransfer.cancel();
+        if (downloadReceiver != null) {
+            try {
+                aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+            } catch (IllegalArgumentException e) {
+                Timber.e("Error unRegister download receiver: %s", e.getMessage());
+            }
+            downloadReceiver = null;
+        }
     }
 
     /**
@@ -123,7 +141,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
         return mSender;
     }
 
-//    public Contact getContactName()
+//    public Contact getSender()
 //    {
 //        return mSender;
 //    }

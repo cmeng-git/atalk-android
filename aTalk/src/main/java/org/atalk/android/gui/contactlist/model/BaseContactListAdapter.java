@@ -12,13 +12,26 @@ import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.impl.protocol.jabber.ContactJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.call.AndroidCallUtil;
+import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
+import org.atalk.android.gui.widgets.UnreadCountCustomView;
 import org.atalk.service.osgi.OSGiActivity;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -30,11 +43,11 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
-        implements View.OnClickListener
+        implements View.OnClickListener, View.OnLongClickListener
 {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
-     * it's accessed from the single thread.
+     * it's accessed from the main thread.
      */
     protected final Handler uiHandler = OSGiActivity.uiHandler;
 
@@ -48,7 +61,19 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     private final ExpandableListView contactListView;
 
-    private final boolean isShownCallButton;
+    /**
+     * A map reference of MetaContact to ContactViewHolder for the unread message count update
+     */
+    private Map<MetaContact, ContactViewHolder> mContactViewHolder = new HashMap<>();
+
+    /**
+     * Flag set to true to indicate the view is the main contact list and all available options etc are enabled
+     * Otherwise the view is meant for group chat invite, all the following options take effects:
+     * a. Hide all media call buttons
+     * b. Disabled Context menu (popup menus) i.e. onClick and onLongClick
+     * c. Multiple contact selection are allowed
+     */
+    private final boolean isMainContactList;
 
     private LayoutInflater mInflater;
 
@@ -56,15 +81,14 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * Creates the contact list adapter.
      *
      * @param clFragment the parent <tt>ContactListFragment</tt>
-     * @param isShowButton enable/disable call buttons option
+     * @param mainContactList call buttons and other options are only enable when it is the main Contact List view
      */
-    public BaseContactListAdapter(ContactListFragment clFragment, boolean isShowButton)
+    public BaseContactListAdapter(ContactListFragment clFragment, boolean mainContactList)
     {
-        // cmeng - must use this as clFragment may not always attached to FragmentManager e.g. muc invite dialog
+        // cmeng - must use this mInflater as clFragment may not always attached to FragmentManager e.g. muc invite dialog
         mInflater = LayoutInflater.from(aTalkApp.getGlobalContext());
-
         contactListFragment = clFragment;
-        isShownCallButton = isShowButton;
+        isMainContactList = mainContactList;
         contactListView = contactListFragment.getContactListView();
     }
 
@@ -121,7 +145,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Refreshes the list view.
+     * Refreshes the view with expands group and invalid view.
      */
     public void invalidateViews()
     {
@@ -154,8 +178,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param contactIndex the index of the contact to update
      * @param contactImpl contact implementation object instance
      */
-    protected void updateAvatar(final int groupIndex, final int contactIndex,
-            final Object contactImpl)
+    protected void updateAvatar(final int groupIndex, final int contactIndex, final Object contactImpl)
     {
         int firstIndex = contactListView.getFirstVisiblePosition();
         View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
@@ -188,6 +211,27 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
                 return;
             }
             statusView.setImageDrawable(getContactRenderer(groupIndex).getStatusImage(contactImpl));
+        }
+    }
+
+    /**
+     * Updates the contact message unread count. Hide the unread message badge if the count is zero
+     *
+     * @param metaContact MetaContact object
+     * @param count unread message count
+     */
+    public void updateUnreadCount(final MetaContact metaContact, final int count)
+    {
+        ContactViewHolder contactViewHolder = mContactViewHolder.get(metaContact);
+        if (contactViewHolder == null)
+            return;
+
+        if (count == 0) {
+            contactViewHolder.unreadCount.setVisibility(View.GONE);
+        }
+        else {
+            contactViewHolder.unreadCount.setVisibility(View.VISIBLE);
+            contactViewHolder.unreadCount.setUnreadCount(count);
         }
     }
 
@@ -243,8 +287,10 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     {
         // Keeps reference to avoid future findViewById()
         ContactViewHolder contactViewHolder;
+        Object child = getChild(groupPosition, childPosition);
+        // Timber.w("getChildView: %s:%s = %s", groupPosition, childPosition, child);
 
-        if (convertView == null) {
+        if ((convertView == null) || !(convertView.getTag() instanceof ContactViewHolder)) {
             convertView = mInflater.inflate(R.layout.contact_list_row, parent, false);
 
             contactViewHolder = new ContactViewHolder();
@@ -253,8 +299,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
             contactViewHolder.avatarView = convertView.findViewById(R.id.avatarIcon);
             contactViewHolder.avatarView.setOnClickListener(this);
-            contactViewHolder.avatarView.setTag(contactViewHolder);
+            contactViewHolder.avatarView.setOnLongClickListener(this);
             contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
+
+            contactViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
+            contactViewHolder.unreadCount.setTag(contactViewHolder);
 
             // Create call button listener and add bind holder tag
             contactViewHolder.callButtonLayout = convertView.findViewById(R.id.callButtonLayout);
@@ -266,10 +315,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             contactViewHolder.callVideoButton.setOnClickListener(this);
             contactViewHolder.callVideoButton.setTag(contactViewHolder);
 
-            contactViewHolder.selectedBgView = convertView.findViewById(R.id.selectedBackgroundIcon);
             contactViewHolder.buttonSeparatorView = convertView.findViewById(R.id.buttonSeparatorView);
-
-            convertView.setTag(contactViewHolder);
         }
         else {
             contactViewHolder = (ContactViewHolder) convertView.getTag();
@@ -278,24 +324,35 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         contactViewHolder.childPosition = childPosition;
 
         // return and stop further process if child contact may have been removed
-        Object child = getChild(groupPosition, childPosition);
-        if (child == null)
+        if (!(child instanceof MetaContact))
             return convertView;
+
+        // Must init child tag here as reused convertView may not necessary contains the correct metaContact
+        View contactView = convertView.findViewById(R.id.contact_view);
+        if (isMainContactList) {
+            contactView.setOnClickListener(this);
+            contactView.setOnLongClickListener(this);
+        }
+        contactView.setTag(child);
+        contactViewHolder.avatarView.setTag(child);
 
         UIContactRenderer renderer = getContactRenderer(groupPosition);
         if (renderer.isSelected(child)) {
-            convertView.setBackgroundResource(R.drawable.list_selection_gradient);
+            convertView.setBackgroundResource(R.drawable.color_blue_gradient);
         }
         else {
-            convertView.setBackgroundResource(R.drawable.array_list_selector);
+            convertView.setBackgroundResource(R.drawable.list_selector_state);
         }
 
         // Set display name and status message for contacts or phone book contacts
         String sDisplayName = renderer.getDisplayName(child);
         String statusMessage = renderer.getStatusMessage(child);
 
-        if ((child instanceof MetaContact)
-                && (((MetaContact) child).getDefaultContact() != null)) {
+        MetaContact metaContact = (MetaContact) child;
+        if (metaContact.getDefaultContact() != null) {
+            mContactViewHolder.put(metaContact, contactViewHolder);
+            updateUnreadCount(metaContact, metaContact.getUnreadCount());
+
             String sJid = sDisplayName;
             if (TextUtils.isEmpty(statusMessage)) {
                 if (sJid.contains("@")) {
@@ -324,24 +381,12 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         boolean isShowVideoCall = renderer.isShowVideoCallBtn(child);
         boolean isShowCall = renderer.isShowCallBtn(child);
 
-        if (isShownCallButton && (isShowVideoCall || isShowCall)) {
-            contactViewHolder.callButtonLayout.setVisibility(View.VISIBLE);
+        if (isMainContactList && (isShowVideoCall || isShowCall)) {
             AndroidUtils.setOnTouchBackgroundEffect(contactViewHolder.callButtonLayout);
 
-            if (contactViewHolder.callButton.isSelected()) {
-                contactViewHolder.callButton.setImageResource(R.drawable.contact_call_selected_dark);
-            }
-            else if (contactViewHolder.callVideoButton.isPressed()) {
-                contactViewHolder.callVideoButton.setImageResource(R.drawable.contact_call_video_selected_dark);
-            }
-            else {
-                if (!isShowCall) {
-                    contactViewHolder.callButton.setVisibility(View.INVISIBLE);
-                }
-                if (!isShowVideoCall) {
-                    contactViewHolder.callVideoButton.setVisibility(View.INVISIBLE);
-                }
-            }
+            contactViewHolder.callButtonLayout.setVisibility(View.VISIBLE);
+            contactViewHolder.callButton.setVisibility(isShowCall ? View.VISIBLE : View.GONE);
+            contactViewHolder.callVideoButton.setVisibility(isShowVideoCall ? View.VISIBLE : View.GONE);
         }
         else {
             contactViewHolder.callButtonLayout.setVisibility(View.INVISIBLE);
@@ -362,11 +407,15 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     {
         // Keeps reference to avoid future findViewById()
         GroupViewHolder groupViewHolder;
+        Object group = getGroup(groupPosition);
 
-        if (convertView == null) {
+        if ((convertView == null) || !(convertView.getTag() instanceof GroupViewHolder)) {
             convertView = mInflater.inflate(R.layout.contact_list_group_row, parent, false);
+
             groupViewHolder = new GroupViewHolder();
-            groupViewHolder.displayName = convertView.findViewById(R.id.displayName);
+            groupViewHolder.groupName = convertView.findViewById(R.id.groupName);
+            groupViewHolder.groupName.setOnLongClickListener(this);
+
             groupViewHolder.indicator = convertView.findViewById(R.id.groupIndicatorView);
             convertView.setTag(groupViewHolder);
         }
@@ -374,10 +423,10 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             groupViewHolder = (GroupViewHolder) convertView.getTag();
         }
 
-        Object group = getGroup(groupPosition);
-        if (group != null) {
+        if (group instanceof MetaContactGroup) {
             UIGroupRenderer groupRenderer = getGroupRenderer(groupPosition);
-            groupViewHolder.displayName.setText(groupRenderer.getDisplayName(group));
+            groupViewHolder.groupName.setTag(group);
+            groupViewHolder.groupName.setText(groupRenderer.getDisplayName(group));
         }
 
         // Group expand indicator
@@ -421,38 +470,112 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     public void onClick(View view)
     {
-        if (!(view.getTag() instanceof ContactViewHolder)) {
-            return;
+        ContactViewHolder viewHolder = null;
+
+        Object object = view.getTag();
+
+        // Use by media call button activation
+        if (object instanceof ContactViewHolder) {
+            viewHolder = (ContactViewHolder) view.getTag();
+            int groupPos = viewHolder.groupPosition;
+            int childPos = viewHolder.childPosition;
+            object = getChild(groupPos, childPos);
         }
 
-        ContactViewHolder viewHolder = (ContactViewHolder) view.getTag();
-        int groupPos = viewHolder.groupPosition;
-        int childPos = viewHolder.childPosition;
-        Object contact = getChild(groupPos, childPos);
+        if (object instanceof MetaContact) {
+            MetaContact metaContact = (MetaContact) object;
+            Contact contact = metaContact.getDefaultContact();
+            Boolean isAudioCall = null;
 
-        if (contact != null) {
-            UIContactRenderer renderer = getContactRenderer(groupPos);
-            String contactAddress = renderer.getDefaultAddress(contact);
+            if (view.getId() == R.id.contact_view) {
+                contactListFragment.startChat(metaContact);
+            }
+            else if (contact != null) {
+                Jid jid = contact.getJid();
+                String JidAddress = contact.getAddress();
 
-            switch (view.getId()) {
-                case R.id.contactCallButton:
-                case R.id.contactCallVideoButton:
-                    boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                    AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
-                            viewHolder.callVideoButton, contactAddress, isVideoCall);
-                    break;
+                switch (view.getId()) {
+                    case R.id.contact_view:
+                        contactListFragment.startChat(metaContact);
+                        break;
 
-                case R.id.avatarIcon:
-                    aTalkApp.showToastMessage(contactAddress);
-                    break;
+                    case R.id.contactCallButton:
+                        if (jid instanceof DomainBareJid) {
+                            TelephonyFragment extPhone = TelephonyFragment.newInstance(JidAddress);
+                            contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(android.R.id.content, extPhone).commit();
+                            break;
+                        }
+                        isAudioCall = true;
 
-                default:
-                    break;
+                    case R.id.contactCallVideoButton:
+                        if (viewHolder != null) {
+                            // AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
+                            //        viewHolder.callVideoButton, JidAddress, (isAudioCall == null));
+                            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), metaContact, (isAudioCall == null),
+                                    viewHolder.callVideoButton);
+                        }
+                        break;
+
+                    case R.id.avatarIcon:
+                        aTalkApp.showToastMessage(JidAddress);
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
         else {
-            Timber.w("No valid contact found at this position: %s:%s", groupPos, childPos);
+            Timber.w("Clicked item is not a valid MetaContact");
         }
+    }
+
+    /**
+     * Retrieve the contact avatar from server when user longClick on the avatar in contact list.
+     * Clicked position/contact is derived from the view holder group/child positions.
+     */
+    public boolean onLongClick(View view)
+    {
+        Object clicked = view.getTag();
+
+        // proceed to retrieve avatar for the clicked contact
+        if (clicked instanceof MetaContact) {
+            MetaContact metaContact = (MetaContact) clicked;
+            switch (view.getId()) {
+                case R.id.contact_view:
+                    contactListFragment.showPopupMenuContact(view, metaContact);
+                    return true;
+
+                case R.id.avatarIcon:
+                    Contact contact = metaContact.getDefaultContact();
+                    if (contact != null) {
+                        Jid contactJid = contact.getJid();
+                        if (!(contactJid instanceof DomainBareJid)) {
+                            ((ContactJabberImpl) contact).getAvatar(true);
+                            aTalkApp.showToastMessage(R.string.service_gui_AVATAR_RETRIEVING, contactJid);
+                        }
+                        else {
+                            aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
+                        }
+                    }
+                    return true;
+            }
+        }
+        else if (clicked instanceof MetaContactGroup) {
+            if (view.getId() == R.id.groupName) {
+                if (ContactGroup.ROOT_GROUP_UID.equals(((MetaContactGroup) clicked).getMetaUID())
+                        || ContactGroup.VOLATILE_GROUP.equals(((MetaContactGroup) clicked).getGroupName())) {
+                    Timber.w("No action allowed for Group Name: %s", ((MetaContactGroup) clicked).getGroupName());
+                    aTalkApp.showToastMessage(R.string.service_gui_UNSUPPORTED_OPERATION);
+                }
+                else {
+                    contactListFragment.showPopUpMenuGroup(view, (MetaContactGroup) clicked);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -476,9 +599,9 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         ImageView statusView;
         ImageView callButton;
         ImageView callVideoButton;
-        ImageView selectedBgView;
         ImageView buttonSeparatorView;
         View callButtonLayout;
+        UnreadCountCustomView unreadCount;
         int groupPosition;
         int childPosition;
     }
@@ -486,6 +609,6 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     private static class GroupViewHolder
     {
         ImageView indicator;
-        TextView displayName;
+        TextView groupName;
     }
 }

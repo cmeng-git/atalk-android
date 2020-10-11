@@ -14,15 +14,14 @@
         android:layout_marginBottom="5dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
-        android:text="@string/service_gui_SEC_PROTOCOLS_MSG"
-        android:layout_marginLeft="15dp" />
+        android:text="@string/service_gui_SEC_PROTOCOLS_MSG" />
 
     <org.atalk.android.gui.widgets.TouchInterceptor
 
         android:id="@android:id/list"
         android:layout_width="match_parent"
 
-        android:layout_height="0dip"
+        android:layout_height="0dp"
         android:layout_weight="1"
 
         android:drawSelectorOnTop="false"

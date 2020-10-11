@@ -173,8 +173,8 @@ public class TouchInterceptor extends ListView
                         break;
                     }
                     View item = getChildAt(itemnum - getFirstVisiblePosition());
-                    dragPointX = x - item.getLeft();
-                    dragPointY = y - item.getTop();
+                    dragPointX = x - ((item == null) ? 0 : item.getLeft());
+                    dragPointY = y - ((item == null) ? 0 : item.getTop());
                     xOffset = ((int) ev.getRawX()) - x;
                     yOffset = ((int) ev.getRawY()) - y;
                     Timber.d("Dragging %s, %s sxy: %s, %s", x, y, dragRegionStartX, dragRegionEndX);
@@ -260,15 +260,17 @@ public class TouchInterceptor extends ListView
      */
     private void unExpandViews(boolean deletion)
     {
+        int y0 = (getChildAt(0) == null) ? 0: getChildAt(0).getTop();
+
         for (int i = 0; ; i++) {
             View v = getChildAt(i);
             if (v == null) {
                 if (deletion) {
                     // HACK force update of mItemCount
                     int position = getFirstVisiblePosition();
-                    int y = getChildAt(0).getTop();
+                     getChildAt(0);
                     setAdapter(getAdapter());
-                    setSelectionFromTop(position, y);
+                    setSelectionFromTop(position, y0);
                     // end hack
                 }
                 try {
@@ -396,11 +398,12 @@ public class TouchInterceptor extends ListView
                         else if (y < upperBound) {
                             // scroll the list down a bit
                             speed = y < upperBound / 2 ? -16 : -4;
-                            if (getFirstVisiblePosition() == 0 && getChildAt(0).getTop() >= getPaddingTop()) {
+
+                            int y0 = (getChildAt(0) == null) ? 0: getChildAt(0).getTop();
+                            if ((getFirstVisiblePosition() == 0) && (y0 >= getPaddingTop())) {
                                 // if we're already at the top, don't try to
                                 // scroll, because it causes the framework to
-                                // do some extra drawing that messes up our
-                                // animation
+                                // do some extra drawing that messes up our animation
                                 speed = 0;
                             }
                         }

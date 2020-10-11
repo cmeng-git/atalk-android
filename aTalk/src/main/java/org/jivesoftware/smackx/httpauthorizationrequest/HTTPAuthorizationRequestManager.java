@@ -21,6 +21,7 @@ import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 import org.jivesoftware.smackx.httpauthorizationrequest.packet.ConfirmIQ;
 import org.jxmpp.jid.DomainBareJid;
@@ -89,7 +90,7 @@ public final class HTTPAuthorizationRequestManager extends Manager
             final Jid from = message.getFrom();
             DomainBareJid bareFrom = from.asDomainBareJid();
 
-            Message.Body bodyExt = message.getExtension(Message.Body.ELEMENT, Message.Body.NAMESPACE);
+            Body bodyExt = message.getExtension(Body.class);
             if (bodyExt != null)
                 instruction = bodyExt.getMessage();
 
@@ -109,7 +110,7 @@ public final class HTTPAuthorizationRequestManager extends Manager
                 mConfirmExtension = iqHttpRequest.getConfirmExtension();
 
                 if (mConfirmExtension == null) {
-                    return IQ.createErrorResponse(iqRequest, StanzaError.getBuilder(StanzaError.Condition.bad_request));
+                    return IQ.createErrorResponse(iqRequest, StanzaError.Condition.bad_request);
                 }
                 msgRequest = null;
                 mIqRequest = iqHttpRequest;
@@ -162,11 +163,12 @@ public final class HTTPAuthorizationRequestManager extends Manager
     {
         try {
             if (msgRequest != null) {
-                Message messageOK = new Message(msgRequest.getFrom());
-                messageOK.setType(msgRequest.getType());
-                messageOK.setThread(msgRequest.getThread());
-                messageOK.addExtension(mConfirmExtension);
-                connection().sendStanza(messageOK);
+                MessageBuilder messageOK = StanzaBuilder.buildMessage()
+                        .to(msgRequest.getFrom())
+                        .ofType(msgRequest.getType())
+                        .setThread(msgRequest.getThread())
+                        .addExtension(mConfirmExtension);
+                connection().sendStanza(messageOK.build());
             }
             else if (mIqRequest != null) {
                 connection().sendStanza(new EmptyResultIQ(mIqRequest));
@@ -183,25 +185,24 @@ public final class HTTPAuthorizationRequestManager extends Manager
      */
     public void reject()
     {
+        StanzaError stanzaError = StanzaError.getBuilder()
+                .setType(StanzaError.Type.AUTH)
+                .setCondition(StanzaError.Condition.not_authorized).build();
+
         try {
             if (msgRequest != null) {
-                StanzaError errorStanza = StanzaError.getBuilder()
-                        .setType(StanzaError.Type.AUTH)
-                        .setCondition(StanzaError.Condition.not_authorized).build();
-
-                Message messageCancel = new Message(msgRequest.getFrom(), Message.Type.error);
-                messageCancel.setThread(msgRequest.getThread());
-                messageCancel.addExtension(mConfirmExtension);
-                messageCancel.addExtension(errorStanza);
-                connection().sendStanza(messageCancel);
+                MessageBuilder messageCancel = StanzaBuilder.buildMessage()
+                        .to(msgRequest.getFrom())
+                        .ofType(Message.Type.error)
+                        .setThread(msgRequest.getThread())
+                        .addExtension(mConfirmExtension)
+                        .addExtension(stanzaError);
+                connection().sendStanza(messageCancel.build());
             }
             else if (mIqRequest != null) {
-                ConfirmIQ iqDeny = new ConfirmIQ(mIqRequest);
-
-                StanzaError stanzaError = StanzaError.getBuilder()
-                        .setType(StanzaError.Type.AUTH)
-                        .setCondition(StanzaError.Condition.not_authorized).build();
-                iqDeny.initializeAsError(stanzaError);
+                ErrorIQ iqDeny = IQ.createErrorResponse(mIqRequest, stanzaError);
+                // smack 4.4.3-alpha3 (20200404) will discard this extensionElement
+                iqDeny.addExtension(mConfirmExtension);
                 connection().sendStanza(iqDeny);
             }
         } catch (SmackException.NotConnectedException | InterruptedException e) {

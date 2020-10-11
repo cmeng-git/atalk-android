@@ -10,7 +10,8 @@ import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.event.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.atalk.util.MediaType;
+import org.jivesoftware.smack.XMPPConnection;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -74,9 +75,9 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * The protocol provider that this peer belongs to.
      */
-    protected final V mProtocolProvider;
+    protected final V mPPS;
 
-    protected final XMPPTCPConnection mConnection;
+    protected final XMPPConnection mConnection;
 
     /**
      * The list of <tt>SoundLevelListener</tt>s interested in level changes in the audio we are
@@ -136,8 +137,8 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     public MediaAwareCallPeer(T owningCall)
     {
         this.call = owningCall;
-        mProtocolProvider = owningCall.getProtocolProvider();
-        mConnection = mProtocolProvider.getConnection();
+        mPPS = owningCall.getProtocolProvider();
+        mConnection = mPPS.getConnection();
 
         // create the uid
         this.peerID = String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
@@ -513,7 +514,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     @Override
     public V getProtocolProvider()
     {
-        return mProtocolProvider;
+        return mPPS;
     }
 
     /**
@@ -717,7 +718,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Indicates that the other party has timeouted replying to our offer to secure the connection.
+     * Indicates that the other party has timeout replying to our offer to secure the connection.
      *
      * @param mediaType the <tt>MediaType</tt> of the call session
      * @param sender the security controller that caused the event

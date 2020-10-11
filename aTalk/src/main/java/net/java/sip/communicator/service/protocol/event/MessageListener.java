@@ -16,7 +16,7 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * A listener that would gather events notifying of message delivery status. Message received
+ * A listener that would gather events notifying of message delivery status. IMessage received
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -24,7 +24,7 @@ import java.util.EventListener;
 public interface MessageListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>Message</tt> has been received.
+     * Called when a new incoming <tt>IMessage</tt> has been received.
      *
      * @param evt the <tt>MessageReceivedEvent</tt> containing the newly received message, its sender
      * and other details.

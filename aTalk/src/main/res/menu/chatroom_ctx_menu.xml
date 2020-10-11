@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    <item
+        android:id="@+id/chatroom_tts_enable"
+        android:title="@string/service_gui_TTS_ENABLE">
+    </item>
     <item
         android:id="@+id/close_chatroom"
         android:title="@string/service_gui_CLOSE_CHAT">
@@ -19,11 +22,11 @@
     </item>
     <item
         android:id="@+id/destroy_chatroom"
-        android:title="@string/service_gui_DESTROY_CHATROOM">
+        android:title="@string/service_gui_CHATROOM_DESTROY">
     </item>
     <item
         android:id="@+id/send_chatroom_file"
-        android:title="@string/service_gui_FILE_SEND_TO"
+        android:title="@string/service_gui_FILE_ATTACHMENT"
         android:visible="false">
     </item>
     <item

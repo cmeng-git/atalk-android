@@ -80,7 +80,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     /**
      * Returns the descriptor of this chat session.
      *
-     * @return the descriptor of this chat session.
+     * @return the descriptor i.e. ChatRoomWrapper of this chat session.
      */
     @Override
     public Object getDescriptor()
@@ -352,6 +352,8 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
 
             String eventType = evt.getEventType();
             ChatRoomMember chatRoomMember = evt.getChatRoomMember();
+            // Timber.d("ChatRoom member: %s (%s)", chatRoomMember.getContactAddress(), chatRoomMember.getNickName());
+
             String statusMessage = null;
             if (eventType.equals(ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED)) {
                 ConferenceChatContact chatContact = new ConferenceChatContact(chatRoomMember);
@@ -363,7 +365,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                         chatParticipants.add(chatContact);
                 }
                 // cmeng: seems to do nothing for private contact presence in chatRoom
-                room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
+                room.updatePrivateContactPresenceStatus(chatRoomMember);
 
                 /*
                  * When the whole list of members of a given chat room is reported, it doesn't
@@ -373,7 +375,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                  */
                 if (!evt.isReasonUserList()) {
                     statusMessage = aTalkApp.getResString(
-                            R.string.service_gui_CHAT_ROOM_USER_JOINED, sourceChatRoom.getName());
+                            R.string.service_gui_CHATROOM_USER_JOINED, sourceChatRoom.getName());
                     sessionRenderer.updateChatContactStatus(chatContact, statusMessage);
                 }
             }
@@ -383,22 +385,22 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
                 switch (eventType) {
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_LEFT:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHAT_ROOM_USER_LEFT, sourceChatRoom.getName());
+                                R.string.service_gui_CHATROOM_USER_LEFT, sourceChatRoom.getName());
                         break;
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHAT_ROOM_USER_KICKED, sourceChatRoom.getName());
+                                R.string.service_gui_CHATROOM_USER_KICKED, sourceChatRoom.getName());
                         break;
                     case ChatRoomMemberPresenceChangeEvent.MEMBER_QUIT:
                         statusMessage = aTalkApp.getResString(
-                                R.string.service_gui_CHAT_ROOM_USER_QUIT, sourceChatRoom.getName());
+                                R.string.service_gui_CHATROOM_USER_QUIT, sourceChatRoom.getName());
                         break;
                 }
 
                 ChatContact<?> contact = null;
                 for (ChatContact<?> chatContact : chatParticipants) {
                     if (chatContact.getDescriptor().equals(chatRoomMember)) {
-                        room.updatePrivateContactPresenceStatus(chatRoomMember.getNickName());
+                        room.updatePrivateContactPresenceStatus(chatRoomMember);
                         contact = chatContact;
                         break;
                     }
@@ -427,7 +429,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     public void chatRoomPropertyChanged(ChatRoomPropertyChangeEvent evt)
     {
         if (evt.getPropertyName().equals(ChatRoomPropertyChangeEvent.CHAT_ROOM_SUBJECT)) {
-            sessionRenderer.setChatSubject((String) evt.getNewValue());
+            sessionRenderer.setChatSubject((String) evt.getNewValue(), (String) evt.getOldValue());
         }
     }
 
@@ -471,7 +473,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
         chatRoom.addMemberPresenceListener(this);
 
         // Load the subject of the chat room.
-        sessionRenderer.setChatSubject(chatRoom.getSubject());
+        sessionRenderer.setChatSubject(chatRoom.getSubject(), null);
     }
 
     /**

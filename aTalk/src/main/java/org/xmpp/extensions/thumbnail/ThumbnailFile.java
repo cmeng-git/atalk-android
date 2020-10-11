@@ -63,8 +63,7 @@ public class ThumbnailFile extends StreamInitiation.File
     @Override
     public String toXML(XmlEnvironment enclosingNamespace)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.prelude(getElementName(), getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         xml.optAttribute("name", getName());
         xml.optAttribute("size", getSize());
@@ -76,10 +75,10 @@ public class ThumbnailFile extends StreamInitiation.File
         xml.rightAngleBracket();
 
         String desc = this.getDesc();
-        if (!StringUtils.isNullOrEmpty(desc)
+        if (StringUtils.isNotEmpty(desc)
                 || isRanged()
                 || (thumbnail != null)) {
-            if (!StringUtils.isNullOrEmpty(desc)) {
+            if (StringUtils.isNotEmpty(desc)) {
                 xml.element("desc", desc);
             }
             if (isRanged()) {

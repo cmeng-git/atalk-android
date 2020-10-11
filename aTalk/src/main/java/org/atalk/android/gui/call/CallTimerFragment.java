@@ -14,9 +14,7 @@ import net.java.sip.communicator.util.GuiUtils;
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiFragment;
 
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Fragment implements the logic responsible for updating call duration timer. It is expected that parent
@@ -82,7 +80,7 @@ public class CallTimerFragment extends OSGiFragment
      */
     public void updateCallDuration()
     {
-        runOnUiThread(() -> doUpdateCallDuration());
+        runOnUiThread(this::doUpdateCallDuration);
     }
 
     /**
@@ -107,8 +105,12 @@ public class CallTimerFragment extends OSGiFragment
         if (callStartDate == null) {
             this.callStartDate = new Date();
         }
-        this.callDurationTimer.schedule(new CallTimerTask(), new Date(System.currentTimeMillis()), 1000);
-        this.isCallTimerStarted = true;
+
+        // Do not schedule if it is already started (pidgin sends 4 session-accept's on user accept incoming call)
+        if (!isCallTimerStarted) {
+            this.callDurationTimer.schedule(new CallTimerTask(), new Date(System.currentTimeMillis()), 1000);
+            this.isCallTimerStarted = true;
+        }
     }
 
     /**

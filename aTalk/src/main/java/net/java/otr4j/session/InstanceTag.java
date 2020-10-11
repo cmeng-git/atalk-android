@@ -2,6 +2,9 @@ package net.java.otr4j.session;
 
 import java.util.Random;
 
+/**
+ * @author Marin Dzhigarov
+ */
 public class InstanceTag
 {
 

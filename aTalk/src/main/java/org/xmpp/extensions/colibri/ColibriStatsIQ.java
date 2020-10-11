@@ -19,19 +19,19 @@ public class ColibriStatsIQ extends IQ
     /**
      * The XML element name of the Jitsi Videobridge <tt>stats</tt> extension.
      */
-    public static final String ELEMENT_NAME = ColibriStatsExtensionElement.ELEMENT_NAME;
+    public static final String ELEMENT = ColibriStatsExtension.ELEMENT;
 
     /**
      * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge
      * <tt>stats</tt> extension.
      */
-    public static final String NAMESPACE = ColibriStatsExtensionElement.NAMESPACE;
+    public static final String NAMESPACE = ColibriStatsExtension.NAMESPACE;
 
-    private final ColibriStatsExtensionElement backEnd = new ColibriStatsExtensionElement();
+    private final ColibriStatsExtension backEnd = new ColibriStatsExtension();
 
     public ColibriStatsIQ()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -39,7 +39,7 @@ public class ColibriStatsIQ extends IQ
      *
      * @param stat the stat to be added
      */
-    public void addStat(ColibriStatsExtensionElement.Stat stat)
+    public void addStat(ColibriStatsExtension.Stat stat)
     {
         backEnd.addStat(stat);
     }

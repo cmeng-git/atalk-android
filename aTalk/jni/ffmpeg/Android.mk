@@ -47,7 +47,7 @@ LOCAL_LDLIBS += -llog -lz
 # LOCAL_STATIC_LIBRARIES := libavformat libavcodec libpostproc libswscale libavutil
 LOCAL_STATIC_LIBRARIES := libavcodec libavutil libavformat libpostproc libswscale 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/ffmpeg
-LOCAL_SRC_FILES := org_atalk_impl_neomedia_codec_FFmpegc
+LOCAL_SRC_FILES := FFmpegc
 #LOCAL_CFLAGS := -march=armv7-a -mfloat-abi=softfp -mfpu=neon
 include $(BUILD_SHARED_LIBRARY)
 

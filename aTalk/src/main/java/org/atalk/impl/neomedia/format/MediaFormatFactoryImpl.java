@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.format;
 
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.MediaFormatFactory;

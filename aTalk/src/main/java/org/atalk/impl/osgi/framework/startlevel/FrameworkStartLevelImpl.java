@@ -6,25 +6,22 @@
  */
 package org.atalk.impl.osgi.framework.startlevel;
 
-import java.util.concurrent.TimeUnit;
-
 import org.atalk.impl.osgi.framework.AsyncExecutor;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.impl.osgi.framework.launch.FrameworkImpl;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 
+import java.util.concurrent.TimeUnit;
+
 /**
- *
  * @author Lyubomir Marinov
  */
-public class FrameworkStartLevelImpl
-    implements FrameworkStartLevel
+public class FrameworkStartLevelImpl implements FrameworkStartLevel
 {
     private final BundleImpl bundle;
 
-    private final AsyncExecutor<Command> executor
-        = new AsyncExecutor<>(5, TimeUnit.MINUTES);
+    private final AsyncExecutor<Command> executor = new AsyncExecutor<>(5, TimeUnit.MINUTES);
 
     private int initialBundleStartLevel = 0;
 
@@ -90,8 +87,7 @@ public class FrameworkStartLevelImpl
         executor.shutdownNow();
     }
 
-    private class Command
-        implements Runnable
+    private class Command implements Runnable
     {
         private final FrameworkListener[] listeners;
 
@@ -108,50 +104,35 @@ public class FrameworkStartLevelImpl
             int startLevel = getStartLevel();
             FrameworkImpl framework = getFramework();
 
-            if (startLevel < this.startLevel)
-            {
+            if (startLevel < this.startLevel) {
                 for (int intermediateStartLevel = startLevel + 1;
-                        intermediateStartLevel <= this.startLevel;
-                        intermediateStartLevel++)
-                {
+                     intermediateStartLevel <= this.startLevel;
+                     intermediateStartLevel++) {
                     int oldStartLevel = getStartLevel();
                     int newStartLevel = intermediateStartLevel;
 
-                    framework.startLevelChanging(
-                            oldStartLevel, newStartLevel,
-                            listeners);
-                    synchronized (FrameworkStartLevelImpl.this)
-                    {
+                    framework.startLevelChanging(oldStartLevel, newStartLevel, listeners);
+                    synchronized (FrameworkStartLevelImpl.this) {
                         FrameworkStartLevelImpl.this.startLevel = newStartLevel;
                     }
-                    framework.startLevelChanged(
-                            oldStartLevel, newStartLevel,
-                            listeners);
+                    framework.startLevelChanged(oldStartLevel, newStartLevel, listeners);
                 }
             }
-            else if (this.startLevel < startLevel)
-            {
+            else if (this.startLevel < startLevel) {
                 for (int intermediateStartLevel = startLevel;
-                        intermediateStartLevel > this.startLevel;
-                        intermediateStartLevel--)
-                {
+                     intermediateStartLevel > this.startLevel;
+                     intermediateStartLevel--) {
                     int oldStartLevel = getStartLevel();
                     int newStartLevel = intermediateStartLevel - 1;
 
-                    framework.startLevelChanging(
-                            oldStartLevel, newStartLevel,
-                            listeners);
-                    synchronized (FrameworkStartLevelImpl.this)
-                    {
+                    framework.startLevelChanging(oldStartLevel, newStartLevel, listeners);
+                    synchronized (FrameworkStartLevelImpl.this) {
                         FrameworkStartLevelImpl.this.startLevel = newStartLevel;
                     }
-                    framework.startLevelChanged(
-                            oldStartLevel, newStartLevel,
-                            listeners);
+                    framework.startLevelChanged(oldStartLevel, newStartLevel, listeners);
                 }
             }
-            else
-            {
+            else {
                 framework.startLevelChanging(startLevel, startLevel, listeners);
                 framework.startLevelChanged(startLevel, startLevel, listeners);
             }

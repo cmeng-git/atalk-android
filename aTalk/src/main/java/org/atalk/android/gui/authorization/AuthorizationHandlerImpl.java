@@ -13,10 +13,10 @@ import net.java.sip.communicator.service.protocol.AuthorizationRequest;
 import net.java.sip.communicator.service.protocol.AuthorizationResponse;
 import net.java.sip.communicator.service.protocol.Contact;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -121,7 +121,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
         }
 
         String reason = response.getReason();
-        if (!StringUtils.isNullOrEmpty(reason)) {
+        if (StringUtils.isNotEmpty(reason)) {
             msg += " " + reason;
         }
 
@@ -171,7 +171,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
         }
 
         /**
-         * This method blocks until the dialog activity finishes it's job.
+         * This method blocks until the dialog activity finishes its job.
          */
         public void waitForResponse()
         {

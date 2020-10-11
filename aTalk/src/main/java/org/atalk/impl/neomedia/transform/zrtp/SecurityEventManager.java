@@ -7,11 +7,10 @@ package org.atalk.impl.neomedia.transform.zrtp;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.MediaType;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.resources.ResourceManagementService;
+import org.atalk.util.MediaType;
 
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -28,12 +27,12 @@ import timber.log.Timber;
  * associated ZRTP multi-stream sessions.
  *
  * Coordinate this callback class with the associated GUI implementation class
+ * @see net.java.sip.communicator.impl.gui.main.call.ZrtpSecurityPanel
  *
  * @author Emanuel Onica
  * @author Werner Dittmann
  * @author Yana Stamcheva
  * @author Eng Chong Meng
- * @see // net.java.sip.communicator.impl.gui.main.call.ZrtpSecurityPanel
  */
 public class SecurityEventManager extends ZrtpUserCallback
 {
@@ -132,8 +131,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     }
 
     /**
-     * ZRTP computes the SAS string after nearly all the negotiation and computations are done
-     * internally.
+     * ZRTP computes the SAS string after nearly all the negotiation and computations are done internally.
      *
      * @param sas The string containing the SAS.
      * @param isVerified is sas verified.
@@ -193,7 +191,8 @@ public class SecurityEventManager extends ZrtpUserCallback
             }
         }
         else if (msgCode instanceof ZrtpCodes.WarningCodes) {
-            // Warning codes usually do not affect encryption or security. Only in few cases inform the user and ask to verify SAS.
+            // Warning codes usually do not affect encryption or security.
+            // Only in few cases inform the user and ask to verify SAS.
             ZrtpCodes.WarningCodes warn = (ZrtpCodes.WarningCodes) msgCode;
             severity = SrtpListener.WARNING;
 
@@ -249,8 +248,9 @@ public class SecurityEventManager extends ZrtpUserCallback
 
         if (sendEvent)
             securityListener.securityMessageReceived(message, i18nMessage, severity);
-        Timber.log(TimberLog.FINER, "%s: ZRTP message: severity: %s, sub code: %s, multi: %s",
-                sessionTypeToString(sessionType), sev, msgCode, multiStreams);
+
+        Timber.d("%s: ZRTP message (%s): code: %s; message: %s",
+                sessionTypeToString(sessionType), sev, msgCode, message);
     }
 
     /**
@@ -265,7 +265,7 @@ public class SecurityEventManager extends ZrtpUserCallback
         Iterator<?> ii = subCode.iterator();
         Object msgCode = ii.next();
 
-        Timber.d("%s: ZRTP key negotiation failed, sub code: %s", sessionTypeToString(sessionType), msgCode);
+        Timber.w(new Exception(), "%s: ZRTP key negotiation failed, sub code: %s", sessionTypeToString(sessionType), msgCode);
     }
 
     /**
@@ -295,7 +295,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void confirmGoClear()
     {
-            Timber.d("%s: GoClear confirmation requested.", sessionTypeToString(sessionType));
+        Timber.d("%s: GoClear confirmation requested.", sessionTypeToString(sessionType));
     }
 
     /**

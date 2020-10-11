@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.transform.dtls;
 import org.atalk.impl.neomedia.*;
 import org.atalk.impl.neomedia.codec.video.h264.Packetizer;
 import org.atalk.service.neomedia.RawPacket;
-import org.bouncycastle.crypto.tls.*;
+import org.bouncycastle.tls.*;
 import org.ice4j.ice.Component;
 
 import java.io.IOException;
@@ -41,8 +41,7 @@ public class DatagramTransportImpl implements DatagramTransport
     /**
      * The pool of <tt>RawPacket</tt>s instances to reduce their allocations and garbage collection.
      */
-    private final Queue<RawPacket> rawPacketPool
-            = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
+    private final Queue<RawPacket> rawPacketPool = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
 
     /**
      * The queue of <tt>RawPacket</tt>s which have been received from the network are awaiting to be
@@ -93,12 +92,10 @@ public class DatagramTransportImpl implements DatagramTransport
         receiveQ = new ArrayBlockingQueue<>(receiveQCapacity);
     }
 
-    private AbstractRTPConnector assertNotClosed(
-            boolean breakOutOfDTLSReliableHandshakeReceiveMessage)
+    private AbstractRTPConnector assertNotClosed(boolean breakOutOfDTLSReliableHandshakeReceiveMessage)
             throws IOException
     {
         AbstractRTPConnector connector = this.connector;
-
         if (connector == null) {
             IOException ioe = new IOException(getClass().getName() + " is closed!");
 
@@ -113,16 +110,14 @@ public class DatagramTransportImpl implements DatagramTransport
 
     /**
      * Works around a bug in the Bouncy Castle Crypto APIs which may cause
-     * <tt>org.bouncycastle.crypto.tls.DTLSReliableHandshake.receiveMessage()</tt> to enter an
-     * endless loop.
+     * <tt>org.bouncycastle.tls.DTLSReliableHandshake.receiveMessage()</tt> to enter an endless loop.
      *
      * @param cause the <tt>Throwable</tt> which would have been thrown if the bug did not exist
      */
     private void breakOutOfDTLSReliableHandshakeReceiveMessage(Throwable cause)
     {
         for (StackTraceElement stackTraceElement : cause.getStackTrace()) {
-            if ("org.bouncycastle.crypto.tls.DTLSReliableHandshake"
-                    .equals(stackTraceElement.getClassName())
+            if ("org.bouncycastle.tls.DTLSReliableHandshake".equals(stackTraceElement.getClassName())
                     && "receiveMessage".equals(stackTraceElement.getMethodName())) {
                 throw new IllegalStateException(cause);
             }
@@ -173,7 +168,6 @@ public class DatagramTransportImpl implements DatagramTransport
             throws IOException
     {
         assertNotClosed(false);
-
         byte[] buf;
         int len;
 
@@ -227,18 +221,15 @@ public class DatagramTransportImpl implements DatagramTransport
 
         if (sendLimit <= 0) {
             /*
-             * XXX The estimation bellow is wildly inaccurate and hardly related but we have to
-             * start somewhere.
+             * XXX The estimation bellow is wildly inaccurate and hardly related but we have to start somewhere.
              */
-            sendLimit = DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH
-                    + Packetizer.MAX_PAYLOAD_SIZE;
+            sendLimit = DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH + Packetizer.MAX_PAYLOAD_SIZE;
         }
         return sendLimit;
     }
 
     /**
-     * Queues a packet received from the network to be received by the application through this
-     * <tt>DatagramTransport</tt>.
+     * Queues a packet received from the network to be received by the application through this <tt>DatagramTransport</tt>.
      *
      * @param buf the array of <tt>byte</tt>s which contains the packet to be queued
      * @param off the offset within <tt>buf</tt> at which the packet to be queued starts
@@ -293,9 +284,8 @@ public class DatagramTransportImpl implements DatagramTransport
          * a response to a request that was earlier scheduled for send.
          */
         /*
-         * XXX However, it may unnecessarily break up a flight into multiple datagrams. Since we
-         * have implemented the recognition of the end of flights, it should be fairly safe to rely
-         * on it alone.
+         * XXX However, it may unnecessarily break up a flight into multiple datagrams. Since we have
+         * implemented the recognition of the end of flights, it should be fairly safe to rely on it alone.
          */
         // flush();
 
@@ -322,7 +312,6 @@ public class DatagramTransportImpl implements DatagramTransport
                 assertNotClosed(true);
 
                 RawPacket pkt = receiveQ.peek();
-
                 if (pkt != null) {
                     /*
                      * If a datagram has been received and even if it carries no/zero bytes, a
@@ -347,8 +336,7 @@ public class DatagramTransportImpl implements DatagramTransport
                             toReceiveIsPositive = (toReceive > 0);
                         }
                         if (toReceiveIsPositive) {
-                            System.arraycopy(pkt.getBuffer(), pktOffset, buf, off + received,
-                                    toReceive);
+                            System.arraycopy(pkt.getBuffer(), pktOffset, buf, off + received, toReceive);
                             received += toReceive;
                         }
                         if (toReceive == pktLength) {
@@ -361,8 +349,7 @@ public class DatagramTransportImpl implements DatagramTransport
                         }
                         if (toReceiveIsPositive) {
                             /*
-                             * The specified buf has received toReceive bytes and we do not
-                             * concatenate RawPackets.
+                             * The specified buf has received toReceive bytes and we do not concatenate RawPackets.
                              */
                             break;
                         }
@@ -398,25 +385,21 @@ public class DatagramTransportImpl implements DatagramTransport
      * {@inheritDoc}
      */
     @Override
-    public void send(byte[] buf, int off, int len)
+    public void send(byte[] buf, int offset, int len)
             throws IOException
     {
         assertNotClosed(false);
 
         // If possible, construct a single datagram from multiple DTLS records.
         if (len >= DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH) {
-            short type = TlsUtils.readUint8(buf, off);
+            short type = TlsUtils.readUint8(buf, offset);
             boolean endOfFlight = false;
 
             switch (type) {
                 case ContentType.handshake:
+                    // message_type is the first byte of the record layer fragment (encrypted after 'change_cipher_spec')
                     short msg_type = TlsUtils.readUint8(buf,
-                            off
-                                    + 1 /* type */
-                                    + 2 /* version */
-                                    + 2 /* epoch */
-                                    + 6 /* sequence_number */
-                                    + 2 /* length */);
+                            offset + DtlsPacketTransformer.DTLS_RECORD_HEADER_LENGTH);
 
                     switch (msg_type) {
                         case HandshakeType.certificate:
@@ -425,7 +408,7 @@ public class DatagramTransportImpl implements DatagramTransport
                         case HandshakeType.client_key_exchange:
                         case HandshakeType.server_hello:
                         case HandshakeType.server_key_exchange:
-                        case HandshakeType.session_ticket:
+                        case HandshakeType.new_session_ticket:
                         case HandshakeType.supplemental_data:
                             endOfFlight = false;
                             break;
@@ -437,8 +420,8 @@ public class DatagramTransportImpl implements DatagramTransport
                             endOfFlight = true;
                             break;
                         default:
+                            Timber.w("Encrypted DTLS handshake 'Finished' or unknown message type: %s", msg_type);
                             endOfFlight = true;
-                            Timber.w("Unknown DTLS handshake message type: %s", msg_type);
                             break;
                     }
                     // Do fall through!
@@ -460,7 +443,7 @@ public class DatagramTransportImpl implements DatagramTransport
                                         Math.min(sendBufLength, sendBuf.length));
                             }
 
-                            System.arraycopy(buf, off, sendBuf, sendBufLength, len);
+                            System.arraycopy(buf, offset, sendBuf, sendBufLength, len);
                             sendBufLength = newSendBufLength;
 
                             if (endOfFlight)
@@ -468,11 +451,11 @@ public class DatagramTransportImpl implements DatagramTransport
                         }
                         else {
                             if (endOfFlight) {
-                                doSend(buf, off, len);
+                                doSend(buf, offset, len);
                             }
                             else {
                                 flush();
-                                send(buf, off, len);
+                                send(buf, offset, len);
                             }
                         }
                     }
@@ -481,12 +464,12 @@ public class DatagramTransportImpl implements DatagramTransport
                 case ContentType.alert:
                 case ContentType.application_data:
                 default:
-                    doSend(buf, off, len);
+                    doSend(buf, offset, len);
                     break;
             }
         }
         else {
-            doSend(buf, off, len);
+            doSend(buf, offset, len);
         }
     }
 

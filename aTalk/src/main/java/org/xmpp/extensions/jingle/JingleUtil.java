@@ -5,6 +5,7 @@
  */
 package org.xmpp.extensions.jingle;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.FullJid;
 import org.xmpp.extensions.jingle.element.*;
@@ -61,7 +62,7 @@ public class JingleUtil
     }
 
     /**
-     * Creates a {@link Jingle} <tt>session-info</tt> packet carrying a the specified payload type.
+     * Creates a {@link Jingle} <tt>session-info</tt> packet carrying the specified payload type.
      *
      * @param from our full jid
      * @param recipient their full jid
@@ -72,7 +73,7 @@ public class JingleUtil
     public static Jingle createSessionInfo(FullJid from, FullJid recipient, String sessionId, SessionInfoType type)
     {
         Jingle ringing = createSessionInfo(from, recipient, sessionId);
-        SessionInfoExtensionElement sessionInfoType = new SessionInfoExtensionElement(type);
+        SessionInfoExtension sessionInfoType = new SessionInfoExtension(type);
 
         ringing.setSessionInfo(sessionInfoType);
         return ringing;
@@ -93,7 +94,7 @@ public class JingleUtil
 
     /**
      * Creates a {@link Jingle} <tt>session-terminate</tt> packet that is meant to terminate an
-     * on-going, well established session (similar to a SIP BYE request).
+     * ongoing, established session (similar to a SIP BYE request).
      *
      * @param from our Jid
      * @param recipient the destination Jid
@@ -148,23 +149,28 @@ public class JingleUtil
      * assume that the <tt>from</tt> value should also be used for the value of the Jingle <tt>responder</tt>.
      *
      * @param from our Jid
-     * @param recipient the destination Jid
-     * @param sessionId the ID of the Jingle session that this message will be terminating.
+     * @param sessionInitIQ the received session-initiate Jingle
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link Jingle} <tt>session-accept</tt> packet.
      */
-    public static Jingle createSessionAccept(FullJid from, FullJid recipient, String sessionId,
-            Iterable<JingleContent> contentList)
+    public static Jingle createSessionAccept(FullJid from, Jingle sessionInitIQ, Iterable<JingleContent> contentList)
     {
-        Jingle sessionAccept = new Jingle(SESSION_ACCEPT, sessionId);
+        Jingle sessionAccept = new Jingle(SESSION_ACCEPT, sessionInitIQ.getSid());
 
-        sessionAccept.setTo(recipient);
+        sessionAccept.setTo(sessionInitIQ.getInitiator());
         sessionAccept.setFrom(from);
         sessionAccept.setResponder(from);
         sessionAccept.setType(IQ.Type.set);
 
+        // Just copy to sessionInitIQ GroupExtension element to session-accept
+        ExtensionElement groupExtension = sessionInitIQ.getExtension(GroupExtension.QNAME);
+        if (groupExtension != null) {
+            sessionAccept.addExtension(groupExtension);
+        }
+
         for (JingleContent content : contentList)
             sessionAccept.addContent(content);
+
         return sessionAccept;
     }
 
@@ -174,31 +180,29 @@ public class JingleUtil
      * assume that the <tt>from</tt> value should also be used for the value of the Jingle <tt>responder</tt>.
      *
      * @param from our Jid
-     * @param recipient the destination Jid
-     * @param sessionId the ID of the Jingle session that this message will be terminating.
+     * @param sessionInitIQ the received session-initiate Jingle
      * @param contentList the content elements containing media and transport descriptions.
      * @return the newly constructed {@link Jingle} <tt>description-info</tt> packet.
      */
-    public static Jingle createDescriptionInfo(FullJid from, FullJid recipient, String sessionId,
-            Iterable<JingleContent> contentList)
+    public static Jingle createDescriptionInfo(FullJid from, Jingle sessionInitIQ, Iterable<JingleContent> contentList)
     {
-        Jingle descriptionInfo = new Jingle(DESCRIPTION_INFO, sessionId);
+        Jingle descriptionInfo = new Jingle(DESCRIPTION_INFO, sessionInitIQ.getSid());
 
-        descriptionInfo.setTo(recipient);
+        descriptionInfo.setTo(sessionInitIQ.getInitiator());
         descriptionInfo.setFrom(from);
         descriptionInfo.setResponder(from);
         descriptionInfo.setType(IQ.Type.set);
 
         for (JingleContent content : contentList)
             descriptionInfo.addContent(content);
+
         return descriptionInfo;
     }
 
     /**
      * Creates a {@link Jingle} <tt>transport-info</tt> packet with the specified <tt>from</tt>,
      * <tt>to</tt>, <tt>sessionId</tt>, and <tt>contentList</tt>. Given our role in a conversation, we
-     * would assume that the <tt>from</tt> value should also be used for the value of the Jingle
-     * <tt>responder</tt>.
+     * would assume that the <tt>from</tt> value should also be used for the value of the Jingle <tt>responder</tt>.
      *
      * @param from our Jid
      * @param recipient the destination Jid

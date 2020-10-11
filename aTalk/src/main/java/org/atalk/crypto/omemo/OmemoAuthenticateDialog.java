@@ -16,6 +16,7 @@
  */
 package org.atalk.crypto.omemo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -24,9 +25,7 @@ import android.widget.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
 import org.jivesoftware.smack.SmackException;
@@ -37,7 +36,9 @@ import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
+import org.jxmpp.jid.BareJid;
 
+import java.io.IOException;
 import java.util.*;
 
 import timber.log.Timber;
@@ -55,7 +56,8 @@ public class OmemoAuthenticateDialog extends OSGiActivity
 
     private static OmemoManager mOmemoManager;
     private static Set<OmemoDevice> mOmemoDevices;
-    private static CryptoFragment mCryptoFragment;
+
+    private static AuthenticateListener mListener;
     private SQLiteOmemoStore mOmemoStore;
 
     private final HashMap<OmemoDevice, String> buddyFingerprints = new HashMap<>();
@@ -67,8 +69,25 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      */
     private FingerprintListAdapter fpListAdapter;
 
-    private OmemoFingerprint remoteFingerprint = null;
-    private String bareJid;
+    /**
+     * Creates parametrized <tt>Intent</tt> of buddy authenticate dialog.
+     *
+     * @param omemoManager the UUID of OTR session.
+     * @return buddy authenticate dialog parametrized with given OTR session's UUID.
+     */
+    public static Intent createIntent(Context context, OmemoManager omemoManager, Set<OmemoDevice> omemoDevices,
+            AuthenticateListener listener)
+    {
+        Intent intent = new Intent(context, OmemoAuthenticateDialog.class);
+
+        mOmemoManager = omemoManager;
+        mOmemoDevices = omemoDevices;
+        mListener = listener;
+
+        // Started not from Activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
 
     /**
      * {@inheritDoc}
@@ -77,7 +96,12 @@ public class OmemoAuthenticateDialog extends OSGiActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mOmemoStore = (SQLiteOmemoStore) SignalOmemoService.getInstance().getOmemoStoreBackend();
+        try {
+            mOmemoStore = (SQLiteOmemoStore) SignalOmemoService.getInstance().getOmemoStoreBackend();
+            // IllegalStateException from the field?
+        } catch (IllegalStateException ex) {
+            finish();
+        }
 
         setContentView(R.layout.omemo_authenticate_dialog);
         setTitle(R.string.omemo_authbuddydialog_AUTHENTICATE_BUDDY);
@@ -86,19 +110,18 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         ListView fingerprintsList = findViewById(R.id.fp_list);
         fingerprintsList.setAdapter(fpListAdapter);
 
-        String account = mOmemoManager.getOwnJid().toString();
+        // userJid may be null
+        BareJid userJid = mOmemoManager.getOwnJid();
         String localFingerprint = null;
         try {
             localFingerprint = mOmemoManager.getOwnFingerprint().toString();
-        } catch (SmackException.NotLoggedInException e) {
-            e.printStackTrace();
-        } catch (CorruptedOmemoKeyException e) {
-            e.printStackTrace();
+        } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
+            Timber.w("Get own fingerprint exception: %s", e.getMessage());
         }
 
         View content = findViewById(android.R.id.content);
         ViewUtil.setTextViewValue(content, R.id.localFingerprintLbl,
-                getString(R.string.omemo_authbuddydialog_LOCAL_FINGERPRINT, account,
+                getString(R.string.omemo_authbuddydialog_LOCAL_FINGERPRINT, userJid,
                         CryptoHelper.prettifyFingerprint(localFingerprint)));
     }
 
@@ -112,21 +135,23 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         String fingerprint;
         FingerprintStatus fpStatus;
 
-        for (OmemoDevice device : mOmemoDevices) {
-            // Default all devices' trust to false
-            fingerprintCheck.put(device, false);
-            try {
-                fingerprint = mOmemoManager.getFingerprint(device).toString();
-                buddyFingerprints.put(device, fingerprint);
+        if (mOmemoDevices != null) {
+            for (OmemoDevice device : mOmemoDevices) {
+                // Default all devices' trust to false
+                fingerprintCheck.put(device, false);
+                try {
+                    fingerprint = mOmemoManager.getFingerprint(device).toString();
+                    buddyFingerprints.put(device, fingerprint);
 
-                fpStatus = mOmemoStore.getFingerprintStatus(device, fingerprint);
-                deviceFPStatus.put(device, fpStatus);
-            } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e) {
-                buddyFingerprints.put(device, Corrupted_OmemoKey);
-                deviceFPStatus.put(device, null);
-            } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
-                    | SmackException.NoResponseException | InterruptedException e) {
-                Timber.w("Smack exception in fingerPrint fetch for omemo device: %s", device);
+                    fpStatus = mOmemoStore.getFingerprintStatus(device, fingerprint);
+                    deviceFPStatus.put(device, fpStatus);
+                } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e) {
+                    buddyFingerprints.put(device, Corrupted_OmemoKey);
+                    deviceFPStatus.put(device, null);
+                } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
+                        | SmackException.NoResponseException | InterruptedException | IOException e) {
+                    Timber.w("Smack exception in fingerPrint fetch for omemo device: %s", device);
+                }
             }
         }
         return buddyFingerprints;
@@ -150,9 +175,11 @@ public class OmemoAuthenticateDialog extends OSGiActivity
                 fingerprint = buddyFingerprints.get(omemoDevice);
                 if (Corrupted_OmemoKey.equals(fingerprint)) {
                     mOmemoStore.purgeOwnDeviceKeys(omemoDevice);
+                    mOmemoDevices.remove(omemoDevice);
                 }
                 else {
                     trustOmemoFingerPrint(omemoDevice, fingerprint);
+                    mOmemoDevices.remove(omemoDevice);
                 }
             }
             else {
@@ -160,15 +187,9 @@ public class OmemoAuthenticateDialog extends OSGiActivity
                 Timber.w("Leaving the fingerprintStatus as it: %s", omemoDevice);
             }
         }
-
-        int chatType;
-        if (allTrusted) {
-            chatType = ChatFragment.MSGTYPE_OMEMO;
-        }
-        else {
-            chatType = ChatFragment.MSGTYPE_OMEMO_UA;
-        }
-        executeDone(chatType);
+        if (mListener != null)
+            mListener.onAuthenticate(allTrusted, mOmemoDevices);
+        finish();
     }
 
     /**
@@ -178,34 +199,9 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      */
     public void onCancelClicked(View v)
     {
-        executeDone(ChatFragment.MSGTYPE_OMEMO_UA);
-    }
-
-    private void executeDone(int chatType)
-    {
-        if (mCryptoFragment != null)
-            mCryptoFragment.onOmemoAuthenticateOK(chatType);
+        if (mListener != null)
+            mListener.onAuthenticate(false, mOmemoDevices);
         finish();
-    }
-
-    /**
-     * Creates parametrized <tt>Intent</tt> of buddy authenticate dialog.
-     *
-     * @param omemoManager the UUID of OTR session.
-     * @return buddy authenticate dialog parametrized with given OTR session's UUID.
-     */
-    public static Intent createIntent(OmemoManager omemoManager, Set<OmemoDevice> omemoDevices,
-            CryptoFragment fragment)
-    {
-        Intent intent = new Intent(aTalkApp.getGlobalContext(), OmemoAuthenticateDialog.class);
-
-        mOmemoManager = omemoManager;
-        mOmemoDevices = omemoDevices;
-        mCryptoFragment = fragment;
-
-        // Started not from Activity
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
     }
 
     // ============== OMEMO Buddy FingerPrints Handlers ================== //
@@ -219,7 +215,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
      * Trust an OmemoIdentity. This involves marking the key as trusted.
      *
      * @param omemoDevice OmemoDevice
-     * @param remoteFingerprint fingerprint
+     * @param remoteFingerprint fingerprint.
      */
     private void trustOmemoFingerPrint(OmemoDevice omemoDevice, String remoteFingerprint)
     {
@@ -320,5 +316,19 @@ public class OmemoAuthenticateDialog extends OSGiActivity
             }
             return null;
         }
+    }
+
+    /**
+     * The listener that will be notified when user clicks the confirm button or dismisses the dialog.
+     */
+    public interface AuthenticateListener
+    {
+        /**
+         * Fired when user clicks the dialog's confirm/cancel button.
+         *
+         * @param allTrusted allTrusted state.
+         * @param omemoDevices set of unTrusted devices
+         */
+        void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices);
     }
 }

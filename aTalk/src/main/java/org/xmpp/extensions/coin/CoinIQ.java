@@ -19,7 +19,7 @@ public class CoinIQ extends IQ
     /**
      * The name of the element that contains the coin data.
      */
-    public static final String ELEMENT_NAME = "conference-info";
+    public static final String ELEMENT = "conference-info";
 
     /**
      * The namespace that coin belongs to.
@@ -68,7 +68,7 @@ public class CoinIQ extends IQ
 
     public CoinIQ()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

@@ -2,8 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/call_background">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/audioVideoLabel"
@@ -44,7 +43,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/mediaTransport"
         android:layout_toEndOf="@+id/videoSizeLabel"
-        android:layout_toRightOf="@+id/videoSizeLabel"
         android:text="↓ YYxYY ↑ YYxYY" />
 
     <TextView
@@ -228,7 +226,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/remoteIp"
-        android:layout_toRightOf="@+id/bandwidthLabel"
+        android:layout_toEndOf="@+id/bandwidthLabel"
         android:text="↓ xx Kbps ↑ xx Kbps" />
 
     <TextView
@@ -246,7 +244,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/bandwidthLabel"
         android:layout_toEndOf="@+id/lossRateLabel"
-        android:layout_toRightOf="@+id/lossRateLabel"
         android:text="↓ xx% ↑ xx%" />
 
     <TextView
@@ -264,7 +261,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/lossRateLabel"
         android:layout_toEndOf="@+id/decodedWithFecLabel"
-        android:layout_toRightOf="@+id/decodedWithFecLabel"
         android:text="xx" />
 
     <TextView
@@ -281,7 +277,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/decodedWithFecLabel"
-        android:layout_toRightOf="@+id/discarderPercentLabel"
         android:layout_toEndOf="@+id/discarderPercentLabel"
         android:text="xx%" />
 
@@ -316,7 +311,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/discardedTotal"
         android:layout_toEndOf="@+id/adaptJitterLabel"
-        android:layout_toRightOf="@+id/adaptJitterLabel"
         android:text="enabled" />
 
     <TextView
@@ -349,7 +343,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/jitterBuffer"
-        android:layout_toRightOf="@+id/rttLabel"
         android:layout_toEndOf="@+id/rttLabel"
         android:text="xx ms" />
 
@@ -368,7 +361,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rttLabel"
-        android:layout_toRightOf="@+id/jitterLabel"
         android:layout_toEndOf="@+id/jitterLabel"
         android:text="↓ xx ms ↑ xx ms" />
 </RelativeLayout>

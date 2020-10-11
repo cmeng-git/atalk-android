@@ -117,14 +117,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:progressDrawable="@drawable/progressbar_red"
-            android:thumb="@drawable/progress_thumb" />
+            android:thumb="@drawable/seekbar_thumb_red" />
 
         <SeekBar
             android:id="@+id/seekTimeInterval"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:progressDrawable="@drawable/custom_progressbar_horizontal" />
+            android:progressDrawable="@drawable/progressbar_blue" />
     </LinearLayout>
 
 </LinearLayout>

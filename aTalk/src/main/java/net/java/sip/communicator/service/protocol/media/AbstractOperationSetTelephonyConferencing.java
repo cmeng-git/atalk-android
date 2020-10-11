@@ -9,6 +9,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 import org.atalk.util.xml.XMLException;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.w3c.dom.*;
@@ -305,7 +306,6 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
             calleeAddresses.add(parseAddressString(callee));
 
         MediaAwareCallT call = createOutgoingCall();
-
         if (conference == null)
             conference = call.getConference();
         else
@@ -906,8 +906,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
                      * is still ringing), we can try to obtain our local SSRC from the streams we
                      * have already set up with the other participants in the conference.
                      */
-                    for (MediaAwareCallPeer<?, ?, ?> otherCallPeer : callPeer.getCall()
-                            .getCallPeerList()) {
+                    for (MediaAwareCallPeer<?, ?, ?> otherCallPeer : callPeer.getCall().getCallPeerList()) {
                         MediaStream otherStream = otherCallPeer.getMediaHandler().getStream(mediaType);
                         if (otherStream != null) {
                             srcId = otherStream.getLocalSourceID();

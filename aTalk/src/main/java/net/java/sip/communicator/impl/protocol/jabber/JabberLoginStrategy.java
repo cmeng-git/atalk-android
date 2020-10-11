@@ -8,11 +8,10 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.*;
 import org.jxmpp.jid.parts.Resourcepart;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import javax.net.ssl.SSLContext;
@@ -39,7 +38,8 @@ interface JabberLoginStrategy
     UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode, String reason, Boolean isShowAlways);
 
     /**
-     * Determines whether the login preparation was successful and the strategy is ready to start connecting.
+     * Determines whether the login preparation was successful and the strategy
+     * is ready to start connecting.
      *
      * @return true if prepareLogin was successful.
      */
@@ -53,8 +53,8 @@ interface JabberLoginStrategy
      * @param resource the XMPP resource
      * @return true to continue connecting, false to abort
      */
-    boolean login(XMPPTCPConnection connection, String userName, Resourcepart resource)
-            throws XMPPException, SmackException;
+    boolean login(AbstractXMPPConnection connection, String userName, Resourcepart resource)
+            throws XMPPException, InterruptedException, IOException, SmackException;
 
     boolean registerAccount(ProtocolProviderServiceJabberImpl pps, AccountID accountId)
             throws XMPPException, SmackException;
@@ -75,4 +75,11 @@ interface JabberLoginStrategy
      */
     SSLContext createSslContext(CertificateService certificateService, X509TrustManager trustManager)
             throws GeneralSecurityException;
+
+    /**
+     * Gets the connection configuration builder.
+     *
+     * @return The connection configuration builder configured for this login strategy.
+     */
+    ConnectionConfiguration.Builder<?, ?> getConnectionConfigurationBuilder();
 }

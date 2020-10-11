@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding" >
+
+    <TextView
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/service_gui_DISPLAY_NAME" />
+
+    <EditText
+        android:id="@+id/certDisplayName"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:inputType="textNoSuggestions" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:text="@string/plugin_certconfig_KEYSTORE" />
+
+        <ImageButton
+            android:id="@+id/browse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:src="?attr/iconFolder" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/certFileName"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:inputType="textNoSuggestions"
+        android:scrollHorizontally="true"
+        android:singleLine="true" />
+
+    <TextView
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/plugin_certconfig_KEYSTORE_TYPE" />
+
+    <Spinner
+        android:id="@+id/cboKeyStoreType"
+        style="@style/SpinnerView"
+        android:layout_marginBottom="@dimen/between_padding" />
+
+    <RelativeLayout
+        android:id="@+id/pwdTypingArea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/between_padding"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/keyStorePassword"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+
+        <CheckBox
+            android:id="@+id/show_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/keyStorePassword"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:button="@drawable/checkbox_password_view" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/label_padding"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/chkSavePassword"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/store_password" />
+
+            <TextView
+                style="@style/MediumFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:text="@string/plugin_certconfig_ALIAS" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/showCert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="3dp"
+            android:src="?attr/iconCertificate" />
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/cboAlias"
+        style="@style/SpinnerView"
+        android:layout_marginBottom="@dimen/between_padding" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_Cancel"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_CANCEL" />
+
+        <Button
+            android:id="@+id/button_OK"
+            style="@style/ButtonTop"
+            android:layout_marginStart="4dp"
+            android:text="@string/service_gui_OK" />
+    </LinearLayout>
+</LinearLayout>

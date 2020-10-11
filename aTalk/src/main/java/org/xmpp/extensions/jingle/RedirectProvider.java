@@ -13,25 +13,25 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import java.io.IOException;
 
 /**
- * The <tt>RedirectProvider</tt> parses "redirect" elements into {@link RedirectExtensionElement} instances.
+ * The <tt>RedirectProvider</tt> parses "redirect" elements into {@link RedirectExtension} instances.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class RedirectProvider extends ExtensionElementProvider<RedirectExtensionElement>
+public class RedirectProvider extends ExtensionElementProvider<RedirectExtension>
 {
     /**
-     * Parses a reason extension sub-packet and creates a {@link RedirectExtensionElement} instance.
+     * Parses a reason extension sub-packet and creates a {@link RedirectExtension} instance.
      * At the beginning of the method call, the xml parser will be positioned on the opening element
      * of the packet extension. As required by the smack API, at the end of the method call, the
      * parser will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>redirect</tt> element.
-     * @return a new {@link RedirectExtensionElement} instance.
+     * @return a new {@link RedirectExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     @Override
-    public RedirectExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public RedirectExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
         String text = null;
@@ -45,13 +45,13 @@ public class RedirectProvider extends ExtensionElementProvider<RedirectExtension
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(RedirectExtensionElement.ELEMENT)) {
+                if (parser.getName().equals(RedirectExtension.ELEMENT)) {
                     done = true;
                 }
             }
         }
 
-        RedirectExtensionElement redirectExt = new RedirectExtensionElement();
+        RedirectExtension redirectExt = new RedirectExtension();
         redirectExt.setText(text);
         redirectExt.setRedir(text);
         return redirectExt;

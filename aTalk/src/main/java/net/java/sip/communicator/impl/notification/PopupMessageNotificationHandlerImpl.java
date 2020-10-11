@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.systray.PopupMessage;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import timber.log.Timber;
 
@@ -34,28 +34,29 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
      * Shows the given <tt>PopupMessage</tt>
      *
      * @param action the action to act upon
-     * @param title the title of the given message
-     * @param message the message to use if and where appropriate (e.g. with sysTray or log notification.)
-     * @param icon the icon to show in the notification if and where appropriate
-     * @param tag additional info to be used by the notification handler
+     * @param data <tt>NotificationData</tt> that contains the name/key, icon and extra info for popup message
      */
-    public void popupMessage(PopupMessageNotificationAction action, String title, String message, byte[] icon, Object tag)
+    public void popupMessage(PopupMessageNotificationAction action, NotificationData data)
     {
         SystrayService sysTray = NotificationActivator.getSystray();
         if (sysTray == null)
             return;
 
-        if (!StringUtils.isNullOrEmpty(message)) {
-            PopupMessage popupMsg = new PopupMessage(title, message, icon, tag);
+        String message = data.getMessage();
+        if (StringUtils.isNotEmpty(message)) {
+            PopupMessage popupMsg = new PopupMessage(data.getTitle(), message, data.getIcon(),
+                    data.getExtra(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA));
+            popupMsg.setEventType(data.getEventType());
+            popupMsg.setMessageType(data.getMessageType());
             popupMsg.setTimeout(action.getTimeout());
             popupMsg.setGroup(action.getGroupName());
 
             sysTray.showPopupMessage(popupMsg);
         }
+        // Allow message to be empty? since some protocols allow empty lines.
         else if (message == null) {
             Timber.e("Message is null!");
         }
-        // Allow messages to be empty, since some protocols allow empty lines.
     }
 
     /**

@@ -16,7 +16,9 @@
 package net.java.sip.communicator.service.muc;
 
 import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -102,6 +104,27 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     String getChatRoomName();
 
     /**
+     * Get the account User BareJid
+     *
+     * @return the account user BareJid
+     */
+    BareJid getUser();
+
+    /**
+     * Set the unread message count for this wrapper represent
+     *
+     * @param count unread message count
+     */
+    void setUnreadCount(int count);
+
+    /**
+     * Returns the unread message count for this chat room
+     *
+     * @return the unread message count
+     */
+    int getUnreadCount();
+
+    /**
      * Returns the identifier of the chat room.
      *
      * @return the identifier of the chat room
@@ -114,6 +137,13 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
      * @return the parent protocol provider
      */
     ChatRoomProviderWrapper getParentProvider();
+
+    /**
+     * Returns the protocol provider service corresponding to this  wrapper.
+     *
+     * @return the protocol provider service corresponding to this server wrapper.
+     */
+    ProtocolProviderService getProtocolProvider();
 
     /**
      * Returns <code>true</code> if the chat room is persistent, otherwise - returns <code>false </code>.
@@ -146,7 +176,7 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     /**
      * Stores the nickName for the user.
      *
-     * @param nickName the nickName to store
+     * @param nickName the nickName to save
      */
     void setNickName(String nickName);
 
@@ -210,6 +240,34 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
      * @param value change of bookmark property.
      */
     void setBookmark(boolean value);
+
+    /**
+     * When access on start-up, return ttsEnable may be null. Null value in DB is considered as false
+     *
+     * @return true if charRoomWrapper tts is enabled.
+     */
+    boolean isTtsEnable();
+
+    /**
+     * Change charRoomWrapper tts enable value in configuration service.
+     *
+     * @param value change of tts enable property.
+     */
+    void setTtsEnable(boolean value);
+
+    /**
+     * When access on start-up, return value may be null. Null value in DB is considered as true
+     *
+     * @return true if charRoomWrapper Subject or Member Presence Status Change notification is enabled.
+     */
+    boolean isRoomStatusEnable();
+
+    /**
+     * Change charRoomWrapper subject or member status notification enable value in configuration service.
+     *
+     * @param value change value of property.
+     */
+    void setRoomStatusEnable(boolean value);
 
     /**
      * Removes the listeners.

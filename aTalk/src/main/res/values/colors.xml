@@ -1,41 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="background_dark">@color/color_primary</color>
+    <color name="background_light">@color/grey50</color>
+    <color name="foreground_dark">@color/background_light</color>
+    <color name="foreground_light">@color/background_dark</color>
 
-    <color name="color_primary">#09354d</color>
+    <color name="color_primary">#ff09354d</color>
     <color name="color_primary_dark">#021625</color>
-    <color name="color_accent">#2DA4F2</color>
+    <color name="color_accent">#2da4f2</color>
+    <color name="color_bg_share">#5d7e95</color>
 
-    <color name="color_text_dark">@color/white85</color>
+    <color name="textColorWhite">@color/grey100</color>
+    <color name="textColorBlack">@color/grey900</color>
 
-    <color name="theme_background">#2E5368</color>
-    <color name="call_background">#2E5368</color>
-    <color name="chat_background">#f5f5f5</color>
-    <color name="chat_background_muc">#E2E2E2</color>
-    <color name="chat_background_normal">#C2DBE2</color>
-    <color name="chat_background_omemo">#FCF8E9</color>
-    <color name="chat_background_omemo_ua">#FCF8E9</color>
-    <color name="chat_background_otr">#B5C2CA</color>
-    <color name="chat_background_otr_ua">#B5C2CA</color>
+    <color name="theme_background">#2e5368</color>
+
+    <color name="call_background">#ff2e5368</color>
+    <color name="chat_background">#fff5f5f5</color>
+    <color name="chat_background_muc">#ffe2e2e2</color>
+    <color name="chat_background_normal">#ffc2dbe2</color>
+    <color name="chat_background_omemo">#fffcf8e9</color>
+    <color name="chat_background_omemo_ua">#fffcf8e9</color>
+    <color name="chat_background_otr">#ffb5c2ca</color>
+    <color name="chat_background_otr_ua">#ffb5c2ca</color>
 
     <color name="chat_background_omemo_stealth">#e73c18</color>
     <color name="chat_background_otr_stealth">#9218e7</color>
 
-    <color name="msg_input_bar_bg">#2E5368</color>
-    <color name="msg_input_correction_bg">#849AA6</color>
+    <color name="msg_input_bar_bg">#2e5368</color>
+    <color name="msg_input_correction_bg">#849aa6</color>
     <color name="msg_correction_border">#ffeb3b</color>
 
     <color name="padlock_red">#ff0000</color>
     <color name="padlock_green">#008800</color>
-    <color name="padlock_orange">#AA6600</color>
-    <color name="status_bar_icon_bg">#1D3741</color>
+    <color name="padlock_orange">#aa6600</color>
+    <color name="status_bar_icon_bg">#1d3741</color>
     <color name="status_bar_button">#086882</color>
     <color name="status_bar_hangup">#d80005</color>
-    <color name="contact_list_divider">#C5C5C5</color>
-    <color name="contact_list_group">#1D475D</color>
+    <color name="contact_list_divider">#c5c5c5</color>
+    <color name="contact_list_group">#1d475d</color>
 
-    <color name="permission_granted">#2DF2A4</color>
-    <color name="permission_denied">#F22D24</color>
-    <color name="permission_unknown">#F2AD24</color>
+    <color name="permission_granted">#2df2a4</color>
+    <color name="permission_denied">#f22d24</color>
+    <color name="permission_unknown">#f2ad24</color>
 
     <!--https://material.io/guidelines/style/color.html#color-color-palette-->
     <color name="primary500">#ff259b24</color>
@@ -44,44 +51,38 @@
     <color name="primary900">#ff024500</color>
 
     <color name="blue">#2da8ca</color>
-    <color name="light_blue">#e4f9ff</color>
+    <color name="blue50">#ffe3f2fd</color>
+    <color name="blue100">#ffbbdefb</color>
+    <color name="blue300">#ff64b5f6</color>
+    <color name="blue700">#ff1976d2</color>
     <color name="blueA200">#ff448aff</color>
     <color name="blueA700">#ff2962ff</color>
     <color name="lightblueA700">#ff0091ea</color>
 
-    <color name="white">#ffffff</color>
-    <color name="white85">#d8ffffff</color>
-    <color name="white12">#1fffffff</color>
-    <color name="white900">#fff0f0f0</color>
-
-    <color name="black">#000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
     <color name="transparent_black">#50000000</color>
-    <color name="black87">#de000000</color>
-    <color name="black54">#8a000000</color>
-    <color name="black26">#42000000</color>
-    <color name="black12">#1f000000</color>
 
-    <color name="grey">#989898</color>
-    <color name="dark_grey">#545454</color>
+    <color name="grey">#ff9e9e9e</color>
     <color name="grey50">#fffafafa</color>
+    <color name="grey100">#fff5f5f5</color>
     <color name="grey200">#ffeeeeee</color>
     <color name="grey500">#ff9e9e9e</color>
     <color name="grey800">#ff424242</color>
-    <color name="grey850">#ff303030</color>
     <color name="grey900">#ff212121</color>
 
-    <color name="red500">#fffF5722</color>
+    <color name="red">#ffff0000</color>
+    <color name="red100">#ffffcdd2</color>
+    <color name="red500">#ffff5722</color>
     <color name="red800">#ffd84315</color>
 
     <color name="orange500">#ffff9800</color>
-    <color name="orangeA400">#ff9100</color>
-    <color name="orangeA700">#ff6d00</color>
+    <color name="orangeA400">#ffff9100</color>
+    <color name="orangeA700">#ffff6d00</color>
 
-    <color name="green500">#ff259b24</color>
-    <color name="bubble">#ff4b9b4a</color>
-
-    <color name="transparent">#00000000</color>
-    <color name="red">#FF0000</color>
+    <color name="green500">#ff4caf50</color>
+    <color name="green700">#ff388e3c</color>
+    <color name="green900">#ff1b5e20</color>
 
     <color name="gold">#ffd700</color>
     <color name="goldenrod">#daa520</color>

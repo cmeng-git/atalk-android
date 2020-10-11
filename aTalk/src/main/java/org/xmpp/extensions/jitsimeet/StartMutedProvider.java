@@ -25,12 +25,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import java.io.IOException;
 
 /**
- * The parser of {@link StartMutedExtensionElement}
+ * The parser of {@link StartMutedExtension}
  *
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class StartMutedProvider extends ExtensionElementProvider<StartMutedExtensionElement>
+public class StartMutedProvider extends ExtensionElementProvider<StartMutedExtension>
 {
     /**
      * Registers this extension provider into the <tt>ProviderManager</tt>.
@@ -38,16 +38,16 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
     public static void registerStartMutedProvider()
     {
         ProviderManager.addExtensionProvider(
-                StartMutedExtensionElement.ELEMENT_NAME,
-                StartMutedExtensionElement.NAMESPACE,
+                StartMutedExtension.ELEMENT,
+                StartMutedExtension.NAMESPACE,
                 new StartMutedProvider());
     }
 
     @Override
-    public StartMutedExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public StartMutedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws XmlPullParserException, IOException, SmackParsingException
     {
-        StartMutedExtensionElement packetExtension = new StartMutedExtensionElement();
+        StartMutedExtension packetExtension = new StartMutedExtension();
 
         //now parse the sub elements
         boolean done = false;
@@ -56,11 +56,11 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
             switch (parser.getEventType()) {
                 case START_ELEMENT: {
                     elementName = parser.getName();
-                    if (StartMutedExtensionElement.ELEMENT_NAME.equals(elementName)) {
+                    if (StartMutedExtension.ELEMENT.equals(elementName)) {
                         boolean audioMute = Boolean.parseBoolean(
-                                parser.getAttributeValue("", StartMutedExtensionElement.AUDIO_ATTRIBUTE_NAME));
+                                parser.getAttributeValue("", StartMutedExtension.AUDIO_ATTRIBUTE_NAME));
                         boolean videoMute = Boolean.parseBoolean(
-                                parser.getAttributeValue("", StartMutedExtensionElement.VIDEO_ATTRIBUTE_NAME));
+                                parser.getAttributeValue("", StartMutedExtension.VIDEO_ATTRIBUTE_NAME));
 
                         packetExtension.setAudioMute(audioMute);
                         packetExtension.setVideoMute(videoMute);
@@ -70,7 +70,7 @@ public class StartMutedProvider extends ExtensionElementProvider<StartMutedExten
                 }
                 case END_ELEMENT: {
                     elementName = parser.getName();
-                    if (StartMutedExtensionElement.ELEMENT_NAME.equals(elementName)) {
+                    if (StartMutedExtension.ELEMENT.equals(elementName)) {
                         done = true;
                     }
                     break;

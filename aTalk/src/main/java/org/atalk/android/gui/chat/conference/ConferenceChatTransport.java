@@ -13,7 +13,7 @@ import net.java.sip.communicator.service.protocol.event.MessageListener;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.*;
-import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -23,7 +23,8 @@ import org.jxmpp.jid.EntityBareJid;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+
+import timber.log.Timber;
 
 /**
  * The conference implementation of the <tt>ChatTransport</tt> interface that provides
@@ -36,6 +37,12 @@ public class ConferenceChatTransport implements ChatTransport
 {
     private final ChatSession chatSession;
     private final ChatRoom chatRoom;
+    /**
+     * <tt>true</tt> when a contact sends a message with XEP-0085 chat state notifications;
+     * override contact disco#info no XEP-0085 feature advertised.
+     */
+    private static boolean isChatStateSupported = false;
+
     private final ProtocolProviderService mPPS;
     private HttpFileUploadManager httpFileUploadManager;
 
@@ -51,7 +58,12 @@ public class ConferenceChatTransport implements ChatTransport
         this.chatSession = chatSession;
         this.chatRoom = chatRoom;
         mPPS = chatRoom.getParentProvider();
-        httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+
+        // mPPS.getConnection() == null from field FER
+        if ((mPPS != null) && (mPPS.getConnection() != null)) {
+            isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
+            httpFileUploadManager = HttpFileUploadManager.getInstanceFor(mPPS.getConnection());
+        }
     }
 
     /**
@@ -146,7 +158,8 @@ public class ConferenceChatTransport implements ChatTransport
      * @return {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}
      */
-    public boolean allowsMessageDeliveryReceipt() {
+    public boolean allowsMessageDeliveryReceipt()
+    {
         return false;
     }
 
@@ -159,8 +172,14 @@ public class ConferenceChatTransport implements ChatTransport
      */
     public boolean allowsChatStateNotifications()
     {
-        Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
-        return tnOpSet != null;
+        // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
+        // return ((tnOpSet != null) && isChatStateSupported);
+        return isChatStateSupported;
+    }
+
+    public static void setChatStateSupport(boolean isEnable)
+    {
+        isChatStateSupported = isEnable;
     }
 
     /**
@@ -168,19 +187,19 @@ public class ConferenceChatTransport implements ChatTransport
      * (html or plain text).
      *
      * @param messageText The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
     public void sendInstantMessage(String messageText, int encType)
             throws Exception
     {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
-            aTalkApp.showToastMessage(R.string.service_gui_CHAT_ROOM_NOT_JOINED);
+            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_NOT_JOINED);
             return;
         }
 
-        Message message = chatRoom.createMessage(messageText, encType, null);
-        if (Message.ENCRYPTION_OMEMO == (encType & Message.ENCRYPTION_OMEMO)) {
+        IMessage message = chatRoom.createMessage(messageText, encType, null);
+        if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_OMEMO)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             chatRoom.sendMessage(message, omemoManager);
         }
@@ -194,7 +213,7 @@ public class ConferenceChatTransport implements ChatTransport
      * mime type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      * @see ChatMessage Encryption Type
      */
@@ -211,7 +230,7 @@ public class ConferenceChatTransport implements ChatTransport
     public boolean isContentTypeSupported(int mimeType)
     {
         // we only support plain text for chat rooms for now
-        return (Message.ENCODE_PLAIN == mimeType);
+        return (IMessage.ENCODE_PLAIN == mimeType);
     }
 
     /**
@@ -240,9 +259,15 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sending sticker messages is not supported by this chat transport implementation.
+     * Sends the given sticker through this chat transport file will always use http file upload
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon and instance of #FileSendConversation
+     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @throws Exception if anything goes wrong
      */
-    public Object sendSticker(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         return sendFile(file, chatType, xferCon);
@@ -259,16 +284,33 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sending chat state notifications is not supported by this chat transport implementation.
+     * Sending chat state notifications for this chat transport.
      */
     public void sendChatStateNotification(ChatState chatState)
     {
+        // Proceed only if this chat transport allows chat state notification
+        if (mPPS.isRegistered() && allowsChatStateNotifications() && allowsInstantMessage()) {
+
+            OperationSetChatStateNotifications tnOperationSet
+                    = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
+            try {
+                tnOperationSet.sendChatStateNotification(chatRoom, chatState);
+            } catch (Exception ex) {
+                Timber.e("Failed to send chat state notifications for %s: %s", chatRoom, ex.getMessage());
+            }
+        }
     }
 
     /**
      * Sending files through a chat room will always use http file upload
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon and instance of #FileSendConversation
+     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @throws Exception if anything goes wrong
      */
-    public Object sendFile(File file, int chatType, FileTransferConversation xferCon)
+    public Object sendFile(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // If this chat transport does not support file transfer we do nothing and just return.
@@ -281,16 +323,16 @@ public class ConferenceChatTransport implements ChatTransport
     /**
      * Http file upload if supported by the server
      */
-    private Object httpFileUpload(File file, int chatType, FileTransferConversation xferCon)
+    private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
             throws Exception
     {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (httpFileUploadManager.isUploadServiceDiscovered()) {
-            int encType = Message.ENCRYPTION_NONE;
+            int encType = IMessage.ENCRYPTION_NONE;
             Object url;
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-                    encType = Message.ENCRYPTION_OMEMO;
+                    encType = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
                 }
                 else {
@@ -313,7 +355,7 @@ public class ConferenceChatTransport implements ChatTransport
      */
     private boolean allowsFileTransfer()
     {
-        return httpFileUploadManager.isUploadServiceDiscovered();
+        return (httpFileUploadManager != null) && httpFileUploadManager.isUploadServiceDiscovered();
     }
 
     /**
@@ -323,7 +365,8 @@ public class ConferenceChatTransport implements ChatTransport
      */
     public long getMaximumFileLength()
     {
-        return httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
+        return (httpFileUploadManager == null)
+                ? 0 : httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
     }
 
     /**
@@ -338,7 +381,7 @@ public class ConferenceChatTransport implements ChatTransport
             try {
                 chatRoom.invite(contactAddress, reason);
             } catch (SmackException.NotConnectedException | InterruptedException e) {
-                e.printStackTrace();
+                Timber.w("Invite chat contact exception: %s", e.getMessage());
             }
     }
 

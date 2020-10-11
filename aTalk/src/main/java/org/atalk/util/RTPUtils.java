@@ -20,6 +20,8 @@ import java.util.Comparator;
 /**
  * RTP-related static utility methods.
  *
+ * // @deprecated
+ *
  * @author Boris Grozev
  */
 public class RTPUtils
@@ -44,10 +46,12 @@ public class RTPUtils
     public static int getSequenceNumberDelta(int a, int b)
     {
         int diff = a - b;
-        if (diff < -(1 << 15))
+        if (diff < -(1 << 15)) {
             diff += 1 << 16;
-        else if (diff > 1 << 15)
+        }
+        else if (diff > 1 << 15) {
             diff -= 1 << 16;
+        }
 
         return diff;
     }
@@ -274,10 +278,12 @@ public class RTPUtils
     public static long rtpTimestampDiff(long a, long b)
     {
         long diff = a - b;
-        if (diff < -(1L << 31))
+        if (diff < -(1L << 31)) {
             diff += 1L << 32;
-        else if (diff > 1L << 31)
+        }
+        else if (diff > 1L << 31) {
             diff -= 1L << 32;
+        }
 
         return diff;
     }
@@ -318,7 +324,7 @@ public class RTPUtils
      */
     public static String toHexString(byte[] bytes)
     {
-        return toHexString(bytes, 0, bytes.length);
+        return toHexString(bytes, 0, bytes.length, true);
     }
 
     /**
@@ -326,21 +332,38 @@ public class RTPUtils
      *
      * @param bytes byte arrays
      * @param offset offset in the array
-     * @param length length of array
+     * @param len length of array
      * @return a string containing the hex string version of the given byte
      */
-    public static String toHexString(byte[] bytes, int offset, int length)
+    public static String toHexString(byte[] bytes, int off, int len)
     {
-        if (bytes == null)
+        return toHexString(bytes, off, len, true);
+    }
+
+    /**
+     * Return a string containing the hex string version of the given byte
+     *
+     * @param bytes byte arrays
+     * @param offset offset in the array
+     * @param len length of array
+     * @param format a boolean that indicates whether or not to format the hex
+     * @return a string containing the hex string version of the given byte
+     */
+    public static String toHexString(byte[] bytes, int offset, int len, boolean format)
+    {
+        if (bytes == null) {
             return null;
+        }
         else {
             StringBuilder hexStringBuilder = new StringBuilder(2 * bytes.length);
-            for (int i = 0; i < length; i++) {
-                if (i % 16 == 0) {
-                    hexStringBuilder.append("\n").append(toHexString((byte) i)).append("  ");
-                }
-                else if (i % 8 == 0) {
-                    hexStringBuilder.append(" ");
+            for (int i = 0; i < len; i++) {
+                if (format) {
+                    if (i % 16 == 0) {
+                        hexStringBuilder.append("\n").append(toHexString((byte) i)).append("  ");
+                    }
+                    else if (i % 8 == 0) {
+                        hexStringBuilder.append(" ");
+                    }
                 }
                 byte b = bytes[offset + i];
 

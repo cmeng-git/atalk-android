@@ -10,6 +10,7 @@ import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetDTMF;
 
 import org.atalk.service.neomedia.*;
+import org.atalk.util.MediaType;
 
 import timber.log.Timber;
 

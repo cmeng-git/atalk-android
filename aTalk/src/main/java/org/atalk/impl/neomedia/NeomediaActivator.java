@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia;
 import net.java.sip.communicator.service.gui.ConfigurationForm;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
+import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
@@ -108,7 +109,7 @@ public class NeomediaActivator implements BundleActivator
      */
     private AudioDeviceConfigurationListener deviceConfigurationPropertyChangeListener;
 
-    /**
+    /*
      * A {@link MediaConfigurationService} instance.
      */
     // private static MediaConfigurationImpl mediaConfiguration;
@@ -322,7 +323,7 @@ public class NeomediaActivator implements BundleActivator
                 // Register a popup message for a device configuration changed notification.
                 notificationService.registerDefaultNotificationForEvent(DEVICE_CONFIGURATION_HAS_CHANGED,
                         net.java.sip.communicator.service.notification.NotificationAction.ACTION_POPUP_MESSAGE,
-                        "Device onfiguration has changed", null);
+                        "Device configuration has changed", null);
             }
         }
         return notificationService;
@@ -349,8 +350,8 @@ public class NeomediaActivator implements BundleActivator
          */
         public void managePopupMessageListenerRegistration(boolean enable)
         {
-            Iterator<NotificationHandler> notificationHandlers = notificationService.getActionHandlers(
-                    net.java.sip.communicator.service.notification.NotificationAction.ACTION_POPUP_MESSAGE).iterator();
+            Iterator<NotificationHandler> notificationHandlers
+                    = notificationService.getActionHandlers(NotificationAction.ACTION_POPUP_MESSAGE).iterator();
             NotificationHandler notificationHandler;
             while (notificationHandlers.hasNext()) {
                 notificationHandler = notificationHandlers.next();
@@ -388,7 +389,7 @@ public class NeomediaActivator implements BundleActivator
                     Map<String, Object> extras = new HashMap<>();
 
                     extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, this);
-                    notificationService.fireNotification(DEVICE_CONFIGURATION_HAS_CHANGED,
+                    notificationService.fireNotification(DEVICE_CONFIGURATION_HAS_CHANGED, SystrayService.NONE_MESSAGE_TYPE,
                             aTalkApp.getResString(R.string.impl_media_configform_AUDIO_DEVICE_CONFIG_CHANGED),
                             aTalkApp.getResString(R.string.impl_media_configform_AUDIO_DEVICE_CONFIG_MANAGMENT_CLICK),
                             null, extras);
@@ -396,7 +397,7 @@ public class NeomediaActivator implements BundleActivator
             }
         }
 
-        /**
+        /*
          * Indicates that user has clicked on the systray popup message.
          *
          * @param evt the event triggered when user clicks on the systray popup message

@@ -54,14 +54,14 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     }
 
     /**
-     * Create a Message instance for sending arbitrary MIME-encoding content.
+     * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
      * @param encType the MIME-type for <tt>content</tt>
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    public Message createMessage(byte[] content, int encType, String subject)
+    public IMessage createMessage(byte[] content, int encType, String subject)
     {
         String contentAsString;
         contentAsString = new String(content);
@@ -69,30 +69,30 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     }
 
     /**
-     * Create a Message instance for sending a simple text messages with default (text/plain)
+     * Create a IMessage instance for sending a simple text messages with default (text/plain)
      * content type and encoding.
      *
      * @param messageText the string content of the message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    public Message createMessage(String messageText)
+    public IMessage createMessage(String messageText)
     {
-        return createMessage(messageText, Message.ENCODE_PLAIN, null);
+        return createMessage(messageText, IMessage.ENCODE_PLAIN, null);
     }
 
-    public abstract Message createMessage(String content, int encType, String subject);
+    public abstract IMessage createMessage(String content, int encType, String subject);
 
     /**
-     * Create a Message instance with the specified UID, content type and a default encoding. This
+     * Create a IMessage instance with the specified UID, content type and a default encoding. This
      * method can be useful when message correction is required. One can construct the corrected
      * message to have the same UID as the message before correction.
      *
      * @param messageText the string content of the message.
      * @param encType the mime and encryption type for the <tt>content</tt>
      * @param messageUID the unique identifier of this message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    public Message createMessageWithUID(String messageText, int encType, String messageUID)
+    public IMessage createMessageWithUID(String messageText, int encType, String messageUID)
     {
         return createMessage(messageText);
     }
@@ -278,7 +278,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     public boolean isContentTypeSupported(int mimeType, Contact contact)
     {
         // by default we support default mime type, for other mime-types method must be overridden
-        return (Message.ENCODE_PLAIN == mimeType);
+        return (IMessage.ENCODE_PLAIN == mimeType);
     }
 
     /**
@@ -287,9 +287,9 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param to the <tt>Contact</tt> to send <tt>message</tt> to
      * @param toResource the resource to which the message should be send
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      */
-    public void sendInstantMessage(Contact to, ContactResource toResource, Message message)
+    public void sendInstantMessage(Contact to, ContactResource toResource, IMessage message)
     {
         sendInstantMessage(to, message);
     }

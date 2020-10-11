@@ -10,8 +10,8 @@ import org.atalk.service.fileaccess.FailSafeTransaction;
 import java.io.*;
 
 /**
- * A failsafe transaction class. By failsafe we mean here that the file concerned always stays in a coherent state. This
- * class use the transactional model.
+ * A failsafe transaction class. By failsafe we mean here that the file concerned
+ * always stays in a coherent state. This class use the transactional model.
  *
  * @author Benoit Pradelle
  * @author Eng Chong Meng
@@ -68,7 +68,7 @@ public class FailSafeTransactionImpl implements FailSafeTransaction
 
         // if a backup copy is still present, simply restore it
         if (back.exists()) {
-            failsafeCopy(back.getAbsolutePath(), this.file.getAbsolutePath());
+            failsafeCopy(back, this.file);
             back.delete();
         }
     }
@@ -94,7 +94,7 @@ public class FailSafeTransactionImpl implements FailSafeTransaction
         this.backup = new File(this.file.getAbsolutePath() + BAK_EXT);
 
         // else backup the current file
-        failsafeCopy(this.file.getAbsolutePath(), this.backup.getAbsolutePath());
+        failsafeCopy(this.file, this.backup);
     }
 
     /**
@@ -129,7 +129,7 @@ public class FailSafeTransactionImpl implements FailSafeTransaction
         }
 
         // restore the backup and delete it
-        failsafeCopy(this.backup.getAbsolutePath(), this.file.getAbsolutePath());
+        failsafeCopy(this.backup, this.file);
         this.backup.delete();
         this.backup = null;
     }
@@ -142,20 +142,19 @@ public class FailSafeTransactionImpl implements FailSafeTransaction
      * @throws IllegalStateException if the file doesn't exists anymore
      * @throws IOException if an IOException occurs during the operation
      */
-    private void failsafeCopy(String from, String to)
+    private void failsafeCopy(File from, File to)
             throws IllegalStateException, IOException
     {
         FileInputStream in;
         FileOutputStream out;
 
         // to ensure a perfect copy, delete the destination if it exists
-        File toF = new File(to);
-        if (toF.exists()) {
-            if (!toF.delete())
-                throw new IOException("Failed to delete destination file: " + toF.getName());
+        if (to.exists()) {
+            if (!to.delete())
+                throw new IOException("Failed to delete destination file: " + to.getName());
         }
 
-        File ptoF = new File(to + PART_EXT);
+        File ptoF = new File(to.getAbsolutePath() + PART_EXT);
         if (ptoF.exists()) {
             if (!ptoF.delete())
                 throw new IOException("Failed to delete partial file: " + ptoF.getName());
@@ -179,7 +178,7 @@ public class FailSafeTransactionImpl implements FailSafeTransaction
         out.close();
 
         // once done, rename the partial file to the final copy
-        if (!ptoF.renameTo(toF))
-            throw new IOException("Failed to rename " + ptoF.getName() + " to " + toF.getName());
+        if (!ptoF.renameTo(to))
+            throw new IOException("Failed to rename " + ptoF.getName() + " to " + to.getName());
     }
 }
