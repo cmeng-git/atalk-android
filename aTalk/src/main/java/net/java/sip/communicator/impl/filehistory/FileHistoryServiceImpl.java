@@ -30,10 +30,11 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.gui.chat.*;
+import org.apache.commons.lang3.StringUtils;
+import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.*;
 
@@ -247,12 +248,13 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      */
     private void insertRecordToDB(EventObject evt, String fileName)
     {
-        Object entityJid = null;
         long timeStamp = 0L;
         String uuid = null;
-        String direction = FileRecord.IN;
         String mJid, mEntityJid;
-        int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
+        String direction = FileRecord.OUT;
+        Object entityJid = null;
+        int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_SEND;
+        contentValues.clear();
 
         if (evt instanceof FileTransferRequestEvent) {
             FileTransferRequestEvent event = (FileTransferRequestEvent) evt;
@@ -260,6 +262,9 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             uuid = req.getID();
             entityJid = req.getSender();
             timeStamp = event.getTimestamp().getTime();
+            direction = FileRecord.IN;
+            msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
+            contentValues.put(ChatMessage.MSG_BODY, fileName);
         }
         else if (evt instanceof HttpFileTransferEvent) {
             HttpFileTransferEvent event = (HttpFileTransferEvent) evt;
@@ -267,8 +272,6 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             uuid = fileTransfer.getID();
             entityJid = ((HttpFileUploadJabberImpl) fileTransfer).getEntityJid();
             timeStamp = event.getTimestamp().getTime();
-            msgType = ChatMessage.MESSAGE_FILE_TRANSFER_SEND;
-            direction = FileRecord.OUT;
         }
         else if (evt instanceof FileTransferCreatedEvent) {
             FileTransferCreatedEvent event = (FileTransferCreatedEvent) evt;
@@ -276,8 +279,6 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             uuid = fileTransfer.getID();
             entityJid = fileTransfer.getContact();
             timeStamp = event.getTimestamp().getTime();
-            msgType = ChatMessage.MESSAGE_FILE_TRANSFER_SEND;
-            direction = FileRecord.OUT;
         }
 
         String sessionUuid;
@@ -293,34 +294,33 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             mEntityJid = XmppStringUtils.parseLocalpart(mJid);
         }
 
-        contentValues.clear();
         contentValues.put(ChatMessage.UUID, uuid);
         contentValues.put(ChatMessage.SESSION_UUID, sessionUuid);
         contentValues.put(ChatMessage.TIME_STAMP, timeStamp);
         contentValues.put(ChatMessage.ENTITY_JID, mEntityJid);
         contentValues.put(ChatMessage.JID, mJid);
-        contentValues.put(ChatMessage.MSG_BODY, FileRecord.ACTIVE);
-        contentValues.put(ChatMessage.ENC_TYPE, Message.ENCODE_PLAIN);
+        contentValues.put(ChatMessage.ENC_TYPE, IMessage.ENCODE_PLAIN);
         contentValues.put(ChatMessage.MSG_TYPE, msgType);
         contentValues.put(ChatMessage.DIRECTION, direction);
-        contentValues.put(ChatMessage.STATUS, ChatMessage.STATUS_ACTIVE);
+        contentValues.put(ChatMessage.STATUS, FileRecord.STATUS_ACTIVE);
         contentValues.put(ChatMessage.FILE_PATH, fileName);
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
     }
 
     /**
-     * Listens for changes in file transfers.
+     * Listens for changes in file transfers and update the DB record status if known.
+     * Translate FileTransfer status to FileRecord status before saving
      *
      * @param event FileTransferStatusChangeEvent
      */
     public void statusChanged(FileTransferStatusChangeEvent event)
     {
         FileTransfer ft = event.getFileTransfer();
-        String status = getStatus(ft.getStatus());
+        int status = getStatus(ft.getStatus());
 
-        // ignore events if status is null
-        if (status != null)
-            updateFTStatusToDB(ft.getID(), status, null, Message.ENCRYPTION_NONE);
+        // ignore events if status is unknown
+        if (status != FileRecord.STATUS_UNKNOWN)
+            updateFTStatusToDB(ft.getID(), status, null, IMessage.ENCRYPTION_NONE);
     }
 
     /**
@@ -331,7 +331,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
         IncomingFileTransferRequest req = event.getRequest();
-        updateFTStatusToDB(req.getID(), FileRecord.REFUSED, null, Message.ENCRYPTION_NONE);
+        updateFTStatusToDB(req.getID(), FileRecord.STATUS_REFUSED, null, IMessage.ENCRYPTION_NONE);
     }
 
     /**
@@ -342,61 +342,75 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void fileTransferRequestCanceled(FileTransferRequestEvent event)
     {
         IncomingFileTransferRequest req = event.getRequest();
-        updateFTStatusToDB(req.getID(), FileRecord.CANCELED, null, Message.ENCRYPTION_NONE);
+        updateFTStatusToDB(req.getID(), FileRecord.STATUS_CANCELED, null, IMessage.ENCRYPTION_NONE);
     }
 
     /**
-     * Update new status and fileName to the fileTransfer record in dataBase
+     * Update new status and fileName and convert to FileTransfer History Record in dataBase
      *
      * @param msgUuid message UUID
      * @param status New status for update
      * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
+     * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
      */
-    public void updateFTStatusToDB(String msgUuid, String status, String fileName, int encType)
+    public void updateFTStatusToDB(String msgUuid, int status, String fileName, int encType)
     {
-        // Timber.w("### File in/out transfer status changes to: " + status);
+        updateFTStatusToDB(msgUuid, status, fileName, encType, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+    }
+
+    /**
+     * Update new status and fileName to the fileTransfer record in dataBase
+     * Keep file uri; for retry if not converted to MESSAGE_FILE_TRANSFER_HISTORY
+     *
+     * @param msgUuid message UUID
+     * @param status New status for update
+     * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
+     * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
+     * @param recordType File Transfer record type
+     */
+    public void updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int recordType)
+    {
+        // Timber.w(new Exception("### File in/out transfer status changes to: " + status));
         String[] args = {msgUuid};
 
         contentValues.clear();
-        contentValues.put(ChatMessage.MSG_BODY, status);
-        contentValues.put(ChatMessage.STATUS, ChatMessageImpl.statusMap.get(status));
-        if (!StringUtils.isNullOrEmpty(fileName)) {
+        contentValues.put(ChatMessage.STATUS, status);
+        if (StringUtils.isNotEmpty(fileName)) {
             contentValues.put(ChatMessage.FILE_PATH, fileName);
         }
         contentValues.put(ChatMessage.ENC_TYPE, encType);
-        contentValues.put(ChatMessage.MSG_TYPE, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
-
+        contentValues.put(ChatMessage.MSG_TYPE, recordType);
         mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
     }
 
     /**
-     * Maps only the statuses we are interested in, otherwise returns null.
+     * Maps only valid FileTransferStatusChangeEvent status, otherwise returns STATUS_UNKNOWN.
      *
      * @param status the status as receive from FileTransfer
      * @return the corresponding status of FileRecord.
      */
-    private static String getStatus(int status)
+    private static int getStatus(int status)
     {
         switch (status) {
             case FileTransferStatusChangeEvent.COMPLETED:
-                return FileRecord.COMPLETED;
+                return FileRecord.STATUS_COMPLETED;
             case FileTransferStatusChangeEvent.REFUSED:
-                return FileRecord.REFUSED;
+                return FileRecord.STATUS_REFUSED;
             case FileTransferStatusChangeEvent.CANCELED:
-                return FileRecord.CANCELED;
+                return FileRecord.STATUS_CANCELED;
             case FileTransferStatusChangeEvent.FAILED:
-                return FileRecord.FAILED;
+                return FileRecord.STATUS_FAILED;
             case FileTransferStatusChangeEvent.PREPARING:
-                return FileRecord.PREPARING;
+                return FileRecord.STATUS_PREPARING;
             case FileTransferStatusChangeEvent.IN_PROGRESS:
-                return FileRecord.IN_PROGRESS;
+                return FileRecord.STATUS_IN_PROGRESS;
             default:
-                return null;
+                return FileRecord.STATUS_UNKNOWN;
         }
     }
 
     /**
-     * Permanently removes locally stored message history for the file transfer.
+     * Permanently removes locally stored chatRoom message messages (need cleanup - not used)
      */
     public void eraseLocallyStoredHistory()
     {

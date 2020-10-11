@@ -10,6 +10,7 @@ import net.sf.fmj.media.util.MediaThread;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.impl.neomedia.protocol.PushBufferStreamAdapter;
+import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ArrayUtils;
 import org.atalk.util.concurrent.MonotonicAtomicLong;
@@ -45,6 +46,12 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
      * The length in bytes of the buffers of <tt>RTPConnectorInputStream</tt> receiving packets from the network.
      */
     public static final int PACKET_RECEIVE_BUFFER_LENGTH = 4 * 1024;
+
+    /**
+     * The name of the property which controls the size of the receive buffer
+     * which {@link RTPConnectorInputStream} will request for the sockets that it uses.
+     */
+    public static final String SO_RCVBUF_PNAME = RTPConnectorInputStream.class.getName() + ".SO_RCVBUF";
 
     /**
      * Sets a specific priority on a specific <tt>Thread</tt>.
@@ -159,7 +166,8 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
             closed = false;
 
             try {
-                setReceiveBufferSize(65535);
+                int receiveBufferSize = LibJitsi.getConfigurationService().getInt(SO_RCVBUF_PNAME, 65535);
+                setReceiveBufferSize(receiveBufferSize);
             } catch (Throwable t) {
                 if (t instanceof InterruptedException)
                     Thread.currentThread().interrupt();
@@ -577,7 +585,7 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
                 break;
             }
 
-            numberOfReceivedBytes += (long) p.getLength();
+            numberOfReceivedBytes += p.getLength();
             try {
                 // Do the DatagramPacketFilters accept the received DatagramPacket?
                 if (accept(p)) {

@@ -8,10 +8,8 @@ package org.atalk.impl.neomedia.rtcp;
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 import net.sf.fmj.media.rtp.RTCPPacket;
 
-import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.RTCPUtils;
-import org.atalk.util.RTPUtils;
+import org.atalk.util.*;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -70,8 +68,8 @@ public class RTCPFBPacket extends RTCPPacket
 
     /**
      * Gets a boolean that indicates whether or not the packet specified in the
-     * {@link ByteArrayBuffer} that is passed in the first argument is an RTCP RTPFB or PSFB
-     * packet.
+     * {@link ByteArrayBuffer} that is passed in the first argument is an RTCP
+     * RTPFB or PSFB packet.
      *
      * @param baf the {@link ByteArrayBuffer} that holds the RTCP packet.
      * @return true if the packet specified in the {@link ByteArrayBuffer} that is passed in the

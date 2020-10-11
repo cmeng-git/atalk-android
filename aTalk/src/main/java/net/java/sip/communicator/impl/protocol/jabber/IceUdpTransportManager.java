@@ -14,7 +14,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.*;
-import org.atalk.util.StringUtils;
+import org.atalk.util.MediaType;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
 import org.ice4j.ice.*;
@@ -31,6 +31,7 @@ import org.xmpp.jnodes.smack.SmackServiceNode;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import timber.log.Timber;
@@ -42,6 +43,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class IceUdpTransportManager extends TransportManagerJabberImpl implements PropertyChangeListener
 {
@@ -106,12 +108,15 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     protected final Agent iceAgent;
 
     /**
-     * Whether this transport manager should use rtcpmux. When using rtcpmux,
+     * Whether this transport manager should use rtcp-mux. When using rtcp-mux,
      * the ICE Agent initializes a single Component per stream, and we use
-     * {@link org.ice4j.socket.MultiplexingDatagramSocket} to split it's
+     * {@link org.ice4j.socket.MultiplexingDatagramSocket} to split its
      * socket into a socket accepting RTCP packets, and one for everything else (RTP, DTLS).
+     *
+     * Set the property as static so that it retains the state init by the caller. It will then use
+     * as default when making a new call: to take care jitsi that cannot support <rtcp-mux/>
      */
-    private boolean rtcpmux = false;
+    private boolean rtcpmux = true;
 
     /**
      * Caches the sockets for the stream connector so that they are not re-created.
@@ -192,7 +197,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 }
             }
             StunCandidateHarvester autoHarvester = namSer.discoverStunServer(accID.getService(),
-                    StringUtils.getUTF8Bytes(username), StringUtils.getUTF8Bytes(password));
+                    username.getBytes(StandardCharsets.UTF_8),
+                    password.getBytes(StandardCharsets.UTF_8));
 
             Timber.i("Auto discovered STUN/TURN-server harvester is %s", autoHarvester);
 
@@ -203,7 +209,27 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         }
         // now create stun server descriptors for whatever other STUN/TURN servers the user may have set.
         for (StunServerDescriptor desc : accID.getStunServers()) {
-            TransportAddress addr = new TransportAddress(desc.getAddress(), desc.getPort(), Transport.UDP);
+            final String protocol = desc.getProtocol();
+            Transport transport;
+            switch (protocol) {
+                case StunServerDescriptor.PROTOCOL_UDP:
+                    transport = Transport.UDP;
+                    break;
+                case StunServerDescriptor.PROTOCOL_TCP:
+                    transport = Transport.TCP;
+                    break;
+                case StunServerDescriptor.PROTOCOL_DTLS:
+                    transport = Transport.DTLS;
+                    break;
+                case StunServerDescriptor.PROTOCOL_TLS:
+                    transport = Transport.TLS;
+                    break;
+                default:
+                    Timber.w("Unknown protocol %s", protocol);
+                    transport = Transport.UDP;
+                    break;
+            }
+            TransportAddress addr = new TransportAddress(desc.getAddress(), desc.getPort(), transport);
 
             // if we get STUN server from automatic discovery, it may just be server name (i.e.
             // stun.domain.org) and it may be possible that it cannot be resolved
@@ -344,8 +370,9 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             if (rtcpmux) {
                 Component component = stream.getComponent(Component.RTP);
                 MultiplexingDatagramSocket componentSocket = component.getSocket();
+
+                // ICE is not ready yet
                 if (componentSocket == null) {
-                    // ICE is not ready yet
                     return null;
                 }
 
@@ -462,17 +489,24 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
     /**
      * {@inheritDoc}
+     *
+     * Both the transport-info attributes i.e. ufrag and pwd must be set for IceUdpTransportExtension by default;
+     * In case there are child elements other than candidates e.g. DTLS fingerPrint
      */
     protected ExtensionElement createTransportPacketExtension()
     {
-        return new IceUdpTransportExtensionElement();
+        IceUdpTransportExtension tpe = new IceUdpTransportExtension();
+        tpe.setUfrag(iceAgent.getLocalUfrag());
+        tpe.setPassword(iceAgent.getLocalPassword());
+
+        return tpe;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected ExtensionElement startCandidateHarvest(JingleContent theirContent,
-            JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
+    protected ExtensionElement startCandidateHarvest(JingleContent theirContent, JingleContent ourContent,
+            TransportInfoSender transportInfoSender, String media)
             throws OperationFailedException
     {
         ExtensionElement pe;
@@ -544,20 +578,22 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             List<JingleContent> ourAnswer, TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
+        // Timber.w(new Exception("CPE list updated"));
         this.cpeList = ourAnswer;
         super.startCandidateHarvest(theirOffer, ourAnswer, transportInfoSender);
     }
 
     /**
      * Converts the ICE media <tt>stream</tt> and its local candidates into a
-     * {@link IceUdpTransportExtensionElement}.
+     * {@link IceUdpTransportExtension}.
      *
      * @param stream the {@link IceMediaStream} that we'd like to describe in XML.
-     * @return the {@link IceUdpTransportExtensionElement} that we
+     * @return the {@link IceUdpTransportExtension} that we
      */
     protected ExtensionElement createTransport(IceMediaStream stream)
     {
-        IceUdpTransportExtensionElement transport = new IceUdpTransportExtensionElement();
+        IceUdpTransportExtension transport = new IceUdpTransportExtension();
+
         Agent iceAgent = stream.getParentAgent();
         transport.setUfrag(iceAgent.getLocalUfrag());
         transport.setPassword(iceAgent.getLocalPassword());
@@ -566,6 +602,16 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             for (Candidate<?> candidate : component.getLocalCandidates())
                 transport.addCandidate(createCandidate(candidate));
         }
+
+        // @see RtcpmuxExtension per XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22);
+        /*
+         * This is a patch for jitsi and is non XEP standard: may want to remove once jitsi has updated.
+         * Jitsi works only on audio but no video call; rtcp will get re-align to jitsi after first call i.e. false
+         */
+        if (rtcpmux) {
+            transport.addChildExtension(new RtcpmuxExtension());
+        }
+
         return transport;
     }
 
@@ -582,16 +628,16 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     }
 
     /**
-     * Creates a {@link CandidateExtensionElement} and initializes it so that it would describe the
+     * Creates a {@link CandidateExtension} and initializes it so that it would describe the
      * state of <tt>candidate</tt>
      *
      * @param candidate the ICE4J {@link Candidate} that we'd like to convert into an XMPP packet extension.
-     * @return a new {@link CandidateExtensionElement} corresponding to the state of the
+     * @return a new {@link CandidateExtension} corresponding to the state of the
      * <tt>candidate</tt> candidate.
      */
-    private CandidateExtensionElement createCandidate(Candidate<?> candidate)
+    private CandidateExtension createCandidate(Candidate<?> candidate)
     {
-        CandidateExtensionElement packet = new CandidateExtensionElement();
+        CandidateExtension packet = new CandidateExtension();
         packet.setFoundation(candidate.getFoundation());
         Component component = candidate.getParentComponent();
 
@@ -632,6 +678,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         IceMediaStream stream;
         PortTracker portTracker;
 
+        Timber.d("Created Ice stream agent for %s", media);
         try {
             portTracker = getPortTracker(media);
             // the following call involves STUN processing so it may take a while
@@ -731,24 +778,26 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     public synchronized boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
             throws OperationFailedException
     {
-        Map<String, IceUdpTransportExtensionElement> map = new LinkedHashMap<>();
+        // Timber.w(new Exception("start Connectivity Establishment"));
+        Map<String, IceUdpTransportExtension> map = new LinkedHashMap<>();
         for (JingleContent content : remote) {
-            IceUdpTransportExtensionElement transport = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+            IceUdpTransportExtension transport = content.getFirstChildOfType(IceUdpTransportExtension.class);
             /*
              * If we cannot associate an IceMediaStream with the remote content, we will not have
              * anything to add the remote candidates to.
              */
-            RtpDescriptionExtensionElement description = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+            RtpDescriptionExtension description = content.getFirstChildOfType(RtpDescriptionExtension.class);
             if ((description == null) && (cpeList != null)) {
                 JingleContent localContent = findContentByName(cpeList, content.getName());
 
                 if (localContent != null) {
-                    description = localContent.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+                    description = localContent.getFirstChildOfType(RtpDescriptionExtension.class);
                 }
             }
             if (description != null) {
                 String media = description.getMedia();
                 map.put(media, transport);
+                // Timber.d("### Processing Jingle IQ (transport-info) media map add: %s (%s)", media, transport.getUfrag());
             }
         }
         /*
@@ -761,7 +810,9 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             return false;
         }
         else {
-            return startConnectivityEstablishment(map);
+            boolean status = startConnectivityEstablishment(map);
+            Timber.d("### Processed Jingle IQ (transport-info) for remote media: %s; success: %s", map.keySet(), status);
+            return status;
         }
     }
 
@@ -775,12 +826,13 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Map)
      */
     @Override
-    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtensionElement> remote)
+    protected synchronized boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtension> remote)
     {
         /*
          * If ICE is running already, we try to update the checklists with the candidates. Note that
          * this is a best effort.
          */
+        // Timber.w("Ice Agent in used: %s", iceAgent);
         boolean iceAgentStateIsRunning = IceProcessingState.RUNNING.equals(iceAgent.getState());
         if (iceAgentStateIsRunning)
             Timber.i("Update ICE remote candidates");
@@ -788,9 +840,9 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         int generation = iceAgent.getGeneration();
         boolean startConnectivityEstablishment = false;
 
-        for (Map.Entry<String, IceUdpTransportExtensionElement> e : remote.entrySet()) {
-            IceUdpTransportExtensionElement transport = e.getValue();
-            List<CandidateExtensionElement> candidates = transport.getChildExtensionsOfType(CandidateExtensionElement.class);
+        for (Map.Entry<String, IceUdpTransportExtension> e : remote.entrySet()) {
+            IceUdpTransportExtension transport = e.getValue();
+            List<CandidateExtension> candidates = transport.getChildExtensionsOfType(CandidateExtension.class);
 
             if (iceAgentStateIsRunning && (candidates.size() == 0)) {
                 Timber.i("connectivity establishment has not been started because candidate list is empty");
@@ -800,7 +852,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             String media = e.getKey();
             IceMediaStream stream = iceAgent.getStream(media);
             if (stream == null) {
-                Timber.w("No ICE media stream for media: %s - ignored candidates.", media);
+                Timber.w("No ICE media stream for media: %s (%s)- ignored candidates.",
+                        media, iceAgent.getStreams());
                 continue;
             }
 
@@ -818,7 +871,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             if (password != null)
                 stream.setRemotePassword(password);
 
-            for (CandidateExtensionElement candidate : candidates) {
+            for (CandidateExtension candidate : candidates) {
                 /*
                  * Is the remote candidate from the current generation of the iceAgent?
                  */
@@ -842,7 +895,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                         candidate.getIP(), candidate.getPort(), Transport.parse(candidate.getProtocol())), component,
                         org.ice4j.ice.CandidateType.parse(candidate.getType().toString()),
                         candidate.getFoundation(), candidate.getPriority(), relatedCandidate);
-
                 if (iceAgentStateIsRunning) {
                     component.addUpdateRemoteCandidates(remoteCandidate);
                 }
@@ -872,8 +924,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             for (IceMediaStream stream : iceAgent.getStreams()) {
                 for (Component component : stream.getComponents()) {
                     if (component.getRemoteCandidateCount() < 1) {
-                        Timber.w("### Insufficient remote candidates to startConnectivityEstablishment! %s: %d",
-                                component.toShortString(), component.getRemoteCandidateCount());
+                        Timber.d("### Insufficient remote candidates to startConnectivityEstablishment! %s: %s %s",
+                                component.toShortString(), component.getRemoteCandidateCount(), iceAgent.getStreams());
                         startConnectivityEstablishment = false;
                         break;
                     }
@@ -908,7 +960,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 {
                     Agent iceAgent = (Agent) evt.getSource();
                     if (iceAgent.isOver()) {
-                        Timber.w("Current IceProcessingState: %s", evt.getNewValue());
+                        Timber.d("Current IceProcessingState: %s", evt.getNewValue());
                         iceAgent.removeStateChangeListener(this);
                         if (iceAgent == IceUdpTransportManager.this.iceAgent) {
                             synchronized (iceProcessingStateSyncRoot) {
@@ -958,21 +1010,24 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
         /*
          * Once we're done establishing connectivity, we shouldn't be sending any more candidates
-         * because we will not be able to perform connectivity checks for them. Besides, they must
-         * have been sent in transport-info already.
+         * because we will not be able to perform connectivity checks for them.
+         * Besides, they must have been sent in transport-info already.
+         *
+         * cmeng 2020529: Do not remove attributes UFRAG_ATTR_NAME and PWD_ATTR_NAME if
+         * transport-info contains child elements e.g. DTLS FingerPrint
          */
         if (cpeList != null) {
             for (JingleContent content : cpeList) {
-                IceUdpTransportExtensionElement transport
-                        = content.getFirstChildOfType(IceUdpTransportExtensionElement.class);
+                IceUdpTransportExtension transport
+                        = content.getFirstChildOfType(IceUdpTransportExtension.class);
                 if (transport != null) {
-                    for (CandidateExtensionElement candidate : transport.getCandidateList())
+                    for (CandidateExtension candidate : transport.getCandidateList())
                         transport.removeCandidate(candidate);
 
-                    Collection<?> childExtensions = transport.getChildExtensionsOfType(CandidateExtensionElement.class);
+                    Collection<?> childExtensions = transport.getChildExtensions();
                     if ((childExtensions == null) || childExtensions.isEmpty()) {
-                        transport.removeAttribute(IceUdpTransportExtensionElement.UFRAG_ATTR_NAME);
-                        transport.removeAttribute(IceUdpTransportExtensionElement.PWD_ATTR_NAME);
+                        transport.removeAttribute(IceUdpTransportExtension.UFRAG_ATTR_NAME);
+                        transport.removeAttribute(IceUdpTransportExtension.PWD_ATTR_NAME);
                     }
                 }
             }
@@ -994,8 +1049,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     {
         JingleContent content = removeContent(cpeList, name);
         if (content != null) {
-            RtpDescriptionExtensionElement rtpDescription
-                    = content.getFirstChildOfType(RtpDescriptionExtensionElement.class);
+            RtpDescriptionExtension rtpDescription
+                    = content.getFirstChildOfType(RtpDescriptionExtension.class);
 
             if (rtpDescription != null) {
                 IceMediaStream stream = iceAgent.getStream(rtpDescription.getMedia());
@@ -1213,5 +1268,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     public void setRtcpmux(boolean rtcpmux)
     {
         this.rtcpmux = rtcpmux;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isRtcpmux()
+    {
+        return rtcpmux;
     }
 }

@@ -15,11 +15,12 @@
  */
 package org.atalk.util;
 
-import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.RawPacket;
 
 /**
  * Utility class that contains static methods for RTCP header manipulation.
+ *
+ * // @deprecated
  *
  * @author George Politis
  * @author Eng Chong Meng

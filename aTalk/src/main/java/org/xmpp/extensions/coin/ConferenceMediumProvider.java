@@ -18,51 +18,51 @@ import java.io.IOException;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class ConferenceMediumProvider extends ExtensionElementProvider<ConferenceMediumExtensionElement>
+public class ConferenceMediumProvider extends ExtensionElementProvider<ConferenceMediumExtension>
 {
     /**
      * Parses a ConferenceMedium extension sub-packet and creates a
-     * {@link ConferenceMediumExtensionElement} instance. At the beginning of the method call, the
+     * {@link ConferenceMediumExtension} instance. At the beginning of the method call, the
      * xml parser will be positioned on the opening element of the packet extension. As required by
      * the smack API, at the end of the method call, the parser will be positioned on the closing
      * element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>ConferenceMedium</tt> element.
-     * @return a new {@link ConferenceMediumExtensionElement} instance.
+     * @return a new {@link ConferenceMediumExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     @Override
-    public ConferenceMediumExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public ConferenceMediumExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
-        String label = parser.getAttributeValue("", ConferenceMediumExtensionElement.LABEL_ATTR_NAME);
+        String label = parser.getAttributeValue("", ConferenceMediumExtension.LABEL_ATTR_NAME);
 
         if (label == null) {
             throw new XmlPullParserException("Coin medium element must contain entity attribute");
         }
 
-        ConferenceMediumExtensionElement ext = new ConferenceMediumExtensionElement("entry", label);
+        ConferenceMediumExtension ext = new ConferenceMediumExtension("entry", label);
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 switch (elementName) {
-                    case MediaExtensionElement.ELEMENT_DISPLAY_TEXT:
+                    case MediaExtension.ELEMENT_DISPLAY_TEXT:
                         ext.setDisplayText(CoinIQProvider.parseText(parser));
                         break;
-                    case MediaExtensionElement.ELEMENT_STATUS:
+                    case MediaExtension.ELEMENT_STATUS:
                         ext.setStatus(CoinIQProvider.parseText(parser));
                         break;
-                    case MediaExtensionElement.ELEMENT_TYPE:
+                    case MediaExtension.ELEMENT_TYPE:
                         ext.setType(CoinIQProvider.parseText(parser));
                         break;
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(ConferenceMediumExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(ConferenceMediumExtension.ELEMENT)) {
                     done = true;
                 }
             }

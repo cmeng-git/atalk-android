@@ -23,6 +23,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -30,7 +31,6 @@ import org.atalk.android.gui.contactlist.*;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.util.java.awt.Color;
 import org.atalk.android.util.javax.swing.*;
-import org.atalk.util.StringUtils;
 
 import java.util.*;
 
@@ -479,7 +479,7 @@ public class SourceUIContact extends UIContactImpl
             String labelText;
             if (ConfigurationUtils.isHideAddressInCallHistoryTooltipEnabled()) {
                 labelText = contactDetail.getDisplayName();
-                if (StringUtils.isNullOrEmpty(labelText))
+                if (StringUtils.isEmpty(labelText))
                     labelText = contactDetail.getDetail();
             }
             else {

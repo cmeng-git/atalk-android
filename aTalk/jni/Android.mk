@@ -76,6 +76,7 @@ include ./speex/Android.mk
 # ================================= G722 ==============================================
 ### Refer to libjitsi and jitsi-lgpl-dependency for support if so required
 ### G722 library build (cmeng - removed support for jn722, incomplete libjn722.so provided)
+# https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-G.722-201209-I!!SOFT-ZST-E&type=items
 # LOCAL_PATH := $(ROOT)
 # include $(CLEAR_VARS)
 # LOCAL_MODULE := jng722
@@ -85,16 +86,17 @@ include ./speex/Android.mk
 # ================================= OpenSSL ===========================================
 ### OpenSSL shared library build (source in jni/openssl)
 # Contains both static libraries-1.0.2r pre-built on Ubuntu 18.04 and
-# sources-1.0.1j from site (Android_src.mk - build has error using android studio ndk on Windows 7)
+# Reference only: sources-1.0.1j from site (Android_src.mk - build has error using AS ndk on Windows 7)
 
 LOCAL_PATH  := $(ROOT)
+include $(CLEAR_VARS)
 
 # https://github.com/aosp-mirror/platform_external_openssl/tree/android-5.1.1_r38
-# Local AS NDK built from source (OPENSSL_VERSION=1.0.1j) - build ok on Ubuntu Android Studio
+# Local AS NDK built from source (OPENSSL_VERSION=1.0.1j) - problem but build ok on Ubuntu Android Studio
 # include openssl/Android.mk
 
-## Built static library from source (version 1.0.2r) on ubuntu 18.04
-# Built from static library (unable to build from source - #TODO)
-include openssl/Android_a.mk
+## Built static library from source (version 1.0.2u) on ubuntu 18.04
+# Built from static library (unable to build from source in jni - #TODO)
+include ./openssl/Android_a.mk
 
 

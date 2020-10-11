@@ -101,6 +101,11 @@ public abstract class PeriodicRunnable implements RecurringRunnable
     @Override
     public long getTimeUntilNextRun()
     {
+        // We haven't run yet.
+        if (_lastProcessTime < 0) {
+            return 0;
+        }
+
         long timeSinceLastProcess = Math.max(System.currentTimeMillis() - _lastProcessTime, 0);
         return Math.max(getPeriod() - timeSinceLastProcess, 0);
     }

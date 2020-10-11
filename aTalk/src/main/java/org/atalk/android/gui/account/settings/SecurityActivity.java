@@ -9,10 +9,10 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.*;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.UtilActivator;
@@ -34,6 +34,7 @@ import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class SecurityActivity extends OSGiActivity implements SecurityProtocolsDialogFragment.DialogClosedListener
 {
@@ -61,6 +62,18 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     private static final String PREF_KEY_SEC_CIPHER_SUITES = aTalkApp.getResString(R.string.pref_key_enc_cipher_suites);
 
     private static final String PREF_KEY_SEC_SAVP_OPTION = aTalkApp.getResString(R.string.pref_key_enc_savp_option);
+
+    private static final String PREF_KEY_SEC_RESET_ZID = aTalkApp.getResString(R.string.pref_key_zid_reset);
+
+    private static final String[] cryptoSuiteEntries = {
+            SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80,
+            SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_32,
+            SrtpCryptoSuite.AES_192_CM_HMAC_SHA1_80,
+            SrtpCryptoSuite.AES_192_CM_HMAC_SHA1_32,
+            SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_80,
+            SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_32,
+            SrtpCryptoSuite.F8_128_HMAC_SHA1_80
+    };
 
     /**
      * Fragment implementing {@link Preference} support in this activity.
@@ -117,12 +130,12 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     /**
      * Fragment handles {@link Preference}s used for manipulating security settings.
      */
-    static public class SecurityPreferenceFragment extends PreferenceFragment
+    public static class SecurityPreferenceFragment extends PreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         private static final String STATE_SEC_REG = "security_reg";
 
-        private SummaryMapper summaryMapper = new SummaryMapper();
+        private final SummaryMapper summaryMapper = new SummaryMapper();
 
         /**
          * Flag indicating if any changes have been made in this activity
@@ -147,13 +160,9 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             addPreferencesFromResource(R.xml.acc_encoding_preferences);
 
             Preference secProtocolsPref = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
-            secProtocolsPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                public boolean onPreferenceClick(Preference preference)
-                {
-                    showEditSecurityProtocolsDialog();
-                    return true;
-                }
+            secProtocolsPref.setOnPreferenceClickListener(preference -> {
+                showEditSecurityProtocolsDialog();
+                return true;
             });
 
             ListPreference savpPreference = (ListPreference) findPreference(PREF_KEY_SEC_SAVP_OPTION);
@@ -168,6 +177,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             zrtpAttr.setChecked(securityReg.isSipZrtpAttribute());
 
             loadCipherSuites();
+
+            initResetZID();
         }
 
         /**
@@ -182,22 +193,30 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
             MultiSelectListPreference cipherList = (MultiSelectListPreference) findPreference(PREF_KEY_SEC_CIPHER_SUITES);
 
-            String[] entries = new String[3];
-            entries[0] = SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_80;
-            entries[1] = SrtpCryptoSuite.AES_CM_128_HMAC_SHA1_32;
-            entries[2] = SrtpCryptoSuite.F8_128_HMAC_SHA1_80;
-            cipherList.setEntries(entries);
-            cipherList.setEntryValues(entries);
+            cipherList.setEntries(cryptoSuiteEntries);
+            cipherList.setEntryValues(cryptoSuiteEntries);
 
             Set<String> selected;
             selected = new HashSet<>();
             if (ciphers != null) {
-                for (String entry : entries) {
+                for (String entry : cryptoSuiteEntries) {
                     if (ciphers.contains(entry))
                         selected.add(entry);
                 }
             }
             cipherList.setValues(selected);
+        }
+
+        private void initResetZID()
+        {
+            findPreference(PREF_KEY_SEC_RESET_ZID).setOnPreferenceClickListener(
+                    preference -> {
+                        securityReg.randomZIDSalt();
+                        hasChanges = true;
+                        Toast.makeText(getActivity(), R.string.ZID_has_been_reset_toast, Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+            );
         }
 
         @Override
@@ -271,13 +290,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             final Map<String, Integer> encMap = securityReg.getEncryptionProtocols();
             List<String> encryptionsInOrder = new ArrayList<>(encMap.keySet());
 
-            Collections.sort(encryptionsInOrder, new Comparator<String>()
-            {
-                public int compare(String s, String s2)
-                {
-                    return encMap.get(s) - encMap.get(s2);
-                }
-            });
+            Collections.sort(encryptionsInOrder, (s, s2) -> encMap.get(s) - encMap.get(s2));
 
             Map<String, Boolean> encStatus = securityReg.getEncryptionProtocolStatus();
             StringBuilder summary = new StringBuilder();
@@ -292,7 +305,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
             String summaryStr = summary.toString();
             if (summaryStr.isEmpty()) {
-                summaryStr = aTalkApp.getAppResources().getString(R.string.service_gui_LIST_EMPTY);
+                summaryStr = aTalkApp.getResString(R.string.service_gui_LIST_NONE);
             }
 
             Preference preference = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
@@ -307,8 +320,9 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             Preference pref = findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
             boolean isOn = pref.getSharedPreferences().getBoolean(PREF_KEY_SEC_SIPZRTP_ATTR, true);
 
-            Resources res = aTalkApp.getAppResources();
-            String sumary = isOn ? res.getString(R.string.service_gui_SEC_ZRTP_SIGNALING_ON) : res.getString(R.string.service_gui_SEC_ZRTP_SIGNALING_OFF);
+            String sumary = isOn
+                    ? aTalkApp.getResString(R.string.service_gui_SEC_ZRTP_SIGNALING_ON)
+                    : aTalkApp.getResString(R.string.service_gui_SEC_ZRTP_SIGNALING_OFF);
 
             pref.setSummary(sumary);
         }
@@ -331,15 +345,26 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
          */
         private String getCipherSuitesSummary(MultiSelectListPreference ml)
         {
-            Object[] selected = ml.getValues().toArray();
+            Set<String> selected = ml.getValues();
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < selected.length; i++) {
-                sb.append(selected[i]);
-                if (i != selected.length - 1)
-                    sb.append(", ");
+
+            boolean firstElem = true;
+            for (String entry : cryptoSuiteEntries) {
+                if (selected.contains(entry)) {
+                    if (firstElem) {
+                        sb.append(entry);
+                        firstElem = false;
+                    }
+                    else {
+                        // separator must not have space. Otherwise, result in unknown crypto suite error.
+                        sb.append(",");
+                        sb.append(entry);
+                    }
+                }
             }
-            if (selected.length == 0)
-                sb.append(aTalkApp.getAppResources().getString(R.string.service_gui_LIST_EMPTY));
+
+            if (selected.isEmpty())
+                sb.append(aTalkApp.getResString(R.string.service_gui_LIST_NONE));
             return sb.toString();
         }
 

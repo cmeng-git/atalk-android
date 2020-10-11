@@ -73,14 +73,12 @@ public class JNIEncoder extends AbstractCodec
     public static final String MAIN_PROFILE = "main";
 
     /**
-     * The default value of the {@link #DEFAULT_PROFILE_PNAME} <tt>ConfigurationService</tt>
-     * property.
+     * The default value of the {@link #DEFAULT_PROFILE_PNAME} <tt>ConfigurationService</tt> property.
      */
     public static final String DEFAULT_DEFAULT_PROFILE = BASELINE_PROFILE;
 
     /**
-     * The frame rate to be assumed by <tt>JNIEncoder</tt> instances in the absence of any other
-     * frame rate indication.
+     * The frame rate to be assumed by <tt>JNIEncoder</tt> instances in the absence of any other frame rate indication.
      */
     public static final int DEFAULT_FRAME_RATE = 15;
 
@@ -219,7 +217,7 @@ public class JNIEncoder extends AbstractCodec
     /**
      * The packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>
      * and the associated packetizer. RFC 3984 "RTP Payload Format for H.264 Video" says that
-     * "[w]hen the value of packetization-mode is equal to 0 or packetization-mode is not present,
+     * "when the value of packetization-mode is equal to 0 or packetization-mode is not present,
      * the single NAL mode, as defined in section 6.2 of RFC 3984, MUST be used."
      */
     private String packetizationMode;
@@ -516,7 +514,6 @@ public class JNIEncoder extends AbstractCodec
         // avctx.chromaoffset = -2;
 
         FFmpeg.avcodeccontext_set_mb_decision(avctx, FFmpeg.FF_MB_DECISION_SIMPLE);
-        FFmpeg.avcodeccontext_set_rc_eq(avctx, "blurCplx^(1-qComp)");
         FFmpeg.avcodeccontext_add_flags(avctx, FFmpeg.CODEC_FLAG_LOOP_FILTER);
         if (intraRefresh) {
             /*
@@ -525,7 +522,6 @@ public class JNIEncoder extends AbstractCodec
              */
             FFmpeg.avcodeccontext_add_flags2(avctx, FFmpeg.CODEC_FLAG2_INTRA_REFRESH);
         }
-        FFmpeg.avcodeccontext_set_me_method(avctx, 7);
         FFmpeg.avcodeccontext_set_me_subpel_quality(avctx, 2);
         FFmpeg.avcodeccontext_set_me_range(avctx, 16);
         FFmpeg.avcodeccontext_set_me_cmp(avctx, FFmpeg.FF_CMP_CHROMA);
@@ -796,8 +792,8 @@ public class JNIEncoder extends AbstractCodec
     }
 
     /**
-     * Sets the packetization mode to be used for the H.264 RTP payload output by this
-     * <tt>JNIEncoder</tt> and the associated packetizer.
+     * Sets the packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>
+     * and the associated packetizer.
      *
      * @param packetizationMode the packetization mode to be used for the H.264 RTP payload output by this
      * <tt>JNIEncoder</tt> and the associated packetizer
@@ -805,14 +801,25 @@ public class JNIEncoder extends AbstractCodec
     public void setPacketizationMode(String packetizationMode)
     {
         /*
-         * RFC 3984 "RTP Payload Format for H.264 Video" says that "[w]hen the value of
-         * packetization-mode is equal to 0 or packetization-mode is not present, the single NAL
-         * mode, as defined in section 6.2 of RFC 3984, MUST be used."
+         * RFC 3984 "RTP Payload Format for H.264 Video", packetization-mode:
+         * This parameter signals the properties of an RTP payload type or the capabilities of a receiver implementation.
+         * Only a single configuration point can be indicated; thus, when capabilities to support more than one
+         * packetization-mode are declared, multiple configuration points (RTP payload types) must be used.
+         *
+         * The value of packetization mode MUST be an integer in the range of 0 to 2, inclusive.
+         * a. When the value of packetization-mode is equal to 0 or packetization-mode is not present,
+         *    the single NAL mode, as defined in section 6.2 of RFC 3984, MUST be used.
+         * b. When the value of packetization-mode is equal to 1, the non- interleaved mode,
+         *    as defined in section 6.3 of RFC 3984, MUST be used.
+         * c. When the value of packetization-mode is equal to 2, the interleaved mode,
+         *    as defined in section 6.4 of RFC 3984, MUST be used.
          */
         if ((packetizationMode == null) || "0".equals(packetizationMode))
             this.packetizationMode = "0";
         else if ("1".equals(packetizationMode))
             this.packetizationMode = "1";
+        else if ("2".equals(packetizationMode))
+            this.packetizationMode = "2";
         else
             throw new IllegalArgumentException("packetizationMode");
     }

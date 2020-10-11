@@ -19,6 +19,8 @@ package org.xmpp.extensions.jibri;
 
 import org.xmpp.extensions.AbstractExtensionElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Jicofo adds one <tt>SipCallState</tt> packet extension for each Jibri SIP
  * session to it's MUC presence in Jitsi Meet conference.
@@ -37,12 +39,14 @@ public class SipCallState extends AbstractExtensionElement
     /**
      * XML element name of this packet extension.
      */
-    public static final String ELEMENT_NAME = "jibri-sip-call-state";
+    public static final String ELEMENT = "jibri-sip-call-state";
 
     /**
      * The namespace of this packet extension.
      */
     public static final String NAMESPACE = JibriIq.NAMESPACE + "/call_state";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of XML attribute which holds the SIP session state.
@@ -56,7 +60,7 @@ public class SipCallState extends AbstractExtensionElement
 
     public SipCallState()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**

@@ -26,8 +26,9 @@ import android.view.View;
 import android.webkit.*;
 import android.widget.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
-import org.atalk.util.StringUtils;
+import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.regex.Pattern;
 
@@ -42,7 +43,6 @@ public class MyWebViewClient extends WebViewClient
     private Context mContext;
 
     private EditText mPasswordField;
-    private ImageView mShowPasswordImage;
 
     public MyWebViewClient(WebViewFragment viewFragment)
     {
@@ -65,7 +65,7 @@ public class MyWebViewClient extends WebViewClient
             viewFragment.startActivity(intent);
         } catch (Exception e) {
             // catch ActivityNotFoundException for xmpp:info@example.com. so let own webView load and display the error
-            Timber.w("Failed to load url \'$s\' : $s", url, e.getMessage());
+            Timber.w("Failed to load url '%s' : %s", url, e.getMessage());
             String origin = Uri.parse(webView.getUrl()).getHost();
             String originDomain = pattern.matcher(origin).replaceAll("$1");
             if (url.contains(originDomain))
@@ -108,9 +108,9 @@ public class MyWebViewClient extends WebViewClient
         mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mPasswordField.setText(httpAuth[1]);
 
-        mShowPasswordImage = authView.findViewById(R.id.pwdviewImage);
         CheckBox showPasswordCheckBox = authView.findViewById(R.id.show_password);
-        showPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> showPassword(isChecked));
+        showPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
 
         AlertDialog.Builder authDialog = new AlertDialog.Builder(mContext)
                 .setTitle(R.string.service_gui_USER_LOGIN)
@@ -119,8 +119,8 @@ public class MyWebViewClient extends WebViewClient
         final AlertDialog dialog = authDialog.show();
 
         authView.findViewById(R.id.button_signin).setOnClickListener(v -> {
-            httpAuth[0] = usernameInput.getText().toString().trim();
-            httpAuth[1] = mPasswordField.getText().toString().trim();
+            httpAuth[0] = ViewUtil.toString(usernameInput);
+            httpAuth[1] = ViewUtil.toString(mPasswordField);
             view.setHttpAuthUsernamePassword(host, realm, httpAuth[0], httpAuth[1]);
             handler.proceed(httpAuth[0], httpAuth[1]);
             dialog.dismiss();
@@ -130,20 +130,6 @@ public class MyWebViewClient extends WebViewClient
             handler.cancel();
             dialog.dismiss();
         });
-    }
-
-    private void showPassword(boolean show)
-    {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
     }
 
     /**
@@ -159,11 +145,11 @@ public class MyWebViewClient extends WebViewClient
         String aim = Uri.parse(url).getHost();
 
         // return true if this is the first time url loading or exact match of host
-        if (StringUtils.isNullOrEmpty(origin) || origin.equalsIgnoreCase(aim))
+        if (StringUtils.isEmpty(origin) || origin.equalsIgnoreCase(aim))
             return true;
 
         // return false if aim contains no host string i.e. not a url e.g. mailto:info[at]example.com
-        if (StringUtils.isNullOrEmpty(aim))
+        if (StringUtils.isEmpty(aim))
             return false;
 
         String originDomain = pattern.matcher(origin).replaceAll("$1");

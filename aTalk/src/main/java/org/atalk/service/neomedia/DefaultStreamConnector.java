@@ -36,8 +36,7 @@ public class DefaultStreamConnector implements StreamConnector
     public static final String BIND_RETRIES_PROPERTY_NAME = "media.BIND_RETRIES";
 
     /**
-     * The name of the property that contains the maximum port number that we'd like our RTP
-     * managers to bind upon.
+     * The name of the property that contains the maximum port number that we'd like our RTP managers to bind upon.
      */
     public static final String MAX_PORT_NUMBER_PROPERTY_NAME = "media.MAX_PORT_NUMBER";
 
@@ -47,8 +46,7 @@ public class DefaultStreamConnector implements StreamConnector
     private static int maxPort = -1;
 
     /**
-     * The name of the property that contains the minimum port number that we'd like our RTP
-     * managers to bind upon.
+     * The name of the property that contains the minimum port number that we'd like our RTP managers to bind upon.
      */
     public static final String MIN_PORT_NUMBER_PROPERTY_NAME = "media.MIN_PORT_NUMBER";
 
@@ -65,8 +63,7 @@ public class DefaultStreamConnector implements StreamConnector
      * times to bind.
      *
      * @param bindAddr the local <tt>InetAddress</tt> the new <tt>DatagramSocket</tt> is to bind to
-     * @return a new <tt>DatagramSocket</tt> instance bound to the specified local
-     * <tt>InetAddress</tt>
+     * @return a new <tt>DatagramSocket</tt> instance bound to the specified local <tt>InetAddress</tt>
      */
     private static synchronized DatagramSocket createDatagramSocket(InetAddress bindAddr)
     {
@@ -92,8 +89,7 @@ public class DefaultStreamConnector implements StreamConnector
             int port = minPort++;
 
             try {
-                return (bindAddr == null) ? new DatagramSocket(port) : new DatagramSocket(port,
-                        bindAddr);
+                return (bindAddr == null) ? new DatagramSocket(port) : new DatagramSocket(port, bindAddr);
             } catch (SocketException se) {
                 Timber.w(se, "Retrying a bind because of a failure to bind to address %s and port %d", bindAddr, port);
             }
@@ -122,8 +118,7 @@ public class DefaultStreamConnector implements StreamConnector
     protected boolean rtcpmux = false;
 
     /**
-     * Initializes a new <tt>DefaultStreamConnector</tt> instance with no control and data
-     * <tt>DatagramSocket</tt>s.
+     * Initializes a new <tt>DefaultStreamConnector</tt> instance with no control and data <tt>DatagramSocket</tt>s.
      * <p>
      * Suitable for extenders willing to delay the creation of the control and data sockets. For
      * example, they could override {@link #getControlSocket()} and/or {@link #getDataSocket()} and
@@ -193,11 +188,9 @@ public class DefaultStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for control data
-     * (e.g. RTCP) traffic.
+     * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for control data (e.g. RTCP) traffic.
      *
-     * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for control data
-     * (e.g. RTCP) traffic
+     * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for control data (e.g. RTCP) traffic.
      * @see StreamConnector#getControlSocket()
      */
     @Override
@@ -209,11 +202,9 @@ public class DefaultStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g.
-     * RTP) traffic.
+     * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g. RTP) traffic.
      *
-     * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g.
-     * RTP) traffic
+     * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g. RTP) traffic.
      * @see StreamConnector#getDataSocket()
      */
     @Override
@@ -225,11 +216,9 @@ public class DefaultStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP)
-     * traffic.
+     * Returns a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP) traffic.
      *
-     * @return a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP)
-     * traffic.
+     * @return a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP) traffic.
      */
     @Override
     public Socket getDataTCPSocket()
@@ -238,11 +227,9 @@ public class DefaultStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>Socket</tt> that a stream should use for control data (e.g.
-     * RTCP).
+     * Returns a reference to the <tt>Socket</tt> that a stream should use for control data (e.g. RTCP).
      *
-     * @return a reference to the <tt>Socket</tt> that a stream should use for control data (e.g.
-     * RTCP).
+     * @return a reference to the <tt>Socket</tt> that a stream should use for control data (e.g. RTCP).
      */
     @Override
     public Socket getControlTCPSocket()

@@ -134,7 +134,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     {
         // no change - throws exception to trace the root; otherwise too many unnecessary events
         if (newState == oldState) {
-            String msg = "The provider state unchange" + newState + ". Reason: " + reason;
+            String msg = "The provider state unchanged: " + newState + ". Reason: " + reason;
             (new Exception(msg)).printStackTrace();
         }
         Timber.d("The provider state changed: %s => %s. Reason: %s", oldState, newState, reason);
@@ -161,9 +161,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
                  */
                 if (throwable instanceof ThreadDeath)
                     throw (ThreadDeath) throwable;
-                Timber.e(throwable, "An error occurred while executing "
-                        + "RegistrationStateChangeListener#registrationStateChanged"
-                        + "(RegistrationStateChangeEvent) of %s", listener);
+                Timber.e(throwable, "Exception while sending registrationStateChanged event to: %s", listener);
             }
         Timber.log(TimberLog.FINER, "Done.");
     }
@@ -309,7 +307,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     @Override
     public String toString()
     {
-        return getClass().getSimpleName() + "(" + getAccountID().getDisplayName() + ")";
+        return getClass().getSimpleName() + "(" + getAccountID() + ")";
     }
 
     /**

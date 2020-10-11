@@ -20,19 +20,12 @@ import android.graphics.Point;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.event.ChatListener;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.LoginManager;
 
 import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.event.WindowListener;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * The <tt>UIService</tt> offers generic access to the graphical user interface
@@ -78,8 +71,7 @@ public interface UIService
      * visibility of the application.
      *
      * @return <code>true</code> if the application is visible and
-     *         <code>false</code> otherwise.
-     *
+     * <code>false</code> otherwise.
      * @see #setVisible(boolean)
      */
     boolean isVisible();
@@ -90,8 +82,7 @@ public interface UIService
      * needs to show or hide the application.
      *
      * @param visible if <code>true</code>, shows the main application window;
-     *            otherwise, hides the main application window.
-     *
+     * otherwise, hides the main application window.
      * @see #isVisible()
      */
     void setVisible(boolean visible);
@@ -170,9 +161,9 @@ public interface UIService
      * window will be only hidden.
      *
      * @param exitOnClose When TRUE, the user could exit the application by
-     *            simply closing the main application window (by clicking the X
-     *            button or pressing Alt-F4). When set to FALSE the main
-     *            application window will be only hidden.
+     * simply closing the main application window (by clicking the X
+     * button or pressing Alt-F4). When set to FALSE the main
+     * application window will be only hidden.
      */
     void setExitOnMainWindowClose(boolean exitOnClose);
 
@@ -181,7 +172,7 @@ public interface UIService
      * application window, otherwise returns FALSE.
      *
      * @return Returns TRUE if the application could be exited by closing the
-     *         main application window, otherwise returns FALSE
+     * main application window, otherwise returns FALSE
      */
     boolean getExitOnMainWindowClose();
 
@@ -192,13 +183,13 @@ public interface UIService
      * obtained by the <tt>getSupportedExportedWindows</tt> method.
      *
      * @param windowID One of the WINDOW_XXX WindowID-s.
-     * @throws IllegalArgumentException if the specified <tt>windowID</tt> is
-     *             not recognized by the implementation (note that
-     *             implementations MUST properly handle all WINDOW_XXX ID-s.
      * @return the window to be shown.
+     * @throws IllegalArgumentException if the specified <tt>windowID</tt> is
+     * not recognized by the implementation (note that
+     * implementations MUST properly handle all WINDOW_XXX ID-s.
      */
     ExportedWindow getExportedWindow(WindowID windowID)
-        throws IllegalArgumentException;
+            throws IllegalArgumentException;
 
     /**
      * Returns an exported window given by the <tt>WindowID</tt>. This could be
@@ -207,15 +198,14 @@ public interface UIService
      * obtained by the <tt>getSupportedExportedWindows</tt> method.
      *
      * @param windowID One of the WINDOW_XXX WindowID-s.
-     * @param params The parameters to be passed to the returned exported
-     *            window.
-     * @throws IllegalArgumentException if the specified <tt>windowID</tt> is
-     *             not recognized by the implementation (note that
-     *             implementations MUST properly handle all WINDOW_XXX ID-s.
+     * @param params The parameters to be passed to the returned exported window.
      * @return the window to be shown.
+     * @throws IllegalArgumentException if the specified <tt>windowID</tt> is
+     * not recognized by the implementation (note that
+     * implementations MUST properly handle all WINDOW_XXX ID-s.
      */
     ExportedWindow getExportedWindow(WindowID windowID, Object[] params)
-        throws IllegalArgumentException;
+            throws IllegalArgumentException;
 
     /**
      * Returns a configurable popup dialog, that could be used to show either a
@@ -248,8 +238,7 @@ public interface UIService
     /**
      * Returns the <tt>Chat</tt> corresponding to the given <tt>ChatRoom</tt>.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> for which the searched chat is
-     *            about.
+     * @param chatRoom the <tt>ChatRoom</tt> for which the searched chat is about.
      * @return the <tt>Chat</tt> corresponding to the given <tt>ChatRoom</tt>.
      */
     Chat getChat(ChatRoom chatRoom);
@@ -266,8 +255,8 @@ public interface UIService
      * The chat must correspond to a one on one conversation. If it is a
      * group chat an exception will be thrown.
      *
-     * @param chat  The chat to get the MetaContact from
-     * @return      The MetaContact corresponding to the chat.
+     * @param chat The chat to get the MetaContact from
+     * @return The MetaContact corresponding to the chat.
      */
     MetaContact getChatContact(Chat chat);
 
@@ -303,14 +292,12 @@ public interface UIService
      * was meant for use by the systray bundle and the protocol URI handlers.
      *
      * @param protocolProvider the <tt>ProtocolProviderService</tt> for which
-     *            the authentication window is about.
-     *
+     * the authentication window is about.
      * @return a default implementation of the <tt>SecurityAuthority</tt>
-     *         interface that can be used by non-UI components that would like
-     *         to launch the registration process for a protocol provider.
+     * interface that can be used by non-UI components that would like
+     * to launch the registration process for a protocol provider.
      */
-    SecurityAuthority getDefaultSecurityAuthority(
-        ProtocolProviderService protocolProvider);
+    SecurityAuthority getDefaultSecurityAuthority(ProtocolProviderService protocolProvider);
 
     /**
      * Returns an iterator over a set of windowID-s. Each <tt>WindowID</tt>
@@ -318,11 +305,10 @@ public interface UIService
      * <tt>WindowID</tt> in the set is one of the constants in the
      * <tt>ExportedWindow</tt> interface. The method is meant to be used by
      * bundles that would like to have access to some windows in the gui - for
-     * example the "Add contact" window, the "Settings" window, the
-     * "Chat window", etc.
+     * example the "Add contact" window, the "Settings" window, the "Chat window", etc.
      *
      * @return Iterator An iterator to a set containing WindowID-s representing
-     *         all exported windows supported by the current UI implementation.
+     * all exported windows supported by the current UI implementation.
      */
     Iterator<WindowID> getSupportedExportedWindows();
 
@@ -331,10 +317,10 @@ public interface UIService
      * current UI implementation.
      *
      * @param windowID one of the <tt>WindowID</tt>-s, defined in the
-     *            <tt>ExportedWindow</tt> interface.
+     * <tt>ExportedWindow</tt> interface.
      * @return <code>true</code> if the component with the given
-     *         <tt>WindowID</tt> is contained in the current UI implementation,
-     *         <code>false</code> otherwise.
+     * <tt>WindowID</tt> is contained in the current UI implementation,
+     * <code>false</code> otherwise.
      */
     boolean isExportedWindowSupported(WindowID windowID);
 
@@ -348,8 +334,7 @@ public interface UIService
      * like different menus, toolbars, etc.
      *
      * @return Iterator An iterator to a set containing containerID-s
-     *         representing all containers supported by the current UI
-     *         implementation.
+     * representing all containers supported by the current UI implementation.
      */
     Iterator<Container> getSupportedContainers();
 
@@ -359,15 +344,14 @@ public interface UIService
      *
      * @param containderID One of the CONTAINER_XXX Container-s.
      * @return <code>true</code> if the container with the given
-     *         <tt>Container</tt> is supported from the current UI
-     *         implementation, <code>false</code> otherwise.
+     * <tt>Container</tt> is supported from the current UI
+     * implementation, <code>false</code> otherwise.
      */
     boolean isContainerSupported(Container containderID);
 
     /**
-     * Determines whether the Mac OS X screen menu bar is being used by the UI
-     * for its main menu instead of the Windows-like menu bars at the top of the
-     * windows.
+     * Determines whether the Mac OS X screen menu bar is being used by the UI for
+     * its main menu instead of the Windows-like menu bars at the top of the windows.
      * <p>
      * A common use of the returned indicator is for the purposes of
      * platform-sensitive UI since Mac OS X employs a single screen menu bar,
@@ -376,46 +360,28 @@ public interface UIService
      * </p>
      *
      * @return <tt>true</tt> if the Mac OS X screen menu bar is being used by
-     *         the UI for its main menu instead of the Windows-like menu bars at
-     *         the top of the windows; otherwise, <tt>false</tt>
+     * the UI for its main menu instead of the Windows-like menu bars at
+     * the top of the windows; otherwise, <tt>false</tt>
      */
     boolean useMacOSXScreenMenuBar();
-
-    /**
-     * Adds the given <tt>WindowListener</tt> listening for events triggered
-     * by the main UIService component. This is normally the main application
-     * window component, the one containing the contact list. This listener
-     * would also receive events when this window is shown or hidden.
-     * @param l the <tt>WindowListener</tt> to add
-     */
-    void addWindowListener(WindowListener l);
-
-    /**
-     * Removes the given <tt>WindowListener</tt> from the list of registered
-     * listener. The <tt>WindowListener</tt> is listening for events
-     * triggered by the main UIService component. This is normally the main
-     * application window component, the one containing the contact list. This
-     * listener would also receive events when this window is shown or hidden.
-     * @param l the <tt>WindowListener</tt> to remove
-     */
-    void removeWindowListener(WindowListener l);
 
     /**
      * Provides all currently instantiated <tt>Chats</tt>.
      *
      * @return all active <tt>Chats</tt>.
      */
-    Collection <Chat> getAllChats();
+    Collection<Chat> getAllChats();
 
     /**
-     * Registers a <tt>NewChatListener</tt> to be informed when new
-     * <tt>Chats</tt> are created.
+     * Registers a <tt>NewChatListener</tt> to be informed when new <tt>Chats</tt> are created.
+     *
      * @param listener listener to be registered
      */
     void addChatListener(ChatListener listener);
 
     /**
      * Removes the registration of a <tt>NewChatListener</tt>.
+     *
      * @param listener listener to be unregistered
      */
     void removeChatListener(ChatListener listener);
@@ -464,33 +430,33 @@ public interface UIService
      * @return the login manager used by the current UI implementation
      */
     LoginManager getLoginManager();
-    
+
     /**
      * Opens a chat room window for the given <tt>ChatRoomWrapper</tt> instance.
-     * 
+     *
      * @param chatRoom the chat room associated with the chat room window
      */
     void openChatRoomWindow(ChatRoomWrapper chatRoom);
-    
+
     /**
-     * Closes the chat room window for the given <tt>ChatRoomWrapper</tt> 
+     * Closes the chat room window for the given <tt>ChatRoomWrapper</tt>
      * instance.
-     * 
+     *
      * @param chatRoom the chat room associated with the chat room window
      */
     void closeChatRoomWindow(ChatRoomWrapper chatRoom);
-    
+
     /**
      * Shows Add chat room dialog.
      */
     void showAddChatRoomDialog();
-    
+
     /**
      * Shows chat room open automatically configuration dialog.
-     * @param chatRoomId the chat room id of the chat room associated with the 
-     * dialog 
+     *
+     * @param chatRoomId the chat room id of the chat room associated with the
+     * dialog
      * @param pps the protocol provider service of the chat room
      */
-    void showChatRoomAutoOpenConfigDialog(
-        ProtocolProviderService pps, String chatRoomId);
+    void showChatRoomAutoOpenConfigDialog(ProtocolProviderService pps, String chatRoomId);
 }

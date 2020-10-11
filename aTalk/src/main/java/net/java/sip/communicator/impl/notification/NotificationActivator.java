@@ -107,11 +107,11 @@ public class NotificationActivator implements BundleActivator
     }
 
     /**
-     * Returns a reference to an UIService implementation currently registered in the bundle context or null if no such
-     * implementation was found.
+     * Returns a reference to an UIService implementation currently registered in the bundle context
+     * or null if no such implementation was found.
      *
-     * @return a reference to an UIService implementation currently registered in the bundle context or null if no such
-     * implementation was found.
+     * @return a reference to an UIService implementation currently registered in the bundle context
+     * or null if no such implementation was found.
      */
     public static UIService getUIService()
     {
@@ -121,8 +121,8 @@ public class NotificationActivator implements BundleActivator
     }
 
     /**
-     * Returns a reference to a ConfigurationService implementation currently registered in the bundle context or null
-     * if no such implementation was found.
+     * Returns a reference to a ConfigurationService implementation currently registered in the bundle context
+     * or null if no such implementation was found.
      *
      * @return a currently valid implementation of the ConfigurationService.
      */

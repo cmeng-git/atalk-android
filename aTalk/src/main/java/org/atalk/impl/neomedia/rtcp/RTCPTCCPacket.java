@@ -17,9 +17,9 @@ package org.atalk.impl.neomedia.rtcp;
 
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
-import org.atalk.service.neomedia.ByteArrayBuffer;
 import org.atalk.service.neomedia.ByteArrayBufferImpl;
 import org.atalk.util.*;
+import org.atalk.util.logging.DiagnosticContext;
 
 import java.util.Map;
 import java.util.TreeMap;

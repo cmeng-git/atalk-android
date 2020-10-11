@@ -33,65 +33,63 @@ import timber.log.Timber;
  */
 public class SipPreferenceFragment extends AccountPreferenceFragment
 {
-    private static final String PREF_KEY_USER_ID = aTalkApp.getAppResources().getString(R.string.pref_key_user_id);
+    private static final String PREF_KEY_USER_ID = aTalkApp.getResString(R.string.pref_key_user_id);
 
-    private static final String PREF_KEY_SERVER_ADDRESS = aTalkApp.getAppResources().getString(R.string.pref_key_server_address);
+    private static final String PREF_KEY_SERVER_ADDRESS = aTalkApp.getResString(R.string.pref_key_server_address);
 
-    private static final String PREF_KEY_AUTH_NAME = aTalkApp.getAppResources().getString(R.string.pref_key_auth_name);
+    private static final String PREF_KEY_AUTH_NAME = aTalkApp.getResString(R.string.pref_key_auth_name);
 
     /*
-     * private static final String PREF_KEY_DEFAULT_DOMAIN = aTalkApp.getAppResources()
-     * .getString(R.string.pref_key_default_domain);
+     * private static final String PREF_KEY_DEFAULT_DOMAIN = aTalkApp.getResString(R.string.pref_key_default_domain);
      */
 
-    private static final String PREF_KEY_TLS_CERT_ID = aTalkApp.getAppResources().getString(R.string.pref_key_client_tls_cert);
+    private static final String PREF_KEY_TLS_CERT_ID = aTalkApp.getResString(R.string.pref_key_client_tls_cert);
 
-    private static final String PREF_KEY_PROXY_AUTO_CONFIG = aTalkApp.getAppResources().getString(R.string.pref_key_proxy_auto_config);
+    private static final String PREF_KEY_PROXY_AUTO_CONFIG = aTalkApp.getResString(R.string.pref_key_proxy_auto_config);
 
-    private static final String PREF_KEY_SERVER_PORT = aTalkApp.getAppResources().getString(R.string.pref_key_server_port);
+    private static final String PREF_KEY_SERVER_PORT = aTalkApp.getResString(R.string.pref_key_server_port);
 
-    private static final String PREF_KEY_PROXY_ADDRESS = aTalkApp.getAppResources().getString(R.string.pref_key_proxy_address);
+    private static final String PREF_KEY_PROXY_ADDRESS = aTalkApp.getResString(R.string.pref_key_proxy_address);
 
-    private static final String PREF_KEY_PREFERRED_TRANSPORT = aTalkApp.getAppResources().getString(R.string.pref_key_preferred_transport);
+    private static final String PREF_KEY_PREFERRED_TRANSPORT = aTalkApp.getResString(R.string.pref_key_preferred_transport);
 
-    private static final String PREF_KEY_PROXY_PORT = aTalkApp.getAppResources().getString(R.string.pref_key_proxy_port);
+    private static final String PREF_KEY_PROXY_PORT = aTalkApp.getResString(R.string.pref_key_proxy_port);
 
-    private static final String PREF_KEY_IS_PRESENCE_EN = aTalkApp.getAppResources().getString(R.string.pref_key_is_presence_enabled);
+    private static final String PREF_KEY_IS_PRESENCE_EN = aTalkApp.getResString(R.string.pref_key_is_presence_enabled);
 
-    private static final String PREF_KEY_FORCE_P2P = aTalkApp.getAppResources().getString(R.string.pref_key_force_p2p);
+    private static final String PREF_KEY_FORCE_P2P = aTalkApp.getResString(R.string.pref_key_force_p2p);
 
-    private static final String PREF_KEY_POLLING_PERIOD = aTalkApp.getAppResources().getString(R.string.pref_key_polling_period);
+    private static final String PREF_KEY_POLLING_PERIOD = aTalkApp.getResString(R.string.pref_key_polling_period);
 
-    private static final String PREF_KEY_SUBSCRIPTION_PERIOD = aTalkApp.getAppResources().getString(R.string.pref_key_subscription_period);
+    private static final String PREF_KEY_SUBSCRIPTION_PERIOD = aTalkApp.getResString(R.string.pref_key_subscription_period);
 
-    private static final String PREF_KEY_KEEP_ALIVE_METHOD = aTalkApp.getAppResources().getString(R.string.pref_key_keep_alive_method);
+    private static final String PREF_KEY_KEEP_ALIVE_METHOD = aTalkApp.getResString(R.string.pref_key_keep_alive_method);
 
-    private static final String PREF_KEY_PING_INTERVAL = aTalkApp.getAppResources()
-            .getString(R.string.pref_key_ping_interval);
+    private static final String PREF_KEY_PING_INTERVAL = aTalkApp.getResString(R.string.pref_key_ping_interval);
 
-    private static final String PREF_KEY_DTMF_METHOD = aTalkApp.getAppResources().getString(R.string.pref_key_dtmf_method);
+    private static final String PREF_KEY_DTMF_METHOD = aTalkApp.getResString(R.string.pref_key_dtmf_method);
 
-    private static final String PREF_KEY_MWI_EN = aTalkApp.getAppResources().getString(R.string.pref_key_mwi_enabled);
+    private static final String PREF_KEY_MWI_EN = aTalkApp.getResString(R.string.pref_key_mwi_enabled);
 
-    private static final String PREF_KEY_VOICE_MAIL_URI = aTalkApp.getAppResources().getString(R.string.pref_key_voicemail_uri);
+    private static final String PREF_KEY_VOICE_MAIL_URI = aTalkApp.getResString(R.string.pref_key_voicemail_uri);
 
-    private static final String PREF_KEY_VOICE_MAIL_CHECK_URI = aTalkApp.getAppResources().getString(R.string.pref_key_voicemail_check_uri);
+    private static final String PREF_KEY_VOICE_MAIL_CHECK_URI = aTalkApp.getResString(R.string.pref_key_voicemail_check_uri);
 
-    private static final String PREF_KEY_CONTACT_LIST_TYPE = aTalkApp.getAppResources().getString(R.string.pref_key_contact_list_type);
+    private static final String PREF_KEY_CONTACT_LIST_TYPE = aTalkApp.getResString(R.string.pref_key_contact_list_type);
 
-    private static final String PREF_KEY_CLIST_SERVER_URI = aTalkApp.getAppResources().getString(R.string.pref_key_clist_server_uri);
+    private static final String PREF_KEY_CLIST_SERVER_URI = aTalkApp.getResString(R.string.pref_key_clist_server_uri);
 
-    private static final String PREF_KEY_CLIST_USE_SIP_CREDENTIALS = aTalkApp.getAppResources().getString(R.string.pref_key_clist_use_sip_credentials);
+    private static final String PREF_KEY_CLIST_USE_SIP_CREDENTIALS = aTalkApp.getResString(R.string.pref_key_clist_use_sip_credentials);
 
-    private static final String PREF_KEY_CLIST_USER = aTalkApp.getAppResources().getString(R.string.pref_key_clist_user);
+    private static final String PREF_KEY_CLIST_USER = aTalkApp.getResString(R.string.pref_key_clist_user);
 
-    private static final String PREF_KEY_CLIST_PASSWORD = aTalkApp.getAppResources().getString(R.string.pref_key_clist_password);
+    private static final String PREF_KEY_CLIST_PASSWORD = aTalkApp.getResString(R.string.pref_key_clist_password);
 
-    private static final String PREF_KEY_DISPLAYNAME = aTalkApp.getAppResources().getString(R.string.pref_key_display_name);
+    private static final String PREF_KEY_DISPLAYNAME = aTalkApp.getResString(R.string.pref_key_display_name);
 
-    private static final String PREF_KEY_PASSWORD = aTalkApp.getAppResources().getString(R.string.pref_key_password);
+    private static final String PREF_KEY_PASSWORD = aTalkApp.getResString(R.string.pref_key_password);
 
-    private static final String PREF_KEY_STORE_PASSWORD = aTalkApp.getAppResources().getString(R.string.pref_key_store_password);
+    private static final String PREF_KEY_STORE_PASSWORD = aTalkApp.getResString(R.string.pref_key_store_password);
 
     /**
      * Creates new instance.
@@ -209,25 +207,27 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         // Enable/disable contact list items on init
         updateContactListViews();
 
-        List<String> certs = new ArrayList<String>();
-        certs.add(getResources().getString(R.string.service_gui_CONN_NO_CERT));
+        List<String> certList = new ArrayList<>();
 
-        CertificateService certService = SIPAccountRegistrationActivator.getCertificateService();
-        for (CertificateConfigEntry e : certService.getClientAuthCertificateConfigs()) {
-            certs.add(e.getId());
+        CertificateService cvs = SIPAccountRegistrationActivator.getCertificateService();
+        List<CertificateConfigEntry> certEntries = cvs.getClientAuthCertificateConfigs();
+        certEntries.add(0, CertificateConfigEntry.CERT_NONE);
+
+        for (CertificateConfigEntry e : certEntries) {
+            certList.add(e.toString());
         }
 
         AccountID accountID = getAccountID();
 
-        String currentCert = accountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
-        if (!certs.contains(currentCert) && !isInitialized()) {
+        String currentCert = accountID.getTlsClientCertificate();
+        if (!certList.contains(currentCert) && !isInitialized()) {
             // The empty one
-            currentCert = certs.get(0);
+            currentCert = certList.get(0);
             getPreferenceManager().getSharedPreferences().edit().putString(PREF_KEY_TLS_CERT_ID, currentCert).apply();
         }
 
-        String[] entries = new String[certs.size()];
-        entries = certs.toArray(entries);
+        String[] entries = new String[certList.size()];
+        entries = certList.toArray(entries);
         ListPreference certPreference = (ListPreference) findPreference(PREF_KEY_TLS_CERT_ID);
         certPreference.setEntries(entries);
         certPreference.setEntryValues(entries);
@@ -253,13 +253,9 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         summaryMapper.includePreference(findPreference(PREF_KEY_SERVER_PORT), emptyStr);
         summaryMapper.includePreference(findPreference(PREF_KEY_AUTH_NAME), emptyStr);
         summaryMapper.includePreference(findPreference(PREF_KEY_TLS_CERT_ID), emptyStr);
-        summaryMapper.includePreference(findPreference(PREF_KEY_DTMF_METHOD), emptyStr, new SummaryMapper.SummaryConverter()
-        {
-            public String convertToSummary(String input)
-            {
-                ListPreference lp = (ListPreference) findPreference(PREF_KEY_DTMF_METHOD);
-                return lp.getEntry().toString();
-            }
+        summaryMapper.includePreference(findPreference(PREF_KEY_DTMF_METHOD), emptyStr, input -> {
+            ListPreference lp = (ListPreference) findPreference(PREF_KEY_DTMF_METHOD);
+            return lp.getEntry().toString();
         });
 
         // Connection -> Keep alive
@@ -308,9 +304,6 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
             // reg.setServerAddress(
             // prefs.getString(PREF_KEY_SERVER_ADDRESS, null));
             // Can not be changed
-        }
-        else if (key.equals(PREF_KEY_PROXY_ADDRESS)) {
-            reg.setProxy(prefs.getString(PREF_KEY_PROXY_ADDRESS, null));
         }
         else if (key.equals(PREF_KEY_USER_ID)) {
             // User id can not be changed
@@ -386,7 +379,6 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         else if (key.equals(PREF_KEY_CLIST_PASSWORD)) {
             reg.setClistOptionPassword(prefs.getString(PREF_KEY_CLIST_PASSWORD, null));
         }
-
     }
 
     /**

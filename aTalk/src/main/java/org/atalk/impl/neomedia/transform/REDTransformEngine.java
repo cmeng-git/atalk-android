@@ -8,7 +8,6 @@ package org.atalk.impl.neomedia.transform;
 import net.sf.fmj.media.rtp.RTPHeader;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.Logger;
 
 import timber.log.Timber;
 

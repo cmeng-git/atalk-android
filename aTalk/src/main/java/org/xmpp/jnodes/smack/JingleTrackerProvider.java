@@ -1,6 +1,5 @@
 package org.xmpp.jnodes.smack;
 
-import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -9,10 +8,10 @@ import org.jxmpp.jid.impl.JidCreate;
 
 import java.io.IOException;
 
-public class JingleTrackerProvider extends IQProvider
+public class JingleTrackerProvider extends IQProvider<JingleTrackerIQ>
 {
     @Override
-    public Element parse(org.jivesoftware.smack.xml.XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public JingleTrackerIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws org.jivesoftware.smack.xml.XmlPullParserException, IOException, SmackParsingException
     {
         JingleTrackerIQ iq = new JingleTrackerIQ();
@@ -45,8 +44,7 @@ public class JingleTrackerProvider extends IQProvider
                 final String verified = parser.getAttributeValue(null, "verified");
 
                 if (address != null && address.length() > 0) {
-                    final TrackerEntry entry = new TrackerEntry(type, policy,
-                            JidCreate.from(address), protocol);
+                    final TrackerEntry entry = new TrackerEntry(type, policy, JidCreate.from(address), protocol);
                     if (verified != null && verified.equals("true")) {
                         entry.setVerified(true);
                     }
@@ -54,7 +52,7 @@ public class JingleTrackerProvider extends IQProvider
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (elementName.equals(JingleTrackerIQ.NAME)) {
+                if (elementName.equals(JingleTrackerIQ.ELEMENT)) {
                     done = true;
                 }
             }

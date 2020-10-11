@@ -8,16 +8,13 @@ package org.atalk.android.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+import android.widget.*;
 
-import org.atalk.android.*;
-import org.atalk.impl.androidtray.NotificationHelper;
-import org.atalk.impl.androidupdate.OnlineUpdateService;
-import org.atalk.persistance.DatabaseBackend;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.service.EventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
@@ -25,13 +22,12 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The splash screen fragment displays animated aTalk logo and indeterminate progress indicators.
- * <p>
- * <p>
+ *
  * TODO: Eventually add exit option to the launcher Currently it's not possible to cancel OSGi
  * startup. Attempt to stop service during startup is causing immediate service restart after
  * shutdown even with synchronization of onCreate and OnDestroy commands. Maybe there is still
  * some reference to OSGI service being held at that time ?
- * <p>
+ *
  * TODO: Prevent from recreating this Activity on startup. On startup when this Activity is
  * recreated it will also destroy OSGiService which is currently not handled properly. Options
  * specified in AndroidManifest.xml should cover most cases for now:
@@ -54,33 +50,20 @@ public class LauncherActivity extends OSGiActivity
 
     private boolean startOnReboot = false;
 
-    /**
-     * aTalk SQLite database
-     */
-    public static DatabaseBackend databaseBackend;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         setupStrictMode();
-        // Request indeterminate progress for splash screen
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
+
+        // Do not show actionBar in splash screen - need this even it is specified in Manifest file
+        if (getActionBar() != null)
+            getActionBar().hide();
 
         if (OSGiService.isShuttingDown()) {
             switchActivity(ShutdownActivity.class);
             return;
         }
-
-        // Must initialize Notification channels before any notification is being issued.
-        new NotificationHelper(this);
-
-        // force delete in case system locked during testing
-        // ServerPersistentStoresRefreshDialog.deleteDB();  // purge sql database
-
-        // Trigger the database upgrade or creation if none exist
-        databaseBackend = DatabaseBackend.getInstance(getApplicationContext());
-        databaseBackend.getReadableDatabase();
 
         // Get restore Intent and display "Restoring..." label
         Intent intent = getIntent();
@@ -89,16 +72,18 @@ public class LauncherActivity extends OSGiActivity
             startOnReboot = intent.getBooleanExtra(EventReceiver.AUTO_START_ONBOOT, false);
         }
 
-        setProgressBarIndeterminateVisibility(true);
         setContentView(R.layout.splash);
+        TextView stateText = findViewById(R.id.stateInfo);
+        if (restoreIntent != null)
+            stateText.setText(R.string.service_gui_RESTORING);
+
+        ProgressBar mActionBarProgress = findViewById(R.id.actionbar_progress);
+        mActionBarProgress.setVisibility(ProgressBar.VISIBLE);
 
         // Starts fade in animation
         ImageView myImageView = findViewById(R.id.loadingImage);
         Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         myImageView.startAnimation(myFadeInAnimation);
-
-        View restoreView = findViewById(R.id.restoring);
-        restoreView.setVisibility(restoreIntent != null ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -111,12 +96,6 @@ public class LauncherActivity extends OSGiActivity
                 // Starts restore intent
                 startActivity(restoreIntent);
                 finish();
-            }
-            else if (BuildConfig.DEBUG) {
-                // Perform software version update check on first launch - for debug version only
-                Intent dailyCheckupIntent = new Intent(getApplicationContext(), OnlineUpdateService.class);
-                dailyCheckupIntent.setAction(OnlineUpdateService.ACTION_AUTO_UPDATE_START);
-                startService(dailyCheckupIntent);
             }
 
             // Start home screen Activity
@@ -140,7 +119,5 @@ public class LauncherActivity extends OSGiActivity
                 .permitDiskReads()
                 .permitDiskWrites()
                 .build());
-
-        //	StrictMode.setThreadPolicy(old);
     }
 }

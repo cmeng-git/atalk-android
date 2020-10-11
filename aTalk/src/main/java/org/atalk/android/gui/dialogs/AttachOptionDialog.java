@@ -31,13 +31,11 @@ public class AttachOptionDialog extends Dialog
     private AttachOptionModeAdapter mAttachOptionAdapter = null;
 	private AttachOptionItem mSelectedItem = null;
 	private ChatActivity mParent = null;
-	private final Contact mContact;
 
-	public AttachOptionDialog(Context context, final Contact contact) {
+	public AttachOptionDialog(Context context) {
 		super(context);
-		mContact = contact;
 		mParent = (ChatActivity) context;
-		setTitle(R.string.title_activity_attach_option_dialog);
+		setTitle(R.string.service_gui_FILE_ATTACHMENT);
 	}
 
 	@Override
@@ -52,7 +50,7 @@ public class AttachOptionDialog extends Dialog
 		mListView.setAdapter(mAttachOptionAdapter);
 		mListView.setOnItemClickListener((parent, view, position, id) -> {
             mSelectedItem = mAttachOptionAdapter.getItem((int) id);
-            mParent.sendAttachment(mSelectedItem, mContact);
+            mParent.sendAttachment(mSelectedItem);
             closeDialog();
         });
 	}

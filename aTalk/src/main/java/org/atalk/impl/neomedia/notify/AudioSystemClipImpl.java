@@ -7,10 +7,11 @@ package org.atalk.impl.neomedia.notify;
 
 import org.atalk.impl.neomedia.codec.audio.speex.SpeexResampler;
 import org.atalk.impl.neomedia.device.AudioSystem;
-import org.atalk.service.audionotifier.*;
-import org.atalk.util.Logger;
+import org.atalk.service.audionotifier.AbstractSCAudioClip;
+import org.atalk.service.audionotifier.AudioNotifierService;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.media.*;
 import javax.media.format.AudioFormat;
@@ -137,7 +138,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
                 resamplerFormat = rendererFormat;
                 resampler.setInputFormat(resamplerFormat);
 
-                Format[] supportedResamplerFormats  = resampler.getSupportedOutputFormats(resamplerFormat);
+                Format[] supportedResamplerFormats = resampler.getSupportedOutputFormats(resamplerFormat);
                 for (Format supportedRendererFormat : renderer.getSupportedInputFormats()) {
                     for (Format supportedResamplerFormat : supportedResamplerFormats) {
                         if (supportedRendererFormat.matches(supportedResamplerFormat)) {
@@ -231,7 +232,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
              */
             if (success && (audioStreamFormat != null) && (audioStreamLength > 0)
                     && (rendererProcessStartTime > 0) && isStarted()) {
-                long audioStreamDuration = (audioStreamFormat.computeDuration( audioStreamLength) + 999999) / 1000000;
+                long audioStreamDuration = (audioStreamFormat.computeDuration(audioStreamLength) + 999999) / 1000000;
                 if (audioStreamDuration > 0) {
                     /*
                      * XXX The estimation is not accurate because we do not know, for example, how

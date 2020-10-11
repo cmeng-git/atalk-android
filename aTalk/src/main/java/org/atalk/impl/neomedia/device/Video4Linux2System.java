@@ -10,7 +10,7 @@ import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.impl.neomedia.jmfext.media.protocol.video4linux2.DataSource;
 import org.atalk.impl.neomedia.jmfext.media.protocol.video4linux2.Video4Linux2;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 
 import javax.media.*;
 

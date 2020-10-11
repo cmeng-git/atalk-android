@@ -5,18 +5,24 @@
  */
 package org.atalk.service.osgi;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.*;
-import android.os.Build;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.core.app.NavUtils;
+
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
+import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.plugin.errorhandler.ExceptionHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -24,7 +30,6 @@ import org.osgi.framework.BundleContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.core.app.NavUtils;
 import timber.log.Timber;
 
 /**
@@ -46,12 +51,12 @@ public class OSGiPreferenceActivity extends PreferenceActivity
     /**
      * EXIT action listener that triggers closes the <tt>Activity</tt>
      */
-    private ExitActionListener exitListener = new ExitActionListener();
+    private final ExitActionListener exitListener = new ExitActionListener();
 
     /**
      * List of attached {@link OSGiUiPart}.
      */
-    private List<OSGiUiPart> osgiFrgaments = new ArrayList<OSGiUiPart>();
+    private final List<OSGiUiPart> osgiFrgaments = new ArrayList<>();
 
     /**
      * Starts this osgi activity.
@@ -97,10 +102,12 @@ public class OSGiPreferenceActivity extends PreferenceActivity
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState)
     {
+        // Always call setTheme() method before super.onCreate(savedInstanceState)
+        ThemeHelper.setTheme(this);
+
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();
 

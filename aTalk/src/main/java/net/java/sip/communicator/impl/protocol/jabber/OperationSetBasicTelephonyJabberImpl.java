@@ -7,8 +7,6 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
-import org.xmpp.extensions.condesc.CallIdExtensionElement;
-import org.xmpp.extensions.jingle.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
@@ -31,7 +29,10 @@ import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
+import org.xmpp.extensions.condesc.CallIdExtension;
+import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.*;
+import org.xmpp.extensions.jitsimeet.StartMutedExtension;
 
 import java.util.*;
 
@@ -63,7 +64,7 @@ public class OperationSetBasicTelephonyJabberImpl
     /**
      * Contains references for all currently active (non ended) calls.
      */
-    private ActiveCallsRepositoryJabberImpl activeCallsRepository = new ActiveCallsRepositoryJabberImpl(this);
+    private final ActiveCallsRepositoryJabberImpl activeCallsRepository = new ActiveCallsRepositoryJabberImpl(this);
 
     /**
      * Jingle IQ set stanza processor
@@ -119,7 +120,7 @@ public class OperationSetBasicTelephonyJabberImpl
     public Call createCall(String callee, CallConference conference)
             throws OperationFailedException
     {
-        CallJabberImpl call = new CallJabberImpl(this);
+        CallJabberImpl call = new CallJabberImpl(this, Jingle.generateSid());
         if (conference != null)
             call.setConference(conference);
 
@@ -131,7 +132,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         Call callOfCallPeer = callPeer.getCall();
         // We may have a Google Talk call here.
-        if ((callOfCallPeer != null) && (call != callOfCallPeer) && (conference != null))
+        if ((callOfCallPeer != call) && (conference != null))
             callOfCallPeer.setConference(conference);
 
         return callOfCallPeer;
@@ -150,7 +151,7 @@ public class OperationSetBasicTelephonyJabberImpl
     public CallJabberImpl createCall(ConferenceDescription cd, final ChatRoom chatRoom)
             throws OperationFailedException
     {
-        final CallJabberImpl call = new CallJabberImpl(this);
+        final CallJabberImpl call = new CallJabberImpl(this, Jingle.generateSid());
         ((ChatRoomJabberImpl) chatRoom).addConferenceCall(call);
 
         call.addCallChangeListener(new CallChangeListener()
@@ -188,7 +189,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         String callid = cd.getCallId();
         if (callid != null) {
-            sessionInitiateExtensions.add(new CallIdExtensionElement(callid));
+            sessionInitiateExtensions.add(new CallIdExtension(callid));
         }
 
         // String password = cd.getPassword();
@@ -233,15 +234,15 @@ public class OperationSetBasicTelephonyJabberImpl
             Iterable<ExtensionElement> sessionInitiateExtensions)
             throws OperationFailedException
     {
+        FullJid calleeJid = null;
         if (calleeAddress.contains("/")) {
             try {
-                FullJid calleeJid = JidCreate.fullFrom(calleeAddress);
-                return createOutgoingCall(call, calleeAddress, calleeJid, sessionInitiateExtensions);
+                calleeJid = JidCreate.fullFrom(calleeAddress);
             } catch (XmppStringprepException e) {
                 e.printStackTrace();
             }
         }
-        return createOutgoingCall(call, calleeAddress, null, sessionInitiateExtensions);
+        return createOutgoingCall(call, calleeAddress, calleeJid, sessionInitiateExtensions);
     }
 
     /**
@@ -300,15 +301,15 @@ public class OperationSetBasicTelephonyJabberImpl
         Jid calleeJid = null;
         try {
             calleeJid = JidCreate.from(calleeAddress);
-        } catch (XmppStringprepException e) {
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             e.printStackTrace();
         }
 
         // Throw exception if the call is none of the above criteria check
         if ((!Roster.getInstanceFor(mConnection).contains(calleeJid.asBareJid())
                 && !isPrivateMessagingContact) && !alwaysCallGtalk && !isTelephonyCall) {
-            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_CALLGROUP, calleeAddress),
-                    OperationFailedException.FORBIDDEN);
+            throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_CALLGROUP,
+                    calleeAddress), OperationFailedException.FORBIDDEN);
         }
 
         Jid fullCalleeJid = fullCalleeURI;
@@ -374,8 +375,8 @@ public class OperationSetBasicTelephonyJabberImpl
          * " is unknown to us." , OperationFailedException.INTERNAL_ERROR); }
          */
 
-        AbstractCallPeer<?, ?> peer = null;
         // initiate call
+        AbstractCallPeer<?, ?> peer;
         try {
             peer = call.initiateSession(fullCalleeJid.asFullJidIfPossible(), di, sessionInitiateExtensions, null);
         } catch (Throwable t) {
@@ -390,9 +391,15 @@ public class OperationSetBasicTelephonyJabberImpl
                     throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_NOT_IN_ROSTER,
                             telephonyDomain), OperationFailedException.ILLEGAL_ARGUMENT);
                 else {
-                    String message = aTalkApp.getResString(R.string.service_gui_CREATE_CALL_FAILED);
-                    if (t.getMessage() != null)
-                        message += "\n" + t.getMessage();
+                    String message = null;
+                    if (t.getCause() != null) {
+                        message = t.getCause().getMessage();
+                    }
+                    else if (t.getMessage() != null) {
+                        message = t.getMessage();
+                    }
+
+                    Timber.e("Initiate call session Exception: %s", message);
                     throw new OperationFailedException(message, OperationFailedException.NETWORK_FAILURE);
                 }
             }
@@ -698,7 +705,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
         if (jingle.getAction() == JingleAction.SESSION_INITIATE) {
             // we only accept session-initiate-s dealing RTP
-            return jingle.containsContentChildOfType(RtpDescriptionExtensionElement.class);
+            return jingle.containsContentChildOfType(RtpDescriptionExtension.class);
         }
 
         String sid = jingle.getSid();
@@ -737,7 +744,16 @@ public class OperationSetBasicTelephonyJabberImpl
 
             try {
                 if (iq instanceof Jingle) {
-                    processJingle((Jingle) iq);
+                    Jingle jingle = (Jingle) iq;
+
+                    // let's first see whether we have a peer that's concerned by this IQ
+                    CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingle.getSid());
+                    if (callPeer == null) {
+                        processJingleSynchronize(jingle);
+                    }
+                    else {
+                        processJingle(jingle, callPeer);
+                    }
                 }
             } catch (Throwable t) {
                 String packetClass = iq.getClass().getSimpleName();
@@ -758,124 +774,321 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param jingle the {@link Jingle} packet we need to be analyzing.
      */
-    private void processJingle(final Jingle jingle)
-            throws NotConnectedException, InterruptedException
+    private synchronized void processJingleSynchronize(final Jingle jingle)
     {
-        // let's first see whether we have a peer that's concerned by this IQ
-        CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingle.getSid());
         JingleAction action = jingle.getAction();
-        Timber.w("### Processing Jingle IQ id: %s. Action: %s", jingle.getStanzaId(), action);
+        Timber.d("### Processing Jingle IQ (%s) synchronized", jingle.getAction());
+        switch (action) {
+            case SESSION_INITIATE:
 
-        if (action == JingleAction.SESSION_INITIATE) {
-            TransferExtensionElement transfer = jingle.getExtension(
-                    TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
-            CallIdExtensionElement callidExt = jingle.getExtension(CallIdExtensionElement.ELEMENT, CallIdExtensionElement.NAMESPACE);
-            CallJabberImpl call = null;
+                // Initiator attribute is RECOMMENDED but not REQUIRED attribute for Jingle "session-initiate".
+                // When Initiator attribute is not present copy the value from IQ "from" attribute. Allow per XEP-0166
+                if (jingle.getInitiator() == null) {
+                    jingle.setInitiator(jingle.getFrom().asEntityFullJidIfPossible());
+                }
 
-            if (transfer != null) {
-                String sid = transfer.getSid();
-                if (sid != null) {
-                    CallJabberImpl attendantCall = getActiveCallsRepository().findSID(sid);
-                    if (attendantCall != null) {
-                        CallPeerJabberImpl attendant = attendantCall.getPeer(sid);
-                        // Check and proceed if we are legally involved in the session.
-                        if ((attendant != null)
-                                && transfer.getFrom().isParentOf(attendant.getPeerJid())
-                                && transfer.getTo().isParentOf(protocolProvider.getOurJID())) {
-                            call = attendantCall;
+//                StartMutedExtension startMutedExt = jingle.getExtension(StartMutedExtension.class);
+//                if (startMutedExt != null) {
+//                    ProtocolProviderServiceJabberImpl protocolProvider
+//                            = getProtocolProvider();
+//
+//                    OperationSetJitsiMeetToolsJabberImpl operationSetJitsiMeetTools
+//                            = (OperationSetJitsiMeetToolsJabberImpl) protocolProvider.getOperationSet(OperationSetJitsiMeetTools.class);
+//
+//                    if (operationSetJitsiMeetTools != null) {
+//                        boolean[] startMutedFlags = {
+//                                Boolean.parseBoolean(startMutedExt.getAttributeValue(
+//                                        StartMutedExtension.AUDIO_ATTRIBUTE_NAME)),
+//
+//                                Boolean.parseBoolean(startMutedExt.getAttributeValue(
+//                                        StartMutedExtension.VIDEO_ATTRIBUTE_NAME))
+//                        };
+//
+//                        operationSetJitsiMeetTools.notifySessionStartMuted(startMutedFlags);
+//                    }
+//                    else {
+//                        Timber.w("StartMutedPacketExtension not handled! OperationSetJitsiMeetTools not available.");
+//                    }
+//                }
+
+                CallJabberImpl call = null;
+                TransferExtension transfer = jingle.getExtension(TransferExtension.class);
+                if (transfer != null) {
+                    String sid = transfer.getSid();
+                    if (sid != null) {
+                        CallJabberImpl attendantCall = activeCallsRepository.findSID(sid);
+                        if (attendantCall != null) {
+                            CallPeerJabberImpl attendant = attendantCall.getPeer(sid);
+                            // Check and proceed if we are legally involved in the session.
+                            if ((attendant != null)
+                                    && transfer.getFrom().isParentOf(attendant.getPeerJid())
+                                    && transfer.getTo().isParentOf(protocolProvider.getOurJID())) {
+                                call = attendantCall;
+                            }
                         }
                     }
                 }
-            }
-            if (callidExt != null) {
-                String callid = callidExt.getText();
-                if (callid != null)
-                    call = getActiveCallsRepository().findCallId(callid);
-            }
-            if (transfer != null && callidExt != null)
-                Timber.w("Received a session-initiate with both 'transfer' and 'callid' extensions. Ignored 'transfer' and used 'callid'.");
 
-            // start init new call if not already in call conference
-            if (call == null)
-                call = new CallJabberImpl(this);
-            final CallJabberImpl finalCall = call;
+                CallIdExtension callidExt = jingle.getExtension(CallIdExtension.class);
+                if (callidExt != null) {
+                    String callid = callidExt.getText();
+                    if (callid != null)
+                        call = activeCallsRepository.findCallId(callid);
+                }
+                if ((transfer != null) && (callidExt != null))
+                    Timber.w("Received a session-initiate with both 'transfer' and 'callid' extensions. Ignored 'transfer' and used 'callid'.");
 
+                // start init new call if not already in call conference
+                if (call == null) {
+                    call = new CallJabberImpl(this, jingle.getSid());
+                    setContentMedia(jingle);
+
+                    /*
+                     * cmeng: 20200622
+                     * Must deployed method synchronized and update the new callPeer to activeCallsRepository asap;
+                     * Otherwise peer sending trailing standalone transport-info (not part of session-initiate)
+                     * (e.g. conversations ~ 60ms) will be in race-condition; the transport-info is received before
+                     * the callPeer has been initialized and hence not being processed at all.
+                     */
+                    FullJid remoteParty = jingle.getInitiator();
+                    final CallPeerJabberImpl callPeer = new CallPeerJabberImpl(remoteParty, call, jingle);
+                    call.addCallPeer(callPeer);
+
+                    /*
+                     * cmeng (20200611): change to merged trailing transport-info's with the session-initiate
+                     * before processing i.e. not using the next synchronous method call.
+                     */
+                    this.processSessionInitiate(call, callPeer, jingle);
+
+                    /*
+                     * cmeng (20200602) - must process to completion if transport-info is send separately,
+                     * otherwise IceUdpTransportManager#startConnectivityEstablishment will fail
+                     * (cpeList is empty) and Ice Agent for the media is not initialized properly
+                     */
+                    // call.processSessionInitiate(jingle, callPeer);
+
+                }
+                break;
+
+            case TRANSPORT_INFO:
+                // Assume callPeer has been set in synchronise session-initiate.
+                CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingle.getSid());
+                processTransportInfo(callPeer, jingle);
+                break;
+
+            default:
+                Timber.e("Received unhandled Jingle IQ id: %s. Action: %s", jingle.getStanzaId(), action);
+        }
+    }
+
+
+    /**
+     * Analyzes the <tt>jingle</tt>'s action and passes it to the corresponding handler.
+     * the rest of these cases deal with exiting peers
+     *
+     * @param jingle the {@link Jingle} packet we need to be analyzing.
+     */
+    private void processJingle(final Jingle jingle, final CallPeerJabberImpl callPeer)
+            throws NotConnectedException, InterruptedException
+    {
+        JingleAction action = jingle.getAction();
+        Timber.d("### Processing Jingle IQ (%s); callPeer: %s", action, callPeer.getAddress());
+        switch (action) {
+            case SESSION_TERMINATE:
+                callPeer.processSessionTerminate(jingle);
+                break;
+            case SESSION_ACCEPT:
+                setContentMedia(jingle);
+                callPeer.processSessionAccept(jingle);
+                break;
+            case SESSION_INFO:
+                SessionInfoExtension info = jingle.getSessionInfo();
+                // change status.
+                if (info != null) {
+                    callPeer.processSessionInfo(info);
+                }
+                else {
+                    TransferExtension transfer = jingle.getExtension(TransferExtension.class);
+                    if (transfer != null) {
+                        if (transfer.getFrom() == null)
+                            transfer.setFrom(jingle.getFrom());
+                        try {
+                            callPeer.processTransfer(transfer);
+                        } catch (OperationFailedException ofe) {
+                            Timber.e(ofe, "Failed to transfer to %s", transfer.getTo());
+                        }
+                    }
+
+                    CoinExtension coinExt = jingle.getExtension(CoinExtension.class);
+                    if (coinExt != null) {
+                        callPeer.setConferenceFocus(Boolean.parseBoolean(
+                                coinExt.getAttributeAsString(CoinExtension.ISFOCUS_ATTR_NAME)));
+                    }
+                }
+                break;
+
+            case CONTENT_ACCEPT:
+                callPeer.processContentAccept(jingle);
+                break;
+
+            case CONTENT_ADD:
+                callPeer.processContentAdd(jingle);
+                break;
+
+            case CONTENT_MODIFY:
+                callPeer.processContentModify(jingle);
+                break;
+
+            case CONTENT_REJECT:
+                callPeer.processContentReject(jingle);
+                break;
+
+            case CONTENT_REMOVE:
+                callPeer.processContentRemove(jingle);
+                break;
+
+            // Transport_info send by peer e.g. conversations is too fast and before callPeer is properly initialized
+            case TRANSPORT_INFO:
+                processTransportInfo(callPeer, jingle);
+                break;
+
+            case SOURCEADD:
+                callPeer.processSourceAdd(jingle);
+                break;
+
+            case SOURCEREMOVE:
+                callPeer.processSourceRemove(jingle);
+                break;
+
+            default:
+                Timber.e("Received unhandled Jingle IQ id: %s. Action: %s", jingle.getStanzaId(), action);
+        }
+    }
+
+    private static CallJabberImpl mCall = null;
+    private static Jingle jingleSI;
+    private static Jingle jingleTransports = null;
+    private static List<String> contentMedias = new ArrayList<>();
+
+    /**
+     * Keep a reference of the media to be processed for transport-info to avoid media prune;
+     * Applicable for training transport-info sedning only e.g. conversations
+     *
+     * @param jingle Jingle element of session-initiate or session-accept
+     * @see #processTransportInfo(CallPeerJabberImpl, Jingle)
+     */
+    private void setContentMedia(Jingle jingle)
+    {
+        contentMedias.clear();
+        List<JingleContent> jingleContents = jingle.getContents();
+        for (JingleContent content : jingleContents) {
+            contentMedias.add(content.getName());
+        }
+    }
+
+    /**
+     * If the session-initiate jingle does not contain the transport candidates, then wait for the trailing
+     * transport-info's before process, otherwise proceed to execute in new thread
+     *
+     * @param call CallJabberImpl
+     * @param callPeer CallPeerJabberImpl
+     * @param jingle Jingle element of session-initiate or session-accept
+     */
+    private void processSessionInitiate(CallJabberImpl call, CallPeerJabberImpl callPeer, Jingle jingle)
+    {
+        jingleSI = null;
+        IceUdpTransportExtension transportExtension = jingle.getContents().get(0).getChildExtension(IceUdpTransportExtension.class);
+        if ((transportExtension != null) && !transportExtension.getCandidateList().isEmpty()) {
             new Thread()
             {
                 @Override
                 public void run()
                 {
-                    finalCall.processSessionInitiate(jingle);
+                    call.processSessionInitiate(jingle, callPeer);
                 }
             }.start();
         }
-        else if (callPeer != null) {
-            // the rest of these cases deal with existing peers
-            switch (action) {
-                case SESSION_TERMINATE:
-                    callPeer.processSessionTerminate(jingle);
-                    break;
-                case SESSION_ACCEPT:
-                    callPeer.processSessionAccept(jingle);
-                    break;
-                case SESSION_INFO:
-                    SessionInfoExtensionElement info = jingle.getSessionInfo();
-                    // change status.
-                    if (info != null) {
-                        callPeer.processSessionInfo(info);
-                    }
-                    else {
-                        ExtensionElement packetExtension = jingle.getExtension(
-                                TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE);
-                        if (packetExtension instanceof TransferExtensionElement) {
-                            TransferExtensionElement transfer = (TransferExtensionElement) packetExtension;
+        else {
+            mCall = call;
+            jingleSI = jingle;
+        }
+    }
 
-                            if (transfer.getFrom() == null)
-                                transfer.setFrom(jingle.getFrom());
-                            try {
-                                callPeer.processTransfer(transfer);
-                            } catch (OperationFailedException ofe) {
-                                Timber.e(ofe, "Failed to transfer to %s", transfer.getTo());
-                            }
-                        }
-
-                        packetExtension = jingle.getExtension(CoinExtensionElement.ELEMENT,
-                                CoinExtensionElement.NAMESPACE);
-                        if (packetExtension instanceof CoinExtensionElement) {
-                            CoinExtensionElement coinExt = (CoinExtensionElement) packetExtension;
-                            callPeer.setConferenceFocus(Boolean.parseBoolean(
-                                    coinExt.getAttributeAsString(CoinExtensionElement.ISFOCUS_ATTR_NAME)));
-                        }
-                    }
-                    break;
-                case CONTENT_ACCEPT:
-                    callPeer.processContentAccept(jingle);
-                    break;
-                case CONTENT_ADD:
-                    callPeer.processContentAdd(jingle);
-                    break;
-                case CONTENT_MODIFY:
-                    callPeer.processContentModify(jingle);
-                    break;
-                case CONTENT_REJECT:
-                    callPeer.processContentReject(jingle);
-                    break;
-                case CONTENT_REMOVE:
-                    callPeer.processContentRemove(jingle);
-                    break;
-                case TRANSPORT_INFO:
-                    callPeer.processTransportInfo(jingle);
-                    break;
-                case SOURCEADD:
-                    callPeer.processSourceAdd(jingle);
-                    break;
-                case SOURCEREMOVE:
-                    callPeer.processSourceRemove(jingle);
-                    break;
+    /**
+     * For session-initiate: merge the trailing transport-info candidates before process the stanza.
+     * For session-accept: all the transport-info's must be combined and processed in one go;
+     * otherwise ice4j will prune any unspecified media from the ice agent i.e.
+     * Combined all transport-info before calling processOfferTransportInfo();
+     *
+     * 1. aTalk/Jitsi implementations:
+     * a. transport-info's are embedded within session-initiate stanza;
+     * b. transport-info's are sent prior to session-accept stanza; - can be processed individually without problem
+     *
+     * 2. Conversations implementations:
+     * a. transport-info's are sent per media after session-initiate stanza;
+     * b. transport-info's are sent per media after session-accept stanza;
+     *
+     * @param jingleTransport Jingle transport-info stanza
+     * @param callPeer CallPeerJabberImpl to be targeted
+     */
+    private void processTransportInfo(CallPeerJabberImpl callPeer, Jingle jingleTransport)
+    {
+        if (contentMedias.size() > 1) {
+            if (jingleTransports == null) {
+                jingleTransports = jingleTransport;
+            }
+            else {
+                jingleTransports.addContent(jingleTransport.getContents().get(0));
             }
         }
         else {
-            Timber.w("Received stray jingle IQ id: %s. Action: %s", jingle.getStanzaId(), action);
+            jingleTransports = jingleTransport;
+        }
+
+        // Merge the transport-info to the session-initiate before process (20200616: confirmed by sendStanza())
+        if (jingleSI != null) {
+            for (JingleContent contents : jingleTransport.getContents()) {
+                String nameContent = contents.getName();
+                for (JingleContent contentSI : jingleSI.getContents()) {
+                    if (nameContent.equals(contentSI.getName())) {
+                        IceUdpTransportExtension contentTransport
+                                = contentSI.getFirstChildOfType(IceUdpTransportExtension.class);
+                        for (IceUdpTransportExtension transport
+                                : contents.getChildExtensionsOfType(IceUdpTransportExtension.class)) {
+                            for (CandidateExtension candidate : transport.getCandidateList()) {
+                                contentTransport.addCandidate(candidate);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (jingleTransports.getContents().size() >= contentMedias.size()) {
+            if (jingleSI != null) {
+                Timber.d("### Process Jingle session-initiate (merged): %s = %s", contentMedias, jingleSI);
+                new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mCall.processSessionInitiate(jingleSI, callPeer);
+                        jingleSI = null;
+                    }
+                }.start();
+            }
+            else {
+                Timber.d("### Process transport-info (merged) for media type: %s: %s,", contentMedias, jingleTransports.getContents());
+                try {
+                    callPeer.processOfferTransportInfo(jingleTransports);
+                } catch (NotConnectedException | InterruptedException e) {
+                    Timber.w("Process transport-info error: %s", e.getMessage());
+                }
+            }
+
+            // Must cleanup after use for next round
+            jingleTransports = null;
+            contentMedias.clear();
         }
     }
 

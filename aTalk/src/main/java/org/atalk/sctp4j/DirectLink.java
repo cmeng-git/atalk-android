@@ -15,8 +15,6 @@
  */
 package org.atalk.sctp4j;
 
-import org.atalk.util.Logger;
-
 import java.io.IOException;
 
 import timber.log.Timber;

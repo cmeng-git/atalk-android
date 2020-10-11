@@ -18,18 +18,16 @@ i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
 All the built libopenssl.a and *.h are installed in the ./output/android/\<ABI>/lib and ./output/android/\<ABI>/include respectively
 
 **Android libopenssl build instructions:**
-```
-## git clone openssl-android directory into your linux working directory.
-git clone https://github.com/cmeng-git/openssl-android.git ./openssl-android
-cd openssl-android
-
+``
 ## Use Android NDK: android-ndk-r15c
 export ANDROID_NDK=/opt/android/android-ndk-r15c
 
-## setup the required libopenssl; default "libopenssl-1.0.2" or change LIB_OPENSSL_GIT in ./init_libopenssl.sh
-./init_libopenssl.sh (Optional as next command will load the source if not found)
+## setup the required libopenssl; default "libopenssl-1.0.2u" or change LIB_OPENSSL_GIT in ./init_libopenssl.sh
+./init_libopenssl.sh
 
 ## use one of the following to build libopenssl i.e.
+If the './openssl' source directory is mssing, the next command will fetch the source using ./init_libopenssl.sh
+
 # a. for all the ABI's defined in _settings.sh
   ./build-libopenssl4android.sh
 
@@ -71,9 +69,9 @@ LOCAL_MODULE := jnopenssl
 LOCAL_LDLIBS := -llog -lz
 LOCAL_STATIC_LIBRARIES := crypto_static ssl_static
 LOCAL_SRC_FILES := \
- HMAC.c \
- OpenSSLWrapperLoader.c \
- SRTPCipherCTROpenSSL.c
+ Hmac.c \
+ OpenSslWrapperLoader.c \
+ SrtpCipherCtrOpenSsl.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
 

@@ -5,12 +5,10 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import androidx.annotation.NonNull;
-
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.BackgroundManager;
 import org.atalk.impl.neomedia.MediaServiceImpl;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
@@ -22,6 +20,7 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 
+import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
@@ -57,6 +56,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
     public static final String LOCATOR_PROTOCOL_IMGSTREAMING = "imgstreaming";
 
+    /**
+     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>MediaRecorder</tt> capture devices.
+     */
     public static final String LOCATOR_PROTOCOL_MEDIARECORDER = "mediarecorder";
 
     public static final String LOCATOR_PROTOCOL_QUICKTIME = "quicktime";
@@ -75,13 +77,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
     /**
      * Returns a <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s which are elements of a specific
-     * <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s and have a specific <tt>MediaLocator</tt>
-     * protocol.
+     * <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s and have a specific <tt>MediaLocator</tt> protocol.
      *
      * @param deviceList the <tt>List</tt> of <tt>CaptureDeviceInfo</tt> which are to be filtered based on the
      * specified <tt>MediaLocator</tt> protocol
-     * @param locatorProtocol the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s which
-     * are to be returned
+     * @param locatorProtocol the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s
+     * which are to be returned
      * @return a <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s which are elements of the specified
      * <tt>deviceList</tt> and have the specified <tt>locatorProtocol</tt>
      */
@@ -156,11 +157,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
         /*
          * The list of supported DeviceSystem implementations if hard-coded. The order of the
          * classes is significant and represents a decreasing preference with respect to which
-         * DeviceSystem is to be picked up as the default one (for the specified mediaType, of
-         * course).
+         * DeviceSystem is to be picked up as the default one (for the specified mediaType, of course).
          */
         final String[] classNames;
-
 
         switch (mediaType) {
             case AUDIO:
@@ -210,8 +209,8 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * invoked if the <tt>DeviceSystem</tt> instance returns a set of flags from its
      * {@link #getFeatures()} which contains {@link #FEATURE_REINITIALIZE}.
      *
-     * @param classNames the names of the classes which extend the <tt>DeviceSystem</tt> class and instances of
-     * which are to be initialized
+     * @param classNames the names of the classes which extend the <tt>DeviceSystem</tt> class
+     * and instances of which are to be initialized.
      */
     private static void initializeDeviceSystems(String[] classNames)
     {
@@ -250,12 +249,14 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                     try {
                         o = Class.forName(className).newInstance();
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        Timber.e("Class not found: %s", e.getMessage());
                     } catch (Throwable t) {
-                        if (t instanceof ThreadDeath)
+                        if (t instanceof ThreadDeath) {
+                            Timber.e("Fatal error while initialize Device Systems: %s; %s", className, t.getMessage());
                             throw (ThreadDeath) t;
+                        }
                         else {
-                            Timber.w(t, "Failed to initialize %s", className);
+                            Timber.w("Failed to initialize %s; %s", className, t.getMessage());
                         }
                     }
                     if (o instanceof DeviceSystem) {
@@ -273,10 +274,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                     try {
                         invokeDeviceSystemInitialize(deviceSystem);
                     } catch (Throwable t) {
-                        if (t instanceof ThreadDeath)
+                        if (t instanceof ThreadDeath) {
+                            Timber.e("Fatal error while initialize Device Systems: %s; %s", className, t.getMessage());
                             throw (ThreadDeath) t;
+                        }
                         else {
-                            Timber.w(t, "Failed to reinitialize %s", className);
+                            Timber.w("Failed to initialize %s; %s", className, t.getMessage());
                         }
                     }
                 }
@@ -303,12 +306,11 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      *
      * @param deviceSystem the <tt>DeviceSystem</tt> to invoke <tt>initialize()</tt> on
      * @param asynchronous <tt>true</tt> if the invocation is to be performed in a separate thread and the method
-     * is to return immediately without waiting for the invocation to return; otherwise,
-     * <tt>false</tt>
+     * is to return immediately without waiting for the invocation to return; otherwise, <tt>false</tt>
      * @throws Exception if an error occurs during the initialization of <tt>initialize()</tt> on the
      * specified <tt>deviceSystem</tt>
      */
-    static void invokeDeviceSystemInitialize(final DeviceSystem deviceSystem, boolean asynchronous)
+    private static void invokeDeviceSystemInitialize(final DeviceSystem deviceSystem, boolean asynchronous)
             throws Exception
     {
         if (OSUtils.IS_WINDOWS || asynchronous) {
@@ -345,11 +347,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                 return;
 
             /*
-             * Wait for the initialize() invocation on deviceSystem to return i.e. the thread to
-             * die.
+             * Wait for the initialize() invocation on deviceSystem to return i.e. the thread to die.
              */
             boolean interrupted = false;
-
             while (thread.isAlive()) {
                 try {
                     thread.join();
@@ -432,7 +432,6 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     public Renderer createRenderer()
     {
         String className = getRendererClassName();
-
         if (className != null) {
             try {
                 return (Renderer) Class.forName(className).newInstance();

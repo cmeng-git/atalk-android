@@ -19,12 +19,12 @@
             android:title="@string/service_gui_settings_AUTO_START" />
 
         <EditTextPreference
-            android:key="@string/pref_key_webview_PAGE"
             android:dialogMessage="@string/service_gui_settings_WEBVIEW_DLG_TITLE"
+            android:hint="https://demo.agayon.be/"
             android:inputType="textWebEditText"
-            android:title="@string/service_gui_settings_WEBVIEW_TITLE"
-            android:hint="e.g. https://www.example.org"
-            android:summary="@string/service_gui_settings_WEBVIEW_SUMMARY" />
+            android:key="@string/pref_key_webview_PAGE"
+            android:summary="@string/service_gui_settings_WEBVIEW_SUMMARY"
+            android:title="@string/service_gui_settings_WEBVIEW_TITLE" />
 
         <ListPreference
             android:dialogTitle="@string/service_gui_settings_LOCALE"
@@ -34,13 +34,13 @@
             android:persistent="false"
             android:title="@string/service_gui_settings_LOCALE" />
 
-        <!--ListPreference
+        <ListPreference
             android:persistent="false"
-            android:key="pref_key_theme"
+            android:key="@string/pref_key_theme"
             android:title="@string/settings_theme_label"
             android:entries="@array/settings_theme_entries"
             android:entryValues="@array/settings_theme_values"
-            android:dialogTitle="@string/settings_theme_label" /-->
+            android:dialogTitle="@string/settings_theme_label" />
 
     </PreferenceCategory>
 
@@ -56,18 +56,10 @@
             <intent android:action=".android.gui.settings.ChatSecuritySettings" />
         </PreferenceScreen>
 
-        <!-- SSL Certificates Removal -->
-        <PreferenceScreen
-            android:key="remove_trusted_certificates"
-            android:summary="@string/pref_remove_trusted_certificates_summary"
-            android:title="@string/pref_remove_trusted_certificates_title">
-            <intent android:action=".impl.androidcertdialog.CertificateDeleteDialog" />
-        </PreferenceScreen>
-
         <!-- SSL Certificates Management -->
         <PreferenceScreen
             android:summary="@string/service_gui_settings_SSL_CERTIFICATE_SUMMARY"
-            android:title="@string/service_gui_settings_SSL_CERTIFICATE_TITLE">
+            android:title="@string/service_gui_settings_SSL_CERTIFICATE">
             <intent android:action=".impl.androidcertdialog.ConnectionInfo" />
         </PreferenceScreen>
 
@@ -163,6 +155,46 @@
             android:key="@string/pref_key_popup_handler"
             android:title="@string/service_gui_settings_POPUP_HANDLER" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_key_heads_up_enable"
+            android:summary="@string/pref_headsup_notifications_summary"
+            android:title="@string/pref_headsup_notifications" />
+
+        <PreferenceScreen
+            android:key="quiet_hours"
+            android:summary="@string/pref_quiet_hours_summary"
+            android:title="@string/title_pref_quiet_hours">
+            <PreferenceCategory
+                android:key="quiet_hour_details"
+                android:title="@string/title_pref_quiet_hours">
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="@string/pref_key_quiet_hours_enable"
+                    android:summary="@string/pref_quiet_hours_summary"
+                    android:title="@string/title_pref_enable_quiet_hours" />
+                <org.atalk.android.gui.settings.TimePreference
+                    android:dependency="@string/pref_key_quiet_hours_enable"
+                    android:key="pref.key.quiet_hours_start"
+                    android:negativeButtonText="@string/service_gui_CANCEL"
+                    android:positiveButtonText="@string/service_gui_SET"
+                    android:title="@string/title_pref_quiet_hours_start_time" />
+                <org.atalk.android.gui.settings.TimePreference
+                    android:dependency="@string/pref_key_quiet_hours_enable"
+                    android:key="pref.key.quiet_hours_end"
+                    android:negativeButtonText="@string/service_gui_CANCEL"
+                    android:positiveButtonText="@string/service_gui_SET"
+                    android:title="@string/title_pref_quiet_hours_end_time" />
+                <intent android:action="android.intent.action.VIEW">
+                    <!--android:targetClass="eu.siacs.conversations.ui.SettingsActivity"
+                    android:targetPackage="@string/applicationId"-->
+                    <extra
+                        android:name="page"
+                        android:value="quiet_hours" />
+                </intent>
+            </PreferenceCategory>
+        </PreferenceScreen>
+
         <!-- Events -->
         <PreferenceScreen
             android:summary="@string/service_gui_settings_EVENTS_SUMMARY"
@@ -178,76 +210,18 @@
             android:title="@string/service_gui_settings_auto_update_check_status" /-->
     </PreferenceCategory>
 
-    <!-- Call Settings -->
+    <!-- Media Call Settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_call"
-        android:title="@string/service_gui_settings_CALL">
-        <CheckBoxPreference
-            android:key="@string/pref_key_normalize_pnumber"
-            android:summaryOff="@string/service_gui_settings_NORMALIZE_OFF"
-            android:summaryOn="@string/service_gui_settings_NORMALIZE_ON"
-            android:title="@string/service_gui_settings_NORMALIZE_NUMBER" />
-        <CheckBoxPreference
-            android:key="@string/pref_key_accept_alpha_pnumbers"
-            android:summaryOff="@string/service_gui_settings_ALLOW_ALPHA_OFF"
-            android:summaryOn="@string/service_gui_settings_ALLOW_ALPHA_ON"
-            android:title="@string/service_gui_settings_ALLOW_ALPHA_PNUMBER" />
-    </PreferenceCategory>
-
-    <!-- Audio Settings -->
-    <PreferenceCategory
-        android:key="@string/pref_cat_settings_audio"
-        android:title="@string/service_gui_settings_AUDIO">
-        <CheckBoxPreference
-            android:key="@string/pref_key_audio_echo_cancel"
-            android:summaryOff="@string/service_gui_settings_ECHO_CANCEL_OFF"
-            android:summaryOn="@string/service_gui_settings_ECHO_CANCEL_ON"
-            android:title="@string/service_gui_settings_ECHO_CANCEL" />
-        <CheckBoxPreference
-            android:key="@string/pref_key_audio_agc"
-            android:summaryOff="@string/service_gui_settings_AGC_OFF"
-            android:summaryOn="@string/service_gui_settings_AGC_ON"
-            android:title="@string/service_gui_settings_AGC" />
-        <CheckBoxPreference
-            android:key="@string/pref_key_audio_denoise"
-            android:summaryOff="@string/service_gui_settings_DENOISE_OFF"
-            android:summaryOn="@string/service_gui_settings_DENOISE_ON"
-            android:title="@string/service_gui_settings_DENOISE" />
-
-        <PreferenceScreen
-            android:summary="@string/service_gui_settings_AUDIO_CODECS_SUMMARY"
-            android:title="@string/service_gui_settings_AUDIO_CODECS_TITLE">
-            <intent android:action=".android.gui.settings.EncodingSettings">
-                <extra
-                    android:name="media_type"
-                    android:value="media_type.AUDIO" />
-            </intent>
-        </PreferenceScreen>
-    </PreferenceCategory>
-
-    <!-- Video Settings -->
-    <PreferenceCategory
-        android:key="@string/pref_cat_settings_video"
-        android:title="@string/service_gui_settings_VIDEO">
+        android:key="@string/pref_cat_settings_media_call"
+        android:title="@string/service_gui_settings_MEDIA_CALL">
+        <!-- Video Sections -->
         <ListPreference
             android:key="@string/pref_key_video_camera"
             android:title="@string/service_gui_settings_CAMERA" />
+
         <ListPreference
             android:key="@string/pref_key_video_resolution"
             android:title="@string/service_gui_settings_VIDEO_RESOLUTION" />
-
-        <CheckBoxPreference
-            android:key="@string/pref_key_video_limit_fps"
-            android:summaryOff="@string/service_gui_settings_LIMIT_FPS_OFF"
-            android:summaryOn="@string/service_gui_settings_LIMIT_FPS_ON"
-            android:title="@string/service_gui_settings_VIDEO_FRAME_RATE" />
-
-        <EditTextPreference
-            android:dependency="@string/pref_key_video_limit_fps"
-            android:dialogMessage="@string/service_gui_settings_VIDEO_FPS_DESC"
-            android:inputType="number"
-            android:key="@string/pref_key_video_target_fps"
-            android:title="@string/service_gui_settings_VIDEO_TARGET_FPS" />
 
         <PreferenceScreen
             android:summary="@string/service_gui_settings_VIDEO_CODECS_SUMMARY"
@@ -258,66 +232,143 @@
                     android:value="media_type.VIDEO" />
             </intent>
         </PreferenceScreen>
+
+        <!-- Audio Sections -->
+        <PreferenceScreen
+            android:summary="@string/service_gui_settings_AUDIO_CODECS_SUMMARY"
+            android:title="@string/service_gui_settings_AUDIO_CODECS_TITLE">
+            <intent android:action=".android.gui.settings.EncodingSettings">
+                <extra
+                    android:name="media_type"
+                    android:value="media_type.AUDIO" />
+            </intent>
+        </PreferenceScreen>
+
         <PreferenceScreen
             android:summary="@string/service_gui_settings_MEDIA_CODEC_LIST_SUMMARY"
             android:title="@string/service_gui_settings_MEDIA_CODEC_LIST">
             <intent android:action=".android.gui.settings.MediaCodecList" />
         </PreferenceScreen>
+    </PreferenceCategory>
 
-        <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:key="@string/pref_key_video_hw_encode"
-            android:title="@string/service_gui_settings_HW_ENCODE" />
-        <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:dependency="@string/pref_key_video_hw_encode"
-            android:key="@string/pref_key_video_surface_encode"
-            android:title="@string/service_gui_settings_DIRECT_SURFACE_ENCODE" />
-        <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:key="@string/pref_key_video_hw_decode"
-            android:title="@string/service_gui_settings_HW_DECODE" />
-        <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:dependency="@string/pref_key_video_hw_decode"
-            android:key="@string/pref_key_video_surface_decode"
-            android:title="@string/service_gui_settings_DIRECT_SURFACE_DECODE" />
+    <!-- Phone Call Settings -->
+    <PreferenceCategory
+        android:key="@string/pref_cat_settings_call"
+        android:title="@string/service_gui_settings_CALL">
 
-        <EditTextPreference
-            android:inputType="number"
-            android:key="@string/pref_key_video_max_bandwidth"
-            android:title="@string/service_gui_settings_VIDEO_MAX_BANDWIDTH" />
-        <EditTextPreference
-            android:inputType="number"
-            android:key="@string/pref_key_video_bitrate"
-            android:title="@string/service_gui_settings_VIDEO_BITRATE" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_normalize_pnumber"
+            android:summaryOff="@string/service_gui_settings_NORMALIZE_OFF"
+            android:summaryOn="@string/service_gui_settings_NORMALIZE_ON"
+            android:title="@string/service_gui_settings_NORMALIZE_NUMBER" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_accept_alpha_pnumbers"
+            android:summaryOff="@string/service_gui_settings_ALLOW_ALPHA_OFF"
+            android:summaryOn="@string/service_gui_settings_ALLOW_ALPHA_ON"
+            android:title="@string/service_gui_settings_ALLOW_ALPHA_PNUMBER" />
     </PreferenceCategory>
 
     <!-- Advanced Settings -->
     <PreferenceCategory
         android:key="@string/pref_cat_settings_advanced"
         android:title="@string/service_gui_settings_ADVANCED">
+
         <PreferenceScreen
-            android:summary="@string/service_gui_settings_OPUS_SUMMARY"
-            android:title="@string/service_gui_settings_OPUS">
-            <intent android:action=".android.gui.settings.OpusSettings" />
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/service_gui_settings_SILK_SUMMARY"
-            android:title="@string/service_gui_settings_SILK">
-            <intent android:action=".android.gui.settings.SilkSettings" />
-        </PreferenceScreen>
-        <PreferenceScreen
-            android:summary="@string/service_gui_settings_SIP_SUMMARY"
-            android:title="@string/service_gui_settings_SIP">
-            <intent android:action=".android.gui.settings.SipSettings" />
-        </PreferenceScreen>
-        <!--PreferenceScreen
-            android:summary="@string/service_gui_settings_DNS_SUMMARY"
-            android:title="@string/service_gui_settings_DNS">
-            <intent android:action=".android.gui.settings.DnsSettings" />
-        </PreferenceScreen-->
-        <PreferenceScreen
-            android:summary="@string/plugin_provisioning_PROVISIONING_SUMMARY"
-            android:title="@string/plugin_provisioning_PROVISIONING">
-            <intent android:action=".android.gui.settings.ProvisioningSettings" />
+            android:summary="@string/service_gui_settings_EXPERT_SUMMARY"
+            android:title="@string/service_gui_settings_EXPERT">
+
+            <!-- Video Settings -->
+            <PreferenceCategory
+                android:key="@string/pref_cat_settings_video"
+                android:title="@string/service_gui_settings_VIDEO">
+
+                <CheckBoxPreference
+                    android:key="@string/pref_key_video_limit_fps"
+                    android:summaryOff="@string/service_gui_settings_LIMIT_FPS_OFF"
+                    android:summaryOn="@string/service_gui_settings_LIMIT_FPS_ON"
+                    android:title="@string/service_gui_settings_VIDEO_FRAME_RATE" />
+
+                <EditTextPreference
+                    android:dependency="@string/pref_key_video_limit_fps"
+                    android:dialogMessage="@string/service_gui_settings_VIDEO_FPS_DESC"
+                    android:inputType="number"
+                    android:key="@string/pref_key_video_target_fps"
+                    android:title="@string/service_gui_settings_VIDEO_TARGET_FPS" />
+
+                <org.atalk.android.gui.settings.widget.ConfigCheckBox
+                    android:key="@string/pref_key_video_hw_encode"
+                    android:title="@string/service_gui_settings_HW_ENCODE" />
+                <org.atalk.android.gui.settings.widget.ConfigCheckBox
+                    android:dependency="@string/pref_key_video_hw_encode"
+                    android:key="@string/pref_key_video_surface_encode"
+                    android:title="@string/service_gui_settings_DIRECT_SURFACE_ENCODE" />
+                <org.atalk.android.gui.settings.widget.ConfigCheckBox
+                    android:key="@string/pref_key_video_hw_decode"
+                    android:title="@string/service_gui_settings_HW_DECODE" />
+                <org.atalk.android.gui.settings.widget.ConfigCheckBox
+                    android:dependency="@string/pref_key_video_hw_decode"
+                    android:key="@string/pref_key_video_surface_decode"
+                    android:title="@string/service_gui_settings_DIRECT_SURFACE_DECODE" />
+
+                <EditTextPreference
+                    android:inputType="number"
+                    android:dialogMessage="\n"
+                    android:key="@string/pref_key_video_max_bandwidth"
+                    android:title="@string/service_gui_settings_VIDEO_MAX_BANDWIDTH" />
+                <EditTextPreference
+                    android:inputType="number"
+                    android:dialogMessage="\n"
+                    android:key="@string/pref_key_video_bitrate"
+                    android:title="@string/service_gui_settings_VIDEO_BITRATE" />
+            </PreferenceCategory>
+
+            <!-- Audio Settings -->
+            <PreferenceCategory
+                android:key="@string/pref_cat_settings_audio"
+                android:title="@string/service_gui_settings_AUDIO">
+                <CheckBoxPreference
+                    android:key="@string/pref_key_audio_echo_cancel"
+                    android:summaryOff="@string/service_gui_settings_ECHO_CANCEL_OFF"
+                    android:summaryOn="@string/service_gui_settings_ECHO_CANCEL_ON"
+                    android:title="@string/service_gui_settings_ECHO_CANCEL" />
+                <CheckBoxPreference
+                    android:key="@string/pref_key_audio_agc"
+                    android:summaryOff="@string/service_gui_settings_AGC_OFF"
+                    android:summaryOn="@string/service_gui_settings_AGC_ON"
+                    android:title="@string/service_gui_settings_AGC" />
+                <CheckBoxPreference
+                    android:key="@string/pref_key_audio_denoise"
+                    android:summaryOff="@string/service_gui_settings_DENOISE_OFF"
+                    android:summaryOn="@string/service_gui_settings_DENOISE_ON"
+                    android:title="@string/service_gui_settings_DENOISE" />
+
+                <PreferenceScreen
+                    android:summary="@string/service_gui_settings_OPUS_SUMMARY"
+                    android:title="@string/service_gui_settings_OPUS">
+                    <intent android:action=".android.gui.settings.OpusSettings" />
+                </PreferenceScreen>
+
+                <PreferenceScreen
+                    android:summary="@string/service_gui_settings_SILK_SUMMARY"
+                    android:title="@string/service_gui_settings_SILK">
+                    <intent android:action=".android.gui.settings.SilkSettings" />
+                </PreferenceScreen>
+            </PreferenceCategory>
+
+            <PreferenceCategory android:title="@string/service_gui_settings_OTHER">
+
+                <!-- PreferenceScreen
+                    android:summary="@string/service_gui_settings_SIP_SUMMARY"
+                    android:title="@string/service_gui_settings_SIP">
+                    <intent android:action=".android.gui.settings.SipSettings" />
+                </PreferenceScreen -->
+                <PreferenceScreen
+                    android:summary="@string/plugin_provisioning_PROVISIONING_SUMMARY"
+                    android:title="@string/plugin_provisioning_PROVISIONING">
+                    <intent android:action=".android.gui.settings.ProvisioningSettings" />
+                </PreferenceScreen>
+            </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
-
 </PreferenceScreen>

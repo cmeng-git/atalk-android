@@ -1,17 +1,18 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may
- * obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
- * the specific language governing permissions
- * and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.android.gui.chatroomslist;
 
@@ -19,7 +20,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -30,12 +31,14 @@ import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.menu.MainMenuActivity;
-import org.atalk.util.StringUtils;
+import org.atalk.android.gui.util.ThemeHelper;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
@@ -72,7 +75,6 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     private CheckBox mBookmark;
 
     private EditText mPasswordField;
-    private ImageView mShowPasswordImage;
 
     private boolean hasChanges = false;
 
@@ -113,7 +115,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        ThemeHelper.setTheme(mParent);
         super.onCreate(savedInstanceState);
+
         setTitle(R.string.service_gui_CHATROOM_BOOKMARK_TITLE);
         this.setContentView(R.layout.chatroom_bookmarks);
 
@@ -127,9 +131,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         mBookmark = this.findViewById(R.id.cb_bookmark);
 
         mPasswordField = this.findViewById(R.id.passwordField);
-        mShowPasswordImage = this.findViewById(R.id.pwdviewImage);
         CheckBox mShowPasswordCheckBox = this.findViewById(R.id.show_password);
-        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> showPassword(isChecked));
+        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
 
         chatRoomSpinner = this.findViewById(R.id.chatRoom_Spinner);
         // chatRoomSpinner.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -145,9 +149,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         mCancelButton.setOnClickListener(v -> {
             if (hasChanges) {
                 DialogActivity.showConfirmDialog(mParent,
-                        aTalkApp.getResString(R.string.service_gui_CHATROOM_BOOKMARK_TITLE),
-                        aTalkApp.getResString(R.string.service_gui_UNSAVED_CHANGES),
-                        aTalkApp.getResString(R.string.service_gui_EXIT), this);
+                        R.string.service_gui_CHATROOM_BOOKMARK_TITLE,
+                        R.string.service_gui_UNSAVED_CHANGES,
+                        R.string.service_gui_EXIT, this);
             }
             else
                 closeDialog();
@@ -199,11 +203,6 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         List<BookmarkedConference> bookmarkedList = new ArrayList<>();
         List<BookmarkConference> bookmarkList = new ArrayList<>();
         BookmarkConference bookmarkConference;
-
-        @Override
-        protected void onPreExecute()
-        {
-        }
 
         @Override
         protected Void doInBackground(Void... params)
@@ -280,7 +279,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
 
                 if ((keySet != null) && (keySet.length > 0)) {
                     String accountId = (String) keySet[0];
-                    if (!StringUtils.isNullOrEmpty(accountId))
+                    if (StringUtils.isNotEmpty(accountId))
                         initChatRoomSpinner(accountId);
                 }
             }
@@ -306,6 +305,8 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
 
         // Create an ArrayAdapter using the string array and aTalk default spinner layout
         ArrayAdapter<String> mAdapter = new ArrayAdapter<>(mParent, R.layout.simple_spinner_item, mChatRoomList);
+        mAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+
         // Apply the adapter to the spinner
         chatRoomSpinner.setAdapter(mAdapter);
         chatRoomSpinner.setOnItemSelectedListener(this);
@@ -378,33 +379,37 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         }
 
         mBookmarkFocus = mBookmarkConferenceList.get(chatRoom);
-        mucNameField.setText(mBookmarkFocus.getName());
-        nicknameField.setText(mBookmarkFocus.getNickname());
-        mPasswordField.setText(mBookmarkFocus.getPassword());
-        mAutoJoin.setChecked(mBookmarkFocus.isAutoJoin());
-        mBookmark.setChecked(mBookmarkFocus.isBookmark());
-        return true;
+        if (mBookmarkFocus != null) {
+            mucNameField.setText(mBookmarkFocus.getName());
+            nicknameField.setText(mBookmarkFocus.getNickname());
+            mPasswordField.setText(mBookmarkFocus.getPassword());
+            mAutoJoin.setChecked(mBookmarkFocus.isAutoJoin());
+            mBookmark.setChecked(mBookmarkFocus.isBookmark());
+            return true;
+        }
+        return false;
     }
 
     private boolean updateBookmarkFocus()
     {
         if (mBookmarkFocus != null) {
-            hasChanges = !(mBookmarkFocus.getName().equals(mucNameField.getText().toString())
-                    && mBookmarkFocus.getNickname().toString().equals(nicknameField.getText().toString())
-                    && mBookmarkFocus.getPassword().equals(mPasswordField.getText().toString())
-                    && mBookmarkFocus.isAutoJoin() == mAutoJoin.isChecked()
-                    && mBookmarkFocus.isBookmark() == mBookmark.isChecked());
+            String nickName = (mBookmarkFocus.getNickname() != null) ? mBookmarkFocus.getNickname().toString() : null;
+            hasChanges = !(isEqual(mBookmarkFocus.getName(), ViewUtil.toString(mucNameField))
+                    && isEqual(nickName, ViewUtil.toString(nicknameField))
+                    && isEqual(mBookmarkFocus.getPassword(), ViewUtil.toString(mPasswordField))
+                    && (mBookmarkFocus.isAutoJoin() == mAutoJoin.isChecked()
+                    && (mBookmarkFocus.isBookmark() == mBookmark.isChecked())));
 
             // Timber.w("Fields have changes: %s", hasChanges);
             if (hasChanges) {
-                mBookmarkFocus.setName(mucNameField.getText().toString());
-                mBookmarkFocus.setPassword(mPasswordField.getText().toString());
+                mBookmarkFocus.setName(ViewUtil.toString(mucNameField));
+                mBookmarkFocus.setPassword(ViewUtil.toString(mPasswordField));
                 mBookmarkFocus.setAutoJoin(mAutoJoin.isChecked());
                 mBookmarkFocus.setBookmark(mBookmark.isChecked());
 
                 try {
                     // nickName cannot be null => exception
-                    mBookmarkFocus.setNickname(Resourcepart.from(nicknameField.getText().toString()));
+                    mBookmarkFocus.setNickname(Resourcepart.from(ViewUtil.toString(nicknameField)));
                 } catch (XmppStringprepException e) {
                     aTalkApp.showToastMessage(R.string.service_gui_CHANGE_NICKNAME_ERROR,
                             mBookmarkFocus.getJid(), e.getMessage());
@@ -413,6 +418,19 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
             }
         }
         return true;
+    }
+
+    /**
+     * Compare two strings if they are equal. Must check for null before compare
+     *
+     * @param oldStr exiting string value
+     * @param newStr newly edited string
+     * @return true is both are equal
+     */
+    private boolean isEqual(String oldStr, String newStr)
+    {
+        return (TextUtils.isEmpty(oldStr) && TextUtils.isEmpty(newStr))
+                || ((oldStr != null) && oldStr.equals(newStr));
     }
 
     /**
@@ -500,68 +518,5 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
             }
         }
         return success;
-    }
-
-//    private ChatRoomWrapper createChatRoom(ProtocolProviderService pps, BookmarkConference bookmarkConference)
-//    {
-//        String chatRoomID = bookmarkConference.getJid().toString();
-//        String nickName = bookmarkConference.getNickname().toString();
-//        String password = bookmarkConference.getPassword();
-//        Collection<String> contacts = new ArrayList<>();
-//        String reason = "Let's chat";
-//        boolean createNew = false;
-//
-//        // create new if chatRoom does not exist
-//        ChatRoomWrapper chatRoomWrapper = mucService.findChatRoomWrapperFromChatRoomID(chatRoomID, pps);
-//        if (chatRoomWrapper == null) {
-//            createNew = true;
-//            chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
-//                    reason, true, false, false);
-//            // In case the protocol failed to create a chat room (null), then return without open the chat room.
-//            if (chatRoomWrapper == null) {
-//                aTalkApp.showToastMessage(R.string.service_gui_CREATE_CHAT_ROOM_ERROR, chatRoomID);
-//                return null;
-//            }
-//
-//            ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
-//
-//            // Allow to remove new chatRoom if join failed
-//            if (AndroidGUIActivator.getConfigurationService()
-//                    .getBoolean(MUCService.REMOVE_ROOM_ON_FIRST_JOIN_FAILED, false)) {
-//                final ChatRoomWrapper crWrapper = chatRoomWrapper;
-//
-//                chatRoomWrapper.addPropertyChangeListener(evt -> {
-//                    if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP)) {
-//                        return;
-//                    }
-//
-//                    // if we failed for some reason, then close and remove the room
-//                    AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
-//                    AndroidGUIActivator.getMUCService().removeChatRoom(crWrapper);
-//                });
-//            }
-//        }
-//        if (!createNew) {
-//            // Set chatRoom openAutomatically on_activity
-//            // MUCService.setChatRoomAutoOpenOption(pps, chatRoomID, MUCService.OPEN_ON_ACTIVITY);
-//            mucService.joinChatRoom(chatRoomWrapper, nickName, password.getBytes());
-//            Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-//            mParent.startActivity(chatIntent);
-//        }
-//        return chatRoomWrapper;
-//    }
-
-    private void showPassword(boolean show)
-    {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
     }
 }

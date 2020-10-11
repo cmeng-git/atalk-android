@@ -11,7 +11,8 @@ import org.ice4j.ice.Component;
 import org.ice4j.ice.LocalCandidate;
 import org.ice4j.ice.harvest.AbstractCandidateHarvester;
 import org.ice4j.socket.IceSocketWrapper;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.xmpp.jnodes.smack.*;
 
 import java.util.Collection;
@@ -86,13 +87,17 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
             return candidates;
         }
 
-        XMPPTCPConnection conn = serviceNode.getConnection();
+        XMPPConnection conn = serviceNode.getConnection();
         JingleChannelIQ ciq = null;
 
         if (serviceNode != null) {
             final TrackerEntry preferred = serviceNode.getPreferredRelay();
             if (preferred != null) {
-                ciq = SmackServiceNode.getChannel(conn, preferred.getJid());
+                try {
+                    ciq = SmackServiceNode.getChannel(conn, preferred.getJid());
+                } catch (SmackException.NotConnectedException | InterruptedException e) {
+                    Timber.e("Could not get JingleNodes channel: %s", e.getMessage());
+                }
             }
         }
 

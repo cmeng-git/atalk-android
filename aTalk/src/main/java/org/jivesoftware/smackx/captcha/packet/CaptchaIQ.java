@@ -27,8 +27,8 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
  */
 public class CaptchaIQ extends IQ
 {
-    public static final String ELEMENT = Captcha.ELEMENT;
-    public static final String NAMESPACE = Captcha.NAMESPACE;
+    public static final String ELEMENT = CaptchaExtension.ELEMENT;
+    public static final String NAMESPACE = CaptchaExtension.NAMESPACE;
 
     private final DataForm mDataForm;
 

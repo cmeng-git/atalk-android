@@ -54,7 +54,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
      */
     public void addCall(T call)
     {
-        activeCalls.put(call.getCallID(), call);
+        activeCalls.put(call.getCallId(), call);
         call.addCallChangeListener(this);
     }
 
@@ -69,7 +69,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
     {
         if (evt.getEventType().equals(CallChangeEvent.CALL_STATE_CHANGE)
                 && evt.getNewValue().equals(CallState.CALL_ENDED)) {
-            T sourceCall = activeCalls.remove(evt.getSourceCall().getCallID());
+            T sourceCall = activeCalls.remove(evt.getSourceCall().getCallId());
             Timber.log(TimberLog.FINER, "Removing call %s from the list of active calls because it entered an ENDED state", sourceCall);
 
             fireCallEvent(CallEvent.CALL_ENDED, sourceCall);

@@ -12,29 +12,32 @@ import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.*;
+import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
 import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.LauncherActivity;
 import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
-import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.android.gui.util.LocaleHelper;
+import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
-import org.atalk.impl.androidcertdialog.VerifyCertificateActivity;
+import org.atalk.impl.androidnotification.NotificationHelper;
+import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
-import androidx.multidex.MultiDex;
+import androidx.lifecycle.*;
 import timber.log.Timber;
 
 /**
@@ -43,7 +46,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class aTalkApp extends Application
+public class aTalkApp extends Application implements LifecycleObserver
 {
     /**
      * Name of config property that indicates whether foreground icon should be displayed.
@@ -55,21 +58,12 @@ public class aTalkApp extends Application
      */
     public static final String ACTION_EXIT = "org.atalk.android.exit";
 
-    public static boolean permissionFirstRequest = true;
-
     /**
-     * Possible values for the different theme settings.
-     *
-     * <strong>Important:</strong>
-     * Do not change the order of the items! The ordinal value (position) is used when saving the settings.
+     * Indicate if aTalk is in foreground (true) or background (false)
      */
-    public enum Theme
-    {
-        LIGHT,
-        DARK
-    }
+    public static boolean isForeground = false;
 
-    public static Theme mTheme = Theme.DARK;
+    public static boolean permissionFirstRequest = true;
 
     /**
      * Static instance holder.
@@ -80,13 +74,6 @@ public class aTalkApp extends Application
      * The currently shown activity.
      */
     private static Activity currentActivity = null;
-
-    /**
-     * The contact list object.
-     */
-    private static MetaContactListAdapter contactListAdapter;
-
-    private static ContactListFragment contactListFragment;
 
     /**
      * Bitmap cache instance.
@@ -109,26 +96,69 @@ public class aTalkApp extends Application
     @Override
     public void onCreate()
     {
-        super.onCreate();
-        mInstance = this;
         TimberLogImpl.init();
-    }
 
-    @Override
-    protected void attachBaseContext(Context base)
-    {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
+        // This helps to prevent WebView resets UI back to system default.
+        // Must skip for < N else weired exceptions happen in Note-5
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            new WebView(this).destroy();
+        }
+
+        // Must initialize Notification channels before any notification is being issued.
+        new NotificationHelper(this);
+
+        // force delete in case system locked during testing
+        // ServerPersistentStoresRefreshDialog.deleteDB();  // purge sql database
+
+        // Trigger the aTalk database upgrade or creation if none exist
+        DatabaseBackend.getInstance(this);
+
+        // Do this after WebView(this).destroy(); Set up contextWrapper to use aTalk user selected Language
+        mInstance = this;
+        String language = ConfigurationUtils.getProperty(getString(R.string.pref_key_locale), "");
+        LocaleHelper.setLocale(mInstance, language);
+
+        super.onCreate();
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        AndroidThreeTen.init(this);
     }
 
     /**
-     * {@inheritDoc}
+     * This method is for use in emulated process environments.  It will never be called on a production Android
+     * device, where processes are removed by simply killing them; no user code (including this callback)
+     * is executed when doing so.
      */
     @Override
     public void onTerminate()
     {
         mInstance = null;
         super.onTerminate();
+    }
+
+    // ========= Lifecycle implementations ======= //
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void onAppForegrounded()
+    {
+        isForeground = true;
+        Timber.d("APP FOREGROUNDED");
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onAppBackgrounded()
+    {
+        isForeground = false;
+        Timber.d("APP BACKGROUNDED");
+    }
+
+    /**
+     * All language setting changes must call via this so aTalkApp contextWrapper is updated
+     *
+     * @param language locale for the aTalkApp
+     */
+    public static void setLocale(String language)
+    {
+        LocaleHelper.setLocale(mInstance, language);
     }
 
     /**
@@ -213,6 +243,16 @@ public class aTalkApp extends Application
     }
 
     /**
+     * Get aTalkApp application instance
+     *
+     * @return aTalkApp mInstance
+     */
+    public static aTalkApp getInstance()
+    {
+        return mInstance;
+    }
+
+    /**
      * Returns global application context.
      *
      * @return Returns global application <tt>Context</tt>.
@@ -233,14 +273,16 @@ public class aTalkApp extends Application
     }
 
     /**
-     * Returns Android string resource for given <tt>id</tt>.
+     * Returns Android string resource of the user selected language for given <tt>id</tt>
+     * and format arguments that will be used for substitution.
      *
      * @param id the string identifier.
-     * @return Android string resource for given <tt>id</tt>.
+     * @param arg the format arguments that will be used for substitution.
+     * @return Android string resource for given <tt>id</tt> and format arguments.
      */
-    public static String getResString(int id)
+    public static String getResString(int id, Object... arg)
     {
-        return getAppResources().getString(id);
+        return mInstance.getString(id, arg);
     }
 
     /**
@@ -250,10 +292,6 @@ public class aTalkApp extends Application
      * @param arg the format arguments that will be used for substitution.
      * @return Android string resource for given <tt>id</tt> and format arguments.
      */
-    public static String getResString(int id, Object... arg)
-    {
-        return getAppResources().getString(id, arg);
-    }
 
     public static String getResStringByName(String aString)
     {
@@ -280,19 +318,14 @@ public class aTalkApp extends Application
 
     public static void showToastMessage(int id, Object... arg)
     {
-        showToastMessage(getAppResources().getString(id, arg));
+        showToastMessage(mInstance.getString(id, arg));
     }
 
-    public static void showToastMessageOnUI(final int id, final Object... arg)
+    public static void showGenericError(final int id, final Object... arg)
     {
-        currentActivity.runOnUiThread(() -> showToastMessage(getAppResources().getString(id, arg)));
-    }
-
-    public static void showAlertDialogOnUI(final String title, final int id, final Object... arg)
-    {
-        currentActivity.runOnUiThread(() -> {
-            String msg = getResString(id, arg);
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            String msg = mInstance.getString(id, arg);
+            DialogActivity.showDialog(mInstance, mInstance.getString(R.string.service_gui_ERROR), msg);
         });
     }
 
@@ -316,8 +349,8 @@ public class aTalkApp extends Application
         }
 
         final int accountCount = accountManager.getStoredAccounts().size();
+        // Start new account Activity if none is found
         if (accountCount == 0) {
-            // Start new account Activity if none is found
             return AccountLoginActivity.class;
         }
         else {
@@ -344,7 +377,7 @@ public class aTalkApp extends Application
      *
      * @return new pending <tt>Intent</tt> to be started, when aTalk icon is clicked.
      */
-    public static PendingIntent getAtalkIconIntent()
+    public static PendingIntent getaTalkIconIntent()
     {
         Intent intent = ChatSessionManager.getLastChatIntent();
         if (intent == null) {
@@ -370,31 +403,7 @@ public class aTalkApp extends Application
      */
     public static boolean isIconEnabled()
     {
-        return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, true);
-    }
-
-    /**
-     * Initialize display Theme
-     */
-    public static void initTheme()
-    {
-        int themeValue = getConfig().getInt(SettingsActivity.P_KEY_THEME, Theme.LIGHT.ordinal());
-        if (themeValue == aTalkApp.Theme.DARK.ordinal() || themeValue == android.R.style.Theme) {
-            mTheme = Theme.DARK;
-        }
-        else {
-            mTheme = Theme.LIGHT;
-        }
-    }
-
-    public static int getAppThemeResourceId(Theme themeId)
-    {
-        return (themeId == Theme.LIGHT) ? R.style.Theme_App_Light : R.style.Theme_App_Dark;
-    }
-
-    public static int getAppThemeResourceId()
-    {
-        return getAppThemeResourceId(mTheme);
+        return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, false);
     }
 
     /**
@@ -439,48 +448,6 @@ public class aTalkApp extends Application
         return currentActivity;
     }
 
-
-    /**
-     * Sets the <tt>contactListAdapter</tt> component currently used to show the contact list.
-     *
-     * @param cList the contact list object to set
-     */
-    public static void setContactListAdapter(MetaContactListAdapter cList)
-    {
-        contactListAdapter = cList;
-    }
-
-    /**
-     * Returns the component used to show the contact list.
-     *
-     * @return the component used to show the contact list
-     */
-    public static MetaContactListAdapter getContactListAdapter()
-    {
-        return contactListAdapter;
-    }
-
-
-    /**
-     * Sets the <tt>contactListFragment</tt> component currently used to show the contact list.
-     *
-     * @param cListFragment the contact list fragment object to set
-     */
-    public static void setContactListFragment(ContactListFragment cListFragment)
-    {
-        contactListFragment = cListFragment;
-    }
-
-    /**
-     * Returns the ContactListFragment that contains the contact list.
-     *
-     * @return the ContactListFragment that contains the contact lists
-     */
-    public static ContactListFragment getContactListFragment()
-    {
-        return contactListFragment;
-    }
-
     /**
      * Returns the time elapsed since last atalk <tt>Activity</tt> was open in milliseconds.
      *
@@ -502,8 +469,7 @@ public class aTalkApp extends Application
      */
     public static boolean isHomeActivityActive()
     {
-        return currentActivity != null && currentActivity.getClass().equals(
-                getHomeScreenActivityClass());
+        return currentActivity != null && currentActivity.getClass().equals(getHomeScreenActivityClass());
     }
 
     /**
@@ -514,52 +480,43 @@ public class aTalkApp extends Application
         LogUploadService logUpload = ServiceUtils.getService(AndroidGUIActivator.bundleContext, LogUploadService.class);
         String defaultEmail = getConfig().getString("org.atalk.android.LOG_REPORT_EMAIL");
 
-        logUpload.sendLogs(new String[]{defaultEmail},
-                getResString(R.string.service_gui_SEND_LOGS_SUBJECT),
-                getResString(R.string.service_gui_SEND_LOGS_TITLE));
-    }
-
-    public static aTalkApp getApp(Context ctx)
-    {
-        return (aTalkApp) ctx.getApplicationContext();
-    }
-
-    public static aTalkApp getInstance()
-    {
-        return mInstance;
+        if (logUpload != null) {
+            logUpload.sendLogs(new String[]{defaultEmail},
+                    getResString(R.string.service_gui_SEND_LOGS_SUBJECT),
+                    getResString(R.string.service_gui_SEND_LOGS_TITLE));
+        }
     }
 
     /**
      * If OSGi has not started, then wait for the <tt>LauncherActivity</tt> etc to complete before
-     * showing any dialog. Dialog should only be shown while <tt>NOT in LaunchActivity</tt>
-     * and only in either: (<tt>aTalk</tt> || <tt>AccountsListActivity</tt>);
-     * Otherwise the dialog will be obscured by these activity
+     * showing any dialog. Dialog should only be shown while <tt>NOT in LaunchActivity</tt> etc
+     * Otherwise the dialog will be obscured by these activities; max wait = 5 waits of 1000ms each
      */
-    public static void waitForDisplay()
+    public static Activity waitForFocus()
     {
         // if (AndroidGUIActivator.bundleContext == null) { #false on first application installation
-        final Object currentActivityMonitor = aTalkApp.getCurrentActivityMonitor();
         synchronized (currentActivityMonitor) {
-            while (true) {
-                Activity currentActivity = aTalkApp.getCurrentActivity();
-                if (currentActivity != null) {
-                    String activity = currentActivity.toString();
-                    if (!(currentActivity instanceof LauncherActivity)
-                            && ((currentActivity instanceof aTalk)
-                            || (currentActivity instanceof AccountsListActivity)
-                            || (currentActivity instanceof VerifyCertificateActivity))) {
-                        break;
+            int wait = 6; // 5 waits each lasting max of 1000ms
+            while (wait-- > 0) {
+                try {
+                    currentActivityMonitor.wait(1000);
+                } catch (InterruptedException e) {
+                    Timber.e("%s", e.getMessage());
+                }
+
+                Activity activity = aTalkApp.getCurrentActivity();
+                if (activity != null) {
+                    if (!(activity instanceof LauncherActivity
+                            || activity instanceof Splash
+                            || activity instanceof PermissionsActivity)) {
+                        return activity;
                     }
                     else {
-                        Timber.w("Login dialog waiting for Activity to finish: %s", activity);
+                        Timber.d("Wait %s sec for aTalk focus on activity: %s", wait, activity);
                     }
                 }
-                try {
-                    currentActivityMonitor.wait(3000);
-                } catch (InterruptedException e) {
-                    Timber.e(e, "%s", e.getMessage());
-                }
             }
+            return null;
         }
     }
 }

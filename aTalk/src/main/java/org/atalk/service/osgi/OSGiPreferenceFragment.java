@@ -5,7 +5,7 @@
  */
 package org.atalk.service.osgi;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
@@ -53,10 +53,10 @@ public class OSGiPreferenceFragment extends PreferenceFragment implements OSGiUi
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(Context context)
     {
-        super.onAttach(activity);
-        OSGiActivity osGiActivity = (OSGiActivity) activity;
+        super.onAttach(context);
+        OSGiActivity osGiActivity = (OSGiActivity) getActivity();
         osGiActivity.registerOSGiFragment(this);
     }
 

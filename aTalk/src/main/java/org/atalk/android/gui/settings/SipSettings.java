@@ -21,6 +21,7 @@ import android.preference.PreferenceCategory;
  * SIP protocol settings screen.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class SipSettings extends BasicSettingsActivity
 {
@@ -34,7 +35,7 @@ public class SipSettings extends BasicSettingsActivity
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
@@ -55,7 +56,7 @@ public class SipSettings extends BasicSettingsActivity
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void onDestroy()
+    protected void onDestroy()
 	{
 		super.onDestroy();
 

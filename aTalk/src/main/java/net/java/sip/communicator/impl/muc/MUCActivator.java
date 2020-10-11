@@ -15,7 +15,6 @@ package net.java.sip.communicator.impl.muc;
 
 import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
-import net.java.sip.communicator.service.customcontactactions.CustomContactActionsService;
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.gui.AlertUIService;
 import net.java.sip.communicator.service.gui.UIService;
@@ -35,6 +34,7 @@ import java.util.List;
  * The activator for the chat room contact source bundle.
  *
  * @author Hristo Terezov
+ * @author Eng Chong Meng
  */
 public class MUCActivator implements BundleActivator
 {
@@ -89,11 +89,6 @@ public class MUCActivator implements BundleActivator
     private static CredentialsStorageService credentialsService;
 
     /**
-     * The custom actions service.
-     */
-    private static MUCCustomContactActionService mucCustomActionService;
-
-    /**
      * The UI service.
      */
     private static UIService uiService = null;
@@ -128,10 +123,6 @@ public class MUCActivator implements BundleActivator
         bundleContext.registerService(ContactSourceService.class.getName(), chatRoomContactSource, null);
         mucService = new MUCServiceImpl();
         bundleContext.registerService(MUCService.class.getName(), mucService, null);
-        mucCustomActionService = new MUCCustomContactActionService();
-        bundleContext.registerService(CustomContactActionsService.class.getName(), mucCustomActionService, null);
-        bundleContext.registerService(CustomContactActionsService.class.getName(),
-                new MUCGroupCustomContactActionService(), null);
     }
 
     public void stop(BundleContext context)
@@ -177,7 +168,6 @@ public class MUCActivator implements BundleActivator
         if (resources == null) {
             resources = ServiceUtils.getService(bundleContext, ResourceManagementService.class);
         }
-
         return resources;
     }
 
@@ -326,8 +316,7 @@ public class MUCActivator implements BundleActivator
      */
     private static void handleProviderRemoved(ProtocolProviderService protocolProvider)
     {
-        if (chatRoomProviders.contains(protocolProvider))
-            chatRoomProviders.remove(protocolProvider);
+        chatRoomProviders.remove(protocolProvider);
     }
 
     /**

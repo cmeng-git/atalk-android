@@ -15,6 +15,8 @@
  */
 package org.atalk.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * The utility class which can be used to clear passwords values from
  * 'sun.java.command' system property.
@@ -23,59 +25,53 @@ package org.atalk.util;
  */
 public class PasswordUtil
 {
-	/**
-	 * The method will replace password argument values with 'X' in a string
-	 * which represents command line arguments(arg=value arg2=value4).
-	 *
-	 * @param cmdLine
-	 * 		a string which represent command line arguments in a form
-	 * 		where each argument is separated by space and value is
-	 * 		assigned by '=' sign. For example "arg=value -arg2=value4
-	 * 		--arg3=val45".
-	 * @param passwordArg
-	 * 		the name of password argument to be shadowed.
-	 * @return <tt>cmdLine</tt> string with password argument values shadowed by
-	 * 'X'
-	 */
-	public static String replacePassword(String cmdLine, String passwordArg)
-	{
-		int passwordIdx = cmdLine.indexOf(passwordArg + "=");
-		if (passwordIdx != -1) {
-			// Get arg=pass
-			int argEndIdx = cmdLine.indexOf(" ", passwordIdx);
-			// Check if this is not the last argument
-			if (argEndIdx == -1)
-				argEndIdx = cmdLine.length();
-			String passArg = cmdLine.substring(passwordIdx, argEndIdx);
+    /**
+     * The method will replace password argument values with 'X' in a string
+     * which represents command line arguments(arg=value arg2=value4).
+     *
+     * @param cmdLine a string which represent command line arguments in a form
+     * where each argument is separated by space and value is
+     * assigned by '=' sign. For example "arg=value -arg2=value4 --arg3=val45".
+     * @param passwordArg the name of password argument to be shadowed.
+     * @return <tt>cmdLine</tt> string with password argument values shadowed by
+     * 'X'
+     */
+    public static String replacePassword(String cmdLine, String passwordArg)
+    {
+        int passwordIdx = cmdLine.indexOf(passwordArg + "=");
+        if (passwordIdx != -1) {
+            // Get arg=pass
+            int argEndIdx = cmdLine.indexOf(" ", passwordIdx);
+            // Check if this is not the last argument
+            if (argEndIdx == -1)
+                argEndIdx = cmdLine.length();
+            String passArg = cmdLine.substring(passwordIdx, argEndIdx);
 
-			// Split to get arg=
-			String strippedPassArg = passArg.substring(0, passArg.indexOf("="));
+            // Split to get arg=
+            String strippedPassArg = passArg.substring(0, passArg.indexOf("="));
 
-			// Modify to have arg=X
-			cmdLine = cmdLine.replace(passArg, strippedPassArg + "=X");
-		}
-		return cmdLine;
-	}
+            // Modify to have arg=X
+            cmdLine = cmdLine.replace(passArg, strippedPassArg + "=X");
+        }
+        return cmdLine;
+    }
 
-	/**
-	 * Does {@link #replacePassword(String, String)} for every argument given in
-	 * <tt>passwordArgs</tt> array.
-	 *
-	 * @param string
-	 * 		command line argument string, e.g. "arg=3 pass=secret"
-	 * @param passwordArgs
-	 * 		the array which contains the names of password
-	 * 		argument to be shadowed.
-	 * @return <tt>cmdLine</tt> string with password arguments values shadowed
-	 * by 'X'
-	 */
-	public static String replacePasswords(String string, String[] passwordArgs)
-	{
-		for (String passArg : passwordArgs) {
-			if (StringUtils.isNullOrEmpty(passArg))
-				continue;
-			string = replacePassword(string, passArg);
-		}
-		return string;
-	}
+    /**
+     * Does {@link #replacePassword(String, String)} for every argument given in <tt>passwordArgs</tt> array.
+     *
+     * @param string command line argument string, e.g. "arg=3 pass=secret"
+     * @param passwordArgs the array which contains the names of password argument to be shadowed.
+     * @return <tt>cmdLine</tt> string with password arguments values shadowed by 'X'
+     */
+    public static String replacePasswords(String string, String[] passwordArgs)
+    {
+        if (passwordArgs != null) {
+            for (String passArg : passwordArgs) {
+                if (StringUtils.isEmpty(passArg))
+                    continue;
+                string = replacePassword(string, passArg);
+            }
+        }
+        return string;
+    }
 }

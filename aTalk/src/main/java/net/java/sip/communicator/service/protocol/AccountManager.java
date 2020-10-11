@@ -516,6 +516,16 @@ public class AccountManager
     }
 
     /**
+     * Modify accountID table with the new AccountID parameters e.g. user changes the userID
+     *
+     * @param accountID the account in the form of <tt>AccountID</tt> to be modified
+     */
+    public void modifyAccountId(AccountID accountID)
+    {
+        databaseBackend.createAccount(accountID);
+    }
+
+    /**
      * Gets account node name under which account configuration properties are stored.
      *
      * @param factory account's protocol provider factory
@@ -626,8 +636,10 @@ public class AccountManager
             throws OperationFailedException
     {
         // If the account with the given id is already loaded we have nothing to do here.
-        if (isAccountLoaded(accountID))
+        if (isAccountLoaded(accountID)) {
+            Timber.w("Account is already loaded: %s", accountID);
             return;
+        }
 
         ProtocolProviderFactory providerFactory
                 = ProtocolProviderActivator.getProtocolProviderFactory(accountID.getProtocolName());
@@ -640,6 +652,9 @@ public class AccountManager
             String password = JabberActivator.getProtocolProviderFactory().loadPassword(accountID);
             accountID.putAccountProperty(ProtocolProviderFactory.PASSWORD, password);
             storeAccount(providerFactory, accountID);
+        }
+        else {
+            Timber.w("Account was not loaded: %s ", accountID);
         }
     }
 

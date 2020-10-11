@@ -13,6 +13,7 @@ import org.jxmpp.jid.*;
  *
  * @author Emil Ivov
  * @author Stephane Remy
+ * @author Eng Chong Meng
  */
 public interface ChatRoomInvitation
 {
@@ -22,26 +23,26 @@ public interface ChatRoomInvitation
 	 *
 	 * @return the <tt>ChatRoom</tt>, which is the target of this invitation
 	 */
-	public ChatRoom getTargetChatRoom();
+	ChatRoom getTargetChatRoom();
 
 	/**
 	 * Returns the password to use when joining the room.
 	 *
 	 * @return the password to use when joining the room
 	 */
-	public byte[] getChatRoomPassword();
+	byte[] getChatRoomPassword();
 
 	/**
 	 * Returns the <tt>ChatRoomMember</tt> that sent this invitation.
 	 *
 	 * @return the <tt>ChatRoomMember</tt> that sent this invitation.
 	 */
-	public EntityJid getInviter();
+	EntityJid getInviter();
 
 	/**
 	 * Returns the reason of this invitation, or null if there is no reason.
 	 *
 	 * @return the reason of this invitation, or null if there is no reason
 	 */
-	public String getReason();
+	String getReason();
 }

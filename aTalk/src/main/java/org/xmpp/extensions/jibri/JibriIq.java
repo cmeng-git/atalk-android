@@ -5,7 +5,8 @@
  */
 package org.xmpp.extensions.jibri;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.EntityBareJid;
 
@@ -46,7 +47,7 @@ public class JibriIq extends IQ
     /**
      * XML element name of the Jibri IQ.
      */
-    public static final String ELEMENT_NAME = "jibri";
+    public static final String ELEMENT = "jibri";
 
     /**
      * XML namespace of the Jibri IQ.
@@ -69,13 +70,18 @@ public class JibriIq extends IQ
     static final String FAILURE_REASON_ATTR_NAME = "failure_reason";
 
     /**
+     * The name of the XML attribute which stores whether or not
+     * Jicofo should retry this request.  Used when the response indicates an error.
+     */
+    static final String SHOULD_RETRY_ATTR_NAME = "should_retry";
+
+    /**
      * The name of XML attribute which stores the stream id.
      */
     static final String STREAM_ID_ATTR_NAME = "streamid";
 
     /**
-     * The name of the XML attribute which stores the YouTube
-     * broadcast ID
+     * The name of the XML attribute which stores the YouTube broadcast ID
      */
     static final String YOUTUBE_BROADCAST_ID_ATTR_NAME = "you_tube_broadcast_id";
 
@@ -85,8 +91,7 @@ public class JibriIq extends IQ
     static final String SESSION_ID_ATTR_NAME = "session_id";
 
     /**
-     * The name of the XML attribute which stores the {@link #appData}
-     * field.
+     * The name of the XML attribute which stores the {@link #appData} field.
      */
     static final String APP_DATA_ATTR_NAME = "app_data";
 
@@ -140,6 +145,12 @@ public class JibriIq extends IQ
     private FailureReason failureReason = null;
 
     /**
+     * In the event of an error, this field denotes whether or not
+     * Jicofo should retry the request (for which this error response corresponds) with another Jibri.
+     */
+    private Boolean shouldRetry = null;
+
+    /**
      * The ID of the stream which will be used to record the conference. The
      * value depends on recording service provider.
      */
@@ -177,7 +188,7 @@ public class JibriIq extends IQ
 
     public JibriIq()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -273,7 +284,8 @@ public class JibriIq extends IQ
      *
      * @return the JSON-encoded application data
      */
-    public String getAppData() {
+    public String getAppData()
+    {
         return appData;
     }
 
@@ -292,7 +304,8 @@ public class JibriIq extends IQ
      *
      * @param appData a JSON-encoded string containing arbitrary application data
      */
-    public void setAppData(String appData) {
+    public void setAppData(String appData)
+    {
         this.appData = appData;
     }
 
@@ -316,6 +329,16 @@ public class JibriIq extends IQ
     public void setRoom(EntityBareJid room)
     {
         this.room = room;
+    }
+
+    /**
+     * Whether or not this IQ represents a failure from Jibri
+     *
+     * @return true if it represents failure, false otherwise
+     */
+    public boolean isFailure()
+    {
+        return this.failureReason != null;
     }
 
     /**
@@ -343,8 +366,11 @@ public class JibriIq extends IQ
         xml.optAttribute(SIP_ADDRESS_ATTR_NAME, sipAddress);
         xml.optAttribute(SESSION_ID_ATTR_NAME, sessionId);
         xml.optAttribute(FAILURE_REASON_ATTR_NAME, failureReason);
-        xml.optAttribute(APP_DATA_ATTR_NAME, appData);
 
+        if (shouldRetry != null) {
+            xml.attribute(SHOULD_RETRY_ATTR_NAME, shouldRetry);
+        }
+        xml.optAttribute(APP_DATA_ATTR_NAME, appData);
         xml.setEmptyElement();
         return xml;
     }
@@ -414,6 +440,16 @@ public class JibriIq extends IQ
         return this.failureReason;
     }
 
+    public void setShouldRetry(Boolean shouldRetry)
+    {
+        this.shouldRetry = shouldRetry;
+    }
+
+    public Boolean getShouldRetry()
+    {
+        return this.shouldRetry;
+    }
+
     public static JibriIq createResult(JibriIq request, String sessionId)
     {
         JibriIq result = new JibriIq();
@@ -468,7 +504,7 @@ public class JibriIq extends IQ
          */
         public static Action parse(String action)
         {
-            if (StringUtils.isNullOrEmpty(action))
+            if (StringUtils.isEmpty(action))
                 return UNDEFINED;
 
             try {
@@ -532,7 +568,7 @@ public class JibriIq extends IQ
          */
         public static RecordingMode parse(String status)
         {
-            if (StringUtils.isNullOrEmpty(status))
+            if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
             try {
@@ -558,6 +594,7 @@ public class JibriIq extends IQ
         /**
          * {@inheritDoc}
          */
+        @NotNull
         @Override
         public String toString()
         {
@@ -573,7 +610,7 @@ public class JibriIq extends IQ
          */
         public static FailureReason parse(String status)
         {
-            if (StringUtils.isNullOrEmpty(status))
+            if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
             try {
@@ -627,6 +664,7 @@ public class JibriIq extends IQ
         /**
          * {@inheritDoc}
          */
+        @NotNull
         @Override
         public String toString()
         {
@@ -642,7 +680,7 @@ public class JibriIq extends IQ
          */
         public static Status parse(String status)
         {
-            if (StringUtils.isNullOrEmpty(status))
+            if (StringUtils.isEmpty(status))
                 return UNDEFINED;
 
             try {

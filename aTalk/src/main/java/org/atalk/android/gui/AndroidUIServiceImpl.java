@@ -22,7 +22,6 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.event.WindowListener;
 
 import java.util.*;
 
@@ -462,31 +461,6 @@ public class AndroidUIServiceImpl implements UIService
     public boolean useMacOSXScreenMenuBar()
     {
         return false;
-    }
-
-    /**
-     * Adds the given <tt>WindowListener</tt> listening for events triggered by the main UIService
-     * component. This is normally the main application window component, the one containing the
-     * contact list. This listener would also receive events when this window is shown or hidden.
-     *
-     * @param l the <tt>WindowListener</tt> to add
-     */
-    @Override
-    public void addWindowListener(WindowListener l)
-    {
-    }
-
-    /**
-     * Removes the given <tt>WindowListener</tt> from the list of registered listener. The
-     * <tt>WindowListener</tt> is listening for events triggered by the main UIService component.
-     * This is normally the main application window component, the one containing the contact
-     * list. This listener would also receive events when this window is shown or hidden.
-     *
-     * @param l the <tt>WindowListener</tt> to remove
-     */
-    @Override
-    public void removeWindowListener(WindowListener l)
-    {
     }
 
     /**

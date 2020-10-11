@@ -20,8 +20,8 @@ import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJab
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -31,7 +31,8 @@ public class LoginSynchronizationPoint<E extends Exception>
 {
 
     private final ProtocolProviderServiceJabberImpl mPPS;
-    private final XMPPTCPConnection mConnect;
+
+    private final XMPPConnection mConnect;
     private final Lock loginInitLock;
     private final Condition condition;
     private final String waitFor;

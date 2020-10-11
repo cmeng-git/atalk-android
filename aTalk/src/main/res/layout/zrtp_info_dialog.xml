@@ -4,7 +4,6 @@
     style="@style/ScreenPadding"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/theme_background"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding">
 
@@ -33,7 +32,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:src="@drawable/secure_audio_off_light" />
     </LinearLayout>
@@ -56,26 +54,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:src="@drawable/secure_video_off_light" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/security_compare"
-        style="@style/MediumFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/service_gui_security_COMPARE_WITH_PARTNER_SHORT" />
-
-    <TextView
-        android:id="@+id/security_auth_str"
-        style="@style/MediumFont"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="\? \? \? \? \?" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/security_compare"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/service_gui_security_COMPARE_WITH_PARTNER_SHORT" />
+
+        <TextView
+            android:id="@+id/security_auth_str"
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="\? \? \? \? \?" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

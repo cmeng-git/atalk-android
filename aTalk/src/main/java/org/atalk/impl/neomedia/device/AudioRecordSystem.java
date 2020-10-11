@@ -5,11 +5,8 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import android.annotation.TargetApi;
 import android.media.audiofx.*;
-import android.os.Build;
 
-import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer;
 import org.atalk.service.neomedia.codec.Constants;
 
@@ -31,42 +28,36 @@ import javax.media.format.AudioFormat;
 public class AudioRecordSystem extends AudioSystem
 {
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>AudioRecord</tt> capture devices.
-     */
-    private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_AUDIORECORD;
-
-    /**
      * Initializes a new <tt>AudioRecordSystem</tt> instance which discovers and registers
      * <tt>AudioRecord</tt> capture devices with FMJ.
      *
-     * @throws Exception if anything goes wrong while discovering and registering <tt>AudioRecord</tt> capture
-     * devices with FMJ
+     * @throws Exception if anything goes wrong while discovering and registering <tt>AudioRecord</tt>
+     * capture devices with FMJ
      */
     public AudioRecordSystem()
             throws Exception
     {
-        super(LOCATOR_PROTOCOL, getFeatureSet());
+        super(LOCATOR_PROTOCOL_AUDIORECORD, getFeatureSet());
     }
 
     /**
-     * Returns feature set for current device.
+     * Returns feature set for current android device;
+     * a. capture
+     * b. playback
      *
      * @return feature set for current device.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static int getFeatureSet()
     {
         int featureSet = FEATURE_NOTIFY_AND_PLAYBACK_DEVICES;
-        if (AndroidUtils.hasAPI(16)) {
-            if (AcousticEchoCanceler.isAvailable()) {
-                featureSet |= FEATURE_ECHO_CANCELLATION;
-            }
-            if (NoiseSuppressor.isAvailable()) {
-                featureSet |= FEATURE_DENOISE;
-            }
-            if (AutomaticGainControl.isAvailable()) {
-                featureSet |= FEATURE_AGC;
-            }
+        if (AcousticEchoCanceler.isAvailable()) {
+            featureSet |= FEATURE_ECHO_CANCELLATION;
+        }
+        if (NoiseSuppressor.isAvailable()) {
+            featureSet |= FEATURE_DENOISE;
+        }
+        if (AutomaticGainControl.isAvailable()) {
+            featureSet |= FEATURE_AGC;
         }
         return featureSet;
     }
@@ -84,14 +75,14 @@ public class AudioRecordSystem extends AudioSystem
         for (int i = 0; i < Constants.AUDIO_SAMPLE_RATES.length; i++) {
             double sampleRate = Constants.AUDIO_SAMPLE_RATES[i];
 
-            // Certain sample rates do not seem to be supported.
+            // Certain sample rates do not seem to be supported by android.
             if (sampleRate == 48000)
                 continue;
 
             formats.add(new AudioFormat(AudioFormat.LINEAR,
                     sampleRate,
-                    16 /* sampleSizeInBits */,
-                    1 /* channels */,
+                    16,
+                    1,
                     AudioFormat.LITTLE_ENDIAN,
                     AudioFormat.SIGNED,
                     Format.NOT_SPECIFIED /* frameSizeInBits */,
@@ -99,19 +90,21 @@ public class AudioRecordSystem extends AudioSystem
                     Format.byteArray));
         }
 
+        // Audio capture device
         CaptureDeviceInfo2 captureDevice = new CaptureDeviceInfo2(
-                "android.media.AudioRecordCapture", new MediaLocator(LOCATOR_PROTOCOL + ":"),
+                "android.media.AudioRecordCapture", new MediaLocator(LOCATOR_PROTOCOL_AUDIORECORD + ":"),
                 formats.toArray(new Format[0]), null, null, null);
         List<CaptureDeviceInfo2> captureDevices = new ArrayList<>(1);
 
         captureDevices.add(captureDevice);
         setCaptureDevices(captureDevices);
 
+        // Audio playback (playback, notification) devices
         CaptureDeviceInfo2 playbackDevice = new CaptureDeviceInfo2(
-                "android.media.AudioRecordPlayback", new MediaLocator(LOCATOR_PROTOCOL + ":playback"),
+                "android.media.AudioRecordPlayback", new MediaLocator(LOCATOR_PROTOCOL_AUDIORECORD + ":playback"),
                 formats.toArray(new Format[0]), null, null, null);
         CaptureDeviceInfo2 notificationDevice = new CaptureDeviceInfo2(
-                "android.media.AudioRecordNotification", new MediaLocator(LOCATOR_PROTOCOL
+                "android.media.AudioRecordNotification", new MediaLocator(LOCATOR_PROTOCOL_AUDIORECORD
                 + ":notification"), formats.toArray(new Format[0]), null, null, null);
 
         List<CaptureDeviceInfo2> playbackDevices = new ArrayList<>(2);
@@ -121,7 +114,6 @@ public class AudioRecordSystem extends AudioSystem
 
         setDevice(DataFlow.NOTIFY, notificationDevice, true);
         setDevice(DataFlow.PLAYBACK, playbackDevice, true);
-
     }
 
     /**
@@ -139,6 +131,7 @@ public class AudioRecordSystem extends AudioSystem
 
     /**
      * Returns the audio format for the <tt>InputStream</tt>. Or null if format cannot be obtained.
+     * Support only Wave format in current implementation.
      *
      * @param audioInputStream the input stream.
      * @return the format of the audio stream.

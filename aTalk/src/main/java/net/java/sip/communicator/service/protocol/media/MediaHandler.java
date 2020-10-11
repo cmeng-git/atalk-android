@@ -5,17 +5,20 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
+import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.event.DTMFListener;
 import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Component;
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.event.*;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.*;
 
 import java.beans.PropertyChangeEvent;
@@ -24,11 +27,14 @@ import java.util.*;
 
 import timber.log.Timber;
 
+import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
+
 /**
  * Implements media control code which allows state sharing among multiple <tt>CallPeerMediaHandler</tt>s.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class MediaHandler extends PropertyChangeNotifier
 {
@@ -41,13 +47,7 @@ public class MediaHandler extends PropertyChangeNotifier
      * The <tt>CsrcAudioLevelListener</tt> that this instance sets on its {@link #audioStream} if
      * {@link #csrcAudioLevelListeners} is not empty.
      */
-    private final CsrcAudioLevelListener csrcAudioLevelListener = new CsrcAudioLevelListener()
-    {
-        public void audioLevelsReceived(long[] audioLevels)
-        {
-            MediaHandler.this.audioLevelsReceived(audioLevels);
-        }
-    };
+    private final CsrcAudioLevelListener csrcAudioLevelListener = MediaHandler.this::audioLevelsReceived;
 
     /**
      * The <tt>Object</tt> which synchronizes the access to {@link #csrcAudioLevelListener} and
@@ -68,23 +68,14 @@ public class MediaHandler extends PropertyChangeNotifier
     private KeyFrameControl keyFrameControl;
 
     /**
-     * The <tt>KeyFrameRequester</tt> implemented by this <tt>MediaHandler</tt> and provided to
-     * {@link #keyFrameControl} .
+     * The <tt>KeyFrameRequester</tt> implemented by this <tt>MediaHandler</tt> and provided to {@link #keyFrameControl} .
      */
-    private final KeyFrameControl.KeyFrameRequester keyFrameRequester
-            = new KeyFrameControl.KeyFrameRequester()
-    {
-        public boolean requestKeyFrame()
-        {
-            return MediaHandler.this.requestKeyFrame();
-        }
-    };
+    private final KeyFrameControl.KeyFrameRequester keyFrameRequester = MediaHandler.this::requestKeyFrame;
 
     private final List<KeyFrameControl.KeyFrameRequester> keyFrameRequesters = new LinkedList<>();
 
     /**
-     * The last-known local SSRCs of the <tt>MediaStream</tt>s of this instance indexed by
-     * <tt>MediaType</tt> ordinal.
+     * The last-known local SSRCs of the <tt>MediaStream</tt>s of this instance indexed by <tt>MediaType</tt> ordinal.
      */
     private final long[] localSSRCs;
 
@@ -97,8 +88,7 @@ public class MediaHandler extends PropertyChangeNotifier
     {
         public void audioLevelChanged(int level)
         {
-            MediaHandler.this.audioLevelChanged(localUserAudioLevelListenerLock,
-                    localUserAudioLevelListeners, level);
+            MediaHandler.this.audioLevelChanged(localUserAudioLevelListenerLock, localUserAudioLevelListeners, level);
         }
     };
 
@@ -115,8 +105,7 @@ public class MediaHandler extends PropertyChangeNotifier
     private List<SimpleAudioLevelListener> localUserAudioLevelListeners = Collections.emptyList();
 
     /**
-     * The last-known remote SSRCs of the <tt>MediaStream</tt>s of this instance indexed by
-     * <tt>MediaType</tt> ordinal.
+     * The last-known remote SSRCs of the <tt>MediaStream</tt>s of this instance indexed by <tt>MediaType</tt> ordinal.
      */
     private final long[] remoteSSRCs;
 
@@ -127,10 +116,10 @@ public class MediaHandler extends PropertyChangeNotifier
 
     private final SrtpListener srtpListener = new SrtpListener()
     {
-        public void securityMessageReceived(String message, String i18nMessage, int severity)
+        public void securityMessageReceived(String messageType, String i18nMessage, int severity)
         {
             for (SrtpListener listener : getSrtpListeners()) {
-                listener.securityMessageReceived(message, i18nMessage, severity);
+                listener.securityMessageReceived(messageType, i18nMessage, severity);
             }
         }
 
@@ -162,8 +151,7 @@ public class MediaHandler extends PropertyChangeNotifier
     private final List<SrtpListener> srtpListeners = new LinkedList<>();
 
     /**
-     * The set of listeners in the application (<tt>Jitsi</tt>) which are to be notified of DTMF
-     * events.
+     * The set of listeners in the application (<tt>Jitsi</tt>) which are to be notified of DTMF events.
      */
     private final Set<DTMFListener> dtmfListeners = new HashSet<>();
 
@@ -208,10 +196,8 @@ public class MediaHandler extends PropertyChangeNotifier
          * Notifies this <tt>PropertyChangeListener</tt> that the value of a specific
          * property of the notifier it is registered with has changed.
          *
-         * @param evt
-         *        a <tt>PropertyChangeEvent</tt> which describes the source of the event,
-         *        the name of the property which has changed its value and the old and
-         *        new values of the property
+         * @param evt a <tt>PropertyChangeEvent</tt> which describes the source of the event, the name
+         * of the property which has changed its value and the old and new values of the property
          * @see PropertyChangeListener#propertyChange(PropertyChangeEvent)
          */
         public void propertyChange(PropertyChangeEvent evt)
@@ -554,9 +540,8 @@ public class MediaHandler extends PropertyChangeNotifier
      * <tt>MediaDevice</tt> fails for some reason.
      */
     protected MediaStream configureStream(CallPeerMediaHandler<?> callPeerMediaHandler,
-            MediaDevice device, MediaFormat format, MediaStreamTarget target,
-            MediaDirection direction, List<RTPExtension> rtpExtensions,
-            MediaStream stream, boolean masterStream)
+            MediaDevice device, MediaFormat format, MediaStreamTarget target, MediaDirection direction,
+            List<RTPExtension> rtpExtensions, MediaStream stream, boolean masterStream)
             throws OperationFailedException
     {
         registerDynamicPTsWithStream(callPeerMediaHandler, stream);
@@ -568,10 +553,11 @@ public class MediaHandler extends PropertyChangeNotifier
         stream.setFormat(format);
 
         // cmeng: call has NPE during testing. Received content-reject while processing content-add;
-        // Call terminated? Just return with original stream if so ??   
+        // Call terminated? Just return with original stream if so ??
+        // cmeng: 20200518 - just return stream instead of causing NPE
         MediaAwareCall<?, ?, ?> call = callPeerMediaHandler.getPeer().getCall();
-        // if (call == null)
-        //    return stream;
+        if (call == null)
+            return stream;
 
         MediaType mediaType = (stream instanceof AudioMediaStream)
                 ? MediaType.AUDIO : MediaType.VIDEO;
@@ -659,16 +645,14 @@ public class MediaHandler extends PropertyChangeNotifier
      * @return the SRTP control type (MIKEY, SDES, ZRTP) used for the given media type or
      * <tt>null</tt> if SRTP is not enabled for the given media type
      */
-    SrtpControl getEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler,
-            MediaType mediaType)
+    SrtpControl getEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType)
     {
         /*
          * Find the first existing SRTP control type for the specified media type which is active
          * i.e. secures the communication.
          */
         for (SrtpControlType srtpControlType : SrtpControlType.values()) {
-            SrtpControl srtpControl
-                    = getSrtpControls(callPeerMediaHandler).get(mediaType, srtpControlType);
+            SrtpControl srtpControl = getSrtpControls(callPeerMediaHandler).get(mediaType, srtpControlType);
 
             if ((srtpControl != null) && srtpControl.getSecureCommunicationStatus()) {
                 return srtpControl;
@@ -756,24 +740,25 @@ public class MediaHandler extends PropertyChangeNotifier
 
             // If a SrtpControl does not exist yet, create a default one.
             if (srtpControl == null) {
+
                 /*
-                 * The default SrtpControl is currently ZRTP without the hello-hash. It is created
-                 * by the MediaStream implementation. Consequently, it needs to be linked to the
-                 * srtpControls Map.
+                 * The default SrtpControl is currently ZRTP without the hello-hash. It needs to
+                 * be linked to the srtpControls Map.
                  */
-                stream = mediaService.createMediaStream(connector, device);
-                srtpControl = stream.getSrtpControl();
-                if (srtpControl != null)
-                    srtpControls.set(mediaType, srtpControl);
+
+                final AccountID accountID = callPeerMediaHandler.getPeer().getProtocolProvider().getAccountID();
+                final byte[] myZid = generateMyZid(accountID, callPeerMediaHandler.getPeer().getPeerJid().asBareJid());
+                srtpControl = NeomediaServiceUtils.getMediaServiceImpl().createSrtpControl(SrtpControlType.ZRTP, myZid);
+
+                srtpControls.set(mediaType, srtpControl);
             }
-            else {
-                stream = mediaService.createMediaStream(connector, device, srtpControl);
-            }
+
+            stream = mediaService.createMediaStream(connector, device, srtpControl);
         }
         else {
             Timber.log(TimberLog.FINER, "Reinitializing stream: " + stream);
         }
-        // cmeng: sream can still be null in testing. why?
+        // cmeng: stream can still be null in testing. why?
         return configureStream(callPeerMediaHandler, device, format, target, direction,
                 rtpExtensions, stream, masterStream);
     }
@@ -796,17 +781,13 @@ public class MediaHandler extends PropertyChangeNotifier
      *
      * @param stream the <tt>MediaStream</tt> that we'd like to register our dynamic payload mappings with.
      */
-    private void registerDynamicPTsWithStream(CallPeerMediaHandler<?> callPeerMediaHandler,
-            MediaStream stream)
+    private void registerDynamicPTsWithStream(CallPeerMediaHandler<?> callPeerMediaHandler, MediaStream stream)
     {
-        DynamicPayloadTypeRegistry dynamicPayloadTypes
-                = callPeerMediaHandler.getDynamicPayloadTypes();
-
-        StringBuffer dbgMessage = new StringBuffer("Dynamic PT map: ");
+        DynamicPayloadTypeRegistry dynamicPayloadTypes = callPeerMediaHandler.getDynamicPayloadTypes();
 
         // first register the mappings
-        for (Map.Entry<MediaFormat, Byte> mapEntry
-                : dynamicPayloadTypes.getMappings().entrySet()) {
+        StringBuffer dbgMessage = new StringBuffer("Dynamic PT map: ");
+        for (Map.Entry<MediaFormat, Byte> mapEntry : dynamicPayloadTypes.getMappings().entrySet()) {
             byte pt = mapEntry.getValue();
             MediaFormat fmt = mapEntry.getKey();
 
@@ -817,8 +798,7 @@ public class MediaHandler extends PropertyChangeNotifier
 
         dbgMessage = new StringBuffer("PT overrides [");
         // now register whatever overrides we have for the above mappings
-        for (Map.Entry<Byte, Byte> overrideEntry
-                : dynamicPayloadTypes.getMappingOverrides().entrySet()) {
+        for (Map.Entry<Byte, Byte> overrideEntry : dynamicPayloadTypes.getMappingOverrides().entrySet()) {
             byte originalPt = overrideEntry.getKey();
             byte overridePt = overrideEntry.getValue();
 
@@ -840,12 +820,10 @@ public class MediaHandler extends PropertyChangeNotifier
     private void registerRTPExtensionsWithStream(CallPeerMediaHandler<?> callPeerMediaHandler,
             List<RTPExtension> rtpExtensions, MediaStream stream)
     {
-        DynamicRTPExtensionsRegistry rtpExtensionsRegistry
-                = callPeerMediaHandler.getRtpExtensionsRegistry();
+        DynamicRTPExtensionsRegistry rtpExtensionsRegistry = callPeerMediaHandler.getRtpExtensionsRegistry();
 
         for (RTPExtension rtpExtension : rtpExtensions) {
             byte extensionID = rtpExtensionsRegistry.getExtensionMapping(rtpExtension);
-
             stream.addRTPExtension(extensionID, rtpExtension);
         }
     }
@@ -956,12 +934,10 @@ public class MediaHandler extends PropertyChangeNotifier
 
     /**
      * Unregisters a specific <tt>VideoListener</tt> from this instance so that it stops receiving
-     * notifications from it about changes in the availability of visual <tt>Component</tt>s
-     * displaying video.
+     * notifications from it about changes in the availability of visual <tt>Component</tt>s displaying video.
      *
      * @param listener the <tt>VideoListener</tt> to be unregistered from this instance and to stop receiving
-     * notifications from it about changes in the availability of visual <tt>Component</tt>s
-     * displaying video
+     * notifications from it about changes in the availability of visual <tt>Component</tt>s displaying video
      */
     void removeVideoListener(VideoListener listener)
     {
@@ -969,12 +945,10 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Requests a key frame from the remote peer of the associated <tt>VideoMediaStream</tt> of
-     * this <tt>MediaHandler</tt>.
+     * Requests a key frame from the remote peer of the associated <tt>VideoMediaStream</tt> of this <tt>MediaHandler</tt>.
      *
-     * @return <tt>true</tt> if this <tt>MediaHandler</tt> has indeed requested a key frame from
-     * the remote peer of its associated <tt>VideoMediaStream</tt> in response to the call;
-     * otherwise, <tt>false</tt>
+     * @return <tt>true</tt> if this <tt>MediaHandler</tt> has indeed requested a key frame from then
+     * remote peer of its associated <tt>VideoMediaStream</tt> in response to the call; otherwise, <tt>false</tt>
      */
     protected boolean requestKeyFrame()
     {
@@ -999,6 +973,8 @@ public class MediaHandler extends PropertyChangeNotifier
     private void setAudioStream(AudioMediaStream audioStream)
     {
         if (this.audioStream != audioStream) {
+            // Timber.w(new Exception("Set Audio Stream"), "set Audio Stream: %s => %s", this.audioStream, audioStream);
+
             if (this.audioStream != null) {
                 synchronized (csrcAudioLevelListenerLock) {
                     if (!csrcAudioLevelListeners.isEmpty())
@@ -1077,8 +1053,7 @@ public class MediaHandler extends PropertyChangeNotifier
      * Sets the last-known local SSRC of the <tt>MediaStream</tt> of a specific <tt>MediaType</tt>.
      *
      * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> to set the last-known local SSRC of
-     * @param localSSRC the last-known local SSRC of the <tt>MediaStream</tt> of the specified
-     * <tt>mediaType</tt>
+     * @param localSSRC the last-known local SSRC of the <tt>MediaStream</tt> of the specified <tt>mediaType</tt>
      */
     private void setLocalSSRC(MediaType mediaType, long localSSRC)
     {
@@ -1105,9 +1080,8 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>VolumeControl</tt> which is to control the volume (level) of the audio received
-     * in/by a specific <tt>AudioMediaStream</tt> and played back in order to achieve call-specific
-     * volume (level).
+     * Sets the <tt>VolumeControl</tt> which is to control the volume (level) of the audio received in/by a
+     * specific <tt>AudioMediaStream</tt> and played back in order to achieve call-specific volume (level).
      * <p>
      * <b>Note</b>: The implementation makes the volume (level) telephony conference-specific.
      * </p>
@@ -1122,8 +1096,7 @@ public class MediaHandler extends PropertyChangeNotifier
         /*
          * The volume (level) of the audio played back in calls should be call-specific i.e. it
          * should be able to change the volume (level) of a call without affecting any other
-         * simultaneous calls. The implementation makes the volume (level) telephony
-         * conference-specific.
+         * simultaneous calls. The implementation makes the volume (level) telephony conference-specific.
          */
         MediaAwareCallConference conference = call.getConference();
 
@@ -1136,12 +1109,10 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the last-known remote SSRC of the <tt>MediaStream</tt> of a specific
-     * <tt>MediaType</tt>.
+     * Sets the last-known remote SSRC of the <tt>MediaStream</tt> of a specific <tt>MediaType</tt>.
      *
      * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> to set the last-known remote SSRC
-     * @param remoteSSRC the last-known remote SSRC of the <tt>MediaStream</tt> of the specified
-     * <tt>mediaType</tt>
+     * @param remoteSSRC the last-known remote SSRC of the <tt>MediaStream</tt> of the specified <tt>mediaType</tt>
      */
     private void setRemoteSSRC(MediaType mediaType, long remoteSSRC)
     {
@@ -1197,8 +1168,7 @@ public class MediaHandler extends PropertyChangeNotifier
             this.videoStream = videoStream;
 
             /*
-             * The videoStream has just changed so this CallPeerMediaHandler should use its
-             * KeyFrameControl.
+             * The videoStream has just changed so this CallPeerMediaHandler should use its KeyFrameControl.
              */
             setKeyFrameControlFromVideoStream(this.videoStream);
 

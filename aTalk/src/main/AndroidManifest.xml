@@ -26,7 +26,6 @@
         android:name="android.hardware.location"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -43,7 +42,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -54,50 +53,24 @@
         android:icon="@drawable/ic_logo"
         android:label="@string/APPLICATION_NAME"
         android:logo="@drawable/ic_notification"
-        android:networkSecurityConfig="@xml/network_security_configuration"
-        android:theme="@style/Theme.App">
+        android:requestLegacyExternalStorage="true"
+        android:networkSecurityConfig="@xml/network_security_configuration" >
+
+        <!-- Apache HTTP client deprecation: (no effect so far)
+         https://developer.android.com/about/versions/pie/android-9.0-changes-28#apache-p
+        uses-library android:name="org.apache.http.legacy" android:required="false"/-->
         <!--
             android:vmSafeMode="true"
             resolved issue in https://issuetracker.google.com/issues/64425255
             but failed https://community.igniterealtime.org/message/266176#comment-266176
          -->
 
-        <service android:name="org.atalk.service.osgi.OSGiService" />
-        <service
-            android:name="org.atalk.android.gui.account.AccountAuthenticatorService"
-            android:exported="true"
-            android:process=":auth">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
-        <service
-            android:name="org.atalk.impl.androidupdate.OnlineUpdateService"
-            android:enabled="true" />
-        <service
-            android:name="org.atalk.android.plugin.audioservice.AudioBgService"
-            android:exported="false" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.files"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
         <activity
             android:name="org.atalk.android.gui.LauncherActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/APPLICATION_NAME"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.App.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="org.atalk.android.gui.ShutdownActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -115,6 +88,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <!-- meta-data
                 android:name="android.support.UI_OPTIONS"
                 android:value="splitActionBarWhenNarrow" /
@@ -126,7 +100,8 @@
         <activity
             android:name="org.atalk.android.plugin.permissions.PermissionsActivity"
             android:label="@string/APPLICATION_NAME"
-            android:theme="@style/Theme.App.NoActionBar">
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -134,8 +109,8 @@
         </activity>
         <activity
             android:name="org.atalk.android.gui.Splash"
-            android:label="@string/app_name"
-            android:launchMode="standard" />
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!-- Account settings and sub-menu-->
         <activity
             android:name="org.atalk.android.gui.account.AccountsListActivity"
@@ -201,6 +176,9 @@
         <activity
             android:name="org.atalk.android.gui.call.VideoCallActivity"
             android:hardwareAccelerated="true"
+            android:label="@string/APPLICATION_NAME" />
+        <activity
+            android:name="org.atalk.android.gui.call.JingleMessageCallActivity"
             android:label="@string/APPLICATION_NAME" />
         <activity
             android:name="org.atalk.android.gui.call.ReceivedCallActivity"
@@ -296,16 +274,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.atalk.impl.androidcertdialog.CertificateDeleteDialog"
-            android:label="@string/pref_remove_trusted_certificates_title">
-            <intent-filter>
-                <action android:name=".impl.androidcertdialog.CertificateDeleteDialog" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="org.atalk.impl.androidcertdialog.ConnectionInfo"
-            android:label="@string/service_gui_settings_SSL_CERTIFICATE_MANAGER">
+            android:label="@string/service_gui_settings_SSL_CERTIFICATE">
             <intent-filter>
                 <action android:name=".impl.androidcertdialog.ConnectionInfo" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -370,19 +340,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!-- Dns settings -->
-        <activity
-            android:name="org.atalk.android.gui.settings.DnsSettings"
-            android:label="@string/service_gui_settings_DNS">
-            <intent-filter>
-                <action android:name=".android.gui.settings.DnsSettings" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.preference"
-                android:resource="@xml/dns_preferences" />
-        </activity>
         <!-- Provisioning settings -->
         <activity
             android:name="org.atalk.android.gui.settings.ProvisioningSettings"
@@ -421,7 +378,68 @@
         <activity
             android:name="org.atalk.android.gui.About"
             android:label="@string/About_action"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name="org.atalk.android.gui.share.ShareActivity"
+            android:label="@string/APPLICATION_NAME"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.chooser.chooser_target_service"
+                android:value=".services.ContactChooserTargetService" />
+        </activity>
+
+        <!--Text Speech Features -->
+        <activity
+            android:name="org.atalk.android.plugin.textspeech.TTSActivity"
+            android:label="@string/APPLICATION_NAME" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <service android:name="org.atalk.service.osgi.OSGiService" />
+        <service
+            android:name="org.atalk.android.gui.account.AccountAuthenticatorService"
+            android:exported="true"
+            android:process=":auth">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+        <service
+            android:name="org.atalk.android.plugin.audioservice.AudioBgService"
+            android:exported="false" />
+        <service
+            android:name="org.atalk.android.plugin.textspeech.TTSService"
+            android:exported="false" />
 
         <receiver
             android:name="org.atalk.service.EventReceiver"
@@ -435,6 +453,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name="org.atalk.android.gui.share.ShareUtil$ShareBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

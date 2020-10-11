@@ -14,22 +14,27 @@
  */
 package net.java.sip.communicator.impl.contactlist;
 
-import android.os.Build;
-
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.ScServiceDiscoveryManager;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.AvatarCacheUtils;
 import net.java.sip.communicator.util.DataObject;
 
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.json.*;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.Jid;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import timber.log.Timber;
 
 /**
@@ -47,14 +52,25 @@ public class MetaContactImpl extends DataObject implements MetaContact
     private final List<Contact> protoContacts = new Vector<>();
 
     /**
-     * The list of capabilities of the meta contact.
+     * The list of capabilities of the meta contact i.e. map of each OperationSet for all the contacts that support it.
+     * Currently has problem as OpSet capability get updated by last contact resource presence
      */
     private final ConcurrentHashMap<String, List<Contact>> capabilities = new ConcurrentHashMap<>();
+
+    /**
+     * The list of capabilities of the meta contact FullJid i.e. all contact resources. To overcome the above problem
+     */
+    private final ConcurrentHashMap<String, List<Jid>> capabilityJid = new ConcurrentHashMap<>();
 
     /**
      * The number of contacts online in this meta contact.
      */
     private int contactsOnline = 0;
+
+    /**
+     * The number of unread messages
+     */
+    private int unreadCount = 0;
 
     /**
      * An id uniquely identifying the meta contact in this contact list.
@@ -187,6 +203,34 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
+     * Determines if the given <tt>feature</tt> is supported by this metaContact for all presence contact.
+     *
+     * @param feature the feature to check for
+     * @return <tt>true</tt> if the required feature is supported; otherwise, <tt>false</tt>
+     */
+    public boolean isFeatureSupported(String feature)
+    {
+        Contact contact = getDefaultContact();
+        ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) contact.getProtocolProvider();
+
+        ScServiceDiscoveryManager discoveryManager = pps.getDiscoveryManager();
+        if (discoveryManager == null)
+            return  false;
+
+        // Proceed only for presence with Type.available
+        List<Presence> presences = Roster.getInstanceFor(pps.getConnection()).getPresences(contact.getJid().asBareJid());
+        for (Presence presence : presences) {
+            if (presence.isAvailable()) {
+                DiscoverInfo featureInfo = discoveryManager.discoverInfoNonBlocking(presence.getFrom());
+                if ((featureInfo != null) && featureInfo.containsFeature(feature)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns contacts, encapsulated by this MetaContact and belonging to the specified protocol ContactGroup.
      *
      * In order to prevent problems with concurrency, the <tt>Iterator</tt> returned by
@@ -305,6 +349,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
     /**
      * Returns a default contact for a specific operation (call, file transfer, IM ...)
+     * cmeng may possibly replaced by getOpSetSupportedContact()
      *
      * @param operationSet the operation for which the default contact is needed
      * @return the default contact for the specified operation.
@@ -316,26 +361,25 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
         // if the current default contact supports the requested operationSet we use it
         if (defaultContact != null) {
-            ProtocolProviderService contactProvider = defaultContact.getProtocolProvider();
+            ProtocolProviderService pps = defaultContact.getProtocolProvider();
 
             // First try to ask the capabilities operation set if such is available.
-            OperationSetContactCapabilities capOpSet = contactProvider.getOperationSet(
-                    OperationSetContactCapabilities.class);
+            OperationSetContactCapabilities capOpSet = pps.getOperationSet(OperationSetContactCapabilities.class);
 
             if (capOpSet != null) {
                 synchronized (capabilities) {
                     List<Contact> capContacts = capabilities.get(operationSet.getName());
-
                     if (capContacts != null && capContacts.contains(defaultContact)) {
                         defaultOpSetContact = defaultContact;
                     }
                 }
             }
-            else if (contactProvider.getOperationSet(operationSet) != null) {
+            else if (pps.getOperationSet(operationSet) != null) {
                 defaultOpSetContact = defaultContact;
             }
         }
 
+        // if default not supported, then check the protoContacts for one
         if (defaultOpSetContact == null) {
             PresenceStatus currentStatus = null;
 
@@ -375,6 +419,45 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
+     * Returns a contact for a specific operationSet (call, file transfer, IM ...), null if none is found
+     * Note: this is currently used for showing the video/call buttons; and protoContacts.size() == 1
+     *
+     * @param operationSet the operation for which the contact is needed
+     * @return a contact that supports the specified operation.
+     */
+    public Contact getOpSetSupportedContact(Class<? extends OperationSet> operationSet)
+    {
+        for (Contact opSetContact : protoContacts) {
+            Jid jid = opSetContact.getJid();  // always a BareJid
+
+            // First try to ask the capabilities operation set if such is available.
+            ProtocolProviderService pps = opSetContact.getProtocolProvider();
+            OperationSetContactCapabilities capOpSet = pps.getOperationSet(OperationSetContactCapabilities.class);
+
+            // We filter to care only about opSetContact which support the needed opSet.
+            if (capOpSet != null) {
+                synchronized (capabilityJid) {
+                    List<Jid> capJids = capabilityJid.get(operationSet.getName());
+                    // Just return null if none supported
+                    if (capJids == null)
+                        return null;
+
+                    for (Jid jidx : capJids) {
+                        if (jid.isParentOf(jidx)) {
+                            // For testing only
+                            // if (opSetContact.getAddress().contains("hawk")) {
+                            //     Timber.d("opSetContact check for %s: %s => %s", operationSet.getName(), displayName, opSetContact);
+                            // }
+                            return opSetContact;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns a String identifier (the actual contents is left to implementations) this
      * <tt>MetaContact</tt> in that uniquely represents the containing <tt>MetaContactList</tt>
      *
@@ -383,6 +466,26 @@ public class MetaContactImpl extends DataObject implements MetaContact
     public String getMetaUID()
     {
         return uid;
+    }
+
+    /**
+     * Set the unread message count for this metaContact
+     *
+     * @param count unread message count
+     */
+    public void setUnreadCount(int count)
+    {
+        unreadCount = count;
+    }
+
+    /**
+     * Returns the unread message count for this metaContact
+     *
+     * @return the unread message count
+     */
+    public int getUnreadCount()
+    {
+        return unreadCount;
     }
 
     /**
@@ -530,7 +633,10 @@ public class MetaContactImpl extends DataObject implements MetaContact
             if (protoContact == null)
                 continue;
 
-            mCachedAvatar = AvatarCacheUtils.getCachedAvatar(protoContact);
+            // mCachedAvatar = AvatarCacheUtils.getCachedAvatar(protoContact);
+            BareJid bareJid = protoContact.getJid().asBareJid();
+            mCachedAvatar = AvatarManager.getAvatarImageByJid(bareJid);
+
             /*
              * Caching a zero-length avatar happens but such an avatar isn't very useful.
              */
@@ -826,7 +932,6 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * @param name of the detail to be removed.
      * @param value value of the detail to be removed.
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void removeDetail(String name, String value)
     {
         try {
@@ -941,7 +1046,9 @@ public class MetaContactImpl extends DataObject implements MetaContact
         this.mCachedAvatar = avatarBytes;
         this.avatarFileCacheAlreadyQueried = true;
 
-        AvatarCacheUtils.cacheAvatar(protoContact, avatarBytes);
+        // AvatarCacheUtils.cacheAvatar(protoContact, avatarBytes);
+        BareJid userId = protoContact.getJid().asBareJid();
+        AvatarManager.addAvatarImage(userId, avatarBytes, false);
     }
 
     /**
@@ -950,7 +1057,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * @param contact the <tt>Contact</tt>, which capabilities have changed
      * @param opSets the new updated set of operation sets
      */
-    public void updateCapabilities(Contact contact, Map<String, ? extends OperationSet> opSets)
+    public void updateCapabilities(Contact contact, Jid jid, Map<String, ? extends OperationSet> opSets)
     {
         OperationSetContactCapabilities capOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
@@ -960,8 +1067,13 @@ public class MetaContactImpl extends DataObject implements MetaContact
         if (capOpSet == null)
             return;
 
+        // Update based on contact only (not considering the contact resource)
         removeCapabilities(contact, opSets);
         addCapabilities(contact, opSets);
+
+        // Update based on FullJid
+        removeCapabilities(jid, opSets);
+        addCapabilities(jid, opSets);
     }
 
     /**
@@ -973,7 +1085,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     private void removeCapabilities(Contact contact, Map<String, ? extends OperationSet> opSets)
     {
         synchronized (capabilities) {
-            Iterator<Map.Entry<String, List<Contact>>> caps = this.capabilities.entrySet().iterator();
+            Iterator<Map.Entry<String, List<Contact>>> caps = capabilities.entrySet().iterator();
             Set<String> contactNewCaps = opSets.keySet();
 
             while (caps.hasNext()) {
@@ -1012,6 +1124,72 @@ public class MetaContactImpl extends DataObject implements MetaContact
                     capContacts = capabilities.get(newCap);
                     if ((capContacts != null) && !capContacts.contains(contact)) {
                         capContacts.add(contact);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Remove capabilities for the given contacts based on FullJid
+     *
+     * @param jid the FullJid of the <tt>Contact</tt>, whom capabilities we remove. Null applies to all resources
+     * @param opSets the new updated set of operation sets.
+     */
+    private void removeCapabilities(Jid jid, Map<String, ? extends OperationSet> opSets)
+    {
+        Timber.d("Opset capability removal started: %s", jid);
+        synchronized (capabilityJid) {
+            Iterator<Map.Entry<String, List<Jid>>> capJids = capabilityJid.entrySet().iterator();
+            Set<String> contactNewCaps = opSets.keySet();
+
+            while (capJids.hasNext()) {
+                Map.Entry<String, List<Jid>> entryJid = capJids.next();
+                String opSetName = entryJid.getKey();
+
+                if (jid.toString().contains("hawk") && !contactNewCaps.contains(opSetName))
+                    Timber.d("Opset capability for %s removed: %s", jid, opSetName);
+
+                Iterator<Jid> jidsForCap = entryJid.getValue().iterator();
+                while (jidsForCap.hasNext()) {
+                    Jid jidx = jidsForCap.next();
+                    if (jid.equals(jidx) && !contactNewCaps.contains(opSetName)) {
+                        jidsForCap.remove();
+                        if (!jidsForCap.hasNext()) {
+                            capJids.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds the capabilities of the given contact based on FullJid
+     *
+     * @param jid the FullJid of the <tt>Contact</tt>, whom capabilities we remove. Null applies to all resources
+     * @param opSets the map of operation sets supported by the contact.
+     */
+    private void addCapabilities(Jid jid, Map<String, ? extends OperationSet> opSets)
+    {
+        Timber.d("Opset capability adding started: %s", jid);
+        synchronized (capabilityJid) {
+            for (String newCap : opSets.keySet()) {
+                List<Jid> capJids;
+
+                if (!capabilityJid.containsKey(newCap)) {
+                    capJids = new LinkedList<>();
+                    capJids.add(jid);
+                    capabilityJid.put(newCap, capJids);
+                }
+                else {
+                    capJids = capabilityJid.get(newCap);
+                    if ((capJids != null) && !capJids.contains(jid)) {
+                        if ((jid != null) && jid.toString().contains("hawk"))
+                            Timber.d("Opset capability for %s added: %s", jid, newCap);
+
+                        capJids.add(jid);
                     }
                 }
             }

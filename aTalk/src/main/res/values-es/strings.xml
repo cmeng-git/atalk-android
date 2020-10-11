@@ -81,7 +81,6 @@
     <string name="chatRoom_Subject">Tema</string>
     <string name="choose_file_activity_title">Elije un archivo</string>
     <string name="menu_settings">Ajustes</string>
-    <string name="title_activity_attach_option_dialog">Enviar archivo adjunto</string>
     <string name="title_activity_activation_view">Activación</string>
 
     <!-- General -->
@@ -135,7 +134,7 @@
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de Llamadas</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">¿Está seguro de que desea purgar todos los registros de llamadas seleccionados?</string>
     <string name="service_gui_CALL_INCOMING">Llamada recibida desde: %1$s</string>
-    <string name="service_gui_CALL_INCOMING_STATUS">Llamadada entrante</string>
+    <string name="service_gui_CALL_INCOMING_STATUS">Llamada entrante</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Iniciando la llamada</string>
     <string name="service_gui_CALL_REJECTED">%1$s ha rechazado la llamada.</string>
     <string name="service_gui_CALL_MISSED_CALL">Llamadas perdidas de:</string>
@@ -199,6 +198,8 @@
 	<string name="service_gui_CHATROOM_NOT_JOINED">Se necesita estar unido a la sala de chat para poder hacer más operaciones con ella..</string>
 	<string name="service_gui_CHATROOM_OPTIONS">Opciones de la Sala</string>
 	<string name="service_gui_CHATROOM_REQUIRES_PASSWORD">En la sala %1$s se requiere contraseña para ser miembro.</string>
+    <string name="service_gui_CHATROOM_STATUS_OFF">Deshabilitar estado de la habitación</string>
+    <string name="service_gui_CHATROOM_STATUS_ON">Habilitar estado de la habitación</string>
 	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Asunto de la habitación cambiado: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOMS">Salas</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s ahora se conoce como %2$s</string>
@@ -239,13 +240,14 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">La lista de contactos no contiene ningún grupo. Por favor, crear un grupo primero (Archivo/Crear grupo).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ayuda on-line</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ayuda online</a></string>
     <string name="AboutDialog_title">Sobre</string>
     <string name="AboutDialog_Version">Versión %s</string>
     <string name="About_action">Sobre</string>
     <string name="About_help">Ayuda</string>
     <string name="check_new_version">Comprobar actualizaciones</string>
     <string name="show_history_log">Historial de registros</string>
+    <string name="Online_help">Ayuda online</string>
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">Solicitud de autorización HTTP</string>
@@ -351,6 +353,7 @@
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
 	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
+	<string name="service_gui_FILE_ATTACHMENT">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
 	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado @ %1$s perdido!</string>
 	<string name="service_gui_FILE_TRANSFER_NOT_SUPPORTED">El cliente o servidor de contacto no admite la transferencia de archivos ni los protocolos necesarios</string>
@@ -369,7 +372,7 @@
 	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Borrar este historial del contacto</string>
 	<string name="service_gui_HISTORY_ERASE_ALL">Borrar el historial de chat de todos los contactos</string>
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">¿Seguro que se quiere borrar todos los mensajes de %1$s?</string>
-	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">¿Seguro que se quiere borrar todos los mensajes de todos los contactos??</string>
+	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">¿Seguro que se quiere borrar todos los mensajes de todos los entidades??</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente. %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
 
@@ -486,7 +489,7 @@
     <string name="service_gui_MSG_DELIVERY_NOT_SUPPORTED">El protocolo que estás utilizando no admite mensajes sin conexión.
         Se puede intentar llegar a %1$s a través de otro protocolo o esperar hasta que se conecte.</string>
     <string name="service_gui_MSG_DELIVERY_UNKNOWN_ERROR">Se ha producido un error desconocido al enviar el mensaje.</string>
-    <string name="service_gui_MSG_DELIVERY_UNSUPPORTED_OPERATION">Operación no admitida.</string>
+    <string name="service_gui_UNSUPPORTED_OPERATION">Operación no admitida.</string>
     <string name="service_gui_MSG_NOT_DELIVERED">Se ha producido un problema en la red. Compruebar la configuración de su red e inténtarlo de nuevo.</string>
     <string name="service_gui_MSG_RECEIVED">%1$s escrito</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Se debes iniciar la sesión primero para enviar el mensaje.</string>
@@ -572,7 +575,6 @@
          1. ¿Qué fue lo último que hiciste antes de que ocurriera el problema?\n\n\n
          2. ¿Cuál fue el problema que ves, incluye una instantánea de la pantalla si está disponible??\n\n\n
          3. ¿Puedes o cómo reproducir el problema?</string>
-
     <string name="service_gui_SEND_MESSAGE">Enviar un mensaje</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Error al enviar el mensaje: %1$s</string>
     <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">La entidad que has seleccionado no admite mensajes de chat instantáneos: %1$s</string>
@@ -1061,14 +1063,20 @@
         proveedor de servicios para informarles sobre el problema.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
-    <string name="service_gui_settings_SSL_CERTIFICATE_DIALOG_TITLE">Eliminar certificado</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_DELETE">Por favor, confirma la eliminación del certificado para: %1$s</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_MANAGER">Administrador de certificados SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE">Certificado SSL</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Purgar los certificados aprobados por el usuario para: %1$s</string>
+    <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Eliminar certificado</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Administración de certificados SSL</string>
-    <string name="service_gui_settings_SSL_CERTIFICATE_TITLE">Certificado SSL</string>
 
-    <string name="pref_remove_trusted_certificates_title">Eliminar certificado</string>
-    <string name="pref_remove_trusted_certificates_summary">Eliminar certificados aprobados manualmente</string>
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Por favor, seleccional el certificado TLS</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Uso del certificado en la autenticación del usuario con el servidor</string>
+
+    <!-- Reset ZID -->
+    <string name="reset_ZID_summary">Restablecer identificador ZRTP de larga duración</string>
+    <string name="reset_ZID_title">Reiniciar ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID ha sido restablecido</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>
@@ -1567,7 +1575,7 @@
     <string name="audio_permission_denied_feedback">La llamada de audio no estará disponible hasta que concedas la solicitud de permiso</string>
 
     <string name="camera_permission_denied_dialog_title">Solicitud de permiso de cámara</string>
-    <string name="camera_permission_denied_feedback">El permiso de la cámara es necesario para la configuración de la videollamada. La videollamada no estará disponible hasta que concedas la solicitud de permiso</string>
+    <string name="camera_permission_denied_feedback">Permiso de cámara: todas las actividades asociadas a la cámara no estarán disponibles hasta que otorgue la solicitud de permiso</string>
 
     <string name="contacts_permission_denied_dialog_title">Solicitud de permiso de contactos</string>
     <string name="contacts_permission_denied_feedback">El permiso de los contactos es necesario para el acceso al estado del teléfono y la configuración de llamadas.</string>

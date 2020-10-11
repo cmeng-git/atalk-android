@@ -237,7 +237,7 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
         List<SourceContact> qr;
 
         synchronized (queryResults) {
-            qr = new ArrayList<SourceContact>(queryResults.size());
+            qr = new ArrayList<>(queryResults.size());
             qr.addAll(queryResults);
         }
         return qr;

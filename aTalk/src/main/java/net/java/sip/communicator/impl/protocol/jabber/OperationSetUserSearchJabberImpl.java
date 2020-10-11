@@ -24,8 +24,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.search.*;
 import org.jivesoftware.smackx.search.ReportedData.Column;
 import org.jivesoftware.smackx.search.ReportedData.Row;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -200,7 +200,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     {
         ReportedData data = null;
         try {
-            Form form = searchManager.getSearchForm(serviceName);
+            DataForm form = searchManager.getSearchForm(serviceName);
             data = searchManager.getSearchResults(form, serviceName);
         } catch (XMPPException | NotConnectedException | InterruptedException | NoResponseException e) {
             Timber.e(e);

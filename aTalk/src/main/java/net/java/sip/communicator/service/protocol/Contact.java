@@ -45,7 +45,7 @@ public interface Contact
      * Returns a String that can be used for identifying the contact. The exact contents of the
      * string depends on the protocol. In the case of SIP, for example, that would be the SIP uri
      * (e.g. sip:alice@biloxi.com) in the case of icq - a UIN (12345653) and for AIM a screen name
-     * (mysname). Jabber (and hence Google) would be having e-mail like addresses.
+     * (myname). Jabber (and hence Google) would be having e-mail like addresses.
      *
      * @return a String id representing and uniquely identifying the contact.
      */
@@ -62,8 +62,7 @@ public interface Contact
 
     /**
      * Returns a String that could be used by any user interacting modules for referring to this
-     * contact. An alias is not necessarily unique but is often more human readable than an address
-     * (or id).
+     * contact. An alias is not necessarily unique but is often more human readable than an address (or id).
      *
      * @return a String that can be used for referring to this contact when interacting with the user.
      */
@@ -81,13 +80,23 @@ public interface Contact
      * Returns the status of the contact as per the last status update we've received for it. Note
      * that this method is not to perform any network operations and will simply return the status
      * received in the last status update message. If you want a reliable way of retrieving
-     * someone's status, you should use the <tt>queryContactStatus()</tt> method in
-     * <tt>OperationSetPresence</tt>.
+     * someone's status, you should use the <tt>queryContactStatus()</tt> method in <tt>OperationSetPresence</tt>.
      *
-     * @return the PresenceStatus that we've received in the last status update pertaining to this
-     * contact.
+     * @return the PresenceStatus that we've received in the last status update pertaining to this contact.
      */
     PresenceStatus getPresenceStatus();
+
+    /**
+     * Set the lastActivity of the contact
+     * @param dateTime Date of the contact last online
+     */
+    void setLastActiveTime(long dateTime);
+
+    /**
+     * Get the contact last activityTime
+     * @return contact last activityTime
+     */
+    long getLastActiveTime();
 
     /**
      * Returns a reference to the contact group that this contact is currently a child of or null if
@@ -132,13 +141,27 @@ public interface Contact
      * contacts are created through the createUnresolvedContact() method in the persistent presence
      * operation set. The method may also return null if no such data is required and the contact
      * address is sufficient for restoring the contact.
-     * <p>
      *
      * @return A <tt>String</tt> that could be used to create a unresolved instance of this contact
      * during a next run of the application, before establishing network connectivity or
      * null if no such data is required.
      */
     String getPersistentData();
+
+    /**
+     * When access on start-up, return ttsEnable may be null.
+     *
+     * @return true if Contact tts is enabled.
+     */
+    boolean isTtsEnable();
+
+    /**
+     * Change Contact tts enable value in configuration service.
+     * Null value in DB is considered as false
+     *
+     * @param value change of tts enable property.
+     */
+    void setTtsEnable(boolean value);
 
     /**
      * Return the current status message of this contact.

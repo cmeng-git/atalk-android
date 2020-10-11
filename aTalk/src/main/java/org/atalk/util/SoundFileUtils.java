@@ -55,7 +55,7 @@ public class SoundFileUtils
      */
     public static boolean isSoundFile(File f)
     {
-        String ext = getExtension(f);
+        String ext = getMimeExtension(f);
 
         if (ext != null) {
             return ext.equals(wma)
@@ -87,11 +87,11 @@ public class SoundFileUtils
     {
         // If there is no specific filters, then compare the file to all sound extension available.
         if (soundFormats == null) {
-            return SoundFileUtils.isSoundFile(f);
+            return isSoundFile(f);
         }
         // Compare the file extension to the sound formats provided in parameter.
         else {
-            String ext = getExtension(f);
+            String ext = getMimeExtension(f);
 
             // If the file has an extension
             if (ext != null) {
@@ -109,7 +109,7 @@ public class SoundFileUtils
      * @param f which wants the extension
      * @return Return the extension as a String
      */
-    public static String getExtension(File f)
+    public static String getMimeExtension(File f)
     {
         String s = f.getName();
         int i = s.lastIndexOf('.');

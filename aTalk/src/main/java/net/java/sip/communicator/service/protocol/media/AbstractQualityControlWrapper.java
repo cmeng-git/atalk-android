@@ -7,7 +7,7 @@ package net.java.sip.communicator.service.protocol.media;
 
 import org.atalk.service.neomedia.MediaException;
 import org.atalk.service.neomedia.MediaStream;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
 import org.atalk.service.neomedia.VideoMediaStream;

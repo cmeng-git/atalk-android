@@ -1,12 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/chatTypingArea"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/msg_input_bar_bg"
-                android:orientation="horizontal"
-                android:padding="6dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chatTypingArea"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/msg_input_bar_bg"
+    android:padding="6dp" >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/media_preview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_rounded"
+        android:layout_alignStart="@+id/chatWriteTextBg"
+        android:layout_alignEnd="@+id/chatWriteText"
+        android:paddingTop="8dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        android:requiresFadingEdge="horizontal"
+        tools:listitem="@layout/media_preview" />
+
+    <TextView
+        android:id="@+id/chatMsgReply"
+        style="@style/SmallFont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/chatWriteTextBg"
+        android:layout_toStartOf="@+id/chatReplyCancel"
+        android:paddingEnd="24dp"
+        android:paddingStart="5dp"
+        android:background="@drawable/background_quote" />
+
+    <ImageView
+        android:id="@+id/chatReplyCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_alignEnd="@+id/chatWriteTextBg"
+        android:src="@drawable/ic_cancel_light" />
 
     <ImageView
         android:id="@+id/chatWriteTextBg"
@@ -15,7 +48,6 @@
         android:layout_alignBottom="@+id/chatWriteText"
         android:layout_alignTop="@+id/chatWriteText"
         android:layout_gravity="center_vertical"
-        android:layout_toLeftOf="@+id/sendMessageButton"
         android:layout_toStartOf="@+id/sendMessageButton"
         android:background="@drawable/white_rounded"/>
 
@@ -25,10 +57,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_toLeftOf="@+id/cancelCorrectionBtn"
-        android:layout_toStartOf="@+id/cancelCorrectionBtn"
-        android:layout_toRightOf="@+id/editingImage"
-        android:layout_toEndOf="@+id/editingImage"
+        android:layout_below="@id/chatMsgReply"
+        android:layout_toEndOf="@+id/cancelCorrectionBtn"
+        android:layout_alignEnd="@+id/chatWriteTextBg"
         android:background="@null"
         android:inputType="textMultiLine|textCapSentences"
         android:maxLines="4"
@@ -43,8 +74,7 @@
         android:id="@+id/recordView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_toLeftOf="@+id/audioRecordButton"
-        android:layout_toStartOf="@+id/audioRecordButton"
+        android:layout_toStartOf="@+id/audioMicButton"
         android:background="@drawable/white_rounded"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -54,7 +84,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/trash_collection"
             android:minHeight="32dp"
@@ -66,9 +95,7 @@
               android:animateLayoutChanges="false"
               android:layout_width="match_parent"
               android:layout_gravity="center_vertical"
-              android:layout_toLeftOf="@+id/recordCancel"
               android:layout_toStartOf="@+id/recordCancel"
-              android:layout_toRightOf="@+id/ic_mic_trash"
               android:layout_toEndOf="@+id/ic_mic_trash"
               android:layout_alignParentTop="true"
               android:layout_height="24dp">
@@ -79,7 +106,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/recordCancel"
-            android:layout_toRightOf="@+id/ic_mic_trash"
             android:layout_toEndOf="@+id/ic_mic_trash"
             android:text="@string/chat_timeZero"
             android:textColor="@color/red"/>
@@ -88,7 +114,6 @@
             android:id="@+id/dBTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/recordCancel"
             android:layout_toStartOf="@+id/recordCancel"
             android:layout_alignBottom="@+id/recordCancel"
             android:text="@string/chat_dbZero"
@@ -97,9 +122,7 @@
         <TextView
             android:id="@+id/recordCancel"
             style="@style/MediumFont"
-            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,7 +130,6 @@
             android:gravity="end"
             android:text="@string/chat_RecordCancel"
             android:textColor="@color/blue"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"/>
     </RelativeLayout>
@@ -117,9 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/chatWriteText"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:background="@null"
         android:minHeight="40dp"
@@ -131,9 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/chatWriteText"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:background="@null"
         android:minHeight="40dp"
@@ -141,43 +159,27 @@
         android:src="@drawable/send_call_dark"/>
 
     <ImageButton
-        android:id="@+id/audioRecordButton"
+        android:id="@+id/audioMicButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/chatWriteText"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         android:background="@null"
         android:minHeight="40dp"
-        android:minWidth="40dp"
-        android:src="@drawable/send_audio_dark"/>
+        android:minWidth="40dp" />
 
     <ImageView
-        android:id="@+id/editingImage"
+        android:id="@+id/cancelCorrectionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/chatWriteText"
-        android:layout_alignLeft="@+id/chatWriteTextBg"
         android:layout_alignStart="@+id/chatWriteTextBg"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:background="@null"
         android:minHeight="40dp"
-        android:minWidth="20dp"
-        android:src="@drawable/editing"/>
-
-    <ImageButton
-        android:id="@+id/cancelCorrectionBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/chatWriteText"
-        android:layout_alignRight="@+id/chatWriteTextBg"
-        android:layout_alignEnd="@+id/chatWriteTextBg"
-        android:background="@null"
-        android:minHeight="40dp"
-        android:minWidth="30dp"
-        android:src="@drawable/reset_editing_light"/>
+        android:minWidth="24dp"
+        android:src="@drawable/correction_cancel"/>
 
 </RelativeLayout>

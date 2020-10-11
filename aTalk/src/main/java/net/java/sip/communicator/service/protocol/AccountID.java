@@ -8,22 +8,23 @@ package net.java.sip.communicator.service.protocol;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.DomainBareJid;
 import org.osgi.framework.BundleContext;
 
 import java.util.*;
@@ -56,10 +57,10 @@ public class AccountID
      * Table accountID columns
      */
     public static final String TABLE_NAME = "accountID";
-    public static final String ACCOUNT_UUID = "accountUuid";
-    public static final String PROTOCOL = "protocolName";  // Default Jabber
-    public static final String USER_ID = "userID";
-    public static final String ACCOUNT_UID = "accountUid"; // jabber:abc123@atalk.org (uuid)
+    public static final String ACCOUNT_UUID = "accountUuid"; // ACCOUNT_UUID_PREFIX + System.currentTimeMillis()
+    public static final String PROTOCOL = "protocolName";    // Default to Jabber
+    public static final String USER_ID = "userID";           // abc123@atalk.org i.e. BareJid
+    public static final String ACCOUNT_UID = "accountUid";   // jabber:abc123@atalk.org (uuid)
     public static final String KEYS = "keys";
 
     // Not use
@@ -84,6 +85,8 @@ public class AccountID
 
     private static final String KEY_PGP_SIGNATURE = "pgp_signature";
     private static final String KEY_PGP_ID = "pgp_id";
+
+    public static final String DEFAULT_PORT = "5222";
 
     protected String avatarHash;
     protected String rosterVersion;
@@ -130,12 +133,12 @@ public class AccountID
      * A String uniquely identifying this account, that can also be used for storing and
      * unambiguously retrieving details concerning it. e.g. jabber:abc123@example.org
      */
-    protected final String accountUID;
+    protected String accountUID;
 
     /**
      * A String uniquely identifying the user for this particular account. e.g. abc123@example.org
      */
-    private final String userID;
+    protected String userID;
 
     /**
      * An XMPP Jabber ID associated with this particular account. e.g. abc123@example.org
@@ -156,8 +159,8 @@ public class AccountID
      * @param accountProperties a Map containing any other protocol and implementation specific account
      * initialization properties
      * @param protocolName the protocol name implemented by the provider that this id is meant for e.g. Jabber
-     * @param serviceName the name of the service (e.g. iptel.org, jabber.org, icq.com) that this account is
-     * registered with.
+     * @param serviceName the name of the service is what follows after the '@' sign in XMPP addresses (JIDs).
+     * (e.g. iptel.org, jabber.org, icq.com) the service of the account registered with.
      *
      * Note: parameters userID is null and new empty accountProperties when called from
      * @see net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration or
@@ -181,7 +184,7 @@ public class AccountID
 
         JSONObject tmp = new JSONObject();
         String strKeys = accountProperties.get(ProtocolProviderFactory.KEYS);
-        if (!StringUtils.isNullOrEmpty(strKeys)) {
+        if (StringUtils.isNotEmpty(strKeys)) {
             try {
                 tmp = new JSONObject(strKeys);
             } catch (JSONException e) {
@@ -189,7 +192,7 @@ public class AccountID
             }
         }
         mKeys = tmp;
-        Timber.i("### Set Account UUID to: %s: %s for %s", uuid, accountUID, userID);
+        Timber.d("### Set Account UUID to: %s: %s for %s", uuid, accountUID, userID);
     }
 
     /**
@@ -203,30 +206,33 @@ public class AccountID
      * protocol name, the current implementation places the specified <tt>defaultProtocolName</tt>
      * in a similar fashion.
      *
-     * @param accountProperties a Map containing any other protocol and implementation specific account initialization
-     * properties
-     * @param defaultProtocolName the protocol name to be used in case <tt>accountProperties</tt> doesn't provide an
-     * overriding value
+     * @param accountProperties a Map containing any other protocol and implementation specific
+     * account initialization properties
+     * @param defaultProtocolName the protocol name to be used in case <tt>accountProperties</tt>
+     * doesn't provide an overriding value
      * @return the protocol name
      */
     private static String getOverriddenProtocolName(Map<String, String> accountProperties, String defaultProtocolName)
     {
         String key = ProtocolProviderFactory.PROTOCOL;
         String protocolName = accountProperties.get(key);
-        if (StringUtils.isNullOrEmpty(protocolName) && !StringUtils.isNullOrEmpty(defaultProtocolName)) {
+        if (StringUtils.isEmpty(protocolName) && StringUtils.isNotEmpty(defaultProtocolName)) {
             protocolName = defaultProtocolName;
             accountProperties.put(key, protocolName);
         }
-        return protocolName.trim();
+        return protocolName;
     }
 
+    /**
+     * @return e.g. acc1567990097080
+     */
     public String getAccountUuid()
     {
         return this.uuid;
     }
 
     /**
-     * Returns the user id associated with this account BareJid e.g. abc123@example.org.
+     * Returns the user id associated with this account BareJid.toString e.g. abc123@example.org.
      *
      * @return A String identifying the user inside this particular service.
      */
@@ -235,10 +241,20 @@ public class AccountID
         return userID;
     }
 
-    // Override for Jabber implementation for the BareJid
+    // Override for Jabber implementation for the BareJid e.g. abc123@example.org.
     public BareJid getBareJid()
     {
         return userBareJid;
+    }
+
+    /**
+     * Get the Entity XMPP domain. The XMPP domain is what follows after the '@' sign in XMPP addresses (JIDs).
+     *
+     * @return XMPP service domain.
+     */
+    public DomainBareJid getXmppDomain()
+    {
+        return userBareJid.asDomainBareJid();
     }
 
     /**
@@ -254,7 +270,7 @@ public class AccountID
         String key = ProtocolProviderFactory.ACCOUNT_DISPLAY_NAME;
         String accountDisplayName = mAccountProperties.get(key);
 
-        if (!TextUtils.isEmpty(accountDisplayName)) {
+        if (StringUtils.isNotEmpty(accountDisplayName)) {
             return accountDisplayName;
         }
 
@@ -262,7 +278,7 @@ public class AccountID
         String returnValue = userID;
         String protocolName = getProtocolDisplayName();
 
-        if (!TextUtils.isEmpty(protocolName)) {
+        if (StringUtils.isNotEmpty(protocolName)) {
             returnValue += " (" + protocolName + ")";
         }
         return returnValue;
@@ -291,7 +307,7 @@ public class AccountID
     /**
      * Returns the name of the protocol.
      *
-     * @return the name of the protocol
+     * @return the name of the protocol.
      */
     public String getProtocolName()
     {
@@ -363,7 +379,7 @@ public class AccountID
         int intValue = defaultValue;
         String stringValue = getAccountPropertyString(key);
 
-        if (!TextUtils.isEmpty(stringValue)) {
+        if (StringUtils.isNotEmpty(stringValue)) {
             try {
                 intValue = Integer.parseInt(stringValue);
             } catch (NumberFormatException ex) {
@@ -402,7 +418,7 @@ public class AccountID
             ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
             if (configService != null) {
                 value = configService.getString(uuid + "." + property);
-                if (!StringUtils.isNullOrEmpty(value)) {
+                if (StringUtils.isNotEmpty(value)) {
                     putAccountProperty(key.toString(), value);
                 }
                 else {
@@ -439,7 +455,7 @@ public class AccountID
      * Adds a property to the map of properties for this account identifier.
      *
      * @param key the key of the property
-     * @param value the property value
+     * @param value the property value.
      */
     public void putAccountProperty(String key, String value)
     {
@@ -494,7 +510,7 @@ public class AccountID
     public boolean equals(Object obj)
     {
         return (this == obj) || (obj != null) && getClass().isInstance(obj)
-                && userID.equals(((AccountID) obj).userID);
+                && accountUID.equals(((AccountID) obj).accountUID);
     }
 
     /**
@@ -732,13 +748,13 @@ public class AccountID
     }
 
     /**
-     * The address of the server we will use for this account
+     * The address of the server we will use for this account.  Default to serviceName if null.
      *
      * @return String
      */
     public String getServerAddress()
     {
-        return getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS);
+        return getAccountPropertyString(ProtocolProviderFactory.SERVER_ADDRESS, serviceName);
     }
 
     /**
@@ -752,19 +768,19 @@ public class AccountID
     }
 
     /**
-     * The port on the specified server
+     * The port on the specified server. Return DEFAULT_PORT if null.
      *
      * @return int
      */
     public String getServerPort()
     {
-        return getAccountPropertyString(ProtocolProviderFactory.SERVER_PORT);
+        return getAccountPropertyString(ProtocolProviderFactory.SERVER_PORT, DEFAULT_PORT);
     }
 
     /**
      * Sets the server port.
      *
-     * @param port int
+     * @param port proxy server port
      */
     public void setServerPort(String port)
     {
@@ -772,21 +788,21 @@ public class AccountID
     }
 
     /**
-     * Indicates if proxy should be used for this account.
+     * Indicates if proxy should be used for this account if Type != NONE.
      *
-     * @return <tt>true</tt> if Proxy should be used for this account, otherwise returns
-     * <tt>false</tt>
+     * @return <tt>true</tt> if (Type != NONE) for this account, otherwise returns <tt>false</tt>
      */
     public boolean isUseProxy()
     {
-        return getAccountPropertyBoolean(ProtocolProviderFactory.IS_USE_PROXY, true);
+        // The isUseProxy state is to take care of old DB?
+        boolean isUseProxy = "true".equals(getAccountPropertyString(ProtocolProviderFactory.IS_USE_PROXY));
+        return isUseProxy && !BoshProxyDialog.NONE.equals(getAccountPropertyString(ProtocolProviderFactory.PROXY_TYPE));
     }
 
     /**
      * Sets the <tt>useProxy</tt> property.
      *
-     * @param isUseProxy <tt>true</tt> to indicate that Proxy should be used for this account, <tt>false</tt> -
-     * otherwise.
+     * @param isUseProxy <tt>true</tt> to indicate that Proxy should be used for this account, <tt>false</tt> - otherwise.
      */
     public void setUseProxy(boolean isUseProxy)
     {
@@ -1067,7 +1083,7 @@ public class AccountID
     {
         String preferredProtocolProp = getAccountPropertyString(ProtocolProviderFactory.IS_PREFERRED_PROTOCOL);
 
-        return !TextUtils.isEmpty(preferredProtocolProp) && Boolean.parseBoolean(preferredProtocolProp);
+        return StringUtils.isNotEmpty(preferredProtocolProp) && Boolean.parseBoolean(preferredProtocolProp);
     }
 
     /**

@@ -10,8 +10,7 @@ import org.atalk.impl.neomedia.transform.TransformEngine;
 import org.atalk.service.neomedia.SrtpControl;
 
 /**
- * Implements {@link SrtpControl.TransformEngine} (and, respectively,
- * {@link TransformEngine}) for DTLS-SRTP.
+ * Implements {@link SrtpControl.TransformEngine} (and, respectively, {@link TransformEngine}) for DTLS-SRTP.
  *
  * @author Lyubomir Marinov
  */
@@ -39,8 +38,7 @@ public class DtlsTransformEngine implements SrtpControl.TransformEngine
     private final DtlsControlImpl dtlsControl;
 
     /**
-     * The <tt>PacketTransformer</tt>s of this <tt>TransformEngine</tt> for data/RTP and
-     * control/RTCP packets.
+     * The <tt>PacketTransformer</tt>s of this <tt>TransformEngine</tt> for data/RTP and control/RTCP packets.
      */
     private final DtlsPacketTransformer[] packetTransformers = new DtlsPacketTransformer[2];
 
@@ -71,8 +69,7 @@ public class DtlsTransformEngine implements SrtpControl.TransformEngine
     }
 
     /**
-     * Initializes a new <tt>DtlsPacketTransformer</tt> instance which is to work on control/RTCP or
-     * data/RTP packets.
+     * Initializes a new <tt>DtlsPacketTransformer</tt> instance which is to work on control/RTCP or data/RTP packets.
      *
      * @param componentID the ID of the component for which the new instance is to work
      * @return a new <tt>DtlsPacketTransformer</tt> instance which is to work on control/RTCP or
@@ -115,12 +112,10 @@ public class DtlsTransformEngine implements SrtpControl.TransformEngine
 
     /**
      * Gets the properties of {@code DtlsControlImpl} and their values which
-     * {@link #dtlsControl} shares with this instance and
-     * {@link DtlsPacketTransformer}.
+     * {@link #dtlsControl} shares with this instance and {@link DtlsPacketTransformer}.
      *
      * @return the properties of {@code DtlsControlImpl} and their values which
-     * {@code dtlsControl} shares with this instance and
-     * {@code DtlsPacketTransformer}
+     * {@code dtlsControl} shares with this instance and {@code DtlsPacketTransformer}
      */
     Properties getProperties()
     {

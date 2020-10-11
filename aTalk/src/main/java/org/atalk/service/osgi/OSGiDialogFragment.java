@@ -5,9 +5,10 @@
  */
 package org.atalk.service.osgi;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Looper;
 
+import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
 import androidx.fragment.app.DialogFragment;
@@ -20,16 +21,18 @@ import androidx.fragment.app.DialogFragment;
  */
 public class OSGiDialogFragment extends DialogFragment implements OSGiUiPart
 {
+    private OSGiActivity osGiActivity;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(@NotNull Context context)
     {
-        super.onAttach(activity);
-
-        OSGiActivity osGiActivity = (OSGiActivity) activity;
-        osGiActivity.registerOSGiFragment(this);
+        super.onAttach(context);
+        osGiActivity = (OSGiActivity) getActivity();
+        if (osGiActivity != null)
+            osGiActivity.registerOSGiFragment(this);
     }
 
     /**
@@ -38,7 +41,7 @@ public class OSGiDialogFragment extends DialogFragment implements OSGiUiPart
     @Override
     public void onDetach()
     {
-        ((OSGiActivity) getActivity()).unregisterOSGiFragment(this);
+        osGiActivity.unregisterOSGiFragment(this);
         super.onDetach();
     }
 

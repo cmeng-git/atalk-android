@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 /**
  * A implementation of a {@link ExtensionElement} for emails.
  *
@@ -34,8 +36,10 @@ import java.io.IOException;
  */
 public class Email implements ExtensionElement
 {
-    public static final String ELEMENT_NAME = "email";
+    public static final String ELEMENT = "email";
     public static final String NAMESPACE = "jabber:client";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private String address = null;
 
@@ -71,7 +75,7 @@ public class Email implements ExtensionElement
      */
     public String getElementName()
     {
-        return ELEMENT_NAME;
+        return ELEMENT;
     }
 
     /**
@@ -90,10 +94,10 @@ public class Email implements ExtensionElement
      * @return xml representation of this extension.
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
-        xml.element(ELEMENT_NAME, getAddress());
+        xml.element(ELEMENT, getAddress());
         return xml;
     }
 

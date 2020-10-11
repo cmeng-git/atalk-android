@@ -5,12 +5,13 @@
  */
 package org.atalk.service.osgi;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Looper;
 
-import org.osgi.framework.BundleContext;
-
 import androidx.fragment.app.Fragment;
+
+import org.jetbrains.annotations.NotNull;
+import org.osgi.framework.BundleContext;
 
 /**
  * Class can be used to build {@link Fragment}s that require OSGI services access.
@@ -20,15 +21,18 @@ import androidx.fragment.app.Fragment;
  */
 public class OSGiFragment extends Fragment implements OSGiUiPart
 {
+    private OSGiActivity osGiActivity;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(@NotNull Context context)
     {
-        super.onAttach(activity);
-        OSGiActivity osGiActivity = (OSGiActivity) activity;
-        osGiActivity.registerOSGiFragment(this);
+        super.onAttach(context);
+        this.osGiActivity = (OSGiActivity) getActivity();
+        if (osGiActivity != null)
+            osGiActivity.registerOSGiFragment(this);
     }
 
     /**
@@ -37,7 +41,7 @@ public class OSGiFragment extends Fragment implements OSGiUiPart
     @Override
     public void onDetach()
     {
-        ((OSGiActivity) getActivity()).unregisterOSGiFragment(this);
+        osGiActivity.unregisterOSGiFragment(this);
         super.onDetach();
     }
 

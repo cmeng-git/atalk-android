@@ -3,16 +3,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/theme_background"
-    android:padding="@dimen/screen_padding"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/screen_padding">
 
     <TextView
         android:id="@+id/reason_label"
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reason_label" />
+        android:text="@string/service_gui_REASON_LABEL" />
 
     <TextView
         android:id="@+id/reason_field"
@@ -47,7 +46,6 @@
             android:id="@+id/button_cancel"
             style="@style/ButtonTop"
             android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
             android:text="@string/service_gui_CANCEL" />
 
         <Button
@@ -58,7 +56,8 @@
         <Button
             android:id="@+id/button_ok"
             style="@style/ButtonTop"
-            android:text="@string/service_gui_OK" />
+            android:text="@string/service_gui_OK"
+            android:visibility="gone" />
 
     </LinearLayout>
 </LinearLayout>

@@ -10,17 +10,11 @@ package net.java.otr4j.session;
  */
 public final class SessionID
 {
-
 	private final String accountID;
 	private final String userID;
 	private final String protocolName;
 
 	public static final SessionID EMPTY = new SessionID(null, null, null);
-	/**
-	 * @deprecated use {@link #EMPTY} instead
-	 */
-	public static final SessionID Empty = EMPTY;
-
 	public SessionID(String accountID, String userID, String protocolName)
 	{
 		this.accountID = accountID;
@@ -83,11 +77,9 @@ public final class SessionID
 		else if (!protocolName.equals(other.protocolName))
 			return false;
 		if (userID == null) {
-			if (other.userID != null)
-				return false;
+            return other.userID == null;
 		}
-		else if (!userID.equals(other.userID))
-			return false;
-		return true;
-	}
+		else
+            return userID.equals(other.userID);
+    }
 }

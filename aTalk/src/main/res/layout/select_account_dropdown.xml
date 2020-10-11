@@ -1,30 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.atalk.android.gui.widgets.CheckableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.atalk.android.gui.widgets.CheckableLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="@dimen/status_spin_height"
-    android:gravity="center_horizontal">
+    style="@style/SpinnerItem.DropDownItem" >
 
     <ImageView
         android:id="@+id/accountProtoIcon"
+        android:background="?attr/colorBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
         android:src="@drawable/jabber_logo" />
 
     <CheckedTextView
         android:id="@+id/protocolProvider"
-        style="@style/SpinnerItem.DropDownItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/accountProtoIcon"
-        android:layout_toRightOf="@+id/accountProtoIcon"
-        android:gravity="left"
+        android:paddingStart="5dp"
         android:text="AccountName"
         tools:ignore="RtlHardcoded" />
-</org.atalk.android.gui.widgets.CheckableRelativeLayout>
+</org.atalk.android.gui.widgets.CheckableLinearLayout>

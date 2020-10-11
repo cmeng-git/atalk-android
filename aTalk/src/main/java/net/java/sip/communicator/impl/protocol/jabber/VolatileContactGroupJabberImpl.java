@@ -7,15 +7,14 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.Contact;
 
-import org.jivesoftware.smack.roster.RosterEntry;
-
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * The Jabber implementation of the Volatile ContactGroup interface.
  *
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class VolatileContactGroupJabberImpl extends ContactGroupJabberImpl
 {
@@ -32,7 +31,7 @@ public class VolatileContactGroupJabberImpl extends ContactGroupJabberImpl
      */
     VolatileContactGroupJabberImpl(String groupName, ServerStoredContactListJabberImpl ssclCallback)
     {
-        super(null, new Vector<RosterEntry>().iterator(), ssclCallback, false);
+        super(null, Collections.emptyIterator(), ssclCallback, false);
         this.contactGroupName = groupName;
     }
 
@@ -48,8 +47,8 @@ public class VolatileContactGroupJabberImpl extends ContactGroupJabberImpl
     }
 
     /**
-     * Returns a string representation of this group, in the form JabberGroup.GroupName[size]{
-     * buddy1.toString(), buddy2.toString(), ...}.
+     * Returns a string representation of this group, in the form
+     * JabberGroup.GroupName[size]{buddy1.toString(), buddy2.toString(), ...}.
      *
      * @return a String representation of the object.
      */
@@ -71,7 +70,7 @@ public class VolatileContactGroupJabberImpl extends ContactGroupJabberImpl
     }
 
     /**
-     * Determines whether or not this contact group is being stored by the server. Non persistent
+     * Determines whether or not this contact group is to be stored in local DB. Non persistent
      * contact groups exist for the sole purpose of containing non persistent contacts.
      *
      * @return true if the contact group is persistent and false otherwise.
@@ -79,6 +78,6 @@ public class VolatileContactGroupJabberImpl extends ContactGroupJabberImpl
     @Override
     public boolean isPersistent()
     {
-        return false;
+        return true;
     }
 }

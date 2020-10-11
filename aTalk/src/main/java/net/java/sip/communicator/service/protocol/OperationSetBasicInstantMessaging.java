@@ -18,45 +18,45 @@ import org.jivesoftware.smackx.omemo.OmemoManager;
 public interface OperationSetBasicInstantMessaging extends OperationSet
 {
     /**
-     * Create a Message instance for sending arbitrary MIME-encoding content.
+     * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
      * @param encType the encryption type for the <tt>content</tt>
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    Message createMessage(String content, int encType, String subject);
+    IMessage createMessage(String content, int encType, String subject);
 
     /**
-     * Create a Message instance for sending a simple text messages with default (text/plain)
+     * Create a IMessage instance for sending a simple text messages with default (text/plain)
      * content type and encoding.
      *
      * @param messageText the string content of the message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    Message createMessage(String messageText);
+    IMessage createMessage(String messageText);
 
     /**
-     * Create a Message instance with the specified UID, content type and a default encoding. This
+     * Create a IMessage instance with the specified UID, content type and a default encoding. This
      * method can be useful when message correction is required. One can construct the corrected
      * message to have the same UID as the message before correction.
      *
      * @param messageText the string content of the message.
      * @param encType the mime and encryption type for the <tt>content</tt>
      * @param messageUID the unique identifier of this message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    Message createMessageWithUID(String messageText, int encType, String messageUID);
+    IMessage createMessageWithUID(String messageText, int encType, String messageUID);
 
     /**
      * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> contact.
      *
      * @param to the <tt>Contact</tt> to send <tt>message</tt> to
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance belonging to the underlying implementation.
      */
-    void sendInstantMessage(Contact to, Message message)
+    void sendInstantMessage(Contact to, IMessage message)
             throws IllegalStateException, IllegalArgumentException;
 
     /**
@@ -65,13 +65,13 @@ public interface OperationSetBasicInstantMessaging extends OperationSet
      *
      * @param to the <tt>Contact</tt> to send <tt>message</tt> to
      * @param toResource the resource to which the message should be send
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance belonging to the underlying implementation.
      */
-    void sendInstantMessage(Contact to, ContactResource toResource, Message message);
+    void sendInstantMessage(Contact to, ContactResource toResource, IMessage message);
 
-    void sendInstantMessage(Contact to, ContactResource resource, Message message, String correctedMessageUID,
+    void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
             OmemoManager omemoManager);
 
     /**

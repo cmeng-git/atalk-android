@@ -297,20 +297,15 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     protected void fireCallPeerChangeEvent(String eventType, Object oldValue, Object newValue, String reason, int reasonCode)
     {
         CallPeerChangeEvent evt = new CallPeerChangeEvent(this, eventType, oldValue, newValue, reason, reasonCode);
-        Timber.d("Dispatching a CallPeerChangeEvent to %s listeners. Event is: %s",
-                callPeerListeners.size(), evt.toString());
 
         Iterator<CallPeerListener> listeners;
         synchronized (callPeerListeners) {
             listeners = new ArrayList<>(callPeerListeners).iterator();
         }
 
+        Timber.d("Dispatching CallPeerChangeEvent (%s): %s; Events: %s", callPeerListeners.size(), callPeerListeners, evt);
         while (listeners.hasNext()) {
             CallPeerListener listener = listeners.next();
-
-            Timber.d("Dispatching CallPeerChangeEvent event to %s. Event is: %s",
-                    listener.getClass(), evt.toString());
-
             // catch any possible errors, so we are sure we dispatch events to all listeners
             try {
                 switch (eventType) {
@@ -324,11 +319,12 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
                         listener.peerImageChanged(evt);
                         break;
                     case CallPeerChangeEvent.CALL_PEER_STATE_CHANGE:
+                        Timber.d("Dispatching CallPeerChangeEvent CALL_PEER_STATE_CHANGE to: %s", listener);
                         listener.peerStateChanged(evt);
                         break;
                 }
             } catch (Throwable t) {
-                Timber.e(t, "Error dispatching event of type %s in %s", eventType, listener);
+                Timber.e(t, "Error dispatching event to %s: %s", listener, eventType);
             }
         }
     }
@@ -366,7 +362,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
                 eventIDString = "UNKNOWN";
                 break;
         }
-        Timber.d("Firing CallPeerConferenceEvent with ID %s to %s listeners", eventIDString, listeners.length);
+        Timber.d("Dispatching CallPeerConferenceEvent with ID %s to %s listeners", eventIDString, listeners.length);
 
         for (CallPeerConferenceListener listener : listeners)
             switch (eventID) {
@@ -397,7 +393,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     {
         CallPeerSecurityMessageEvent evt = new CallPeerSecurityMessageEvent(this, messageType, i18nMessage, severity);
 
-        Timber.d("Dispatching a CallPeerSecurityFailedEvent event to %s listeners. event is: %s",
+        Timber.d("Dispatching CallPeer Security Message Events to %s listeners:\n%s",
                 callPeerSecurityListeners.size(), evt.toString());
 
         Iterator<CallPeerSecurityListener> listeners;
@@ -421,7 +417,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     {
         lastSecurityEvent = evt;
 
-        Timber.d("Dispatching a CallPeerSecurityStatusEvent event to %s listeners. event is: %s",
+        Timber.d("Dispatching CallPeerSecurityStatusEvent Started to %s listeners: %s",
                 callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
@@ -442,7 +438,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     protected void fireCallPeerSecurityOffEvent(CallPeerSecurityOffEvent evt)
     {
         lastSecurityEvent = evt;
-        Timber.d("Dispatching a CallPeerSecurityAuthenticationEvent event to %s listeners. event is: %s",
+        Timber.d("Dispatching CallPeerSecurityAuthenticationEvent OFF to %s listeners: %s",
                 callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
@@ -464,8 +460,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     protected void fireCallPeerSecurityOnEvent(CallPeerSecurityOnEvent evt)
     {
         lastSecurityEvent = evt;
-            Timber.d("Dispatching a CallPeerSecurityStatusEvent event to %s listeners. event is: %s",
-                    callPeerSecurityListeners.size(), evt.toString());
+        Timber.d("Dispatching CallPeerSecurityStatusEvent ON to %s listeners: %s",
+                callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
         synchronized (callPeerSecurityListeners) {
@@ -488,8 +484,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     {
         lastSecurityEvent = evt;
 
-            Timber.d("Dispatching a CallPeerSecurityStatusEvent event to %s listeners. event is: %s",
-                    callPeerSecurityListeners.size(), evt.toString());
+        Timber.d("Dispatching CallPeerSecurityStatusEvent Timeout to %s listeners: %s",
+                callPeerSecurityListeners.size(), evt.toString());
 
         List<CallPeerSecurityListener> listeners;
         synchronized (callPeerSecurityListeners) {
@@ -759,6 +755,6 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     @Override
     public String toString()
     {
-        return getDisplayName() + " <" + getAddress() + ">;status=" + getState().getStateString();
+        return getDisplayName() + " <" + getAddress() + ">; status=" + getState().getStateString();
     }
 }

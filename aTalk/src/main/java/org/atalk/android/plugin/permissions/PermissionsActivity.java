@@ -19,7 +19,6 @@ package org.atalk.android.plugin.permissions;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -42,6 +41,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.Splash;
 import org.atalk.service.EventReceiver;
+import org.atalk.service.osgi.OSGiActivity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -55,7 +55,7 @@ import timber.log.Timber;
 /**
  * Sample activity showing the permission request process with Dexter.
  */
-public class PermissionsActivity extends Activity
+public class PermissionsActivity extends OSGiActivity
 {
     private static final int REQUEST_BATTERY_OP = 100;
 

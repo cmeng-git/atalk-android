@@ -17,9 +17,11 @@
 package org.atalk.android.gui.login;
 
 import android.os.Bundle;
-import android.text.InputType;
+import android.text.*;
 import android.view.*;
 import android.widget.*;
+
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
@@ -103,13 +105,14 @@ public class CredentialsFragment extends Fragment
      */
     public static final String ARG_LOGIN_REASON = "login_reason";
 
+    public static final String ARG_CERT_ID = "cert_id";
+
     private CheckBox mServerOverrideCheckBox;
     private EditText mServerIpField;
     private EditText mServerPortField;
 
     private EditText mPasswordField;
     private CheckBox mShowPasswordCheckBox;
-    private ImageView mShowPasswordImage;
 
     /**
      * {@inheritDoc}
@@ -118,7 +121,7 @@ public class CredentialsFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Bundle args = getArguments();
-        View content = inflater.inflate(R.layout.credentials, container, false);
+        View content = inflater.inflate(R.layout.account_credentials, container, false);
 
         Spinner spinnerDM = content.findViewById(R.id.dnssecModeSpinner);
         ArrayAdapter<CharSequence> adapterDM = ArrayAdapter.createFromResource(getActivity(),
@@ -131,12 +134,11 @@ public class CredentialsFragment extends Fragment
         int sPos = Arrays.asList(dnssecModeValues).indexOf(dnssecMode);
         spinnerDM.setSelection(sPos);
 
-        ViewUtil.setTextViewValue(content, R.id.username, args.getString(ARG_LOGIN));
-        boolean loginEditable = args.getBoolean(ARG_LOGIN_EDITABLE, true);
-        content.findViewById(R.id.username).setEnabled(loginEditable);
+        EditText mUserNameEdit = content.findViewById(R.id.username);
+        mUserNameEdit.setText(args.getString(ARG_LOGIN));
+        mUserNameEdit.setEnabled(args.getBoolean(ARG_LOGIN_EDITABLE, true));
 
         mShowPasswordCheckBox = content.findViewById(R.id.show_password);
-        mShowPasswordImage = content.findViewById(R.id.pwdviewImage);
 
         mPasswordField = content.findViewById(R.id.password);
         mPasswordField.setText(args.getString(ARG_PASSWORD));
@@ -144,6 +146,12 @@ public class CredentialsFragment extends Fragment
 
         ViewUtil.setCompoundChecked(content, R.id.store_password, args.getBoolean(ARG_STORE_PASSWORD, true));
         ViewUtil.setCompoundChecked(content, R.id.ib_registration, args.getBoolean(ARG_IB_REGISTRATION, false));
+
+        ImageView showCert = content.findViewById(R.id.showCert);
+        String clientCertId = args.getString(ARG_CERT_ID);
+        if ((clientCertId == null) || clientCertId.equals(CertificateConfigEntry.CERT_NONE.toString())) {
+            showCert.setVisibility(View.GONE);
+        }
 
         mServerOverrideCheckBox = content.findViewById(R.id.serverOverridden);
         mServerIpField = content.findViewById(R.id.serverIpField);
@@ -162,9 +170,13 @@ public class CredentialsFragment extends Fragment
             mServerPortField.setVisibility(View.GONE);
         }
 
-        String loginReason = args.getString(ARG_LOGIN_REASON);
+        // make xml text more human readable and link clickable
         TextView reasonField = content.findViewById(R.id.reason_field);
-        reasonField.setText(loginReason);
+        String xmlText = args.getString(ARG_LOGIN_REASON);
+        if (!TextUtils.isEmpty(xmlText)) {
+            Spanned loginReason = Html.fromHtml(xmlText.replace("\n", "<br/>"));
+            reasonField.setText(loginReason);
+        }
 
         initializeViewListeners();
         return content;
@@ -172,25 +184,11 @@ public class CredentialsFragment extends Fragment
 
     private void initializeViewListeners()
     {
-        mShowPasswordCheckBox.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> showPassword(isChecked));
+        mShowPasswordCheckBox.setOnCheckedChangeListener((buttonView, isChecked)
+                -> ViewUtil.showPassword(mPasswordField, isChecked));
 
         mServerOverrideCheckBox.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> updateViewVisibility(isChecked));
-    }
-
-    private void showPassword(boolean show)
-    {
-        int cursorPosition = mPasswordField.getSelectionStart();
-        if (show) {
-            mShowPasswordImage.setAlpha(1.0f);
-            mPasswordField.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        else {
-            mShowPasswordImage.setAlpha(0.3f);
-            mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        mPasswordField.setSelection(cursorPosition);
     }
 
     private void updateViewVisibility(boolean IsServerOverridden)

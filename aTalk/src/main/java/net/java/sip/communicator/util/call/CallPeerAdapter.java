@@ -21,8 +21,7 @@ import net.java.sip.communicator.service.protocol.event.*;
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
  */
-public class CallPeerAdapter
-    extends net.java.sip.communicator.service.protocol.event.CallPeerAdapter
+public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.event.CallPeerAdapter
     implements CallPeerSecurityListener, PropertyChangeListener
 {
     /**

@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.SrtpControlType;
 
@@ -13,17 +13,21 @@ import org.atalk.service.neomedia.SrtpControlType;
  * Represents a sorted set of <tt>SrtpControl</tt> implementations.
  *
  * @author Lyubomir Marinov
+ * @author MilanKral 
  */
 public class SrtpControls
 {
-	private static final SrtpControlType[] SORTED_SRTP_CONTROL_TYPES = { SrtpControlType.ZRTP,
-		SrtpControlType.DTLS_SRTP, SrtpControlType.MIKEY, SrtpControlType.SDES };
+	private static final SrtpControlType[] SORTED_SRTP_CONTROL_TYPES = {
+	        SrtpControlType.ZRTP,
+            SrtpControlType.DTLS_SRTP,
+            SrtpControlType.MIKEY,
+            SrtpControlType.SDES };
 
 	/**
 	 * The <tt>SrtpControl</tt> implementations which are the elements of this sorted set.
 	 */
-	private final SrtpControl[][] elements = new SrtpControl[MediaType.values().length][SrtpControlType
-		.values().length];
+	private final SrtpControl[][] elements
+            = new SrtpControl[MediaType.values().length][SrtpControlType.values().length];
 
 	/**
 	 * Initializes a new <tt>SrtpControls</tt> instance.
@@ -49,14 +53,14 @@ public class SrtpControls
 		return elements[mediaType.ordinal()][srtpControlType.ordinal()];
 	}
 
-	public SrtpControl getOrCreate(MediaType mediaType, SrtpControlType srtpControlType)
+	public SrtpControl getOrCreate(MediaType mediaType, SrtpControlType srtpControlType, final byte[] myZid)
 	{
 		SrtpControl[] elements = this.elements[mediaType.ordinal()];
 		int index = srtpControlType.ordinal();
 		SrtpControl element = elements[index];
 
 		if (element == null) {
-			element = ProtocolMediaActivator.getMediaService().createSrtpControl(srtpControlType);
+			element = ProtocolMediaActivator.getMediaService().createSrtpControl(srtpControlType, myZid);
 			if (element != null)
 				elements[index] = element;
 		}

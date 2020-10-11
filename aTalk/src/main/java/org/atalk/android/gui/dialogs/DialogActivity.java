@@ -6,6 +6,7 @@
 package org.atalk.android.gui.dialogs;
 
 import android.content.*;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -225,7 +226,8 @@ public class DialogActivity extends OSGiActivity
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
-        if (!cancelable && keyCode == KeyEvent.KEYCODE_BACK) {
+        if (!cancelable &&
+                keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
         }
         return super.onKeyUp(keyCode, event);
@@ -409,6 +411,22 @@ public class DialogActivity extends OSGiActivity
 
         alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(alert);
+    }
+
+    /**
+     * Shows confirm dialog allowing to handle confirm action using supplied <tt>listener</tt>.
+     *
+     * @param context Android context.
+     * @param title dialog title Res that will be used
+     * @param message dialog message Res that wil be used.
+     * @param confirmTxt confirm button label Res.
+     * @param listener the confirm action listener.
+     */
+    public static void showConfirmDialog(Context context, int title, int message,
+            int confirmTxt, DialogListener listener)
+    {
+        Resources res = aTalkApp.getAppResources();
+        showConfirmDialog(context, res.getString(title), res.getString(message), res.getString(confirmTxt), listener);
     }
 
     /**

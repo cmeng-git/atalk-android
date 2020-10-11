@@ -1,0 +1,20 @@
+--- /home/cmeng/source/smack/Smack-4.4.0-alpha3-20200404/org/jivesoftware/smack/provider/AbstractProvider.java	2020-03-24 09:16:10.000000000 
++++ /home/cmeng/workspace/android/atalk-android/aTalk/src/main/java/org/jivesoftware/smack/provider/AbstractProvider.java	2020-04-06 12:16:22.000000000 
+@@ -33,13 +33,17 @@
+             currentType = currentClass.getGenericSuperclass();
+         }
+         ParameterizedType parameterizedGenericSuperclass = (ParameterizedType) currentType;
+         Type[] actualTypeArguments = parameterizedGenericSuperclass.getActualTypeArguments();
+         Type elementType = actualTypeArguments[0];
+ 
++        // required by aTalk class otherwise elementType is only resolved to <EE>
++        if (!(elementType instanceof Class))
++            elementType = elementType.getClass();
++
+         elementClass =  (Class<E>) elementType;
+     }
+ 
+     public final Class<E> getElementClass() {
+         return elementClass;
+     }
+ }

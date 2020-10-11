@@ -17,7 +17,9 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
-import org.atalk.android.gui.util.ActionBarUtil;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
+import org.atalk.android.gui.util.LocaleHelper;
+import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.plugin.errorhandler.ExceptionHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -30,7 +32,7 @@ import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**
- * Implements a base <tt>Activity</tt> which employs OSGi.
+ * Implements a base <tt>FragmentActivity</tt> which employs OSGi.
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
@@ -38,11 +40,6 @@ import timber.log.Timber;
  */
 public class OSGiActivity extends FragmentActivity
 {
-    /**
-     * UI thread handler
-     */
-    public final static Handler uiHandler = new Handler(Looper.getMainLooper());
-
     private BundleActivator bundleActivator;
 
     private BundleContext bundleContext;
@@ -52,6 +49,11 @@ public class OSGiActivity extends FragmentActivity
     private ServiceConnection serviceConnection;
 
     /**
+     * UI thread handler
+     */
+    public final static Handler uiHandler = new Handler(Looper.getMainLooper());
+
+    /**
      * EXIT action listener that triggers closes the <tt>Activity</tt>
      */
     private ExitActionListener exitListener = new ExitActionListener();
@@ -59,55 +61,22 @@ public class OSGiActivity extends FragmentActivity
     /**
      * List of attached {@link OSGiUiPart}.
      */
-    private List<OSGiUiPart> osgiFrgaments = new ArrayList<>();
-
-    /**
-     * Starts this osgi activity.
-     *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
-     * @throws Exception
-     */
-    private void internalStart(BundleContext bundleContext)
-            throws Exception
-    {
-        this.bundleContext = bundleContext;
-        boolean start = false;
-        try {
-            start(bundleContext);
-            start = true;
-        } finally {
-            if (!start && (this.bundleContext == bundleContext))
-                this.bundleContext = null;
-        }
-    }
-
-    /**
-     * Stops this osgi activity.
-     *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
-     * @throws Exception
-     */
-    private void internalStop(BundleContext bundleContext)
-            throws Exception
-    {
-        if (this.bundleContext != null) {
-            if (bundleContext == null)
-                bundleContext = this.bundleContext;
-            if (this.bundleContext == bundleContext)
-                this.bundleContext = null;
-            stop(bundleContext);
-        }
-    }
+    private List<OSGiUiPart> osgiFragments = new ArrayList<>();
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
+     * Both setLanguage and setTheme must happen before super.onCreate() is called
      *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
-     * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down
+     * then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     * Note: Otherwise it is null.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        // Always call setTheme() method in baseclass and before super.onCreate()
+        ThemeHelper.setTheme(this);
+
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();
 
@@ -141,14 +110,43 @@ public class OSGiActivity extends FragmentActivity
         this.serviceConnection = serviceConnection;
         boolean bindService = false;
         try {
-            bindService = bindService(new Intent(this, OSGiService.class), serviceConnection,
-                    BIND_AUTO_CREATE);
+            bindService = bindService(new Intent(this, OSGiService.class), serviceConnection, BIND_AUTO_CREATE);
         } finally {
             if (!bindService)
                 this.serviceConnection = null;
         }
         // Registers exit action listener
         this.registerReceiver(exitListener, new IntentFilter(aTalkApp.ACTION_EXIT));
+    }
+
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        aTalkApp.setCurrentActivity(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base)
+    {
+        LocaleHelper.setLocale(base);
+        super.attachBaseContext(base);
+    }
+
+    protected void onResume()
+    {
+        super.onResume();
+        aTalkApp.setCurrentActivity(this);
+        // If OSGi service is running check for send logs
+        if (bundleContext != null) {
+            checkForSendLogsDialog();
+        }
+    }
+
+    protected void onPause()
+    {
+        // Clear the references to this activity.
+        clearReferences();
+        super.onPause();
     }
 
     /**
@@ -171,23 +169,6 @@ public class OSGiActivity extends FragmentActivity
         super.onDestroy();
     }
 
-    protected void onPause()
-    {
-        // Clear the references to this activity.
-        clearReferences();
-        super.onPause();
-    }
-
-    protected void onResume()
-    {
-        super.onResume();
-        aTalkApp.setCurrentActivity(this);
-        // If OSGi service is running check for send logs
-        if (bundleContext != null) {
-            checkForSendLogsDialog();
-        }
-    }
-
     /**
      * Checks if the crash has occurred since the aTalk was last started. If it's true asks the
      * user about eventual logs report.
@@ -198,22 +179,17 @@ public class OSGiActivity extends FragmentActivity
         if (!ExceptionHandler.hasCrashed()) {
             return;
         }
-        // Clears the crash status
+        // Clears the crash status and ask user to send debug log
         ExceptionHandler.resetCrashedStatus();
-        // Asks the user
         AlertDialog.Builder question = new AlertDialog.Builder(this);
-        question.setTitle(R.string.service_gui_WARNING).setMessage(getString(R.string.service_gui_SEND_LOGS_QUESTION))
+        question.setTitle(R.string.service_gui_WARNING)
+                .setMessage(getString(R.string.service_gui_SEND_LOGS_QUESTION))
                 .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> {
                     dialog.dismiss();
                     aTalkApp.showSendLogsDialog();
-                }).setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss()).create().show();
-
-    }
-
-    protected void onNewIntent(Intent intent)
-    {
-        super.onNewIntent(intent);
-        aTalkApp.setCurrentActivity(this);
+                })
+                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss())
+                .create().show();
     }
 
     private void setService(BundleContextHolder service)
@@ -256,11 +232,49 @@ public class OSGiActivity extends FragmentActivity
         }
     }
 
+    /**
+     * Starts this osgi activity.
+     *
+     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @throws Exception
+     */
+    private void internalStart(BundleContext bundleContext)
+            throws Exception
+    {
+        this.bundleContext = bundleContext;
+        boolean start = false;
+        try {
+            start(bundleContext);
+            start = true;
+        } finally {
+            if (!start && (this.bundleContext == bundleContext))
+                this.bundleContext = null;
+        }
+    }
+
+    /**
+     * Stops this osgi activity.
+     *
+     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @throws Exception
+     */
+    private void internalStop(BundleContext bundleContext)
+            throws Exception
+    {
+        if (this.bundleContext != null) {
+            if (bundleContext == null)
+                bundleContext = this.bundleContext;
+            if (this.bundleContext == bundleContext)
+                this.bundleContext = null;
+            stop(bundleContext);
+        }
+    }
+
     protected void start(BundleContext bundleContext)
             throws Exception
     {
         // Starts children OSGI fragments.
-        for (OSGiUiPart osGiFragment : osgiFrgaments) {
+        for (OSGiUiPart osGiFragment : osgiFragments) {
             osGiFragment.start(bundleContext);
         }
         // If OSGi has just started and we're on UI thread check for crash event. We must be on
@@ -275,7 +289,7 @@ public class OSGiActivity extends FragmentActivity
             throws Exception
     {
         // Stops children OSGI fragments.
-        for (OSGiUiPart osGiFragment : osgiFrgaments) {
+        for (OSGiUiPart osGiFragment : osgiFragments) {
             osGiFragment.stop(bundleContext);
         }
     }
@@ -287,7 +301,7 @@ public class OSGiActivity extends FragmentActivity
      */
     public void registerOSGiFragment(OSGiUiPart fragment)
     {
-        osgiFrgaments.add(fragment);
+        osgiFragments.add(fragment);
 
         if (bundleContext != null) {
             // If context exists it means we have started already, so start the fragment immediately
@@ -313,7 +327,7 @@ public class OSGiActivity extends FragmentActivity
                 Timber.e(e, "Error while trying to stop OSGiFragment");
             }
         }
-        osgiFrgaments.remove(fragment);
+        osgiFragments.remove(fragment);
     }
 
     /**

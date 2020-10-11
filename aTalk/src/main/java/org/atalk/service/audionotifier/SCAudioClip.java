@@ -12,6 +12,7 @@ import java.util.concurrent.Callable;
  *
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public interface SCAudioClip
 {
@@ -19,7 +20,7 @@ public interface SCAudioClip
      * Starts playing this audio once only. The method behaves as if {@link #play(int, Callable)}
      * was invoked with a negative <tt>loopInterval</tt> and/or <tt>null</tt> <tt>loopCondition</tt>.
      */
-    public void play();
+    void play();
 
     /**
      * Starts playing this audio. Optionally, the playback is looped.
@@ -31,12 +32,12 @@ public interface SCAudioClip
      * If <tt>loopInterval</tt> is negative or <tt>loopCondition</tt> is <tt>null</tt>,
      * this audio is played once only.
      */
-    public void play(int loopInterval, Callable<Boolean> loopCondition);
+    void play(int loopInterval, Callable<Boolean> loopCondition);
 
     /**
      * Stops playing this audio.
      */
-    public void stop();
+    void stop();
 
     /**
      * Determines whether this audio is started i.e. a <tt>play</tt> method was invoked and no
@@ -44,5 +45,5 @@ public interface SCAudioClip
      *
      * @return <tt>true</tt> if this audio is started; otherwise, <tt>false</tt>
      */
-    public boolean isStarted();
+    boolean isStarted();
 }

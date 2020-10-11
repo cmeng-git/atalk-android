@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.*;
@@ -65,7 +66,7 @@ public class VCardAvatarManager extends AvatarManager
     private static Map<XMPPConnection, VCardAvatarManager> instances = new WeakHashMap<>();
 
     /**
-     * Listeners to be informed if there is new avatar updated.
+     * Listeners to be informed if there is a new avatar updated.
      */
     private final List<VCardAvatarListener> mListeners = new LinkedList<>();
 
@@ -78,6 +79,8 @@ public class VCardAvatarManager extends AvatarManager
      * The VCardManager associated with the VCardAvatarManager.
      */
     private final VCardManager vCardMgr;
+
+    private final MultiUserChatManager mucManager;
 
     /**
      * Creates a filter to only listen to presence stanza with the element name "x" and the
@@ -115,11 +118,12 @@ public class VCardAvatarManager extends AvatarManager
     private VCardAvatarManager(XMPPConnection connection)
     {
         super(connection);
+        mucManager = MultiUserChatManager.getInstanceFor(connection);
         vCardMgr = VCardManager.getInstanceFor(connection);
         vCardTempXUpdate = new VCardTempXUpdate(null);
         instances.put(connection, this);
 
-        connection.addConnectionListener(new AbstractConnectionListener()
+        connection.addConnectionListener(new ConnectionListener()
         {
             /**
              * Upon user authentication, update account avatarHash so it is ready for
@@ -171,7 +175,7 @@ public class VCardAvatarManager extends AvatarManager
             userId = mAccount;
 
         try {
-            mVCard = vCardMgr.loadVCard((EntityBareJid) userId);
+            mVCard = vCardMgr.loadVCard(userId.asEntityBareJidIfPossible());
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
                 | SmackException.NotConnectedException | InterruptedException e) {
             LOGGER.log(Level.WARNING, "Error while downloading VCard for: '" + userId + "'. " + e.getMessage());
@@ -250,7 +254,15 @@ public class VCardAvatarManager extends AvatarManager
     {
         // Do not process if received own <presence/> from server or from system service entity
         Jid jidFrom = stanza.getFrom();
-        if (!jidFrom.isEntityFullJid() || (mAccount != null && jidFrom.isParentOf(mAccount))) {
+        // if (!jidFrom.isEntityFullJid() || (mAccount != null && mAccount.isParentOf(jidFrom))) {
+        if (!jidFrom.isEntityFullJid() || jidFrom.equals(stanza.getTo())) {
+            return;
+        }
+
+        // Do not process <presence/>s send by chatRoom participants
+        Set<EntityBareJid> chatRooms = mucManager.getJoinedRooms();
+        if (chatRooms.contains(jidFrom.asEntityBareJidIfPossible())) {
+            // LOGGER.log(Level.INFO, "Skip process presence from chatRoom participant: " + jidFrom);
             return;
         }
 
@@ -258,7 +270,7 @@ public class VCardAvatarManager extends AvatarManager
         String currentAvatarHash = getAvatarHashByJid(jidFrom.asBareJid());
 
         // Get the stanza extension which contains the photo tag.
-        VCardTempXUpdate vCardXExtension = stanza.getExtension(ELEMENT, NAMESPACE);
+        VCardTempXUpdate vCardXExtension = stanza.getExtension(VCardTempXUpdate.class);
         if (vCardXExtension != null) {
             /*
              * Retrieved avatarHash info may contains [null | "" | "{avatarHash}"
@@ -277,7 +289,7 @@ public class VCardAvatarManager extends AvatarManager
                 if (mAutoDownload) {
                     mVCard = downloadVCard(jidFrom.asBareJid());
 
-                    if (mVCard.getAvatar() != null) {
+                    if ((mVCard != null) && (mVCard.getAvatar() != null)) {
                         LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
                                 + jidFrom + "\n" + currentAvatarHash + "\n" + avatarHash);
                         fireListeners(jidFrom, avatarHash);

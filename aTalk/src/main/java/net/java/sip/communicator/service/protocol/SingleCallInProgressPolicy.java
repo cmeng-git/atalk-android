@@ -443,8 +443,10 @@ public class SingleCallInProgressPolicy
             Object oldCallState = ev.getOldValue();
             Object newCallState = call.getCallState();
 
-            if ((CallState.CALL_INITIALIZATION.equals(oldCallState) && CallState.CALL_IN_PROGRESS.equals(newCallState))
-                    || (CallState.CALL_IN_PROGRESS.equals(oldCallState) && CallState.CALL_ENDED.equals(newCallState))) {
+            if ((CallState.CALL_INITIALIZATION.equals(oldCallState)
+                    && CallState.CALL_IN_PROGRESS.equals(newCallState))
+                    || (CallState.CALL_IN_PROGRESS.equals(oldCallState)
+                    && CallState.CALL_ENDED.equals(newCallState))) {
                 run();
             }
             else {

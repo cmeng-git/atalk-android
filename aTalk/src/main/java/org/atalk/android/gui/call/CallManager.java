@@ -5,12 +5,16 @@
  */
 package org.atalk.android.gui.call;
 
+import android.text.TextUtils;
+
 import net.java.sip.communicator.impl.phonenumbers.PhoneNumberI18nServiceImpl;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.java.sip.communicator.util.NetworkUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -23,7 +27,7 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.StringUtils;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
 
@@ -38,9 +42,11 @@ import timber.log.Timber;
  */
 public class CallManager
 {
-    public static final String CALLEE_DISPLAY_NAME = "CalleeDisplayName";
-    public static final String CALLEE_ADDRESS = "CalleeAddress";
-    public static final String CALLEE_AVATAR = "CalleeAvatar";
+    // Jingle Message id / Jingle session-initiate sid
+    public static final String CALL_SID = "call_sid";
+    public static final String CALL_EVENT = "call_event";
+
+    // android call parameter
     public static final String CALL_IDENTIFIER = "CallIdentifier";
 
     /**
@@ -56,7 +62,12 @@ public class CallManager
 
     public synchronized static String addActiveCall(Call call)
     {
-        String key = String.valueOf(System.currentTimeMillis());
+        String key = call.getCallId();
+        if (TextUtils.isEmpty(key)) {
+            key = String.valueOf(System.currentTimeMillis());
+            Timber.e("CallId is not initialized with jingle sid: %s", key);
+        }
+
         synchronized (activeCalls) {
             activeCalls.put(key, call);
         }
@@ -210,10 +221,11 @@ public class CallManager
      *
      * @param protocolProvider the protocol provider to which this call belongs.
      * @param contact the contact to call to
+     * @param isVideoCall true to setup video call
      */
-    public static void createCall(ProtocolProviderService protocolProvider, String contact)
+    public static void createCall(ProtocolProviderService protocolProvider, String contact, boolean isVideoCall)
     {
-        new CreateCallThread(protocolProvider, contact, false /* audio-only */).run();
+        new CreateCallThread(protocolProvider, contact, isVideoCall).start();
     }
 
     /**
@@ -222,35 +234,12 @@ public class CallManager
      * @param protocolProvider the protocol provider to which this call belongs.
      * @param contact the contact to call to
      * @param uiContact the meta contact we're calling
+     * @param isVideoCall true to setup video call
      */
-    public static void createCall(ProtocolProviderService protocolProvider, String contact, UIContactImpl uiContact)
+    public static void createCall(ProtocolProviderService protocolProvider, String contact, UIContactImpl uiContact,
+            boolean isVideoCall)
     {
-        new CreateCallThread(protocolProvider, null, null, uiContact, contact,
-                null, null, false /* audio-only */).run();
-    }
-
-    /**
-     * Creates a video call to the contact represented by the given string.
-     *
-     * @param protocolProvider the protocol provider to which this call belongs.
-     * @param contact the contact to call to
-     */
-    public static void createVideoCall(ProtocolProviderService protocolProvider, String contact)
-    {
-        new CreateCallThread(protocolProvider, contact, true /* video */).run();
-    }
-
-    /**
-     * Creates a video call to the contact represented by the given string.
-     *
-     * @param protocolProvider the protocol provider to which this call belongs.
-     * @param contact the contact to call to
-     * @param uiContact the <tt>UIContactImpl</tt> we're calling
-     */
-    public static void createVideoCall(ProtocolProviderService protocolProvider, String contact, UIContactImpl uiContact)
-    {
-        new CreateCallThread(protocolProvider, null, null, uiContact, contact,
-                null, null, true /* video */).start();
+        new CreateCallThread(protocolProvider, null, null, uiContact, contact, null, null, isVideoCall).start();
     }
 
     /**
@@ -273,8 +262,7 @@ public class CallManager
      */
     public static boolean isLocalVideoEnabled(Call call)
     {
-        OperationSetVideoTelephony telephony
-                = call.getProtocolProvider().getOperationSet(OperationSetVideoTelephony.class);
+        OperationSetVideoTelephony telephony = call.getProtocolProvider().getOperationSet(OperationSetVideoTelephony.class);
         return (telephony != null) && telephony.isLocalVideoAllowed(call);
     }
 
@@ -309,7 +297,7 @@ public class CallManager
 
         List<ProtocolProviderService> telephonyProviders = CallManager.getTelephonyProviders();
         if (telephonyProviders.size() == 1) {
-            CallManager.createCall(telephonyProviders.get(0), callString);
+            CallManager.createCall(telephonyProviders.get(0), callString, false);
 
             if (l != null)
                 l.callInterfaceStarted();
@@ -339,7 +327,7 @@ public class CallManager
                 if (preferredTelephonyProvider == null)
                     preferredTelephonyProvider = telephonyProviders.get(0);
 
-                CallManager.createCall(preferredTelephonyProvider, callString);
+                CallManager.createCall(preferredTelephonyProvider, callString, false);
                 if (l != null)
                     l.callInterfaceStarted();
             }
@@ -599,8 +587,7 @@ public class CallManager
      * Indicates if we have video streams to show in this interface.
      *
      * @param call the call to check for video streaming
-     * @return <tt>true</tt> if we have video streams to show in this interface; otherwise,
-     * <tt>false</tt>
+     * @return <tt>true</tt> if we have video streams to show in this interface; otherwise, <tt>false</tt>
      */
     public static boolean isVideoStreaming(Call call)
     {
@@ -611,8 +598,7 @@ public class CallManager
      * Indicates if we have video streams to show in this interface.
      *
      * @param conference the conference we check for video streaming
-     * @return <tt>true</tt> if we have video streams to show in this interface; otherwise,
-     * <tt>false</tt>
+     * @return <tt>true</tt> if we have video streams to show in this interface; otherwise, <tt>false</tt>
      */
     public static boolean isVideoStreaming(CallConference conference)
     {
@@ -843,15 +829,14 @@ public class CallManager
          *
          * The constructor is private because it relies on its arguments being validated prior to its invocation.
          *
-         * @param protocolProvider the <tt>ProtocolProviderService</tt> which is to perform the establishment of the
-         * new <tt>Call</tt>
+         * @param protocolProvider the ProtocolProviderService which is to perform the establishment of the new Call
          * @param contact the contact to call
          * @param contactResource the specific contact resource to call
          * @param uiContact the ui contact we're calling
-         * @param stringContact the string to call
-         * @param video <tt>true</tt> if this instance is to create a new video (as opposed to audio-only) <tt>Call</tt>
+         * @param stringContact the string callee to call
          * @param conferenceDescription the description of a conference to call
          * @param chatRoom the chat room associated with the call.
+         * @param video <tt>true</tt> if this instance is to create a new video (as opposed to audio-only) <tt>Call</tt>
          */
         public CreateCallThread(ProtocolProviderService protocolProvider, Contact contact,
                 ContactResource contactResource, UIContactImpl uiContact, String stringContact,
@@ -985,14 +970,14 @@ public class CallManager
         if (resourceTelephony != null && contactResource != null) {
             if (contact != null)
                 createdCall = resourceTelephony.createCall(contact, contactResource);
-            else if (!StringUtils.isNullOrEmpty(stringContact))
+            else if (StringUtils.isNotEmpty(stringContact))
                 createdCall = resourceTelephony.createCall(stringContact, contactResource.getResourceName());
         }
         else if (telephony != null) {
             if (contact != null) {
                 createdCall = telephony.createCall(contact);
             }
-            else if (!StringUtils.isNullOrEmpty(stringContact))
+            else if (StringUtils.isNotEmpty(stringContact))
                 createdCall = telephony.createCall(stringContact);
         }
 
@@ -1099,10 +1084,8 @@ public class CallManager
                     = protocolProvider.getOperationSet(OperationSetDesktopStreaming.class);
 
             /*
-             * XXX If we are here and we just discover that OperationSetDesktopStreaming is not
-             * supported, then we're
-             * already in trouble - we've already started a whole new thread just to check that a
-             * reference is null.
+             * XXX If we are here and we just discover that OperationSetDesktopStreaming is not supported, then we're
+             * already in trouble - we've already started a whole new thread just to check that a reference is null.
              */
             if (desktopSharingOpSet == null)
                 return;

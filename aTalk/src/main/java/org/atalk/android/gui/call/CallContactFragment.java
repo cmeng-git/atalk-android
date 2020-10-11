@@ -9,6 +9,7 @@ import android.Manifest;
 import android.accounts.Account;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
@@ -19,8 +20,9 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.BundleContext;
@@ -75,16 +77,14 @@ public class CallContactFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View content = inflater.inflate(R.layout.call_contact, container, false);
 
         final ImageView callButton = content.findViewById(R.id.callButtonFull);
         callButton.setOnClickListener(v -> {
-            final EditText callField = content.findViewById(R.id.callField);
-            String contact = callField.getText().toString();
-            if (contact.isEmpty()) {
+            String contact = ViewUtil.toString(content.findViewById(R.id.callField));
+            if (contact == null) {
                 System.err.println("Contact is empty");
             }
             else {
@@ -95,7 +95,7 @@ public class CallContactFragment extends OSGiFragment
         // Call intent handling
         Bundle arguments = getArguments();
         String phoneNumber = arguments.getString(ARG_PHONE_NUMBER);
-        if (phoneNumber != null && phoneNumber.length() > 0) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
             ViewUtil.setTextViewValue(content, R.id.callField, phoneNumber);
         }
         return content;
@@ -116,7 +116,7 @@ public class CallContactFragment extends OSGiFragment
         Collection<ProtocolProviderService> onlineProviders = AccountUtils.getOnlineProviders();
 
         for (final ProtocolProviderService provider : onlineProviders) {
-            XMPPTCPConnection connection = provider.getConnection();
+            XMPPConnection connection = provider.getConnection();
             try {
                 if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
 
@@ -124,7 +124,7 @@ public class CallContactFragment extends OSGiFragment
 
                     MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, accountAddress);
                     menuItem.setOnMenuItemClickListener(item -> {
-                        createCall(calleeAddress, provider);
+                        createCall(provider, calleeAddress);
                         return false;
                     });
                     mProvider = provider;
@@ -136,7 +136,7 @@ public class CallContactFragment extends OSGiFragment
         if (menu.size() > 1)
             popup.show();
         else
-            createCall(calleeAddress, mProvider);
+            createCall(mProvider, calleeAddress);
     }
 
     /**
@@ -145,14 +145,14 @@ public class CallContactFragment extends OSGiFragment
      * @param destination target callee name.
      * @param provider the provider that will be used to make a call.
      */
-    private void createCall(final String destination, final ProtocolProviderService provider)
+    private void createCall(final ProtocolProviderService provider, final String destination)
     {
         new Thread()
         {
             public void run()
             {
                 try {
-                    CallManager.createCall(provider, destination);
+                    CallManager.createCall(provider, destination, false);
                 } catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
                     AndroidUtils.showAlertDialog(getActivity(), getString(R.string.service_gui_ERROR), t.getMessage());
@@ -197,7 +197,7 @@ public class CallContactFragment extends OSGiFragment
      * Creates new parametrized instance of <tt>CallContactFragment</tt>.
      *
      * @param phoneNumber optional phone number that will be filled.
-     * @return new parametrized instance of <tt>CallContactFragment</tt>.
+     * @return new parameterized instance of <tt>CallContactFragment</tt>.
      */
     public static CallContactFragment newInstance(String phoneNumber)
     {

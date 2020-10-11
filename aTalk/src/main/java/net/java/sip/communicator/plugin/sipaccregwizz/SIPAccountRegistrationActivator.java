@@ -109,7 +109,6 @@ public class SIPAccountRegistrationActivator implements BundleActivator
             ServiceReference<?> serviceReference = bundleContext.getServiceReference(ConfigurationService.class.getName());
             configService = (ConfigurationService) bundleContext.getService(serviceReference);
         }
-
         return configService;
     }
 
@@ -123,13 +122,11 @@ public class SIPAccountRegistrationActivator implements BundleActivator
     public static CertificateService getCertificateService()
     {
         if (certService == null) {
-            ServiceReference<?> serviceReference = bundleContext
-                    .getServiceReference(CertificateService.class.getName());
+            ServiceReference<?> serviceReference
+                    = bundleContext.getServiceReference(CertificateService.class.getName());
 
-            certService = (CertificateService) bundleContext
-                    .getService(serviceReference);
+            certService = (CertificateService) bundleContext.getService(serviceReference);
         }
-
         return certService;
     }
 }

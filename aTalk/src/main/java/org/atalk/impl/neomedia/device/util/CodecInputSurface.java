@@ -5,9 +5,7 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.annotation.TargetApi;
 import android.opengl.EGLContext;
-import android.os.Build;
 import android.view.Surface;
 
 /**
@@ -38,7 +36,6 @@ public class CodecInputSurface extends OpenGLContext
     /**
      * {@inheritDoc}
      */
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void release()
     {

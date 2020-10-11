@@ -22,6 +22,7 @@ package org.atalk.util;
  * copied here to avoid pulling in the whole package as a dependency.
  *
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class TimeUtils
 {
@@ -65,27 +66,24 @@ public class TimeUtils
         if (useBase1) {
             seconds |= 0x80000000L; // set high-order bit if msb1baseTime 1900 used
         }
-        long time = seconds << 32 | fraction;
-        return time;
+        return seconds << 32 | fraction;
     }
 
-    // This will returns the correct NTP time in RTT calculation
+    // This will returns the correct NTP time in RTT calculation (cmeng)
     public static long toNtpTime(long baseTime)
     {
         long seconds = baseTime / 1000;
         long fraction = ((baseTime % 1000) * 0x100000000L) / 1000;
 
-        long time = seconds << 32 | fraction;
-        return time;
+        return seconds << 32 | fraction;
     }
 
     public static long toNtpShort(long t)
     {
         long secs = t / 1000L;
-        long ntptimestamplsw = ((t % 1000) * 0x100000000L) / 1000;;
-        long ntptimestampmsw = secs;
+        long ntptimestamplsw = ((t % 1000) * 0x100000000L) / 1000;
 
-        return ((secs << 16) | (ntptimestamplsw >>> 16))  & 0x0ffffffffL;
+        return ((secs << 16) | (ntptimestamplsw >>> 16)) & 0x0ffffffffL;
     }
 
     /**
@@ -133,7 +131,7 @@ public class TimeUtils
 
     /**
      * Converts the given timestamp in NTP Timestamp Format into NTP Short
-     * Format (see {@link "http://tools.ietf.org/html/rfc5905#section-6"}).
+     * Format (see {@link "https://tools.ietf.org/html/rfc5905#section-6"}).
      *
      * @param ntpTime the timestamp to convert.
      * @return the NTP Short Format timestamp, represented as a long.
@@ -145,8 +143,7 @@ public class TimeUtils
 
     /**
      * Converts a timestamp in NTP Short Format (Q16.16, see
-     * {@link "http://tools.ietf.org/html/rfc5905#section-6"}) into
-     * milliseconds.
+     * {@link "https://tools.ietf.org/html/rfc5905#section-6"}) into milliseconds.
      *
      * @param ntpShortTime the timestamp in NTP Short Format to convert.
      * @return the number of milliseconds.
@@ -158,20 +155,19 @@ public class TimeUtils
 
     /**
      * Constructs a {@code long} representation of a timestamp in NTP Timestamp
-     * Format (see {@link "http://tools.ietf.org/html/rfc5905#section-6"}).
+     * Format (see {@link "https://tools.ietf.org/html/rfc5905#section-6"}).
      *
      * @param msw The most significant word (32bits) represented as a long.
      * @param lsw The least significant word (32bits) represented as a long.
      * @return the NTP timestamp constructed from {@code msw} and {@code lsw}.
      */
-    public static long constuctNtp(long msw, long lsw)
+    public static long constructNtp(long msw, long lsw)
     {
         return (msw << 32) | (lsw & 0xFFFFFFFFL);
     }
 
     /**
-     * Gets the most significant word (32bits) from an NTP Timestamp represented
-     * as a long.
+     * Gets the most significant word (32bits) from an NTP Timestamp represented as a long.
      *
      * @param ntpTime the timestamp in NTP Timestamp Format.
      * @return the MSW of {@code ntpTime}.
@@ -182,8 +178,7 @@ public class TimeUtils
     }
 
     /**
-     * Gets the least significant word (32bits) from an NTP Timestamp
-     * represented as a long.
+     * Gets the least significant word (32bits) from an NTP Timestamp represented as a long.
      *
      * @param ntpTime the timestamp in NTP Timestamp Format.
      * @return the LSW of {@code ntpTime}.
@@ -193,15 +188,62 @@ public class TimeUtils
         return ntpTime & 0xFFFFFFFFL;
     }
 
-    /**
-     * Returns the difference between two RTP timestamps.
-     *
-     * @return the difference between two RTP timestamps.
-     * @deprecated use {@link RTPUtils#rtpTimestampDiff(long, long)}
-     */
-    @Deprecated
-    public static long rtpDiff(long a, long b)
-    {
-        return RTPUtils.rtpTimestampDiff(a, b);
-    }
+     // Required android-O (API-26) - cannot be used for aTalk (API-21 min)
+//    /**
+//     * Format string for formatTimeAsFullMillis to print milliseconds-per-second
+//     */
+//    @TargetApi(Build.VERSION_CODES.O)
+//    // DecimalFormat is NOT thread safe!
+//    private static final ThreadLocal<DecimalFormat> trailingMilliFormat
+//            = ThreadLocal.withInitial(() -> new DecimalFormat("000"));
+//
+//    /**
+//     * Format string for formatTimeAsFullMillis to print nanoseconds-per-millisecond
+//     */
+//    @TargetApi(Build.VERSION_CODES.O)
+//    private static final ThreadLocal<DecimalFormat> nanosPerMilliFormat
+//            = ThreadLocal.withInitial(() -> {
+//        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+//        dfs.setDecimalSeparator('.');
+//        return new DecimalFormat(".######", dfs);
+//    });
+//
+//    /**
+//     * Formats a time -- represented by (long seconds, int nanos) -- as
+//     * a String of floating-point milliseconds, in full precision.
+//     *
+//     * This is designed to format the java.time.Duration and java.time.Interval
+//     * classes, without being dependent on them.
+//     *
+//     * This should return a correct result for every valid (secs, nanos) pair.
+//     */
+//    @TargetApi(Build.VERSION_CODES.O)
+//    public static String formatTimeAsFullMillis(long secs, int nanos)
+//    {
+//        assert (nanos >= 0 && nanos < 1_000_000_000);
+//
+//        StringBuilder builder = new StringBuilder();
+//
+//        if (secs < 0 && nanos != 0) {
+//            secs = -secs - 1;
+//            nanos = 1_000_000_000 - nanos;
+//            builder.append('-');
+//        }
+//
+//        int millis = nanos / 1_000_000;
+//        int nanosPerMilli = nanos % 1_000_000;
+//
+//        if (secs != 0) {
+//            builder.append(secs);
+//            builder.append(trailingMilliFormat.get().format(millis));
+//        }
+//        else {
+//            builder.append(millis);
+//        }
+//        if (nanosPerMilli != 0) {
+//            builder.append(nanosPerMilliFormat.get().format(nanosPerMilli / 1e6));
+//        }
+//
+//        return builder.toString();
+//    }
 }

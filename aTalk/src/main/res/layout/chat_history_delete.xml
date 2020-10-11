@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING"
+        android:textAppearance="@style/MediumFont" />
+
+    <CheckBox
+        android:id="@+id/cb_media_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/list_padding"
+        android:checked="true"
+        android:text="@string/service_gui_HISTORY_REMOVE_MEDIA" />
+
+</LinearLayout>

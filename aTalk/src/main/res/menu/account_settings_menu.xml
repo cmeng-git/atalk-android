@@ -3,19 +3,25 @@
     <item
         android:id="@+id/add_account"
         android:icon="@drawable/ic_account_new_dark"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="@string/service_gui_NEW_ACCOUNT">
     </item>
     <item
         android:id="@+id/add_group"
         android:icon="@drawable/ic_group_new_dark"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="@string/service_gui_CREATE_GROUP">
     </item>
     <item
-        android:id="@+id/purge_stores"
+        android:id="@+id/TLS_Configuration"
+        android:icon="@drawable/ic_certificate_add"
+        android:showAsAction="always"
+        android:title="@string/service_gui_TLS_CERT">
+    </item>
+    <item
+        android:id="@+id/refresh_database"
         android:icon="@drawable/ic_sweep_dark"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="@string/service_gui_REFRESH_STORES">
     </item>
 </menu>

@@ -15,9 +15,10 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a collection of {@link RTPEncodingDesc}s that encode the same media source. This
@@ -110,6 +111,7 @@ public class MediaStreamTrackDesc
      * "stable" bitrate is measured on every new frame and with a 5000ms window.
      *
      * to have fresh data and not just its active property to be set to true.
+     *
      * @return the last "stable" bitrate (bps) of the encoding at the specified index.
      */
     public long getBps(int idx)
@@ -150,6 +152,19 @@ public class MediaStreamTrackDesc
             }
         }
         return null;
+    }
+
+    @NotNull
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        if (!ArrayUtils.isNullOrEmpty(rtpEncodings)) {
+            for (RTPEncodingDesc encoding : rtpEncodings) {
+                sb.append(" ").append(encoding);
+            }
+        }
+        return sb.toString();
     }
 
     /**

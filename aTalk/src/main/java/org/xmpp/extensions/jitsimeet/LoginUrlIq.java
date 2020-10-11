@@ -15,7 +15,7 @@
  */
 package org.xmpp.extensions.jitsimeet;
 
-import org.atalk.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.EntityBareJid;
 
@@ -34,7 +34,7 @@ public class LoginUrlIq extends IQ
 {
     public static final String NAMESPACE = ConferenceIq.NAMESPACE;
 
-    public static final String ELEMENT_NAME = "login-url";
+    public static final String ELEMENT = "login-url";
 
     /**
      * The name of the attribute that holds authentication URL value.
@@ -87,13 +87,13 @@ public class LoginUrlIq extends IQ
      */
     public LoginUrlIq()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
-        if (!StringUtils.isNullOrEmpty(url)) {
+        if (StringUtils.isNotEmpty(url)) {
             try {
                 String value = URLEncoder.encode(url, "UTF-8");
                 xml.attribute(URL_ATTRIBUTE_NAME, value);

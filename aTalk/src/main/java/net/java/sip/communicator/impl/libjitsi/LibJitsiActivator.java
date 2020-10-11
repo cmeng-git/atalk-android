@@ -1,50 +1,42 @@
 package net.java.sip.communicator.impl.libjitsi;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import org.atalk.service.libjitsi.LibJitsi;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class LibJitsiActivator
-  implements BundleActivator
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+public class LibJitsiActivator implements BundleActivator
 {
-  public void start(BundleContext bundleContext)
-    throws Exception
-  {
-    Method start;
-    try
+    public void start(BundleContext bundleContext)
+            throws Exception
     {
-      start = LibJitsi.class.getDeclaredMethod("start", new Class[] { Object.class });
-      if (Modifier.isStatic(start.getModifiers()))
-      {
-        start.setAccessible(true);
-        if (!start.isAccessible()) {
-          start = null;
+        Method start;
+        try {
+            start = LibJitsi.class.getDeclaredMethod("start", Object.class);
+            if (Modifier.isStatic(start.getModifiers())) {
+                start.setAccessible(true);
+                if (!start.isAccessible()) {
+                    start = null;
+                }
+            }
+            else {
+                start = null;
+            }
+        } catch (NoSuchMethodException | SecurityException ex) {
+            start = null;
         }
-      }
-      else
-      {
-        start = null;
-      }
+        if (start == null) {
+            LibJitsi.start();
+        }
+        else {
+            start.invoke(null, bundleContext);
+        }
     }
-    catch (NoSuchMethodException nsme)
+
+    public void stop(BundleContext bundleContext)
+            throws Exception
     {
-      start = null;
     }
-    catch (SecurityException se)
-    {
-      start = null;
-    }
-    if (start == null) {
-      LibJitsi.start();
-    } else {
-      start.invoke(null, new Object[] { bundleContext });
-    }
-  }
-  
-  public void stop(BundleContext bundleContext)
-    throws Exception
-  {}
 }

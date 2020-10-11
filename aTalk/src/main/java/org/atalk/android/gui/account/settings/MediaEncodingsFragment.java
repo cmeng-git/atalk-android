@@ -5,13 +5,13 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.widgets.TouchInterceptor;
+import org.atalk.service.osgi.OSGiFragment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,8 +20,9 @@ import java.util.List;
  * The fragments allows user to edit encodings and their priorities.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
-public class MediaEncodingsFragment extends Fragment implements TouchInterceptor.DropListener
+public class MediaEncodingsFragment extends OSGiFragment implements TouchInterceptor.DropListener
 {
     /**
      * Argument key for list of encodings as strings (see {@link MediaEncodingActivity} for utility methods.)
@@ -167,7 +168,6 @@ public class MediaEncodingsFragment extends Fragment implements TouchInterceptor
         args.putSerializable(ARG_PRIORITIES, (Serializable) priorities);
 
         fragment.setArguments(args);
-
         return fragment;
     }
 
@@ -192,8 +192,8 @@ public class MediaEncodingsFragment extends Fragment implements TouchInterceptor
     }
 
     /**
-     * Class implements encodings model for the list widget. Enables/disables each encoding and sets it's priority. Also
-     * responsible for creating Views for list rows.
+     * Class implements encodings model for the list widget. Enables/disables each encoding and sets it's priority.
+     * Also responsible for creating Views for list rows.
      */
     class OrderListAdapter extends BaseAdapter
     {

@@ -32,22 +32,14 @@ public class CallRecordImpl extends CallRecord
     private Call sourceCall = null;
 
     /**
-     * Creates CallRecord
-     */
-    public CallRecordImpl()
-    {
-        super();
-    }
-
-    /**
      * Creates Call Record
      * @param direction String
      * @param startTime Date
      * @param endTime Date
      */
-    public CallRecordImpl(String direction, Date startTime, Date endTime)
+    public CallRecordImpl(String uuid, String direction, Date startTime, Date endTime)
     {
-        super(direction, startTime, endTime);
+        super(uuid, direction, startTime, endTime);
     }
 
     /**

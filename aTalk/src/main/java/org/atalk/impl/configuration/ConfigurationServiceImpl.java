@@ -11,8 +11,10 @@ import org.atalk.service.configuration.*;
 import org.atalk.service.fileaccess.FailSafeTransaction;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.*;
+import org.atalk.util.OSUtils;
+import org.atalk.util.PasswordUtil;
 import org.atalk.util.xml.XMLException;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.beans.PropertyChangeListener;
 import java.io.*;
@@ -62,13 +64,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * Specify names of command line arguments which are password, so that their values will be
      * masked when 'sun.java.command' is printed to the logs. Separate each name with a comma.
      */
-    public static String PASSWORD_CMD_LINE_ARGS;
+    private static String PASSWORD_CMD_LINE_ARGS;
 
     /**
      * Set this filed value to a regular expression which will be used to select system
      * properties mKeys whose values should be masked when printed out to the logs.
      */
-    public static String PASSWORD_SYS_PROPS;
+    private static String PASSWORD_SYS_PROPS;
 
     /**
      * A reference to the currently used configuration file.
@@ -278,19 +280,23 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param propertyName the name of the property to change.
      */
     @Override
-    public void removeProperty(String propertyName)
+    public int removeProperty(String propertyName)
     {
         List<String> childPropertyNames = getPropertyNamesByPrefix(propertyName, false);
-
-        // remove all properties
+        int size = childPropertyNames.size() + 1;
+        // remove all child properties
         for (String pName : childPropertyNames) {
             removePropertyInternal(pName);
         }
+        // remove the parent properties if any
+        removePropertyInternal(propertyName);
+
         try {
             storeConfiguration();
         } catch (IOException ex) {
             Timber.e("Failed to store configuration after a property change");
         }
+        return size;
     }
 
     /**
@@ -380,8 +386,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
-     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with
+     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have
+     * a prefix that is an exact match of the the <tt>prefix</tt> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
      * @return a <tt>java.util.List</tt>containing all property name String-s matching the
      * specified conditions.
@@ -402,8 +408,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         }
 
         // now get property names from the current store.
-        getPropertyNamesByPrefix(prefix, exactPrefixMatch,
-                store.getPropertyNames(prefix), resultKeySet);
+        getPropertyNamesByPrefix(prefix, exactPrefixMatch, store.getPropertyNames(prefix), resultKeySet);
 
         // finally, get property names from mutable default property set.
         if (defaultProperties.size() > 0) {
@@ -423,8 +428,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
-     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with
+     * @param exactPrefixMatch a boolean indicating whether the returned property names should all have
+     * a prefix that is an exact match of the the <tt>prefix</tt> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
      * @param names the list of names that we'd like to search.
      * @return a reference to the updated result set.
@@ -980,7 +985,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
             try {
                 clazz = Class.forName(DEFAULT_CONFIGURATION_STORE_CLASS_NAME);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException ignore) {
             }
             if ((clazz != null) && ConfigurationStore.class.isAssignableFrom(clazz))
                 defaultConfigurationStoreClass = (Class<? extends ConfigurationStore>) clazz;
@@ -1004,7 +1009,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param inputStream the {@code InputStream} the contents of which is to be output in the specified {@code File}
      * @param outputFile the {@code File} to write the contents of the specified {@code InputStream} into
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     private static void copy(InputStream inputStream, File outputFile)
             throws IOException
@@ -1033,9 +1038,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     private static String getSystemProperty(String propertyName)
     {
         String retval = System.getProperty(propertyName);
-        if ((retval != null) && (retval.trim().length() == 0))
-            retval = null;
-        return retval;
+        return StringUtils.returnIfNotEmptyTrimmed(retval);
     }
 
     /**
@@ -1055,8 +1058,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
         if (propValue == null)
             return null;
 
-        String propStrValue = propValue.toString().trim();
-        return (propStrValue.length() > 0) ? propStrValue : null;
+        return StringUtils.returnIfNotEmptyTrimmed(propValue.toString());
     }
 
     /**
@@ -1222,16 +1224,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Goes over all system properties and outputs their names and values for debug purposes. The
-     * method has no effect if the logger is at a log level other than DEBUG or TRACE (FINE or
-     * FINEST). * Changed that system properties are printed in INFO level and this way they
+     * Goes over all system properties and outputs their names and values for debug purposes.
+     * Changed that system properties are printed in INFO level and this way they
      * are included in the beginning of every users log file.
      */
     private void debugPrintSystemProperties()
     {
-        if (!TimberLog.isTraceEnable)
-            return;
-
         try {
             // Password system properties
             Pattern exclusion = null;
@@ -1254,7 +1252,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
                 if (passwordArgs != null && "sun.java.command".equals(key)) {
                     value = PasswordUtil.replacePasswords(value, passwordArgs);
                 }
-                Timber.d("%s = %s", key, value);
+                Timber.i("%s = %s", key, value);
             }
         } catch (RuntimeException e) {
             Timber.w(e, "An exception occurred while writing debug info");
@@ -1297,13 +1295,12 @@ public class ConfigurationServiceImpl implements ConfigurationService
      */
     private void preloadSystemPropertyFiles()
     {
-        String propertyFilesListStr = System.getProperty(SYS_PROPS_FILE_NAME_PROPERTY);
-
-        if (propertyFilesListStr == null || propertyFilesListStr.trim().length() == 0)
+        String propFilesListStr
+                = StringUtils.returnIfNotEmptyTrimmed(System.getProperty(SYS_PROPS_FILE_NAME_PROPERTY));
+        if (propFilesListStr == null)
             return;
 
-        StringTokenizer tokenizer = new StringTokenizer(propertyFilesListStr, ";,", false);
-
+        StringTokenizer tokenizer = new StringTokenizer(propFilesListStr, ";,", false);
         while (tokenizer.hasMoreTokens()) {
             String fileName = tokenizer.nextToken();
             try {
@@ -1347,13 +1344,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
         if (!clazz.isInstance(this.store)) {
             Throwable exception = null;
-
             try {
                 this.store = clazz.newInstance();
-            } catch (IllegalAccessException ex) {
+            } catch (IllegalAccessException | InstantiationException ex) {
                 exception = ex;
-            } catch (InstantiationException e) {
-                exception = e;
             }
 
             if (exception != null)

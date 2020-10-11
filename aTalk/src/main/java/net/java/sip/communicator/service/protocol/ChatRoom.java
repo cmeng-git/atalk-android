@@ -31,11 +31,22 @@ public interface ChatRoom
     /**
      * The constant defined for chatRoom configuration attributes property.
      */
-
-    String CHAT_ROOM = "chatRoom";
-    String CHAT_ROOM_NAME = "chatRoomName";
+    String CHATROOM = "chatRoom";
+    String CHATROOM_NAME = "chatRoomName";
     String USER_NICK_NAME = "userNickName";
-    String LAST_CHAT_ROOM_STATUS = "lastChatRoomStatus";
+    String USER_ROLE = "userRole";
+
+    /**
+     * Proceed to create room if isPrivate
+     */
+    String IS_PRIVATE = "isPrivate";
+
+    /**
+     * indicate if the room is already on the server - persistent
+     */
+    String ON_SERVER_ROOM = "onServerRoom";
+
+    String CHATROOM_LAST_STATUS = "lastChatRoomStatus";
 
     /**
      * Returns the name of this <tt>ChatRoom</tt>.
@@ -64,18 +75,17 @@ public interface ChatRoom
      *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void join()
+    boolean join()
             throws OperationFailedException;
 
     /**
      * Joins this chat room so that the user would start receiving events and messages for it. The
-     * method uses the nickname of the local user and the specified password in order to enter the
-     * chatRoom.
+     * method uses the nickname of the local user and the specified password in order to enter the chatRoom.
      *
      * @param password the password to use when authenticating on the chatRoom.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void join(byte[] password)
+    boolean join(byte[] password)
             throws OperationFailedException;
 
     /**
@@ -86,20 +96,19 @@ public interface ChatRoom
      * @param nickname the nickname to use.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void joinAs(String nickname)
+    boolean joinAs(String nickname)
             throws OperationFailedException;
 
     /**
      * Joins this chat room with the specified nickname and password so that the user would start
      * receiving events and messages for it. If the chatRoom already contains a user with this
-     * nickname, the method would throw an OperationFailedException with code
-     * IDENTIFICATION_CONFLICT.
+     * nickname, the method would throw an OperationFailedException with code IDENTIFICATION_CONFLICT.
      *
      * @param nickname the nickname to use.
      * @param password a password necessary to authenticate when joining the room.
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
-    void joinAs(String nickname, byte[] password)
+    boolean joinAs(String nickname, byte[] password)
             throws OperationFailedException;
 
     /**
@@ -153,8 +162,8 @@ public interface ChatRoom
     Resourcepart getUserNickname();
 
     /**
-     * Returns the local user's role in the context of this chat room or <tt>null</tt> if not
-     * currently joined.
+     * Returns the local user's role in the context of this chat room if currently joined.
+     * Else retrieve from the value in DB that was previously saved, or <tt>null</tt> if none
      *
      * @return the role currently being used by the local user in the context of the chat room.
      */
@@ -264,10 +273,9 @@ public interface ChatRoom
      * If the room is password-protected, the invitee will receive a password to use to join the
      * room. If the room is members-only, the the invitee may be added to the member list.
      *
-     * @param userAddress the address of the user to invite to the room.(one may also invite users not on their
-     * contact list).
-     * @param reason a reason, subject, or welcome message that would tell the the user why they are being
-     * invited.
+     * @param userAddress the address of the user to invite to the room.(one may also invite users
+     * not on their contact list).
+     * @param reason a reason, subject, or welcome message that would tell the the user why they are being invited.
      */
     void invite(EntityBareJid userAddress, String reason)
             throws SmackException.NotConnectedException, InterruptedException;
@@ -304,34 +312,34 @@ public interface ChatRoom
     void removeMessageListener(ChatRoomMessageListener listener);
 
     /**
-     * Create a Message instance for sending a simple text messages with default (text/plain)
+     * Create a IMessage instance for sending a simple text messages with default (text/plain)
      * content type and encoding.
      *
      * @param messageText the string content of the message.
-     * @return Message the newly created message
+     * @return IMessage the newly created message
      */
-    Message createMessage(String messageText);
+    IMessage createMessage(String messageText);
 
     /**
-     * Create a Message instance for sending arbitrary MIME-encoding content.
+     * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
-     * @param encType See Message for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
      * @return the newly created message.
      */
-    Message createMessage(String content, int encType, String subject);
+    IMessage createMessage(String content, int encType, String subject);
 
     /**
      * Sends the <tt>message</tt> to this chat room.
      *
-     * @param message the <tt>Message</tt> to send.
+     * @param message the <tt>IMessage</tt> to send.
      * @throws OperationFailedException if sending the message fails for some reason.
      */
-    void sendMessage(Message message)
+    void sendMessage(IMessage message)
             throws OperationFailedException;
 
-    void sendMessage(Message message, OmemoManager omemoManager);
+    void sendMessage(IMessage message, OmemoManager omemoManager);
 
     /**
      * Returns a reference to the provider that created this room.
@@ -342,12 +350,11 @@ public interface ChatRoom
 
     /**
      * Returns an Iterator over a set of ban masks for this chat room. The ban mask defines a group
-     * of users that will be banned. The ban list is a list of all such ban masks defined for this
-     * chat room.
+     * of users that will be banned. The ban list is a list of all such ban masks defined for this chat room.
      *
      * @return an Iterator over a set of ban masks for this chat room
-     * @throws OperationFailedException if an error occurred while performing the request to the server or you don't have
-     * enough privileges to get this information
+     * @throws OperationFailedException if an error occurred while performing the request to the server or
+     * you don't have enough privileges to get this information
      */
     Iterator<ChatRoomMember> getBanList()
             throws OperationFailedException;
@@ -356,13 +363,12 @@ public interface ChatRoom
      * Bans a user from the room. An administrator or owner of the room can ban users from a room. A
      * banned user will no longer be able to join the room unless the ban has been removed. If the
      * banned user was present in the room then he/she will be removed from the room and notified
-     * that he/she was banned along with the reason (if provided) and the user who initiated the
-     * ban.
+     * that he/she was banned along with the reason (if provided) and the user who initiated the ban.
      *
      * @param chatRoomMember the <tt>ChatRoomMember</tt> to be banned.
      * @param reason the reason why the user was banned.
-     * @throws OperationFailedException if an error occurs while banning a user. In particular, an error can occur if a
-     * moderator or a user with an affiliation of "owner" or "admin" was tried to be banned
+     * @throws OperationFailedException if an error occurs while banning a user. In particular, an error can occur
+     * if a moderator or a user with an affiliation of "owner" or "admin" was tried to be banned
      * or if the user that is banning have not enough permissions to ban.
      */
     void banParticipant(ChatRoomMember chatRoomMember, String reason)
@@ -522,9 +528,9 @@ public interface ChatRoom
     /**
      * Updates the presence status of private messaging contact.
      *
-     * @param nickname the nickname of the contact.
+     * @param chatRoomMember the chatRoom member.
      */
-    void updatePrivateContactPresenceStatus(String nickname);
+    void updatePrivateContactPresenceStatus(ChatRoomMember chatRoomMember);
 
     /**
      * Updates the presence status of private messaging contact.

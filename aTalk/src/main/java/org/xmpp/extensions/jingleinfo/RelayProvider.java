@@ -22,36 +22,36 @@ import java.text.ParseException;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class RelayProvider extends ExtensionElementProvider<RelayExtensionElement>
+public class RelayProvider extends ExtensionElementProvider<RelayExtension>
 {
     /**
-     * Parses a users extension sub-packet and creates a {@link StunExtensionElement} instance. At
+     * Parses a users extension sub-packet and creates a {@link StunExtension} instance. At
      * the beginning of the method call, the xml parser will be positioned on the opening
      * element of the packet extension. As required by the smack API, at the end of the method
      * call, the parser will be positioned on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>Server</tt> element.
-     * @return a new {@link RelayExtensionElement} instance.
+     * @return a new {@link RelayExtension} instance.
      * @throws ParseException, XmlPullParserException, IOException if an error occurs parsing the XML.
      */
 
     @Override
-    public RelayExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public RelayExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws XmlPullParserException, IOException, SmackParsingException
     {
         boolean done = false;
         XmlPullParser.Event eventType;
         String elementName = null;
-        RelayExtensionElement ext = new RelayExtensionElement();
+        RelayExtension ext = new RelayExtension();
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                if (elementName.equals(ServerExtensionElement.ELEMENT_NAME)) {
+                if (elementName.equals(ServerExtension.ELEMENT)) {
                     ExtensionElementProvider provider = ProviderManager.getExtensionProvider(
-                            ServerExtensionElement.ELEMENT_NAME, ServerExtensionElement.NAMESPACE);
+                            ServerExtension.ELEMENT, ServerExtension.NAMESPACE);
                     ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
                     ext.addChildExtension(childExtension);
                 }
@@ -60,7 +60,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtensionElemen
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(RelayExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(RelayExtension.ELEMENT)) {
                     done = true;
                 }
             }

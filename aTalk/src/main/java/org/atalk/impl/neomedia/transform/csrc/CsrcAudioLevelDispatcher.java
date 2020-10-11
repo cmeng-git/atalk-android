@@ -6,8 +6,7 @@
 package org.atalk.impl.neomedia.transform.csrc;
 
 import org.atalk.impl.neomedia.AudioMediaStreamImpl;
-import org.atalk.util.ExecutorUtils;
-import org.ice4j.util.ExecutorFactory;
+import org.atalk.util.concurrent.ExecutorUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -17,6 +17,8 @@ import org.jxmpp.jid.parts.Localpart;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.xml.namespace.QName;
+
 import timber.log.Timber;
 
 /**
@@ -473,7 +475,7 @@ public class ColibriConferenceIQ extends IQ
          * The XML element name of a <tt>channel</tt> of a <tt>content</tt> of a Jitsi Videobridge
          * <tt>conference</tt> IQ.
          */
-        public static final String ELEMENT_NAME = "channel";
+        public static final String ELEMENT = "channel";
 
         /**
          * The XML name of the <tt>host</tt> attribute of a <tt>channel</tt> of a <tt>content</tt>
@@ -543,7 +545,7 @@ public class ColibriConferenceIQ extends IQ
          * The name of the XML element which is a child of the &lt;channel&gt; element and which
          * identifies/specifies an (RTP) SSRC which has been seen/received on the respective <tt>Channel</tt>.
          */
-        public static final String SSRC_ELEMENT_NAME = "ssrc";
+        public static final String SSRC_ELEMENT = "ssrc";
 
         /**
          * The direction of the <tt>channel</tt> represented by this instance.
@@ -579,13 +581,13 @@ public class ColibriConferenceIQ extends IQ
          * The <tt>payload-type</tt> elements defined by XEP-0167: Jingle RTP Sessions associated
          * with this <tt>channel</tt>.
          */
-        private final List<PayloadTypeExtensionElement> payloadTypes = new ArrayList<>();
+        private final List<PayloadTypeExtension> payloadTypes = new ArrayList<>();
 
         /**
          * The <tt>rtp-hdrext</tt> elements defined by XEP-0294: Jingle RTP Header Extensions
          * Negotiation associated with this channel.
          */
-        private final Map<Integer, RTPHdrExtExtensionElement> rtpHeaderExtensions = new HashMap<>();
+        private final Map<Integer, RTPHdrExtExtension> rtpHeaderExtensions = new HashMap<>();
 
         /**
          * The target quality of the simulcast subStreams to be sent from Jitsi Videobridge to the
@@ -621,12 +623,12 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The <tt>SourceGroupExtensionElement</tt>s of this channel.
          */
-        private List<SourceGroupExtensionElement> sourceGroups;
+        private List<SourceGroupExtension> sourceGroups;
 
         /**
          * The <tt>SourceExtensionElement</tt>s of this channel.
          */
-        private final List<SourceExtensionElement> sources = new LinkedList<>();
+        private final List<SourceExtension> sources = new LinkedList<>();
         /**
          * The list of (RTP) SSRCs which have been seen/received on this <tt>Channel</tt> by now.
          * These may exclude SSRCs which are no longer active. Set by the Jitsi Videobridge server,
@@ -639,7 +641,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public Channel()
         {
-            super(Channel.ELEMENT_NAME);
+            super(Channel.ELEMENT);
         }
 
         /**
@@ -650,13 +652,13 @@ public class ColibriConferenceIQ extends IQ
          * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
          * @throws NullPointerException if the specified <tt>payloadType</tt> is <tt>null</tt>
          */
-        public boolean addPayloadType(PayloadTypeExtensionElement payloadType)
+        public boolean addPayloadType(PayloadTypeExtension payloadType)
         {
             ApiLib.requireNonNull(payloadType, "payloadType");
 
             // Make sure that the COLIBRI namespace is used.
             payloadType.setNamespace(null);
-            for (ParameterExtensionElement p : payloadType.getParameters())
+            for (ParameterExtension p : payloadType.getParameters())
                 p.setNamespace(null);
 
             return !payloadTypes.contains(payloadType) && payloadTypes.add(payloadType);
@@ -669,12 +671,12 @@ public class ColibriConferenceIQ extends IQ
          * @param ext the <tt>payload-type</tt> element to be added to this <tt>channel</tt>
          * @throws NullPointerException if the specified <tt>ext</tt> is <tt>null</tt>
          */
-        public void addRtpHeaderExtension(RTPHdrExtExtensionElement ext)
+        public void addRtpHeaderExtension(RTPHdrExtExtension ext)
         {
             ApiLib.requireNonNull(ext, "ext");
 
             // Create a new instance, because we are going to modify the NS
-            RTPHdrExtExtensionElement newExt = RTPHdrExtExtensionElement.clone(ext);
+            RTPHdrExtExtension newExt = RTPHdrExtExtension.clone(ext);
 
             // Make sure that the parent namespace (COLIBRI) is used.
             newExt.setNamespace(null);
@@ -700,7 +702,7 @@ public class ColibriConferenceIQ extends IQ
          * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
          * execution of the method; otherwise, <tt>false</tt>
          */
-        public synchronized boolean addSource(SourceExtensionElement source)
+        public synchronized boolean addSource(SourceExtension source)
         {
             ApiLib.requireNonNull(source, "source");
             return !sources.contains(source) && sources.add(source);
@@ -713,11 +715,11 @@ public class ColibriConferenceIQ extends IQ
          * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
          * execution of the method; otherwise, <tt>false</tt>
          */
-        public synchronized boolean addSourceGroup(SourceGroupExtensionElement sourceGroup)
+        public synchronized boolean addSourceGroup(SourceGroupExtension sourceGroup)
         {
             ApiLib.requireNonNull(sourceGroup, "sourceGroup");
             if (sourceGroups == null)
-                sourceGroups = new LinkedList<SourceGroupExtensionElement>();
+                sourceGroups = new LinkedList<SourceGroupExtension>();
 
             return !sourceGroups.contains(sourceGroup) && sourceGroups.add(sourceGroup);
         }
@@ -812,7 +814,7 @@ public class ColibriConferenceIQ extends IQ
          * @return an unmodifiable <tt>List</tt> of <tt>payload-type</tt> elements defined by
          * XEP-0167: Jingle RTP Sessions added to this <tt>channel</tt>
          */
-        public List<PayloadTypeExtensionElement> getPayloadTypes()
+        public List<PayloadTypeExtension> getPayloadTypes()
         {
             return Collections.unmodifiableList(payloadTypes);
         }
@@ -824,7 +826,7 @@ public class ColibriConferenceIQ extends IQ
          * @return an unmodifiable <tt>List</tt> of <tt>rtp-hdrext</tt> elements defined by
          * XEP-0294: Jingle RTP Header Extensions Negotiation added to this <tt>channel</tt>
          */
-        public Collection<RTPHdrExtExtensionElement> getRtpHeaderExtensions()
+        public Collection<RTPHdrExtExtension> getRtpHeaderExtensions()
         {
             return Collections.unmodifiableCollection(rtpHeaderExtensions.values());
         }
@@ -888,7 +890,7 @@ public class ColibriConferenceIQ extends IQ
          * @return a <tt>List</tt> of <tt>SourceGroupExtensionElement</tt>s which represent the
          * source groups of this channel
          */
-        public synchronized List<SourceGroupExtensionElement> getSourceGroups()
+        public synchronized List<SourceGroupExtension> getSourceGroups()
         {
             return (sourceGroups == null) ? null : new ArrayList<>(sourceGroups);
         }
@@ -898,7 +900,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @return a <tt>List</tt> of <tt>SourceExtensionElement</tt>s which represent the sources of this channel
          */
-        public synchronized List<SourceExtensionElement> getSources()
+        public synchronized List<SourceExtension> getSources()
         {
             return new ArrayList<>(sources);
         }
@@ -917,15 +919,15 @@ public class ColibriConferenceIQ extends IQ
         @Override
         protected boolean hasContent()
         {
-            List<PayloadTypeExtensionElement> payloadTypes = getPayloadTypes();
+            List<PayloadTypeExtension> payloadTypes = getPayloadTypes();
             if (!payloadTypes.isEmpty())
                 return true;
 
-            List<SourceGroupExtensionElement> sourceGroups = getSourceGroups();
+            List<SourceGroupExtension> sourceGroups = getSourceGroups();
             if (sourceGroups != null && !getSourceGroups().isEmpty())
                 return true;
 
-            List<SourceExtensionElement> sources = getSources();
+            List<SourceExtension> sources = getSources();
             if (!sources.isEmpty())
                 return true;
 
@@ -985,27 +987,27 @@ public class ColibriConferenceIQ extends IQ
         @Override
         protected IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml)
         {
-            List<PayloadTypeExtensionElement> payloadTypes = getPayloadTypes();
-            Collection<RTPHdrExtExtensionElement> rtpHdrExtPacketExtensions = getRtpHeaderExtensions();
-            List<SourceExtensionElement> sources = getSources();
-            List<SourceGroupExtensionElement> sourceGroups = getSourceGroups();
+            List<PayloadTypeExtension> payloadTypes = getPayloadTypes();
+            Collection<RTPHdrExtExtension> rtpHdrExtPacketExtensions = getRtpHeaderExtensions();
+            List<SourceExtension> sources = getSources();
+            List<SourceGroupExtension> sourceGroups = getSourceGroups();
             int[] ssrcs = getSSRCs();
 
-            for (PayloadTypeExtensionElement payloadType : payloadTypes)
+            for (PayloadTypeExtension payloadType : payloadTypes)
                 xml.append(payloadType.toXML(XmlEnvironment.EMPTY));
 
-            for (RTPHdrExtExtensionElement ext : rtpHdrExtPacketExtensions)
+            for (RTPHdrExtExtension ext : rtpHdrExtPacketExtensions)
                 xml.append(ext.toXML(XmlEnvironment.EMPTY));
 
-            for (SourceExtensionElement source : sources)
+            for (SourceExtension source : sources)
                 xml.append(source.toXML(XmlEnvironment.EMPTY));
 
             if (sourceGroups != null && sourceGroups.size() != 0)
-                for (SourceGroupExtensionElement sourceGroup : sourceGroups)
+                for (SourceGroupExtension sourceGroup : sourceGroups)
                     xml.append(sourceGroup.toXML(XmlEnvironment.EMPTY));
 
             for (int ssrc : ssrcs) {
-                xml.openElement(SSRC_ELEMENT_NAME);
+                xml.openElement(SSRC_ELEMENT);
                 xml.append(Long.toString(ssrc & 0xFFFFFFFFL));
             }
             return xml;
@@ -1018,7 +1020,7 @@ public class ColibriConferenceIQ extends IQ
          * @return <tt>true</tt> if the list of <tt>payload-type</tt> elements associated with this
          * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
          */
-        public boolean removePayloadType(PayloadTypeExtensionElement payloadType)
+        public boolean removePayloadType(PayloadTypeExtension payloadType)
         {
             return payloadTypes.remove(payloadType);
         }
@@ -1029,7 +1031,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param ext the <tt>rtp-hdrext</tt> element to be removed from this <tt>channel</tt>
          */
-        public void removeRtpHeaderExtension(RTPHdrExtExtensionElement ext)
+        public void removeRtpHeaderExtension(RTPHdrExtExtension ext)
         {
             int id;
             try {
@@ -1048,7 +1050,7 @@ public class ColibriConferenceIQ extends IQ
          * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
          * execution of the method; otherwise, <tt>false</tt>
          */
-        public synchronized boolean removeSource(SourceExtensionElement source)
+        public synchronized boolean removeSource(SourceExtension source)
         {
             return sources.remove(source);
         }
@@ -1240,7 +1242,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The name of the "relay" child element of an {@link OctoChannel}.
          */
-        public static final String RELAY_ELEMENT_NAME = "relay";
+        public static final String RELAY_ELEMENT = "relay";
 
         /**
          * The name of the "id" attribute of child elements with name "relay".
@@ -1317,7 +1319,7 @@ public class ColibriConferenceIQ extends IQ
         {
             super.printContent(xml);
             for (String relay : relays) {
-                xml.halfOpenElement(RELAY_ELEMENT_NAME);
+                xml.halfOpenElement(RELAY_ELEMENT);
                 xml.attribute(ID_ATTR_NAME, relay);
                 xml.closeEmptyElement();
             }
@@ -1333,7 +1335,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The name of the "channel-bundle" element.
          */
-        public static final String ELEMENT_NAME = "channel-bundle";
+        public static final String ELEMENT = "channel-bundle";
 
         /**
          * The name of the "id" attribute.
@@ -1348,7 +1350,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The transport element of this <tt>ChannelBundle</tt>.
          */
-        private IceUdpTransportExtensionElement transport;
+        private IceUdpTransportExtension transport;
 
         /**
          * Initializes a new <tt>ChannelBundle</tt> with the given ID.
@@ -1375,7 +1377,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @return the transport element of this <tt>ChannelBundle</tt>.
          */
-        public IceUdpTransportExtensionElement getTransport()
+        public IceUdpTransportExtension getTransport()
         {
             return transport;
         }
@@ -1395,7 +1397,7 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param transport the transport to set.
          */
-        public void setTransport(IceUdpTransportExtensionElement transport)
+        public void setTransport(IceUdpTransportExtension transport)
         {
             this.transport = transport;
         }
@@ -1407,13 +1409,13 @@ public class ColibriConferenceIQ extends IQ
          */
         public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
-            xml.halfOpenElement(ELEMENT_NAME);
+            xml.halfOpenElement(ELEMENT);
             xml.attribute(ID_ATTR_NAME, id);
 
             if (transport != null) {
                 xml.rightAngleBracket();
                 xml.append(transport.toXML(XmlEnvironment.EMPTY));
-                xml.closeElement(ELEMENT_NAME);
+                xml.closeElement(ELEMENT);
             }
             else {
                 xml.closeEmptyElement();
@@ -1511,7 +1513,7 @@ public class ColibriConferenceIQ extends IQ
          */
         private Boolean initiator;
 
-        private IceUdpTransportExtensionElement transport;
+        private IceUdpTransportExtension transport;
 
         /**
          * Initializes this class with given XML <tt>elementName</tt>.
@@ -1574,7 +1576,7 @@ public class ColibriConferenceIQ extends IQ
             return id;
         }
 
-        public IceUdpTransportExtensionElement getTransport()
+        public IceUdpTransportExtension getTransport()
         {
             return transport;
         }
@@ -1691,7 +1693,7 @@ public class ColibriConferenceIQ extends IQ
             this.initiator = initiator;
         }
 
-        public void setTransport(IceUdpTransportExtensionElement transport)
+        public void setTransport(IceUdpTransportExtension transport)
         {
             this.transport = transport;
         }
@@ -1723,7 +1725,7 @@ public class ColibriConferenceIQ extends IQ
             // Print derived class attributes
             printAttributes(xml);
 
-            IceUdpTransportExtensionElement transport = getTransport();
+            IceUdpTransportExtension transport = getTransport();
             boolean hasTransport = (transport != null);
             if (hasTransport || hasContent()) {
                 xml.rightAngleBracket();
@@ -1750,7 +1752,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The XML element name of a <tt>content</tt> of a Jitsi Videobridge <tt>conference</tt> IQ.
          */
-        public static final String ELEMENT_NAME = "content";
+        public static final String ELEMENT = "content";
 
         /**
          * The XML name of the <tt>name</tt> attribute of a <tt>content</tt> of a
@@ -1961,7 +1963,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
-            xml.halfOpenElement(ELEMENT_NAME);
+            xml.halfOpenElement(ELEMENT);
             xml.attribute(NAME_ATTR_NAME, getName());
 
             List<Channel> channels = getChannels();
@@ -1979,7 +1981,7 @@ public class ColibriConferenceIQ extends IQ
                 for (SctpConnection conn : connections) {
                     conn.toXML(xml);
                 }
-                xml.closeElement(ELEMENT_NAME);
+                xml.closeElement(ELEMENT);
             }
             return xml;
         }
@@ -2009,7 +2011,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The name of the 'endpoint' element.
          */
-        public static final String ELEMENT_NAME = "endpoint";
+        public static final String ELEMENT = "endpoint";
 
         /**
          * The name of the 'id' attribute.
@@ -2121,7 +2123,7 @@ public class ColibriConferenceIQ extends IQ
         public IQChildElementXmlStringBuilder toXML(
                 IQChildElementXmlStringBuilder xml)
         {
-            xml.halfOpenElement(ELEMENT_NAME);
+            xml.halfOpenElement(ELEMENT);
             xml.attribute(ID_ATTR_NAME, id);
 
             xml.optAttribute(DISPLAYNAME_ATTR_NAME, displayName);
@@ -2139,7 +2141,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The XML name of the <tt>recording</tt> element.
          */
-        public static final String ELEMENT_NAME = "recording";
+        public static final String ELEMENT = "recording";
 
         /**
          * The XML name of the <tt>path</tt> attribute.
@@ -2241,7 +2243,7 @@ public class ColibriConferenceIQ extends IQ
 
         public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
-            xml.halfOpenElement(ELEMENT_NAME);
+            xml.halfOpenElement(ELEMENT);
             xml.attribute(STATE_ATTR_NAME, state);
             xml.optAttribute(TOKEN_ATTR_NAME, token);
             xml.optAttribute(DIRECTORY_ATTR_NAME, directory);
@@ -2315,19 +2317,21 @@ public class ColibriConferenceIQ extends IQ
      */
     public static class GracefulShutdown extends AbstractExtensionElement
     {
-        public static final String ELEMENT_NAME = "graceful-shutdown";
+        public static final String ELEMENT = "graceful-shutdown";
 
         public static final String NAMESPACE = ColibriConferenceIQ.NAMESPACE;
 
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         public GracefulShutdown()
         {
-            super(ELEMENT_NAME, ColibriConferenceIQ.NAMESPACE);
+            super(ELEMENT, ColibriConferenceIQ.NAMESPACE);
         }
     }
 
     public static class RTCPTerminationStrategy
     {
-        public static final String ELEMENT_NAME = "rtcp-termination-strategy";
+        public static final String ELEMENT = "rtcp-termination-strategy";
 
         public static final String NAME_ATTR_NAME = "name";
 
@@ -2345,7 +2349,7 @@ public class ColibriConferenceIQ extends IQ
 
         public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
-            xml.halfOpenElement(ELEMENT_NAME);
+            xml.halfOpenElement(ELEMENT);
             xml.attribute(NAME_ATTR_NAME, name);
             xml.closeEmptyElement();
             return xml;
@@ -2363,7 +2367,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The XML element name of a <tt>content</tt> of a Jitsi Videobridge <tt>conference</tt> IQ.
          */
-        public static final String ELEMENT_NAME = "sctpconnection";
+        public static final String ELEMENT = "sctpconnection";
 
         /**
          * The XML name of the <tt>port</tt> attribute of a <tt>SctpConnection</tt> of a
@@ -2383,7 +2387,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public SctpConnection()
         {
-            super(SctpConnection.ELEMENT_NAME);
+            super(SctpConnection.ELEMENT);
         }
 
         /**

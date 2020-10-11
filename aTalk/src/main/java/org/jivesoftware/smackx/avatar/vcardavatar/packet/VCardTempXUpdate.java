@@ -24,6 +24,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 /**
  * Implements the presence extension corresponding to element name "x" and namespace
  * "vcard-temp:x:update" (cf. XEP-0153). This adds extension element <photo/> tag to
@@ -48,6 +50,8 @@ public class VCardTempXUpdate implements ExtensionElement
      * This presence extension element name.
      */
     public static final String ELEMENT = "x";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * This photo extension element name.

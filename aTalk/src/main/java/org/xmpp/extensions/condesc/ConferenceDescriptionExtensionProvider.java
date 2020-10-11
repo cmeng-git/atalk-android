@@ -8,10 +8,10 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import java.io.IOException;
 
 /**
- * Parses elements with the {@value ConferenceDescriptionExtensionElement#NAMESPACE} namespace.
+ * Parses elements with the {@value ConferenceDescriptionExtension#NAMESPACE} namespace.
  */
 public class ConferenceDescriptionExtensionProvider
-        extends ExtensionElementProvider<ConferenceDescriptionExtensionElement>
+        extends ExtensionElementProvider<ConferenceDescriptionExtension>
 {
     /**
      * Creates a <tt>ConferenceDescriptionPacketExtension</tt> by parsing an XML document.
@@ -21,10 +21,10 @@ public class ConferenceDescriptionExtensionProvider
      * @throws IOException, XmlPullParserException if error
      */
     @Override
-    public ConferenceDescriptionExtensionElement parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+    public ConferenceDescriptionExtension parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
-        ConferenceDescriptionExtensionElement packetExtension = new ConferenceDescriptionExtensionElement();
+        ConferenceDescriptionExtension packetExtension = new ConferenceDescriptionExtension();
 
         //first, set all attributes
         int attrCount = parser.getAttributeCount();
@@ -35,27 +35,27 @@ public class ConferenceDescriptionExtensionProvider
         //now parse the sub elements
         boolean done = false;
         String elementName;
-        TransportExtensionElement transportExt = null;
+        TransportExtension transportExt = null;
 
         while (!done) {
             switch (parser.next()) {
                 case START_ELEMENT:
                     elementName = parser.getName();
-                    if (TransportExtensionElement.ELEMENT_NAME.equals(elementName)) {
+                    if (TransportExtension.ELEMENT.equals(elementName)) {
                         String transportNs = parser.getNamespace();
                         if (transportNs != null) {
-                            transportExt = new TransportExtensionElement(transportNs);
+                            transportExt = new TransportExtension(transportNs);
                         }
                     }
                     break;
 
                 case END_ELEMENT:
                     switch (parser.getName()) {
-                        case ConferenceDescriptionExtensionElement.ELEMENT_NAME:
+                        case ConferenceDescriptionExtension.ELEMENT:
                             done = true;
                             break;
 
-                        case TransportExtensionElement.ELEMENT_NAME:
+                        case TransportExtension.ELEMENT:
                             if (transportExt != null) {
                                 packetExtension.addChildExtension(transportExt);
                             }

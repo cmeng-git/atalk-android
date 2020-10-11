@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <style name="actionOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_menu_moreoverflow_dark</item>
+    <style name="PreferencesTheme">
+        <item name="android:windowBackground">?attr/colorBackground</item>
+        <item name="android:background">?attr/colorBackground</item>
     </style>
 
     <style name="SpinnerView" parent="@android:style/Widget.Spinner">
-        <item name="android:radius">5dp</item>
-        <item name="android:textColor">@color/grey800</item>
+        <item name="android:textColor">@color/textColorBlack</item>
         <item name="android:textCursorDrawable">@null</item>
         <item name="android:background">@drawable/spinner_dark</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/item_height</item>
         <item name="android:spinnerMode">dropdown</item>
         <item name="android:textSize">15sp</item>
     </style>
 
     <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
-        <item name="android:textColor">@color/grey800</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:textColor">@color/textColorBlack</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/item_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">10dp</item>
     </style>
 
     <style name="SpinnerItem.DropDownItem" parent="@android:style/Widget.DropDownItem.Spinner">
-        <item name="android:textColor">@color/white900</item>
-        <item name="android:background">@color/grey850</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:textColor">?attr/textColorPrimary</item>
+        <item name="android:background">?attr/colorBackground</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/item_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">10dp</item>
     </style>
 
     <style name="EntryTextView" parent="@android:style/Widget.Holo.EditText">
         <item name="android:radius">5dp</item>
-        <item name="android:textColor">@color/grey800</item>
+        <item name="android:textColor">@color/textColorBlack</item>
         <item name="android:textCursorDrawable">@null</item>
         <item name="android:background">@drawable/white_rounded</item>
         <item name="android:layout_height">@dimen/item_height</item>
@@ -40,13 +46,13 @@
 
     <style name="MsgTextView" parent="@android:style/Widget.Holo.TextView">
         <item name="android:radius">5dp</item>
-        <item name="android:textColor">@color/grey800</item>
+        <item name="android:textColor">@color/textColorBlack</item>
         <item name="android:textCursorDrawable">@null</item>
         <item name="android:background">@drawable/white_rounded</item>
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="Theme.AppDialog" parent="@android:style/Theme.Holo.Light">
+    <style name="ThemeAppDialog" parent="@android:style/Theme.Holo.Light">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@drawable/popup_background_dark</item>
         <item name="android:windowTitleStyle">?android:attr/textAppearanceLargeInverse</item>
@@ -66,23 +72,19 @@
 
     <style name="Button">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/grey800</item>
+        <item name="android:textColor">@color/textColorBlack</item>
         <item name="android:background">@drawable/btn_bg</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:drawablePadding">0dip</item>
         <item name="android:layout_marginBottom">5dp</item>
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:padding">8dp</item>
-    </style>
-
-    <style name="ButtonTop" parent="@style/Button">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">44dp</item>
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="ButtonBottom" parent="@style/Button">
-        <item name="android:layout_width">0dip</item>
+    <style name="ButtonTop" parent="@style/Button">
+        <item name="android:layout_height">44dp</item>
     </style>
 
     <style name="XSmallFont" parent="@android:style/TextAppearance.Small">
@@ -99,6 +101,13 @@
 
     <style name="LargeFont" parent="@android:style/TextAppearance.Large">
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TitleStatus">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/textColorWhite</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <!-- Call info section header -->
@@ -249,7 +258,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/white900</item>
+        <item name="android:textColor">@color/textColorWhite</item>
         <item name="android:background">@drawable/count_bcg</item>
         <item name="android:text"></item>
     </style>
@@ -272,7 +281,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/white900</item>
+        <item name="android:textColor">@color/textColorWhite</item>
         <item name="android:background">@drawable/count_bcg_crypto</item>
         <item name="android:text"></item>
     </style>
@@ -295,7 +304,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/white900</item>
+        <item name="android:textColor">@color/textColorWhite</item>
         <item name="android:background">@drawable/count_bcg_stealth</item>
         <item name="android:text"></item>
     </style>
@@ -318,7 +327,7 @@
         <item name="android:lines">1</item>
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">11sp</item>
-        <item name="android:textColor">@color/white900</item>
+        <item name="android:textColor">@color/textColorWhite</item>
         <item name="android:background">@drawable/count_bcg_crypto</item>
         <item name="android:text"></item>
     </style>
@@ -372,36 +381,30 @@
     <style name="chat_message">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:textColor">#f000</item>
-        <!-- <item name="android:textSize">13sp</item> -->
         <item name="android:textSize">?attr/font_medium</item>
     </style>
 
     <style name="chat_date">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:textColor">#ff404040</item>
-        <!-- <item name="android:textSize">13sp</item> -->
         <item name="android:textSize">?attr/font_xsmall</item>
     </style>
 
     <style name="chat_time">
-        <!-- <item name="android:textSize">10sp</item> -->
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:textSize">?attr/font_xsmall</item>
     </style>
 
     <style name="chat_time.Light">
-        <!-- <item name="android:textColor">#ff404040</item> -->
-        <item name="android:textColor">@color/white900</item>
+        <item name="android:textColor">@color/textColorWhite</item>
     </style>
 
     <style name="chat_time.Dark">
-        <!-- <item name="android:textColor">#ff404040</item> -->
-        <item name="android:textColor">@color/white900</item>
+        <item name="android:textColor">@color/textColorWhite</item>
     </style>
 
     <style name="chat_from">
-        <item name="android:textColor">@color/white900</item>
-        <!-- <item name="android:textSize">11sp</item> -->
+        <item name="android:textColor">@color/textColorWhite</item>
         <item name="android:textSize">?attr/font_xsmall</item>
     </style>
 
@@ -446,22 +449,24 @@
     -->
 
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/custom_progressbar_horizontal</item>
+        <item name="android:progressDrawable">@drawable/progressbar_blue</item>
         <item name="android:minHeight">10dip</item>
         <item name="android:maxHeight">20dip</item>
     </style>
 
     <style name="AboutDialogTextColor" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/grey</item>
-        <item name="android:textColorLink">@color/light_blue</item>
+        <item name="android:textColorLink">@color/blue100</item>
     </style>
 
+    <style name="AppTheme2" parent="AppTheme.Light" />
+
     <!-- Dexter -->
-    <style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!--style name="AppTheme2" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
-    </style>
+    </style-->
 
     <style name="AppTitle">
         <item name="android:textColor">@android:color/white</item>

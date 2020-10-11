@@ -22,7 +22,7 @@ import java.io.*;
  * This class represent a rtpdump file and provide an API to get the payload of the rtp packet it
  * contains.
  * 
- * rtpdump format : - http://www.cs.columbia.edu/irt/software/rtptools/ -
+ * rtpdump format : - https://www.cs.columbia.edu/irt/software/rtptools/ -
  * https://gist.github.com/Haerezis/18e3ffc2d69c86f8463f#file-rtpdump_file_format (backup gist)
  * 
  * 

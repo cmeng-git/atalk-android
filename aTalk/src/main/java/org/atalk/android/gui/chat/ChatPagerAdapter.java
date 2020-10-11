@@ -61,7 +61,6 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
         ChatSessionManager.removeChatListener(this);
     }
 
-
     public ChatFragment getCurrentChatFragment()
     {
         return mPrimaryItem;

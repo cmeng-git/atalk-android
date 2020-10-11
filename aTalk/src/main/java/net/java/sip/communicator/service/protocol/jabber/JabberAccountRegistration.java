@@ -8,10 +8,10 @@ package net.java.sip.communicator.service.protocol.jabber;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.gui.aTalk;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.util.StringUtils;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;
 
@@ -41,7 +41,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     private boolean rememberPassword = true;
 
     /**
-     * UID of edited account
+     * UID of edited account in form: jabber:user@example.com
      */
     private String editedAccUID;
 
@@ -91,13 +91,13 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      */
     public JabberAccountRegistration()
     {
-        super(null, new HashMap<String, String>());
+        super(null, new HashMap<>());
     }
 
     /**
      * Overrides to return UID loaded from edited AccountID.
-     *
-     * @return UID of edited account.
+     *      *
+     * @return UID of edited account e.g. jabber:user@example.com.
      */
     public String getAccountUniqueID()
     {
@@ -105,7 +105,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Sets the User ID of the jabber registration account.
+     * Sets the User ID of the jabber registration account e.g. user@example.com.
      *
      * @param userID the identifier of the jabber registration account.
      */
@@ -230,8 +230,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         // aTalk STUN/JN implementation can only be added/modified via account modification
         if (isModification) {
             String accountUuid = null;
-            // cmeng - editedAccUID contains the last edited account.
-            if (!StringUtils.isNullOrEmpty(editedAccUID)) {
+            // cmeng - editedAccUID contains the last edited account e.g. jabber:xxx@atalk.org.
+            if (StringUtils.isNotEmpty(editedAccUID)) {
                 AccountManager accManager = ProtocolProviderActivator.getAccountManager();
                 accountUuid = accManager.getStoredAccountUUID(factory, editedAccUID);
             }
@@ -346,7 +346,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     protected String getServerFromUserName(String userName)
     {
         String newServerAddr = XmppStringUtils.parseDomain(userName);
-        if (!StringUtils.isNullOrEmpty(newServerAddr)) {
+        if (StringUtils.isNotEmpty(newServerAddr)) {
             return newServerAddr.equals(GOOGLE_USER_SUFFIX) ? GOOGLE_CONNECT_SRV : newServerAddr;
         }
         return null;

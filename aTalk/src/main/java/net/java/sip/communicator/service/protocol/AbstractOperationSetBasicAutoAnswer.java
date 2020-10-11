@@ -24,7 +24,12 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     /**
      * The parent Protocol Provider.
      */
-    protected final ProtocolProviderService protocolProvider;
+    protected final ProtocolProviderService mPPS;
+
+    /**
+     * Should we unconditionally answer.
+     */
+    protected boolean answerOnJingleMessageAccept = false;
 
     /**
      * Should we unconditionally answer.
@@ -43,7 +48,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     public AbstractOperationSetBasicAutoAnswer(ProtocolProviderService protocolProvider)
     {
-        this.protocolProvider = protocolProvider;
+        this.mPPS = protocolProvider;
     }
 
     /**
@@ -51,14 +56,14 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     protected void load()
     {
-        AccountID acc = protocolProvider.getAccountID();
+        AccountID acc = mPPS.getAccountID();
 
         answerUnconditional = acc.getAccountPropertyBoolean(AUTO_ANSWER_UNCOND_PROP, false);
         answerWithVideo = acc.getAccountPropertyBoolean(AUTO_ANSWER_WITH_VIDEO_PROP, false);
     }
 
     /**
-     * Saves values to account properties.
+     * Save values to account properties.
      */
     protected abstract void save();
 
@@ -76,23 +81,20 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     public void clear()
     {
         clearLocal();
-
         this.answerWithVideo = false;
-
         save();
     }
 
     /**
-     * Makes a check after creating call locally, should we answer it.
+     * Make a check after creating call locally, should we answer it.
      *
      * @param call The new incoming call to auto-answer if needed.
      * @param isVideoCall Indicates if the remote peer which has created this call wish to have a video call.
-     * @return <tt>true</tt> if we have processed and no further processing is needed,
-     * <tt>false</tt> otherwise.
+     * @return <tt>true</tt> if we have processed and no further processing is needed, <tt>false</tt> otherwise.
      */
     public boolean autoAnswer(Call call, boolean isVideoCall)
     {
-        if (answerUnconditional || satisfyAutoAnswerConditions(call)) {
+        if (answerOnJingleMessageAccept || answerUnconditional || satisfyAutoAnswerConditions(call)) {
             this.answerCall(call, isVideoCall);
             return true;
         }
@@ -107,8 +109,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     protected void answerCall(Call call, boolean isVideoCall)
     {
-        // We are here because we satisfy the conditional, or unconditional is
-        // true.
+        // We are here because we satisfy the conditional, or unconditional is true.
         Iterator<? extends CallPeer> peers = call.getCallPeers();
 
         while (peers.hasNext()) {
@@ -120,8 +121,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      * Checks if the call satisfy the auto answer conditions.
      *
      * @param call The new incoming call to auto-answer if needed.
-     * @return <tt>true</tt> if the call satisfy the auto answer conditions. <tt>False</tt>
-     * otherwise.
+     * @return <tt>true</tt> if the call satisfy the auto answer conditions. <tt>False</tt> otherwise.
      */
     protected abstract boolean satisfyAutoAnswerConditions(Call call);
 
@@ -131,9 +131,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     public void setAutoAnswerUnconditional()
     {
         clearLocal();
-
         this.answerUnconditional = true;
-
         save();
     }
 
@@ -150,8 +148,8 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     /**
      * Sets the auto answer with video to video calls.
      *
-     * @param answerWithVideo A boolean set to true to activate the auto answer with video when receiving a video
-     * call. False otherwise.
+     * @param answerWithVideo A boolean set to true to activate the auto answer with video
+     * when receiving a video call. False otherwise.
      */
     public void setAutoAnswerWithVideo(boolean answerWithVideo)
     {
@@ -186,12 +184,10 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
         private boolean isVideoCall;
 
         /**
-         * Waits for peer to switch into INCOMING_CALL state, before auto-answering the call in a
-         * new thread.
+         * Wait for peer to switch into INCOMING_CALL state, before auto-answering the call in a new thread.
          *
          * @param peer The call peer which has generated the call.
-         * @param isVideoCall Indicates if the remote peer which has created this call wish to have a video
-         * call.
+         * @param isVideoCall Indicates if the remote peer which has created this call wish to have a video call.
          */
         public AutoAnswerThread(CallPeer peer, boolean isVideoCall)
         {
@@ -204,7 +200,6 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
             else {
                 peer.addCallPeerListener(this);
             }
-
         }
 
         /**
@@ -212,28 +207,25 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
          */
         public void run()
         {
-            OperationSetBasicTelephony<?> opSetBasicTelephony = protocolProvider
-                    .getOperationSet(OperationSetBasicTelephony.class);
-            OperationSetVideoTelephony opSetVideoTelephony = protocolProvider
-                    .getOperationSet(OperationSetVideoTelephony.class);
+            OperationSetBasicTelephony<?> opSetBasicTelephony = mPPS.getOperationSet(OperationSetBasicTelephony.class);
+            OperationSetVideoTelephony opSetVideoTelephony = mPPS.getOperationSet(OperationSetVideoTelephony.class);
             try {
-                // If this is a video call and that the user has configured to
-                // answer it with video, then create a video call.
-                if (this.isVideoCall && answerWithVideo && opSetVideoTelephony != null) {
+                // If user has configured to answer video call with video, then create a video call.
+                // Always answer with video for incoming video call via Jingle Message accept.
+                if (this.isVideoCall && (answerOnJingleMessageAccept || answerWithVideo) && opSetVideoTelephony != null) {
                     opSetVideoTelephony.answerVideoCallPeer(peer);
                 }
-                // Else sends only audio to the remote peer (the remote peer is
-                // still able to send us its video stream).
+                // Else send only audio to the remote peer (remote peer is still able to send us its video stream).
                 else if (opSetBasicTelephony != null) {
                     opSetBasicTelephony.answerCallPeer(peer);
                 }
             } catch (OperationFailedException e) {
-                Timber.e("Could not answer to: %s: Exception: %s", peer, e.getMessage());
+                Timber.e("Failed to auto answer call from: %s; %s", peer, e.getMessage());
             }
         }
 
         /**
-         * If we peer was not in proper state wait for it and then answer.
+         * If our peer was not in proper state wait for it and then answer.
          *
          * @param evt the <tt>CallPeerChangeEvent</tt> instance containing the
          */

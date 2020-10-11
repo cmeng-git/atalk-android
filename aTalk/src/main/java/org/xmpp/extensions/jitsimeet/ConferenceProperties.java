@@ -20,6 +20,8 @@ import org.xmpp.extensions.AbstractExtensionElement;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.namespace.QName;
+
 /**
  * A packet extension that represents a list of
  * {@link ConferenceProperty}s to be included in the focus MUC presence. The
@@ -39,7 +41,9 @@ public class ConferenceProperties extends AbstractExtensionElement
     /**
      * The XML name of the conference-properties element.
      */
-    public static final String ELEMENT_NAME = "conference-properties";
+    public static final String ELEMENT = "conference-properties";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The property key used for the conference creation timestamp (in milliseconds since the Epoch).
@@ -80,7 +84,7 @@ public class ConferenceProperties extends AbstractExtensionElement
      */
     public ConferenceProperties()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -145,7 +149,7 @@ public class ConferenceProperties extends AbstractExtensionElement
         /**
          * The XML name of the conference property element.
          */
-        public static final String ELEMENT_NAME = "property";
+        public static final String ELEMENT = "property";
 
         /**
          * The name of the "key" attribute.
@@ -164,7 +168,7 @@ public class ConferenceProperties extends AbstractExtensionElement
          */
         public ConferenceProperty()
         {
-            super(ELEMENT_NAME, NAMESPACE);
+            super(ELEMENT, NAMESPACE);
         }
 
         /**
@@ -175,7 +179,7 @@ public class ConferenceProperties extends AbstractExtensionElement
          */
         public ConferenceProperty(String key, String value)
         {
-            super(ELEMENT_NAME, NAMESPACE);
+            super(ELEMENT, NAMESPACE);
             setAttribute(KEY_ATTR_NAME, key);
             setAttribute(VALUE_ATTR_NAME, value);
         }

@@ -63,12 +63,12 @@ public class AvatarDataProvider extends ExtensionElementProvider
     public AvatarData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException
     {
-        AvatarData avatarData = null;
+        String data = null;
         if (AvatarData.ELEMENT.equals(parser.getName())) {
-            String data = parser.nextText();
-            avatarData = new AvatarData(data);
+            data = parser.nextText();
         }
-        return avatarData;
+
+        return new AvatarData(data);
 
           // cmeng - not working
 //        outerloop: while (true) {

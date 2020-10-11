@@ -3,50 +3,41 @@
     android:id="@+id/actionBarView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="3dp">
 
     <TextView
-        android:id="@+id/actionBarText"
-        style="@style/MediumFont"
+        android:id="@+id/actionBarTitle"
+        style="@style/TitleStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:ellipsize="end"
-        android:gravity="start"
-        android:maxLines="1"
-        android:paddingBottom="5dp"
-        android:text="@string/service_gui_ACCOUNT_ME"
-        android:textColor="@color/color_text_dark"
-        android:textStyle="normal|bold" />
+        android:ellipsize="end" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/globalStatusIcon"
-            android:layout_width="18dip"
-            android:layout_height="18dip"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="0dp" />
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_centerVertical="true" />
 
         <TextView
-            android:id="@+id/actionBarStatusText"
-            style="@style/MediumFont"
+            android:id="@+id/actionBarStatus"
+            style="@style/SmallFont"
+            android:textColor="@color/textColorWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="25dp"
-            android:focusable="true"
-            android:maxLines="1"
-            android:textColor="@color/color_text_dark"
-            android:textStyle="normal|bold" />
+            android:layout_centerVertical="true"
+            android:layout_marginStart="22dp"
+            android:focusable="true" />
     </RelativeLayout>
 </RelativeLayout>

@@ -13,17 +13,16 @@ import android.widget.Toast;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.util.java.awt.Component;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiDialogFragment;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
 
-import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,9 +30,9 @@ import timber.log.Timber;
 
 /**
  * The dialog shows security information for ZRTP protocol. Allows user to verify/clear security authentication string.
- * It will be shown only if the call is secured(there is security control available).
- * Parent <tt>Activity</tt> should implement {@link SasVerificationListener} in order to receive SAS verification status
- * updates performed by this dialog.
+ * It will be shown only if the call is secured (i.e. there is security control available).
+ * Parent <tt>Activity</tt> should implement {@link SasVerificationListener} in order to receive SAS
+ * verification status updates performed by this dialog.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -43,7 +42,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * The extra key for call ID managed by {@link CallManager}.
      */
-    public static final String EXTRA_CALL_KEY = "org.atalk.android.call_id";
+    private static final String EXTRA_CALL_KEY = "org.atalk.android.call_id";
 
     /**
      * The listener object that will be notified on SAS string verification status change.
@@ -53,12 +52,17 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * The {@link MediaAwareCallPeer} used by this dialog.
      */
-    MediaAwareCallPeer<?, ?, ?> mediaAwarePeer;
+    private MediaAwareCallPeer<?, ?, ?> mediaAwarePeer;
 
     /**
      * The {@link ZrtpControl} used as a master security controller. Retrieved from AUDIO stream.
      */
     private ZrtpControl masterControl;
+
+    /**
+     * Dialog view container for ZRTP info display
+     */
+    private View viewContainer;
 
     /**
      * {@inheritDoc}
@@ -121,12 +125,11 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
             }
         }
 
-        View content = inflater.inflate(R.layout.zrtp_info_dialog, container, false);
-
-        View cancelBtn = content.findViewById(R.id.zrtp_ok);
+        viewContainer = inflater.inflate(R.layout.zrtp_info_dialog, container, false);
+        View cancelBtn = viewContainer.findViewById(R.id.zrtp_ok);
         cancelBtn.setOnClickListener(view -> dismiss());
 
-        View confirmBtn = content.findViewById(R.id.security_confirm);
+        View confirmBtn = viewContainer.findViewById(R.id.security_confirm);
         confirmBtn.setOnClickListener(view -> {
             if (mediaAwarePeer.getCall() == null)
                 return;
@@ -137,8 +140,9 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
             notifySasVerified(masterControl.isSecurityVerified());
         });
 
-        getDialog().setTitle(R.string.service_gui_SECURITY_INFO);
-        return content;
+        if (getDialog() != null)
+            getDialog().setTitle(R.string.service_gui_SECURITY_INFO);
+        return viewContainer;
     }
 
     /**
@@ -162,10 +166,10 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         mediaAwarePeer.addCallPeerSecurityListener(this);
         mediaAwarePeer.getMediaHandler().addVideoListener(this);
 
-        ViewUtil.setTextViewValue(getView(), R.id.security_auth_str, getSecurityString());
+        ViewUtil.setTextViewValue(viewContainer, R.id.security_auth_str, getSecurityString());
 
-        ViewUtil.setTextViewValue(getView(), R.id.security_cipher,
-                MessageFormat.format(getString(R.string.service_gui_security_CIPHER), masterControl.getCipherString()));
+        ViewUtil.setTextViewValue(viewContainer, R.id.security_cipher,
+                getString(R.string.service_gui_security_CIPHER, masterControl.getCipherString()));
 
         updateVerificationStatus();
         boolean isAudioSecure = masterControl != null && masterControl.getSecureCommunicationStatus();
@@ -184,10 +188,10 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         Timber.d("Is sas verified? %s", verified);
 
         String txt = verified ? getString(R.string.service_gui_security_STRING_COMPARED) : getString(R.string.service_gui_security_COMPARE_WITH_PARTNER_SHORT);
-        ViewUtil.setTextViewValue(getView(), R.id.security_compare, txt);
+        ViewUtil.setTextViewValue(viewContainer, R.id.security_compare, txt);
 
         String confirmTxt = verified ? getString(R.string.service_gui_security_CLEAR) : getString(R.string.service_gui_security_CONFIRM);
-        ViewUtil.setTextViewValue(getView(), R.id.security_confirm, confirmTxt);
+        ViewUtil.setTextViewValue(viewContainer, R.id.security_confirm, confirmTxt);
     }
 
     /**
@@ -223,15 +227,12 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     {
         String securityString = masterControl.getSecurityString();
         if (securityString != null) {
-            StringBuilder sb = new StringBuilder(10);
-            sb.append(securityString.charAt(0));
-            sb.append(' ');
-            sb.append(securityString.charAt(1));
-            sb.append(' ');
-            sb.append(securityString.charAt(2));
-            sb.append(' ');
-            sb.append(securityString.charAt(3));
-            return sb.toString();
+            final String sb = String.valueOf(
+                    securityString.charAt(0)) + ' ' +
+                    securityString.charAt(1) + ' ' +
+                    securityString.charAt(2) + ' ' +
+                    securityString.charAt(3);
+            return sb;
         }
         else {
             return "";
@@ -247,9 +248,9 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     {
         String audioStr = isSecure ? getString(R.string.service_gui_security_SECURE_AUDIO) : getString(R.string.service_gui_security_AUDIO_NOT_SECURED);
 
-        ViewUtil.setTextViewValue(getView(), R.id.secure_audio_text, audioStr);
+        ViewUtil.setTextViewValue(viewContainer, R.id.secure_audio_text, audioStr);
         int iconId = isSecure ? R.drawable.secure_audio_on_light : R.drawable.secure_audio_off_light;
-        ViewUtil.setImageViewIcon(getView(), R.id.secure_audio_icon, iconId);
+        ViewUtil.setImageViewIcon(viewContainer, R.id.secure_audio_icon, iconId);
     }
 
     /**
@@ -285,8 +286,8 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
             }
         }
 
-        ViewUtil.ensureVisible(getView(), R.id.secure_video_text, isVideo);
-        ViewUtil.ensureVisible(getView(), R.id.secure_video_icon, isVideo);
+        ViewUtil.ensureVisible(viewContainer, R.id.secure_video_text, isVideo);
+        ViewUtil.ensureVisible(viewContainer, R.id.secure_video_icon, isVideo);
 
         /*
          * If there's no video skip this part, as controls will be hidden.
@@ -295,9 +296,9 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
             return;
 
         String videoText = isSecure ? getString(R.string.service_gui_security_SECURE_VIDEO) : getString(R.string.service_gui_security_VIDEO_NOT_SECURED);
-        ViewUtil.setTextViewValue(getView(), R.id.secure_video_text, videoText);
+        ViewUtil.setTextViewValue(viewContainer, R.id.secure_video_text, videoText);
 
-        ViewUtil.setImageViewIcon(getView(), R.id.secure_video_icon, isSecure
+        ViewUtil.setImageViewIcon(viewContainer, R.id.secure_video_icon, isSecure
                 ? R.drawable.secure_video_on_light : R.drawable.secure_video_off_light);
     }
 

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="?attr/colorBackground"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="@dimen/screen_padding">
+
+    <TextView
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/plugin_certconfig_REVOCATION_TITLE" />
+
+    <CheckBox
+        android:id="@+id/cb_crl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/list_padding"
+        android:text="@string/plugin_certconfig_REVOCATION_CHECK_ENABLED" />
+
+    <CheckBox
+        android:id="@+id/cb_ocsp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/list_padding"
+        android:text="@string/plugin_certconfig_REVOCATION_OCSP_ENABLED" />
+
+    <TextView
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/plugin_certconfig_CERT_LIST_TITLE" />
+
+    <TextView
+        style="@style/MediumFont"
+        android:background="@drawable/alpha_blue_01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/plugin_certconfig_CERT_LIST_DESCRIPTION" />
+
+    <Spinner
+        android:id="@+id/cboCert"
+        style="@style/SpinnerView" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cmd_add"
+            style="@style/ButtonTop"
+            android:text="@string/service_gui_ADD" />
+
+        <Button
+            android:id="@+id/cmd_remove"
+            style="@style/ButtonTop"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/service_gui_REMOVE" />
+
+        <Button
+            android:id="@+id/cmd_edit"
+            style="@style/ButtonTop"
+            android:focusable="true"
+            android:text="@string/service_gui_EDIT" />
+    </LinearLayout>
+</LinearLayout>

@@ -42,8 +42,8 @@ public class PresenceFilter implements ContactListFilter
     private boolean isShowOffline;
 
     /**
-     * The initial result count below which we insert all filter results directly to the contact list without firing
-     * events.
+     * The initial result count below which we insert all filter results directly to the contact list
+     * without firing events.
      */
     private static final int INITIAL_CONTACT_COUNT = 30;
 
@@ -187,8 +187,8 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Returns <tt>true</tt> if offline contacts are shown or if the given <tt>MetaContactGroup</tt> contains online
-     * contacts.
+     * Returns <tt>true</tt> if offline contacts are shown or if the given <tt>MetaContactGroup</tt>
+     * contains online contacts.
      *
      * @param metaGroup the <tt>MetaContactGroup</tt> to check
      * @return <tt>true</tt> if the given <tt>MetaContactGroup</tt> is matching this filter
@@ -217,8 +217,8 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Adds all contacts contained in the given <tt>MetaContactGroup</tt> matching the current filter and not contained
-     * in the contact list.
+     * Adds all contacts contained in the given <tt>MetaContactGroup</tt> matching the current filter
+     * and not contained in the contact list.
      *
      * @param metaGroup the <tt>MetaContactGroup</tt>, which matching contacts to add
      * @param query the <tt>MetaContactQuery</tt> that notifies interested listeners of the results of this matching

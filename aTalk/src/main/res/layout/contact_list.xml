@@ -2,16 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"
+    android:background="@color/background_light"
     android:orientation="vertical">
 
     <ExpandableListView
         android:id="@+id/contactListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:cacheColorHint="@color/white"
+        android:cacheColorHint="@color/textColorWhite"
         android:choiceMode="singleChoice"
         android:divider="@null"
-        android:dividerHeight="0dip"
+        android:dividerHeight="0dp"
         android:groupIndicator="@null" />
 </LinearLayout>

@@ -21,7 +21,7 @@ import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.impl.neomedia.transform.ControlTransformInputStream;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
 import org.atalk.service.neomedia.event.*;
@@ -1243,15 +1243,6 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     protected void setProcessorFormat(Processor processor, MediaFormatImpl<? extends Format> mediaFormat)
     {
         Format format = mediaFormat.getFormat();
-        if ("h263-1998/rtp".equalsIgnoreCase(format.getEncoding())) {
-            /*
-             * If no output size has been defined, then no SDP fmtp has been found with QCIF, CIF,
-             * VGA or CUSTOM parameters. Let's default to QCIF (176x144).
-             */
-            if (outputSize == null)
-                outputSize = new Dimension(176, 144);
-        }
-
         /*
          * Add a size in the output format. As VideoFormat has no setter, we recreate the object.
          * Also check whether capture device can output such a size.
@@ -1325,13 +1316,14 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
          * will re-implement the functionality bellow using a Control interface and we will not
          * bother with inserting customized codecs.
          */
+        // aTalk uses external h264, so accept OSUtils.IS_ANDROID ???
         if (!OSUtils.IS_ANDROID && "h264/rtp".equalsIgnoreCase(format.getEncoding())) {
             encoder = new JNIEncoder();
 
             // packetization-mode
             Map<String, String> formatParameters = mediaFormat.getFormatParameters();
-            String packetizationMode = (formatParameters == null) ? null : formatParameters
-                    .get(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP);
+            String packetizationMode = (formatParameters == null)
+                    ? null : formatParameters.get(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP);
             encoder.setPacketizationMode(packetizationMode);
 
             // additionalCodecSettings

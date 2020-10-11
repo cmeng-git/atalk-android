@@ -75,12 +75,10 @@ public class CertificateShowDialog extends OSGiDialogFragment {
 
         // Always trust checkbox
         CompoundButton alwaysTrustBtn = contentView.findViewById(R.id.alwaysTrust);
-        alwaysTrustBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Updates always trust property of dialog model
-                CertificateDialogActivator.getDialog(request).setAlwaysTrust(isChecked);
-            }
+
+        // Updates always trust property of dialog model
+        alwaysTrustBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            CertificateDialogActivator.getDialog(request).setAlwaysTrust(isChecked);
         });
 
         // contentView.findViewById(R.id.dummyView).setVisibility(View.GONE);
@@ -134,13 +132,13 @@ public class CertificateShowDialog extends OSGiDialogFragment {
     /**
      * Interface used to pass dialog result to parent <tt>Activity</tt>.
      */
-    static public interface CertInfoDialogListener {
+    public interface CertInfoDialogListener {
         /**
          * Fired when dialog is dismissed. Passes the result as an argument.
          *
          * @param continueAnyway <tt>true</tt> if continue anyway button was pressed, <tt>false</tt>
          * means that the dialog was discarded or cancel button was pressed.
          */
-        public void onDialogResult(boolean continueAnyway);
+        void onDialogResult(boolean continueAnyway);
     }
 }

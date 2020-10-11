@@ -8,7 +8,7 @@ package org.xmpp.extensions.colibri;
 import org.xmpp.extensions.jingle.element.JingleContent;
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 
 import java.util.*;
 

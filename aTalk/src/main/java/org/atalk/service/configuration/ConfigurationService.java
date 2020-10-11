@@ -24,47 +24,46 @@ public interface ConfigurationService
      * The name of the property that indicates the name of the directory where aTalk is to store
      * user specific data such as configuration files, message and call history.
      */
-    public static String PNAME_SC_HOME_DIR_NAME = "net.java.sip.communicator.SC_HOME_DIR_NAME";
+    String PNAME_SC_HOME_DIR_NAME = "net.java.sip.communicator.SC_HOME_DIR_NAME";
 
     /**
      * The name of the property that indicates the location of the directory where aTalk is to
      * store user specific data such as configuration files, message and call history.
      */
-    public static String PNAME_SC_HOME_DIR_LOCATION = "net.java.sip.communicator.SC_HOME_DIR_LOCATION";
+    String PNAME_SC_HOME_DIR_LOCATION = "net.java.sip.communicator.SC_HOME_DIR_LOCATION";
 
     /**
      * The name of the property that indicates the location of the directory where aTalk is to store cached data.
      */
-    public static String PNAME_SC_CACHE_DIR_LOCATION = "net.java.sip.communicator.SC_CACHE_DIR_LOCATION";
+    String PNAME_SC_CACHE_DIR_LOCATION = "net.java.sip.communicator.SC_CACHE_DIR_LOCATION";
 
     /**
      * The name of the property that indicates the location of the directory where aTalk is to store cached data.
      */
-    public static String PNAME_SC_LOG_DIR_LOCATION  = "net.java.sip.communicator.SC_LOG_DIR_LOCATION";
+    String PNAME_SC_LOG_DIR_LOCATION  = "net.java.sip.communicator.SC_LOG_DIR_LOCATION";
 
     /**
      * The name of the boolean system property which indicates whether the configuration file is
      * to be considered read-only. The default value is <tt>false</tt> which means that the
      * configuration file is considered writable.
      */
-    public static String PNAME_CONFIGURATION_FILE_IS_READ_ONLY = "net.java.sip.communicator.CONFIGURATION_FILE_IS_READ_ONLY";
+    String PNAME_CONFIGURATION_FILE_IS_READ_ONLY = "net.java.sip.communicator.CONFIGURATION_FILE_IS_READ_ONLY";
 
     /**
      * The name of the system property that stores the name of the configuration file.
      */
-    public static String PNAME_CONFIGURATION_FILE_NAME = "net.java.sip.communicator.CONFIGURATION_FILE_NAME";
+    String PNAME_CONFIGURATION_FILE_NAME = "net.java.sip.communicator.CONFIGURATION_FILE_NAME";
 
     /**
      * The name of the property that users may trust omemo key before its verification.
      */
-    public static String PNAME_OMEMO_KEY_BLIND_TRUST = "omemo.KEY_BLIND_TRUST";
+    String PNAME_OMEMO_KEY_BLIND_TRUST = "omemo.KEY_BLIND_TRUST";
 
     /**
      * Sets the property with the specified name to the specified value. Calling this method would
      * first trigger a PropertyChangeEvent that will be dispatched to all VetoableChangeListeners.
      * In case no complaints (PropertyVetoException) have been received, the property will be
      * actually changed and a  PropertyChangeEvent will be dispatched.
-     *
      *
      * @param propertyName the name of the property to change.
      * @param property the new value of the specified property.
@@ -101,8 +100,7 @@ public interface ConfigurationService
      *
      * @param properties a <code>Map</code> of property names to their new values to be set
      * @throws ConfigPropertyVetoException if a change in at least one of the properties has been refused by
-     * at least one of the
-     * <code>VetoableChangeListener</code>s
+     * at least one of the <code>VetoableChangeListener</code>s
      */
     void setProperties(Map<String, Object> properties);
 
@@ -125,7 +123,7 @@ public interface ConfigurationService
      * @param propertyName the name of the property to change.
      * @throws ConfigPropertyVetoException in case the changed has been refused by at least one propertyChange listener.
      */
-    void removeProperty(String propertyName);
+    int removeProperty(String propertyName);
 
     /**
      * Returns a <tt>java.util.List</tt> of <tt>String</tt>s containing all property names.
@@ -204,8 +202,7 @@ public interface ConfigurationService
      *
      * @param propertyName the name of the property that is being queried.
      * @param defaultValue the value to be returned if the specified property name is not associated with a value
-     * in this
-     * <code>ConfigurationService</code>
+     * in this <code>ConfigurationService</code>
      * @return the result of calling the property's toString method and <code>defaultValue</code>
      * in case there was no value mapped against the specified <tt>propertyName</tt>, or the
      * returned string had zero length or contained whitespaces only.

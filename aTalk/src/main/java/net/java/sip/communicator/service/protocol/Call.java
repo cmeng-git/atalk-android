@@ -5,8 +5,13 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.DataObject;
+
+import org.jetbrains.annotations.NotNull;
+import org.xmpp.extensions.jingle.element.Jingle;
 
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -29,8 +34,7 @@ import timber.log.Timber;
 public abstract class Call extends DataObject
 {
     /**
-     * The name of the <tt>Call</tt> property which represents its telephony conference-related
-     * state.
+     * The name of the <tt>Call</tt> property which represents its telephony conference-related state.
      */
     public static final String CONFERENCE = "conference";
 
@@ -43,12 +47,12 @@ public abstract class Call extends DataObject
     /**
      * An identifier uniquely representing the call.
      */
-    private final String callID;
+    private final String callId;
 
     /**
      * A list of all listeners currently registered for <tt>CallChangeEvent</tt>s
      */
-    private final List<CallChangeListener> callListeners = new Vector<CallChangeListener>();
+    private final List<CallChangeListener> callListeners = new Vector<>();
 
     /**
      * A reference to the ProtocolProviderService instance that created us.
@@ -87,9 +91,8 @@ public abstract class Call extends DataObject
     private boolean isAutoAnswer = false;
 
     /**
-     * The indicator which determines whether any telephony conference represented by this
-     * instance is mixing or relaying. By default what can be mixed is mixed (audio) and rest is
-     * relayed.
+     * The indicator which determines whether any telephony conference represented by this instance
+     * is mixing or relaying. By default what can be mixed is mixed (audio) and rest is relayed.
      */
     protected final boolean useTranslator;
 
@@ -97,12 +100,18 @@ public abstract class Call extends DataObject
      * Creates a new Call instance.
      *
      * @param sourceProvider the proto provider that created us.
+     * @param sid the Jingle session-initiate id if provided.
      */
-    protected Call(ProtocolProviderService sourceProvider)
+    protected Call(ProtocolProviderService sourceProvider, String sid)
     {
         // create the uid
-        this.callID = String.valueOf(System.currentTimeMillis())
-                + String.valueOf(super.hashCode());
+        if (TextUtils.isEmpty(sid)) {
+            // callId = System.currentTimeMillis() + String.valueOf(super.hashCode());
+            callId = Jingle.generateSid();
+        } else {
+            callId = sid;
+        }
+
         this.protocolProvider = sourceProvider;
         AccountID accountID = protocolProvider.getAccountID();
 
@@ -119,9 +128,9 @@ public abstract class Call extends DataObject
      *
      * @return a String uniquely identifying the call.
      */
-    public String getCallID()
+    public String getCallId()
     {
-        return callID;
+        return callId;
     }
 
     /**
@@ -135,9 +144,9 @@ public abstract class Call extends DataObject
     @Override
     public boolean equals(Object obj)
     {
-        if ((obj == null) || !(obj instanceof Call))
+        if (!(obj instanceof Call))
             return false;
-        return (obj == this) || ((Call) obj).getCallID().equals(getCallID());
+        return (obj == this) || ((Call) obj).getCallId().equals(getCallId());
     }
 
     /**
@@ -148,7 +157,7 @@ public abstract class Call extends DataObject
     @Override
     public int hashCode()
     {
-        return getCallID().hashCode();
+        return getCallId().hashCode();
     }
 
     /**
@@ -160,14 +169,14 @@ public abstract class Call extends DataObject
     public void addCallChangeListener(CallChangeListener listener)
     {
         synchronized (callListeners) {
-            if (!callListeners.contains(listener))
+            if (!callListeners.contains(listener)) {
                 callListeners.add(listener);
+            }
         }
     }
 
     /**
-     * Removes <tt>listener</tt> to this call so that it won't receive further
-     * <tt>CallChangeEvent</tt>s.
+     * Removes <tt>listener</tt> to this call so that it won't receive further <tt>CallChangeEvent</tt>s.
      *
      * @param listener the listener to register
      */
@@ -213,12 +222,12 @@ public abstract class Call extends DataObject
     {
         CallPeerEvent event = new CallPeerEvent(sourceCallPeer, this, eventID, delayed);
 
-        Timber.d("Dispatching a CallPeer event to %s listeners. The event is: %s",
+        Timber.d("Dispatching CallPeer event to %s listeners. The event is: %s",
                 callListeners.size(), event);
 
         Iterator<CallChangeListener> listeners;
         synchronized (callListeners) {
-            listeners = new ArrayList<CallChangeListener>(callListeners).iterator();
+            listeners = new ArrayList<>(callListeners).iterator();
         }
 
         while (listeners.hasNext()) {
@@ -237,10 +246,11 @@ public abstract class Call extends DataObject
      *
      * @return a string representation of the object.
      */
+    @NotNull
     @Override
     public String toString()
     {
-        return "Call: id=" + getCallID() + " peers=" + getCallPeerCount();
+        return "Call: id=" + getCallId() + " peers=" + getCallPeerCount();
     }
 
     /**
@@ -259,25 +269,21 @@ public abstract class Call extends DataObject
 
     /**
      * Creates a <tt>CallChangeEvent</tt> with this class as <tt>sourceCall</tt>, and the specified
-     * <tt>eventID</tt> and old and new values and dispatches it on all currently registered
-     * listeners.
+     * <tt>eventID</tt> and old and new values and dispatches it on all currently registered listeners.
      *
      * @param type the type of the event to create (see CallChangeEvent member ints)
      * @param oldValue the value of the call property that changed, before the event had occurred.
      * @param newValue the value of the call property that changed, after the event has occurred.
      * @param cause the event that is the initial cause of the current one.
      */
-    protected void fireCallChangeEvent(String type, Object oldValue, Object newValue,
-            CallPeerChangeEvent cause)
+    protected void fireCallChangeEvent(String type, Object oldValue, Object newValue, CallPeerChangeEvent cause)
     {
         CallChangeEvent event = new CallChangeEvent(this, type, oldValue, newValue, cause);
-        Timber.d("Dispatching a CallChange event to %s listeners. The event is: %s",
-                callListeners.size(), event);
+        Timber.d("Dispatching CallChangeEvent to (%s) listeners. %s", callListeners.size(), event);
 
         CallChangeListener[] listeners;
-
         synchronized (callListeners) {
-            listeners = callListeners.toArray(new CallChangeListener[callListeners.size()]);
+            listeners = callListeners.toArray(new CallChangeListener[0]);
         }
         for (CallChangeListener listener : listeners)
             listener.callStateChanged(event);
@@ -294,8 +300,7 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Sets the state of this call and fires a call change event notifying registered listeners for
-     * the change.
+     * Sets the state of this call and fires a call change event notifying registered listeners for the change.
      *
      * @param newState a reference to the <tt>CallState</tt> instance that the call is to enter.
      */
@@ -316,11 +321,10 @@ public abstract class Call extends DataObject
     {
         CallState oldState = getCallState();
         if (oldState != newState) {
-            this.callState = newState;
+            callState = newState;
 
             try {
-                fireCallChangeEvent(CallChangeEvent.CALL_STATE_CHANGE, oldState, this.callState,
-                        cause);
+                fireCallChangeEvent(CallChangeEvent.CALL_STATE_CHANGE, oldState, callState, cause);
             } finally {
                 if (CallState.CALL_ENDED.equals(getCallState()))
                     setConference(null);
@@ -406,8 +410,7 @@ public abstract class Call extends DataObject
      * Gets the telephony conference-related state of this <tt>Call</tt>. Since a non-conference
      * <tt>Call</tt> may be converted into a conference <tt>Call</tt> at any time, every
      * <tt>Call</tt> instance maintains a <tt>CallConference</tt> instance regardless of whether
-     * the
-     * <tt>Call</tt> in question is participating in a telephony conference.
+     * the <tt>Call</tt> in question is participating in a telephony conference.
      *
      * @return a <tt>CallConference</tt> instance which represents the telephony conference-related
      * state of this <tt>Call</tt>.
@@ -433,8 +436,7 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Sets the telephony conference-related state of this <tt>Call</tt>. If the invocation
-     * modifies
+     * Sets the telephony conference-related state of this <tt>Call</tt>. If the invocation modifies
      * this instance, it adds this <tt>Call</tt> to the newly set <tt>CallConference</tt> and fires
      * a <tt>PropertyChangeEvent</tt> for the <tt>CONFERENCE</tt> property to its listeners.
      *
@@ -472,8 +474,7 @@ public abstract class Call extends DataObject
     /**
      * Fires a new <tt>PropertyChangeEvent</tt> to the <tt>PropertyChangeListener</tt>s registered
      * with this <tt>Call</tt> in order to notify about a change in the value of a specific
-     * property
-     * which had its old value modified to a specific new value.
+     * property which had its old value modified to a specific new value.
      *
      * @param property the name of the property of this <tt>Call</tt> which had its value changed
      * @param oldValue the value of the property with the specified name before the change
@@ -501,8 +502,7 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Sets the flag that specifies whether incoming calls into this <tt>Call</tt> should be
-     * auto-answered.
+     * Sets the flag that specifies whether incoming calls into this <tt>Call</tt> should be auto-answered.
      *
      * @param autoAnswer whether incoming calls into this <tt>Call</tt> should be auto-answered.
      */

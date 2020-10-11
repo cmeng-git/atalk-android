@@ -7,7 +7,8 @@ package org.atalk.impl.neomedia.recording;
 
 import com.sun.media.util.Registry;
 
-import org.atalk.impl.neomedia.DominantSpeakerIdentification;
+import org.atalk.util.MediaType;
+import org.atalk.util.dsi.DominantSpeakerIdentification;
 import org.atalk.impl.neomedia.audiolevel.AudioLevelEffect;
 import org.atalk.impl.neomedia.codec.SilenceEffect;
 import org.atalk.impl.neomedia.device.MediaDeviceImpl;
@@ -24,8 +25,9 @@ import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.FlushableControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
-import org.atalk.service.neomedia.event.ActiveSpeakerChangedListener;
+import org.atalk.util.dsi.ActiveSpeakerChangedListener;
 import org.atalk.service.neomedia.recording.*;
+import org.atalk.util.dsi.ActiveSpeakerDetector;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,11 +59,13 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      */
     private static final ConfigurationService cfg = LibJitsi.getConfigurationService();
 
-    // values hard-coded to match chrome
+    // values hard-coded to match chrome =>
     // TODO: allow to set them dynamically
+    // Issue 6705: Stop using hardcoded payload types for VideoCodecs
+    // https://bugs.chromium.org/p/webrtc/issues/detail?id=6705
     private static final byte redPayloadType = 116;
     private static final byte ulpfecPayloadType = 117;
-    private static final byte vp8PayloadType = 100;
+    private static final byte vp8PayloadType = 96;
     private static final byte opusPayloadType = 111;
     private static final Format redFormat = new VideoFormat(Constants.RED);
     private static final Format ulpfecFormat = new VideoFormat(Constants.ULPFEC);
@@ -245,8 +249,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Implements {@link Recorder#getFilename()}. Returns null, since we don't have a (single)
-     * associated filename.
+     * Implements {@link Recorder#getFilename()}. Returns null, since we don't
+     * have a (single) associated filename.
      */
     @Override
     public String getFilename()
@@ -255,8 +259,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Sets the instance which should be notified when events related to recordings (such as the
-     * start or end of a recording) occur.
+     * Sets the instance which should be notified when events related to
+     * recordings (such as the start or end of a recording) occur.
      */
     public void setEventHandler(RecorderEventHandler eventHandler)
     {
@@ -343,20 +347,21 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     public void stop()
     {
         if (started) {
-            Timber.i("Stopping %s", hashCode());
+            Timber.d("Stopping %s", this);
 
-            // remove the recorder from the translator (e.g. stop new packets from
-            // being written to rtpConnector
-            if (streamRTPManager != null)
+            // remove the recorder from the translator (e.g. stop new packets from being written to rtpConnector
+            if (streamRTPManager != null) {
                 streamRTPManager.dispose();
+            }
 
             HashSet<ReceiveStreamDesc> streamsToRemove = new HashSet<>();
             synchronized (receiveStreams) {
                 streamsToRemove.addAll(receiveStreams);
             }
 
-            for (ReceiveStreamDesc r : streamsToRemove)
+            for (ReceiveStreamDesc r : streamsToRemove) {
                 removeReceiveStream(r, false);
+            }
 
             rtpConnector.rtcpPacketTransformer.close();
             rtpConnector.rtpPacketTransformer.close();
@@ -364,7 +369,6 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
             if (activeSpeakerDetector != null)
                 activeSpeakerDetector.removeActiveSpeakerChangedListener(this);
-
             started = false;
         }
 
@@ -372,7 +376,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
     /**
      * Implements {@link ReceiveStreamListener#update(ReceiveStreamEvent)}.
-     * <p>
+     *
      * {@link #rtpManager} will use this to notify us of <tt>ReceiveStreamEvent</tt>s.
      */
     @Override

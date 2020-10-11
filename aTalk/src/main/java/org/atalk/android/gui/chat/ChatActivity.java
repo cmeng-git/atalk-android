@@ -5,35 +5,44 @@
  */
 package org.atalk.android.gui.chat;
 
-import android.annotation.SuppressLint;
-import android.content.*;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.*;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
-import net.java.sip.communicator.service.gui.UIService;
+import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.util.ConfigurationUtils;
+import net.sf.fmj.utility.IOUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.*;
-import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
+import org.atalk.android.gui.call.AndroidCallUtil;
+import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoDialog;
+import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.share.Attachment;
+import org.atalk.android.gui.share.MediaPreviewAdapter;
+import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
@@ -41,19 +50,22 @@ import org.atalk.crypto.CryptoFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
-import org.atalk.util.StringUtils;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.File;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.*;
 
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import timber.log.Timber;
@@ -67,9 +79,21 @@ import static org.atalk.persistance.FileBackend.getMimeType;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatActivity extends OSGiActivity implements OnPageChangeListener, TaskCompleted
+public class ChatActivity extends OSGiActivity
+        implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener, ChatRoomConfiguration.ChatRoomConfigListener
 {
+    private static final int REQUEST_CODE_SELECT_PHOTO = 100;
+    private static final int REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY = 101;
+    private static final int REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY = 102;
+    private static final int REQUEST_CODE_SELECT_VIDEO = 103;
+    private static final int REQUEST_CODE_CHOOSE_FILE_ACTIVITY = 104;
+    private static final int REQUEST_CODE_OPEN_FILE = 105;
+
+    private static final int REQUEST_CODE_SHARE_WITH = 200;
+    private static final int REQUEST_CODE_FORWARD = 201;
+
     public final static String CRYPTO_FRAGMENT = "crypto_fragment";
+
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access
      * previous and next wizard steps.
@@ -80,6 +104,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private ChatPagerAdapter chatPagerAdapter;
+
+    /**
+     * The media preview adapter, which provides views of all attachments.
+     */
+    private MediaPreviewAdapter mediaPreviewAdapter;
 
     /**
      * Set the number of pages that should be retained to either side of the current page in the
@@ -102,34 +131,35 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     private MenuItem mCallVideoContact;
     private MenuItem mSendFile;
     private MenuItem mSendLocation;
+    private MenuItem mTtsEnable;
+    private MenuItem mStatusEnable;
+    private MenuItem mRoomInvite;
     private MenuItem mLeaveChatRoom;
     private MenuItem mDestroyChatRoom;
     private MenuItem mChatRoomInfo;
     private MenuItem mChatRoomMember;
-    private MenuItem mChatRoomSubject;
+    private MenuItem mChatRoomConfig;
+    private MenuItem mChatRoomNickSubject;
     private MenuItem mOtr_Session;
-
     /**
      * Holds chatId that is currently handled by this Activity.
      */
     private String currentChatId;
     // Current chatMode see ChatSessionManager ChatMode variables
     private int currentChatMode;
-    // currently not implemented
+    // Not implemented currently
     private int mCurrentChatType;
 
     private ChatPanel selectedChatPanel;
     private static Contact mRecipient;
 
-    private static File mCameraFilePath = null;
-    final private List<Uri> mPendingImageUris = new ArrayList<>();
+    private ChatRoomConfiguration chatRoomConfig;
+    private CryptoFragment cryptoFragment;
 
-    private static final int SELECT_PHOTO = 100;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 101;
-    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 102;
-    private static final int SELECT_VIDEO = 103;
-    private static final int CHOOSE_FILE_ACTIVITY_REQUEST_CODE = 104;
-    private static final int OPEN_FILE_REQUEST_CODE = 105;
+    /**
+     * file for camera picture or video capture
+     */
+    private static File mCameraFilePath = null;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -148,7 +178,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat);
+        setContentView(R.layout.chat_main);
 
         // If chat notification has been clicked and OSGi service has been killed in the meantime
         // then we have to start it and restore this activity
@@ -156,7 +186,8 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             return;
         }
         // Add fragment for crypto padLock for OTR and OMEMO before start pager
-        getSupportFragmentManager().beginTransaction().add(new CryptoFragment(), CRYPTO_FRAGMENT).commit();
+        cryptoFragment = new CryptoFragment();
+        getSupportFragmentManager().beginTransaction().add(cryptoFragment, CRYPTO_FRAGMENT).commit();
 
         // Instantiate a ViewPager and a PagerAdapter.
         chatPager = findViewById(R.id.chatPager);
@@ -165,6 +196,16 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         chatPager.setOffscreenPageLimit(CHAT_PAGER_SIZE);
         chatPager.addOnPageChangeListener(this);
 
+        /*
+         * Media Preview display area for user confirmation before sending
+         */
+        ImageView imagePreview = findViewById(R.id.imagePreview);
+        RecyclerView mediaPreview = findViewById(R.id.media_preview);
+        mediaPreviewAdapter = new MediaPreviewAdapter(this, imagePreview);
+        mediaPreview.setAdapter(mediaPreviewAdapter);
+
+        // Registered location listener - only use by playStore version
+        GeoLocation.registeredLocationListener(this);
         handleIntent(getIntent(), savedInstanceState);
     }
 
@@ -206,6 +247,14 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         // setCurrentChatId(chatPanel.getChatSession().getChatId());
         setCurrentChatId(chatId);
         chatPager.setCurrentItem(chatPagerAdapter.getChatIdx(currentChatId));
+
+        if (intent.getClipData() != null) {
+            if (intent.getCategories() != null)
+                onActivityResult(REQUEST_CODE_FORWARD, RESULT_OK, intent);
+            else
+                onActivityResult(REQUEST_CODE_SHARE_WITH, RESULT_OK, intent);
+
+        }
     }
 
     /**
@@ -234,6 +283,17 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     @Override
     protected void onPause()
     {
+        // Must reset unread message counter on chatSession closed
+        // Otherwise value not clear when user enter and exit chatSession without page slide
+        if (selectedChatPanel != null) {
+            Object descriptor = selectedChatPanel.getChatSession().getDescriptor();
+            if (descriptor instanceof MetaContact) {
+                ((MetaContact) descriptor).setUnreadCount(0);
+            }
+            else if (descriptor instanceof ChatRoomWrapper) {
+                ((ChatRoomWrapper) descriptor).setUnreadCount(0);
+            }
+        }
         ChatSessionManager.setCurrentChatId(null);
         super.onPause();
     }
@@ -254,11 +314,23 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     protected void onDestroy()
     {
         super.onDestroy();
-        if (chatPagerAdapter != null)
+        if (chatPagerAdapter != null) {
             chatPagerAdapter.dispose();
+        }
 
         // Clear last chat intent
         AndroidUtils.clearGeneralNotification(aTalkApp.getGlobalContext());
+    }
+
+    /**
+     * Must check chatFragment for non-null before proceed
+     * User by ShareUtil to toggle media preview if any
+     */
+    public void toggleInputMethod()
+    {
+        ChatFragment chatFragment;
+        if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null)
+            chatFragment.getChatController().updateSendModeState();
     }
 
     /**
@@ -293,8 +365,25 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     {
         // Close the activity when back button is pressed
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
+            if (chatRoomConfig != null) {
+                chatRoomConfig.onBackPressed();
+            }
+            else {
+                finish();
+            }
             return true;
+        }
+        else {
+            // Pass to ChatController to handle; reference may be null on event triggered => NPE. so must check
+            ChatFragment chatFragment;
+            ChatController chatController;
+
+            if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null) {
+                if ((chatController = chatFragment.getChatController()) != null) {
+                    if (chatController.onKeyUp(keyCode, event))
+                        return true;
+                }
+            }
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -315,18 +404,21 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         mCallVideoContact = mMenu.findItem(R.id.call_contact_video);
         mSendFile = mMenu.findItem(R.id.send_file);
         mSendLocation = mMenu.findItem(R.id.send_location);
+        mTtsEnable = mMenu.findItem(R.id.chat_tts_enable);
+        mStatusEnable = mMenu.findItem(R.id.room_status_enable);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
+        mRoomInvite = mMenu.findItem(R.id.muc_invite);
         mLeaveChatRoom = mMenu.findItem(R.id.leave_chat_room);
         mDestroyChatRoom = mMenu.findItem(R.id.destroy_chat_room);
         mChatRoomInfo = mMenu.findItem(R.id.chatroom_info);
         mChatRoomMember = mMenu.findItem(R.id.show_chatroom_occupant);
-        mChatRoomSubject = mMenu.findItem(R.id.change_chatroom_attr);
+        mChatRoomConfig = mMenu.findItem(R.id.chatroom_config);
+        mChatRoomNickSubject = mMenu.findItem(R.id.chatroom_info_change);
         mOtr_Session = menu.findItem(R.id.otr_session);
 
         if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
             menu.removeItem(R.id.send_location);
         }
-
         setOptionItem();
         return true;
     }
@@ -337,7 +429,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         if ((mMenu != null) && (selectedChatPanel != null)) {
             boolean hasUploadService = false;
             ChatSession chatSession = selectedChatPanel.getChatSession();
-            XMPPTCPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+            XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
             if (connection != null) {
                 HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
                 hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
@@ -349,6 +441,7 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mLeaveChatRoom.setVisible(false);
                 mDestroyChatRoom.setVisible(false);
                 mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
+                boolean isDomainJid = mRecipient.getJid() instanceof DomainBareJid;
 
                 // check if to show call buttons.
                 Object metaContact = chatSession.getDescriptor();
@@ -359,28 +452,58 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 mCallAudioContact.setVisible(isShowCall);
                 mCallVideoContact.setVisible(isShowVideoCall);
 
-                boolean isShowFileSend = contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService;
+                boolean isShowFileSend = !isDomainJid
+                        && (contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService);
                 mSendFile.setVisible(isShowFileSend);
-                mSendLocation.setVisible(true);
+                mSendLocation.setVisible(!isDomainJid);
+
+                mTtsEnable.setVisible(!isDomainJid);
+                mTtsEnable.setTitle(mRecipient.isTtsEnable()
+                        ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+
+                mStatusEnable.setVisible(false);
+                mRoomInvite.setVisible(!isDomainJid);
                 mChatRoomInfo.setVisible(false);
                 mChatRoomMember.setVisible(false);
-                mChatRoomSubject.setVisible(false);
-                // Let CryptoFragment handles this to take care Omemo and OTR
-                // mOtr_Session.setVisible(true);
+                mChatRoomConfig.setVisible(false);
+                mChatRoomNickSubject.setVisible(false);
+                // Also let CryptoFragment handles this to take care Omemo and OTR
+                mOtr_Session.setVisible(!isDomainJid);
             }
             else {
-                mLeaveChatRoom.setVisible(true);
-                mDestroyChatRoom.setVisible(true);
+                // Only room owner is allowed to destroy chatRoom - role should not be null for joined room
+                ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) chatSession.getDescriptor();
+                ChatRoomMemberRole role = chatRoomWrapper.getChatRoom().getUserRole();
+
+                mDestroyChatRoom.setVisible(ChatRoomMemberRole.OWNER.equals(role));
+                mChatRoomConfig.setVisible(ChatRoomMemberRole.OWNER.equals(role));
+
+                boolean isJoined = chatRoomWrapper.getChatRoom().isJoined();
+                mLeaveChatRoom.setVisible(isJoined);
+                mSendFile.setVisible(isJoined && hasUploadService);
+                mSendLocation.setVisible(isJoined);
+
+                mTtsEnable.setVisible(isJoined);
+                mTtsEnable.setTitle(chatRoomWrapper.isTtsEnable()
+                        ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+
+                mStatusEnable.setVisible(true);
+                mStatusEnable.setTitle(chatRoomWrapper.isRoomStatusEnable()
+                        ? R.string.service_gui_CHATROOM_STATUS_OFF : R.string.service_gui_CHATROOM_STATUS_ON);
+
+                mChatRoomNickSubject.setVisible(isJoined);
+
                 mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
-                mSendFile.setVisible(hasUploadService);
-                mSendLocation.setVisible(false);
                 mChatRoomInfo.setVisible(true);
                 mChatRoomMember.setVisible(true);
-                mChatRoomSubject.setVisible(true);
+
+                // not available in chatRoom
                 mCallAudioContact.setVisible(false);
                 mCallVideoContact.setVisible(false);
                 mOtr_Session.setVisible(false);
             }
+            // Show the TTS enable option only if global TTS option is enabled.
+            mTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
 
             MenuItem mPadlock = mMenu.findItem(R.id.otr_padlock);
             if (mPadlock != null) {
@@ -397,16 +520,52 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        Object object = selectedChatPanel.getChatSession().getDescriptor();
+        // NPE from field
+        if ((selectedChatPanel == null) || (selectedChatPanel.getChatSession() == null))
+            return super.onOptionsItemSelected(item);
 
-        if (object instanceof ChatRoomWrapper) {
-            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) object;
+        Object descriptor = selectedChatPanel.getChatSession().getDescriptor();
+
+        // Common handler for both the ChatRoomWrapper and MetaContact
+        switch (item.getItemId()) {
+            case R.id.send_file:
+                AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this);
+                attachOptionDialog.show();
+                return true;
+
+            case R.id.muc_invite:
+                ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
+                inviteDialog.show();
+                return true;
+
+            case R.id.erase_chat_history:
+                EntityListHelper.eraseEntityChatHistory(this, descriptor, null, null);
+                return true;
+
+            case R.id.send_location:
+                Intent intent = new Intent(this, GeoLocation.class);
+                intent.putExtra(GeoLocation.SEND_LOCATION, true);
+                startActivity(intent);
+                return true;
+        }
+
+        if (descriptor instanceof ChatRoomWrapper) {
+            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) descriptor;
             ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.addToBackStack(null);
 
             switch (item.getItemId()) {
-                case R.id.muc_invite:
-                    ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
-                    inviteDialog.show();
+                case R.id.chat_tts_enable:
+                    if (chatRoomWrapper.isTtsEnable()) {
+                        chatRoomWrapper.setTtsEnable(false);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                    }
+                    else {
+                        chatRoomWrapper.setTtsEnable(true);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                    }
+                    selectedChatPanel.updateChatTtsOption();
                     return true;
 
                 case R.id.leave_chat_room:
@@ -423,83 +582,93 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                     return true;
 
                 case R.id.destroy_chat_room:
-                    EntityListHelper.removeEntity(chatRoomWrapper, selectedChatPanel);
+                    new ChatRoomDestroyDialog().show(this, chatRoomWrapper, selectedChatPanel);
                     // It is safer to just finish. see case R.id.close_chat:
                     finish();
                     return true;
 
                 case R.id.chatroom_info:
                     ChatRoomInfoDialog chatRoomInfoDialog = ChatRoomInfoDialog.newInstance(chatRoomWrapper);
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.addToBackStack(null);
                     chatRoomInfoDialog.show(ft, "infoDialog");
                     return true;
 
-                case R.id.change_chatroom_attr:
-                    ChatRoomInfoChangeDialog chatRoomInfoChangeDialog = new ChatRoomInfoChangeDialog(this, chatRoomWrapper);
-                    chatRoomInfoChangeDialog.show();
+                case R.id.chatroom_info_change:
+                    new ChatRoomInfoChangeDialog().show(this, chatRoomWrapper);
+                    return true;
+
+                case R.id.chatroom_config:
+                    chatRoomConfig = ChatRoomConfiguration.getInstance(chatRoomWrapper, this);
+                    ft.replace(android.R.id.content, chatRoomConfig).commit();
+                    return true;
+
+                case R.id.room_status_enable:
+                    if (chatRoomWrapper.isRoomStatusEnable()) {
+                        chatRoomWrapper.setRoomStatusEnable(false);
+                        mStatusEnable.setTitle(R.string.service_gui_CHATROOM_STATUS_ON);
+                    }
+                    else {
+                        chatRoomWrapper.setRoomStatusEnable(true);
+                        mStatusEnable.setTitle(R.string.service_gui_CHATROOM_STATUS_OFF);
+                    }
                     return true;
 
                 case R.id.show_chatroom_occupant:
                     StringBuilder memberList = new StringBuilder();
-                    List<ChatRoomMember> occupants = chatRoomWrapper.getChatRoom().getMembers();
-                    for (ChatRoomMember member : occupants) {
-                        ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
-                        memberList.append(occupant.getNickName())
-                                .append(" - ")
-                                .append(occupant.getJabberID())
-                                .append("<br/>");
-                        String user = chatRoomWrapper.getParentProvider().getProtocolProvider().getAccountID().getUserID();
-                        selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_HTML,
-                                memberList.toString());
+                    List<ChatRoomMember> occupants = chatRoom.getMembers();
+                    if (occupants.size() > 0) {
+                        for (ChatRoomMember member : occupants) {
+                            ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
+                            memberList.append(occupant.getNickName())
+                                    .append(" - ")
+                                    .append(occupant.getJabberID())
+                                    .append(" (")
+                                    .append(member.getRole().getRoleName())
+                                    .append(")")
+                                    .append("<br/>");
+                        }
                     }
-                    return true;
-
-                case R.id.send_file:
-                    // Note: mReceipient is not used
-                    AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
-                    attachOptionDialog.show();
+                    else {
+                        memberList.append(getString(R.string.service_gui_LIST_NONE));
+                    }
+                    String user = chatRoomWrapper.getProtocolProvider().getAccountID().getUserID();
+                    selectedChatPanel.addMessage(user, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_HTML,
+                            memberList.toString());
                     return true;
             }
         }
-        else {
-            Intent intent;
+        // Handle item selection for mRecipient if non-null
+        else if (mRecipient != null) {
+            Boolean isAudioCall = null;
 
-            // Handle item selection
             switch (item.getItemId()) {
-                case R.id.muc_invite:
-                    ChatInviteDialog inviteDialog = new ChatInviteDialog(this, selectedChatPanel);
-                    inviteDialog.show();
+                case R.id.chat_tts_enable:
+                    if (mRecipient.isTtsEnable()) {
+                        mRecipient.setTtsEnable(false);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_ENABLE);
+                    }
+                    else {
+                        mRecipient.setTtsEnable(true);
+                        mTtsEnable.setTitle(R.string.service_gui_TTS_DISABLE);
+                    }
+                    selectedChatPanel.updateChatTtsOption();
                     return true;
 
                 case R.id.call_contact_audio: // start audio call
-                    if (mRecipient != null)
-                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                                mRecipient.getProtocolProvider(), false);
-                    return true;
-
-                case R.id.call_contact_video: // start video call
-                    if (mRecipient != null)
-                        AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                                mRecipient.getProtocolProvider(), true);
-                    return true;
-
-                case R.id.send_location:
-                    if (!BuildConfig.FLAVOR.equals("fdroid")) {
-                        intent = new Intent(this, GeoLocation.class);
-                        intent.putExtra(GeoLocation.SEND_LOCATION, true);
-                        startActivity(intent);
+                    Jid jid = mRecipient.getJid();
+                    if (jid instanceof DomainBareJid) {
+                        TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(android.R.id.content, extPhone).commit();
+                        return true;
                     }
-                    return true;
+                    isAudioCall = true;  // fall through to start either audio / video call
 
-                case R.id.erase_chat_history:
-                    EntityListHelper.eraseEntityChatHistory(ChatActivity.this,
-                            selectedChatPanel.getChatSession().getDescriptor(), null, null);
-                    return true;
+                case R.id.call_contact_video:
+                    // AndroidCallUtil.createCall(this, mRecipient.getAddress(),
+                    //        mRecipient.getProtocolProvider(), (isAudioCall == null));
 
-                case R.id.send_file:
-                    AttachOptionDialog attachOptionDialog = new AttachOptionDialog(this, mRecipient);
-                    attachOptionDialog.show();
+                    AndroidCallUtil.createCall(this, selectedChatPanel.getMetaContact(),
+                            (isAudioCall == null), null);
                     return true;
             }
         }
@@ -562,32 +731,39 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 chatSession = chatPanel.getChatSession();
             }
 
-            if (chatSession == null) {
+            if ((chatSession == null) || (chatSession.getCurrentChatTransport() == null)) {
                 Timber.e("Cannot continue without the default chatSession");
                 return;
             }
 
+            // Update the actionBar Title with the entity name
             ActionBarUtil.setTitle(this, chatSession.getCurrentChatTransport().getDisplayName());
-            if (chatSession instanceof MetaContactChatSession) {
-                ActionBarUtil.setAvatar(this, chatSession.getChatAvatar());
 
+            if (chatSession instanceof MetaContactChatSession) {
+                // Reset unread message count when user slides to view this chat session
+                ((MetaContact) chatSession.getDescriptor()).setUnreadCount(0);
+
+                ActionBarUtil.setAvatar(this, chatSession.getChatAvatar());
                 PresenceStatus status = chatSession.getCurrentChatTransport().getStatus();
                 if (status != null) {
                     ActionBarUtil.setStatus(this, status.getStatusIcon());
 
-                    String presenceStatus = status.getStatusName();
                     if (!status.isOnline()) {
-                        String lastSeen = getLastSeen();
-                        if (lastSeen != null)
-                            presenceStatus = lastSeen;
+                        getLastSeen(status);
                     }
-                    ActionBarUtil.setSubtitle(this, presenceStatus);
+                    else {
+                        // Reset elapse time to fetch new again when contact goes offline again
+                        mRecipient.setLastActiveTime(-1);
+                        ActionBarUtil.setSubtitle(this, status.getStatusName());
+                    }
                 }
             }
             else if (chatSession instanceof ConferenceChatSession) {
+                // Reset unread message count when user slides to view this chat session
+                ((ChatRoomWrapper) chatSession.getDescriptor()).setUnreadCount(0);
+
                 ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
-                ActionBarUtil.setAvatar(this, AndroidImageUtil.convertToBytes(BitmapFactory
-                        .decodeResource(getResources(), R.drawable.ic_chatroom), 100));
+                ActionBarUtil.setAvatar(this, R.drawable.ic_chatroom);
                 ActionBarUtil.setStatus(this, ccSession.getChatStatusIcon());
                 ActionBarUtil.setSubtitle(this, ccSession.getChatSubject());
             }
@@ -595,102 +771,82 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     }
 
     /**
-     * Convert to string of the lastSeen elapsed Time
-     *
-     * @return lastSeen string for display; null if exception
+     * Fetch and display the contact lastSeen elapsed Time; run in new thread to avoid ANR
      */
-    public String getLastSeen()
+    public void getLastSeen(PresenceStatus status)
     {
-        XMPPTCPConnection connection = mRecipient.getProtocolProvider().getConnection();
-        if (connection == null)
-            return null;
+        // cmeng: this happens if the contact remove presence subscription while still in chat session
+        if (mRecipient != null) {
+            XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
 
-        Jid jid = mRecipient.getJid();
-        LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);
+            // Proceed only if user is online and registered
+            if ((connection != null) && connection.isAuthenticated()) {
+                new Thread(() -> {
+                    final String lastSeen;
+                    Contact mContact = mRecipient;
 
-        long timeNow = System.currentTimeMillis();
-        long elapseTime = -1;
-        try {
-            elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
-        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                | SmackException.NotConnectedException | InterruptedException ignore) {
-        }
+                    // Retrieve from server if this is the first access
+                    long lastActiveTime = mRecipient.getLastActiveTime();
+                    if (lastActiveTime == -1) {
+                        Jid jid = mRecipient.getJid();
+                        LastActivityManager lastActivityManager = LastActivityManager.getInstanceFor(connection);
 
-        if (elapseTime == -1) {
-            return null;
-        }
-        else {
-            CharSequence lastSeen;
-            long dateTime = (timeNow - elapseTime * 1000L);
-
-            if (DateUtils.isToday(dateTime)) {
-                DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
-                return getString(R.string.service_gui_LAST_SEEN, df.format(new Date(dateTime)));
-            }
-            // else if (DateUtils.isToday(dateTime + DateUtils.DAY_IN_MILLIS)) {  // yesterday
-                // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.SECOND_IN_MILLIS,
-                //        DateUtils.FORMAT_ABBREV_ALL);
-            // }
-            else {
-                // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
-                DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-                return df.format(new Date(dateTime));
-            }
-        }
-    }
-
-    /**
-     * Send an outgoing file message to chatFragment for it to start the file send process
-     * The recipient can be contact or chatRoom
-     *
-     * @param filePath of the file to be sent
-     */
-    public void sendFile(String filePath)
-    {
-        Date date = Calendar.getInstance().getTime();
-        String sendTo = selectedChatPanel.getChatSession().getCurrentChatTransport().getName();
-        selectedChatPanel.addMessage(sendTo, date, ChatMessage.MESSAGE_FILE_TRANSFER_SEND, Message.ENCODE_PLAIN, filePath);
-    }
-
-    public static void sendLocation(String location)
-    {
-        final ChatPanel chatPanel;
-        UIService uiService = AndroidGUIActivator.getUIService();
-        if (uiService != null) {
-            if (mRecipient != null) {
-                chatPanel = (ChatPanel) uiService.getChat(mRecipient);
-                if (chatPanel != null) {
-                    int encryption = Message.ENCRYPTION_NONE;
-                    if (chatPanel.isOmemoChat())
-                        encryption = Message.ENCRYPTION_OMEMO;
-                    else if (chatPanel.isOTRChat())
-                        encryption = Message.ENCRYPTION_OTR;
-
-                    ChatTransport mChatTransport = chatPanel.getChatSession().getCurrentChatTransport();
-                    try {
-                        mChatTransport.sendInstantMessage(location, encryption | Message.ENCODE_PLAIN);
-                    } catch (Exception e) {
-                        aTalkApp.showToastMessage(e.getMessage());
+                        try {
+                            long elapseTime = lastActivityManager.getLastActivity(jid).getIdleTime();
+                            lastActiveTime = (System.currentTimeMillis() - elapseTime * 1000L);
+                            mRecipient.setLastActiveTime(lastActiveTime);
+                        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
+                                | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException e) {
+                            Timber.w("Exception in getLastSeen %s", e.getMessage());
+                        }
                     }
-                }
+
+                    if (lastActiveTime != -1) {
+                        if (DateUtils.isToday(lastActiveTime)) {
+                            DateFormat df = DateFormat.getTimeInstance(DateFormat.MEDIUM);
+                            lastSeen = getString(R.string.service_gui_LAST_SEEN, df.format(new Date(lastActiveTime)));
+                        }
+                        else {
+                            // lastSeen = DateUtils.getRelativeTimeSpanString(dateTime, timeNow, DateUtils.DAY_IN_MILLIS);
+                            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+                            lastSeen = df.format(new Date(lastActiveTime));
+                        }
+                    }
+                    else {
+                        lastSeen = status.getStatusName();
+                    }
+                    // Update display only if the result is for the intended mContact;
+                    // user may have slide to new chatSession if server has slow response
+                    if (mContact.equals(mRecipient))
+                        runOnUiThread(() -> ActionBarUtil.setSubtitle(ChatActivity.this, lastSeen));
+                }).start();
             }
+            return;
         }
+
+        // Reset elapse time to fetch new again when contact goes offline again and just update with contact old status
+        // mRecipient.setLastActiveTime(-1);
+        ActionBarUtil.setSubtitle(this, status.getStatusName());
     }
 
-    public void sendAttachment(AttachOptionItem attachOptionItem, final Contact contact)
+    public void sendAttachment(AttachOptionItem attachOptionItem)
     {
-        mRecipient = contact;
         Intent intent = new Intent();
         Uri fileUri;
 
         switch (attachOptionItem) {
             case pic:
                 intent.setType("image/*");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                }
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, SELECT_PHOTO);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_PHOTO);
+                break;
+
+            case video:
+                intent.setType("video/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
                 break;
 
             case camera:
@@ -703,13 +859,11 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                break;
-
-            case video:
-                intent.setType("video/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, SELECT_VIDEO);
+                try {
+                    startActivityForResult(intent, REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY);
+                } catch (SecurityException e) {
+                    aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
+                }
                 break;
 
             case video_record:
@@ -720,19 +874,21 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
                 // create Intent to record video and return control to the calling application
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
                 intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
-                startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                try {
+                    startActivityForResult(intent, REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
+                } catch (SecurityException e) {
+                    aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
+                }
                 break;
 
             case share_file:
                 intent.setType("*/*");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                }
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 try {
                     Intent chooseFile = Intent.createChooser(intent, getString(R.string.choose_file_activity_title));
-                    startActivityForResult(chooseFile, CHOOSE_FILE_ACTIVITY_REQUEST_CODE);
+                    startActivityForResult(chooseFile, REQUEST_CODE_CHOOSE_FILE_ACTIVITY);
                 } catch (android.content.ActivityNotFoundException ex) {
                     showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_APPLICATION);
                 }
@@ -741,99 +897,101 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    public void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode == RESULT_OK) {
             String filePath;
+            List<Attachment> attachments;
 
             switch (requestCode) {
-                case SELECT_PHOTO:
-                    mPendingImageUris.clear();
-                    mPendingImageUris.addAll(extractUriFromIntent(data));
-                    for (Iterator<Uri> i = mPendingImageUris.iterator(); i.hasNext(); i.remove()) {
-                        filePath = FilePathHelper.getPath(this, i.next());
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
+                case REQUEST_CODE_SELECT_PHOTO:
+                case REQUEST_CODE_SELECT_VIDEO:
+                case REQUEST_CODE_CHOOSE_FILE_ACTIVITY:
+                    attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
+                    mediaPreviewAdapter.addMediaPreviews(attachments);
                     break;
 
-                case SELECT_VIDEO:
-                    Uri selectedVideo = data.getData();
-                    if (selectedVideo != null) {
-                        filePath = FilePathHelper.getPath(this, selectedVideo);
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
-                    break;
-
-                case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-                case CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE:
+                case REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY:
+                case REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY:
                     if ((mCameraFilePath != null) && mCameraFilePath.exists()) {
-                        filePath = mCameraFilePath.getPath();
-                        if (!StringUtils.isNullOrEmpty(filePath)) {
-                            mCameraFilePath = null;
-                            sendFile(filePath);
-                        }
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    }
-                    else
-                        aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-                    break;
-
-                case CHOOSE_FILE_ACTIVITY_REQUEST_CODE:
-                    mPendingImageUris.clear();
-                    mPendingImageUris.addAll(extractUriFromIntent(data));
-                    for (Iterator<Uri> i = mPendingImageUris.iterator(); i.hasNext(); i.remove()) {
-                        filePath = FilePathHelper.getPath(this, i.next());
-                        if (!StringUtils.isNullOrEmpty(filePath))
-                            sendFile(filePath);
-                        else
-                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                        Uri uri = FileBackend.getUriForFile(this, mCameraFilePath);
+                        attachments = Attachment.of(this, uri, Attachment.Type.IMAGE);
+                        mediaPreviewAdapter.addMediaPreviews(attachments);
                     }
                     break;
 
-                case OPEN_FILE_REQUEST_CODE:
-                    if (data != null) {
-                        Uri uri = data.getData();
+                case REQUEST_CODE_OPEN_FILE:
+                    if (intent != null) {
+                        Uri uri = intent.getData();
                         if (uri != null) {
                             filePath = FilePathHelper.getPath(this, uri);
-                            if (!StringUtils.isNullOrEmpty(filePath))
+                            if (StringUtils.isNotEmpty(filePath))
                                 openDownloadable(new File(filePath));
                             else
                                 aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                         }
                     }
                     break;
+
+                case REQUEST_CODE_SHARE_WITH:
+                    Timber.d("Share Intent with: REQUEST_CODE_SHARE_WITH");
+                    selectedChatPanel.setEditedText(null);
+                    if ("text/plain".equals(intent.getType())) {
+                        String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+                        if (!TextUtils.isEmpty(text)) {
+                            if (FileBackend.isHttpFileDnLink(text)) {
+                                MediaShareAsynTask msTask = new MediaShareAsynTask();
+                                msTask.execute(text);
+                                break;
+                            }
+                            else {
+                                selectedChatPanel.setEditedText(text);
+                            }
+                        }
+                    }
+                    else {
+                        attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
+                        mediaPreviewAdapter.addMediaPreviews(attachments);
+                    }
+                    // Switch to active chat fragment and update the chatController entry
+                    chatPagerAdapter.notifyDataSetChanged();
+                    toggleInputMethod();
+                    break;
+
+                case REQUEST_CODE_FORWARD:
+                    Timber.d("Share Intent with: REQUEST_CODE_FORWARD");
+                    selectedChatPanel.setEditedText(null);
+                    String text = (intent.getCategories() == null) ? null : intent.getCategories().toString();
+                    if (!TextUtils.isEmpty(text)) {
+                        selectedChatPanel.setEditedText(text);
+                    }
+
+                    attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
+                    mediaPreviewAdapter.addMediaPreviews(attachments);
+
+                    // Switch to active chat fragment and update the chatController entry
+                    chatPagerAdapter.notifyDataSetChanged();
+                    toggleInputMethod();
+                    break;
             }
         }
     }
 
-    @SuppressLint("NewApi")
-    private static List<Uri> extractUriFromIntent(final Intent intent)
+    /**
+     * callBack for GeoLocation onResult received
+     *
+     * @param location Geo Location information
+     * @param locAddress Geo Location Address
+     */
+    @Override
+    public void onResult(Location location, String locAddress)
     {
-        List<Uri> uris = new ArrayList<>();
-        if (intent == null) {
-            return uris;
-        }
-        Uri uri = intent.getData();
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) && uri == null) {
-            final ClipData clipData = intent.getClipData();
-            if (clipData != null) {
-                for (int i = 0; i < clipData.getItemCount(); ++i) {
-                    uris.add(clipData.getItemAt(i).getUri());
-                }
-            }
-        }
-        else {
-            uris.add(uri);
-        }
-        return uris;
+        String mLatitude = String.valueOf(location.getLatitude());
+        String mLongitude = String.valueOf(location.getLongitude());
+        String msg = locAddress + " \nLatLng: " + mLatitude + "," + mLongitude;
+
+        selectedChatPanel.sendMessage(msg, IMessage.ENCODE_PLAIN);
     }
 
     /**
@@ -865,9 +1023,9 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
         }
 
         Intent openIntent = new Intent(Intent.ACTION_VIEW);
-        if (mimeType.contains("3gp")) {
+        if (mimeType.contains("audio") || mimeType.contains("3gp")) {
             openIntent = new Intent(this, AudioBgService.class);
-            openIntent.setAction(AudioBgService.ACTION_PLAYBACK);
+            openIntent.setAction(AudioBgService.ACTION_PLAYBACK_PLAY);
             openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             openIntent.setDataAndType(uri, mimeType);
             startService(openIntent);
@@ -885,6 +1043,103 @@ public class ChatActivity extends OSGiActivity implements OnPageChangeListener, 
             startActivity(openIntent);
         } catch (ActivityNotFoundException e) {
             showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+        }
+    }
+
+    /**
+     * Call back from ChatRoomConfiguration when it has completed the task.
+     * 1. Stop all future onBackPressed call to ChatRoomConfiguration
+     * 2. Re-init OMEMO support option after room properties changed.
+     *
+     * @param configUpdates room configuration user selected fields for update
+     */
+    @Override
+    public void onConfigComplete(Map<String, Object> configUpdates)
+    {
+        chatRoomConfig = null;
+        cryptoFragment.updateOmemoSupport();
+    }
+
+    /**
+     * Construct media url share with thumbnail and title via URL_EMBBED which supports with JSONObject:
+     *
+     * {"width":480,"provider_name":"YouTube","url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+     * "title":"Rick Astley - Never Gonna Give You Up (Video)","author_name":"RickAstleyVEVO",
+     * "thumbnail_width":480,"height":270,"thumbnail_url":"https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+     * "author_url":"https://www.youtube.com/user/RickAstleyVEVO","type":"video","provider_url":"https://www.youtube.com/",
+     * "thumbnail_height":360,"version":"1.0","html":"\n<iframe width=\" 480\" height=\"270\"
+     * src=\"https://www.youtube.com/embed/dQw4w9WgXcQ?feature=oembed\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>\n"}
+     */
+    private class MediaShareAsynTask extends AsyncTask<String, Void, String>
+    {
+        private String mUrl;
+
+        @Override
+        protected String doInBackground(String... params)
+        {
+            mUrl = params[0];
+            // mUrl = "https://vimeo.com/45196609";  // invalid link
+            return getUrlInfo(mUrl);
+        }
+
+        @Override
+        protected void onPostExecute(String result)
+        {
+            String urlInfo = null;
+            if (!TextUtils.isEmpty(result)) {
+                try {
+                    final JSONObject attributes = new JSONObject(result);
+                    String title = attributes.getString("title");
+                    String imageUrl = attributes.getString("thumbnail_url");
+
+                    urlInfo = getString(R.string.service_gui_URL_MEDIA_SHARE, imageUrl, title, mUrl);
+                    selectedChatPanel.sendMessage(urlInfo, IMessage.ENCODE_HTML);
+                } catch (JSONException e) {
+                    Timber.w("Exception in JSONObject access: %s", result);
+                }
+            }
+
+            // send mUrl instead fetch urlInfo failed
+            if (urlInfo == null) {
+                // selectedChatPanel.setEditedText(mUrl); too late as controller msgEdit is already initialized
+                selectedChatPanel.sendMessage(mUrl, IMessage.ENCODE_PLAIN);
+            }
+        }
+
+        /***
+         * Get the Drawable from the given URL (change to secure https if necessary)
+         * aTalk/android supports only secure https connection
+         * https://noembed.com/embed?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ
+         *
+         * @param urlString url string
+         * @return Jason String
+         */
+        private String getUrlInfo(String urlString)
+        {
+            // Server that provides the media info for the supported services
+            String URL_EMBBED = "https://noembed.com/embed?url=";
+
+            try {
+                urlString = URL_EMBBED + urlString.replace("http:", "https:");
+                URL mUrl = new URL(urlString);
+                HttpURLConnection httpConnection = (HttpURLConnection) mUrl.openConnection();
+                httpConnection.setRequestMethod("GET");
+                httpConnection.setRequestProperty("Content-length", "0");
+                httpConnection.setUseCaches(false);
+                httpConnection.setAllowUserInteraction(false);
+                httpConnection.setConnectTimeout(3000);
+                httpConnection.setReadTimeout(3000);
+                httpConnection.connect();
+
+                int responseCode = httpConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = httpConnection.getInputStream();
+                    return IOUtils.readAllToString(inputStream);
+                }
+            } catch (IOException e) {
+                Timber.w("Exception in get URL info: %s", e.getMessage());
+            }
+            return null;
         }
     }
 

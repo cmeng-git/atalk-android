@@ -15,13 +15,13 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.FullJid;
 import org.xmpp.extensions.DefaultExtensionElementProvider;
-import org.xmpp.extensions.colibri.WebSocketExtensionElement;
-import org.xmpp.extensions.condesc.CallIdExtensionElement;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionElement;
+import org.xmpp.extensions.colibri.WebSocketExtension;
+import org.xmpp.extensions.condesc.CallIdExtension;
+import org.xmpp.extensions.condesc.ConferenceDescriptionExtension;
 import org.xmpp.extensions.jingle.*;
 import org.xmpp.extensions.jingle.element.*;
-import org.xmpp.extensions.jitsimeet.BundleExtensionElement;
-import org.xmpp.extensions.jitsimeet.SSRCInfoExtensionElement;
+import org.xmpp.extensions.jitsimeet.BundleExtension;
+import org.xmpp.extensions.jitsimeet.SSRCInfoExtension;
 
 import java.io.IOException;
 
@@ -36,36 +36,37 @@ import timber.log.Timber;
 public class JingleProvider extends IQProvider<Jingle>
 {
     /**
-     * Creates a new instance of the <tt>JingleProvider</tt> and register all jingle related
-     * extension providers. It is the responsibility of the application to register the
-     * <tt>JingleProvider</tt> itself.
+     * Creates a new instance of the <tt>JingleProvider</tt> and register all jingle related extension providers.
+     * It is the responsibility of the application to register the <tt>JingleProvider</tt> itself.
+     *
+     * Note: All sub Elements without its own NAMESPACE use their parent NAMESPACE for provider support (Parser implementation)
      */
     public JingleProvider()
     {
         // <description/> provider
         ProviderManager.addExtensionProvider(
-                RtpDescriptionExtensionElement.ELEMENT, RtpDescriptionExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RtpDescriptionExtensionElement.class));
+                RtpDescriptionExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RtpDescriptionExtension.class));
 
         // <payload-type/> provider
         ProviderManager.addExtensionProvider(
-                PayloadTypeExtensionElement.ELEMENT, RtpDescriptionExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(PayloadTypeExtensionElement.class));
+                PayloadTypeExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(PayloadTypeExtension.class));
 
         // <parameter/> provider - RtpDescriptionExtensionElement
         ProviderManager.addExtensionProvider(
-                ParameterExtensionElement.ELEMENT, RtpDescriptionExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ParameterExtensionElement.class));
+                ParameterExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ParameterExtension.class));
 
         // <parameter/> provider - RTPHdrExtExtensionElement
         ProviderManager.addExtensionProvider(
-                ParameterExtensionElement.ELEMENT, RTPHdrExtExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ParameterExtensionElement.class));
+                ParameterExtension.ELEMENT, RTPHdrExtExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ParameterExtension.class));
 
         // <rtp-hdrext/> provider
         ProviderManager.addExtensionProvider(
-                RTPHdrExtExtensionElement.ELEMENT, RTPHdrExtExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RTPHdrExtExtensionElement.class));
+                RTPHdrExtExtension.ELEMENT, RTPHdrExtExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RTPHdrExtExtension.class));
 
         // <sctpmap/> provider
         ProviderManager.addExtensionProvider(
@@ -74,104 +75,110 @@ public class JingleProvider extends IQProvider<Jingle>
 
         // <encryption/> provider
         ProviderManager.addExtensionProvider(
-                EncryptionExtensionElement.ELEMENT, RtpDescriptionExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(EncryptionExtensionElement.class));
+                EncryptionExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(EncryptionExtension.class));
 
         // <zrtp-hash/> provider
         ProviderManager.addExtensionProvider(
-                ZrtpHashExtensionElement.ELEMENT, ZrtpHashExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(ZrtpHashExtensionElement.class));
+                ZrtpHashExtension.ELEMENT, ZrtpHashExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(ZrtpHashExtension.class));
 
         // <crypto/> provider
         ProviderManager.addExtensionProvider(
-                CryptoExtensionElement.ELEMENT, RtpDescriptionExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(CryptoExtensionElement.class));
+                CryptoExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(CryptoExtension.class));
 
         // <bundle/> provider
         ProviderManager.addExtensionProvider(
-                BundleExtensionElement.ELEMENT, BundleExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(BundleExtensionElement.class));
+                BundleExtension.ELEMENT, BundleExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(BundleExtension.class));
 
         // <group/> provider
         ProviderManager.addExtensionProvider(
-                GroupExtensionElement.ELEMENT, GroupExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(GroupExtensionElement.class));
+                GroupExtension.ELEMENT, GroupExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(GroupExtension.class));
 
         // ice-udp transport
         ProviderManager.addExtensionProvider(
-                IceUdpTransportExtensionElement.ELEMENT, IceUdpTransportExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(IceUdpTransportExtensionElement.class));
+                IceUdpTransportExtension.ELEMENT, IceUdpTransportExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(IceUdpTransportExtension.class));
 
         // <raw-udp/> provider
         ProviderManager.addExtensionProvider(
-                RawUdpTransportExtensionElement.ELEMENT, RawUdpTransportExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RawUdpTransportExtensionElement.class));
+                RawUdpTransportExtension.ELEMENT, RawUdpTransportExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RawUdpTransportExtension.class));
 
         // ice-udp <candidate/> provider
-        ProviderManager.addExtensionProvider(CandidateExtensionElement.ELEMENT,
-                IceUdpTransportExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(CandidateExtensionElement.class));
+        ProviderManager.addExtensionProvider(CandidateExtension.ELEMENT,
+                IceUdpTransportExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(CandidateExtension.class));
 
         // raw-udp <candidate/> provider
         ProviderManager.addExtensionProvider(
-                CandidateExtensionElement.ELEMENT, RawUdpTransportExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(CandidateExtensionElement.class));
+                CandidateExtension.ELEMENT, RawUdpTransportExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(CandidateExtension.class));
 
         // ice-udp <remote-candidate/> provider
         ProviderManager.addExtensionProvider(
-                RemoteCandidateExtensionElement.ELEMENT, IceUdpTransportExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RemoteCandidateExtensionElement.class));
+                RemoteCandidateExtension.ELEMENT, IceUdpTransportExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RemoteCandidateExtension.class));
 
         // inputevt <inputevt/> provider
         ProviderManager.addExtensionProvider(
-                InputEvtExtensionElement.ELEMENT, InputEvtExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(InputEvtExtensionElement.class));
+                InputEvtExtension.ELEMENT, InputEvtExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(InputEvtExtension.class));
 
         // coin <conference-info/> provider
         ProviderManager.addExtensionProvider(
-                CoinExtensionElement.ELEMENT, CoinExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(CoinExtensionElement.class));
+                CoinExtension.ELEMENT, CoinExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(CoinExtension.class));
 
         // DTLS-SRTP
         ProviderManager.addExtensionProvider(
-                DtlsFingerprintExtensionElement.ELEMENT, DtlsFingerprintExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(DtlsFingerprintExtensionElement.class));
+                DtlsFingerprintExtension.ELEMENT, DtlsFingerprintExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(DtlsFingerprintExtension.class));
 
         /*
          * XEP-0251: Jingle Session Transfer <transfer/> and <transferred> providers
          */
         ProviderManager.addExtensionProvider(
-                TransferExtensionElement.ELEMENT, TransferExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(TransferExtensionElement.class));
+                TransferExtension.ELEMENT, TransferExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(TransferExtension.class));
 
         ProviderManager.addExtensionProvider(
-                TransferredExtensionElement.ELEMENT, TransferredExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(TransferredExtensionElement.class));
+                TransferredExtension.ELEMENT, TransferredExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(TransferredExtension.class));
 
         // conference description <callid/> provider
         ProviderManager.addExtensionProvider(
-                CallIdExtensionElement.ELEMENT, ConferenceDescriptionExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(CallIdExtensionElement.class));
+                CallIdExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(CallIdExtension.class));
 
         // rtcp-fb
         ProviderManager.addExtensionProvider(
-                RtcpFbExtensionElement.ELEMENT, RtcpFbExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RtcpFbExtensionElement.class));
+                RtcpFbExtension.ELEMENT, RtcpFbExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RtcpFbExtension.class));
 
-        // rtcp-mux
+        // rtcp-mux => XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22) https://xmpp.org/extensions/xep-0167.html
         ProviderManager.addExtensionProvider(
-                RtcpmuxExtensionElement.ELEMENT, IceUdpTransportExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RtcpmuxExtensionElement.class));
+                RtcpmuxExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RtcpmuxExtension.class));
+
+        // rtcp-mux =>  Multiplexing RTP Data and Control Packets on a Single Port (April 2010)
+        // https://tools.ietf.org/html/rfc5761 (5.1.3.  Interactions with ICE)
+        ProviderManager.addExtensionProvider(
+                RtcpmuxExtension.ELEMENT, IceUdpTransportExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(RtcpmuxExtension.class));
 
         //web-socket
         ProviderManager.addExtensionProvider(
-                WebSocketExtensionElement.ELEMENT, WebSocketExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(WebSocketExtensionElement.class));
+                WebSocketExtension.ELEMENT, WebSocketExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(WebSocketExtension.class));
 
         // ssrcInfo
         ProviderManager.addExtensionProvider(
-                SSRCInfoExtensionElement.ELEMENT, SSRCInfoExtensionElement.NAMESPACE,
-                new DefaultExtensionElementProvider<>(SSRCInfoExtensionElement.class));
+                SSRCInfoExtension.ELEMENT, SSRCInfoExtension.NAMESPACE,
+                new DefaultExtensionElementProvider<>(SSRCInfoExtension.class));
     }
 
     /**
@@ -201,12 +208,12 @@ public class JingleProvider extends IQProvider<Jingle>
         DefaultExtensionElementProvider<JingleContent> contentProvider
                 = new DefaultExtensionElementProvider<>(JingleContent.class);
         ReasonProvider reasonProvider = new ReasonProvider();
-        DefaultExtensionElementProvider<TransferExtensionElement> transferProvider
-                = new DefaultExtensionElementProvider<>(TransferExtensionElement.class);
-        DefaultExtensionElementProvider<CoinExtensionElement> coinProvider
-                = new DefaultExtensionElementProvider<>(CoinExtensionElement.class);
-        DefaultExtensionElementProvider<CallIdExtensionElement> callidProvider
-                = new DefaultExtensionElementProvider<>(CallIdExtensionElement.class);
+        DefaultExtensionElementProvider<TransferExtension> transferProvider
+                = new DefaultExtensionElementProvider<>(TransferExtension.class);
+        DefaultExtensionElementProvider<CoinExtension> coinProvider
+                = new DefaultExtensionElementProvider<>(CoinExtension.class);
+        DefaultExtensionElementProvider<CallIdExtension> callidProvider
+                = new DefaultExtensionElementProvider<>(CallIdExtension.class);
 
         // Now go on and parse the jingle element's content.
         boolean done = false;
@@ -231,47 +238,38 @@ public class JingleProvider extends IQProvider<Jingle>
                             jingle.setReason(reason);
                             break;
                         // <transfer/>
-                        case TransferExtensionElement.ELEMENT:
-                            if (namespace.equals(TransferExtensionElement.NAMESPACE)) {
+                        case TransferExtension.ELEMENT:
+                            if (namespace.equals(TransferExtension.NAMESPACE)) {
                                 jingle.addExtension(transferProvider.parse(parser));
                             }
                             break;
                         // <conference-info/>
-                        case CoinExtensionElement.ELEMENT:
+                        case CoinExtension.ELEMENT:
                             jingle.addExtension(coinProvider.parse(parser));
                             break;
-                        case CallIdExtensionElement.ELEMENT:
+                        case CallIdExtension.ELEMENT:
                             jingle.addExtension(callidProvider.parse(parser));
                             break;
-                        case GroupExtensionElement.ELEMENT:
-                            jingle.addExtension(GroupExtensionElement.parseExtension(parser));
+                        case GroupExtension.ELEMENT:
+                            jingle.addExtension(GroupExtension.parseExtension(parser));
                             break;
                         default:
                             // <mute/> <active/> and other session-info element handlers
-                            if (namespace.equals(SessionInfoExtensionElement.NAMESPACE)) {
+                            if (namespace.equals(SessionInfoExtension.NAMESPACE)) {
                                 SessionInfoType type = SessionInfoType.valueOf(elementName);
 
                                 // <mute/>
                                 if (type == SessionInfoType.mute || type == SessionInfoType.unmute) {
-                                    String name = parser.getAttributeValue("", MuteSessionInfoExtensionElement.NAME_ATTR_VALUE);
-                                    jingle.setSessionInfo(new MuteSessionInfoExtensionElement(
+                                    String name = parser.getAttributeValue("", MuteSessionInfoExtension.NAME_ATTR_VALUE);
+                                    jingle.setSessionInfo(new MuteSessionInfoExtension(
                                             type == SessionInfoType.mute, name));
                                 }
                                 // <ringing/>, <hold/>, <unhold/>, <active/>, etc.
                                 else {
-                                    jingle.setSessionInfo(new SessionInfoExtensionElement(type));
+                                    jingle.setSessionInfo(new SessionInfoExtension(type));
                                 }
                             }
                             else {
-                                /*
-                                 * Seem to have problem with extracting correct elementName???; will failed if passed on to
-                                 * PacketParserUtils.addExtensionElement(jingle, parser);
-                                 *
-                                 * <jingle xmlns='urn:xmpp:jingle:1' action='session-initiate'
-                                 *         initiator='swordfish@atalk.org/atalk' sid='5e00252pm8if7'>
-                                 *     <content creator='initiator' name='audio'>
-                                 * Unknown jingle IQ type: content; urn:xmpp:jingle:1)
-                                 */
                                 Timber.w("Unknown jingle IQ: <%s xml:'%s'>)", elementName, namespace);
                                 try {
                                     PacketParserUtils.addExtensionElement(jingle, parser, xmlEnvironment);
@@ -283,7 +281,7 @@ public class JingleProvider extends IQProvider<Jingle>
                     }
                     break;
                 case END_ELEMENT:
-                    // if (parser.getName().equals(Jingle.ELEMENT_NAME)) {
+                    // if (parser.getName().equals(Jingle.ELEMENT)) {
                     if (parser.getDepth() == initialDepth) {
                         done = true;
                     }

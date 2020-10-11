@@ -18,7 +18,7 @@ package org.atalk.util.concurrent;
 /**
  * Represents an asynchronous processible task which determines the intervals
  * (the lengths of which may vary) at which it is to be invoked.
- * <p>
+ *
  * webrtc/modules/interface/module.h
  *
  * @author Lyubomir Marinov

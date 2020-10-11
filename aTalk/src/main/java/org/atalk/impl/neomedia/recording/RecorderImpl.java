@@ -9,6 +9,7 @@ import org.atalk.impl.neomedia.device.*;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.MediaException;
 import org.atalk.service.neomedia.recording.*;
+import org.atalk.util.MediaType;
 import org.atalk.util.SoundFileUtils;
 
 import java.io.IOException;
@@ -26,7 +27,6 @@ import javax.media.protocol.*;
  */
 public class RecorderImpl implements Recorder
 {
-
 	/**
 	 * The list of formats in which <tt>RecorderImpl</tt> instances support recording media.
 	 */
@@ -40,8 +40,7 @@ public class RecorderImpl implements Recorder
 	};
 
 	/**
-	 * The <tt>AudioMixerMediaDevice</tt> which is to be or which is already being recorded by this
-	 * <tt>Recorder</tt>.
+	 * The <tt>AudioMixerMediaDevice</tt> which is to be or which is already being recorded by this <tt>Recorder</tt>.
 	 */
 	private final AudioMixerMediaDevice device;
 
@@ -57,8 +56,7 @@ public class RecorderImpl implements Recorder
 	private MediaDeviceSession deviceSession;
 
 	/**
-	 * The <tt>List</tt> of <tt>Recorder.Listener</tt>s interested in notifications from this
-	 * <tt>Recorder</tt>.
+	 * The <tt>List</tt> of <tt>Recorder.Listener</tt>s interested in notifications from this <tt>Recorder</tt>.
 	 */
 	private final List<Recorder.Listener> listeners = new ArrayList<>();
 

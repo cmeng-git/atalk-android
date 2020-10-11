@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:background="@color/theme_background"
     android:orientation="vertical"
     android:padding="@dimen/screen_padding">
 
@@ -54,6 +53,63 @@
         android:paddingBottom="5dp">
 
         <TextView
+            android:id="@+id/password"
+            style="@style/MediumFont"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/service_gui_PASSWORD" />
+
+        <RelativeLayout
+            android:id="@+id/pwdTypingArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/passwordField"
+                style="@style/EntryTextView"
+                android:layout_width="match_parent"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+            <CheckBox
+                android:id="@+id/show_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/passwordField"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:button="@drawable/checkbox_password_view" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/none"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"/>
+
+        <CheckBox
+            android:id="@+id/store_password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/store_password" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp">
+
+        <TextView
             android:id="@+id/chatRoom_Subject"
             style="@style/MediumFont"
             android:layout_width="100dp"
@@ -73,37 +129,27 @@
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/service_gui_CHAT_ROOM" />
+        android:text="@string/service_gui_CHATROOM" />
 
-    <org.atalk.android.util.ComboBox
+    <org.atalk.android.gui.util.ComboBox
         android:id="@+id/chatRoom_Combo"
-        style="@style/SpinnerView"
-        android:layout_width="match_parent" />
+        style="@style/SpinnerView" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/between_padding"
-        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button_Cancel"
             style="@style/ButtonTop"
-            android:enabled="true"
             android:text="@string/service_gui_CANCEL" />
-
-        <View
-            android:id="@+id/centerShim"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="2dp"
-            android:visibility="invisible" />
 
         <Button
             android:id="@+id/button_Join"
             style="@style/ButtonTop"
+            android:layout_marginStart="4dp"
             android:enabled="false"
             android:text="@string/service_gui_JOIN" />
     </LinearLayout>

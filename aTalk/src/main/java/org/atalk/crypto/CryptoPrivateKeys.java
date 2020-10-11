@@ -28,20 +28,23 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.*;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
+import java.io.IOException;
 import java.util.*;
+
+import timber.log.Timber;
 
 /**
  * Settings screen displays local private keys. Allows user to generate new or regenerate
@@ -111,10 +114,8 @@ public class CryptoPrivateKeys extends OSGiActivity
                 OmemoFingerprint omemoFingerprint = omemoManager.getOwnFingerprint();
                 if (omemoFingerprint != null)
                     fingerprint = omemoFingerprint.toString();
-            } catch (SmackException.NotLoggedInException e) {
-                e.printStackTrace();
-            } catch (CorruptedOmemoKeyException e) {
-                e.printStackTrace();
+            } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
+                Timber.w("Get own fingerprint Exception: %s", e.getMessage());
             }
             deviceFingerprints.put(deviceJid, fingerprint);
             accountList.put(deviceJid, accountId);
@@ -122,7 +123,7 @@ public class CryptoPrivateKeys extends OSGiActivity
             // Get OTRDevice fingerprint - can be null for new generation
             deviceJid = OTR + bareJid;
             fingerprint = keyManager.getLocalFingerprint(accountId);
-            if (!StringUtils.isNullOrEmpty(fingerprint)) {
+            if (StringUtils.isNotEmpty(fingerprint)) {
                 fingerprint = fingerprint.toLowerCase();
             }
             deviceFingerprints.put(deviceJid, fingerprint);
@@ -146,7 +147,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         ListView.AdapterContextMenuInfo ctxInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
         int pos = ctxInfo.position;
         String privateKey = accountsAdapter.getOwnKeyFromRow(pos);
-        boolean isKeyExist = !StringUtils.isNullOrEmpty(privateKey);
+        boolean isKeyExist = StringUtils.isNotEmpty(privateKey);
 
         menu.findItem(R.id.generate).setEnabled(!isKeyExist);
         menu.findItem(R.id.regenerate).setEnabled(isKeyExist);
@@ -201,7 +202,7 @@ public class CryptoPrivateKeys extends OSGiActivity
         String message = getString(getResStrId, bareJid, warnMsg);
 
         AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle(getString(R.string.crypto_dialog_KEY_GENERATE_TITLE))
+        b.setTitle(R.string.crypto_dialog_KEY_GENERATE_TITLE)
                 .setMessage(message)
                 .setPositiveButton(R.string.service_gui_PROCEED, (dialog, which) -> {
                     if (accountId != null) {
@@ -289,7 +290,7 @@ public class CryptoPrivateKeys extends OSGiActivity
 
             String fingerprint = getOwnKeyFromRow(position);
             String fingerprintStr = fingerprint;
-            if (StringUtils.isNullOrEmpty(fingerprint)) {
+            if (StringUtils.isEmpty(fingerprint)) {
                 fingerprintStr = getString(R.string.crypto_NO_KEY_PRESENT);
             }
             ViewUtil.setTextViewValue(rowView, R.id.fingerprint, CryptoHelper.prettifyFingerprint(fingerprintStr));

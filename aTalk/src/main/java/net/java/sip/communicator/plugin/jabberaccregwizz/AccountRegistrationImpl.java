@@ -114,7 +114,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
             return protocolProvider;
         }
 
-        /* Process to create new account and return the newly created protocolProvider */
+        /* isModification() == false; Process to create new account and return the newly created protocolProvider */
         try {
             Timber.i("Installing new account created for user %s", userName);
 

@@ -17,34 +17,31 @@
 
 package org.atalk.android.gui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import org.atalk.android.R;
+import org.atalk.service.osgi.OSGiActivity;
 
 import timber.log.Timber;
 
 /**
- * Splash screen activity
+ * Splash screen for aTalk start up
+ *
+ * @author Eng Chong Meng
  */
-public class Splash extends Activity
+public class Splash extends OSGiActivity
 {
     private static boolean mFirstRun = true;
-    private static ProgressBar mActionBarProgress;
+    private ProgressBar mActionBarProgress;
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        // Request indeterminate progress for splash screen
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        // requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setProgressBarIndeterminateVisibility(true);
 
         setContentView(R.layout.splash);
         mActionBarProgress = findViewById(R.id.actionbar_progress);
@@ -58,7 +55,6 @@ public class Splash extends Activity
 
         new Handler().postDelayed(() -> {
             Timber.d("End of Splash screen Timer");
-            stopProgressBar();
             finish();
         }, 800);
     }
@@ -66,10 +62,5 @@ public class Splash extends Activity
     public static boolean isFirstRun()
     {
         return mFirstRun;
-    }
-
-    public static void stopProgressBar()
-    {
-        mActionBarProgress.setVisibility(ProgressBar.GONE);
     }
 }

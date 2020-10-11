@@ -27,6 +27,7 @@ import static android.media.AudioTrack.STATE_INITIALIZED;
  * Implements an audio <tt>Renderer</tt> which uses {@link AudioTrack}.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
 {
@@ -76,7 +77,8 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * The <tt>AudioTrack</tt> which implements the output device represented by this <tt>Renderer</tt> and renders to it.
+     * The <tt>AudioTrack</tt> which implements the output device represented by this <tt>Renderer</tt>
+     * and renders to it.
      */
     private AudioTrack audioTrack;
 
@@ -157,7 +159,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
          * type here to use different native volume control.
          */
         streamType = enableGainControl ? AudioManager.STREAM_VOICE_CALL : AudioManager.STREAM_NOTIFICATION;
-        Timber.d("Created stream for type: %s", streamType);
+        Timber.d("Audio Track Renderer creating stream for type: %s", streamType);
 
         if (enableGainControl) {
             MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
@@ -307,7 +309,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                     throw new ResourceUnavailableException("sampleSizeInBits");
             }
 
-            int bytesPerMillisecond = (int) Math.round((sampleRate / 1000) * channels * (sampleSizeInBits / 8));
+            int bytesPerMillisecond = (int) Math.round((sampleRate / 1000) * channels * (sampleSizeInBits / 8.0));
             audioTrackWriteLengthInBytes = 20 /* milliseconds */ * bytesPerMillisecond;
 
             /*
@@ -321,18 +323,17 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
              */
             DataSource.setThreadPriority();
 
-            /*
-             * @deprecated use {@link AudioTrack.Builder} or
-             * { @link #AudioTrack(AudioAttributes, android.media.AudioFormat, int,int,int)}to specify the
-             * {@link AudioAttributes} instead of the stream type which is only for volume control.
-             */
-
-            AudioAttributes audioAttribute = null;
             int bufferSize = Math.max(audioTrackBufferSizeInBytes,
                     AudioTrack.getMinBufferSize((int) sampleRate, channelConfig, audioFormat));
 
+            /*
+             * @deprecated use {@link AudioTrack.Builder} or
+             * {@link #AudioTrack(AudioAttributes, android.media.AudioFormat, int,int,int)}to specify the
+             * {@link AudioAttributes} instead of the stream type which is only for volume control.
+             */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                /*
+                AudioAttributes audioAttribute;
+
                 if (AudioManager.STREAM_VOICE_CALL == streamType) {
                     audioAttribute = (new AudioAttributes.Builder())
                             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
@@ -345,11 +346,6 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                             .build();
                 }
-                */
-
-                audioAttribute = (new AudioAttributes.Builder())
-                        .setLegacyStreamType(streamType)
-                        .build();
 
                 android.media.AudioFormat androidAudioFormat = (new android.media.AudioFormat.Builder())
                         .setChannelMask(channelConfig)
@@ -364,8 +360,6 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                 audioTrack = new AudioTrack(streamType, (int) sampleRate, channelConfig, audioFormat, bufferSize,
                         AudioTrack.MODE_STREAM);
             }
-            //            new Exception("Open AudioTrack Encode PCM: " + audioFormat + "; Channels: " + channelConfig
-            //                    + ": " + sampleRate + "\n" + audioAttribute.toString()).printStackTrace();
 
             setThreadPriority = true;
             if (USE_SOFTWARE_GAIN) {

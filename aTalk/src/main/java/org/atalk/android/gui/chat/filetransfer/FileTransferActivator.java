@@ -195,7 +195,7 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
     }
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who sent it.
+     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who send it.
      *
      * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
      */

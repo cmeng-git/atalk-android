@@ -23,6 +23,12 @@ public abstract class AbstractContact implements Contact
      */
     final private Collection<ContactResourceListener> resourceListeners = new ArrayList<>();
 
+    /**
+     * A reference copy of last fetch contact activity. The value is set to -1 when contact is online
+     * so a new lastActivity is fetched when the user is offline again
+     */
+    private long mLastSeen = -1;
+
     @Override
     public boolean equals(Object obj)
     {
@@ -153,5 +159,23 @@ public abstract class AbstractContact implements Contact
     public boolean isMobile()
     {
         return false;
+    }
+
+    /**
+     * Set the lastActivity for the contact
+     * @param dateTime Date of the contact last seen online
+     */
+    public void setLastActiveTime(long dateTime)
+    {
+        mLastSeen = dateTime;
+    }
+
+    /**
+     * Get the contact last seen activityTime
+     * @return contact last seen activityTime
+     */
+    public long getLastActiveTime()
+    {
+        return mLastSeen;
     }
 }

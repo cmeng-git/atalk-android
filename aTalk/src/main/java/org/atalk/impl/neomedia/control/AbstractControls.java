@@ -5,8 +5,6 @@
  */
 package org.atalk.impl.neomedia.control;
 
-import org.atalk.util.Logger;
-
 import javax.media.Controls;
 
 import timber.log.Timber;

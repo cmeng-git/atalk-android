@@ -38,15 +38,12 @@ public class MergedMessage implements ChatMessage
     /**
      * Variable used to cache merged message content.
      */
-    private String message;
+    private String mergedMessage;
 
     /**
      * Variable used to cache merged message Ids.
      */
-    private String serverMsgId;
-    private String remoteMsgId;
-
-    private int receiptStatus;
+    private String serverMsgIds;
 
     /**
      * Creates new instance of <tt>MergedMessage</tt> where the given message will become its
@@ -64,18 +61,18 @@ public class MergedMessage implements ChatMessage
      * {@inheritDoc}
      */
     @Override
-    public String getContactName()
+    public String getSender()
     {
-        return rootMessage.getContactName();
+        return rootMessage.getSender();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getContactDisplayName()
+    public String getSenderName()
     {
-        return rootMessage.getContactDisplayName();
+        return rootMessage.getSenderName();
     }
 
     /**
@@ -109,37 +106,15 @@ public class MergedMessage implements ChatMessage
      * {@inheritDoc}
      */
     @Override
-    public String getMessage()
-    {
-        if (message == null) {
-            message = rootMessage.getMessage();
-            // Merge the text
-            for (ChatMessage ch : children) {
-                message = mergeText(message, ch.getMessage());
-            }
-        }
-        return message;
-    }
-
-    /**
-     * Utility method used for merging message contents.
-     *
-     * @param msg current message text
-     * @param nextMsg next message text to merge
-     * @return merged message text
-     */
-    private static String mergeText(String msg, String nextMsg)
-    {
-        return msg + " <br/>" + nextMsg;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public int getEncryptionType()
     {
         return rootMessage.getEncryptionType();
+    }
+
+    @Override
+    public int getXferStatus()
+    {
+        return FileRecord.STATUS_UNKNOWN;
     }
 
     /**
@@ -149,7 +124,7 @@ public class MergedMessage implements ChatMessage
      */
     public int getReceiptStatus()
     {
-        receiptStatus = rootMessage.getReceiptStatus();
+        int receiptStatus = rootMessage.getReceiptStatus();
         for (ChatMessage ch : children) {
             if (ch.getReceiptStatus() < receiptStatus)
                 receiptStatus = ch.getReceiptStatus();
@@ -165,12 +140,16 @@ public class MergedMessage implements ChatMessage
     @Override
     public String getServerMsgId()
     {
-        serverMsgId = rootMessage.getServerMsgId();
-        // Merge the text
+        /*
+         * Variable used to cache merged message Ids.
+         */
+        serverMsgIds = rootMessage.getServerMsgId();
+
+        // Merge the server message Ids
         for (ChatMessage ch : children) {
-            serverMsgId = mergeText(serverMsgId, ch.getServerMsgId());
+            serverMsgIds = mergeText(serverMsgIds, ch.getServerMsgId());
         }
-        return serverMsgId;
+        return serverMsgIds;
     }
 
     /**
@@ -180,8 +159,9 @@ public class MergedMessage implements ChatMessage
      */
     public String getRemoteMsgId()
     {
-        remoteMsgId = rootMessage.getRemoteMsgId();
-        // Merge the text
+        String remoteMsgId = rootMessage.getRemoteMsgId();
+
+        // Merge the remote server message Ids
         for (ChatMessage ch : children) {
             remoteMsgId = mergeText(remoteMsgId, ch.getRemoteMsgId());
         }
@@ -231,14 +211,13 @@ public class MergedMessage implements ChatMessage
     public ChatMessage mergeMessage(ChatMessage consecutiveMessage)
     {
         ChatMessage corrected = findCorrectedMessage(consecutiveMessage);
-
         if (corrected == null) {
             children.add(consecutiveMessage);
             // Use the most recent date, as main date
             date = consecutiveMessage.getDate();
             // Append the text only if we have cached content, otherwise it will be lazily generated on content request
-            if (message != null) {
-                message = mergeText(message, consecutiveMessage.getMessage());
+            if (mergedMessage != null) {
+                mergedMessage = mergeText(mergedMessage, getMessageText(consecutiveMessage));
             }
         }
         else {
@@ -246,9 +225,97 @@ public class MergedMessage implements ChatMessage
             ChatMessage correctionResult = corrected.mergeMessage(consecutiveMessage);
             int correctedIdx = children.indexOf(corrected);
             children.set(correctedIdx, correctionResult);
+
             // Clear content cache
-            message = null;
+            mergedMessage = null;
         }
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     * msgText = "&#x2611 &#x2713 &#x2612 &#x2716 &#x2717 &#x2718 &#x2715 " + msgText;
+     */
+    @Override
+    public String getMessage()
+    {
+        if (mergedMessage == null) {
+            mergedMessage = getMessageText(rootMessage);
+
+            // Merge the child text to root Message
+            for (ChatMessage chatMessage : children) {
+                mergedMessage = mergeText(mergedMessage, getMessageText(chatMessage));
+            }
+        }
+        return mergedMessage;
+    }
+
+    /**
+     * Utility method used for merging message contents.
+     *
+     * @param chatMessage Chat message
+     * @return merged message text
+     */
+    private static String getMessageText(ChatMessage chatMessage)
+    {
+        String msgText = chatMessage.getMessage();
+        if (chatMessage.getMessageType() == MESSAGE_OUT) {
+            msgText = getReceiptStatus(chatMessage) + msgText;
+        }
+        return msgText;
+    }
+
+    /**
+     * Get the status display for the given message.
+     *
+     * @param receiptStatusView the encryption state view
+     * @param deliveryStatus the encryption
+     */
+    private static String getReceiptStatus(ChatMessage chatMessage)
+    {
+        int reciptStatus = chatMessage.getReceiptStatus();
+        switch (reciptStatus) {
+            case ChatMessage.MESSAGE_DELIVERY_NONE:
+                return "&#x2612 ";  // cross makr with square boundary
+            case ChatMessage.MESSAGE_DELIVERY_RECEIPT:
+                return ""; // "&#x2713 "; do not want to show anything for receipt message
+            case ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT:
+                return "&#x2717 ";  // cross mark for message delivery to server
+            case ChatMessage.MESSAGE_DELIVERY_SERVER_SENT:
+                return "&#x2618 ";  // bold cross mark
+        }
+        return "";
+    }
+
+    /**
+     * Utility method used for merging message contents.
+     *
+     * @param msg current message text
+     * @param nextMsg next message text to merge
+     * @return merged message text
+     */
+    private static String mergeText(String msg, String nextMsg)
+    {
+        return msg + " <br/>" + nextMsg;
+    }
+
+    public MergedMessage updateDeliveryStatus(String msgId, int status)
+    {
+        if (rootMessage.getServerMsgId().equals(msgId)) {
+            ((ChatMessageImpl) rootMessage).setReceiptStatus(status);
+        }
+        else {
+            for (int i = 0; i < children.size(); i++) {
+                ChatMessage child = children.get(i);
+                if (child.getServerMsgId().equals(msgId)) {
+                    ((ChatMessageImpl) child).setReceiptStatus(status);
+                    break;
+                }
+            }
+        }
+        // rebuild the mergeMessage
+        mergedMessage = null;
+        getMessage();
         return this;
     }
 

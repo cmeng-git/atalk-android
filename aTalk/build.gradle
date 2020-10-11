@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.2'
-        classpath "org.anarres.jarjar:jarjar-gradle:1.0.1" // working jarjar.repackage version
+        classpath 'com.android.tools.build:gradle:4.1.0-rc03'
+        classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1' // working jarjar.repackage version
     }
 }
 
@@ -14,19 +14,24 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar'
 
 repositories {
+    maven {
+        url 'third_party/m2'
+        // Must include these lines for gradle 5.0+
+        metadataSources {
+            mavenPom()
+            artifact()
+        }
+    }
     google()
     jcenter()
     mavenCentral()
     maven {
-        // Need manual cleanup for new SNAPSHOT update if same name with date change only:
-        // Smack official SNAPSHOT repository accepted by FDroid
+        // May need manual cleanup for new SNAPSHOT update if same name with date change only:
+        // Smack official SNAPSHOT repository accepted by F-Droid
         url 'https://oss.sonatype.org/content/repositories/snapshots'
 
-        // Smack custom library for org.igniterealtime - not recognize by FDroid
+        // Smack custom library for org.igniterealtime - not recognize by F-Droid
         // url 'https://igniterealtime.org/repo/'
-
-        // Custom library for org.jitsi - maven-metadata.xml not compatible
-        // url 'https://github.com/jitsi/jitsi-maven-repository/tree/master/snapshots'
     }
     maven {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
@@ -38,32 +43,57 @@ configurations {
     fdroidImplementation
     playstoreImplementation
 
-    // libraries duplication conflict
-    all*.exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    all*.exclude group: 'xpp3', module: 'xpp3'
+    // dependency libraries duplication conflict cause by smack-xmlparser-xpp3
+    all*.exclude group: 'xpp3', module: 'xpp3_min'
+}
 
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-core'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-experimental'
-    all*.exclude group: 'org.igniterealtime.smack', module: 'smack-extensions'
+configurations.all {
+    it.resolutionStrategy {
+        eachDependency { details ->
+            // multiple actions can be specified
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-core', 'smack-experimental', 'smack-extensions'].contains(details.requested.name)) {
+                //changing the name reference to smack libraries to its individual jar
+                details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
+            }
+        }
+    }
+
+    // https://docs.gradle.org/current/userguide/resolution_rules.html
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'org.bouncycastle' && details.requested.name == 'bcprov-jdk15on' && details.requested.version == '1.66') {
+            details.useVersion '1.65'
+            details.because 'Fixes ASP bug: Failed to transform bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59'
+        }
+    }
 }
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
-    compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
-    }
-
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1103
-        versionName "2.0.3"
+        versionCode 1142
+        versionName "2.4.2"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
         multiDexEnabled true
+
+//        externalNativeBuild {
+//            ndkBuild {
+//                arguments "-Cjni"
+//            }
+//        }
+    }
+
+    dataBinding {
+        enabled true
+    }
+
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 
     flavorDimensions("distribution")
@@ -79,7 +109,7 @@ android {
 
     buildTypes {
         release {
-            // cannot enable for aTalk string resource as not all are per android style
+            // cannot enable for aTalk string resource as not all usages are per android style
             shrinkResources false
             // too many missing references when enable
             minifyEnabled false
@@ -92,6 +122,13 @@ android {
             minifyEnabled false
         }
     }
+
+    // Have problem, so use aTalk method
+//    externalNativeBuild {
+//        ndkBuild {
+//            path file('jni/Android.mk')
+//        }
+//    }
 
     File cfgFile = project.rootProject.file("settings.signing")
     if (cfgFile != null && cfgFile.exists()) {
@@ -117,6 +154,7 @@ android {
 
     sourceSets {
         main {
+            java.srcDirs = ['src/main/java']
             resources.srcDirs = ['src']
 
             // disable gradle automatic ndk-build call, which ignore our Android.mk
@@ -124,7 +162,6 @@ android {
 
             // This is necessary if you have pre-compiled libraries .jar/.so in your project.
             jniLibs.srcDirs = ['libs']
-            java.srcDirs = ['src/main/java']
         }
         release { java.srcDirs = ['src/release/java'] }
         debug { java.srcDirs = ['src/debug/java'] }
@@ -138,26 +175,28 @@ android {
 
     packagingOptions {
         exclude 'jni/**'
+        exclude 'mozilla/public-suffix-list.txt'
+        exclude 'LICENSE.txt'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
-        exclude 'LICENSE.txt'
     }
 }
 
 ext {
-    // Need manual cleanup for new SNAPSHOT update if same name with date change only:
+    // for official maven release
+    smackVersion = '4.4.0-beta2'
+
+    // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
     // Remove source reference in .idea/libraries if source mismatched with class jar
 
-    // for official maven release
-    smackVersion = '4.4.0-alpha2'
-
     // For smack own repository SNAPSHOT release
-    // smackVersion = '4.4.0-alpha2-SNAPSHOT'
+    // smackVersion = '4.4.0-alpha3-SNAPSHOT' // 20200407.115900-6
 }
+
 
 dependencies {
     // Java compilation dependency: ndkBuild & jarRepackage (avoid class conflict)
@@ -166,129 +205,104 @@ dependencies {
 
     implementation "androidx.legacy:legacy-support-v4:${rootProject.supportLibraryVersion}"
     implementation "androidx.legacy:legacy-support-v13:${rootProject.supportLibraryVersion}"
-    implementation "androidx.appcompat:appcompat:1.0.2"
-    // implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.preference:preference:1.1.1"
 
-    implementation "com.google.android.material:material:${rootProject.supportLibraryVersion}"
+    implementation "com.google.android.material:material:1.2.1"
 
-    // libraries from maven repository
-    implementation 'ch.imvs:sdes4j:1.1.4'
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
-    // butterknife >=9.0.0 uses androidx - incompatible
-    implementation 'com.jakewharton:butterknife:10.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+    implementation 'com.jakewharton:butterknife:10.2.2'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.2'
 
     implementation('com.jakewharton.timber:timber:4.7.1') {
         transitive = false
     }
-    implementation 'com.karumi:dexter:5.0.0'
+    implementation 'com.karumi:dexter:6.2.1'
 
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
-
-    implementation 'com.github.yalantis:ucrop:2.2.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.github.yalantis:ucrop:2.2.5'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.5'
-    implementation 'com.splitwise:tokenautocomplete:2.0.8'
+    implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
 
-    // when targeting Android API 23 and newer - class obsoleted
-    implementation 'cz.msebera.android:httpclient:4.4.1.2' // duplicate class
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 
-    implementation 'org.apache.commons:commons-lang3:3.8.1'
-    implementation 'org.apache.commons:commons-io:1.3.2'
-    implementation 'org.apache.james:apache-mime4j-core:0.8.2'
+    implementation 'commons-codec:commons-codec:1.14'
+    implementation 'org.apache.commons:commons-text:1.8'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.0.1'
+    implementation 'org.apache.httpcomponents:httpmime:4.5.10'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.3'
     implementation 'org.bitlet:weupnp:0.1.4'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.61'
-    // (dependencies = core + prov)
 
-    // Use by provisioning Discover
-    // implementation 'org.jitsi:dnssecjava:1.1.3'
+    // Do not upgrade to bouncycastle v1.66 ASP has problem: Failed to transform bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59
+    implementation 'org.bouncycastle:bcpg-jdk15on:1.65'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    implementation 'org.bouncycastle:bctls-jdk15on:1.65'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
+
+    // Required for debug and tracing for bouncycastle - do not removed
+//    implementation jarjar.repackage {
+//        from('org.bouncycastle:bctls-jdk15on:1.65') {
+//            transitive = false
+//        }
+//        destinationDir new File("${projectDir}/libs")
+//        destinationName "bctls-jdk15on-1.65.jar"
+//
+//        classDelete 'org.bouncycastle.tls.DTLSServerProtocol**'
+//        classDelete 'org.bouncycastle.tls.DTLSClientProtocol**'
+//        classDelete 'org.bouncycastle.tls.TlsUtils**'
+//    }
+
+    // Fix ZRTP X25519 key exchange - https://github.com/jitsi/zrtp4j/commit/f7575bf6301927a997675726002d309b2acdd5d9
+    // Truncate ZRTP KDF output as per RFC - https://github.com/jitsi/zrtp4j/commit/0baa502b9269d0d8a31247d032ee4896f945a344
+    // note: bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59
+    implementation 'org.jitsi:zrtp4j-light:4.1.2'
 
     // Required for provisioning discovery
     implementation 'org.jmdns:jmdns:3.5.3'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
 
-    // Smack local libraries with patches or enhance features
-    // implementation files('lib/smack/smack-core-4.4.0-alpha2-SNAPSHOT.jar')
-    // implementation files('lib/smack/smack-extensions-4.4.0-alpha2-SNAPSHOT.jar')
-
-    // Smack 4.4.0-alpha2 has moved to use minidns v0.4.0-alpha3
     implementation "org.igniterealtime.smack:smack-android-extensions:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-compression-jzlib:$smackVersion"
-    // implementation "org.igniterealtime.smack:smack-core:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
+    implementation "org.igniterealtime.jbosh:jbosh:0.9.2"
+
+    implementation "org.igniterealtime.smack:smack-compression-jzlib:4.4.0-alpha3-SNAPSHOT"
+    implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
-    // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-im:$smackVersion"
     implementation "org.igniterealtime.smack:smack-legacy:$smackVersion"
     implementation "org.igniterealtime.smack:smack-resolver-minidns:$smackVersion"
     implementation "org.igniterealtime.smack:smack-sasl-provided:$smackVersion"
     implementation "org.igniterealtime.smack:smack-tcp:$smackVersion"
-    // implementation "com.gitbub.igniterealtime.Smack:smack-tcp:2b9cbb978ef6f9841da09256f669fb6dbf421290"
 
-    // implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
+    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
-    implementation 'org.jxmpp:jxmpp-jid:0.7.0-alpha5'
+    implementation 'org.jxmpp:jxmpp-jid:1.0.0'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'org.osgi:osgi.core:7.0.0'
 
-    // not compatible to 17.0.0 androidx#Fragment
-    playstoreImplementation "com.google.android.gms:play-services-location:${rootProject.gmsPlayServicesVersion}"
+    playstoreImplementation "com.google.android.gms:play-services-location:17.1.0"
     playstoreImplementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
     playstoreImplementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
 
     /*
      * jarjar.repackage with generated dir/filename specified - default in build/jarjar/jarjar-xxx.jar
-     * filename must not contains colon i.e. ":" colon, treated as URL and will failed missing classes
+     * filename must not contains a colon i.e. ":" colon, treated as URL and will failed missing classes
      * destinationName may use relative i.e. "../../libs/fileName.jar to $buildDir/jarjar
-     * classDelete must check actual jar to see if end ** is required - due to multiple components
+     * classDelete must check the actual jar to see if end ** is required - due to multiple components
      * May use className and className$** to delete only the related, but excluding classes with same prefix
      */
     implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-core:$smackVersion") {
-            transitive = false
-        }
+        from('org.jitsi:fmj:1.0.0-jitsi')
         destinationDir new File("${projectDir}/libs")
-        destinationName "smack-core_${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smack.provider.Provider'
-        classDelete 'org.jivesoftware.smack.SmackReactor**'
-        classDelete 'org.jivesoftware.smack.util.StringUtils**'
-    }
-
-    implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/libs")
-        destinationName "smack-experimental${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
-    }
-
-    implementation jarjar.repackage {
-        from("org.igniterealtime.smack:smack-extensions:$smackVersion") {
-            transitive = false
-        }
-        destinationDir new File("${projectDir}/libs")
-        destinationName "smack-extensions_${smackVersion}.jar"
-
-        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager**'
-        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
-        classDelete 'org.jivesoftware.smackx.filetransfer.IBBTransferNegotiator**'
-        classDelete 'org.jivesoftware.smackx.filetransfer.FaultTolerantNegotiator'
-    }
-
-    implementation jarjar.repackage {
-        from files('lib/bundles/fmj-1.0-SNAPSHOT.jar')
-        destinationDir new File("${projectDir}/libs")
-        destinationName "fmj-1.0-SNAPSHOT.jar"
+        destinationName "fmj-1.0.0-jitsi.jar"
 
         classRename 'java.awt.**', 'org.atalk.android.util.java.awt.@1'
         classRename 'java.beans.**', 'org.atalk.android.util.java.beans.@1'
@@ -304,32 +318,41 @@ dependencies {
 
     // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
     // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
-    // Objects class only available in API-19 and above
     implementation jarjar.repackage {
-        // from files('lib/bundles/ice4j-2.0.0-20181024.160538-12.jar') // (revision 730)
-
         // Do not use the latest master-SNAPSHOT => not compatible with aTalk
-        // use only ba7e30c189 i.e. the release version of ice4j-2.0.0-20181024.160538-12.jar
-        from('com.github.jitsi:ice4j:ba7e30c18980556f126e5e72ecbdb637616dd1bf') {
+        // use the latest release version: ice4j-2.0.0-20190607.184546-36.jar
+        // 'ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac' == 'ice4j:ice4j-2.0.0-20190607.184546-36'
+        from('com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac') {
             transitive = false
         }
         destinationDir new File("${projectDir}/libs")
         destinationName "ice4j-2.0.0-SNAPSHOT.jar"
 
-        classRename 'java.util.Objects', 'org.jivesoftware.smack.util.Objects'
+        // Consumer was introduced in API-24
+        classRename 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
+
+        // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
+        classRename 'java.time.Duration', 'org.threeten.bp.Duration'
     }
 
-    // implementation 'com.github.jitsi:zrtp4j:master-SNAPSHOT'
-    implementation jarjar.repackage {
-        // Source not found either in master-SNAPSHOT or
-        // from('com.github.jitsi:zrtp4j:beb6723b2e13e27710e38ea9b64f2da8d9a395a3') {
-        //    transitive = false
-        // }
-        from files('lib/bundles/zrtp4j-light-4.1.0-jitsi-1-SNAPSHOT.jar')
-        destinationDir new File("${projectDir}/libs")
-        destinationName "zrtp4j-light-4.1.0.jar"
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+    // implementation 'org.jitsi:jain-sip-ri-ossonly:1.2.279-jitsi-oss1'
 
-        classRename 'org.jitsi.**', 'org.atalk.@1'
+    // implementation 'ch.imvs:sdes4j:1.1.5' - not compatible due to java library use
+    // libraries from maven repository but need to change Base64 to ApacheBase64 to avoid conflict with android
+    // declaration of 'org.apache.commons.codec.binary.Base64' appears in /system/framework/org.apache.http.legacy.boot.jar
+    implementation jarjar.repackage {
+        from('ch.imvs:sdes4j:1.1.4') {
+            transitive = false
+        }
+        destinationDir new File("${projectDir}/libs")
+        destinationName "sde4j-1.1.4.jar"
+
+        // v1.1.5 uses java.util.Base64 was only added in API level 26
+        // classRename 'java.util.Base64', 'org.atalk.android.util.java.util.Base64'
+
+        // v1.1.4 uses binary.Base64
+        classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
     }
 }
 
@@ -383,6 +406,10 @@ task updateVersionFile(type: Copy) {
 // cmeng - need to perform setup libs (first time & after clean)
 tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn ndkBuild
+
+        // Uncomment below lines if you want to show all deprecated warnings
+//    options.compilerArgs << '-Xlint:unchecked'
+//    options.deprecation = true
 }
 
 // will clean /libs/armeabi/*.so

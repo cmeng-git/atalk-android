@@ -17,6 +17,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountsListAdapter;
@@ -93,8 +94,9 @@ public class AddContactActivity extends OSGiActivity
         MetaContactGroupAdapter contactGroupAdapter
                 = new MetaContactGroupAdapter(this, R.id.selectGroupSpinner, true, true);
 
-        contactGroupAdapter.setItemLayout(R.layout.simple_spinner_item);
-        contactGroupAdapter.setDropDownLayout(R.layout.simple_spinner_dropdown_item);
+        // Already default to use in MetaContactGroupAdapter.
+        // contactGroupAdapter.setItemLayout(R.layout.simple_spinner_item);
+        // contactGroupAdapter.setDropDownLayout(R.layout.simple_spinner_dropdown_item);
         groupSpinner.setAdapter(contactGroupAdapter);
     }
 
@@ -118,14 +120,23 @@ public class AddContactActivity extends OSGiActivity
             return;
         }
         View content = findViewById(android.R.id.content);
-        String contactAddress = ViewUtil.getTextViewValue(content, R.id.editContactName).trim();
+        String contactAddress = ViewUtil.getTextViewValue(content, R.id.editContactName);
 
-        String displayName = ViewUtil.getTextViewValue(content, R.id.editDisplayName).trim();
+        String displayName = ViewUtil.getTextViewValue(content, R.id.editDisplayName);
         if (!TextUtils.isEmpty(displayName)) {
             addRenameListener(pps, null, contactAddress, displayName);
         }
         Spinner groupSpinner = findViewById(R.id.selectGroupSpinner);
-        ContactListUtils.addContact(pps, (MetaContactGroup) groupSpinner.getSelectedItem(), contactAddress);
+        MetaContactGroup mGroup = null;
+
+        // "Create group .." selected but no entered value
+        try {
+            mGroup = (MetaContactGroup) groupSpinner.getSelectedItem();
+        } catch (Exception e) {
+            aTalkApp.showToastMessage(R.string.service_gui_CREATE_GROUP_INVALID, e.getMessage());
+            return;
+        }
+        ContactListUtils.addContact(pps, mGroup, contactAddress);
         finish();
     }
 

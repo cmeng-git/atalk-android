@@ -15,7 +15,7 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.util.ByteArrayBuffer;
 
 /**
  * Provides utility functions for the frame marking RTP header extension

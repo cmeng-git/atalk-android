@@ -1,5 +1,8 @@
 package net.java.otr4j;
 
+/**
+ * @author George Politis
+ */
 public class OtrPolicyImpl implements OtrPolicy
 {
 	private int policy;

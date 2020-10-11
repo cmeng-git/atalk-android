@@ -89,7 +89,7 @@ public class Jingle extends IQ
     /**
      * Any session info extensions that this packet may contain.
      */
-    private SessionInfoExtensionElement sessionInfo;
+    private SessionInfoExtension sessionInfo;
 
     /**
      * The list of "content" elements included in this IQ.
@@ -226,9 +226,8 @@ public class Jingle extends IQ
     }
 
     /**
-     * Specifies this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a
-     * <tt>jingle</tt> IQ provides machine and possibly human -readable information about the reason
-     * for the action.
+     * Specifies this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a <tt>jingle</tt> IQ
+     * provides machine and possibly human -readable information about the reason for the action.
      *
      * @param reason this IQ's <tt>reason</tt> extension.
      */
@@ -238,9 +237,8 @@ public class Jingle extends IQ
     }
 
     /**
-     * Returns this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a
-     * <tt>jingle</tt> IQ provides machine and possibly human -readable information about the reason
-     * for the action.
+     * Returns this IQ's <tt>reason</tt> extension. The <tt>reason</tt> extension in a <tt>jingle</tt> IQ
+     * provides machine and possibly human -readable information about the reason for the action.
      *
      * @return this IQ's <tt>reason</tt> extension.
      */
@@ -250,8 +248,7 @@ public class Jingle extends IQ
     }
 
     /**
-     * Returns a reference (and not a copy so be careful how you are handling it) of this element's
-     * content list.
+     * Returns a reference (and not a copy so be careful how you are handling it) of this element's content list.
      *
      * @return a reference to this element's content list.
      */
@@ -278,7 +275,7 @@ public class Jingle extends IQ
      * Determines if this packet contains a <tt>content</tt> with a child matching the specified
      * <tt>contentType</tt>. The method is meant to allow to easily determine the purpose of a
      * jingle IQ. A telephony initiation IQ would for example contain a <tt>content</tt> element of
-     * type {@link RtpDescriptionExtensionElement}.
+     * type {@link RtpDescriptionExtension}.
      *
      * @param contentType the type of the content child we are looking for.
      * @return <tt>true</tt> if one of this IQ's <tt>content</tt> elements contains a child of the
@@ -314,8 +311,7 @@ public class Jingle extends IQ
      * Finds <tt>JingleContent</tt> that matches given <tt>contentName</tt>.
      *
      * @param contentName the name of the content for which extension will be returned
-     * @return <tt>JingleContent</tt> that matches given <tt>contentName</tt> or
-     * <tt>null</tt> if not found.
+     * @return <tt>JingleContent</tt> that matches given <tt>contentName</tt> or <tt>null</tt> if not found.
      */
     public JingleContent getContentByName(String contentName)
     {
@@ -332,21 +328,19 @@ public class Jingle extends IQ
     /**
      * Sets <tt>si</tt> as the session info extension for this packet.
      *
-     * @param si a {@link SessionInfoExtensionElement} that we'd like to add here.
+     * @param si a {@link SessionInfoExtension} that we'd like to add here.
      */
-    public void setSessionInfo(SessionInfoExtensionElement si)
+    public void setSessionInfo(SessionInfoExtension si)
     {
         this.sessionInfo = si;
     }
 
     /**
-     * Returns a {@link SessionInfoExtensionElement} if this <tt>Jingle</tt> contains one and
-     * <tt>null</tt> otherwise.
+     * Returns a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and <tt>null</tt> otherwise.
      *
-     * @return a {@link SessionInfoExtensionElement} if this <tt>Jingle</tt> contains one and
-     * <tt>null</tt> otherwise.
+     * @return a {@link SessionInfoExtension} if this <tt>Jingle</tt> contains one and <tt>null</tt> otherwise.
      */
-    public SessionInfoExtensionElement getSessionInfo()
+    public SessionInfoExtension getSessionInfo()
     {
         return this.sessionInfo;
     }

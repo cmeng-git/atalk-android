@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.codec;
 
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
@@ -20,12 +20,13 @@ import java.util.Map;
  * @author Damian Minkov
  * @author Lyubomir Marinov
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class EncodingConfigurationImpl extends EncodingConfiguration
 {
     /**
      * The indicator which determines whether the G.729 codec is enabled.
-     * <p>
+     *
      * WARNING: The use of G.729 may require a license fee and/or royalty fee in some countries and
      * is licensed by <a href="http://www.sipro.com">SIPRO Lab Telecom</a>.
      */
@@ -45,31 +46,11 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     private void initializeFormatPreferences()
     {
         // first init default preferences video
-        setEncodingPreference(
-                "H264",
-                VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
-                1100);
-
-        setEncodingPreference(
-                "H263-1998",
-                VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
-                0);
-
-        setEncodingPreference(
-                "VP8",
-                VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
-                1200);
-        /*
-         * setEncodingPreference( "H263", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1000);
-         */
-        setEncodingPreference(
-                "JPEG",
-                VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
-                950);
-        setEncodingPreference(
-                "H261",
-                VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,
-                800);
+        setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1100);
+        setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,0);
+        setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,0);
+        setEncodingPreference("JPEG", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,950);
+        setEncodingPreference("H261", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,800);
 
         // audio
         setEncodingPreference("opus", 48000, 750);
@@ -162,8 +143,8 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
             if (res == 0) {
                 res = Double.compare(enc2.getClockRate(), enc1.getClockRate());
                 /*
-                 * And then again, there are formats (e.g. H.264) with one and the same encoding
-                 * (name) and clock rate but different format parameters (e.g. packetization-mode).
+                 * Then again, there are formats (e.g. H.264) with the same encoding name and
+                 * clock rate but different format parameters (e.g. packetization-mode).
                  */
                 if (res == 0) {
                     // Try to preserve the order specified by MediaUtils.

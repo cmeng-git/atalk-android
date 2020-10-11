@@ -5,8 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import org.atalk.android.gui.call.JingleMessageHelper;
 import org.xmpp.extensions.coin.CoinIQ;
-import org.xmpp.extensions.jingle.CoinExtensionElement;
+import org.xmpp.extensions.jingle.CoinExtension;
 import org.xmpp.extensions.jingle.element.Jingle;
 
 import net.java.sip.communicator.service.protocol.*;
@@ -270,7 +271,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     protected CallJabberImpl createOutgoingCall()
             throws OperationFailedException
     {
-        return new CallJabberImpl(getBasicTelephony());
+        return new CallJabberImpl(getBasicTelephony(), Jingle.generateSid());
     }
 
     /**
@@ -285,7 +286,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             throws OperationFailedException
     {
         return getBasicTelephony().createOutgoingCall(call, calleeAddress,
-                Arrays.asList(new ExtensionElement[]{new CoinExtensionElement(true)}));
+                Arrays.asList(new ExtensionElement[]{new CoinExtension(true)}));
     }
 
     /**
@@ -302,9 +303,13 @@ public class OperationSetTelephonyConferencingJabberImpl
      */
     @Override
     protected String parseAddressString(String calleeAddressString)
-            throws OperationFailedException, XmppStringprepException
+            throws OperationFailedException
     {
-        return getBasicTelephony().getFullCalleeURI(JidCreate.from(calleeAddressString)).toString();
+        try {
+            return getBasicTelephony().getFullCalleeURI(JidCreate.from(calleeAddressString)).toString();
+        } catch (XmppStringprepException | IllegalArgumentException e) {
+            throw new OperationFailedException("Could not parse: " + calleeAddressString, 0, e);
+        }
     }
 
     /**
@@ -349,7 +354,7 @@ public class OperationSetTelephonyConferencingJabberImpl
         // setup for Coin Request Handler
         protected IQRequestHandler()
         {
-            super(CoinIQ.ELEMENT_NAME, CoinIQ.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async);
+            super(CoinIQ.ELEMENT, CoinIQ.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async);
         }
 
         // public void processStanza(Stanza packet) {
@@ -483,11 +488,11 @@ public class OperationSetTelephonyConferencingJabberImpl
         OperationSetVideoBridge videoBridge = parentProvider.getOperationSet(OperationSetVideoBridge.class);
         boolean isVideobridge = (videoBridge != null) && videoBridge.isActive();
 
-        CallJabberImpl call = new CallJabberImpl(getBasicTelephony());
+        CallJabberImpl call = new CallJabberImpl(getBasicTelephony(), Jingle.generateSid());
         call.setAutoAnswer(true);
 
         String uri = "xmpp:" + chatRoom.getIdentifier() + "/" + chatRoom.getUserNickname();
-        ConferenceDescription cd = new ConferenceDescription(uri, call.getCallID());
+        ConferenceDescription cd = new ConferenceDescription(uri, call.getCallId());
 
         call.addCallChangeListener(new CallChangeListener()
         {
@@ -516,7 +521,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             cd.addTransport(ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0);
         }
         Timber.i("Setup a conference with uri = %s and callid = %s. Videobridge in use: %s",
-                uri, call.getCallID(), isVideobridge);
+                uri, call.getCallId(), isVideobridge);
         return cd;
     }
 }

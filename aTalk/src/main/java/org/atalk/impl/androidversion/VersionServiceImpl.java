@@ -8,6 +8,7 @@ package org.atalk.impl.androidversion;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.service.version.Version;
@@ -16,7 +17,7 @@ import org.atalk.service.version.util.AbstractVersionService;
 import timber.log.Timber;
 
 /**
- * Android version service implementation. Current version is parsed from android:versionName
+ * An android version service implementation. The current version is parsed from android:versionName
  * attribute from PackageInfo.
  *
  * @author Pawel Domas
@@ -29,12 +30,12 @@ public class VersionServiceImpl extends AbstractVersionService
      */
     private final VersionImpl CURRENT_VERSION;
 
-    private final int CURRENT_VERSION_CODE;
+    private final long CURRENT_VERSION_CODE;
 
     private final String CURRENT_VERSION_NAME;
 
     /**
-     * Creates new instance of <tt>VersionServiceImpl</tt> and parses current version from
+     * Creates a new instance of <tt>VersionServiceImpl</tt> and parses current version from
      * android:versionName attribute from PackageInfo.
      */
     public VersionServiceImpl()
@@ -43,12 +44,17 @@ public class VersionServiceImpl extends AbstractVersionService
         PackageManager pckgMan = ctx.getPackageManager();
         try {
             PackageInfo pckgInfo = pckgMan.getPackageInfo(ctx.getPackageName(), 0);
-
             String versionName = pckgInfo.versionName;
-            int versionCode = pckgInfo.versionCode;
+
+            long versionCode;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+                versionCode = pckgInfo.getLongVersionCode();
+            else
+                versionCode = pckgInfo.versionCode;
 
             CURRENT_VERSION_NAME = versionName;
             CURRENT_VERSION_CODE = versionCode;
+
             // cmeng - version must all be digits, otherwise no online update
             CURRENT_VERSION = (VersionImpl) parseVersionString(versionName);
             Timber.i("Device installed with aTalk-android version: %s, version code: %s",
@@ -70,7 +76,7 @@ public class VersionServiceImpl extends AbstractVersionService
         return CURRENT_VERSION;
     }
 
-    public int getCurrentVersionCode()
+    public long getCurrentVersionCode()
     {
         return CURRENT_VERSION_CODE;
     }

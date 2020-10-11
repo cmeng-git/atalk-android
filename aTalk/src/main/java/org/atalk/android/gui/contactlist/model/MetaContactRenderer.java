@@ -10,14 +10,16 @@ import android.graphics.drawable.Drawable;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations.SubscriptionStatus;
 import net.java.sip.communicator.util.StatusUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.DrawableCache;
-import org.atalk.util.StringUtils;
+import org.jxmpp.jid.DomainBareJid;
 
 import java.util.Iterator;
 
@@ -76,13 +78,27 @@ public class MetaContactRenderer implements UIContactRenderer
     @Override
     public boolean isShowCallBtn(Object contactImpl)
     {
-        return isShowButton((MetaContact) contactImpl, OperationSetBasicTelephony.class);
+        // Handle only if contactImpl instanceof MetaContact; DomainJid always show call button option
+        if (contactImpl instanceof MetaContact) {
+            MetaContact metaContact = (MetaContact) contactImpl;
+
+            boolean isDomainJid = false;
+            if (metaContact.getDefaultContact() != null)
+                isDomainJid = metaContact.getDefaultContact().getJid() instanceof DomainBareJid;
+            return isDomainJid || isShowButton(metaContact, OperationSetBasicTelephony.class);
+        }
+        return false;
     }
 
     @Override
     public boolean isShowFileSendBtn(Object contactImpl)
     {
         return isShowButton((MetaContact) contactImpl, OperationSetFileTransfer.class);
+    }
+
+    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
+    {
+        return (metaContact.getOpSetSupportedContact(opSetClass) != null);
     }
 
     @Override
@@ -106,23 +122,17 @@ public class MetaContactRenderer implements UIContactRenderer
         Iterator<Contact> protoContacts = metaContact.getContacts();
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
+            OperationSetExtendedAuthorizations authOpSet
+                    = protoContact.getProtocolProvider().getOperationSet(OperationSetExtendedAuthorizations.class);
 
-            OperationSetExtendedAuthorizations authOpSet = protoContact.getProtocolProvider()
-                    .getOperationSet(OperationSetExtendedAuthorizations.class);
-
-            if ((authOpSet != null)
-                    && (authOpSet.getSubscriptionStatus(protoContact) != null)
-                    && !authOpSet.getSubscriptionStatus(protoContact).equals(
-                    OperationSetExtendedAuthorizations.SubscriptionStatus.Subscribed)) {
-                OperationSetExtendedAuthorizations.SubscriptionStatus status
-                        = authOpSet.getSubscriptionStatus(protoContact);
-
-                if (status.equals(OperationSetExtendedAuthorizations.SubscriptionStatus.SubscriptionPending))
+            SubscriptionStatus status = authOpSet.getSubscriptionStatus(protoContact);
+            if (!SubscriptionStatus.Subscribed.equals(status)) {
+                if (SubscriptionStatus.SubscriptionPending.equals(status))
                     subscriptionDetails = aTalkApp.getResString(R.string.service_gui_WAITING_AUTHORIZATION);
-                else if (status.equals(OperationSetExtendedAuthorizations.SubscriptionStatus.NotSubscribed))
+                else if (SubscriptionStatus.NotSubscribed.equals(status))
                     subscriptionDetails = aTalkApp.getResString(R.string.service_gui_NOT_AUTHORIZED);
             }
-            else if (!StringUtils.isNullOrEmpty(protoContact.getStatusMessage())) {
+            else if (StringUtils.isNotEmpty(protoContact.getStatusMessage())) {
                 displayDetails = protoContact.getStatusMessage();
                 subscribed = true;
                 break;
@@ -132,20 +142,15 @@ public class MetaContactRenderer implements UIContactRenderer
             }
         }
 
-        if (StringUtils.isNullOrEmpty(displayDetails) && !subscribed
-                && !StringUtils.isNullOrEmpty(subscriptionDetails))
+        if (StringUtils.isEmpty(displayDetails) && !subscribed
+                && StringUtils.isNotEmpty(subscriptionDetails))
             displayDetails = subscriptionDetails;
 
         return displayDetails;
     }
 
-    private static boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
-    {
-        return metaContact.getDefaultContact(opSetClass) != null;
-    }
-
     /**
-     * Returns the status <tt>Drawable</tt> for the given <tt>MetaContact</tt>.
+     * Returns the avatar <tt>Drawable</tt> for the given <tt>MetaContact</tt>.
      *
      * @param metaContact the <tt>MetaContact</tt>, which status drawable we're looking for
      * @return a <tt>BitmapDrawable</tt> object representing the status of the given <tt>MetaContact</tt>

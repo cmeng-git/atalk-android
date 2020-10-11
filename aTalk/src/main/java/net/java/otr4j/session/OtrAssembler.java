@@ -92,7 +92,7 @@ public final class OtrAssembler
 				discard();
 				throw new ProtocolException();
 			}
-			if (receiverInstance != 0 && receiverInstance != ownInstance.getValue()) {
+			if ((receiverInstance != 0) && receiverInstance != ownInstance.getValue()) {
 				// discard message for different instance id
 				throw new UnknownInstanceException("Message for unknown instance tag "
 						+ String.valueOf(receiverInstance) + " received: " + msgText);

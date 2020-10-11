@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -20,12 +21,14 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.chat.conference.*;
-import org.atalk.android.gui.util.ActionBarUtil;
-import org.atalk.util.StringUtils;
+import org.atalk.android.plugin.textspeech.TTSService;
+import org.atalk.persistance.FileBackend;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -59,6 +62,8 @@ public class ChatPanel implements Chat, MessageListener
      */
     private final MetaContact mMetaContact;
 
+    private final Object mDescriptor;
+
     /**
      * The chatType for which the message will be send for method not using Transform process
      * i.e. OTR. This is also the master copy where other will update or refer to.
@@ -81,7 +86,9 @@ public class ChatPanel implements Chat, MessageListener
      * Messages cache used by this session; to cache msg arrived when the chatFragment
      * is not in view e.g. standby, while in contactList view or when scroll out of view.
      */
-    private List<ChatMessage> msgCache = new LinkedList<>();
+    // Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
+    // private List<ChatMessage> msgCache = new LinkedList<>();
+    private List<ChatMessage> msgCache = new CopyOnWriteArrayList<>();
 
     /**
      * Synchronization root for messages cache.
@@ -107,9 +114,22 @@ public class ChatPanel implements Chat, MessageListener
     private boolean cacheRefresh = false;
 
     /**
+     * Blocked caching of the next new message if it is sent via sendMessage().
+     * Else there will have duplicated display messages
+     */
+    private boolean cacheBlocked = false;
+
+    /**
      * Registered chatFragment to be informed of any messageReceived event
      */
     private final List<ChatSessionListener> msgListeners = new ArrayList<>();
+
+    /**
+     * Current chatSession TTS is active if true
+     */
+    private boolean isChatTtsEnable = false;
+
+    private int ttsDelay = 1200;
 
     /**
      * Field used by the <tt>ChatController</tt> to keep track of last edited message content.
@@ -134,6 +154,8 @@ public class ChatPanel implements Chat, MessageListener
      */
     public ChatPanel(Object descriptor)
     {
+        mDescriptor = descriptor;
+
         if (descriptor instanceof MetaContact) {
             mMetaContact = (MetaContact) descriptor;
         }
@@ -151,7 +173,7 @@ public class ChatPanel implements Chat, MessageListener
     public void setChatSession(ChatSession chatSession)
     {
         if (mChatSession != null) {
-            // remove old listener if any
+            // remove any old listener if present.
             mCurrentChatTransport.removeInstantMessageListener(this);
             mCurrentChatTransport.removeSmsMessageListener(this);
         }
@@ -160,12 +182,13 @@ public class ChatPanel implements Chat, MessageListener
         mCurrentChatTransport = mChatSession.getCurrentChatTransport();
         mCurrentChatTransport.addInstantMessageListener(this);
         mCurrentChatTransport.addSmsMessageListener(this);
+        updateChatTtsOption();
     }
 
     /**
      * Returns the protocolProvider of the user associated with this chat panel.
      *
-     * @return the protocolProvider associated with this chat panel
+     * @return the protocolProvider associated with this chat panel.
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -175,7 +198,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Returns the chat session associated with this chat panel.
      *
-     * @return the chat session associated with this chat panel
+     * @return the chat session associated with this chat panel.
      */
     public ChatSession getChatSession()
     {
@@ -195,7 +218,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Stores current chatType.
      *
-     * @param chatType selected chatType e.g. MSGTYPE_NORMAL
+     * @param chatType selected chatType e.g. MSGTYPE_NORMAL.
      **/
     public void setChatType(int chatType)
     {
@@ -211,7 +234,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Check if current chat is set to OMEMO crypto mode
      *
-     * @return return <tt>true</tt> if OMEMO crypto chat is selected
+     * @return return <tt>true</tt> if OMEMO crypto chat is selected.
      */
     public boolean isOmemoChat()
     {
@@ -305,43 +328,33 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds the given <tt>ChatStateNotificationsListener</tt> to listen for message events
-     * in this metaContact chat session.
+     * Adds the given <tt>ChatStateNotificationsListener</tt> to listen for chat state events
+     * in this chat session (Contact or ChatRoom).
      *
      * @param l the <tt>ChatStateNotificationsListener</tt> to add
      */
     public void addChatStateListener(ChatStateNotificationsListener l)
     {
-        Iterator<Contact> protoContacts = mMetaContact.getContacts();
+        OperationSetChatStateNotifications chatStateOpSet
+                = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
-        while (protoContacts.hasNext()) {
-            Contact protoContact = protoContacts.next();
-            OperationSetChatStateNotifications chatStateOpSet
-                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
-
-            if (chatStateOpSet != null) {
-                chatStateOpSet.addChatStateNotificationsListener(l);
-            }
+        if (chatStateOpSet != null) {
+            chatStateOpSet.addChatStateNotificationsListener(l);
         }
     }
 
     /**
-     * Removes the given <tt>ChatStateNotificationsListener</tt> from this chat session.
+     * Removes the given <tt>ChatStateNotificationsListener</tt> from this chat session (Contact or ChatRoom)..
      *
      * @param l the <tt>ChatStateNotificationsListener</tt> to remove
      */
     public void removeChatStateListener(ChatStateNotificationsListener l)
     {
-        Iterator<Contact> protoContacts = mMetaContact.getContacts();
+        OperationSetChatStateNotifications chatStateOpSet
+                = mCurrentChatTransport.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
 
-        while (protoContacts.hasNext()) {
-            Contact protoContact = protoContacts.next();
-            OperationSetChatStateNotifications chatStateOpSet
-                    = protoContact.getProtocolProvider().getOperationSet(OperationSetChatStateNotifications.class);
-
-            if (chatStateOpSet != null) {
-                chatStateOpSet.removeChatStateNotificationsListener(l);
-            }
+        if (chatStateOpSet != null) {
+            chatStateOpSet.removeChatStateNotificationsListener(l);
         }
     }
 
@@ -373,7 +386,6 @@ public class ChatPanel implements Chat, MessageListener
     public void removeContactStatusListener(ContactPresenceStatusListener l)
     {
         Iterator<Contact> protoContacts = mMetaContact.getContacts();
-
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
             OperationSetPresence presenceOpSet
@@ -384,7 +396,6 @@ public class ChatPanel implements Chat, MessageListener
             }
         }
     }
-
 
     /**
      * Set the cache refresh flag from send file status change event.
@@ -416,9 +427,10 @@ public class ChatPanel implements Chat, MessageListener
         if (metaHistory == null)
             return msgCache;
 
-        // descriptor can either be metaContact or chatRoomWrapper (ChatRoom), from whom the history to be loaded
+        // descriptor can either be metaContact or chatRoomWrapper=>ChatRoom, from whom the history to be loaded
         Object descriptor = mChatSession.getDescriptor();
-        Collection<Object> history;
+        if (descriptor instanceof ChatRoomWrapper)
+            descriptor = ((ChatRoomWrapper) descriptor).getChatRoom();
 
         // Refresh msgCache if set via file transfer sending status change request
         if (cacheRefresh) {
@@ -427,6 +439,7 @@ public class ChatPanel implements Chat, MessageListener
         }
 
         // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
+        Collection<Object> history;
         if (msgCache.size() == 0) {
             history = metaHistory.findLast(chatHistoryFilter, descriptor, HISTORY_CHUNK_SIZE);
         }
@@ -531,13 +544,15 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Implements the <tt>Chat.isChatFocused</tt> method. Returns TRUE if this chat is
      * the currently selected and if the chat window, where it's contained is active.
+     * NPE: mChatSession == null from field
      *
      * @return true if this chat has the focus and false otherwise.
      */
     @Override
     public boolean isChatFocused()
     {
-        return mChatSession.getChatId().equals(ChatSessionManager.getCurrentChatId());
+        return (mChatSession != null)
+                && mChatSession.getChatId().equals(ChatSessionManager.getCurrentChatId());
     }
 
     /**
@@ -571,6 +586,35 @@ public class ChatPanel implements Chat, MessageListener
     public void setMessage(String message)
     {
         throw new RuntimeException("Not supported yet");
+        //??? chatController.msgEdit.setText(message);
+    }
+
+//    public static void sendMessage(Object descriptor, String message, int encType)
+//    {
+//    }
+
+    /**
+     * Sends the message and blocked message caching for this message; otherwise the single send message
+     * will appear twice in the chat fragment i.e. inserted and cached e.g. from share link
+     *
+     * @param message the text string to be sent
+     * @param encType The encType of the message to be sent: RemoteOnly | 1=text/html or 0=text/plain.
+     */
+    public void sendMessage(String message, int encType)
+    {
+        cacheBlocked = true;
+
+        int encryption = IMessage.ENCRYPTION_NONE;
+        if (isOmemoChat())
+            encryption = IMessage.ENCRYPTION_OMEMO;
+        else if (isOTRChat())
+            encryption = IMessage.ENCRYPTION_OTR;
+
+        try {
+            mCurrentChatTransport.sendInstantMessage(message, encryption | encType);
+        } catch (Exception ex) {
+            aTalkApp.showToastMessage(ex.getMessage());
+        }
     }
 
     /**
@@ -585,7 +629,7 @@ public class ChatPanel implements Chat, MessageListener
     @Override
     public void addMessage(String contactName, Date date, int messageType, int encType, String content)
     {
-        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content));
+        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content, null));
     }
 
     /**
@@ -595,10 +639,10 @@ public class ChatPanel implements Chat, MessageListener
      * @param displayName the display name of the contact
      * @param date the time at which the message is sent or received
      * @param chatMsgType the type of the message. See ChatMessage
-     * @param message the Message
+     * @param message the IMessage.
      */
     public void addMessage(String contactName, String displayName, Date date, int chatMsgType,
-            Message message, String correctedMessageUID)
+            IMessage message, String correctedMessageUID)
     {
         addMessage(new ChatMessageImpl(contactName, displayName, date, chatMsgType, message, correctedMessageUID));
     }
@@ -606,7 +650,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Adds a chat message to this <tt>Chat</tt> panel.
      *
-     * @param chatMessage the ChatMessage
+     * @param chatMessage the ChatMessage.
      */
     public void addMessage(ChatMessageImpl chatMessage)
     {
@@ -614,6 +658,7 @@ public class ChatPanel implements Chat, MessageListener
             // Must always cache the chatMsg as chatFragment has not registered to handle incoming
             // message on first onAttach or when it is not in focus.
             cacheNextMsg(chatMessage);
+            messageSpeak(chatMessage, 2*ttsDelay);  // for chatRoom
 
             for (ChatSessionListener l : msgListeners) {
                 l.messageAdded(chatMessage);
@@ -621,16 +666,94 @@ public class ChatPanel implements Chat, MessageListener
         }
     }
 
+    public boolean isChatTtsEnable()
+    {
+        return isChatTtsEnable;
+    }
+
+    public void updateChatTtsOption()
+    {
+        isChatTtsEnable = ConfigurationUtils.isTtsEnable();
+        if (isChatTtsEnable) {
+            // Object mDescriptor = mChatSession.getDescriptor();
+            if (mDescriptor instanceof MetaContact) {
+                isChatTtsEnable = ((MetaContact) mDescriptor).getDefaultContact().isTtsEnable();
+            }
+            else {
+                isChatTtsEnable = ((ChatRoomWrapper) mDescriptor).isTtsEnable();
+            }
+        }
+        // refresh the tts delay time
+        ttsDelay = ConfigurationUtils.getTtsDelay();
+    }
+
+    private void messageSpeak(ChatMessage msg, int delay)
+    {
+        Timber.d("Chat TTS message speak: %s = %s", isChatTtsEnable, msg.getMessage());
+        if (!isChatTtsEnable)
+            return;
+
+        // ChatRoomMessageReceivedEvent from conference room
+        if (ChatMessage.MESSAGE_IN == msg.getMessageType()
+                || ChatMessage.MESSAGE_MUC_IN == msg.getMessageType()) {
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                Timber.w("TTS speak wait exception: %s", e.getMessage());
+            }
+            ttsSpeak(msg);
+        }
+    }
+
+    /**
+     * call TTS to speak the text given in chatMessage if it is not HttpDownloadLink
+     *
+     * @param chatMessage ChatMessage for TTS
+     */
+    public void ttsSpeak(ChatMessage chatMessage)
+    {
+        String textBody = chatMessage.getMessage();
+        if (!TextUtils.isEmpty(textBody) && !FileBackend.isHttpFileDnLink(textBody)) {
+            Intent spkIntent = new Intent(aTalkApp.getInstance(), TTSService.class);
+            spkIntent.putExtra(TTSService.EXTRA_MESSAGE, textBody);
+            spkIntent.putExtra(TTSService.EXTRA_QMODE, false);
+            aTalkApp.getInstance().startService(spkIntent);
+        }
+    }
+
+    /**
+     * Send an outgoing file message to chatFragment for it to start the file send process
+     * The recipient can be contact or chatRoom
+     *
+     * @param filePath of the file to be sent
+     * @param messageType indicate which File transfer message is for
+     */
+    public void addFTRequest(String filePath, int messageType)
+    {
+        String sendTo;
+        Date date = Calendar.getInstance().getTime();
+
+        // Create the new msg Uuid for record saved in dB
+        String msgUuid = String.valueOf(System.currentTimeMillis()) + hashCode();
+
+        Object sender = mCurrentChatTransport.getDescriptor();
+        if (sender instanceof Contact) {
+            sendTo = ((Contact) sender).getAddress();
+        }
+        else {
+            sendTo = ((ChatRoom) sender).getName();
+        }
+        addMessage(new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid));
+    }
+
     /*
      * ChatMessage for IncomingFileTransferRequest
      *
      * Adds the given <tt>IncomingFileTransferRequest</tt> to the conversation panel in order to
-     * notify the user of the incoming file.
+     * notify the user of an incoming file transfer request.
      *
      * @param fileTransferOpSet the file transfer operation set
-     *
      * @param request the request to display in the conversation panel
-     *
      * @param date the date on which the request has been received
      */
     public void addFTRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date)
@@ -641,9 +764,9 @@ public class ChatPanel implements Chat, MessageListener
                 R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
-        int encType = Message.ENCODE_PLAIN;
+        int encType = IMessage.ENCODE_PLAIN;
         ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, encType,
-                msgContent, null, opSet, request, null);
+                msgContent, request.getID(), opSet, request, null);
 
         synchronized (cacheLock) {
             // Must cache chatMsg as chatFragment has not registered to handle incoming message on
@@ -659,7 +782,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Adds a new ChatLinkClickedListener. The callback is called for every link whose scheme is
      * <tt>jitsi</tt>. It is the callback's responsibility to filter the action based on the URI.
-     * <p>
+     *
      * Example:<br>
      * <tt>jitsi://classname/action?query</tt><br>
      * Use the name of the registering class as the host, the action to execute as the path and
@@ -673,26 +796,6 @@ public class ChatPanel implements Chat, MessageListener
         ChatSessionManager.addChatLinkListener(chatLinkClickedListener);
     }
 
-    /**
-     * Returns the shortened display name of this chat.
-     *
-     * @return the shortened display name of this chat
-     */
-    public String getShortDisplayName()
-    {
-        String transportDisplayName = mCurrentChatTransport.getDisplayName().trim();
-        int atIndex = transportDisplayName.indexOf("@");
-
-        if (atIndex > -1)
-            transportDisplayName = transportDisplayName.substring(0, atIndex);
-
-        int spaceIndex = transportDisplayName.indexOf(" ");
-        if (spaceIndex > -1)
-            transportDisplayName = transportDisplayName.substring(0, spaceIndex);
-
-        return transportDisplayName;
-    }
-
     @Override
     public void messageReceived(MessageReceivedEvent messageReceivedEvent)
     {
@@ -701,7 +804,10 @@ public class ChatPanel implements Chat, MessageListener
             synchronized (cacheLock) {
                 // Must cache chatMsg as chatFragment has not registered to handle incoming
                 // message on first onAttach or not in focus
-                cacheNextMsg(ChatMessageImpl.getMsgForEvent(messageReceivedEvent));
+
+                ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
+                cacheNextMsg(chatMessage);
+                messageSpeak(chatMessage, ttsDelay);
 
                 for (MessageListener l : msgListeners) {
                     l.messageReceived(messageReceivedEvent);
@@ -711,17 +817,27 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Caches next message.
+     * Caches next message when chat is not in focus and it is not being blocked via sendMessage().
+     * Otherwise duplicated messages when share link
      *
      * @param newMsg the next message to cache.
      */
     private void cacheNextMsg(ChatMessageImpl newMsg)
     {
-        msgCache.add(newMsg);
+        // Timber.d("Cache blocked is %s for: %s", cacheBlocked, newMsg.getMessage());
+        if (!cacheBlocked) {
+            msgCache.add(newMsg);
+        }
+        cacheBlocked = false;
     }
 
     /**
-     * Clear the old message message if underlying data changed.
+     * When user closes the chat session, this action must be performed if any updates had been done to the
+     * chatFragment MessageViewHolder contents. Otherwise the MessageViewHolder will be replaced with old
+     * content in this msgCache when user open the chat session again. Clearing the msgCache will force
+     * getHistory() to reload the updated content from DB.
+     *
+     * This the  current shortfall in the implementation - may be to remove msgCache as DB fetch is fast (page slider)?
      */
     public void clearMsgCache()
     {
@@ -757,43 +873,46 @@ public class ChatPanel implements Chat, MessageListener
         for (MessageListener l : msgListeners) {
             l.messageDeliveryFailed(evt);
         }
-        // Insert error message
-        Timber.e("%s", evt.getReason());
 
+        // Insert error message
+        Timber.d("%s", evt.getReason());
+
+        // Just show the pass in error message if false
+        boolean mergeMessage = true;
         String errorMsg;
-        Message srcMessage = (Message) evt.getSource();
+        IMessage srcMessage = (IMessage) evt.getSource();
 
         // contactJid cannot be nick name, otherwise message will not be displayed
         String contactJid = evt.getDestinationContact().getAddress();
 
-        if (evt.getErrorCode() == MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED) {
-            errorMsg = aTalkApp.getResString(
-                    R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, contactJid);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.NETWORK_FAILURE) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.INTERNAL_ERROR) {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
-        }
-        else if (evt.getErrorCode() == MessageDeliveryFailedEvent.OMEMO_SEND_ERROR) {
-            // Just show the pass in error message
-            errorMsg = evt.getReason();
-            evt.setReason(null);
-        }
-        else {
-            errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
+        switch (evt.getErrorCode()) {
+            case MessageDeliveryFailedEvent.OFFLINE_MESSAGES_NOT_SUPPORTED:
+                errorMsg = aTalkApp.getResString(
+                        R.string.service_gui_MSG_DELIVERY_NOT_SUPPORTED, contactJid);
+                break;
+            case MessageDeliveryFailedEvent.NETWORK_FAILURE:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_NOT_DELIVERED);
+                break;
+            case MessageDeliveryFailedEvent.PROVIDER_NOT_REGISTERED:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
+                break;
+            case MessageDeliveryFailedEvent.INTERNAL_ERROR:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_INTERNAL_ERROR);
+                break;
+            case MessageDeliveryFailedEvent.OMEMO_SEND_ERROR:
+                errorMsg = evt.getReason();
+                mergeMessage = false;
+                break;
+            default:
+                errorMsg = aTalkApp.getResString(R.string.service_gui_MSG_DELIVERY_ERROR);
         }
 
         String reason = evt.getReason();
-        if (!TextUtils.isEmpty(reason))
+        if (!TextUtils.isEmpty(reason) && mergeMessage) {
             errorMsg += " " + aTalkApp.getResString(R.string.service_gui_ERROR_WAS, reason);
-
+        }
         addMessage(contactJid, new Date(), ChatMessage.MESSAGE_OUT, srcMessage.getMimeType(), srcMessage.getContent());
-        addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN, errorMsg);
+        addMessage(contactJid, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN, errorMsg);
     }
 
     /**
@@ -822,8 +941,6 @@ public class ChatPanel implements Chat, MessageListener
                     PresenceStatus presenceStatus = chatTransport.getStatus();
                     ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
                     ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
-
-
                 });
             }
         }
@@ -831,10 +948,10 @@ public class ChatPanel implements Chat, MessageListener
         String contactName = ((MetaContactChatTransport) chatTransport).getContact().getAddress();
         if (ConfigurationUtils.isShowStatusChangedInChat()) {
             // Show a status message to the user.
-            // addMessage(contactName, chatTransport.getName(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+            // addMessage(contactName, chatTransport.getName(), new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
             //        aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()),
-            //        Message.ENCRYPTION_NONE, null, null);
-            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
+            //        IMessage.ENCRYPTION_NONE, null, null);
+            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
                     aTalkApp.getResString(R.string.service_gui_STATUS_CHANGED_CHAT_MESSAGE, chatTransport.getStatus().getStatusName()));
         }
     }
@@ -862,7 +979,7 @@ public class ChatPanel implements Chat, MessageListener
      *
      * @param subject the subject to set
      */
-    public void setChatSubject(final String subject)
+    public void setChatSubject(final String subject, String oldSubject)
     {
         if ((subject != null) && !subject.equals(chatSubject)) {
             chatSubject = subject;
@@ -878,8 +995,10 @@ public class ChatPanel implements Chat, MessageListener
                     });
                 }
             }
-            this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN,
-                    aTalkApp.getResString(R.string.service_gui_CHAT_ROOM_SUBJECT_CHANGED, mChatSession.getChatEntity(), subject));
+            // Do not display change subject message if this is the original subject
+            if (!TextUtils.isEmpty(oldSubject))
+                this.addMessage(mChatSession.getChatEntity(), new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN,
+                        aTalkApp.getResString(R.string.service_gui_CHATROOM_SUBJECT_CHANGED, oldSubject, subject));
         }
     }
 
@@ -891,10 +1010,9 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void updateChatContactStatus(final ChatContact<?> chatContact, final String statusMessage)
     {
-        if (!StringUtils.isNullOrEmpty(statusMessage)) {
+        if (StringUtils.isNotEmpty(statusMessage)) {
             String contactName = ((ChatRoomMemberJabberImpl) chatContact.getDescriptor()).getContactAddress();
-            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, Message.ENCODE_PLAIN, statusMessage);
-
+            addMessage(contactName, new Date(), ChatMessage.MESSAGE_STATUS, IMessage.ENCODE_PLAIN, statusMessage);
         }
     }
 
@@ -944,7 +1062,7 @@ public class ChatPanel implements Chat, MessageListener
             // the chat session is set regarding to which OpSet is used for MUC
             if (pps.getOperationSet(OperationSetMultiUserChat.class) != null) {
                 ChatRoomWrapper chatRoomWrapper
-                        = AndroidGUIActivator.getMUCService().createPrivateChatRoom(pps, chatContacts, reason, false);
+                        = MUCActivator.getMUCService().createPrivateChatRoom(pps, chatContacts, reason, false);
                 if (chatRoomWrapper != null) {
                     // conferenceChatSession = new ConferenceChatSession(this, chatRoomWrapper);
                     Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
@@ -955,8 +1073,8 @@ public class ChatPanel implements Chat, MessageListener
                 }
             }
             else if (pps.getOperationSet(OperationSetAdHocMultiUserChat.class) != null) {
-                AdHocChatRoomWrapper chatRoomWrapper = conferenceChatManager.createAdHocChatRoom
-                        (pps, chatContacts, reason);
+                AdHocChatRoomWrapper chatRoomWrapper
+                        = conferenceChatManager.createAdHocChatRoom(pps, chatContacts, reason);
                 // conferenceChatSession = new AdHocConferenceChatSession(this, chatRoomWrapper);
                 Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
                 aTalkApp.getGlobalContext().startActivity(chatIntent);
@@ -971,7 +1089,7 @@ public class ChatPanel implements Chat, MessageListener
                 try {
                     mCurrentChatTransport.inviteChatContact(JidCreate.entityBareFrom(contactAddress), reason);
                 } catch (XmppStringprepException e) {
-                    e.printStackTrace();
+                    Timber.w("Group chat invitees Jid create error: %s, %s", contactAddress, e.getMessage());
                 }
             }
         }

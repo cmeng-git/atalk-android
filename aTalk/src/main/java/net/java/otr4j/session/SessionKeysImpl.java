@@ -202,6 +202,7 @@ class SessionKeysImpl implements SessionKeys
         return sendingMACKey;
     }
 
+	@Override
     public byte[] getReceivingMACKey()
             throws OtrException
     {

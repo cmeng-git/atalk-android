@@ -17,20 +17,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 
-import net.java.sip.communicator.service.protocol.AdHocChatRoomInvitation;
-import net.java.sip.communicator.service.protocol.ChatRoomInvitation;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.EntityJid;
 
 /**
@@ -43,7 +38,7 @@ public class InvitationReceivedDialog extends Dialog
     /**
      * The <tt>MultiUserChatManager</tt> is the one that deals with invitation events.
      */
-    private ConferenceChatManager mMultiUserChatManager = null;
+    private ConferenceChatManager mMultiUserChatManager;
 
     /**
      * The operation set that would handle the rejection if the user choose to reject the
@@ -132,9 +127,8 @@ public class InvitationReceivedDialog extends Dialog
         infoTextArea.setText(mContext.getString(R.string.service_gui_INVITATION_RECEIVED_MSG,
                 mInviter, mChatRoomName));
 
-        TextView textInvitation = this.findViewById(R.id.textInvitation);
+        EditText textInvitation = this.findViewById(R.id.textInvitation);
         if (!TextUtils.isEmpty(mReason)) {
-            textInvitation.setSingleLine(false);
             textInvitation.setText(mReason);
         }
         else {
@@ -164,7 +158,7 @@ public class InvitationReceivedDialog extends Dialog
     private boolean onAcceptClicked()
     {
         if (mInvitationAdHoc == null) {
-            AndroidGUIActivator.getMUCService().acceptInvitation(mInvitation);
+            MUCActivator.getMUCService().acceptInvitation(mInvitation);
         }
         else {
             try {
@@ -178,17 +172,16 @@ public class InvitationReceivedDialog extends Dialog
 
     private void onRejectClicked()
     {
-        String reasonField = reasonTextArea.getText().toString().trim();
+        String reasonField = ViewUtil.toString(reasonTextArea);
         if (mMultiUserChatAdHocOpSet == null && mInvitationAdHoc == null) {
             try {
-                AndroidGUIActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
+                MUCActivator.getMUCService().rejectInvitation(mMultiUserChatOpSet, mInvitation, reasonField);
             } catch (OperationFailedException e) {
                 e.printStackTrace();
             }
         }
-        else {
+        if (mMultiUserChatAdHocOpSet != null)
             mMultiUserChatManager.rejectInvitation(mMultiUserChatAdHocOpSet, mInvitationAdHoc, reasonField);
-        }
     }
 
     /**

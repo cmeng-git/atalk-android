@@ -65,7 +65,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
     /**
      * An image that graphically represents the status.
      */
-    protected final byte[] statusIcon;
+    private final byte[] statusIcon;
 
     /**
      * Represents the connectivity status on a scale from 0 to 100 with 0 indicating complete

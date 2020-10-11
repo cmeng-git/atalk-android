@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.recording;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.json.JSONObject;
 
 import androidx.annotation.NonNull;

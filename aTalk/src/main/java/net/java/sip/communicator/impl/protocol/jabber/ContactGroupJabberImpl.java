@@ -19,8 +19,8 @@ import java.util.*;
 
 /**
  * The Jabber implementation of the ContactGroup interface. Instances of this class (contrary to
- * <tt>RootContactGroupJabberImpl</tt>) may only contain contacts and cannot have sub groups. Note
- * that instances of this class only use the corresponding smack source group for reading their
+ * <tt>RootContactGroupJabberImpl</tt>) may only contain contacts and cannot have subgroups.
+ * Note that instances of this class only use the corresponding smack source group for reading their
  * names and only initially fill their <tt>contacts</tt> <tt>java.util.List</tt> with the
  * ContactJabberImpl objects corresponding to those contained in the source group at the moment it
  * is being created. They would, however, never try to sync or update their contents ulteriorly.
@@ -36,7 +36,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     /**
      * Maps all Jid in our roster to the actual contacts so that we could easily search the set of
      * existing contacts. Note that we only store lower case strings in the left column because JIDs
-     * in XMPP are not case sensitive.
+     * in XMPP are not case-sensitive.
      */
     private Map<BareJid, Contact> buddies = new Hashtable<>();
 
@@ -164,7 +164,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      *
      * @param contact the contact to remove.
      */
-    void removeContact(ContactJabberImpl contact)
+    public void removeContact(ContactJabberImpl contact)
     {
         buddies.remove(contact.getJid().asBareJid());
     }
@@ -189,14 +189,15 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     public Contact getContact(String id)
     {
         try {
-            return findContact(JidCreate.from(id).asBareJid());
-        } catch (XmppStringprepException e) {
+            return findContact(JidCreate.from(id));
+        } catch (XmppStringprepException | IllegalArgumentException e) {
             return null;
         }
     }
 
     /**
      * Returns the contact encapsulating with the specified name or null if no such contact was found.
+     * The search is always based on BareJid
      *
      * @param jid the id for the contact we're looking for.
      * @return the <tt>ContactJabberImpl</tt> corresponding to the specified screenName or null
@@ -204,9 +205,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      */
     public ContactJabberImpl findContact(Jid jid)
     {
-        if (jid == null)
-            return null;
-        return (ContactJabberImpl) buddies.get(jid.asBareJid());
+        return (jid == null) ? null : (ContactJabberImpl) buddies.get(jid.asBareJid());
     }
 
     /**
@@ -328,7 +327,6 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      *
      * @return a String representation of the object.
      */
-    @NotNull
     @Override
     public String toString()
     {
@@ -350,7 +348,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      *
      * @param newName String
      */
-    void setNameCopy(String newName)
+    public void setNameCopy(String newName)
     {
         this.nameCopy = newName;
     }
@@ -361,7 +359,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * @return a String containing a copy of the name of this group as it was last time when we
      * called <tt>initNameCopy</tt>.
      */
-    String getNameCopy()
+    public String getNameCopy()
     {
         return this.nameCopy;
     }
@@ -379,7 +377,6 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
     /**
      * Returns null as no persistent data is required and the contact address is sufficient for restoring the contact.
-     * <p>
      *
      * @return null as no such data is needed.
      */
@@ -406,7 +403,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      *
      * @param source the server stored group
      */
-    void setResolved(RosterGroup source)
+    public void setResolved(RosterGroup source)
     {
         if (isResolved)
             return;
@@ -467,7 +464,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      *
      * @param newGroup RosterGroup
      */
-    void setSourceGroup(RosterGroup newGroup)
+    public void setSourceGroup(RosterGroup newGroup)
     {
         this.id = newGroup.getName();
     }

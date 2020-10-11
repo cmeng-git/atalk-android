@@ -6,20 +6,32 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.OperationSetJitsiMeetTools;
+import net.java.sip.communicator.service.protocol.*;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import timber.log.Timber;
 
 /**
  * Jabber protocol provider implementation of {@link OperationSetJitsiMeetTools}
  *
  * @author Pawel Domas
+ * @author Cristian Florin Ghita
  * @author Eng Chong Meng
  */
 public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMeetTools
 {
     private final ProtocolProviderServiceJabberImpl parentProvider;
+
+    /**
+     * The list of {@link JitsiMeetRequestListener}.
+     */
+    private final List<JitsiMeetRequestListener> requestHandlers = new CopyOnWriteArrayList<>();
 
     /**
      * Creates new instance of <tt>OperationSetJitsiMeetToolsJabberImpl</tt>.
@@ -78,12 +90,42 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
     @Override
     public void addRequestListener(JitsiMeetRequestListener requestHandler)
     {
-        // Not used
+        this.requestHandlers.add(requestHandler);
     }
 
     @Override
     public void removeRequestListener(JitsiMeetRequestListener requestHandler)
     {
-        // Not used
+        this.requestHandlers.remove(requestHandler);
+    }
+
+    /**
+     * Event is fired after startmuted extension is received.
+     *
+     * @param startMutedFlags startMutedFlags[0] represents
+     * the muted status of audio stream.
+     * startMuted[1] represents the muted status of video stream.
+     */
+    public void notifySessionStartMuted(boolean[] startMuted)
+    {
+        boolean handled = false;
+        for (JitsiMeetRequestListener l : requestHandlers) {
+            l.onSessionStartMuted(startMuted);
+            handled = true;
+        }
+        if (!handled) {
+            Timber.w("Unhandled join onStartMuted Jitsi Meet request!");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendJSON(CallPeer callPeer, JSONObject jsonObject, Map<String, Object> params)
+            throws OperationFailedException
+    {
+        throw new OperationFailedException("Operation not supported for this protocol yet!",
+                OperationFailedException.NOT_SUPPORTED_OPERATION);
     }
 }

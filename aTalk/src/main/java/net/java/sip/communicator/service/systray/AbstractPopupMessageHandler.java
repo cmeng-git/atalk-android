@@ -6,9 +6,10 @@
  */
 package net.java.sip.communicator.service.systray;
 
-import java.util.*;
+import net.java.sip.communicator.service.systray.event.SystrayPopupMessageEvent;
+import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
 
-import net.java.sip.communicator.service.systray.event.*;
+import java.util.*;
 
 /**
  * Abstract base implementation of <tt>PopupMessageHandler</tt> which
@@ -34,8 +35,7 @@ public abstract class AbstractPopupMessageHandler implements PopupMessageHandler
      */
     public void addPopupMessageListener(SystrayPopupMessageListener listener)
     {
-        synchronized (popupMessageListeners)
-        {
+        synchronized (popupMessageListeners) {
             if (!popupMessageListeners.contains(listener))
                 popupMessageListeners.add(listener);
         }
@@ -51,12 +51,9 @@ public abstract class AbstractPopupMessageHandler implements PopupMessageHandler
     protected void firePopupMessageClicked(SystrayPopupMessageEvent evt)
     {
         List<SystrayPopupMessageListener> listeners;
-
-        synchronized (popupMessageListeners)
-        {
+        synchronized (popupMessageListeners) {
             listeners = new ArrayList<>(popupMessageListeners);
         }
-
         for (SystrayPopupMessageListener listener : listeners)
             listener.popupMessageClicked(evt);
     }
@@ -70,8 +67,7 @@ public abstract class AbstractPopupMessageHandler implements PopupMessageHandler
      */
     public void removePopupMessageListener(SystrayPopupMessageListener listener)
     {
-        synchronized (popupMessageListeners)
-        {
+        synchronized (popupMessageListeners) {
             popupMessageListeners.remove(listener);
         }
     }

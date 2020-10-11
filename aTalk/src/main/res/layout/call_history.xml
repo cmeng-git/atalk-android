@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background_light"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/call_history"
+        style="@style/MediumFont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_dark"
+        android:padding="5dp"
+        android:text="@string/service_gui_CALL_HISTORY_GROUP_NAME"
+        android:textColor="@color/textColorWhite" />
+
+    <ListView
+        android:id="@+id/callListView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:divider="@drawable/contact_list_h_separator_dark"
+        android:dividerHeight="1dp"
+        android:transcriptMode="normal" />
+
+</LinearLayout>

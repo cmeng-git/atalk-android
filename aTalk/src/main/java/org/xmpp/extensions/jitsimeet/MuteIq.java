@@ -35,7 +35,7 @@ public class MuteIq extends IQ
     /**
      * XML element name of mute packet extension.
      */
-    public static final String ELEMENT_NAME = "mute";
+    public static final String ELEMENT = "mute";
 
     /**
      * Attribute name of "jid".
@@ -67,7 +67,7 @@ public class MuteIq extends IQ
      */
     public MuteIq()
     {
-        super(ELEMENT_NAME, NAMESPACE);
+        super(ELEMENT, NAMESPACE);
     }
 
     @Override

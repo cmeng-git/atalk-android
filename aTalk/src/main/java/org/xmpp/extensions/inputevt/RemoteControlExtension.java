@@ -108,7 +108,7 @@ public class RemoteControlExtension implements ExtensionElement
      * @return XML representation of the item
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
         XmlStringBuilder xml = new XmlStringBuilder();
 

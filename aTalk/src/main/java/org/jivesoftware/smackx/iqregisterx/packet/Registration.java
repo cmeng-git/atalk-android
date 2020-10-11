@@ -18,11 +18,12 @@
 package org.jivesoftware.smackx.iqregisterx.packet;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.bob.packet.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBExt;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
 /**
  * XEP-0077: In-Band Registration Implementation with fields elements and DataForm
  * Represents registration packets. An empty GET query will cause the server to return information
@@ -164,6 +165,8 @@ public class Registration extends IQ {
     public static final class Feature implements ExtensionElement {
         public static final String ELEMENT = "register";
         public static final String NAMESPACE = "http://jabber.org/features/iq-register";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         public static final Feature INSTANCE = new Registration.Feature();
 
         private Feature() {
@@ -183,6 +186,5 @@ public class Registration extends IQ {
         public String getNamespace() {
             return NAMESPACE;
         }
-
     }
 }

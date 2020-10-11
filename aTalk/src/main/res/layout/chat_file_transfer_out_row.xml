@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
+
+    <RelativeLayout
+        android:id="@+id/avatarView"
+        android:layout_width="@dimen/chat_avatar"
+        android:layout_height="@dimen/chat_avatar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="5dp">
+
+        <ImageButton
+            android:id="@+id/button_file"
+            android:layout_width="64sp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:background="@android:color/transparent"
+            android:contentDescription="{toolTip}"
+            android:src="@drawable/file_icon" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/msg_body_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="4dp"
+        android:layout_toStartOf="@+id/avatarView"
+        android:background="@drawable/holder_filexfer"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="5dp">
+
+        <ImageView
+            android:id="@+id/sticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxHeight="320dp"
+            android:scaleType="fitCenter" />
+
+        <include layout="@layout/player_audio_ui" />
+
+        <TextView
+            android:id="@+id/filexferFileNameView"
+            style="@style/SmallFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="{FileName text}"
+            android:textColor="@color/grey" />
+
+        <TextView
+            android:id="@+id/filexferStatusView"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingBottom="5dp"
+            android:text="{Status text}"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/errorView"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="{Error text}"
+            android:textColor="@color/red"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/file_progressbar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/file_progressSpeed"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/chat_text_margin"
+            android:gravity="start"
+            android:text="{Transfer Speed}"
+            android:textColor="@color/blue"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/file_estTime"
+            style="@style/SmallFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/chat_text_margin"
+            android:gravity="start"
+            android:paddingTop="5dp"
+            android:text="{Time left}"
+            android:textColor="@color/blue"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/msg_info_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/xferTimeView"
+                style="@style/SmallFont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/chat_text_margin"
+                android:textColor="@color/grey" />
+
+            <ImageView
+                android:id="@+id/encFileStateView"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/encryption_omemo" />
+        </LinearLayout>
+
+        <include layout="@layout/chat_file_transfer_buttons" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/filexferArrowView"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/chat_arrow_height"
+        android:layout_toEndOf="@+id/msg_body_layout"
+        android:layout_marginStart="-10dp"
+        android:layout_marginTop="@dimen/chat_arrow_top"
+        android:src="@drawable/file_xfer_arrow_out" />
+
+</RelativeLayout>

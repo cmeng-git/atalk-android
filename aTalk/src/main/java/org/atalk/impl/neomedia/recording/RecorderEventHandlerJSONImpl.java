@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.recording;
 
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.recording.RecorderEvent;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
 import org.json.JSONException;

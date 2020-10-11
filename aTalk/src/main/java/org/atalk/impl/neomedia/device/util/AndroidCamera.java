@@ -7,11 +7,12 @@ package org.atalk.impl.neomedia.device.util;
 
 import android.hardware.Camera;
 
+import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.MediaUseCase;
 
-import java.util.List;
+import java.util.*;
 
 import javax.media.*;
 
@@ -27,17 +28,17 @@ import timber.log.Timber;
 public class AndroidCamera extends CaptureDeviceInfo
 {
     /**
-     * The constant value for camera facing front.
-     */
-    public static final int FACING_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
-
-    /**
-     * The constant value for camera facing back.
+     * The facing of the camera is opposite to that of the screen.
      */
     public static final int FACING_BACK = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     /**
-     * Creates new instance of <tt>AndroidCamera</tt>
+     * The facing of the camera is the same as that of the screen.
+     */
+    public static final int FACING_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
+
+    /**
+     * Creates a new instance of <tt>AndroidCamera</tt>
      *
      * @param name human readable name of the camera e.g. front camera.
      * @param locator the <tt>MediaLocator</tt> identifying the camera and it's system.
@@ -102,7 +103,7 @@ public class AndroidCamera extends CaptureDeviceInfo
     public static int getCameraFacing(MediaLocator locator)
     {
         String remainder = locator.getRemainder();
-        return Integer.parseInt(remainder.substring(remainder.indexOf("/") + 1, remainder.length()));
+        return Integer.parseInt(remainder.substring(remainder.indexOf("/") + 1));
     }
 
     /**
@@ -114,6 +115,7 @@ public class AndroidCamera extends CaptureDeviceInfo
     {
         DeviceConfiguration devConfig = NeomediaActivator.getMediaServiceImpl().getDeviceConfiguration();
         List<CaptureDeviceInfo> videoDevices = devConfig.getAvailableVideoCaptureDevices(MediaUseCase.CALL);
+        Collections.sort(videoDevices, new SortByName());
 
         AndroidCamera[] cameras = new AndroidCamera[videoDevices.size()];
         for (int i = 0; i < videoDevices.size(); i++) {
@@ -122,6 +124,15 @@ public class AndroidCamera extends CaptureDeviceInfo
             cameras[i] = (AndroidCamera) device;
         }
         return cameras;
+    }
+
+    // Used for sorting in ascending order CaptureDeviceInfo by name
+    static class SortByName implements Comparator<CaptureDeviceInfo>
+    {
+        public int compare(CaptureDeviceInfo a, CaptureDeviceInfo b)
+        {
+            return a.getName().compareTo(b.getName());
+        }
     }
 
     /**
@@ -133,7 +144,7 @@ public class AndroidCamera extends CaptureDeviceInfo
     public static AndroidCamera getCameraFromCurrentDeviceSystem(int facing)
     {
         AndroidCamera currentCamera = getSelectedCameraDevInfo();
-        String currentProtocol = currentCamera != null ? currentCamera.getCameraProtocol() : null;
+        String currentProtocol = (currentCamera != null) ? currentCamera.getCameraProtocol() : null;
 
         AndroidCamera[] cameras = getCameras();
         for (AndroidCamera camera : cameras) {
@@ -160,8 +171,9 @@ public class AndroidCamera extends CaptureDeviceInfo
      */
     public static AndroidCamera getSelectedCameraDevInfo()
     {
-        DeviceConfiguration devConfig = NeomediaActivator.getMediaServiceImpl().getDeviceConfiguration();
-        return (AndroidCamera) devConfig.getVideoCaptureDevice(MediaUseCase.CALL);
+        MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
+        return (mediaServiceImpl == null) ? null
+                : (AndroidCamera) mediaServiceImpl.getDeviceConfiguration().getVideoCaptureDevice(MediaUseCase.CALL);
     }
 
     /**

@@ -25,17 +25,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Base64;
 
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
+import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.impl.msghistory.MessageSourceService;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.protocol.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.chat.*;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.*;
-import org.atalk.util.StringUtils;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
@@ -370,10 +371,8 @@ public class DatabaseBackend extends SQLiteOpenHelper
     private void initDatabase(SQLiteDatabase db)
     {
         Timber.i("### Starting Database migration! ###");
-
         db.beginTransaction();
         try {
-            MigrationToSqlDB.xmlToSqlDatabase(db);
             db.setTransactionSuccessful();
             Timber.i("### Completed SQLite DataBase migration successfully! ###");
         } finally {
@@ -381,10 +380,15 @@ public class DatabaseBackend extends SQLiteOpenHelper
         }
     }
 
+    /**
+     * Create or update the AccountID table for a specified accountId
+     *
+     * @param accountId AccountID to be replaced/inserted
+     */
     public void createAccount(AccountID accountId)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(AccountID.TABLE_NAME, null, accountId.getContentValues());
+        db.replace(AccountID.TABLE_NAME, null, accountId.getContentValues());
     }
 
     public List<String> getAllAccountIDs()
@@ -639,14 +643,14 @@ public class DatabaseBackend extends SQLiteOpenHelper
         return record;
     }
 
-    public void storePreKey(OmemoDevice userDevice, PreKeyRecord record)
+    public void storePreKey(OmemoDevice userDevice, int preKeyId, PreKeyRecord record)
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.BARE_JID, userDevice.getJid().toString());
         values.put(SQLiteOmemoStore.DEVICE_ID, userDevice.getDeviceId());
-        values.put(SQLiteOmemoStore.PRE_KEY_ID, record.getId());
+        values.put(SQLiteOmemoStore.PRE_KEY_ID, preKeyId);
         values.put(SQLiteOmemoStore.PRE_KEYS, Base64.encodeToString(record.serialize(), Base64.DEFAULT));
         db.insert(SQLiteOmemoStore.PREKEY_TABLE_NAME, null, values);
     }
@@ -850,7 +854,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             String identityKP = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.IDENTITY_KEY));
             cursor.close();
             try {
-                if (!StringUtils.isNullOrEmpty(identityKP)) {
+                if (StringUtils.isNotEmpty(identityKP)) {
                     identityKeyPair = new IdentityKeyPair(Base64.decode(identityKP, Base64.DEFAULT));
                 }
             } catch (InvalidKeyException e) {
@@ -872,7 +876,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             String key = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.IDENTITY_KEY));
             cursor.close();
             try {
-                if (!StringUtils.isNullOrEmpty(key)) {
+                if (StringUtils.isNotEmpty(key)) {
                     identityKey = new IdentityKey(Base64.decode(key, Base64.DEFAULT), 0);
                 }
             } catch (InvalidKeyException e) {
@@ -948,7 +952,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             }
             try {
                 key = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.IDENTITY_KEY));
-                if (!StringUtils.isNullOrEmpty(key)) {
+                if (StringUtils.isNotEmpty(key)) {
                     identityKeys.add(new IdentityKey(Base64.decode(key, Base64.DEFAULT), 0));
                 }
                 else {
@@ -1003,7 +1007,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         // Active devices
         values.put(SQLiteOmemoStore.ACTIVE, 1);
         Set<Integer> activeDevices = deviceList.getActiveDevices();
-        Timber.i("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
+        Timber.d("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
         for (int deviceId : activeDevices) {
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 
@@ -1016,7 +1020,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
                  * Just logged the error. Any missing buddy identityKey will be handled by
                  * AndroidOmemoService#buddyDeviceListUpdateListener()
                  */
-                Timber.w("Identities table - create new activeDevice: %s:%s ", contact, deviceId);
+                Timber.d("Identities table - create new activeDevice: %s:%s ", contact, deviceId);
                 values.put(SQLiteOmemoStore.BARE_JID, contact.toString());
                 values.put(SQLiteOmemoStore.DEVICE_ID, deviceId);
                 db.insert(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, values);
@@ -1228,7 +1232,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         while (cursor.moveToNext()) {
             deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             String sessionKey = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY));
-            if (!StringUtils.isNullOrEmpty(sessionKey)) {
+            if (StringUtils.isNotEmpty(sessionKey)) {
                 try {
                     session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
                 } catch (IOException e) {
@@ -1258,7 +1262,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
 
         while (cursor.moveToNext()) {
             String sessionKey = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY));
-            if (!StringUtils.isNullOrEmpty(sessionKey)) {
+            if (StringUtils.isNotEmpty(sessionKey)) {
                 try {
                     session = new SessionRecord(Base64.decode(sessionKey, Base64.DEFAULT));
                 } catch (IOException e) {

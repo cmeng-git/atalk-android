@@ -54,8 +54,7 @@ public class DataMessage extends AbstractEncodedMessage
 	public MysteriousT getT()
 	{
 		return new MysteriousT(protocolVersion, senderInstanceTag,
-				receiverInstanceTag, flags, senderKeyID,
-				recipientKeyID, nextDH, ctr, encryptedMessage);
+				receiverInstanceTag, flags, senderKeyID, recipientKeyID, nextDH, ctr, encryptedMessage);
 	}
 
 	@Override

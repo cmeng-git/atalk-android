@@ -26,6 +26,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.ProtocolException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.*;
@@ -48,7 +49,7 @@ public class SessionImpl implements Session
     private SessionStatus sessionStatus;
     private AuthContext authContext;
     private SessionKeys[][] sessionKeys;
-    private Vector<byte[]> oldMacKeys;
+	private List<byte[]> oldMacKeys;
     private final OtrSm otrSm;
     private BigInteger ess;
     private OfferStatus offerStatus;
@@ -57,7 +58,7 @@ public class SessionImpl implements Session
     private int protocolVersion;
     private final OtrAssembler assembler;
     private final OtrFragmenter fragmenter;
-    private final List<OtrEngineListener> listeners = new Vector<>();
+	private final List<OtrEngineListener> listeners = new ArrayList<>();
     private PublicKey remotePublicKey;
 
     public SessionImpl(SessionID sessionID, OtrEngineHost listener)
@@ -76,7 +77,7 @@ public class SessionImpl implements Session
         this.senderTag = new InstanceTag();
         this.receiverInstanceTag = InstanceTag.ZERO_TAG;
 
-        this.slaveSessions = new SelectableMap<>(new HashMap<InstanceTag, SessionImpl>());
+        this.slaveSessions = new SelectableMap<>(new HashMap<>());
         isMasterSession = true;
 
         assembler = new OtrAssembler(getSenderInstanceTag());
@@ -96,7 +97,7 @@ public class SessionImpl implements Session
         this.senderTag = senderTag;
         this.receiverInstanceTag = receiverInstanceTag;
 
-        this.slaveSessions = new SelectableMap<>(Collections.<InstanceTag, SessionImpl>emptyMap());
+        this.slaveSessions = new SelectableMap<>(Collections.emptyMap());
         isMasterSession = false;
 
         protocolVersion = OTRv.THREE;
@@ -295,10 +296,10 @@ public class SessionImpl implements Session
         return authContext;
     }
 
-    private Vector<byte[]> getOldMacKeys()
+	private List<byte[]> getOldMacKeys()
     {
         if (oldMacKeys == null)
-            oldMacKeys = new Vector<>();
+            oldMacKeys = new ArrayList<>();
         return oldMacKeys;
     }
 
@@ -563,12 +564,8 @@ public class SessionImpl implements Session
                         matchingKeys.getReceivingCtr(), data.encryptedMessage);
 
                 String decryptedMsgContent;
-                try {
-                    // Expect bytes to be text encoded in UTF-8.
-                    decryptedMsgContent = new String(dmc, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    throw new OtrException(e);
-                }
+                // Expect bytes to be text encoded in UTF-8.
+                decryptedMsgContent = new String(dmc, StandardCharsets.UTF_8);
                 Timber.log(TimberLog.FINER, "Decrypted message: '%s", decryptedMsgContent);
 
                 // Rotate keys if necessary.
@@ -700,8 +697,7 @@ public class SessionImpl implements Session
                     break;
                 case PLAINTEXT:
                     // Remove the whitespace tag and display the message to the user. If
-                    // REQUIRE_ENCRYPTION is set, warn him that the message was received
-                    // non-encrypted.
+                    // REQUIRE_ENCRYPTION is set, warn him that the message was received non-encrypted.
                     if (policy.getRequireEncryption())
                         getHost().unencryptedMessageReceived(sessionID, plainTextMessage.cleanText);
                     break;
@@ -782,7 +778,7 @@ public class SessionImpl implements Session
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 if (msgText != null && msgText.length() > 0) {
                     try {
-                        out.write(msgText.getBytes("UTF8"));
+                        out.write(msgText.getBytes(StandardCharsets.UTF_8));
                     } catch (IOException e) {
                         throw new OtrException(e);
                     }

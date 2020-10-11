@@ -5,15 +5,21 @@
  */
 package org.atalk.impl.neomedia.transform.dtls;
 
-import org.bouncycastle.crypto.tls.*;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.tls.*;
+import org.bouncycastle.tls.crypto.*;
+import org.bouncycastle.tls.crypto.impl.bc.*;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import timber.log.Timber;
 
 /**
- * Implements {@link TlsServer} for the purposes of supporting DTLS-SRTP.
+ * Implements {@link TlsServer} for the purposes of supporting DTLS-SRTP - DTLSv12/DTLSv10.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -23,8 +29,13 @@ public class TlsServerImpl extends DefaultTlsServer
     /**
      * @see TlsServer#getCertificateRequest()
      */
-    private final CertificateRequest certificateRequest
-            = new CertificateRequest(new short[]{ClientCertificateType.rsa_sign}, null, null);
+    private CertificateRequest certificateRequest = null;
+
+    /**
+     * If DTLSv12 or higher is negotiated, configures the set of supported signature algorithms in the
+     * CertificateRequest (if one is sent). If null, uses the default set.
+     */
+    private Vector serverCertReqSigAlgs = null;
 
     /**
      * The <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its client.
@@ -39,12 +50,12 @@ public class TlsServerImpl extends DefaultTlsServer
     /**
      * @see DefaultTlsServer#getRSAEncryptionCredentials()
      */
-    private TlsEncryptionCredentials rsaEncryptionCredentials;
+    private TlsCredentialedDecryptor rsaEncryptionCredentials;
 
     /**
      * @see DefaultTlsServer#getRSASignerCredentials()
      */
-    private TlsSignerCredentials rsaSignerCredentials;
+    private TlsCredentialedSigner rsaSignerCredentials;
 
     /**
      * Initializes a new <tt>TlsServerImpl</tt> instance.
@@ -53,6 +64,7 @@ public class TlsServerImpl extends DefaultTlsServer
      */
     public TlsServerImpl(DtlsPacketTransformer packetTransformer)
     {
+        super(new BcTlsCrypto(new SecureRandom()));
         this.packetTransformer = packetTransformer;
     }
 
@@ -62,44 +74,56 @@ public class TlsServerImpl extends DefaultTlsServer
     @Override
     public CertificateRequest getCertificateRequest()
     {
+        if (certificateRequest == null) {
+            short[] certificateTypes = new short[]{ ClientCertificateType.rsa_sign,
+                    ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
+
+
+            Vector serverSigAlgs = null;
+            if (TlsUtils.isSignatureAlgorithmsExtensionAllowed(context.getServerVersion())) {
+                serverSigAlgs = serverCertReqSigAlgs;
+                if (serverSigAlgs == null) {
+                    serverSigAlgs = TlsUtils.getDefaultSupportedSignatureAlgorithms(context);
+                }
+            }
+
+//            Certificate certificate = getDtlsControl().getCertificateInfo().getCertificate();
+//            TlsCertificate[] chain = certificate.getCertificateList();
+//            try {
+//                for (TlsCertificate tlsCertificate : chain) {
+//                    org.bouncycastle.asn1.x509.Certificate entry = org.bouncycastle.asn1.x509.Certificate.getInstance(tlsCertificate.getEncoded());
+//                    certificateAuthorities.addElement(entry.getIssuer());
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+            Vector certificateAuthorities = new Vector();
+            certificateAuthorities.addElement(new X500Name("CN=atalk.org TLS CA"));
+
+            certificateRequest = new CertificateRequest(certificateTypes, serverSigAlgs, certificateAuthorities);
+        }
         return certificateRequest;
     }
 
     /**
      * Gets the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its client.
      *
-     * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its
-     * client
+     * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its client
      */
-    int getChosenProtectionProfile()
+    private int getChosenProtectionProfile()
     {
         return chosenProtectionProfile;
     }
 
     /**
      * {@inheritDoc}
-     *
-     * Overrides the super implementation to explicitly specify cipher suites
-     * which we know to be supported by Bouncy Castle and provide Perfect Forward Secrecy.
+     * The implementation of <tt>TlsClientImpl</tt> always returns <tt>ProtocolVersion.DTLSv12 & DTLSv10</tt>
      */
     @Override
-    protected int[] getCipherSuites()
+    protected ProtocolVersion[] getSupportedVersions()
     {
-        return new int[]{
-                /* core/src/main/java/org/bouncycastle/crypto/tls/DefaultTlsServer.java */
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA
-        };
+        return ProtocolVersion.DTLSv12.downTo(ProtocolVersion.DTLSv10);
     }
 
     /**
@@ -122,28 +146,6 @@ public class TlsServerImpl extends DefaultTlsServer
         return packetTransformer.getDtlsControl();
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * The implementation of <tt>TlsServerImpl</tt> always returns <tt>ProtocolVersion.DTLSv10</tt>
-     * because <tt>ProtocolVersion.DTLSv12</tt> does not work with the Bouncy Castle Crypto APIs at
-     * the time of this writing.
-     */
-    @Override
-    protected ProtocolVersion getMaximumVersion()
-    {
-        return ProtocolVersion.DTLSv10;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected ProtocolVersion getMinimumVersion()
-    {
-        return ProtocolVersion.DTLSv10;
-    }
-
     private Properties getProperties()
     {
         return packetTransformer.getProperties();
@@ -157,12 +159,17 @@ public class TlsServerImpl extends DefaultTlsServer
      * implemented by <tt>DefaultTlsServer</tt>.
      */
     @Override
-    protected TlsEncryptionCredentials getRSAEncryptionCredentials()
+    protected TlsCredentialedDecryptor getRSAEncryptionCredentials()
     {
         if (rsaEncryptionCredentials == null) {
-            CertificateInfo certificateInfo = getDtlsControl().getCertificateInfo();
-            rsaEncryptionCredentials = new DefaultTlsEncryptionCredentials(context,
-                    certificateInfo.getCertificate(), certificateInfo.getKeyPair().getPrivate());
+            TlsCrypto crypto = context.getCrypto();
+
+            CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
+            Certificate certificate = certInfo.getCertificate();
+            AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
+
+            rsaEncryptionCredentials = new BcDefaultTlsCredentialedDecryptor((BcTlsCrypto) crypto,
+                    certificate, privateKey);
         }
         return rsaEncryptionCredentials;
     }
@@ -173,19 +180,26 @@ public class TlsServerImpl extends DefaultTlsServer
      * Depending on the <tt>selectedCipherSuite</tt>, <tt>DefaultTlsServer</tt> will require either
      * <tt>rsaEncryptionCredentials</tt> or <tt>rsaSignerCredentials</tt> neither of which is
      * implemented by <tt>DefaultTlsServer</tt>.
+     *
+     * @return
      */
     @Override
-    protected TlsSignerCredentials getRSASignerCredentials()
+    protected TlsCredentialedSigner getRSASignerCredentials()
     {
         if (rsaSignerCredentials == null) {
-            CertificateInfo certificateInfo = getDtlsControl().getCertificateInfo();
+            TlsCrypto crypto = context.getCrypto();
+            TlsCryptoParameters cryptoParams = new TlsCryptoParameters(context);
 
-            /*
-             * FIXME The signature and hash algorithms should be retrieved from the certificate.
-             */
-            rsaSignerCredentials = new DefaultTlsSignerCredentials(context,
-                    certificateInfo.getCertificate(), certificateInfo.getKeyPair().getPrivate(),
-                    new SignatureAndHashAlgorithm(HashAlgorithm.sha1, SignatureAlgorithm.rsa));
+            CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
+            AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
+            Certificate certificate = certInfo.getCertificate();
+
+            // FIXME The signature and hash algorithms should be retrieved from the certificate.
+            SignatureAndHashAlgorithm signatureAndHashAlgorithm
+                    = new SignatureAndHashAlgorithm(HashAlgorithm.sha256, SignatureAlgorithm.rsa);
+
+            rsaSignerCredentials = new BcDefaultTlsCredentialedSigner(cryptoParams, (BcTlsCrypto) crypto,
+                    privateKey, certificate, signatureAndHashAlgorithm);
         }
         return rsaSignerCredentials;
     }
@@ -210,8 +224,7 @@ public class TlsServerImpl extends DefaultTlsServer
                 serverExtensions = new Hashtable();
 
             UseSRTPData useSRTPData = TlsSRTPUtils.getUseSRTPExtension(clientExtensions);
-            int chosenProtectionProfile = DtlsControlImpl.chooseSRTPProtectionProfile(
-                    useSRTPData.getProtectionProfiles());
+            int chosenProtectionProfile = DtlsControlImpl.chooseSRTPProtectionProfile(useSRTPData.getProtectionProfiles());
 
             /*
              * If there is no shared profile and that is not acceptable, the server SHOULD
@@ -275,13 +288,13 @@ public class TlsServerImpl extends DefaultTlsServer
              * message including a Supported Point Formats Extension appends this extension (along
              * with others) to its ServerHello message, enumerating the point formats it can parse.
              */
-            serverECPointFormats = new short[]{
+            short[] serverECPointFormats = new short[]{
                     ECPointFormat.uncompressed,
                     ECPointFormat.ansiX962_compressed_prime,
                     ECPointFormat.ansiX962_compressed_char2,
             };
 
-            TlsECCUtils.addSupportedPointFormatsExtension(checkServerExtensions(), serverECPointFormats);
+            TlsExtensionsUtils.addSupportedPointFormatsExtension(checkServerExtensions(), serverECPointFormats);
         }
         return serverExtensions;
     }
@@ -296,7 +309,6 @@ public class TlsServerImpl extends DefaultTlsServer
     @Override
     public void init(TlsServerContext context)
     {
-        // TODO Auto-generated method stub
         super.init(context);
     }
 
@@ -321,6 +333,17 @@ public class TlsServerImpl extends DefaultTlsServer
     public void notifyAlertRaised(short alertLevel, short alertDescription, String message, Throwable cause)
     {
         packetTransformer.notifyAlertRaised(this, alertLevel, alertDescription, message, cause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyHandshakeComplete()
+            throws IOException
+    {
+        super.notifyHandshakeComplete();
+        packetTransformer.initializeSRTPTransformer(getChosenProtectionProfile(), context);
     }
 
     /**
@@ -366,8 +389,7 @@ public class TlsServerImpl extends DefaultTlsServer
             throw ioe;
         }
         else {
-            int chosenProtectionProfile = DtlsControlImpl.chooseSRTPProtectionProfile(
-                    useSRTPData.getProtectionProfiles());
+            int chosenProtectionProfile = DtlsControlImpl.chooseSRTPProtectionProfile(useSRTPData.getProtectionProfiles());
 
             /*
              * If there is no shared profile and that is not acceptable, the server SHOULD

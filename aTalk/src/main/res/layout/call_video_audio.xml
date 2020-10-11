@@ -9,7 +9,6 @@
         android:id="@+id/remoteVideoContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@color/red" />
@@ -19,10 +18,8 @@
         android:layout_width="90dp"
         android:layout_height="160dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="70dp"
-        android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
         android:orientation="vertical"
         android:background="@drawable/border_blue"
@@ -49,7 +46,7 @@
                 android:contentDescription="@string/service_gui_CALL"
                 android:paddingBottom="@dimen/between_padding"
                 android:scaleType="fitXY"
-                android:src="@drawable/personphoto" />
+                android:src="@drawable/person_photo" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -64,13 +61,11 @@
                     android:id="@+id/callStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:layout_toEndOf="@+id/security_group"
-                    android:layout_toRightOf="@+id/security_group"
                     android:gravity="center_vertical"
                     android:text="{call status}"
-                    android:textColor="@color/white"
+                    android:textColor="@color/textColorWhite"
                     android:textSize="@dimen/label_text_size" />
 
                 <RelativeLayout
@@ -84,8 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="{proto}"
-                        android:textColor="@color/white"
+                        android:textColor="@color/textColorWhite"
                         android:textSize="@dimen/label_text_size" />
 
                     <ImageView
@@ -94,7 +88,6 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toEndOf="@+id/security_protocol"
-                        android:layout_toRightOf="@+id/security_protocol"
                         android:src="@drawable/secure_off_dark" />
                 </RelativeLayout>
 
@@ -102,12 +95,10 @@
                     android:id="@+id/callTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:layout_toEndOf="@+id/callStatus"
-                    android:layout_toRightOf="@+id/callStatus"
                     android:text="00:00:00"
-                    android:textColor="@color/white"
+                    android:textColor="@color/textColorWhite"
                     android:textSize="@dimen/label_text_size" />
             </RelativeLayout>
         </LinearLayout>
@@ -134,7 +125,7 @@
             android:id="@+id/button_call_back_to_chat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
@@ -146,7 +137,7 @@
             android:id="@+id/button_speakerphone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
@@ -158,7 +149,7 @@
             android:id="@+id/button_call_microphone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
@@ -170,7 +161,7 @@
             android:id="@+id/button_call_video"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
@@ -182,7 +173,7 @@
             android:id="@+id/button_call_hold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
@@ -194,7 +185,7 @@
             android:id="@+id/button_call_hangup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"

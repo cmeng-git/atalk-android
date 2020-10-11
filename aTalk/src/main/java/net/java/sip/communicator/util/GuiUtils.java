@@ -6,6 +6,8 @@
  */
 package net.java.sip.communicator.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -229,6 +231,39 @@ public class GuiUtils
 
     /**
      * Formats the given date. The result format is the following:
+     * For example: Tue 29 Oct 2019 04:37:55 FMT+08:00
+     *
+     * @param date the date to format
+     * @return the formatted date string
+     */
+    public static String formatDateTime(Date date)
+    {
+        if (date == null)
+            date = new Date();
+
+        String pattern = "E, dd MMM yyyy HH:mm:ss z";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        return simpleDateFormat.format(date);
+
+        /*
+         * [Month] [Day], [Year] [Hour]:[Minute]:[Second].
+         * Dec 24, 2000 12:25:30.
+         */
+        // long dateTime = date.getTime()
+        // StringBuffer strBuf = new StringBuffer();
+        // formatDate(dateTime, strBuf);
+        // formatTime(dateTime);
+        // return strBuf.append(" ").append(formatTime(dateTime)).toString();
+    }
+
+    public static String formatDateTimeShort(Date date)
+    {
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+        return df.format(date);
+    }
+
+    /**
+     * Formats the given date. The result format is the following:
      * [Month] [Day], [Year]. For example: Dec 24, 2000.
      *
      * @param date the date to format
@@ -274,12 +309,10 @@ public class GuiUtils
     }
 
     /**
-     * Formats the given date as: Month DD, YYYY and appends it to the given
-     * <tt>dateStrBuf</tt> string buffer.
+     * Formats the given date as: Month DD, YYYY and appends it to the given <tt>dateStrBuf</tt> string buffer.
      *
      * @param date the date to format
-     * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the
-     * formatted date
+     * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the formatted date
      */
     public static void formatDate(Date date, StringBuffer dateStrBuf)
     {

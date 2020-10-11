@@ -18,6 +18,7 @@ package org.atalk.crypto;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.*;
 
 import net.java.otr4j.OtrPolicy;
@@ -40,9 +41,7 @@ import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.crypto.otr.OTRv3OutgoingSessionSwitcher;
 import org.atalk.service.osgi.OSGiFragment;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.omemo.*;
@@ -53,6 +52,7 @@ import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jxmpp.jid.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.security.PublicKey;
 import java.util.*;
@@ -76,7 +76,8 @@ import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_UNKNOWN;
  * @author Eng Chong Meng
  */
 public class CryptoFragment extends OSGiFragment
-        implements ChatSessionManager.CurrentChatListener, ChatRoomMemberPresenceListener
+        implements ChatSessionManager.CurrentChatListener, ChatRoomMemberPresenceListener,
+        OmemoAuthenticateDialog.AuthenticateListener
 {
     /**
      * A map of the user selected chatType. The stored key is the chatSessionId. The information
@@ -90,8 +91,8 @@ public class CryptoFragment extends OSGiFragment
     private static final Map<Object, Boolean> omemoCapable = new LinkedHashMap<>();
 
     /**
-     * A cache map of the Descriptor and its CryptoModeChangeListener. Need this as listener is
-     * being added only when the chatFragment is launch. Slide pages does not get updated.
+     * A cache map of the Descriptor and its CryptoModeChangeListener. Need this as listener is added only
+     * when the chatFragment is launched. Slide pages does not get updated.
      * ChatType change event is sent to CryptoModeChangeListener to update chatFragment background colour:
      */
     private static final Map<Object, CryptoModeChangeListener> cryptoModeChangeListeners = new LinkedHashMap<>();
@@ -105,8 +106,13 @@ public class CryptoFragment extends OSGiFragment
     private MenuItem mOtr;
     private MenuItem mOtr_Session;
 
-    private XMPPTCPConnection mConnection;
+    private XMPPConnection mConnection;
+
+    /**
+     * Can either be Contact or ChatRoom
+     */
     private Object mDescriptor;
+
     private OmemoManager mOmemoManager;
     private OmemoStore mOmemoStore;
 
@@ -133,7 +139,7 @@ public class CryptoFragment extends OSGiFragment
     private boolean isOmemoMode = false;
 
     /**
-     * Creates new instance of <tt>OtrFragment</tt>.
+     * Creates a new instance of <tt>OtrFragment</tt>.
      */
     public CryptoFragment()
     {
@@ -199,8 +205,9 @@ public class CryptoFragment extends OSGiFragment
 
         switch (item.getItemId()) {
             case R.id.crypto_choice:
-                boolean isOmemoSupported = omemoCapable.containsKey(mDescriptor)
-                        ? omemoCapable.get(mDescriptor) : false;
+                Boolean isOmemoSupported = omemoCapable.get(mDescriptor);
+                if (isOmemoSupported == null)
+                    isOmemoSupported = false;
                 mOmemo.setEnabled(isOmemoSupported);
                 mOmemo.getIcon().setAlpha(isOmemoSupported ? 255 : 80);
 
@@ -240,7 +247,7 @@ public class CryptoFragment extends OSGiFragment
 
             case R.id.otr_session:
                 OTRv3OutgoingSessionSwitcher otrSessionDialog = OTRv3OutgoingSessionSwitcher.newInstance(currentOtrContact);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                FragmentTransaction ft = getParentFragmentManager().beginTransaction();
                 ft.addToBackStack(null);
                 otrSessionDialog.show(ft, "otrDialog");
                 break;
@@ -255,9 +262,10 @@ public class CryptoFragment extends OSGiFragment
             // Timber.w("update persistent ChatType to: %s", mChatType);
 
             mOtr_Session.setVisible(showMultiOtrSession);
-            // Do not store OTR as it may be invalid on new session startup
-            if ((mChatType != MSGTYPE_OTR) && (mChatType != MSGTYPE_OTR_UA))
-                mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
+            // cmeng (20200717): proceed to save but will forced to normal on retrieval
+            // Do not store OTR as it is not valid on new session startup
+            // if ((mChatType != MSGTYPE_OTR) && (mChatType != MSGTYPE_OTR_UA))
+            mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -325,7 +333,7 @@ public class CryptoFragment extends OSGiFragment
             } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException
                     | InterruptedException | SmackException.NoResponseException
-                    | IllegalArgumentException e) {
+                    | IllegalArgumentException | IOException e) {
                 // IllegalArgumentException is throw when IdentityKeyPair is null
                 Timber.w("Fetching active fingerPrints has failed: %s", e.getMessage());
             }
@@ -335,19 +343,19 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (InterruptedException | SmackException.NoResponseException | CryptoFailedException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 Timber.i("OMEMO changes mChatType to: %s", mChatType);
                 return;
             } catch (Exception e) { // catch any non-advertised exception
                 Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 Timber.w("Revert OMEMO mChatType to: %s", mChatType);
                 return;
@@ -367,7 +375,7 @@ public class CryptoFragment extends OSGiFragment
              */
             if ((numUntrusted > 0) && (numUntrusted == fingerPrints.size())) {
                 mChatType = ChatFragment.MSGTYPE_OMEMO_UT;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_UNTRUSTED));
             }
             else if (allTrusted) {
@@ -375,7 +383,7 @@ public class CryptoFragment extends OSGiFragment
             }
             else {
                 mChatType = ChatFragment.MSGTYPE_OMEMO_UA;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_UNVERIFIED));
             }
         }
@@ -391,19 +399,19 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
                 allTrusted = false;
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
                     | XMPPException.XMPPErrorException | CryptoFailedException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
                 return;
             } catch (Exception e) { // catch any non-advertised exception
                 Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
                 mChatType = ChatFragment.MSGTYPE_MUC_NORMAL;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage()));
             }
 
@@ -413,7 +421,7 @@ public class CryptoFragment extends OSGiFragment
             }
             else {
                 mChatType = ChatFragment.MSGTYPE_OMEMO_UA;
-                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
+                activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
                         getString(R.string.crypto_msg_OMEMO_SESSION_UNVERIFIED_UNTRUSTED));
             }
         }
@@ -436,7 +444,12 @@ public class CryptoFragment extends OSGiFragment
 
         for (EntityFullJid e : multiUserChat.getOccupants()) {
             recipient = multiUserChat.getOccupant(e).getJid().asBareJid();
-            OmemoCachedDeviceList theirDevices = mOmemoStore.loadCachedDeviceList(mOmemoManager.getOwnDevice(), recipient);
+            OmemoCachedDeviceList theirDevices = null;
+            try {
+                theirDevices = mOmemoStore.loadCachedDeviceList(mOmemoManager.getOwnDevice(), recipient);
+            } catch (IOException ex) {
+                Timber.w("IOException: %s", ex.getMessage());
+            }
             for (int id : theirDevices.getActiveDevices()) {
                 OmemoDevice recipientDevice = new OmemoDevice(recipient, id);
                 try {
@@ -446,7 +459,7 @@ public class CryptoFragment extends OSGiFragment
                 } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e1) {
                     Timber.w("AllTrusted check exception: %s", e1.getMessage());
                 } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
-                        | SmackException.NoResponseException | InterruptedException e1) {
+                        | SmackException.NoResponseException | InterruptedException | IOException e1) {
                     e1.printStackTrace();
                 }
             }
@@ -457,7 +470,7 @@ public class CryptoFragment extends OSGiFragment
     /**
      * Trigger when invited participant join the conference. This will fill the partial identities table for the
      * participant and request fingerPrint verification is undecided. Hence ensuring that the next sent message
-     * is properly received by the new member
+     * is properly received by the new member.
      *
      * @param evt the <tt>ChatRoomMemberPresenceChangeEvent</tt> instance containing the source chat
      */
@@ -470,9 +483,9 @@ public class CryptoFragment extends OSGiFragment
             } catch (UndecidedOmemoIdentityException e) {
                 Set<OmemoDevice> omemoDevices = e.getUndecidedDevices();
                 Timber.w("There are undecided Omemo devices: %s", omemoDevices);
-                startActivity(OmemoAuthenticateDialog.createIntent(mOmemoManager, omemoDevices, this));
+                startActivity(OmemoAuthenticateDialog.createIntent(getContext(), mOmemoManager, omemoDevices, this));
             } catch (NoOmemoSupportException | InterruptedException | SmackException.NoResponseException
-                    | XMPPException.XMPPErrorException | CryptoFailedException
+                    | XMPPException.XMPPErrorException | CryptoFailedException | IOException
                     | SmackException.NotConnectedException | SmackException.NotLoggedInException e) {
                 Timber.w("UndecidedOmemoIdentity check failed: %s", e.getMessage());
             }
@@ -621,15 +634,17 @@ public class CryptoFragment extends OSGiFragment
 
         // activeChat must not be null; proceed if it is conference call (contact == null).
         // Do not proceed if chat session is triggered from system server (domainBareJid) i.e. welcome message
-        if ((activeChat != null)
-                && ((contact == null) || !(contact.getJid() instanceof DomainBareJid)))
-            setCurrentContact(contact, chatSessionId);
-        else {
-            mOmemo.setEnabled(false);
-            mOmemo.getIcon().setAlpha(80);
+        runOnUiThread(() -> {
+            if ((activeChat != null)
+                    && ((contact == null) || !(contact.getJid() instanceof DomainBareJid)))
+                setCurrentContact(contact, chatSessionId);
+            else {
+                mOmemo.setEnabled(false);
+                mOmemo.getIcon().setAlpha(80);
 
-            mOtr.setVisible(false);
-        }
+                mOtr.setVisible(false);
+            }
+        });
     }
 
     /**
@@ -638,7 +653,6 @@ public class CryptoFragment extends OSGiFragment
      *
      * @param contact new <tt>contact</tt> to be used.
      */
-
     private void setCurrentContact(Contact contact, String chatSessionId)
     {
         currentOtrContact = null;
@@ -664,7 +678,6 @@ public class CryptoFragment extends OSGiFragment
                 setStatusOtr(scOtrEngine.getSessionStatus(currentOtrContact));
             }
         }
-
         // Timber.w("set otr session visibility: %s %s", currentOtrContact,isOmemoMode);
         mOtr_Session.setVisible((currentOtrContact != null) && !isOmemoMode);
     }
@@ -682,6 +695,10 @@ public class CryptoFragment extends OSGiFragment
         int chatType;
         if (!encryptionChoice.containsKey(chatSessionId)) {
             chatType = mMHS.getSessionChatType(activeChat.getChatSession());
+            // OTR state in DB may not be valid in the current chat session, so force it to normal chat mode
+            if ((chatType == MSGTYPE_OTR) || (chatType == MSGTYPE_OTR_UA)) {
+                chatType = MSGTYPE_NORMAL;
+            }
             encryptionChoice.put(chatSessionId, chatType);
         }
         chatType = encryptionChoice.get(chatSessionId);
@@ -700,6 +717,20 @@ public class CryptoFragment extends OSGiFragment
 
 //		Timber.w("ChatSession ID: %s\nEncryption choice: %s\nmItem: %s\nChatType: %s", chatSessionId,
 //				encryptionChoice, mItem, activeChat.getChatType());
+    }
+
+    /**
+     * Reset the encryption choice for the specified chatSessionId.
+     * Mainly use by ChatSessionFragement; to re-enable the chat Session for UI when it is selected again
+     *
+     * @param chatSessionId chat session Uuid
+     */
+    public static void resetEncryptionChoice(String chatSessionId){
+        if (TextUtils.isEmpty(chatSessionId)) {
+            encryptionChoice.clear();
+        } else {
+            encryptionChoice.remove(chatSessionId);
+        }
     }
 
     /**
@@ -732,9 +763,7 @@ public class CryptoFragment extends OSGiFragment
         @Override
         public void multipleInstancesDetected(OtrContact otrContact)
         {
-            runOnUiThread(() -> {
-                mOtr_Session.setVisible(true);
-            });
+            runOnUiThread(() -> mOtr_Session.setVisible(true));
         }
 
         @Override
@@ -828,7 +857,7 @@ public class CryptoFragment extends OSGiFragment
                     tipKey = R.string.plugin_otr_menu_OTR_HANDSHAKE;
                     break;
                 case TIMED_OUT:
-                    iconId = R.drawable.crypto_otr_pdbroken;
+                    iconId = R.drawable.crypto_otr_pd_broken;
                     tipKey = R.string.plugin_otr_menu_OTR_TIMEOUT;
                     break;
                 default:
@@ -845,10 +874,12 @@ public class CryptoFragment extends OSGiFragment
             if ((chatType != mChatType) || (chatType != activeChat.getChatType())) {
                 // Timber.d("OTR listener change mChatType to: %s (%s)", mChatType, chatType);
                 mChatType = chatType;
-                // Do not save OTR state into DB
-                if (mChatType == MSGTYPE_NORMAL) {
-                    mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
-                }
+
+                // cmeng (20200717): proceed to save but will forced to normal on retrieval
+                // Do not store OTR as it is not valid on new session startup
+                // if (mChatType == MSGTYPE_NORMAL)
+                mMHS.setSessionChatType(activeChat.getChatSession(), mChatType);
+
                 notifyCryptoModeChanged(mChatType);
             }
         }
@@ -898,7 +929,7 @@ public class CryptoFragment extends OSGiFragment
     /**
      * Check and cache result of OMEMO is supported by current chatTransport;
      */
-    private void updateOmemoSupport()
+    public void updateOmemoSupport()
     {
         // Following few parameters must get initialized while in updateOmemoSupport()
         // Do not proceed if account is not log in, otherwise system crash
@@ -914,7 +945,7 @@ public class CryptoFragment extends OSGiFragment
         }
         mOmemoManager = OmemoManager.getInstanceFor(mConnection);
 
-        // Execute in new thread to avoid ANR with black screen when chat window is opened
+        // Execute in a new thread to avoid ANR with black screen when chat window is opened.
         new Thread()
         {
             @Override
@@ -933,7 +964,7 @@ public class CryptoFragment extends OSGiFragment
                         entityCan = mOmemoManager.multiUserChatSupportsOmemo(muc);
                     }
                     else {
-                        // buddy online check may sometimes experience reply timeout
+                        // buddy online check may sometimes experience reply timeout; OMEMO obsoleted feature
                         // not a good idea to include PEP_NODE_DEVICE_LIST_NOTIFY as some siblings may
                         // support omemo encryption.
                         // boolean support = ServiceDiscoveryManager.getInstanceFor(connection)
@@ -948,13 +979,18 @@ public class CryptoFragment extends OSGiFragment
                         // entityCan = ((SQLiteOmemoStore) mOmemoStore).getContactNumTrustedKeys(usrID) > 0;
                     }
                 } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
-                        | InterruptedException | SmackException.NotConnectedException e) {
+                        | InterruptedException | SmackException.NotConnectedException | IOException e) {
                     Timber.w("Exception in omemo support checking: %s", e.getMessage());
                 } catch (PubSubException.NotALeafNodeException e) {
                     Timber.w("Exception in checking entity omemo support: %s", e.getMessage());
                 }
-                // update the result in cache
-                omemoCapable.put(mDescriptor, serverCan && entityCan);
+
+                // update omemoSupported in cache; revert to MSGTYPE_NORMAL if Default OMEMO not supported by session
+                boolean omemoSupported = serverCan && entityCan;
+                omemoCapable.put(mDescriptor, omemoSupported);
+
+                if (!omemoSupported && (MSGTYPE_OMEMO == mChatType))
+                    setChatType(MSGTYPE_NORMAL);
             }
         }.start();
     }
@@ -998,16 +1034,32 @@ public class CryptoFragment extends OSGiFragment
     }
 
     /**
+     * Callback when user clicks the omemo Authentication dialog's confirm/cancel button.
+     *
+     * @param allTrusted allTrusted state.
+     * @param omemoDevices set of unTrusted devices
+     */
+    @Override
+    public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
+    {
+        if (allTrusted) {
+            onOmemoAuthenticate(ChatFragment.MSGTYPE_OMEMO);
+            activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, IMessage.ENCODE_PLAIN,
+                    getString(R.string.crypto_msg_OMEMO_SESSION_VERIFIED));
+        }
+        else {
+            onOmemoAuthenticate(ChatFragment.MSGTYPE_OMEMO_UA);
+            // activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_ERROR, IMessage.ENCODE_PLAIN,
+            //         "Undecided Omemo Identity: " + omemoDevices.toString());
+        }
+    }
+
+    /**
      * @param chatType New chatType pending user verification action from omemo Authentication dialog
      * @see OmemoAuthenticateDialog
      */
-    public void onOmemoAuthenticateOK(int chatType)
+    private void onOmemoAuthenticate(int chatType)
     {
-        // Update system message if changes is from MSGTYPE_OMEMO_UA
-        if (chatType == ChatFragment.MSGTYPE_OMEMO)
-            activeChat.addMessage(mEntity, new Date(), ChatMessage.MESSAGE_SYSTEM, Message.ENCODE_PLAIN,
-                    getString(R.string.crypto_msg_OMEMO_SESSION_VERIFIED));
-
         // must update encryptionChoice and set ChatPanel to the new chatType
         encryptionChoice.put(mCurrentChatSessionId, chatType);
         activeChat.setChatType(chatType);
@@ -1045,8 +1097,7 @@ public class CryptoFragment extends OSGiFragment
     }
 
     /**
-     * Note: mDescriptor is always null when first triggers by chatFragment. It gets updated in
-     * notifyCryptoModeChanged()
+     * Note: mDescriptor is always null when first triggers by chatFragment. It gets updated in notifyCryptoModeChanged()
      *
      * @param listener CryptoModeChangeListener added by chatFragment.
      * @see #notifyCryptoModeChanged(int)

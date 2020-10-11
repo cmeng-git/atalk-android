@@ -67,9 +67,9 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	private Date timestamp = null;
 
 	/**
-	 * The received <tt>Message</tt>.
+	 * The received <tt>IMessage</tt>.
 	 */
-	private Message message = null;
+	private IMessage message = null;
 
 	/**
 	 * Creates a <tt>AdHocChatRoomMessageDeliveryFailedEvent</tt> indicating failure of delivery of
@@ -84,10 +84,10 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	 * @param timestamp
 	 *        the exact Date when it was determined that delivery had failed.
 	 * @param message
-	 *        the received <tt>Message</tt>.
+	 *        the received <tt>IMessage</tt>.
 	 */
 	public AdHocChatRoomMessageDeliveryFailedEvent(AdHocChatRoom source, Contact to, int errorCode,
-		Date timestamp, Message message)
+		Date timestamp, IMessage message)
 	{
 		super(source);
 
@@ -98,10 +98,10 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	}
 
 	/**
-	 * Returns a reference to the <tt>Contact</tt> that the source (failed) <tt>Message</tt> was
+	 * Returns a reference to the <tt>Contact</tt> that the source (failed) <tt>IMessage</tt> was
 	 * sent to.
 	 *
-	 * @return a reference to the <tt>Contact</tt> that the source failed <tt>Message</tt> was sent
+	 * @return a reference to the <tt>Contact</tt> that the source failed <tt>IMessage</tt> was sent
 	 *         to.
 	 */
 	public Contact getDestinationParticipant()
@@ -112,9 +112,9 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	/**
 	 * Returns the received message.
 	 * 
-	 * @return the <tt>Message</tt> that triggered this event.
+	 * @return the <tt>IMessage</tt> that triggered this event.
 	 */
-	public Message getMessage()
+	public IMessage getMessage()
 	{
 		return message;
 	}

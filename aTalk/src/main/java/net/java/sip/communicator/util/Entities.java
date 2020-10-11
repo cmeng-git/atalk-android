@@ -27,10 +27,10 @@ import java.util.*;
  * @author <a href="mailto:ggregory@seagullsw.com">Gary Gregory</a>
  * @version $Id$
  * @see <a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
- * @see <a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
- * @see <a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
- * @see <a href="http://www.w3.org/TR/html401/charset.html#h-5.3">HTML 4.01 Character References</a>
- * @see <a href="http://www.w3.org/TR/html401/charset.html#code-position">HTML 4.01 Code positions</a>
+ * @see <a href="https://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
+ * @see <a href="https://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>
+ * @see <a href="https://www.w3.org/TR/html401/charset.html#h-5.3">HTML 4.01 Character References</a>
+ * @see <a href="https://www.w3.org/TR/html401/charset.html#code-position">HTML 4.01 Code positions</a>
  * @since 2.0
  */
 
@@ -145,7 +145,7 @@ class Entities
             {"yuml", "255"}, // ? - lowercase y, umlaut
     };
 
-    // http://www.w3.org/TR/REC-html40/sgml/entities.html package scoped for testing
+    // https://www.w3.org/TR/REC-html40/sgml/entities.html package scoped for testing
     static final String[][] HTML40_ARRAY = {
             // <!-- Latin Extended-B -->
             {"fnof", "402"}, // latin small f with hook = function= florin, U+0192 ISOtech -->

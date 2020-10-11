@@ -76,7 +76,7 @@ public class AvatarManager extends Manager
      */
     private static final LruCache<BareJid, String> cacheJidToAvatarId = new LruCache<>(1000);
 
-    private static Map<XMPPConnection, AvatarManager> instances = new WeakHashMap<>();
+    private static final Map<XMPPConnection, AvatarManager> instances = new WeakHashMap<>();
 
     /**
      * Use for the persistent JidToHash Index storage in additional to cacheJidToAvatarId
@@ -131,7 +131,7 @@ public class AvatarManager extends Manager
         mConnection = connection;
         instances.put(connection, this);
 
-        connection.addConnectionListener(new AbstractConnectionListener()
+        connection.addConnectionListener(new ConnectionListener()
         {
             @Override
             public void connected(XMPPConnection connection)
@@ -255,9 +255,35 @@ public class AvatarManager extends Manager
     public static byte[] getAvatarImageByJid(BareJid jid)
     {
         String avatarId = getAvatarHashByJid(jid);
-        LOGGER.log(Level.INFO, "Fetching avatar from local storage for: (" + jid + ") => " + avatarId);
+        LOGGER.log(Level.FINE, "Fetching avatar from local storage for: (" + jid + ") => " + avatarId);
 
         return (avatarId == null) ? null : getAvatarImageByHash(avatarId);
+    }
+
+
+    /**
+     * Calculate the avatarId and save its image to cache on condition is forced or none is found.
+     * The method is created for aTalk external access
+     *
+     * @param userId the bareJid of the avatarImage
+     * @param avatarImage Byte[] value of avatar image data.
+     * @param force override existing even if it exists
+     * @return return true is success
+     */
+    public static boolean addAvatarImage(BareJid userId, byte[] avatarImage, boolean force)
+    {
+        if ((userId == null) || (avatarImage.length == 0))
+            return false;
+
+        String avatarId = getAvatarHash(avatarImage);
+        if (force || getAvatarImageByHash(avatarId).length == 0) {
+            if (!TextUtils.isEmpty(avatarId)) {
+                addAvatarImageByAvatarId(avatarId, avatarImage);
+                addJidToAvatarHashIndex(userId, avatarId);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

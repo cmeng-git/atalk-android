@@ -31,7 +31,7 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.MediaFormatFactory;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
-import org.atalk.util.Logger;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 import org.atalk.util.swing.VideoContainer;
@@ -57,6 +57,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Dmitri Melnikov
  * @author Eng Chong Meng
+ * @author MilanKral
  */
 public class MediaServiceImpl extends PropertyChangeNotifier implements MediaService
 {
@@ -619,7 +620,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * {@inheritDoc}
      */
-    public SrtpControl createSrtpControl(SrtpControlType srtpControlType)
+    public SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte[] myZid)
     {
         switch (srtpControlType) {
             case DTLS_SRTP:
@@ -627,7 +628,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             case SDES:
                 return new SDesControlImpl();
             case ZRTP:
-                return new ZrtpControlImpl();
+                return new ZrtpControlImpl(myZid);
             default:
                 return null;
         }
@@ -794,7 +795,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                             if (json.has(MediaFormatImpl.FORMAT_PARAMETERS_PNAME)) {
                                 JSONObject jsonFmtps = (JSONObject) json.get(MediaFormatImpl.FORMAT_PARAMETERS_PNAME);
                                 Iterator<String> keys = jsonFmtps.keys();
-                                while(keys.hasNext()) {
+                                while (keys.hasNext()) {
                                     String key = keys.next();
                                     String value = jsonFmtps.getString(key);
                                     fmtps.put(key, value);
@@ -1046,7 +1047,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         y -= bounds.y;
 
         CaptureDeviceInfo devInfo
-                = new CaptureDeviceInfo( name + " " + display,
+                = new CaptureDeviceInfo(name + " " + display,
                 new MediaLocator(
                         DeviceSystem.LOCATOR_PROTOCOL_IMGSTREAMING + ":"
                                 + display + "," + x + "," + y), formats);
@@ -1285,7 +1286,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
 
         if (cfg != null) {
             enableFfmpeg = cfg.getBoolean(ENABLE_FFMPEG_CODECS_PNAME, enableFfmpeg);
-            for (String prop : cfg.getPropertyNamesByPrefix( "neomedia.adaptive_jitter_buffer", true)) {
+            for (String prop : cfg.getPropertyNamesByPrefix("neomedia.adaptive_jitter_buffer", true)) {
                 String suffix = prop.substring(prop.lastIndexOf(".") + 1);
                 Registry.set("adaptive_jitter_buffer_" + suffix, cfg.getString(prop));
             }

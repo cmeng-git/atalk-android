@@ -107,7 +107,7 @@ public class DefaultLanguagePackImpl implements LanguagePack
             }
         });
 
-        Map<String, String> resources = new Hashtable<String, String>();
+        Map<String, String> resources = new Hashtable<>();
         this.initResources(resourceBundle, resources);
         this.initPluginResources(resources, locale);
 

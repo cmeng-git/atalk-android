@@ -9,6 +9,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import javax.xml.namespace.QName;
+
 /**
  * SctpMap extension in transport packet extension. Defined by XEP-0343: Signaling WebRTC datachannels in Jingle.
  *
@@ -26,6 +28,8 @@ public class SctpMapExtension implements ExtensionElement
      * The namespace for the "sctpmap" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:dtls-sctp:1";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Port number of "sctpmap" element.
@@ -83,8 +87,7 @@ public class SctpMapExtension implements ExtensionElement
     @Override
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.prelude(getElementName(), getNamespace());
+        XmlStringBuilder xml = new XmlStringBuilder(this);
 
         xml.optIntAttribute(PORT_ATTR_NAME, port);
         xml.optAttribute(PROTOCOL_ATTR_NAME, protocol);

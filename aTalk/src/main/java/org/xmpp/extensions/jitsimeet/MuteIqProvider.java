@@ -39,7 +39,7 @@ public class MuteIqProvider extends IQProvider<MuteIq>
      */
     public static void registerMuteIqProvider()
     {
-        ProviderManager.addIQProvider(MuteIq.ELEMENT_NAME, MuteIq.NAMESPACE, new MuteIqProvider());
+        ProviderManager.addIQProvider(MuteIq.ELEMENT, MuteIq.NAMESPACE, new MuteIqProvider());
     }
 
     /**
@@ -58,7 +58,7 @@ public class MuteIqProvider extends IQProvider<MuteIq>
 
         String rootElement = parser.getName();
         MuteIq iq;
-        if (MuteIq.ELEMENT_NAME.equals(rootElement)) {
+        if (MuteIq.ELEMENT.equals(rootElement)) {
             iq = new MuteIq();
             String jidStr = parser.getAttributeValue("", MuteIq.JID_ATTR_NAME);
             if (jidStr != null) {

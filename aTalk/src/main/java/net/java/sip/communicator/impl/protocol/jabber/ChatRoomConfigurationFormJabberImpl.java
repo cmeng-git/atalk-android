@@ -12,8 +12,9 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 
 import java.util.*;
 
@@ -35,25 +36,25 @@ public class ChatRoomConfigurationFormJabberImpl implements ChatRoomConfiguratio
     /**
      * The form that will be filled out and submitted by user.
      */
-    protected Form smackSubmitForm;
+    protected FillableForm smackSubmitForm;
 
     /**
-     * The smack multi user chat is the one to which we'll send the form once filled out.
+     * The smack multi-user chat is the one to which we'll send the form once filled out.
      */
     private MultiUserChat smackMultiUserChat;
 
     /**
      * Creates an instance of <tt>ChatRoomConfigurationFormJabberImpl</tt> by specifying the
-     * corresponding smack multi user chat and smack configuration form.
+     * corresponding smack multi-user chat and smack configuration form.
      *
-     * @param multiUserChat the smack multi user chat, to which we'll send the configuration form once filled out
-     * @param smackConfigForm the smack configuration form
+     * @param multiUserChat the smack multi-user chat, to which we'll send the configuration form once filled out
+     * @param smackConfigForm the smack configuration form.
      */
     public ChatRoomConfigurationFormJabberImpl(MultiUserChat multiUserChat, Form smackConfigForm)
     {
         this.smackMultiUserChat = multiUserChat;
         this.smackConfigForm = smackConfigForm;
-        this.smackSubmitForm = smackConfigForm.createAnswerForm();
+        this.smackSubmitForm = smackConfigForm.getFillableForm();
     }
 
     /**
@@ -63,10 +64,8 @@ public class ChatRoomConfigurationFormJabberImpl implements ChatRoomConfiguratio
      */
     public Iterator<ChatRoomConfigurationFormField> getConfigurationSet()
     {
-        Vector<ChatRoomConfigurationFormField> configFormFields = new Vector<ChatRoomConfigurationFormField>();
-        List<FormField> smackFormFields = smackConfigForm.getFields();
-
-        for (FormField smackFormField : smackFormFields) {
+        Vector<ChatRoomConfigurationFormField> configFormFields = new Vector<>();
+        for (FormField smackFormField : smackConfigForm.getDataForm().getFields()) {
             if (smackFormField == null || smackFormField.getType() == FormField.Type.hidden)
                 continue;
 

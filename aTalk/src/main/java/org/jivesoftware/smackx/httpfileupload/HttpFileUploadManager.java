@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,14 +42,15 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
@@ -70,7 +72,7 @@ import org.jxmpp.jid.DomainBareJid;
  * @author Florian Schmaus
  * @author Paul Schaub
  * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
- * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+ * @see <a href="http://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
  */
 public final class HttpFileUploadManager extends Manager {
 
@@ -125,7 +127,7 @@ public final class HttpFileUploadManager extends Manager {
     private HttpFileUploadManager(XMPPConnection connection) {
         super(connection);
 
-        connection.addConnectionListener(new AbstractConnectionListener() {
+        connection.addConnectionListener(new ConnectionListener() {
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {
                 // No need to reset the cache if the connection got resumed.
@@ -144,7 +146,7 @@ public final class HttpFileUploadManager extends Manager {
     }
 
     private static UploadService uploadServiceFrom(DiscoverInfo discoverInfo) {
-        assert (containsHttpFileUploadNamespace(discoverInfo));
+        assert containsHttpFileUploadNamespace(discoverInfo);
 
         UploadService.Version version;
         if (discoverInfo.containsFeature(NAMESPACE)) {
@@ -188,10 +190,10 @@ public final class HttpFileUploadManager extends Manager {
      *
      * @return true if upload service was discovered
 
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException.NotConnectedException
-     * @throws InterruptedException
-     * @throws SmackException.NoResponseException
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
     public boolean discoverUploadService() throws XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException {
@@ -238,9 +240,9 @@ public final class HttpFileUploadManager extends Manager {
      *
      * @param file file to be uploaded
      * @return public URL for sharing uploaded file
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException if Smack detected an exceptional situation.
      * @throws IOException in case of HTTP upload errors
      */
     public URL uploadFile(File file) throws InterruptedException, XMPPException.XMPPErrorException,
@@ -255,13 +257,13 @@ public final class HttpFileUploadManager extends Manager {
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
      * @param file file to be uploaded
-     * @param listener upload progress listener or null
+     * @param listener Upload progress listener or null
      * @return public URL for sharing uploaded file
      *
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occurred.
      */
     public URL uploadFile(File file, UploadProgressListener listener) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException, IOException {
@@ -269,9 +271,56 @@ public final class HttpFileUploadManager extends Manager {
             throw new FileNotFoundException("The path " + file.getAbsolutePath() + " is not a file");
         }
         final Slot slot = requestSlot(file.getName(), file.length(), "application/octet-stream");
+        final long fileSize = file.length();
+        // Construct the FileInputStream first to make sure we can actually read the file.
+        final FileInputStream fis = new FileInputStream(file);
+        upload(fis, fileSize, slot, listener);
+        return slot.getGetUrl();
+    }
 
-        uploadFile(file, slot, listener);
+    /**
+     * Request slot and uploaded stream to HTTP upload service.
+     *
+     * You don't need to request slot and upload input stream separately, this method will do both.
+     * Note that this is a synchronous call -- Smack must wait for the server response.
+     *
+     * @param inputStream Input stream used for the upload.
+     * @param fileName Name of the file.
+     * @param fileSize Size of the file.
+     * @return public URL for sharing uploaded file
+     * @throws XMPPErrorException XMPPErrorException if there was an XMPP error returned.
+     * @throws InterruptedException If the calling thread was interrupted.
+     * @throws SmackException If Smack detected an exceptional situation.
+     * @throws IOException If an I/O error occurred.
+     */
+    public URL uploadFile(InputStream inputStream, String fileName, long fileSize) throws XMPPErrorException, InterruptedException, SmackException, IOException {
+        return uploadFile(inputStream, fileName, fileSize, null);
+    }
 
+    /**
+     * Request slot and uploaded stream to HTTP upload service.
+     *
+     * You don't need to request slot and upload input stream separately, this method will do both.
+     * Note that this is a synchronous call -- Smack must wait for the server response.
+     *
+     * @param inputStream Input stream used for the upload.
+     * @param fileName Name of the file.
+     * @param fileSize file size in bytes.
+     * @param listener upload progress listener or null.
+     * @return public URL for sharing uploaded file
+     * @throws XMPPErrorException XMPPErrorException if there was an XMPP error returned.
+     * @throws InterruptedException If the calling thread was interrupted.
+     * @throws SmackException If Smack detected an exceptional situation.
+     * @throws IOException If an I/O error occurred.
+     */
+    public URL uploadFile(InputStream inputStream, String fileName, long fileSize, UploadProgressListener listener) throws XMPPErrorException, InterruptedException, SmackException, IOException {
+        Objects.requireNonNull(inputStream, "Input Stream cannot be null");
+        Objects.requireNonNull(fileName, "Filename Stream cannot be null");
+        if (fileSize < 0) {
+            throw new IllegalArgumentException("File size cannot be negative");
+        }
+        final Slot slot = requestSlot(fileName, fileSize, "application/octet-stream");
+        upload(inputStream, fileSize, slot, listener);
         return slot.getGetUrl();
     }
 
@@ -339,8 +388,7 @@ public final class HttpFileUploadManager extends Manager {
         // encrypt the file on the fly - encryption actually happens below in uploadFile()
         CipherInputStream cis = new CipherInputStream(fis, cipher);
 
-        uploadFile(cis, cipherFileLength, slot, listener);
-
+        upload(cis, cipherFileLength, slot, listener);
         return new AesgcmUrl(slotUrl, key, iv);
     }
 
@@ -353,10 +401,9 @@ public final class HttpFileUploadManager extends Manager {
      * @return file upload Slot in case of success
      * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
      *         supported by the service.
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException.NotConnectedException
-     * @throws SmackException.NoResponseException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException if smack exception.
      */
     public Slot requestSlot(String filename, long fileSize) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException {
@@ -376,10 +423,10 @@ public final class HttpFileUploadManager extends Manager {
 
      * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
      *         supported by the service.
-     * @throws SmackException.NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException.NoResponseException
+     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException if smack exception.
      */
     public Slot requestSlot(String filename, long fileSize, String contentType) throws SmackException,
             InterruptedException, XMPPException.XMPPErrorException {
@@ -399,9 +446,9 @@ public final class HttpFileUploadManager extends Manager {
      * @return file upload Slot in case of success
      * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
      *         supported by the service.
-     * @throws SmackException
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      */
     public Slot requestSlot(String filename, long fileSize, String contentType, DomainBareJid uploadServiceAddress)
             throws SmackException, InterruptedException, XMPPException.XMPPErrorException {
@@ -458,25 +505,7 @@ public final class HttpFileUploadManager extends Manager {
         this.tlsSocketFactory = tlsContext.getSocketFactory();
     }
 
-    public void useTlsSettingsFrom(ConnectionConfiguration connectionConfiguration) {
-        SSLContext sslContext = connectionConfiguration.getCustomSSLContext();
-        setTlsContext(sslContext);
-    }
-
-    private void uploadFile(final File file, final Slot slot, UploadProgressListener listener) throws IOException {
-        final long fileSize = file.length();
-        // TODO Remove once Smack's minimum Android API level is 19 or higher. See also comment below.
-        if (fileSize >= Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("File size " + fileSize + " must be less than " + Integer.MAX_VALUE);
-        }
-
-        // Construct the FileInputStream first to make sure we can actually read the file.
-        final FileInputStream fis = new FileInputStream(file);
-        uploadFile(fis, fileSize, slot, listener);
-    }
-
-    private void uploadFile(final InputStream fis, long fileSize, final Slot slot, UploadProgressListener listener) throws IOException {
-
+    private void upload(InputStream iStream, long fileSize, Slot slot, UploadProgressListener listener) throws IOException {
         final URL putUrl = slot.getPutUrl();
 
         final HttpURLConnection urlConnection = (HttpURLConnection) putUrl.openConnection();
@@ -484,9 +513,8 @@ public final class HttpFileUploadManager extends Manager {
         urlConnection.setRequestMethod("PUT");
         urlConnection.setUseCaches(false);
         urlConnection.setDoOutput(true);
-        // TODO Change to using fileSize once Smack's minimum Android API level is 19 or higher.
-        urlConnection.setFixedLengthStreamingMode((int) fileSize);
-        urlConnection.setRequestProperty("Content-Type", "application/octet-stream;");
+        urlConnection.setFixedLengthStreamingMode(fileSize);
+        urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
         for (Entry<String, String> header : slot.getHeaders().entrySet()) {
             urlConnection.setRequestProperty(header.getKey(), header.getValue());
         }
@@ -506,7 +534,7 @@ public final class HttpFileUploadManager extends Manager {
                 listener.onUploadProgress(0, fileSize);
             }
 
-            BufferedInputStream inputStream = new BufferedInputStream(fis);
+            BufferedInputStream inputStream = new BufferedInputStream(iStream);
 
             // TODO Factor in extra static method (and re-use e.g. in bytestream code).
             byte[] buffer = new byte[4096];
@@ -525,7 +553,8 @@ public final class HttpFileUploadManager extends Manager {
                 try {
                     inputStream.close();
                 }
-                catch (IOException e) {
+                // Must include IllegalStateException: GCM cipher cannot be reused for encryption (happen on Note-5)
+                catch (IOException | IllegalStateException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing input stream", e);
                 }
                 try {

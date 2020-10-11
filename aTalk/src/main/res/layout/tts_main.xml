@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/screen_padding"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/service_gui_TTS_VOICE" />
+
+    <EditText
+        android:id="@+id/tts_locale"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/list_padding"
+        android:editable="false" />
+
+    <TextView
+        style="@style/MediumFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/label_padding"
+        android:text="@string/service_gui_TTS_DELAY" />
+
+    <EditText
+        android:id="@+id/tts_delay"
+        style="@style/EntryTextView"
+        android:layout_width="match_parent"
+        android:inputType="number"
+        android:layout_marginBottom="@dimen/list_padding" />
+
+    <CheckBox
+        android:id="@+id/tts_enable"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/list_padding"
+        android:text="@string/service_gui_TTS_ENABLE" />
+
+    <Button
+        android:id="@+id/tts_setting"
+        style="@style/ButtonTop"
+        android:layout_width="fill_parent"
+        android:text="@string/service_gui_TTS_SETTINGS" />
+
+    <LinearLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:attr/indeterminateProgressStyle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="@dimen/between_padding"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/service_gui_LOADING" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/success"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/screen_padding"
+        android:orientation="vertical" >
+
+        <TextView
+            style="@style/MediumFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/label_padding"
+            android:text="@string/service_gui_TTS_SYNTHESIS" />
+
+        <EditText
+            android:id="@+id/tts_text"
+            style="@style/EntryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:minHeight="100dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/between_padding"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/tts_save"
+                style="@style/ButtonTop"
+                android:text="@string/service_gui_SAVE" />
+
+            <Button
+                android:id="@+id/tts_play"
+                style="@style/ButtonTop"
+                android:layout_marginStart="4dp"
+                android:text="@string/service_gui_PLAY" />
+
+            <Button
+                android:id="@+id/tts_ok"
+                style="@style/ButtonTop"
+                android:layout_marginStart="4dp"
+                android:text="@string/service_gui_OK" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

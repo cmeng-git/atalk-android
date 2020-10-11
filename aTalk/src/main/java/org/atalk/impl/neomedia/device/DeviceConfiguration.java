@@ -11,7 +11,7 @@ import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.util.OSUtils;
@@ -274,7 +274,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         setAudioSystemIsDisabled = (cfg != null)
                 && cfg.getBoolean(MediaServiceImpl.DISABLE_SET_AUDIO_SYSTEM_PNAME, false);
 
-        // these seem to be throwing exceptions every now and then so we'll blindly catch them for now
+        // Seem to be throwing exceptions randomly, so we'll blindly catch them for now
         try {
             DeviceSystem.initializeDeviceSystems();
             extractConfiguredCaptureDevices();
@@ -426,9 +426,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                     }
                 }
             }
-
             if (videoCaptureDevice != null) {
-                Timber.i("Found %s as a %s video capture device.", videoCaptureDevice.getName(), format);
+                Timber.i("Found %s; format: %s video capture device.", videoCaptureDevice.getName(), format);
+            } else if (cfg != null){
+                // incorrect value specified in DB, so force and save to use first videoCaptureDevice
+                videoCaptureDevice = videoCaptureDevices.get(0);
+                cfg.setProperty(PROP_VIDEO_DEVICE, videoCaptureDevice.getName());
             }
         }
         return videoCaptureDevice;
@@ -671,14 +674,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                 break;
             case DESKTOP:
                 List<CaptureDeviceInfo> devs = getAvailableVideoCaptureDevices(MediaUseCase.DESKTOP);
-
                 if (devs.size() > 0)
                     dev = devs.get(0);
                 break;
             default:
                 break;
         }
-
         return dev;
     }
 

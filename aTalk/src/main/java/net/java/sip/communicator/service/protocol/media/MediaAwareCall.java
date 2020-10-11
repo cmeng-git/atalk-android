@@ -5,36 +5,18 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.AbstractCall;
-import net.java.sip.communicator.service.protocol.Call;
-import net.java.sip.communicator.service.protocol.CallConference;
-import net.java.sip.communicator.service.protocol.CallPeer;
-import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.OperationFailedException;
-import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallChangeListener;
-import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
-import net.java.sip.communicator.service.protocol.event.CallPeerListener;
-import net.java.sip.communicator.service.protocol.event.DTMFListener;
-import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
-import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.service.neomedia.MediaType;
-import org.atalk.service.neomedia.MediaUseCase;
-import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.recording.Recorder;
+import org.atalk.util.MediaType;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * A utility class implementing media control code shared between current telephony implementations.
@@ -49,6 +31,7 @@ import java.util.List;
  * <tt>ProtocolProviderServiceJabberImpl</tt>
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U extends OperationSetBasicTelephony<V>,
         V extends ProtocolProviderService> extends AbstractCall<T, V>
@@ -114,12 +97,13 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * Crates a <tt>Call</tt> instance belonging to <tt>parentOpSet</tt>.
      *
-     * @param parentOpSet a reference to the operation set that's creating us and that we would be able to use
-     * for even dispatching.
+     * @param parentOpSet a reference to the operation set that's creating us and that
+     * we would be able to use for even dispatching.
+     * @param sid the Jingle session-initiate id if provided.
      */
-    protected MediaAwareCall(U parentOpSet)
+    protected MediaAwareCall(U parentOpSet, String sid)
     {
-        super(parentOpSet.getProtocolProvider());
+        super(parentOpSet.getProtocolProvider(), sid);
         this.parentOpSet = parentOpSet;
     }
 
@@ -129,7 +113,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
      *
      * @param callPeer the new <tt>CallPeer</tt>
      */
-    protected void addCallPeer(T callPeer)
+    public void addCallPeer(T callPeer)
     {
         if (!doAddCallPeer(callPeer))
             return;
@@ -137,9 +121,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
         callPeer.addCallPeerListener(this);
         synchronized (localUserAudioLevelListenersSyncRoot) {
             /*
-             * If there's someone listening for audio level events, then they'd also like to know
-             * about the new peer. Make sure the first element is always the one to listen for local
-             * audio events.
+             * If there's someone listening for audio level events, then they'd also like to know about the
+             * new peer. Make sure the first element is always the one to listen for local audio events.
              */
             List<T> callPeers = getCallPeerList();
 
@@ -170,9 +153,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
             // remove sound level listeners from the peer
             callPeer.getMediaHandler().setLocalUserAudioLevelListener(null);
 
-            // if there are more peers and the peer was the first, the one
-            // that listens for local levels, now lets make sure
-            // the new first will listen for local level events
+            // if there are more peers and the peer was the first, the one that listens for local levels,
+            // now lets make sure the new first will listen for local level events
             List<T> callPeers = getCallPeerList();
 
             if (!callPeers.isEmpty()) {
@@ -256,8 +238,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Returns a reference to the <tt>OperationSetBasicTelephony</tt> implementation instance that
-     * created this call.
+     * Returns a reference to the <tt>OperationSetBasicTelephony</tt> implementation instance that created this call.
      *
      * @return a reference to the <tt>OperationSetBasicTelephony</tt> instance that created this call.
      */
@@ -271,8 +252,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
      * <tt>CallPeer</tt>s of this <tt>Call</tt> when the local peer represented by this
      * <tt>Call</tt> is acting as a conference focus.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which RTP and RTCP traffic is to be
-     * forwarded between
+     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which RTP
+     * and RTCP traffic is to be forwarded between
      * @return the <tt>RTPTranslator</tt> which forwards RTP and RTCP traffic between the
      * <tt>CallPeer</tt>s of this <tt>Call</tt> when the local peer represented by this
      * <tt>Call</tt> is acting as a conference focus
@@ -299,8 +280,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * Gets a <tt>MediaDevice</tt> which is capable of capture and/or playback of media of the
      * specified <tt>MediaType</tt>, is the default choice of the user for a <tt>MediaDevice</tt>
-     * with the specified <tt>MediaType</tt> and is appropriate for the current state of this
-     * <tt>Call</tt>.
+     * with the specified <tt>MediaType</tt> and is appropriate for the current state of this <tt>Call</tt>.
      * <p>
      * For example, when the local peer represented by this <tt>Call</tt> instance is acting as a
      * conference focus, the audio device must be a mixer.
@@ -505,8 +485,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Determines whether we are currently streaming video toward at least one of the peers in this
-     * call.
+     * Determines whether we are currently streaming video toward at least one of the peers in this call.
      *
      * @return <tt>true</tt> if we are currently streaming video toward at least one of the peers in
      * this call and <tt>false</tt> otherwise.

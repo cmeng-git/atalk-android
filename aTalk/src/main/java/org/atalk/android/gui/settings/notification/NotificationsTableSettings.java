@@ -14,6 +14,7 @@ import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
 import net.java.sip.communicator.util.ServiceUtils;
+import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -25,6 +26,7 @@ import org.atalk.service.resources.ResourceManagementService;
  * Activity displays table of all notification events allowing user to change their settings.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class NotificationsTableSettings extends OSGiActivity implements NotificationChangeListener
 {
@@ -85,7 +87,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
 
         LayoutInflater inflater = getLayoutInflater();
 
-        ResourceManagementService rms = AndroidGUIActivator.getResources();
+        ResourceManagementService rms = UtilActivator.getResources();
 
         for (String eventType : notificationService.getRegisteredEvents()) {
             View tableRow = inflater.inflate(R.layout.notification_row, table, false);
@@ -272,7 +274,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
      */
     private void rebuildTable()
     {
-        runOnUiThread(() -> buildTable());
+        runOnUiThread(this::buildTable);
     }
 
     /**

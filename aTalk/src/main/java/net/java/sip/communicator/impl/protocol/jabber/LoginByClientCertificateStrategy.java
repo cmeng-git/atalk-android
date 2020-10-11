@@ -10,8 +10,8 @@ import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.provided.SASLExternalMechanism;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jxmpp.jid.parts.Resourcepart;
 
 import java.io.IOException;
@@ -31,15 +31,18 @@ import timber.log.Timber;
 class LoginByClientCertificateStrategy implements JabberLoginStrategy
 {
     private AccountID accountID;
+    private ConnectionConfiguration.Builder<?, ?>  ccBuilder;
 
     /**
      * Creates a new instance of this class.
      *
      * @param accountID The account to use for the strategy.
+     * @param ccBuilder ConnectionConfiguration.Builder
      */
-    public LoginByClientCertificateStrategy(AccountID accountID)
+    public LoginByClientCertificateStrategy(AccountID accountID, ConnectionConfiguration.Builder<?, ?>  ccBuilder)
     {
         this.accountID = accountID;
+        this.ccBuilder = ccBuilder;
     }
 
     /**
@@ -62,6 +65,9 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
      */
     public boolean loginPreparationSuccessful()
     {
+        ccBuilder.allowEmptyOrNullUsernames()
+                .setSecurityMode(ConnectionConfiguration.SecurityMode.required)
+                .addEnabledSaslMechanism(SASLMechanism.EXTERNAL);
         return true;
     }
 
@@ -82,12 +88,12 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
      * @param certificateService certificate service to retrieve the SSL context
      * @param trustManager Trust manager to use for the context
      * @return Configured and initialized SSL Context
-     * @throws GeneralSecurityException
+     * @throws GeneralSecurityException Security Exception
      */
     public SSLContext createSslContext(CertificateService certificateService, X509TrustManager trustManager)
             throws GeneralSecurityException
     {
-        String certConfigName = accountID.getAccountPropertyString(ProtocolProviderFactory.CLIENT_TLS_CERTIFICATE);
+        String certConfigName = accountID.getTlsClientCertificate();
         return certificateService.getSSLContext(certConfigName, trustManager);
     }
 
@@ -98,25 +104,26 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
      * @param userName The username for the login.
      * @param resource The XMPP resource.
      * @return true when the login succeeded, false when the certificate wasn't accepted.
-     * @throws XMPPException
+     * @throws XMPPException Exception
      */
-    public boolean login(XMPPTCPConnection connection, String userName, Resourcepart resource)
+    @Override
+    public boolean login(AbstractXMPPConnection connection, String userName, Resourcepart resource)
             throws XMPPException, SmackException
     {
         SASLAuthentication.registerSASLMechanism(new SASLExternalMechanism());
 
-        // user/password MUST be empty. In fact they shouldn't be
-        // necessary at all because the user name is derived from the client certificate.
+        // user/password MUST be empty. In fact they shouldn't be necessary at all
+        // because the user name is derived from the client certificate.
         try {
             try {
                 connection.login("", "", resource);
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                Timber.e("Certificate login failed: %s", e.getMessage());
             }
             return true;
         } catch (XMPPException | SmackException ex) {
             if (ex.getMessage().contains("EXTERNAL failed: not-authorized")) {
-                Timber.e(ex, "Certificate login failed");
+                Timber.e("Certificate login failed: %s", ex.getMessage());
                 return false;
             }
             throw ex;
@@ -128,5 +135,11 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
             throws XMPPException, SmackException
     {
         return false;
+    }
+
+    @Override
+    public ConnectionConfiguration.Builder<?, ?> getConnectionConfigurationBuilder()
+    {
+        return ccBuilder;
     }
 }

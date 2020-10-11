@@ -6,36 +6,33 @@
     android:descendantFocusability="blocksDescendants">
 
     <TextView
-        android:id="@+id/displayName"
+        android:id="@+id/groupName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="30dp"
         android:layout_marginStart="30dp"
-        android:gravity="center"
-        android:text="@string/service_gui_CONTACTS"
-        android:textColor="@color/white"
+        android:gravity="left|center"
+        android:text="@string/service_gui_REMOVE_GROUP"
+        android:textColor="@color/textColorWhite"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="1dip"
+        android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:background="@color/contact_list_divider" />
 
     <LinearLayout
-        android:layout_width="7dip"
+        android:layout_width="7dp"
         android:layout_height="fill_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/chatseparator" />
+        android:background="@drawable/chat_separator" />
 
     <ImageView
         android:id="@+id/groupIndicatorView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="6dp"
         android:layout_marginStart="6dp"
         android:src="@drawable/collapsed_dark" />
 

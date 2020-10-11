@@ -106,12 +106,12 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
     public Iterator<GenericDetail> getAllDetailsForContact(Contact contact)
     {
         if (isPrivateMessagingContact(contact) || !(contact instanceof ContactJabberImpl))
-            return new LinkedList<GenericDetail>().iterator();
+            return Collections.emptyIterator();
 
         List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asBareJid());
 
         if (details == null)
-            return new LinkedList<GenericDetail>().iterator();
+            return Collections.emptyIterator();
         else
             return new LinkedList<>(details).iterator();
     }

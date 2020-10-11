@@ -18,8 +18,7 @@ import java.io.File;
 public interface IncomingFileTransferRequest
 {
     /**
-     * Uniquie ID that is identifying the request and then the FileTransfer if the request has been
-     * accepted.
+     * Unique ID that is identifying the request and then the FileTransfer if the request has been accepted.
      *
      * @return the id.
      */

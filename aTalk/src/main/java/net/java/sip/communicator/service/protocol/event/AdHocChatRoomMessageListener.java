@@ -25,10 +25,10 @@ import java.util.EventListener;
 public interface AdHocChatRoomMessageListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>Message</tt> has been received.
+     * Called when a new incoming <tt>IMessage</tt> has been received.
      *
-     * @param evt the <tt>AdHocChatRoomMessageReceivedEvent</tt> containing the newly received message,
-     * its sender and other details.
+     * @param evt the <tt>AdHocChatRoomMessageReceivedEvent</tt> containing the newly received
+     * message, its sender and other details.
      */
     void messageReceived(AdHocChatRoomMessageReceivedEvent evt);
 
@@ -36,8 +36,8 @@ public interface AdHocChatRoomMessageListener extends EventListener
      * Called when the underlying implementation has received an indication that a message, sent
      * earlier has been successfully received by the destination.
      *
-     * @param evt the <tt>AdHocChatRoomMessageDeliveredEvent</tt> containing the id of the message that
-     * has caused the event.
+     * @param evt the <tt>AdHocChatRoomMessageDeliveredEvent</tt> containing the id of the message
+     * that has caused the event.
      */
     void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt);
 
@@ -45,8 +45,8 @@ public interface AdHocChatRoomMessageListener extends EventListener
      * Called to indicate that delivery of a message sent earlier to the chat room has failed.
      * Reason code and phrase are contained by the <tt>MessageFailedEvent</tt>
      *
-     * @param evt the <tt>AdHocChatroomMessageDeliveryFailedEvent</tt> containing the ID of the message
-     * whose delivery has failed.
+     * @param evt the <tt>AdHocChatroomMessageDeliveryFailedEvent</tt> containing the ID of the
+     * message whose delivery has failed.
      */
     void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt);
 }

@@ -2,12 +2,18 @@
 - an encrypted instant messaging with video call and GPS features for android
 
 <p align="center">
-    <a href="http://atalk.sytes.net">
+    <a href="https://cmeng-git.github.io">
         <img src="./art/atalk.png" alt="aTalk">
     </a>
+    &nbsp;
     <a href="https://play.google.com/store/apps/details?id=org.atalk.android&hl=en">
         <img src="./art/google_play.png" alt="Google PlayStore">
     </a>
+    &nbsp;
+    <a href="https://f-droid.org/en/packages/org.atalk.android/">
+        <img src="./art/fdroid-logo.png" alt="F-Droid">
+    </a>
+    &nbsp;
     <a href="https://www.youtube.com/watch?v=9w5WwphzgBc">
         <img src="./art/youtube.png" alt="YouTube">
     </a>
@@ -15,38 +21,53 @@
 
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
-* Instant messaging in plain text and End-to-End encryption with [OMEMO](http://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
+* Instant messaging in plain text and End-to-End encryption with [OMEMO](https://conversations.im/omemo/) or [OTR](https://otr.cypherpunks.ca/)
 * SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure Connection Establishment
-* OMEMO encryption in multi-user-chat session, give users' maximum privacy and security
+* OMEMO encryption in group chat session enhancing privacy and security
 * OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
-* Support http file upload for file sharing with offline contact and members in conference room
-* Support downloadable Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
-* Send and receive files for all document types and images, with thumbnail preview before file is sent 
-* Auto accept file transfer request with max file size option
-* Implement fault-tolerance file transfer to ease and enhance file sharing reliability (1-1 chat and chatRoom) 
+* Support http file upload for file sharing with offline contact and in group chat
+* Support Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
+* Send and receive files for all document types and images with thumbnail preview and gif animation
+* Auto accept file transfer with max file size option
+* Implement fault-tolerance file transfer to ease and enhance file sharing reliability
 * Enhance and harmonize UI for file sharing in chat and chatRoom
-* XEP-0012: Last Activity to show the time of the last activity associated with a contact
+* Support share, quote and forward of messages and media with previews prior to sending
+* Support multi-instances of audio media player with functions: Play, Pause, Resume, Stop and Seek
+* Support unread message badges in contact and chatRoom list views
+* User selectable option for heads-up notification and quite hours
+* Share of social media links are tagged with thumbnail and title
+* Support Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
+* XEP-0012: Last Activity time associated with contacts
 * XEP-0048: Bookmarks for conference room and autoJoin on login
-* XEP-0070: Verifying HTTP Requests via XMPP entity to confirm it made the request
+* XEP-0070: Verifying HTTP Requests via XMPP entity for user authentication without password entry
+* XEP-0071: XHTML-IM Support chat messages containing lightweight text markup
+* XEP-0085: Chat State Notifications
+* XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
+* XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication
 * XEP-0184: Message Delivery Receipts with user enable/disable option
-* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway (experimental)
-* Support multi-user chat in room creation, server chat rooms discovery and joining chat room with captcha protection 
-* Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
+* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
+* Join or create room with full room configuration support for owner
+* Integrated captcha protected room user interface with retry on failure
+* Support both vo to algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
+* SDES encice and video call with ZRTP, SDES and DTLS SRTP (DTLSv12) encryption modes
+* ZRTP crypto algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
+* SDES encryption with AES256 and AES192, acceleration using OpenSSL
 * Support simultaneous media call and message chat sessions
-* Unique GPS-Location implementation standalone tool, or sending locations to your chosen buddy for real-time tracking or playback animation.
-* A 360° street view of your current location, may use for self-guided tour. The street view tracks and follows your direction of sight.
+* Unique GPS-Location implementation as standalone tool, send locations to your desired buddy for real-time tracking or playback animation
+* A 360° street view of your current location use for self-guided tour. The street view tracks and follows your direction of sight
 * Built-in demo for GPS-Location features
 * Integrated photo editor with zooming and cropping, user can update the avatar with ease
 * Last message correction, message carbons and offline messages (OMEMO)
-* Mobile network ping interval self-tune optimization support
+* Stream Management and mobile network ping interval self-tune optimization support
 * In-Band Registration with captcha option support
 * Multiple accounts creation
-* Multi-language UI support (Bahasa Indonesia, English, German, Russian, and Spanish). 
+* User selectable Themes support
+* Multi-language UI support (Bahasa Indonesia, English, German, Russian, Slovak and Spanish)
 
-### XMPP Features
+## XMPP Standards Implemented
 
-aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported.
-It supports the following XEP's, standards for XMPP client devices.
+aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported.<br/>
+It supports the following XEP's, standards for XMPP clients.
 
 * [XEP-0012: Last Activity](https://xmpp.org/extensions/xep-0012.html)
 * [XEP-0030: Service Discovery](https://xmpp.org/extensions/xep-0030.html)
@@ -66,6 +87,7 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0096: SI File Transfer](https://xmpp.org/extensions/xep-0096.html)
 * [XEP-0100: Gateway Interaction](https://xmpp.org/extensions/xep-0100.html)
 * [XEP-0115: Entity Capabilities](https://xmpp.org/extensions/xep-0115.html)
+* [XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH)](https://xmpp.org/extensions/xep-0124.html),
 * [XEP-0138: Stream Compression](https://xmpp.org/extensions/xep-0138.html)
 * [XEP-0153: vCard-Based Avatar](https://xmpp.org/extensions/xep-0153.html)
 * [XEP-0158: CAPTCHA Forms](https://xmpp.org/extensions/xep-0158.html)
@@ -75,11 +97,13 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0172: User Nickname](https://xmpp.org/extensions/xep-0172.html)
 * [XEP-0176: Jingle ICE-UDP Transport Method](https://xmpp.org/extensions/xep-0176.html)
 * [XEP-0177: Jingle Raw UDP Transport Method](https://xmpp.org/extensions/xep-0177.html)
+* [XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates](https://xmpp.org/extensions/xep-0178.html)
 * [XEP-0184: Message Delivery Receipts](https://xmpp.org/extensions/xep-0184.html)
 * [XEP-0191: Blocking command (NI)](https://xmpp.org/extensions/xep-0191.html)
 * [XEP-0198: Stream Management](https://xmpp.org/extensions/xep-0198.html)
 * [XEP-0199: XMPP Ping](https://xmpp.org/extensions/xep-0199.html)
 * [XEP-0203: Delayed Delivery](https://xmpp.org/extensions/xep-0203.html)
+* [XEP-0206: XMPP Over BOSH](https://xmpp.org/extensions/xep-0206.html)
 * [XEP-0231: Bits of Binary](https://xmpp.org/extensions/xep-0231.html)
 * [XEP-0234: Jingle File Transfer](https://xmpp.org/extensions/xep-0234.html)
 * [XEP-0237: Roster Versioning](https://xmpp.org/extensions/xep-0237.html)
@@ -96,29 +120,31 @@ It supports the following XEP's, standards for XMPP client devices.
 * [XEP-0308: Last Message Correction](https://xmpp.org/extensions/xep-0308.html)
 * [XEP-0319: Last User Interaction in Presence](https://xmpp.org/extensions/xep-0319.html)
 * [XEP-0320: Use of DTLS-SRTP in Jingle Sessions](https://xmpp.org/extensions/xep-0320.html)
-* [XEP-0352: Client State Indication](https://xmpp.org/extensions/xep-052.html)
+* [XEP-0352: Client State Indication](https://xmpp.org/extensions/xep-0352.html)
+* [XEP-0353: Jingle Message Initiation](https://xmpp.org/extensions/xep-0353.html)
 * [XEP-0363: HTTP File Upload](https://xmpp.org/extensions/xep-0363.html)
 * [XEP-0364: Off-the-Record Messaging (V2/3)](https://xmpp.org/extensions/xep-0364.html)
 * [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
 * [XEP-xxxx: OMEMO Media sharing](https://xmpp.org/extensions/inbox/omemo-media-sharing.html)
 
-Libraries used in this project
-------------------------------
-* [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
+## Acknowledgments
+
+Libraries used in this project:
+
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
 * [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
 * [annotations-java5](https://mvnrepository.com/artifact/org.jetbrains/annotations)
+* [apache-mime4j-core](https://github.com/apache/james-mime4j)
 * [bouncycastle](https://github.com/bcgit/bc-java)
 * [butterknife](https://github.com/JakeWharton/butterknife)
 * [ckChangeLog](https://github.com/cketti/ckChangeLog)
-* [commons-lang](http://commons.apache.org/proper/commons-lang/)
+* [commons-text](https://commons.apache.org/proper/commons-text/)
 * [Dexter](https://github.com/Karumi/Dexter)
-* [dhcp4java](https://github.com/ggrandes-clones/dhcp4java)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 * [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)
-* [httpclient-android](https://github.com/smarek/httpclient-android)
+* [httpcore](https://hc.apache.org/httpcomponents-client-4.5.x/)
 * [ice4j](https://github.com/jitsi/ice4j)
 * [jitsi](https://github.com/jitsi/jitsi)
 * [jitsi-android](https://github.com/jitsi/jitsi-android)
@@ -127,8 +153,8 @@ Libraries used in this project
 * [libjitsi](https://github.com/jitsi/libjitsi)
 * [libphonenumber](https://github.com/googlei18n/libphonenumber)
 * [libvpx](https://github.com/webmproject/libvpx)
-* [Mime4j](https://james.apache.org/mime4j/)
 * [miniDNS](https://github.com/MiniDNS/minidns)
+* [Noembed](https://noembed.com/)
 * [otr4j](https://github.com/jitsi/otr4j)
 * [opensles](https://github.com/openssl/openssl )
 * [osgi.core](http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0)
@@ -140,8 +166,22 @@ Libraries used in this project
 * [TokenAutoComplete](https://github.com/splitwise/TokenAutoComplete)
 * [uCrop](https://github.com/Yalantis/uCrop)
 * [weupnp](https://github.com/bitletorg/weupnp)
-* [x264](http://git.videolan.org/git/x264.git)
+* [x264](https://git.videolan.org/git/x264.git)
 * [zrtp4j-light](https://github.com/jitsi/zrtp4j)
+
+Other contributors:
+* [Others](https://github.com/cmeng-git/atalk-android/graphs/contributors)
+
+## Documentation
+* [aTalk site](https://cmeng-git.github.io)
+* [FAQ](https://cmeng-git.github.io/faq.html)
+* [aTalk alt-site](https://atalk.sytes.net/atalk/)
+* [Release Notes](https://github.com/cmeng-git/atalk-android/blob/master/aTalk/ReleaseNotes.txt)
+
+## Feedback and Contributions
+Cannot found an UI language and would like to help; translate the content in [strings.xml](https://github.com/cmeng-git/atalk-android/blob/master/art/values-xlate/strings.xml). Create a pull request or forward the file to the developer.
+
+If you have found bug, wish for new feature, or have other questions, [file an issue](https://github.com/cmeng-git/atalk-android/issues).
 
 License
 -------
@@ -163,4 +203,4 @@ License
     limitations under the License.
 
 
-[Privacy Policy](http://atalk.sytes.net/privacypolicy.html) 
+[Privacy Policy](https://cmeng-git.github.io/privacypolicy.html) 

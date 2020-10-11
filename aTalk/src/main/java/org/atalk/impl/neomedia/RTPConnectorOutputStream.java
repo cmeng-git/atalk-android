@@ -105,7 +105,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
             packetQueueCapacity = ConfigUtils.getInt(cfg, oldPropertyName, -1);
         }
 
-        PACKET_QUEUE_CAPACITY = packetQueueCapacity >= 0 ? packetQueueCapacity : 256;
+        PACKET_QUEUE_CAPACITY = packetQueueCapacity >= 0 ? packetQueueCapacity : 1024;
         Timber.log(TimberLog.FINER, "Initialized configuration. Send thread: %s. Pool capacity: %s. Queue capacity: %s. Avg bitrate window: %s",
                 USE_SEND_THREAD, POOL_CAPACITY, PACKET_QUEUE_CAPACITY, AVERAGE_BITRATE_WINDOW_MS);
     }
@@ -329,9 +329,9 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
                 sendToTarget(packet, target);
             } catch (IOException ioe) {
                 rawPacketPool.offer(packet);
-                // too many msg hangs the system, show only 1 in 50
-                if ((numberOfPackets % 50) == 0)
-                    Timber.w("Failed to send a packet to target %s: %s", target, ioe.getMessage());
+                // too many msg hangs the system, show only once per 100
+                if ((numberOfPackets % 100) == 0)
+                    Timber.w("Failed to send 100 packets to target %s: %s", target, ioe.getMessage());
                 return false;
             }
         }
@@ -489,8 +489,7 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
      * Sends an array of {@link RawPacket}s to this {@link RTPConnectorOutputStream}'s targets.
      *
      * @param pkts the array of {@link RawPacket}s to send.
-     * @return {@code true} if all {@code pkts} were written into this {@code OutputDataStream};
-     * otherwise, {@code false}
+     * @return {@code true} if all {@code pkts} were written into this {@code OutputDataStream}; otherwise, {@code false}
      */
     private boolean write(RawPacket[] pkts)
     {
@@ -503,14 +502,12 @@ public abstract class RTPConnectorOutputStream implements OutputDataStream
         long now = System.currentTimeMillis();
 
         for (RawPacket pkt : pkts) {
-            // If we got extended, the delivery of the packet may have been
-            // canceled.
+            // If we got extended, the delivery of the packet may have been canceled.
             if (pkt != null) {
                 if (success) {
                     if (!send(pkt)) {
-                        // Skip sending the remaining RawPackets but return
-                        // them to the pool and clear pkts. The current pkt
-                        // was returned to the pool by send().
+                        // Skip sending the remaining RawPackets but return them to the pool and clear pkts.
+                        // The current pkt was returned to the pool by send().
                         success = false;
                     }
                     else {

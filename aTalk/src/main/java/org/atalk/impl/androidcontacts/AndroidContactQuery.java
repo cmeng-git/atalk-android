@@ -159,8 +159,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
         } catch (SecurityException e) {
             aTalkApp.showToastMessage(aTalkApp.getResString(R.string.contacts_permission_denied_feedback)
                     + "\n" + e.getMessage());
-        }
-        finally {
+        } finally {
             if (cursor != null)
                 cursor.close();
         }

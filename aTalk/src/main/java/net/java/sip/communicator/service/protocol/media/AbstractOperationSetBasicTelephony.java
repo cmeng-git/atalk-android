@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.event.CallListener;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.service.neomedia.MediaType;
+import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.recording.Recorder;
 
 import java.text.ParseException;
@@ -36,21 +36,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     /**
      * A list of listeners registered for call events.
      */
-    private final List<CallListener> callListeners = new ArrayList<CallListener>();
-
-    /**
-     * Registers <tt>listener</tt> with this provider so that it could be notified when incoming
-     * calls are received.
-     *
-     * @param listener the listener to register with this provider.
-     */
-    public void addCallListener(CallListener listener)
-    {
-        synchronized (callListeners) {
-            if (!callListeners.contains(listener))
-                callListeners.add(listener);
-        }
-    }
+    private final List<CallListener> callListeners = new ArrayList<>();
 
     /**
      * {@inheritDoc}
@@ -140,9 +126,10 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     {
         List<CallListener> listeners;
         synchronized (callListeners) {
-            listeners = new ArrayList<CallListener>(callListeners);
+            listeners = new ArrayList<>(callListeners);
         }
         Timber.log(TimberLog.FINER, "Dispatching a CallEvent to %s listeners. The event is: %s", listeners.size(), event);
+
         for (CallListener listener : listeners) {
             Timber.log(TimberLog.FINER, "Dispatching a CallEvent to %s. The event is: %s", listener.getClass(), event);
 
@@ -157,6 +144,19 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
                     listener.callEnded(event);
                     break;
             }
+        }
+    }
+
+    /**
+     * Registers <tt>listener</tt> with this provider, so that it could be notified when incoming calls are received.
+     *
+     * @param listener the listener to register with this provider.
+     */
+    public void addCallListener(CallListener listener)
+    {
+        synchronized (callListeners) {
+            if (!callListeners.contains(listener))
+                callListeners.add(listener);
         }
     }
 

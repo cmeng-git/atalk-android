@@ -9,10 +9,10 @@ import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
-import org.atalk.util.Logger;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import javax.media.*;
 import javax.media.control.FormatControl;
@@ -307,8 +307,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         /**
          * Stops the transfer of media data from this instance.
          *
-         * @throws IOException if an error has prevented the stopping of the transfer of media from this
-         * instance
+         * @throws IOException if an error has prevented the stopping of the transfer of media from this instance
          */
         @Override
         public synchronized void stop()
@@ -318,9 +317,22 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             notifyAll();
 
             boolean interrupted = false;
+
+            // a workaround for an issue we see where we cannot stop this stream as the thread waiting to
+            // transfer data is waiting for data that never comes. So we timeout after short period and
+            // we interrupt the thread to clean it
+            long WAIT_TIMEOUT = 100; // ms.
+            boolean waited = false;
+            long started = System.nanoTime();
             while (thread != null) {
+                if (waited) {
+                    // our stop had timed out, so let's interrupt the thread
+                    this.thread.interrupt();
+                    break;
+                }
                 try {
-                    wait();
+                    wait(WAIT_TIMEOUT);
+                    waited = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started) >= WAIT_TIMEOUT;
                 } catch (InterruptedException ie) {
                     interrupted = true;
                 }

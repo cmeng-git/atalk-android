@@ -14,7 +14,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
-import org.xmpp.extensions.caps.UserCapsNodeListener;
+import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 
 import java.util.*;
 

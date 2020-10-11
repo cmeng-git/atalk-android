@@ -10,11 +10,11 @@ import android.graphics.drawable.Drawable;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.impl.configuration.ConfigurationActivator;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.util.CollectionAdapter;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiActivity;
@@ -79,7 +79,7 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
         this.listRowResourceID = listRowResourceID;
         this.dropDownRowResourceID = dropDownRowResourceID;
 
-        this.bundleContext = AndroidGUIActivator.bundleContext;
+        this.bundleContext = ConfigurationActivator.bundleContext;
         bundleContext.addServiceListener(this);
         initAccounts(accounts);
     }

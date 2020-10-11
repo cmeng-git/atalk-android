@@ -21,12 +21,11 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.captcha.packet.Captcha;
+import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * The <tt>CaptchaProvider</tt> is an extension element provider that is meant to be used for
@@ -34,7 +33,7 @@ import java.text.ParseException;
  *
  * @author Eng Chong Meng
  */
-public class CaptchaProvider extends ExtensionElementProvider<Captcha>
+public class CaptchaProvider extends ExtensionElementProvider<CaptchaExtension>
 {
     /**
      * Parses the given <tt>XmlPullParser</tt> into a DataForm packet and returns it.
@@ -44,7 +43,7 @@ public class CaptchaProvider extends ExtensionElementProvider<Captcha>
      * @see ExtensionElementProvider#parse(XmlPullParser, int)
      */
     @Override
-    public Captcha parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public CaptchaExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException, SmackParsingException
     {
         // feature
@@ -70,11 +69,11 @@ public class CaptchaProvider extends ExtensionElementProvider<Captcha>
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (Captcha.ELEMENT.equals(elementName)) {
+                if (CaptchaExtension.ELEMENT.equals(elementName)) {
                     done = true;
                 }
             }
         }
-        return new Captcha(form);
+        return new CaptchaExtension(form);
     }
 }

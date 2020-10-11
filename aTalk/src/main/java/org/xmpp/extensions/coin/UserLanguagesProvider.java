@@ -23,13 +23,13 @@ public class UserLanguagesProvider extends ExtensionElementProvider<ExtensionEle
 {
     /**
      * Parses a UserLanguages extension sub-packet and creates a
-     * {@link UserLanguagesExtensionElement} instance. At the beginning of the method call, the xml
+     * {@link UserLanguagesExtension} instance. At the beginning of the method call, the xml
      * parser will be positioned on the opening element of the packet extension. As required by the
      * smack API, at the end of the method call, the parser will be positioned on the closing
      * element of the packet extension.
      *
      * @param parser an XML parser positioned at the opening <tt>UserLanguages</tt> element.
-     * @return a new {@link UserLanguagesExtensionElement} instance.
+     * @return a new {@link UserLanguagesExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     @Override
@@ -40,19 +40,19 @@ public class UserLanguagesProvider extends ExtensionElementProvider<ExtensionEle
         XmlPullParser.Event eventType;
         String elementName = null;
 
-        UserLanguagesExtensionElement ext = new UserLanguagesExtensionElement();
+        UserLanguagesExtension ext = new UserLanguagesExtension();
 
         while (!done) {
             eventType = parser.next();
             elementName = parser.getName();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                if (elementName.equals(UserLanguagesExtensionElement.ELEMENT_LANGUAGES)) {
+                if (elementName.equals(UserLanguagesExtension.ELEMENT_LANGUAGES)) {
                     ext.setLanguages(CoinIQProvider.parseText(parser));
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(UserLanguagesExtensionElement.ELEMENT_NAME)) {
+                if (parser.getName().equals(UserLanguagesExtension.ELEMENT)) {
                     done = true;
                 }
             }

@@ -1,3 +1,20 @@
+/*
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.atalk.persistance;
 
 import android.annotation.SuppressLint;
@@ -9,20 +26,64 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
-import org.apache.commons.io.IOUtils;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.share.Attachment;
 
 import java.io.*;
 
-import androidx.annotation.RequiresApi;
 import timber.log.Timber;
+
+/**
+ * FilePath Helper utilities
+ *
+ * @author Eng Chong Meng
+ */
 
 public class FilePathHelper
 {
-    /* Get uri related content real local file path. */
+    /**
+     * Get the real local file path of the given attachement; create and copy to a new local file on failure
+     *
+     * @param ctx the reference Context
+     * @param attachment a wrapper of file with other properties {@see Attachment}
+     * @return real local file path of uri or newly created file
+     */
+    public static String getPath(Context ctx, Attachment attachment)
+    {
+        Uri uri = attachment.getUri();
+        String filePath = getFilePath(ctx, uri);
+        if (filePath == null)
+            filePath = getFilePathWithCreate(ctx, uri, attachment.getMime());
+        return filePath;
+    }
+
+    /**
+     * Get the real local file path of the given uri; create and copy to a new local file on failure
+     *
+     * @param ctx the reference Context
+     * @param uri content:// or file:// or whatever suitable Uri you want.
+     * @return real local file path of uri or newly created file
+     */
     public static String getPath(Context ctx, Uri uri)
     {
-        String filePath;
+        String filePath = getFilePath(ctx, uri);
+        if (filePath == null)
+            filePath = getFilePathWithCreate(ctx, uri, null);
+        return filePath;
+    }
+
+    /**
+     * Get the real local file path of a given uri
+     *
+     * @param ctx the reference Context
+     * @param uri content:// or file:// or whatever suitable Uri you want.
+     * @return real local file path or null on access exception
+     */
+    private static String getFilePath(Context ctx, Uri uri)
+    {
+        String filePath = null;
         try {
             // Android OS above sdk version 19.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -34,30 +95,63 @@ public class FilePathHelper
             }
         } catch (Exception e) {
             Timber.d("FilePath Catch: %s", uri.toString());
-            filePath = getFilePathFromURI(ctx, uri);
         }
         return filePath;
     }
 
-    private static String getFilePathFromURI(Context context, Uri contentUri)
+    /**
+     * To create a new file based on the given uri (usually on ContentResolver failure)
+     * Guess the file ext if one is not given, and rename the file accordingly.
+     *
+     * @param ctx the reference Context
+     * @param uri content:// or file:// or whatever suitable Uri you want.
+     * @param mime a reference mime type (usually from attachment)
+     * @return file name with the guessed ext if none is given.
+     */
+    private static String getFilePathWithCreate(Context ctx, Uri contentUri, String mimeType)
     {
-        //copy file and send new file path
         String fileName = getFileName(contentUri);
         if (!TextUtils.isEmpty(fileName)) {
-            File destFile = new File(FileBackend.getaTalkStore(FileBackend.TMP), fileName);
-            Timber.d("FilePath copyFile: %s", destFile);
-            copy(context, contentUri, destFile);
+            String extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
+            // android sdk returns "" for filename contains unicode characters
+            if (TextUtils.isEmpty(extension)) {
+                int dotPos = fileName.lastIndexOf('.');
+                if (0 < dotPos) {
+                    extension = fileName.substring(dotPos + 1);
+                }
+            }
+            if (TextUtils.isEmpty(extension)) {
+                String guess = FileBackend.getMimeType(ctx, contentUri, mimeType);
+                if (!TextUtils.isEmpty(guess)) {
+                    String[] mime = guess.split("/");
+                    if (!"*".equals(mime[1])) {
+                        fileName += "." + mime[1];
+                    }
+                    else if (!"*".equals(mime[0])) {
+                        fileName = mime[0] + ":" + fileName;
+                    }
+                }
+            }
+            File destFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), fileName);
+            if (!destFile.exists()) {
+                Timber.d("FilePath copyFile: %s", destFile);
+                copy(ctx, contentUri, destFile);
+            }
             return destFile.getAbsolutePath();
         }
         return null;
     }
 
-    /*
+    /**
+     * Get the fileName of the given uri
+     *
      * Gboard content provider stream:
      * content://com.google.android.inputmethod.latin.inputcontent/inputContent?
      * fileName=/data/data/com.google.android.inputmethod.latin/files/sticker5151310470
      * &packageName=org.atalk.android
      * &mimeType=image/png
+     *
+     * @param uri content:// or file:// or whatever suitable Uri you want.
      */
     public static String getFileName(Uri uri)
     {
@@ -81,6 +175,13 @@ public class FilePathHelper
         return fileName;
     }
 
+    /**
+     * Copy the content from the given uri to the defined destFile
+     *
+     * @param context the reference Context
+     * @param srcUri content:// or file:// or whatever suitable Uri you want.
+     * @param dstFile the destination file to be copied to
+     */
     public static void copy(Context context, Uri srcUri, File dstFile)
     {
         try {
@@ -88,7 +189,7 @@ public class FilePathHelper
             if (inputStream == null)
                 return;
             OutputStream outputStream = new FileOutputStream(dstFile);
-            IOUtils.copy(inputStream, outputStream); // org.apache.commons.io
+            FileBackend.copy(inputStream, outputStream);
             inputStream.close();
             outputStream.close();
         } catch (Exception e) { // IOException
@@ -96,7 +197,12 @@ public class FilePathHelper
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    /**
+     * Get the uri real path for OS with KitKat and above.
+     *
+     * @param ctx the reference Context
+     * @param uri content:// or file:// or whatever suitable Uri you want.
+     */
     private static String getUriRealPathAboveKitkat(Context ctx, Uri uri)
             throws Exception
     {
@@ -150,7 +256,7 @@ public class FilePathHelper
                     Uri downloadUri = Uri.parse("content://downloads/public_downloads");
 
                     // Append download document id at uri end.
-                    Uri downloadUriAppendId = ContentUris.withAppendedId(downloadUri, Long.valueOf(documentId));
+                    Uri downloadUriAppendId = ContentUris.withAppendedId(downloadUri, Long.parseLong(documentId));
                     filePath = getRealPath(ctx.getContentResolver(), downloadUriAppendId, null);
 
                 }
@@ -161,7 +267,7 @@ public class FilePathHelper
                         String realDocId = idArr[1];
 
                         if ("primary".equalsIgnoreCase(type)) {
-                            filePath = Environment.getExternalStorageDirectory() + "/" + realDocId;
+                            filePath = ctx.getExternalFilesDir(realDocId).getAbsolutePath();
                         }
                     }
                 }
@@ -170,8 +276,11 @@ public class FilePathHelper
         return filePath;
     }
 
-    /* Check whether this uri represent a document or not. */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    /**
+     * Check whether this uri represent a document or not.
+     *
+     * @param uri content:// or file:// or whatever suitable Uri you want.
+     */
     private static boolean isDocumentUri(Context ctx, Uri uri)
     {
         boolean ret = false;
@@ -181,9 +290,11 @@ public class FilePathHelper
         return ret;
     }
 
-    /* Check whether this uri is a content uri or not.
-     *  content uri like content://media/external/images/media/1302716
-     *  */
+    /**
+     * Check whether this uri is a content uri or not.
+     *
+     * @param uri content uri e.g. content://media/external/images/media/1302716
+     */
     private static boolean isContentUri(Uri uri)
     {
         boolean ret = false;
@@ -196,9 +307,11 @@ public class FilePathHelper
         return ret;
     }
 
-    /* Check whether this uri is a file uri or not.
-     *  file uri like file:///storage/41B7-12F1/DCIM/Camera/IMG_20180211_095139.jpg
-     * */
+    /**
+     * Check whether this uri is a file uri or not.
+     *
+     * @param uri file uri e.g. file:///storage/41B7-12F1/DCIM/Camera/IMG_20180211_095139.jpg
+     */
     private static boolean isFileUri(Uri uri)
     {
         boolean ret = false;
@@ -264,6 +377,7 @@ public class FilePathHelper
                 // Get column value which is the uri related file local path.
                 filePath = cursor.getString(columnIndex);
             }
+            cursor.close();
         }
         else {
             // throw exception to try using stream copy

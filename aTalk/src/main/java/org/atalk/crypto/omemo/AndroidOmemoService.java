@@ -16,8 +16,7 @@
  */
 package org.atalk.crypto.omemo;
 
-import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicInstantMessagingJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.*;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
@@ -100,11 +99,13 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
 
     /**
      * The method should only be called upon user authentication
+     * Init smack reply timeout for omemo prekey publish whose reply takes 7(normal) to 11s(bosh)
+     * on Note3 & Note10 with remote server; but takes only 2s on aTalk server
      */
     public void initOmemoDevice()
     {
-        // omemoManager.initialize(); or
         isOmemoInitSuccessful = false;
+        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_OMEMO_INIT_TIMEOUT);
         mOmemoManager.initializeAsync(this);
     }
 
@@ -112,20 +113,23 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     public void initializationFinished(OmemoManager manager)
     {
         isOmemoInitSuccessful = true;
-        Timber.i("Initialize OmemoManager successful for %s", mConnection.getUser());
+        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
+        Timber.d("Initialize OmemoManager successful for %s", mConnection.getUser());
     }
 
     @Override
     public void initializationFailed(Exception cause)
     {
         isOmemoInitSuccessful = false;
+        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
+
         String title = aTalkApp.getResString(R.string.omemo_init_failed_title);
-        Timber.e(cause, "%s", title);
         String errMsg = cause.getMessage();
+        Timber.w("%s: %s", title, errMsg);
         if (errMsg != null) {
             if (errMsg.contains("CorruptedOmemoKeyException")) {
                 String msg = aTalkApp.getResString(R.string.omemo_init_failed_CorruptedOmemoKeyException,
-                        mOmemoManager.getOwnDevice(), cause.getMessage());
+                        mOmemoManager.getOwnDevice(), errMsg);
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
             }
             else {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.atalk.android"
+    android:installLocation="internalOnly">
+
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <application
+        android:name="org.atalk.android.aTalkApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_logo"
+        android:label="@string/APPLICATION_NAME"
+        android:logo="@drawable/ic_notification"
+        android:networkSecurityConfig="@xml/network_security_configuration" >
+
+        <activity
+            android:name="org.atalk.android.gui.LauncherDebugActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/APPLICATION_NAME"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name="org.atalk.impl.androidupdate.OnlineUpdateService"
+            android:enabled="true" />
+
+    </application>
+</manifest>

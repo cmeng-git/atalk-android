@@ -7,7 +7,6 @@ package net.java.sip.communicator.service.protocol.event;
 
 import net.java.sip.communicator.service.protocol.*;
 
-import java.util.Date;
 import java.util.EventObject;
 
 /**
@@ -27,70 +26,27 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     /**
      * The chat room member that this message has been sent to.
      */
-    private ChatRoomMember to = null;
-
-    /**
-     * Set when no other error code can describe the exception that occurred.
-     */
-    public static final int UNKNOWN_ERROR = 1;
-
-    /**
-     * Set when delivery fails due to a failure in network communications or a transport error.
-     */
-    public static final int NETWORK_FAILURE = 2;
-
-    /**
-     * Set to indicate that delivery has failed because the provider was not registered.
-     */
-    public static final int PROVIDER_NOT_REGISTERED = 3;
-
-    /**
-     * Set when delivery fails for implementation specific reasons.
-     */
-    public static final int INTERNAL_ERROR = 4;
-
-    /**
-     * Set when delivery fails because we're trying to send a message to a contact that is currently
-     * offline and the server does not support offline messages.
-     */
-    public static final int OFFLINE_MESSAGES_NOT_SUPPORTED = 5;
-
-    /**
-     * Set when delivery fails because there are undecided omemo identity detected with omemo message encryption
-     */
-    public static final int OMEMO_SEND_ERROR = 6;
-
-    /**
-     * Set when delivery fails because of dependency on an operation that is unsupported. For
-     * example, because it is unknown or not supported at that particular moment.
-     */
-    public static final int UNSUPPORTED_OPERATION = 7;
-
-    /**
-     * Set when delivery fails because we're trying to send a message to a a room where we are not
-     * allowed to send messages.
-     */
-    public static final int FORBIDDEN = 8;
+    private final ChatRoomMember to;
 
     /**
      * An error code indicating the reason for the failure of this delivery.
      */
-    private int errorCode = UNKNOWN_ERROR;
+    private final int errorCode;
 
     /**
-     * The reason of the delivery failure
+     * Contains a human readable message indicating the reason for the failure or null if the reason is unknown.
      */
-    private String reason;
+    private final String reason;
 
     /**
      * A timestamp indicating the exact date when the event occurred.
      */
-    private Date timestamp = null;
+    private final long timestamp;
 
     /**
-     * The received <tt>Message</tt>.
+     * The received <tt>IMessage</tt>.
      */
-    private Message message = null;
+    private final IMessage message;
 
     /**
      * Creates a <tt>ChatRoomMessageDeliveryFailedEvent</tt> indicating failure of delivery of a
@@ -99,27 +55,26 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
      * @param source the <tt>ChatRoom</tt> in which the message was sent
      * @param to the <tt>ChatRoomMember</tt> that this message was sent to.
      * @param errorCode an errorCode indicating the reason of the failure.
-     * @param reason the reason of the failure
-     * @param timestamp the exacte Date when it was determined that delivery had failed.
-     * @param message the received <tt>Message</tt>.
+     * @param timestamp the exact timestamp when it was determined that delivery had failed.
+     * @param reason a human readable message indicating the reason for the failure or null if the reason is unknown.
+     * @param message the received <tt>IMessage</tt>.
      */
-    public ChatRoomMessageDeliveryFailedEvent(ChatRoom source, ChatRoomMember to, int errorCode,
-            String reason, Date timestamp, Message message)
+    public ChatRoomMessageDeliveryFailedEvent(ChatRoom source, ChatRoomMember to, int errorCode, long timestamp,
+            String reason, IMessage message)
     {
         super(source);
-
         this.to = to;
         this.errorCode = errorCode;
         this.timestamp = timestamp;
-        this.message = message;
         this.reason = reason;
+        this.message = message;
     }
 
     /**
-     * Returns a reference to the <tt>ChatRoomMember</tt> that the source (failed) <tt>Message</tt>
+     * Returns a reference to the <tt>ChatRoomMember</tt> that the source (failed) <tt>IMessage</tt>
      * was sent to.
      *
-     * @return a reference to the <tt>ChatRoomMember</tt> that the source failed <tt>Message</tt>
+     * @return a reference to the <tt>ChatRoomMember</tt> that the source failed <tt>IMessage</tt>
      * was sent to.
      */
     public ChatRoomMember getDestinationChatRoomMember()
@@ -130,9 +85,9 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>Message</tt> that triggered this event.
+     * @return the <tt>IMessage</tt> that triggered this event.
      */
-    public Message getMessage()
+    public IMessage getMessage()
     {
         return message;
     }
@@ -148,27 +103,22 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     }
 
     /**
-     * Returns the reason of the delivery failure.
+     * Returns a human readable message indicating the reason for the failure or null if the reason is unknown.
      *
-     * @return the reason of the delivery failure
+     * @return a human readable message indicating the reason for the failure or null if the reason is unknown.
      */
     public String getReason()
     {
         return reason;
     }
 
-    public void setReason(String reason)
-    {
-        this.reason = reason;
-    }
-
     /**
-     * A timestamp indicating the exact date when the event ocurred (in this case it is the moment
+     * A timestamp indicating the exact date when the event occurred (in this case it is the moment
      * when it was determined that message delivery has failed).
      *
-     * @return a Date indicating when the event ocurred.
+     * @return a long indicating when the event occurred in the form of date timestamp.
      */
-    public Date getTimestamp()
+    public long getTimestamp()
     {
         return timestamp;
     }
