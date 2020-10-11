@@ -36,14 +36,14 @@
     <string name="account_server_ip">Conectar al servidor con IP</string>
     <string name="ibr_registration">Registro IB</string>
     <string name="captcha_registration_request">Registro con Captcha</string>
-    <string name="captcha_registration_fail">¡El registro con Chapta ha fallado!\n%1$s</string>
-    <string name="captcha_registration_success">Registro con Chapta realizado.\nAhora se puede iniciar la sesión!</string>
+    <string name="captcha_registration_fail">¡El registro con Captcha ha fallado!\n%1$s</string>
+    <string name="captcha_registration_success">Registro con Captcha realizado.\n¡Ahora se puede iniciar la sesión!</string>
     <string name="captcha_registration_reason">Registro InBand solicitado por el usuario</string>
     <string name="captcha_registration_pwd_empty">Error: ¡el campo de contraseña está vacío!</string>
     <string name="captcha_hint">Ingresar el texto que ves</string>
     <string name="captcha_retry">Haga clic en \'Aceptar\' para volver a intentarlo o en \'Cancelar\' para finalizar</string>
 
-    <string name="choose_network">Escojer una red</string>
+    <string name="choose_network">Escoger una red</string>
     <string name="encryption_TOOLTIP">Encriptar chat</string>
     <string name="encryption_choices">Opciones de cifrado</string>
     <string name="encryption_choice_unencrypted">No encriptado</string>
@@ -70,7 +70,7 @@
     <string name="attachOptionDialog_Videos">Vídeos</string>
     <string name="attachOptionDialog_videoRecord">Grabar un vídeo</string>
     <string name="attachOptionDialog_shareFile">Compartir archivo</string>
-    <string name="service_gui_COPY">Dupdo</string>
+    <string name="service_gui_COPY">Copiar</string>
     <string name="service_gui_DELETE">Borrar</string>
     <string name="service_gui_EDIT">Editar</string>
     <string name="service_gui_FORWARD">Reenviar…</string>
@@ -100,7 +100,7 @@
     <string name="service_gui_ADD_CONTACT_NOT_SUPPORTED">No se pudo agregar contacto con id: %1$s. Operación no soportada.</string>
     <string name="service_gui_ADD_CONTACT_NOT_CONNECTED">Se necesita estar conectado para poder añadir un contacto. Iniciar sesión en el proveedor seleccionado e intentarlo de nuevo.</string>
     <string name="service_gui_ADD_GROUP_LOCAL_ERROR">No se pudo agregar un grupo con nombre: %1$s. El problema ocurrió durante una operación local de IO.</string>
-    <string name="service_gui_ADD_GROUP_EXIST_ERROR">El grupo %1$s ya existe en la lista de contactos. Por favor, elijir otro nombre.</string>
+    <string name="service_gui_ADD_GROUP_EXIST_ERROR">El grupo %1$s ya existe en la lista de contactos. Por favor, elegir otro nombre.</string>
     <string name="service_gui_ADD_GROUP_NET_ERROR">No se pudo agregar un grupo con nombre: %1$s. El problema es debido a un fallo en la red. Compruebar la conexión de red e intentarlo de nuevo.</string>
     <string name="service_gui_ADD_GROUP_ERROR">No se ha podido añadir un grupo con nombre: %1$s.</string>
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">El nombre del grupo no debe estar vacío.</string>
@@ -352,6 +352,7 @@
 	<string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Lo sentimos, la operación para abrir el archivo no es compatible con la plataforma actual</string>
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
+	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_ATTACHMENT">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
 	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado @ %1$s perdido!</string>
@@ -571,10 +572,9 @@
     <string name="service_gui_SEND_LOGS_SUBJECT">Reportar bugs a aTalk</string>
     <string name="service_gui_SEND_LOGS_TITLE">Informe de errores de aTalk por correo electrónico</string>
     <string name="service_gui_SEND_LOGS_INFO">La información a continuación puede ayudar al desarrollador a solucionar el problema:\n\n
-         1. ¿Qué fue lo último que hiciste antes de que ocurriera el problema?\n\n\n
-         2. ¿Cuál fue el problema que ves, incluye una instantánea de la pantalla si está disponible??\n\n\n
-         3. ¿Puedes o cómo reproducir el problema?</string>
-
+         1. ¿Qué fue lo último que hiciste antes de que ocurriera el problema?\n\n\n
+         2. ¿Cuál fue el problema que ves, incluye una instantánea de la pantalla si está disponible??\n\n\n
+         3. ¿Puedes o cómo reproducir el problema?</string>
     <string name="service_gui_SEND_MESSAGE">Enviar un mensaje</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Error al enviar el mensaje: %1$s</string>
     <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">La entidad que has seleccionado no admite mensajes de chat instantáneos: %1$s</string>
@@ -762,7 +762,7 @@
     <string name="service_gui_security_SECURITY_ALERT">Intento de asegurar la llamada. Se desconectará en</string>
     <string name="service_gui_security_STRING_COMPARED">¡Cadenas comparadas:</string>
     <string name="service_gui_security_VERIFY_TOAST">¡Llamada segura! Presionar para comparar la cadena de seguridad ahora o utilizar el menú más tarde.</string>
-    <string name="service_gui_security_VIDEO_NOT_SECURED">Video no seguro</string>
+    <string name="service_gui_security_VIDEO_NOT_SECURED">Vídeo no seguro</string>
     <string name="service_gui_avatar_CHOOSE_ICON">Escoger imagen</string>
     <string name="service_gui_avatar_REMOVE_ICON">Eliminar la imagen actual</string>
 
@@ -824,7 +824,7 @@
     <string name="plugin_certconfig_ALIAS">Nombre de alias en KeyStore</string>
     <string name="plugin_certconfig_KEYSTORE_TYPE">Tipo</string>
     <string name="plugin_certconfig_CERT_ENTRY_TITLE">Certificado de cliente TLS</string>
-    <string name="plugin_certconfig_KEYSTORE">файл</string>
+    <string name="plugin_certconfig_KEYSTORE">Fichero</string>
     <string name="plugin_certconfig_KEYSTORE_PASSWORD">Contraseña</string>
     <string name="plugin_certconfig_INCOMPLETE">Por favor, introduzca un valor para todos los campos</string>
     <string name="plugin_certconfig_SHOW_CERT_EXCEPTION">No se puede mostrar el certificado (%1$s).</string>
@@ -1053,20 +1053,30 @@
     <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>Zona firmada con DNSSEC %1$s devolvió datos no válidos.&lt;br>%2$s&lt;/ html></string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">La consulta de %1$s para %2$s no está firmada.</string>
     <string name="util_dns_DNSSEC_WARNING">&lt;html>&lt;div width="600">%1$s ha intentado conectarse al servidor en&lt;b>%2$s&lt;&lt;/ b>,
-        que es un dominio que lleva una protección fuerte llamada DNSSEC. La información que %1$s ha obtenido
-        desde el servidor DNS no está de acuerdo con la información que proporciona DNSSEC sobre este dominio. &lt;br>&lt;br>&lt;b>
-        Esto no debería suceder a menos que se cometieran errores muy graves en %2$s. Por lo tanto, es una indicación muy fuerte de que algo es
-        muy mal con la confiabilidad de su conexión de red.&lt;/b>&lt;br>&lt;br>
-        Si estás en la conexión a Internet de otra persona (como un punto de acceso WiFi) o si hay circunstancias especiales que te hacen desconfiar
-        su proveedor habitual de Internet, le recomendamos que deje de usarlo inmediatamente y busque un punto de acceso a Internet alternativo.
-        Cuando esté conectado de manera segura a otra red, el problema debe resolverse automáticamente. Si este no es el caso, contáctese con su
-        proveedor de servicios para informarles sobre el problema.&lt;/div>&lt;/html></string>
+        que es un dominio que lleva una protección fuerte llamada DNSSEC. La información que %1$s ha obtenido
+        desde el servidor DNS no está de acuerdo con la información que proporciona DNSSEC sobre este dominio. &lt;br>&lt;br>&lt;b>
+        Esto no debería suceder a menos que se cometieran errores muy graves en %2$s. Por lo tanto, es una indicación muy fuerte de que algo es
+        muy mal con la confiabilidad de su conexión de red.&lt;/b>&lt;br>&lt;br>
+        Si estás en la conexión a Internet de otra persona (como un punto de acceso WiFi) o si hay circunstancias especiales que te hacen desconfiar
+        su proveedor habitual de Internet, le recomendamos que deje de usarlo inmediatamente y busque un punto de acceso a Internet alternativo.
+        Cuando esté conectado de manera segura a otra red, el problema debe resolverse automáticamente. Si este no es el caso, contáctese con su
+        proveedor de servicios para informarles sobre el problema.&lt;/div>&lt;/html></string>
 
     <!-- SSL Certificates -->
     <string name="service_gui_settings_SSL_CERTIFICATE">Certificado SSL</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Purgar los certificados aprobados por el usuario para: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Eliminar certificado</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Administración de certificados SSL</string>
+
+    <!-- Client TLS Certificates -->
+    <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>
+    <string name="service_gui_TLS_CERT_PROMPT">Por favor, seleccional el certificado TLS</string>
+    <string name="service_gui_TLS_CERT_SUMMARY">Uso del certificado en la autenticación del usuario con el servidor</string>
+
+    <!-- Reset ZID -->
+    <string name="reset_ZID_summary">Restablecer identificador ZRTP de larga duración</string>
+    <string name="reset_ZID_title">Reiniciar ZID</string>
+    <string name="ZID_has_been_reset_toast">ZID ha sido restablecido</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>
@@ -1496,7 +1506,7 @@
     <string name="crypto_toast_OMEMO_TRUST_MESSAGE_RESUME">Reanudar el envío de mensajes OMEMO al amigo: %1$s</string>
 
     <!-- Advanced settings category -->
-    <string name="service_gui_settings_ADVANCED">Advanzado</string>
+    <string name="service_gui_settings_ADVANCED">Avanzado</string>
     <string name="service_gui_settings_EXPERT">Opciones para expertos</string>
     <string name="service_gui_settings_EXPERT_SUMMARY">Por favor, cuidado con estas opciones</string>
     <string name="service_gui_settings_OTHER">Otros</string>
@@ -1589,8 +1599,9 @@
 
 	<!--Location string constant -->
     <string name="location_permission_dialog_title">Se necesita permiso de ubicación</string>
-    <string name="location_permission_dialog_message">Habilitar permiso de ubicación ahora?</string>
+    <string name="location_permission_dialog_message">¿Habilitar permiso de ubicación ahora?</string>
     <string name="location_services_off">Servicios de localización OFF</string>
-    <string name="open_location_settings">Habilitar servicios de ubicación ahora?</string>
+    <string name="open_location_settings">¿Habilitar servicios de ubicación ahora?</string>
 
 </resources>
+
