@@ -236,7 +236,7 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Your contact list does not contain any groups. Please create a group first (File/Create group).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online Help</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Online Help</a></string>
     <string name="AboutDialog_title">About</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">About</string>
@@ -982,7 +982,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authenticate Buddy</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">You have unauthenticated buddies. Unverified buddies cannot receive OMEMO message. Check to authenticate.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
-    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs is missing for: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">Create OMEMO IdentityKeyPairs for: %1$s</string>
     <string name="omemo_identity_key_invalid">Invalid IdentityKey for omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_identity_key_missing">OMEMO IdentityKey for %1$s is missing.\nProceed to download from server.</string>
     <string name="omemo_identity_keypairs_invalid">Invalid IdentityKeyPairs for omemoDevice: %1$s.\nException: %2$s.</string>
@@ -1443,7 +1443,7 @@
     <string name="pref_omemo_blind_trust_before_verification">Blind trust before verification</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Auto-trust all new devices of contacts that haven’t been verified before; prompt for manual confirmation when a verified contact adds new devices.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">Upon regenerated your OMEMO identity, all your contacts will receive the new fingerprint and are required to re-verify you. Relaunch aTalk after regeneration. Perform only when having omemo session setup problem.</string>
+    <string name="pref_omemo_regenerate_identities_summary">Upon regenerated your OMEMO identity, all your contacts will receive the new fingerprint and are required to re-verify you. Perform only when having omemo session setup problem.</string>
     <string name="pref_omemo_regenerate_identities_title">Regenerate OMEMO identities</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">OMEMO Identities Refresh</string>
     <!-- OMEMO purge device screen -->

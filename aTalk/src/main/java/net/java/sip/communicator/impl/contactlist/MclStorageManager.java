@@ -94,7 +94,7 @@ public class MclStorageManager implements MetaContactListListener
      */
     void extractContactsForAccount(String accountUuid, String accountUid)
     {
-        // we don't want to receive meta contact events triggered by ourselves so we stop
+        // we don't want to receive meta contact events triggered by ourselves, so we stop
         // listening. It is possible but very unlikely that other events, not triggered by us are
         // received while we're off the channel.
         mclServiceImpl.removeMetaContactListListener(this);
@@ -102,7 +102,7 @@ public class MclStorageManager implements MetaContactListListener
         // Extract all its child groups and contacts
         processGroupContact(accountUuid, accountUid);
 
-        // now that we're done updating the contact list we can start listening again
+        // now we're done updating the contact list we can start listening again
         this.mclServiceImpl.addMetaContactListListener(this);
     }
 

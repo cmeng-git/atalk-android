@@ -235,7 +235,7 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Váš zoznam kontaktov neobsahuje žiadne skupiny. Najskôr vytvorte skupinu (Súbor/Vytvoriť skupinu).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online pomoc</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Online pomoc</a></string>
     <string name="AboutDialog_title">O programe</string>
     <string name="AboutDialog_Version">Verzia %1$s</string>
     <string name="About_action">O programe</string>
@@ -474,9 +474,9 @@
     <string name="service_gui_LOGIN_CREDENTIAL">Prihlasovacie poverenia používateľa</string>
     <string name="service_gui_LOGIN_FAILED">Prihlásenie zlyhalo</string>
     <string name="service_gui_LOGIN_GENERAL_ERROR">Pri prihlasovaní pomocou účtu sa vyskytla chyba: Meno používateľa: %1$s, Názov servera: %2$s: %3$s.</string>
-    <string name="service_gui_LOGIN_INTERNAL_ERROR">Pri prihlasovaní pomocou účtu sa vyskytla chyba: Meno používateľa: %1$s, Názov servera: %2$s. Toto je pravdepodobne interná chyba aplikácie. Nahláste problém nášmu mailing listu vývojárom.</string>
-    <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Nedá sa prihlásiť pomocou účtu: Meno používateľa: %1$s, Názov servera: %2$s, kvôli problému s konfiguráciou účtu. Skontrolujte konfiguráciu svojho účtu.</string>
-    <string name="service_gui_LOGIN_NETWORK_ERROR">Nemožno sa prihlásiť pomocou účtu:\nUžívateľské meno: %1$s\nNázov servera: %2$s\nv dôsledku zlyhania siete. Skontrolujte sieťové pripojenie.</string>
+    <string name="service_gui_LOGIN_INTERNAL_ERROR">Pri prihlasovaní pomocou účtu sa vyskytla chyba: Meno používateľa: {0}, Názov servera: {1}. Toto je pravdepodobne interná chyba aplikácie. Nahláste problém nášmu mailing listu vývojárom.</string>
+    <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Nedá sa prihlásiť pomocou účtu: Meno používateľa: {0}, Názov servera: {1}, kvôli problému s konfiguráciou účtu. Skontrolujte konfiguráciu svojho účtu.</string>
+    <string name="service_gui_LOGIN_NETWORK_ERROR">Nemožno sa prihlásiť pomocou účtu:\nUžívateľské meno: {0}\nNázov servera: {1}\nv dôsledku zlyhania siete. Skontrolujte sieťové pripojenie.</string>
     <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Pri odhlásení pomocou nasledujúceho účtu sa vyskytla chyba: Meno používateľa: %1$s, Názov servera: %2$s.</string>
     <string name="service_gui_MOBILE_PHONE">Mobilné</string>
     <string name="service_gui_MOVE">Presunúť</string>
@@ -981,7 +981,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Autentifikácia Buddy</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Máte neoverených kamarátov. Neoverení kamaráti nemôžu prijímať správu OMEMO. Začiarknite na overenie.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Môj odtlačok prsta %1$s:\n%2$s</string>
-    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs chýba pre: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">Vytvorte OMEMO IdentityKeyPair pre: %1$s</string>
     <string name="omemo_identity_key_invalid">Neplatné IdentityKey pre omemoDevice: %1$s.\nVýnimka:%2$s.</string>
     <string name="omemo_identity_key_missing">Chýba OMEMO IdentityKey pre %1$s.\nPokračujte v sťahovaní zo servera.</string>
     <string name="omemo_identity_keypairs_invalid">Neplatné IdentityKeyPairs pre omemoDevice: %1$s.\nVýnimka:%2$s.</string>
@@ -1440,7 +1440,7 @@
     <string name="pref_omemo_blind_trust_before_verification">Slepá dôvera pred overením</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Automaticky veriť všetkým novým zariadeniam kontaktov, ktoré ešte neboli overené; výzva na manuálne potvrdenie, keď overený kontakt pridá nové zariadenia.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">Po regenerácii vašej identity OMEMO dostanú všetky vaše kontakty nový odtlačok prsta a musíte ich znova overiť. Po regenerácii znova spustite aalk. Vykonajte iba v prípade problémov s nastavením relácie Omemo.</string>
+    <string name="pref_omemo_regenerate_identities_summary">Po regenerácii vašej identity OMEMO dostanú všetky vaše kontakty nový odtlačok prsta a musíte ich znova overiť. Vykonajte iba v prípade problémov s nastavením relácie Omemo.</string>
     <string name="pref_omemo_regenerate_identities_title">Regenerujte identity OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Obnovenie identity OMEMO</string>
     <!-- OMEMO purge device screen -->

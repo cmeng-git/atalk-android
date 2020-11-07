@@ -176,7 +176,7 @@ public class PortTracker
         } catch (Exception exc)//Null, NumberFormat, IllegalArgument
         {
             Timber.i("Ignoring invalid port range [%s to %s]", newMinPortString, newMaxPortString);
-            Timber.d("Cause: ", exc.getMessage());
+            Timber.d("Cause: %s", exc.getMessage());
             return null;
         }
     }

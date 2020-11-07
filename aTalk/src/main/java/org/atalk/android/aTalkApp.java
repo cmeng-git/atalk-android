@@ -100,8 +100,13 @@ public class aTalkApp extends Application implements LifecycleObserver
 
         // This helps to prevent WebView resets UI back to system default.
         // Must skip for < N else weired exceptions happen in Note-5
+        // chromium-Monochrome.aab-stable-424011020:5 throw NPE at org.chromium.ui.base.Clipboard.<init>
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            new WebView(this).destroy();
+            try {
+                new WebView(this).destroy();
+            } catch (Exception e) {
+                Timber.e("WebView init exception: %s", e.getMessage());
+            }
         }
 
         // Must initialize Notification channels before any notification is being issued.

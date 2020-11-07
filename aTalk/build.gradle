@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0-rc03'
+        classpath 'com.android.tools.build:gradle:4.1.0'
         classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1' // working jarjar.repackage version
     }
 }
@@ -73,8 +73,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1142
-        versionName "2.4.2"
+        versionCode 1143
+        versionName "2.4.3"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -170,6 +170,7 @@ android {
     lintOptions {
         abortOnError false
         lintConfig file("lint.xml")
+        disable 'NonConstantResourceId'
         // disable 'MissingTranslation', 'InvalidPackage', 'MissingQuantity', 'AppCompatResource'
     }
 

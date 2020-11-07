@@ -367,10 +367,6 @@
             android:label="@string/APPLICATION_NAME" />
 
         <activity
-            android:name="org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivity"
-            android:label="@string/split_street_view_panorama_and_map_label" />
-
-        <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

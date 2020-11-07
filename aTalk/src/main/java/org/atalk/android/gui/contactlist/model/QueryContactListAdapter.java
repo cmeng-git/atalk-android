@@ -115,11 +115,11 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     public Object getGroup(int position)
     {
         int metaGroupCount = metaContactList.getGroupCount();
-        if (position < metaGroupCount) {
+        if ((position >= 0) &&  (position < metaGroupCount)) {
             return metaContactList.getGroup(position);
         }
         else {
-            return results.get(position - metaGroupCount);
+            return null;
         }
     }
 

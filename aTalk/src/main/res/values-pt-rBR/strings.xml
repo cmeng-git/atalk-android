@@ -236,7 +236,7 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Sua lista de contatos não contém nenhum grupo. Por favor, crie um grupo primeiro (Arquivo/Criar grupo).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ajuda online</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Ajuda online</a></string>
     <string name="AboutDialog_title">Sobre</string>
     <string name="AboutDialog_Version">Versão %1$s</string>
     <string name="About_action">Sobre</string>
@@ -1442,7 +1442,7 @@
     <string name="pref_omemo_blind_trust_before_verification">Blind Trust antes da verificação</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Confiar automaticamente todos os novos dispositivos de contatos que ainda não tenham sido verificados; solicitar confirmação manual quando um contato verificado acrescentar novos dispositivos.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">Após a regeneração de sua identidade OMEMO, todos os seus contatos receberão a nova impressão digital e são obrigados a verificar novamente sua identidade. Reiniciar aTalk após a regeneração. Realize somente quando tiver problemas de configuração de sessão omemo.</string>
+    <string name="pref_omemo_regenerate_identities_summary">Após a regeneração de sua identidade OMEMO, todos os seus contatos receberão a nova impressão digital e são obrigados a verificar novamente sua identidade. Realize somente quando tiver problemas de configuração de sessão omemo.</string>
     <string name="pref_omemo_regenerate_identities_title">Regenerar as identidades OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Atualizar as identidades OMEMO</string>
     <!-- OMEMO purge device screen -->

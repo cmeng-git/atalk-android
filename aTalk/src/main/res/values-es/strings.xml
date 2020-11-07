@@ -240,7 +240,7 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">La lista de contactos no contiene ningún grupo. Por favor, crear un grupo primero (Archivo/Crear grupo).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Ayuda online</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Ayuda online</a></string>
     <string name="AboutDialog_title">Sobre</string>
     <string name="AboutDialog_Version">Versión %s</string>
     <string name="About_action">Sobre</string>
@@ -352,7 +352,6 @@
 	<string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Lo sentimos, la operación para abrir el archivo no es compatible con la plataforma actual</string>
 	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
-	<string name="service_gui_FILE_SEND_TO">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_ATTACHMENT">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
 	<string name="service_gui_FILE_TRANSFER_ACTIVE">La transferencia de archivos en curso se interrumpía. Seguimiento de estado @ %1$s perdido!</string>
@@ -466,10 +465,10 @@
     <string name="service_gui_LOGIN_CREDENTIAL">Credenciales de usuario de inicio de sesión</string>
     <string name="service_gui_LOGIN_FAILED">Error de inicio de sesión</string>
     <string name="service_gui_LOGIN_GENERAL_ERROR">Se ha producido un error al iniciar sesión con la cuenta: Usuario: %1$s, Servidor: %2$s:%3$s.</string>
-    <string name="service_gui_LOGIN_INTERNAL_ERROR">Se ha producido un error al iniciar sesión con la cuenta: Usuario: %1$s, Servidor: %2$s. Lo más probable es que se trate de un error interno de la aplicación. Por favor reporte el problema a nuestra lista de correo de desarrolladores.</string>
-    <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">No se puede iniciar la sesión con la cuenta: Usuario: %1$s, Servidor: %2$s, debido a un problema de configuración de la cuenta. Por favor, comprueba la configuración de su cuenta.</string>
-    <string name="service_gui_LOGIN_NETWORK_ERROR">No se puede iniciar sesión con la cuenta:\nUsuario: %1$s\nServidor: %2$s\ndebido a un fallo en la red. Por favor, compruebe su conexión de red.</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Se produjo un error al cerrar la sesión con la siguiente cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$S.</string>
+    <string name="service_gui_LOGIN_INTERNAL_ERROR">Se ha producido un error al iniciar sesión con la cuenta: Usuario: {0}, Servidor: {1}. Lo más probable es que se trate de un error interno de la aplicación. Por favor reporte el problema a nuestra lista de correo de desarrolladores.</string>
+    <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">No se puede iniciar la sesión con la cuenta: Usuario: {0}, Servidor: {1}, debido a un problema de configuración de la cuenta. Por favor, comprueba la configuración de su cuenta.</string>
+    <string name="service_gui_LOGIN_NETWORK_ERROR">No se puede iniciar sesión con la cuenta:\nUsuario: {0}\nServidor: {1}\ndebido a un fallo en la red. Por favor, compruebe su conexión de red.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Se produjo un error al cerrar la sesión con la siguiente cuenta: Nombre de usuario: %1$s, Nombre del servidor: %2$s.</string>
     <string name="service_gui_MOBILE_PHONE">Móvil</string>
     <string name="service_gui_MOVE">Mover</string>
     <string name="service_gui_MOVE_CONTACT">Mover Contacto</string>
@@ -575,6 +574,7 @@
          1. ¿Qué fue lo último que hiciste antes de que ocurriera el problema?\n\n\n
          2. ¿Cuál fue el problema que ves, incluye una instantánea de la pantalla si está disponible??\n\n\n
          3. ¿Puedes o cómo reproducir el problema?</string>
+
     <string name="service_gui_SEND_MESSAGE">Enviar un mensaje</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Error al enviar el mensaje: %1$s</string>
     <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">La entidad que has seleccionado no admite mensajes de chat instantáneos: %1$s</string>
@@ -983,7 +983,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authentificar amigo</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Hay amigos no autentificados. Los amigos no verificados no pueden recibir el mensajes OMEMO. Comprobar para autenticar.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Huella digital local %1$s:\n%2$s</string>
-    <string name="omemo_identity_keypairs_missing">Faltan IdentityKeyPairs de OMEMO para: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">Cree pares de claves de identidad OMEMO para: %1$s</string>
     <string name="omemo_identity_key_invalid">IdentityKey inválido para el dispositivo omemo: %1$s.\nExcepción: %2$s.</string>
     <string name="omemo_identity_key_missing">Falta la IdentityKey OMEMO para: %1$s\nProceda a descargar desde el servidor.</string>
     <string name="omemo_identity_keypairs_invalid">IdentityKeyPairs inválidos para el dispositivo omemo: %1$s.\nExcepción: %2$s.</string>
@@ -1067,16 +1067,6 @@
     <string name="service_gui_settings_SSL_CERTIFICATE_PURGE">Purgar los certificados aprobados por el usuario para: %1$s</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_REMOVE">Eliminar certificado</string>
     <string name="service_gui_settings_SSL_CERTIFICATE_SUMMARY">Administración de certificados SSL</string>
-
-    <!-- Client TLS Certificates -->
-    <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>
-    <string name="service_gui_TLS_CERT_PROMPT">Por favor, seleccional el certificado TLS</string>
-    <string name="service_gui_TLS_CERT_SUMMARY">Uso del certificado en la autenticación del usuario con el servidor</string>
-
-    <!-- Reset ZID -->
-    <string name="reset_ZID_summary">Restablecer identificador ZRTP de larga duración</string>
-    <string name="reset_ZID_title">Reiniciar ZID</string>
-    <string name="ZID_has_been_reset_toast">ZID ha sido restablecido</string>
 
     <!-- Client TLS Certificates -->
     <string name="service_gui_TLS_CERT">Certificado TLS del cliente</string>
@@ -1455,7 +1445,7 @@
     <string name="pref_omemo_blind_trust_before_verification">Confianza ciega antes de la verificación</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Confiar automáticamente en todos los dispositivos nuevos de contactos que no se hayan verificado anteriormente; solicitar una confirmación manual cuando un contacto verificado agregue nuevos dispositivos.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">Al regenerar su identidad OMEMO, todos tus contactos recibirán la nueva huella digital y deberán volver a verificarte. Vuelve a lanzar aTalk después de la regeneración. Realizar sólo cuando se tiene un problema de configuración de sesión de Omemo.</string>
+    <string name="pref_omemo_regenerate_identities_summary">Al regenerar su identidad OMEMO, todos tus contactos recibirán la nueva huella digital y deberán volver a verificarte. Realizar sólo cuando se tiene un problema de configuración de sesión de Omemo.</string>
     <string name="pref_omemo_regenerate_identities_title">Regenerar las identidades OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Refrescar Identidades OMEMO</string>
     <!-- OMEMO purge device screen -->
@@ -1604,4 +1594,3 @@
     <string name="open_location_settings">¿Habilitar servicios de ubicación ahora?</string>
 
 </resources>
-

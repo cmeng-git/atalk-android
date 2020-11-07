@@ -96,7 +96,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * The time of the last fileTransfer update.
      */
-    private long mLastTimestamp = 0;
+    private long mLastTimestamp = -1;
 
     /**
      * The number of bytes last transferred.
@@ -106,12 +106,12 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * The last calculated progress speed.
      */
-    private long mTransferSpeed = 0;
+    private long mTransferSpeedAverage = 0;
 
     /**
      * The last estimated time.
      */
-    private long mEstimatedTimeLeft = 0;
+    private long mEstimatedTimeLeft = -1;
 
     /**
      * The state of a player where playback is stopped
@@ -457,20 +457,33 @@ public abstract class FileTransferConversation extends OSGiFragment
 
     private void updateProgress(long transferredBytes, long progressTimestamp)
     {
+        long SMOOTHING_FACTOR = 100;
+
         // before file transfer start is -1
         if (transferredBytes < 0)
             return;
 
         final String bytesString = ByteFormat.format(transferredBytes);
-        long byteTransferDelta = transferredBytes - mLastTransferredBytes;
-        long timeElapsed = progressTimestamp - mLastTimestamp;
+        long byteTransferDelta = (transferredBytes == 0) ? 0 : (transferredBytes - mLastTransferredBytes);
 
-        // Calculate running average transfer speed in bytes/sec
-        if (timeElapsed > 0)
-            mTransferSpeed = (((byteTransferDelta * 1000) / timeElapsed) + mTransferSpeed) / 2;
+        // Calculate running average transfer speed in bytes/sec and time left, with the given SMOOTHING_FACTOR
+        if (mLastTimestamp > 0) {
+            long timeElapsed = progressTimestamp - mLastTimestamp;
+            long transferSpeedCurrent = (timeElapsed > 0) ? (byteTransferDelta * 1000) / timeElapsed : 0;
+            if (mTransferSpeedAverage != 0) {
+                mTransferSpeedAverage = (transferSpeedCurrent + (SMOOTHING_FACTOR - 1) * mTransferSpeedAverage) / SMOOTHING_FACTOR;
+            }
+            else {
+                mTransferSpeedAverage = transferSpeedCurrent;
+            }
+        }
+        else {
+            mEstimatedTimeLeft = -1;
+        }
+
         // Calculate  running average time left in sec
-        if (mTransferSpeed > 0)
-            mEstimatedTimeLeft = (((mTransferFileSize - transferredBytes) / mTransferSpeed) + mEstimatedTimeLeft) / 2;
+        if (mTransferSpeedAverage > 0)
+            mEstimatedTimeLeft = (mTransferFileSize - transferredBytes) / mTransferSpeedAverage;
 
         mLastTimestamp = progressTimestamp;
         mLastTransferredBytes = transferredBytes;
@@ -485,10 +498,10 @@ public abstract class FileTransferConversation extends OSGiFragment
             // Note: progress bar can only handle int size (4-bytes: 2,147,483, 647);
             messageViewHolder.progressBar.setProgress((int) transferredBytes);
 
-            if (mTransferSpeed > 0) {
+            if (mTransferSpeedAverage > 0) {
                 messageViewHolder.fileXferSpeed.setVisibility(View.VISIBLE);
                 messageViewHolder.fileXferSpeed.setText(
-                        aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(mTransferSpeed), bytesString));
+                        aTalkApp.getResString(R.string.service_gui_SPEED, ByteFormat.format(mTransferSpeedAverage), bytesString));
             }
 
             if (transferredBytes >= mTransferFileSize) {

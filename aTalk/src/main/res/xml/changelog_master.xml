@@ -6,11 +6,22 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.4.3 (11/07/2020)" versioncode="1143">
+        <change>Fix 'SSL Certificate' access crashes due to NetworkOnMainThread Exception when an IP address is specified for server override</change>
+        <change>Execute OMEMO Regeneration in background thread to avoid ANR</change>
+        <change>Improve Omemo regeneration process to include fixes for mismatched fingerprints, and correct new deviceId init process error</change>
+        <change>PubSubManager must include userJid in parameter passing in order to purge unused pubsub nodes and items on server</change>
+        <change>Fix the field's ANR and crashes problems feedback in android console (v2.4.2)</change>
+        <change>Upgrade aTalk to support android-11(R) API-30</change>
+        <change>Update aTalk to new online link address</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.4.2 (09/30/2020)" versioncode="1142">
-        <change>Please read &lt;a href='https://cmeng-git.github.io/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk.</change>
         <change>Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled</change>
         <change>Update aTalk media player UI to distinguish between pause and stop states</change>
-        <change>Upgrade Smack to version 4.4.0-beta2</change>
+        <change>Upgrade smack to version 4.4.0-beta2</change>
         <change>Upgrade aTalk to support android-11(R) API-30</change>
     </release>
 
@@ -23,7 +34,7 @@
         <change>Upgrade to zrtp-light:4.1.2: Fix ZRTP X25519 key exchange error, and truncate ZRTP KDF output as per RFC</change>
         <change>Cleanup contact 'Move to group' associated option handlers</change>
         <change>Upgrade to smack 4.4.0-beta1: bug fix and enhancement</change>
-        <change>Fix TLS client certificate info display problem: API-29 webview has problem to display '#' character</change>
+        <change>Fix TLS client certificate info display problem: API-29 webview has a problem to display '#' character</change>
         <change>Upgrade HttpUtils: Migration to Apache HttpClient 5.0 replacing deprecated library</change>
         <change>Add new UI language support i.e. Português (Brasil)</change>
         <change>Bug fixes and enhancements</change>

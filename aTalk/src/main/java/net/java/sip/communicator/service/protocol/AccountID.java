@@ -96,8 +96,6 @@ public class AccountID
 
     protected JSONObject mKeys = new JSONObject();
 
-    // private OtrService mOtrService = null;
-    private XMPPTCPConnection xmppConnection = null;
 
     /**
      * The default properties common key prefix used in lib/atalk-defaults.properties which are
@@ -1514,7 +1512,7 @@ public class AccountID
         accountProperties.put(ProtocolProviderFactory.KEYS, cursor.getString(cursor.getColumnIndex(KEYS)));
 
         // Retrieve the remaining account properties from table
-        String args[] = {accountUuid};
+        String[] args = {accountUuid};
         cursor = db.query(TBL_PROPERTIES, null, ACCOUNT_UUID + "=?", args, null, null, null);
         int columnName = cursor.getColumnIndex("Name");
         int columnValue = cursor.getColumnIndex("Value");

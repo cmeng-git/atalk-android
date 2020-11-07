@@ -509,7 +509,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     {
         if (!uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
             if (ringtone != null) {
-                Timber.d("RingTone stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
+                // Timber.d("RingTone stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
                 try {
                     ringtone.stop();
                     ringtone = null;

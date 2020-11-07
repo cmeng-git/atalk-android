@@ -236,7 +236,7 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ваш список контактов не содержит групп. Сначала создайте группу (File/Create group).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Онлайн-справка</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Онлайн-справка</a></string>
     <string name="AboutDialog_title">О</string>
     <string name="AboutDialog_Version">Версия %1$s</string>
     <string name="About_action">О</string>
@@ -464,7 +464,7 @@
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Произошла ошибка при входе в учетную запись: Имя пользователя: {0}, Имя сервера: {1}. Это, скорее всего, внутренняя ошибка приложения. Сообщите о проблеме в список рассылки разработчиков.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Невозможно войти в систему с учетной записью: Имя пользователя: {0}, Имя сервера: {1}, из-за проблемы с настройкой учетной записи. Проверьте конфигурацию своей учетной записи.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Невозможно войти в систему с учетной записью:\nИмя пользователя: {0}\nServer name: {1}\ndue к сбою сети. Проверьте сетевое подключение.</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Произошла ошибка при выходе из системы со следующей учетной записью: Имя пользователя: %1$s, Имя сервера: %2$S.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Произошла ошибка при выходе из системы со следующей учетной записью: Имя пользователя: %1$s, Имя сервера: %2$s.</string>
     <string name="service_gui_MOBILE_PHONE">Мобильный</string>
     <string name="service_gui_MOVE">Переместить</string>
     <string name="service_gui_MOVE_CONTACT">Переместить контакт</string>
@@ -965,7 +965,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Аутентифицировать друзей</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">У вас есть неаутентифицированные друзья. Непроверенные друзья не могут получать сообщение OMEMO. Проверить подлинность.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
-    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs отсутствует для: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">Создайте OMEMO IdentityKeyPairs для: %1$s</string>
     <string name="omemo_identity_key_invalid">Недопустимый IdentityKey для omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_identity_key_missing">OMEMO IdentityKey для %1$s отсутствует.\nПродолжить загрузку с сервера.</string>
     <string name="omemo_identity_keypairs_invalid">Недопустимый IdentityKeyPairs для omemoDevice: %1$s.\nException: %2$s.</string>
@@ -1427,7 +1427,7 @@
     <string name="pref_omemo_blind_trust_before_verification">Слепое доверие перед проверкой</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Автоматическое доверие ко всем новым устройствам контактов, которые ранее не были проверены; запрос на подтверждение вручную, когда подтвержденный контакт добавляет новые устройства.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">После восстановления вашей идентичности OMEMO все ваши контакты получат новый отпечаток пальца и должны будут повторно подтвердить вас. Перезапустите aTalk после регенерации. Выполняйте только при наличии проблемы установки omemo.</string>
+    <string name="pref_omemo_regenerate_identities_summary">После восстановления вашей идентичности OMEMO все ваши контакты получат новый отпечаток пальца и должны будут повторно подтвердить вас. Выполняйте только при наличии проблемы установки omemo.</string>
     <string name="pref_omemo_regenerate_identities_title">Регенерировать идентификаторы OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">Оповещения OMEMO Обновить</string>
     <!-- OMEMO purge device screen -->

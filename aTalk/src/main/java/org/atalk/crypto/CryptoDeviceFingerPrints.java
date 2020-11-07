@@ -41,13 +41,21 @@ import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
+import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
+import org.jivesoftware.smackx.omemo.signal.SignalOmemoKeyUtil;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
+import org.whispersystems.libsignal.IdentityKey;
 
+import java.io.IOException;
 import java.util.*;
+
+import timber.log.Timber;
 
 import static org.atalk.android.R.id.fingerprint;
 

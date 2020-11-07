@@ -236,7 +236,7 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Daftar kontak Anda tidak berisi grup apa pun. Harap buat grup terlebih dahulu (Fail/Buat grup).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Bantuan online</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Bantuan online</a></string>
     <string name="AboutDialog_title">Tentang</string>
     <string name="AboutDialog_Version">Versi %1$s</string>
     <string name="About_action">Tentang</string>
@@ -464,7 +464,7 @@
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Terjadi kesalahan saat masuk menggunakan akun: Nama pengguna: {0}, Nama server: {1}. Ini kemungkinan besar kesalahan aplikasi internal. Silakan laporkan masalah ke milis pengembang kami.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Tidak dapat masuk dengan akun: Nama pengguna: {0}, Nama server: {1}, karena masalah konfigurasi akun. Silakan periksa konfigurasi akun Anda.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Tidak dapat masuk menggunakan akun:\nNama pengguna: {0}\nNama server: {1}\nkenyebabkan kegagalan jaringan. Silakan periksa koneksi jaringan Anda.</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Terjadi kesalahan saat melakukan logoff dengan akun berikut: Nama pengguna: %1$s, Nama server: %2$2.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Terjadi kesalahan saat melakukan logoff dengan akun berikut: Nama pengguna: %1$s, Nama server: %2$s.</string>
     <string name="service_gui_MOBILE_PHONE">Seluler</string>
     <string name="service_gui_MOVE">Pindahkan</string>
     <string name="service_gui_MOVE_CONTACT">Pindahkan Kontak</string>
@@ -973,7 +973,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Otentikasi Sobat</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Anda memiliki teman yang tidak terautentikasi. Teman yang belum diverifikasi tidak dapat menerima pesan OMEMO. Periksa untuk mengautentikasi.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Sidik Jari Saya %1$s:\n %2$s</string>
-    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs tidak ada untuk: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">Perbarui OMEMO IdentityKeyPairs untuk: %1$s</string>
     <string name="omemo_identity_key_invalid">IdentitasKey Tidak Valid untuk omemoDevice: %1$s.\nEksepsi: %2$s.</string>
     <string name="omemo_identity_key_missing">OMEMO IdentityKey untuk %1$s tidak ada.\nLanjutkan untuk mengunduh dari server.</string>
     <string name="omemo_identity_keypairs_invalid">IdentitasKeyPairs Tidak Valid untuk omemoDevice: %1$s.\nEksepsi: %2$s.</string>
@@ -1434,7 +1434,7 @@
     <string name="pref_omemo_blind_trust_before_verification">Kepercayaan buta sebelum verifikasi</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Memercayai otomatis semua perangkat kontak baru yang belum diverifikasi sebelumnya;meminta konfirmasi manual ketika kontak terverifikasi menambahkan perangkat baru.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">Setelah meregenerasi identitas OMEMO Anda, semua kontak Anda akan menerima sidik jari baru dan diminta untuk memverifikasi ulang Anda. Luncurkan kembali aTalk setelah regenerasi. Lakukan hanya ketika memiliki masalah pengaturan sesi omemo.</string>
+    <string name="pref_omemo_regenerate_identities_summary">Setelah meregenerasi identitas OMEMO Anda, semua kontak Anda akan menerima sidik jari baru dan diminta untuk memverifikasi ulang Anda. Lakukan hanya ketika memiliki masalah pengaturan sesi omemo.</string>
     <string name="pref_omemo_regenerate_identities_title">Meregenerasi identitas OMEMO</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">OMEMO Identitas Segarkan</string>
     <!-- OMEMO purge device screen -->

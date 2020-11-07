@@ -214,6 +214,8 @@ public class ConnectionInfo extends OSGiActivity
 
     /**
      * Constructs the connection info text.
+     * Do not use ISAddress.getHostName(); this may make a network access for a reverse IP lookup
+     * and cause NetworkOnMainThreadException
      */
     private String loadDetails(ProtocolProviderService pps)
     {
@@ -227,8 +229,10 @@ public class ConnectionInfo extends OSGiActivity
         final OperationSetConnectionInfo opSetConnInfo = pps.getOperationSet(OperationSetConnectionInfo.class);
         if (opSetConnInfo != null) {
             InetSocketAddress ISAddress = opSetConnInfo.getServerAddress();
+            // buff.append(getItemString(getString(R.string.service_gui_settings_ADDRESS),
+            //      (ISAddress == null) ? "" : ISAddress.getHostName()));
             buff.append(getItemString(getString(R.string.service_gui_settings_ADDRESS),
-                    (ISAddress == null) ? "" : ISAddress.getHostName()));
+                    (ISAddress == null) ? "" : ISAddress.getHostString()));
             buff.append(getItemString(getString(R.string.service_gui_settings_PORT),
                     (ISAddress == null) ? "" : String.valueOf(ISAddress.getPort())));
         }

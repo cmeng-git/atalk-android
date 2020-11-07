@@ -18,6 +18,7 @@ package net.java.sip.communicator.impl.credentialsstorage;
 import net.java.sip.communicator.service.credentialsstorage.CryptoException;
 import net.java.sip.communicator.util.Base64;
 
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -30,9 +31,9 @@ import javax.crypto.spec.SecretKeySpec;
  * Performs encryption and decryption of text using AES algorithm.
  *
  * @author Dmitri Melnikov
+ * @author Eng Chong Meng
  */
-public class AESCrypto
-        implements Crypto
+public class AESCrypto implements Crypto
 {
     /**
      * The algorithm associated with the key.
@@ -47,18 +48,17 @@ public class AESCrypto
     /**
      * Salt used when creating the key.
      */
-    private static byte[] SALT =
-            {0x0C, 0x0A, 0x0F, 0x0E, 0x0B, 0x0E, 0x0E, 0x0F};
+    private static final byte[] SALT = {0x0C, 0x0A, 0x0F, 0x0E, 0x0B, 0x0E, 0x0E, 0x0F};
 
     /**
      * Possible length of the keys in bits.
      */
-    private static int[] KEY_LENGTHS = new int[]{256, 128};
+    private static final int[] KEY_LENGTHS = new int[]{256, 128};
 
     /**
      * Number of iterations to use when creating the key.
      */
-    private static int ITERATION_COUNT = 1024;
+    private static final int ITERATION_COUNT = 1024;
 
     /**
      * Key derived from the master password to use for encryption/decryption.
@@ -121,9 +121,7 @@ public class AESCrypto
      * @throws InvalidKeySpecException if the key specifications are invalid
      */
     private void initKey(String masterPassword, int keyLength)
-            throws InvalidKeyException,
-            NoSuchAlgorithmException,
-            InvalidKeySpecException
+            throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException
     {
         // if the password is empty, we get an exception constructing the key
         if (masterPassword == null) {
@@ -134,12 +132,9 @@ public class AESCrypto
 
         // Password-Based Key Derivation Function found in PKCS5 v2.0.
         // This is only available with java 6.
-        SecretKeyFactory factory =
-                SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         // Make a key from the master password
-        KeySpec spec =
-                new PBEKeySpec(masterPassword.toCharArray(), SALT,
-                        ITERATION_COUNT, keyLength);
+        KeySpec spec = new PBEKeySpec(masterPassword.toCharArray(), SALT, ITERATION_COUNT, keyLength);
         SecretKey tmp = factory.generateSecret(spec);
         // Make an algorithm specific key
         key = new SecretKeySpec(tmp.getEncoded(), KEY_ALGORITHM);
@@ -162,8 +157,7 @@ public class AESCrypto
     {
         try {
             decryptCipher.init(Cipher.DECRYPT_MODE, key);
-            return new String(decryptCipher.doFinal(Base64.decode(ciphertext)),
-                    "UTF-8");
+            return new String(decryptCipher.doFinal(Base64.decode(ciphertext)), StandardCharsets.UTF_8);
         } catch (BadPaddingException e) {
             throw new CryptoException(CryptoException.WRONG_KEY, e);
         } catch (Exception e) {
@@ -183,8 +177,7 @@ public class AESCrypto
     {
         try {
             encryptCipher.init(Cipher.ENCRYPT_MODE, key);
-            return new String(Base64.encode(encryptCipher.doFinal(plaintext
-                    .getBytes("UTF-8"))));
+            return new String(Base64.encode(encryptCipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8))));
         } catch (Exception e) {
             throw new CryptoException(CryptoException.ENCRYPTION_ERROR, e);
         }
