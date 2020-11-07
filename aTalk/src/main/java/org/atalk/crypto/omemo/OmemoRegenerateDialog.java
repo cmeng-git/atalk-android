@@ -31,6 +31,8 @@ import org.jivesoftware.smackx.omemo.OmemoStore;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * OMEMO identities regeneration user interface.
  *
@@ -75,16 +77,34 @@ public class OmemoRegenerateDialog extends OSGiActivity
 
         builder.setNegativeButton(R.string.service_gui_CANCEL, (dialog, which) -> finish());
         builder.setPositiveButton(R.string.crypto_dialog_button_OMEMO_REGENERATE, (dialog, which) -> {
-            OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
-            for (int i = 0; i < checkedItems.length; ++i) {
-                if (checkedItems[i]) {
-                    ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
-                    if (pps != null) {
-                        AccountID accountID = pps.getAccountID();
-                        ((SQLiteOmemoStore) omemoStore).regenerate(accountID);
+            final OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+            new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    for (int i = 0; i < checkedItems.length; ++i) {
+                        if (checkedItems[i]) {
+                            ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
+                            if (pps != null) {
+                                AccountID accountID = pps.getAccountID();
+                                Timber.d("Regenerate Omemo for: %s", accountID.getAccountJid());
+                                ((SQLiteOmemoStore) omemoStore).regenerate(accountID);
+                                // ((SQLiteOmemoStore) omemoStore).cleanServerOmemoData(accountID); // for test only
+                            }
+                        }
                     }
                 }
-            }
+            }.start();
+//            for (int i = 0; i < checkedItems.length; ++i) {
+//                if (checkedItems[i]) {
+//                    ProtocolProviderService pps = accountMap.get(accounts.get(i).toString());
+//                    if (pps != null) {
+//                        AccountID accountID = pps.getAccountID();
+//                        ((SQLiteOmemoStore) omemoStore).regenerate(accountID);
+//                    }
+//                }
+//            }
             finish();
         });
 

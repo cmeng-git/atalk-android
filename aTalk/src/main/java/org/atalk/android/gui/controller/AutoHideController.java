@@ -20,9 +20,9 @@ import java.util.TimerTask;
 import timber.log.Timber;
 
 /**
- * The fragment is a controller which will hide given <tt>View</tt> after specified delay interval. To reset and prevent
- * from hiding for another period of time call <tt>show</tt> method. This method will also instantly display controlled
- * <tt>View</tt> if it's currently hidden.
+ * The fragment is a controller which hides the given <tt>View</tt> after specified delay interval. To reset
+ * and prevent from hiding for another period of call <tt>show</tt> method. This method will also instantly
+ * display controlled <tt>View</tt> if it's currently hidden.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -30,7 +30,7 @@ import timber.log.Timber;
 public class AutoHideController extends OSGiFragment implements Animation.AnimationListener
 {
     /**
-     * Argument key for the identifier of <tt>View</tt> that will be auto hidden. It must exists in parent
+     * Argument key for the identifier of <tt>View</tt> that will be auto hidden. It must exist in the parent
      * <tt>Activity</tt> view hierarchy.
      */
     private static final String ARG_VIEW_ID = "view_id";
@@ -130,7 +130,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     }
 
     /**
-     * Makes sure that the hide task is cancelled.
+     * Makes sure the hide task is cancelled.
      */
     private void cancelAutoHideTask()
     {
@@ -238,7 +238,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
 
     /**
      * Interface which can be used for listening to controlled view visibility state changes. Must be implemented by
-     * parent <tt>Activity</tt>, which will be registered as a listener when this fragment is created.
+     * the parent <tt>Activity</tt>, which will be registered as a listener when this fragment is created.
      */
     public interface AutoHideListener
     {

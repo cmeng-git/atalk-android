@@ -324,7 +324,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private boolean isInitialized = false;
 
     /**
-     * False to disable resetting the smack reply timer on completion; let AndroidOmemoService as the task is async
+     * False to disable resetting the smack reply timer on completion;
+     * let AndroidOmemoService do it as the task is async
      */
     private boolean resetSmackTimer = true;
 
@@ -1760,7 +1761,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          * is connected to ensure the user is defined
          *
          * Move to authenticated stage?
-         * Perform here to ensure only one androidOmemoService is created. Otherwise onResume may create multiple instances
+         * Perform here to ensure only one androidOmemoService is created; otherwise onResume may create multiple instances
          */
         androidOmemoService = new AndroidOmemoService(this);
 

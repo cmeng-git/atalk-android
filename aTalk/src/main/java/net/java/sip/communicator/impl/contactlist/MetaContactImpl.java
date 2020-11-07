@@ -444,10 +444,6 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
                     for (Jid jidx : capJids) {
                         if (jid.isParentOf(jidx)) {
-                            // For testing only
-                            // if (opSetContact.getAddress().contains("hawk")) {
-                            //     Timber.d("opSetContact check for %s: %s => %s", operationSet.getName(), displayName, opSetContact);
-                            // }
                             return opSetContact;
                         }
                     }
@@ -1147,9 +1143,6 @@ public class MetaContactImpl extends DataObject implements MetaContact
                 Map.Entry<String, List<Jid>> entryJid = capJids.next();
                 String opSetName = entryJid.getKey();
 
-                if (jid.toString().contains("hawk") && !contactNewCaps.contains(opSetName))
-                    Timber.d("Opset capability for %s removed: %s", jid, opSetName);
-
                 Iterator<Jid> jidsForCap = entryJid.getValue().iterator();
                 while (jidsForCap.hasNext()) {
                     Jid jidx = jidsForCap.next();
@@ -1186,9 +1179,6 @@ public class MetaContactImpl extends DataObject implements MetaContact
                 else {
                     capJids = capabilityJid.get(newCap);
                     if ((capJids != null) && !capJids.contains(jid)) {
-                        if ((jid != null) && jid.toString().contains("hawk"))
-                            Timber.d("Opset capability for %s added: %s", jid, newCap);
-
                         capJids.add(jid);
                     }
                 }

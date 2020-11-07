@@ -42,8 +42,8 @@
     <string name="service_gui_CHAT_LINK">&lt;a href="%1$s">%2$s&lt;/a></string>
     <!-- About Dialog -->
     <string name="AboutDialog_Copyright">Copyright@2014, atalk.org\n(GNU General Public License v3.0)\nAll rights reserved.</string>
-    <string name="AboutDialog_Link">https://cmeng-git.github.io</string>
-    <string name="FAQ_Link">https://cmeng-git.github.io/faq.html</string>
+    <string name="AboutDialog_Link">https://cmeng-git.github.io/atalk</string>
+    <string name="FAQ_Link">https://cmeng-git.github.io/atalk/faq.html</string>
 
     <!-- PTT Chat -->
     <string name="chat_dbZero">00.00dB</string>
@@ -82,7 +82,7 @@
 
     <!-- account info -->
     <string name="plugin_accountinfo_URL">URL:</string>
-    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io</string>
+    <string name="plugin_otr_authbuddydialog_HELP_URI">https://cmeng-git.github.io/atalk</string>
 
     <!-- Account proxy settings -->
     <string name="pref_key_bosh_configuration">Bosh_Configuration</string>

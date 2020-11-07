@@ -234,7 +234,7 @@
     <string name="service_gui_CREATE_FIRST_GROUP_WIZARD">Ihre Kontaktliste enthält keine Gruppen. Bitte erstelle zuerst eine Gruppe. (Datei/Gruppe erstellen).</string>
 
     <!-- About Dialog -->
-    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io">Online hilfe</a></string>
+    <string name="AboutDialog_help"><a href="https://cmeng-git.github.io/atalk">Online hilfe</a></string>
     <string name="AboutDialog_title">Über uns</string>
     <string name="AboutDialog_Version">Version %1$s</string>
     <string name="About_action">Über uns</string>
@@ -462,7 +462,7 @@
     <string name="service_gui_LOGIN_INTERNAL_ERROR">Beim Anmelden mit dem Konto ist ein Fehler aufgetreten: Benutzername: {0}, Servername: {1}. Dies ist höchstwahrscheinlich ein interner Anwendungsfehler. Bitte melde das Problem unserer Mailingliste für Entwickler.</string>
     <string name="service_gui_LOGIN_INVALID_PROPERTIES_ERROR">Anmeldung mit diesem Konto nicht möglich: Benutzername: {0}, Servername: {1}. Bitte überprüfe deine Kontoeinstellungen.</string>
     <string name="service_gui_LOGIN_NETWORK_ERROR">Anmeldung fehlgeschlagen:\nBenutzername: {0}\nServername: {1}\n Netzwerkfehler: Bitte überprüfe deine Netzwerkverbindung.</string>
-    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Beim Abmelden mit dem folgenden Konto ist ein Fehler aufgetreten: Benutzername:%1$s, Servername:%2$2.</string>
+    <string name="service_gui_LOGOFF_NOT_SUCCEEDED">Beim Abmelden mit dem folgenden Konto ist ein Fehler aufgetreten: Benutzername: %1$s, Servername: %2$s.</string>
     <string name="service_gui_MOBILE_PHONE">Mobilfunknummer</string>
     <string name="service_gui_MOVE">Verschieben</string>
     <string name="service_gui_MOVE_CONTACT">Kontakt verschieben</string>
@@ -960,7 +960,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Chatpartner authentifizieren</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Du hast nicht authentifizierte Chatpartner. Nichtverifizierte Kontakte können keine OMEMO-verschlüsselten Nachrichten empfangen. Überprüfe die Authentifizierung.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Mein Fingerprint %1$s:\n%2$s</string>
-    <string name="omemo_identity_keypairs_missing">OMEMO IdentityKeyPairs fehlen für: %1$s</string>
+    <string name="omemo_identity_keypairs_missing">Erstellen Sie OMEMO IdentityKeyPairs für: %1$s</string>
     <string name="omemo_identity_key_invalid">Ungültiger IdentityKey für OMEMO-Gerät: %1$s.\nException:%2$s.</string>
     <string name="omemo_identity_key_missing">OMEMO IdentityKey für %1$s fehlt.\nFahren Sie mit dem Herunterladen vom Server fort.</string>
     <string name="omemo_identity_keypairs_invalid">Ungültige IdentityKeyPairs für OMEMO-Gerät: %1$s.\nException:%2$s.</string>
@@ -1414,7 +1414,7 @@
     <string name="pref_omemo_blind_trust_before_verification">Ohne vorherige Überprüfung verschlüsseln</string>
     <string name="pref_omemo_blind_trust_before_verification_summary">Es wird allen neuen Geräten von allen Kontakten ohne vorherige Überprüfung blind vertraut. Bestätigungen werden nur bei neuen Geräten von verfizierten Kontakten angefordert.</string>
     <!-- OMEMO regenerate screen -->
-    <string name="pref_omemo_regenerate_identities_summary">Nach Neugenerierung der OMEMO-Identität erhalten all Ihre Kontakte den neuen Fingerprint zur erneuten Bestätigung. Starte aTalk danach neu. Führe diese Maßnahme nur durch, wenn du Probleme beim Einrichten einer OMEMO-Sitzung hast.</string>
+    <string name="pref_omemo_regenerate_identities_summary">Nach Neugenerierung der OMEMO-Identität erhalten all Ihre Kontakte den neuen Fingerprint zur erneuten Bestätigung. Führe diese Maßnahme nur durch, wenn du Probleme beim Einrichten einer OMEMO-Sitzung hast.</string>
     <string name="pref_omemo_regenerate_identities_title">OMEMO-Identitäten neu generieren</string>
     <string name="service_gui_settings_OMEMO_REGENERATE_TITLE">OMEMO-Identitäten aktualisieren</string>
     <!-- OMEMO purge device screen -->

@@ -1050,18 +1050,18 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
                 String xhtmlBody = encryptedMessage.getElement().toXML().toString();
-                XHTMLText htmlBody = new XHTMLText("", "us").append(xhtmlBody).appendCloseBodyTag();
+                XHTMLText xhtmlText = new XHTMLText("", "us")
+                        .append(xhtmlBody)
+                        .appendCloseBodyTag();
 
                 // OMEMO normal body message content will strip off any html tags info
                 msgContent = Html.fromHtml(msgContent).toString();
-
                 encryptedMessage = omemoManager.encrypt(mMultiUserChat, msgContent);
 
                 messageBuilder = StanzaBuilder.buildMessage();
-                sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);
-
                 // Add the XHTML text to the message
-                XHTMLManager.addBody(sendMessage, htmlBody);
+                XHTMLManager.addBody(messageBuilder, xhtmlText);
+                sendMessage = encryptedMessage.buildMessage(messageBuilder, entityBareJid);
             }
 
             // proceed to send message if no exceptions.

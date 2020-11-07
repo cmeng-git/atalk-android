@@ -1190,14 +1190,15 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Updates views alignment which depend on call control buttons group visibility state.
-     * <p>
+     * Updates view alignment which depend on call control buttons group visibility state.
      * {@inheritDoc}
      */
     @Override
     public void onAutoHideStateChanged(AutoHideController source, int visibility)
     {
-        videoFragment.updateCallInfoMargin();
+        // NPE from field report
+        if (videoFragment != null)
+            videoFragment.updateCallInfoMargin();
     }
 
     public static void setBackToChat(boolean state)

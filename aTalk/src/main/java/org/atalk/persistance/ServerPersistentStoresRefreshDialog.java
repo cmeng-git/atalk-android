@@ -241,7 +241,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         String JSONKEY_CURRENT_PREKEY_ID = "omemoCurPreKeyId";
         Context ctx = aTalkApp.getGlobalContext();
 
-        OmemoStore omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+        OmemoStore<?, ?, ?, ?, ?, ?, ?, ?, ?> omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         if (omemoStore instanceof SQLiteOmemoStore) {
             DatabaseBackend db = DatabaseBackend.getInstance(ctx);
@@ -252,7 +252,17 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                 db.updateAccount(accountId);
             }
             MigrationTo2.createOmemoTables(db.getWritableDatabase());
+
+            // start to regenerate all Omemo data for registered accounts - has exception
+            // SQLiteOmemoStore.loadOmemoSignedPreKey().371 There is no SignedPreKeyRecord for: 0
+            // SignedPreKeyRecord.getKeyPair()' on a null object reference
+            for (ProtocolProviderService pps : ppServices) {
+                AccountID accountId = pps.getAccountID();
+                ((SQLiteOmemoStore) omemoStore).regenerate(accountId);
+            }
         }
+
+        // This is here for file-based implementation and not use anymore
         else {
             String OMEMO_Store = "OMEMO_Store";
             File omemoDir = new File(ctx.getFilesDir(), OMEMO_Store);
@@ -263,14 +273,6 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                     e.printStackTrace();
                 }
             }
-        }
-
-        // start to regenerate all Omemo data for registered accounts - has exception
-        // SQLiteOmemoStore.loadOmemoSignedPreKey().371 There is no SignedPreKeyRecord for: 0
-        // SignedPreKeyRecord.getKeyPair()' on a null object reference
-        for (ProtocolProviderService pps : ppServices) {
-            AccountID accountId = pps.getAccountID();
-            ((SQLiteOmemoStore) omemoStore).regenerate(accountId);
         }
         Timber.i("### Omemo store has been refreshed!");
     }
@@ -339,10 +341,10 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         try {
             logDir = LibJitsi.getFileAccessService().getPrivatePersistentDirectory(LOGGING_DIR_NAME, FileCategory.LOG);
             if ((logDir != null) && logDir.exists()) {
-                File[] files = logDir.listFiles();
-                boolean status = true;
+                final File[] files = logDir.listFiles();
                 for (File file : files) {
-                    status = file.delete();
+                    if (!file.delete())
+                        Timber.w("Couldn't delete log file: %s", file.getName());
                 }
             }
         } catch (Exception ex) {

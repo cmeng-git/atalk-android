@@ -15,8 +15,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.service.neomedia.codec.Constants;
 
 /**
- * Camera data source. Creates <tt>PreviewStream</tt> or <tt>SurfaceStream</tt> based on used format
- * encoding.
+ * Camera data source. Creates <tt>PreviewStream</tt> or <tt>SurfaceStream</tt> based on used format encoding.
  *
  * @author Pawel Domas
  */

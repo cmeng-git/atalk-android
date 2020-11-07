@@ -37,12 +37,8 @@ import timber.log.Timber;
  */
 public class AndroidOmemoService implements OmemoManager.InitializationFinishedCallback
 {
-    private OmemoManager mOmemoManager;
-    private OmemoStore mOmemoStore;
-    private XMPPConnection mConnection;
-
-    private OperationSetBasicInstantMessagingJabberImpl imOpSet = null;
-    private OperationSetMultiUserChatJabberImpl mucOpSet = null;
+    private final OmemoManager mOmemoManager;
+    private final XMPPConnection mConnection;
 
     public static boolean isOmemoInitSuccessful = false;
 
@@ -52,11 +48,11 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
         mOmemoManager = initOmemoManager(pps);
 
         Timber.i("### Registered omemo messageListener for: %s", pps.getAccountID().getUserID());
-        imOpSet = (OperationSetBasicInstantMessagingJabberImpl) pps.getOperationSet(OperationSetBasicInstantMessaging.class);
-        imOpSet.registerOmemoListener(mOmemoManager);
+        OperationSetBasicInstantMessaging imOpSet =  pps.getOperationSet(OperationSetBasicInstantMessaging.class);
+        ((OperationSetBasicInstantMessagingJabberImpl) imOpSet).registerOmemoListener(mOmemoManager);
 
-        mucOpSet = (OperationSetMultiUserChatJabberImpl) pps.getOperationSet(OperationSetMultiUserChat.class);
-        mucOpSet.registerOmemoMucListener(mOmemoManager);
+        OperationSetMultiUserChat mucOpSet = pps.getOperationSet(OperationSetMultiUserChat.class);
+        ((OperationSetMultiUserChatJabberImpl) mucOpSet).registerOmemoMucListener(mOmemoManager);
     }
 
     /**
@@ -67,7 +63,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
      */
     private OmemoManager initOmemoManager(ProtocolProviderService pps)
     {
-        mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
+        OmemoStore mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
 
         BareJid userJid;
         if (mConnection.getUser() != null) {

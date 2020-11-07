@@ -708,16 +708,12 @@ public class HistoryReaderImpl implements HistoryReader
 				result.add(filelist.next());
 			}
 
-			Collections.sort(result, new Comparator<String>() {
-
-				public int compare(String o1, String o2)
-				{
-					if (reverseOrder)
-						return o2.compareTo(o1);
-					else
-						return o1.compareTo(o2);
-				}
-			});
+			Collections.sort(result, (o1, o2) -> {
+                if (reverseOrder)
+                    return o2.compareTo(o1);
+                else
+                    return o1.compareTo(o2);
+            });
 
 			return result;
 		}
@@ -749,7 +745,7 @@ public class HistoryReaderImpl implements HistoryReader
 		else
 			endLong = endDate.getTime();
 
-		// get all records inclusive the one before the startdate
+		// get all records inclusive the one before the startDate
 		for (Long f : files) {
 			if (startLong <= f && f <= endLong) {
 				resultAsLong.add(f);
@@ -772,16 +768,12 @@ public class HistoryReaderImpl implements HistoryReader
 			result.add(item.toString() + ".xml");
 		}
 
-		Collections.sort(result, new Comparator<String>() {
-
-			public int compare(String o1, String o2)
-			{
-				if (reverseOrder)
-					return o2.compareTo(o1);
-				else
-					return o1.compareTo(o2);
-			}
-		});
+		Collections.sort(result, (o1, o2) -> {
+            if (reverseOrder)
+                return o2.compareTo(o1);
+            else
+                return o1.compareTo(o2);
+        });
 
 		return result;
 	}

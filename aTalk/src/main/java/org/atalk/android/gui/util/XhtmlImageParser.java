@@ -97,7 +97,7 @@ public class XhtmlImageParser implements Html.ImageGetter
         public Drawable getDrawable(String urlString)
         {
             try {
-                // urlString = "https://cmeng-git.github.io/img/09.atalk_avatar.png";
+                // urlString = "https://cmeng-git.github.io/atalk/img/09.atalk_avatar.png";
                 urlString = urlString.replace("http:", "https:");
 
                 URL sourceURL = new URL(urlString);

@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.ViewGroup;
 
-import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
 import org.atalk.android.R;

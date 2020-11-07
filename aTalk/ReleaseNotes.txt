@@ -1,6 +1,22 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	11/071/2020
+Version:		2.4.3 (1143)
+- Change ConnectionInfo#loadDetails() to use ISAddress.getHostString() instead of ISAddress.getHostName();
+  Later may lead to a network access for reverse IP lookup and cause NetworkOnMainThreadException.
+- Execute OMEMO Regeneration in background thread to avoid ANR.
+- Improve Omemo regeneration process to include fixes for mismatched fingerprints, and correct new deviceId init process error
+- An instance of PubSubManager must include userJid in parameter passing PubSubManager.getInstanceFor(connection, userJid);
+  must also peform leafNode.deleteAllItems() before pubsubManager.deleteNode(nodeId) in
+  * SQLiteOmemoStore#purgeUserOmemoData(), #purgeInactiveUserDevices()
+  * see https://github.com/processone/ejabberd/issues/3418
+- FileTransferConversation#updateProgress()-calculating a moving average for the speed so we don't get jumpy calculations for time etc.
+- Update aTalk online link address
+- Minor clean up in translation errors parameters {0} and {1}.
+
+=========================================================================
+Author:         cmeng
 Upload Date:	09/30/2020
 Version:		2.4.2 (1142)
 - Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled

@@ -22,10 +22,10 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
-import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.impl.msghistory.MessageSourceService;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -36,7 +36,8 @@ import org.atalk.android.*;
 import org.atalk.android.gui.chat.*;
 import org.atalk.crypto.omemo.FingerprintStatus;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
-import org.atalk.persistance.migrations.*;
+import org.atalk.persistance.migrations.Migrations;
+import org.atalk.persistance.migrations.MigrationsHelper;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
@@ -889,11 +890,12 @@ public class DatabaseBackend extends SQLiteOpenHelper
         return identityKey;
     }
 
-    // Use to delete the device corrupted identityKey - later rebuilt when device restart
+    // Use this to delete the device corrupted identityKeyPair/identityKey
+    // - Later identityKeyPair gets rebuilt when device restart
     public void deleteIdentityKey(OmemoDevice device)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        String whereArgs[] = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
+        String[] whereArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
         db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=? AND "
                 + SQLiteOmemoStore.DEVICE_ID + "=?", whereArgs);
@@ -1052,7 +1054,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         }
     }
 
-    public int deleteNullIdentyKeyDevices()
+    public int deleteNullIdentityKeyDevices()
     {
         final SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.IDENTITY_KEY + " IS NULL", null);
@@ -1202,19 +1204,19 @@ public class DatabaseBackend extends SQLiteOpenHelper
 
     public SessionRecord loadSession(OmemoDevice omemoContact)
     {
-        SessionRecord session = null;
+        SessionRecord sessionRecord = null;
         Cursor cursor = getCursorForSession(omemoContact);
         if (cursor.getCount() != 0) {
             cursor.moveToFirst();
             try {
-                session = new SessionRecord(Base64.decode(
+                sessionRecord = new SessionRecord(Base64.decode(
                         cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.SESSION_KEY)), Base64.DEFAULT));
             } catch (IOException e) {
                 Timber.w("Could not deserialize raw session. %s", e.getMessage());
             }
         }
         cursor.close();
-        return session;
+        return sessionRecord;
     }
 
     public HashMap<Integer, SessionRecord> getSubDeviceSessions(BareJid contact)
@@ -1252,7 +1254,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         BareJid bareJid;
         int deviceId;
         String sJid;
-        SessionRecord session = null;
+        SessionRecord session;
         HashMap<OmemoDevice, SessionRecord> deviceSessions = new HashMap<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -1319,36 +1321,91 @@ public class DatabaseBackend extends SQLiteOpenHelper
     }
 
     // ========= Purge OMEMO dataBase =========
-    public void purgeOmemoDb(String account)
-    {
-        Timber.d(">>> Wiping OMEMO database for account : %s", account);
-        SQLiteDatabase db = this.getWritableDatabase();
-        String[] deleteArgs = {account};
 
-        db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, SQLiteOmemoStore.OMEMO_JID + "=?", deleteArgs);
-        db.delete(SQLiteOmemoStore.PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
-        db.delete(SQLiteOmemoStore.SIGNED_PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
-        db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
-        db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", deleteArgs);
+    /**
+     * Call by OMEMO regeneration to perform clean up for:
+     * 1. purge own Omemo deviceId
+     * 2. All the preKey records for the deviceId
+     * 3. Singed preKey data
+     * 4. All the identities and sessions that are associated with the accountUuid
+     *
+     * @param accountId the specified AccountID to regenerate
+     */
+    public void purgeOmemoDb(AccountID accountId)
+    {
+        String account = accountId.getAccountJid();
+        Timber.d(">>> Wiping OMEMO database for account : %s", account);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] args = {account};
+
+        db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, SQLiteOmemoStore.OMEMO_JID + "=?", args);
+        db.delete(SQLiteOmemoStore.PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
+        db.delete(SQLiteOmemoStore.SIGNED_PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
+
+        // Cleanup all the session and identities records for own resources and the contacts
+        List<String> identityJids = getContactsForAccount(accountId.getAccountUuid());
+        identityJids.add(account);
+        for (String identityJid : identityJids) {
+            args = new String[]{identityJid};
+            db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
+            db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
+        }
     }
 
+    /**
+     * Call by OMEMO purgeOwnDeviceKeys, it will clean up:
+     * 1. purge own Omemo deviceId
+     * 2. All the preKey records for own deviceId
+     * 3. Singed preKey data
+     * 4. The identities and sessions for the specified omemoDevice
+     *
+     * @param device the specified omemoDevice for cleanup
+     */
     public void purgeOmemoDb(OmemoDevice device)
     {
         Timber.d(">>> Wiping OMEMO database for device : %s", device);
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] deleteArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
+        String[] args = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
         db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME,
-                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?", deleteArgs);
+                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?", args);
         db.delete(SQLiteOmemoStore.PREKEY_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", args);
         db.delete(SQLiteOmemoStore.SIGNED_PREKEY_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", args);
+
         db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", args);
         db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME,
-                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", deleteArgs);
+                SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", args);
     }
+
+    /**
+     * Fetch all the contacts of the specified accountUuid
+     *
+     * @param accountUuid Account Uuid
+     * @return List of contacts for the specified accountUuid
+     */
+    public List<String> getContactsForAccount(String accountUuid)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<String> childContacts = new ArrayList<>();
+
+        String[] columns = {MetaContactGroup.CONTACT_JID};
+        String[] args = new String[]{accountUuid};
+        Cursor cursor = db.query(MetaContactGroup.TBL_CHILD_CONTACTS, columns,
+                MetaContactGroup.ACCOUNT_UUID + "=?", args, null, null, null);
+
+        while (cursor.moveToNext()) {
+            String contact = cursor.getString(0);
+            if (!TextUtils.isEmpty(contact))
+                childContacts.add(contact);
+        }
+        cursor.close();
+        return childContacts;
+    }
+
 
     private static class RealMigrationsHelper implements MigrationsHelper
     {

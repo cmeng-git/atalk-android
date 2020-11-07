@@ -766,6 +766,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             if (!TextUtils.isEmpty(sessionUuid))
                 sessionUuids.add(sessionUuid);
         }
+        cursor.close();
 
         if (!sessionUuids.isEmpty()) {
             for (String sessionId : sessionUuids) {

@@ -2,7 +2,7 @@
 - an encrypted instant messaging with video call and GPS features for android
 
 <p align="center">
-    <a href="https://cmeng-git.github.io">
+    <a href="https://cmeng-git.github.io/atalk">
         <img src="./art/atalk.png" alt="aTalk">
     </a>
     &nbsp;
@@ -173,9 +173,8 @@ Other contributors:
 * [Others](https://github.com/cmeng-git/atalk-android/graphs/contributors)
 
 ## Documentation
-* [aTalk site](https://cmeng-git.github.io)
-* [FAQ](https://cmeng-git.github.io/faq.html)
-* [aTalk alt-site](https://atalk.sytes.net/atalk/)
+* [aTalk site](https://cmeng-git.github.io/atalk)
+* [FAQ](https://cmeng-git.github.io/atalk/faq.html)
 * [Release Notes](https://github.com/cmeng-git/atalk-android/blob/master/aTalk/ReleaseNotes.txt)
 
 ## Feedback and Contributions
@@ -203,4 +202,4 @@ License
     limitations under the License.
 
 
-[Privacy Policy](https://cmeng-git.github.io/privacypolicy.html) 
+[Privacy Policy](https://cmeng-git.github.io/atalk/privacypolicy.html)

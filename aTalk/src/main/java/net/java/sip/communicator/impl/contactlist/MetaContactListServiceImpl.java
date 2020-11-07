@@ -16,6 +16,8 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.contactlist;
 
+import android.text.TextUtils;
+
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.contactlist.event.*;
 import net.java.sip.communicator.service.protocol.*;
@@ -1546,8 +1548,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      */
     private void addContactToEventIgnoreList(String contact, ProtocolProviderService ownerProvider)
     {
-        // first check whether registrations in the ignore list already exist for this contact.
-        if (isContactInEventIgnoreList(contact, ownerProvider)) {
+        // first check whether registration is in the ignored list already exist for this contact.
+        if (TextUtils.isEmpty(contact) || isContactInEventIgnoreList(contact, ownerProvider)) {
             return;
         }
 
@@ -1569,7 +1571,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     private boolean isContactInEventIgnoreList(String contact, ProtocolProviderService ownerProvider)
     {
         List<ProtocolProviderService> existingProvList = mContactEventIgnoreList.get(contact);
-        return existingProvList != null && existingProvList.contains(ownerProvider);
+        return (existingProvList != null) && existingProvList.contains(ownerProvider);
     }
 
     /**

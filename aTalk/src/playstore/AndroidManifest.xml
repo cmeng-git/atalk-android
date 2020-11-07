@@ -32,6 +32,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
 
+        <activity
+            android:name="org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivity"
+            android:label="@string/split_street_view_panorama_and_map_label" />
+
         <service
             android:name="com.akhgupta.easylocation.LocationBgService"
             android:exported="false"/>

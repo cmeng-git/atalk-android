@@ -536,13 +536,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
 
                 messageBuilder = StanzaBuilder.buildMessage();
+                // Add the XHTML text to the message builder
+                XHTMLManager.addBody(messageBuilder, xhtmlText);
                 sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
-
-                // Add the XHTML text to the message
-                XHTMLManager.addBody(sendMessage, xhtmlText);
             }
 
-            // proceed to send message if no exceptions.
+            // proceed to send the message if there is no exception.
             if (correctedMessageUID != null)
                 sendMessage.addExtension(new MessageCorrectExtension(correctedMessageUID));
             sendMessage.setStanzaId(message.getMessageUID());
@@ -650,7 +649,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                         mPPS.getOperationSet(OperationSetPersistentPresence.class);
                 /*
                  * HashSet<OmemoMessageListener> omemoMessageListeners;
-                 * Cannot just add here, has problem as jid is not known to omemoManager yet
+                 * Cannot just add here, has a problem as jid is not known to omemoManager yet
                  * See AndroidOmemoService implementation for fix
                  */
                 // OmemoManager omemoManager = OmemoManager.getInstanceFor(xmppConnection);

@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
