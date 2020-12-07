@@ -83,7 +83,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
     private MediaRecorder mRecorder = null;
 
-    private Map<Uri, MediaPlayer> uriPlayers = new ConcurrentHashMap<>();
+    private final Map<Uri, MediaPlayer> uriPlayers = new ConcurrentHashMap<>();
 
     private long startTime = 0L;
 
@@ -93,7 +93,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     // The Google ASR input requirements state that audio input sensitivity should be set such
     // that 90 dB SPL_LEVEL at 1000 Hz yields RMS of 2500 for 16-bit samples,
     // i.e. 20 * log_10 (2500 / mGain) = 90.
-    private double mGain = 2500.0 / Math.pow(10.0, 90.0 / 20.0);
+    private final double mGain = 2500.0 / Math.pow(10.0, 90.0 / 20.0);
 
     // For displaying error in calibration.
     public static double mOffsetDB = 0.0f;  //10 Offset for bar, i.e. 0 lit LEDs at 10 dB.
@@ -130,7 +130,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
             case ACTION_PLAYER_SEEK:
                 fileUri = intent.getData();
-                int seekPosition = intent.getIntExtra(AudioBgService.PLAYBACK_POSITION, 0);
+                int seekPosition = intent.getIntExtra(PLAYBACK_POSITION, 0);
                 playerSeek(fileUri, seekPosition);
                 break;
 
@@ -237,7 +237,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * Return the status of current active player if present; keep the state as it
      * else get the media file info and release player to conserve resource
      *
-     * @param uri Media file uri
+     * @param uri the media file uri
      */
     public void playerInit(Uri uri)
     {
@@ -276,9 +276,9 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     }
 
     /**
-     * Reinit an existing player and return its status
+     * Re-init an existing player and broadcast its state
      *
-     * @param uri Media file uri
+     * @param uri the media file uri
      */
     private void playerReInit(Uri uri)
     {
@@ -294,7 +294,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     /**
      * Pause the current player and return the action result
      *
-     * @param uri Media file uri
+     * @param uri the media file uri
      */
     public void playerPause(Uri uri)
     {
@@ -315,7 +315,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * Start playing back on existing player or create new if none
      * Broadcast the player satus at regular interval
      *
-     * @param uri Media file uri
+     * @param uri the media file uri
      */
     public void playerStart(Uri uri)
     {
@@ -345,7 +345,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * Start playing back on existing player or create new if none
      * Broadcast the player satus at regular interval
      *
-     * @param uri Media file uri
+     * @param uri the media file uri
      */
     public void playerSeek(Uri uri, int seekPosition)
     {
@@ -369,7 +369,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     /**
      * Release the player resource and remove it from uriPlayers
      *
-     * @param uri Media file uri
+     * @param uri the media file uri
      */
     private void playerRelease(Uri uri)
     {
@@ -391,7 +391,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     // Listener for playback completion
 
     /**
-     * callback from media player when playback of a media source has completed.
+     * callback from the specific media player when playback of a media source has completed.
      *
      * @param mp Media Player instance
      */
@@ -455,7 +455,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * b. playback position
      * c. uri playback duration
      */
-    private Runnable playbackStatus = new Runnable()
+    private final Runnable playbackStatus = new Runnable()
     {
         public void run()
         {
@@ -560,7 +560,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    private Runnable updateSPL = new Runnable()
+    private final Runnable updateSPL = new Runnable()
     {
         public void run()
         {

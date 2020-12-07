@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.1'
         classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1' // working jarjar.repackage version
     }
 }
@@ -73,8 +73,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1143
-        versionName "2.4.3"
+        versionCode 1144
+        versionName "2.4.4"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -87,8 +87,11 @@ android {
 //        }
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
+
+        // for view binding:
+        // viewBinding true
     }
 
     compileOptions {
@@ -123,6 +126,7 @@ android {
         }
     }
 
+    ndkVersion '20.0.5594570'
     // Have problem, so use aTalk method
 //    externalNativeBuild {
 //        ndkBuild {
@@ -196,6 +200,9 @@ ext {
 
     // For smack own repository SNAPSHOT release
     // smackVersion = '4.4.0-alpha3-SNAPSHOT' // 20200407.115900-6
+
+    // aTalk is only compatible to ndkVersion '20.0.5594570' max
+    ndkDir = "/opt/android/android-sdk/ndk/20.0.5594570"
 }
 
 
@@ -317,12 +324,17 @@ dependencies {
         classDelete 'javax.media.Manager**'
     }
 
+    // The latest ice4j-2.0.0-20190607.184546-36.jar seems OK with DISABLE_AWS_HARVESTER_PNAME => false
     // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
-    // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
+    // so remove System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
+
+    // ice4j dependency lib org.bitlet.weupnp uses in uPnP Harvester not working for android:
+    // see https://github.com/bitletorg/weupnp/issues/20
+    // must include System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
     implementation jarjar.repackage {
         // Do not use the latest master-SNAPSHOT => not compatible with aTalk
-        // use the latest release version: ice4j-2.0.0-20190607.184546-36.jar
-        // 'ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac' == 'ice4j:ice4j-2.0.0-20190607.184546-36'
+        // Use the latest release version: ice4j-2.0.0-20190607.184546-36.jar
+        // == 'ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac'
         from('com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac') {
             transitive = false
         }
@@ -334,10 +346,14 @@ dependencies {
 
         // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
         classRename 'java.time.Duration', 'org.threeten.bp.Duration'
-    }
 
+        // For testing/debug only
+        // classDelete 'org.ice4j.ice.Agent**'
+        // classDelete 'org.ice4j.ice.ConnectivityCheckClient'
+        // classDelete 'org.ice4j.ice.ConnectivityCheckServer'
+        // classDelete 'org.ice4j.ice.harvest.UPNPHarvester**'
+    }
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
-    // implementation 'org.jitsi:jain-sip-ri-ossonly:1.2.279-jitsi-oss1'
 
     // implementation 'ch.imvs:sdes4j:1.1.5' - not compatible due to java library use
     // libraries from maven repository but need to change Base64 to ApacheBase64 to avoid conflict with android
@@ -358,7 +374,7 @@ dependencies {
 }
 
 task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
-    def ndkDir = android.ndkDirectory
+    // def ndkDir = android.ndkDirectory
     def jniSrcDir = projectDir.toString() + "\\jni"
 
     println '****************************************************************************************'
@@ -376,7 +392,7 @@ task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
 }
 
 task ndkClean(type: Exec, description: 'Clean JNI object files') {
-    def ndkDir = android.ndkDirectory
+    // def ndkDir = android.ndkDirectory
     commandLine "$ndkDir/ndk-build",
             '-C' + projectDir + '/jni',
             'clean'

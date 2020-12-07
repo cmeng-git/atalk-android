@@ -62,7 +62,7 @@
         android:layout_height="48dp"
         android:layout_below="@+id/filename_audio"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/ic_player_play"
-        android:src="@drawable/ic_play_stop" />
+        android:background="@drawable/ic_player_playing"
+        android:src="@drawable/ic_player_stop" />
 
 </RelativeLayout>

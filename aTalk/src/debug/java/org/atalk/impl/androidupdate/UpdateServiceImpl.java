@@ -107,7 +107,7 @@ public class UpdateServiceImpl implements UpdateService
                 if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
                     DownloadManager downloadManager = aTalkApp.getDownloadManager();
                     Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
-                    File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
+                    File apkFile = new File(FilePathHelper.getFilePath(aTalkApp.getGlobalContext(), fileUri));
 
                     // Ask the user if he wants to install if available and valid apk is found
                     if (isValidApkVersion(apkFile, latestVersionCode)) {
@@ -250,7 +250,7 @@ public class UpdateServiceImpl implements UpdateService
                 if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
                     DownloadManager downloadManager = aTalkApp.getDownloadManager();
                     Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
-                    File apkFile = new File(FilePathHelper.getPath(aTalkApp.getGlobalContext(), fileUri));
+                    File apkFile = new File(FilePathHelper.getFilePath(aTalkApp.getGlobalContext(), fileUri));
 
                     // Ask the user if he wants to install if available and valid apk is found
                     if (isValidApkVersion(apkFile, latestVersionCode)) {

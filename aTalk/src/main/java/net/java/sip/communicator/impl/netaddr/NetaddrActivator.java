@@ -60,10 +60,15 @@ public class NetaddrActivator implements BundleActivator
         //in here we load static properties that should be else where
         //System.setProperty("java.net.preferIPv4Stack", "false");
         //System.setProperty("java.net.preferIPv6Addresses", "true");
-
-        // cmeng: ice4j 2.0.0 settings for aTalk - must set this to true otherwise ice4j hangs
-        System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true");
         //end ugly property set
+
+        // The latest ice4j-2.0.0-20190607.184546-36.jar seems not required it anymore
+        // cmeng: ice4j 2.0.0 settings for aTalk - must set this to true otherwise ice4j hangs
+        // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true");
+
+        // To define the xmp parser for weupnp for android
+        // https://github.com/bitletorg/weupnp/issues/20
+        System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
 
         //keep a reference to the bundle context for later usage.
         NetaddrActivator.bundleContext = bundleContext;

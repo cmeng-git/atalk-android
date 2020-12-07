@@ -20,6 +20,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.*;
@@ -33,7 +35,6 @@ import org.osgi.framework.BundleContext;
 
 import java.util.*;
 
-import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 import static net.java.sip.communicator.service.contactlist.MetaContactGroup.TBL_CHILD_CONTACTS;
@@ -147,7 +148,7 @@ public class MclStorageManager implements MetaContactListListener
      * parentGroup:　the <tt>MetaContactGroupImpl</tt> where we should be creating children.
      * parentProtoGroups a Map containing all proto groups that could be parents of any groups
      * parsed from the specified groupNode. The map binds UIDs to group references and may be
-     * null for top level groups.
+     * null for the top-level groups.
      *
      * @param accountUuid a String identifier i.e. prefix with "acc" of the account whose contacts we're interested in.
      */
@@ -231,10 +232,21 @@ public class MclStorageManager implements MetaContactListListener
                 protoContacts.add(new StoredProtoContactDescriptor(contactAddress, persistentData,
                         protoGroupsMap.get(protoGroupUID)));
 
-                // pass the parsed proto contacts to the mcl service
-                MetaContactImpl metaContactImpl = mclServiceImpl.loadStoredMetaContact(
-                        metaGroupMap.get(protoGroupUID), metaUID, displayName, details, protoContacts, accountUid);
-                metaContactImpl.setDisplayNameUserDefined(isDisplayNameUserDefined);
+                try {
+                    // pass the parsed proto contacts to the mcl service
+                    MetaContactImpl metaContactImpl = mclServiceImpl.loadStoredMetaContact(
+                            metaGroupMap.get(protoGroupUID), metaUID, displayName, details, protoContacts, accountUid);
+                    metaContactImpl.setDisplayNameUserDefined(isDisplayNameUserDefined);
+
+                } catch (Throwable ex) {
+                    // if we fail parsing a meta contact, we should remove it so that it stops causing trouble,
+                    // and let other meta contacts continue to load.
+                    Timber.w("Parse metaContact Exception. Proceed to remove (%s) and continue with other contacts: %s",
+                            metaUID, ex.getMessage());
+
+                    args = new String[]{metaUID};
+                    mDB.delete(MetaContactGroup.TBL_CHILD_CONTACTS, MetaContactGroup.MC_UID + "=?", args);
+                }
             }
         }
         cursor.close();
@@ -535,8 +547,7 @@ public class MclStorageManager implements MetaContactListListener
      * call for contactGroup removal.
      *
      * @param evt the MetaContactListEvent containing the corresponding contactGroup and other info.
-     * @see MetaContactListServiceImpl#locallyRemoveAllContactsForProvider
-     * (MetaContactGroupImpl, ContactGroup)
+     * @see MetaContactListServiceImpl#locallyRemoveAllContactsForProvider(MetaContactGroupImpl, ContactGroup)
      */
     private void contactGroupRemovedFromMetaGroup(MetaContactGroupEvent evt)
     {

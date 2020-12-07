@@ -24,7 +24,7 @@ import java.util.*;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public abstract class SecurityAccountRegistration implements Serializable
 {
@@ -311,13 +311,11 @@ public abstract class SecurityAccountRegistration implements Serializable
         setSDesCipherSuites(accountID.getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES));
 
         final String storedZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
-        if (storedZIDSalt == null)
-        {
+        if (storedZIDSalt == null) {
             randomZIDSalt();
             accountID.storeAccountProperty(ProtocolProviderFactory.ZID_SALT, getZIDSalt());
         }
-        else
-        {
+        else {
             ZIDSalt = storedZIDSalt;
         }
     }
@@ -389,17 +387,21 @@ public abstract class SecurityAccountRegistration implements Serializable
 
     /**
      * Returns ZID salt
+     *
      * @return ZID salt
      */
-    public String getZIDSalt() {
+    public String getZIDSalt()
+    {
         return ZIDSalt;
     }
 
     /**
      * Set ZID salt
+     *
      * @param ZIDSalt new ZID salt value
      */
-    public void setZIDSalt(final String ZIDSalt) {
+    public void setZIDSalt(final String ZIDSalt)
+    {
         this.ZIDSalt = ZIDSalt;
     }
 

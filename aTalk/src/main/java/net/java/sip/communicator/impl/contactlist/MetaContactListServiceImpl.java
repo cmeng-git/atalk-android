@@ -153,8 +153,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
-        // in case we found any, retrieve the root groups for all protocol providers and create
-        // the meta contact list
+        // in case we found any, retrieve the root groups for all protocol providers and create the meta contact list
         if (ppsRefs != null) {
             for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs) {
                 ProtocolProviderService pps = mBundleContext.getService(ppsRef);
@@ -164,7 +163,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     }
 
     /**
-     * Prepares the meta contact list service for shutdown.
+     * Prepares the meta contact list service for shut-down.
      *
      * @param bc the currently active bundle context.
      */
@@ -226,11 +225,10 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * First makes the specified protocol provider create the contact as indicated by <tt>contactID</tt>,
      * and then associates it to the _existing_ <tt>metaContact</tt> given as an argument.
      *
-     * @param provider the ProtocolProviderService that should create the contact indicated by
-     * <tt>contactID</tt>.
+     * @param provider the ProtocolProviderService that should create the contact indicated by <tt>contactID</tt>.
      * @param metaContact the meta contact where that the newly created contact should be associated to.
      * @param contactID the identifier of the contact that the specified provider
-     * @param fireEvent specifies whether or not an even is to be fire at the end of the method.Used when this
+     * @param fireEvent specifies whether an even is to be fire at the end of the method.Used when this
      * method is called upon creation of a new meta contact and not only a new contact.
      * @throws MetaContactListException with an appropriate code if the operation fails for some reason.
      */
@@ -256,7 +254,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * @param parentMetaGroup the meta contact group which is the parent group of the newly created contact
      * @param metaContact the meta contact where that the newly created contact should be associated to.
      * @param contactID the identifier of the contact that the specified provider
-     * @param fireEvent specifies whether or not an even is to be fired at the end of the method.Used when
+     * @param fireEvent specifies whether an even is to be fired at the end of the method.Used when
      * this method is called upon creation of a new meta contact and not only a new contact.
      * @throws MetaContactListException with an appropriate code if the operation fails for some reason.
      */
@@ -575,7 +573,6 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
     /**
      * Sets the display name for <tt>metaContact</tt> to be <tt>newName</tt>.
-     * <p>
      *
      * @param metaContact the <tt>MetaContact</tt> that we are renaming
      * @param newDisplayName a <tt>String</tt> containing the new display name for <tt>metaContact</tt>.
@@ -590,7 +587,6 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
     /**
      * Sets the display name for <tt>metaContact</tt> to be <tt>newName</tt>.
-     * <p>
      *
      * @param metaContact the <tt>MetaContact</tt> that we are renaming
      * @param newDisplayName a <tt>String</tt> containing the new display name for <tt>metaContact</tt>.
@@ -661,7 +657,6 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
     /**
      * Sets the avatar for <tt>metaContact</tt> to be <tt>newAvatar</tt>.
-     * <p>
      *
      * @param metaContact the <tt>MetaContact</tt> that change avatar
      * @param protoContact the <tt>Contact> that change avatar
@@ -1409,7 +1404,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             synchronizeOpSetWithLocalContactList(opSetPersPresence);
         }
         else {
-            Timber.d("Service did not have a peer. pres. op. set.");
+            Timber.d("Service did not have a opSetPersPresence");
         }
 
         /* @todo implement handling non persistent presence operation sets */
@@ -2301,7 +2296,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * The method is called from the storage manager whenever a new contact has been parsed and it
      * has to be created.
      *
-     * @param parentGroup the group that contains the meta contact we're about to load.
+     * @param parentGroup the group contains the meta contact we're about to load.
      * @param metaUID the unique identifier of the meta contact.
      * @param displayName the display name of the meta contact.
      * @param details the details for the contact to create.
@@ -2328,8 +2323,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
                 = sourceProvider.getOperationSet(OperationSetPersistentPresence.class);
 
         for (MclStorageManager.StoredProtoContactDescriptor contactDescriptor : protoContacts) {
-            // this contact has already been registered by another meta contact so we'll ignore
-            // it. If this is the only contact in the meta contact, we'll throw an exception at
+            // this contact has already been registered by another metaContact, so we'll ignore it.
+            // If this is the only contact in the meta contact, we'll throw an exception at
             // the end of the method and cause the mcl storage manager to remove it.
             MetaContact mc = findMetaContactByContact(contactDescriptor.contactAddress, accountID);
 
@@ -2349,9 +2344,9 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         }
 
         if (newMetaContact.getContactCount() == 0) {
-            Timber.e("Found an empty meta contact. Throwing an exception so that the storage manager would remove it.");
+            Timber.e("Found an empty metaContact. Throw exception for MciStorageManager to remove it!");
             throw new IllegalArgumentException("MetaContact[" + newMetaContact
-                    + "] contains no non-duplicating child contacts.");
+                    + "] contains zero non-duplicating child contacts.");
         }
 
         parentGroup.addMetaContact(newMetaContact);

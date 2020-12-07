@@ -43,7 +43,7 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
     private final ChatActivity chatActivity;
 
     private final ImageView viewHolder;
-    private LinearLayout.LayoutParams layoutParams;
+    private final LinearLayout.LayoutParams layoutParams;
 
     public MediaPreviewAdapter(ChatActivity fragment, ImageView imgPreview)
     {
@@ -69,7 +69,7 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
     public void onBindViewHolder(@NonNull MediaPreviewViewHolder holder, int position)
     {
         final Attachment attachment = mediaPreviews.get(position);
-        final File file = new File(FilePathHelper.getPath(chatActivity, attachment));
+        final File file = new File(FilePathHelper.getFilePath(chatActivity, attachment));
         MyGlideApp.loadImage(holder.binding.mediaPreviewItem, file, true);
 
         holder.binding.deleteButton.setOnClickListener(v ->
@@ -117,9 +117,8 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
         this.mediaPreviews.clear();
     }
 
-    class MediaPreviewViewHolder extends RecyclerView.ViewHolder
+    static class MediaPreviewViewHolder extends RecyclerView.ViewHolder
     {
-
         private final MediaPreviewBinding binding;
 
         MediaPreviewViewHolder(MediaPreviewBinding binding)
