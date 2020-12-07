@@ -822,7 +822,7 @@ public abstract class FileTransferConversation extends OSGiFragment
                         messageViewHolder.playbackSeekBar.setMax(audioDuration);
                         messageViewHolder.playbackSeekBar.setProgress(0);
 
-                        messageViewHolder.playbackPlay.setImageResource(R.drawable.ic_play_stop);
+                        messageViewHolder.playbackPlay.setImageResource(R.drawable.ic_player_stop);
                         mPlayerAnimate.stop();
                         break;
 
@@ -850,7 +850,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
                         mPlayerAnimate.stop();
                         messageViewHolder.playbackPlay.setImageResource((playerState == STATE_PAUSE)
-                                ? R.drawable.ic_play_pause : R.drawable.ic_play_stop);
+                                ? R.drawable.ic_player_pause : R.drawable.ic_player_stop);
                         break;
                 }
             }

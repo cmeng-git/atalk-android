@@ -55,15 +55,15 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     );
 
     /**
-     * The ICE <tt>Component</tt> IDs in their common order used, for example, by
-     * <tt>DefaultStreamConnector</tt>, <tt>MediaStreamTarget</tt>.
+     * The ICE <tt>Component</tt> IDs in their common order used, for example,
+     * by <tt>DefaultStreamConnector</tt>, <tt>MediaStreamTarget</tt>.
      */
     private static final int[] COMPONENT_IDS = new int[]{Component.RTP, Component.RTCP};
 
     /**
      * A filter which accepts any non-RTCP packets (RTP, DTLS, etc).
      */
-    private static DatagramPacketFilter RTP_FILTER = new DatagramPacketFilter()
+    private static final DatagramPacketFilter RTP_FILTER = new DatagramPacketFilter()
     {
         @Override
         public boolean accept(DatagramPacket p)
@@ -231,8 +231,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             }
             TransportAddress addr = new TransportAddress(desc.getAddress(), desc.getPort(), transport);
 
-            // if we get STUN server from automatic discovery, it may just be server name (i.e.
-            // stun.domain.org) and it may be possible that it cannot be resolved
+            // if we get STUN server from automatic discovery, it may just be server name
+            // (i.e. stun.domain.org), and it may be possible that it cannot be resolved
             if (addr.getAddress() == null) {
                 Timber.i("Unresolved STUN server address for %s", addr);
                 continue;
@@ -276,7 +276,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
         long stopGatheringHarvesterTime = System.currentTimeMillis();
         long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;
-        Timber.i("End gathering harvester within %d ms; Size: %s", gatheringHarvesterTime, agent.getHarvesters().size());
+        Timber.i("End gathering harvesters within %d ms; Harvesters size: %s", gatheringHarvesterTime, agent.getHarvesters().size());
         return agent;
     }
 
@@ -302,8 +302,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         DatagramSocket[] streamConnectorSockets = getStreamConnectorSockets(mediaType);
 
         /*
-         * XXX If the iceAgent has not completed (yet), go with a default StreamConnector (until it
-         * completes).
+         * XXX If the iceAgent has not completed (yet), go with a default StreamConnector (until it completes).
          */
         return (streamConnectorSockets == null) ? super.doCreateStreamConnector(mediaType)
                 : new DefaultStreamConnector(streamConnectorSockets[0 /* RTP */], streamConnectorSockets[1 /* RTCP */]);
@@ -360,7 +359,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     private DatagramSocket[] getStreamConnectorSockets(MediaType mediaType)
     {
-        // cmeng: aTalk remote video cannot received if enabled even for ice4j-2.0
+        // cmeng: aTalk remote video cannot receive if enabled even for ice4j-2.0
         // if (streamConnectorSockets != null) {
         //     return streamConnectorSockets;
         // }
@@ -394,11 +393,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     Component component = stream.getComponent(COMPONENT_IDS[i]);
 
                     if (component != null) {
-                        // CandidatePair selectedPair = component.getSelectedPair();
-                        // if (selectedPair != null) {
-                        //    DatagramSocket streamConnectorSocket = selectedPair.getLocalCandidate().getDatagramSocket();
-
-                        DatagramSocket streamConnectorSocket = component.getSocket(); // ice4j-2.0
+                        DatagramSocket streamConnectorSocket = component.getSocket();
                         if (streamConnectorSocket != null) {
                             streamConnectorSockets[i] = streamConnectorSocket;
                             streamConnectorSocketCount++;
@@ -603,10 +598,12 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 transport.addCandidate(createCandidate(candidate));
         }
 
-        // @see RtcpmuxExtension per XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22);
         /*
-         * This is a patch for jitsi and is non XEP standard: may want to remove once jitsi has updated.
-         * Jitsi works only on audio but no video call; rtcp will get re-align to jitsi after first call i.e. false
+         * @see RtcpmuxExtension per XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22);
+         *
+         * This is a patch for jitsi and is non XEP standard: may want to remove once jitsi has updated;
+         * still required on 2.11.5633. Jitsi works only on the audio but no video call (only local video);
+         * rtcp-mux will get re-align to jitsi rtcp mode after first call from jitsi i.e. false
          */
         if (rtcpmux) {
             transport.addChildExtension(new RtcpmuxExtension());
@@ -844,7 +841,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             IceUdpTransportExtension transport = e.getValue();
             List<CandidateExtension> candidates = transport.getChildExtensionsOfType(CandidateExtension.class);
 
-            if (iceAgentStateIsRunning && (candidates.size() == 0)) {
+            if (iceAgentStateIsRunning && candidates.isEmpty()) {
                 Timber.i("connectivity establishment has not been started because candidate list is empty");
                 return false;
             }
@@ -890,17 +887,24 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     relatedAddress = new TransportAddress(relAddr, relPort, Transport.parse(candidate.getProtocol()));
                 }
 
-                RemoteCandidate relatedCandidate = component.findRemoteCandidate(relatedAddress);
-                RemoteCandidate remoteCandidate = new RemoteCandidate(new TransportAddress(
-                        candidate.getIP(), candidate.getPort(), Transport.parse(candidate.getProtocol())), component,
-                        org.ice4j.ice.CandidateType.parse(candidate.getType().toString()),
-                        candidate.getFoundation(), candidate.getPriority(), relatedCandidate);
-                if (iceAgentStateIsRunning) {
-                    component.addUpdateRemoteCandidates(remoteCandidate);
+                // must check for null else NPE in component.findRemoteCandidate()
+                if (component != null) {
+                    RemoteCandidate relatedCandidate = component.findRemoteCandidate(relatedAddress);
+                    RemoteCandidate remoteCandidate = new RemoteCandidate(new TransportAddress(
+                            candidate.getIP(), candidate.getPort(), Transport.parse(candidate.getProtocol())), component,
+                            org.ice4j.ice.CandidateType.parse(candidate.getType().toString()),
+                            candidate.getFoundation(), candidate.getPriority(), relatedCandidate);
+                    if (iceAgentStateIsRunning) {
+                        component.addUpdateRemoteCandidates(remoteCandidate);
+                    }
+                    else {
+                        component.addRemoteCandidate(remoteCandidate);
+                        startConnectivityEstablishment = true;
+                    }
                 }
                 else {
-                    component.addRemoteCandidate(remoteCandidate);
-                    startConnectivityEstablishment = true;
+                    Timber.w("StartConnectivityEstablishment invalid: %s %s", component, relatedAddress);
+                    return false;
                 }
             }
         }

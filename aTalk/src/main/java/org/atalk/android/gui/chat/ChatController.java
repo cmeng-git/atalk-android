@@ -444,7 +444,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                             List<Attachment> mediaPreviews = mpAdapter.getAttachments();
                             if (!mediaPreviews.isEmpty()) {
                                 for (Attachment attachment : mediaPreviews) {
-                                    String filePath = FilePathHelper.getPath(parent, attachment);
+                                    String filePath = FilePathHelper.getFilePath(parent, attachment);
                                     if (StringUtils.isNotEmpty(filePath))
                                         chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                                 }
@@ -924,7 +924,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     {
         if (chatPanel.getProtocolProvider().isRegistered()) {
             Uri contentUri = info.getContentUri();
-            String filePath = FilePathHelper.getPath(parent, contentUri);
+            String filePath = FilePathHelper.getFilePath(parent, contentUri);
             if (StringUtils.isNotEmpty(filePath)) {
                 sendSticker(filePath);
             }

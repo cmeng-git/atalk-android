@@ -9,7 +9,8 @@ import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -260,8 +261,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
          * attempt to allocate them now.
          */
         if (isJitsiVideobridge) {
-            Map<JingleContent, JingleContent> contentMap = new LinkedHashMap<JingleContent, JingleContent>();
-
+            Map<JingleContent, JingleContent> contentMap = new LinkedHashMap<>();
             for (JingleContent cpe : cpes) {
                 MediaType mediaType = JingleUtils.getMediaType(cpe);
 
@@ -577,18 +577,13 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
         if (channel != null) {
             CallPeerJabberImpl peer = getCallPeer();
             CallJabberImpl call = peer.getCall();
-            StreamConnector streamConnector = call.createColibriStreamConnector(peer, mediaType,
-                    channel, new StreamConnectorFactory()
-                    {
-                        public StreamConnector createStreamConnector()
-                        {
-                            try {
-                                return doCreateStreamConnector(mediaType);
-                            } catch (OperationFailedException ofe) {
-                                return null;
-                            }
-                        }
-                    });
+            StreamConnector streamConnector = call.createColibriStreamConnector(peer, mediaType, channel, () -> {
+                try {
+                    return doCreateStreamConnector(mediaType);
+                } catch (OperationFailedException ofe) {
+                    return null;
+                }
+            });
             if (streamConnector != null)
                 return streamConnector;
         }

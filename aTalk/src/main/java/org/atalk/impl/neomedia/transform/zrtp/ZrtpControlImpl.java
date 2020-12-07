@@ -8,15 +8,16 @@ package org.atalk.impl.neomedia.transform.zrtp;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.neomedia.*;
 import org.atalk.util.MediaType;
 import org.jxmpp.jid.BareJid;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.util.EnumSet;
 
 import gnu.java.zrtp.ZrtpCodes;
@@ -372,30 +373,43 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      * Compute own ZID from salt value stored in accountID and peer JID.
      *
      * @param accountID Use the ZID salt value for this account
-     * @param peerJid peer JID. Muss be a base JID, without resources part, because the
-     * resource can change too often.
+     * @param peerJid peer JID. Muss be a base JID, without resources part, because the resource can change too often.
      * @return computed ZID
      */
     public static byte[] generateMyZid(final AccountID accountID, final BareJid peerJid)
     {
-        final String ZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT, "");
-
+        final String ZIDSalt = getAccountZIDSalt(accountID);
         final byte[] zid = new byte[12];
-
         try {
             final MessageDigest md = MessageDigest.getInstance("SHA-256");
-
             md.update(new BigInteger(ZIDSalt, 32).toByteArray());
 
-            md.update(peerJid.toString().getBytes("UTF-8"));
+            md.update(peerJid.toString().getBytes(StandardCharsets.UTF_8));
             final byte[] result = md.digest();
-
             System.arraycopy(result, 0, zid, 0, 12);
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+
+        } catch (NumberFormatException e) {
+            aTalkApp.showToastMessage(R.string.reset_ZID_summary);
+        } catch (NoSuchAlgorithmException e) {
             throw new IllegalArgumentException("generateMyZid");
         }
 
         return zid;
+    }
+
+    /**
+     * Generate a new ZID salt if none is defined for the accountId (happen in testing.
+     * @param accountID Use the ZID salt value for this account
+     *
+     * @return the found or new ZIDSalt
+     */
+    private static String getAccountZIDSalt(AccountID accountID)
+    {
+        String ZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
+        if (ZIDSalt == null) {
+            ZIDSalt =  new BigInteger(256, new SecureRandom()).toString(32);
+            accountID.storeAccountProperty(ProtocolProviderFactory.ZID_SALT, ZIDSalt);
+        }
+        return ZIDSalt;
     }
 }

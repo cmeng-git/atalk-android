@@ -155,6 +155,7 @@ public class Attachment implements Parcelable
         if (intent == null) {
             return uris;
         }
+
         final String contentType = intent.getType();
         final Uri data = intent.getData();
         if (data == null) {
@@ -170,7 +171,7 @@ public class Attachment implements Parcelable
         }
         else {
             // final String mime = MimeUtils.guessMimeTypeFromUriAndMime(context, data, contentType);
-            final String mime = FileBackend.getMimeType(context, data, contentType);
+            String mime = FileBackend.getMimeType(context, data, contentType);
             uris.add(new Attachment(data, type, mime));
         }
         return uris;

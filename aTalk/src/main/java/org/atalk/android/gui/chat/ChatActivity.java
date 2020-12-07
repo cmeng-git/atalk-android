@@ -284,7 +284,7 @@ public class ChatActivity extends OSGiActivity
     protected void onPause()
     {
         // Must reset unread message counter on chatSession closed
-        // Otherwise value not clear when user enter and exit chatSession without page slide
+        // Otherwise, value not clear when user enter and exit chatSession without page slide
         if (selectedChatPanel != null) {
             Object descriptor = selectedChatPanel.getChatSession().getDescriptor();
             if (descriptor instanceof MetaContact) {
@@ -925,7 +925,7 @@ public class ChatActivity extends OSGiActivity
                     if (intent != null) {
                         Uri uri = intent.getData();
                         if (uri != null) {
-                            filePath = FilePathHelper.getPath(this, uri);
+                            filePath = FilePathHelper.getFilePath(this, uri);
                             if (StringUtils.isNotEmpty(filePath))
                                 openDownloadable(new File(filePath));
                             else

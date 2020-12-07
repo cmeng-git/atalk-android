@@ -326,7 +326,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
             if ((requestCode == REQUEST_CODE_OPEN_FILE) && (intent != null)) {
                 Uri fileUri = intent.getData();
                 if (fileUri != null) {
-                    File inFile = new File(FilePathHelper.getPath(mContext, fileUri));
+                    File inFile = new File(FilePathHelper.getFilePath(mContext, fileUri));
                     if (inFile.exists()) {
                         newInstall = true;
                         cboKeyStoreType.setEnabled(true);

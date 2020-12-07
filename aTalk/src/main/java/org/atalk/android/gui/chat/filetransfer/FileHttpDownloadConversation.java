@@ -440,7 +440,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                     String dnLink = previousDownloads.get(lastDownloadId);
 
                     Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownloadId);
-                    File inFile = new File(FilePathHelper.getPath(context, fileUri));
+                    File inFile = new File(FilePathHelper.getFilePath(context, fileUri));
 
                     // update fileSize for progress bar update, in case it is still not updated by download Manager
                     fileSize = inFile.length();

@@ -25,14 +25,16 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import androidx.core.content.FileProvider;
+
 import org.atalk.android.aTalkApp;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import androidx.core.content.FileProvider;
 import timber.log.Timber;
 
 /**
@@ -146,7 +148,7 @@ public class FileBackend
                 throw new IOException("Cannot copy file onto itself.");
             }
 
-            // replace existing file, but not directory
+            // replace the existing file, but not directory
             if (dstPath.exists()) {
                 if (dstPath.isDirectory()) {
                     throw new IOException("Cannot overwrite existing directory.");
@@ -283,7 +285,7 @@ public class FileBackend
     }
 
     /**
-     * To guess if a given link string is a file link address
+     * To make a best guess if a given link string is a file download link address
      *
      * @param link a string to be checked for file link
      * @return true if the string is likely to be a Http File Download link
@@ -294,12 +296,16 @@ public class FileBackend
             if (link.matches("(?s)^aesgcm:.*")) {
                 return true;
             }
-            else if (link.matches("(?s)^http[s]:.*") && !link.contains("\\s")) {
+
+            // Use URLUtil.isValidUrl(link)?
+            // boolean isValidLink = URLUtil.isHttpUrl(link) || URLUtil.isHttpsUrl(link);
+            if (link.matches("(?s)^http[s]:.*") && !link.contains("\\s")) {
                 // return false if there is no ext or 2 < ext.length() > 5
                 String ext = link.replaceAll("(?s)^.+/[\\w-]+\\.([\\w-]{2,5})$", "$1");
                 if (ext.length() > 5) {
                     return false;
-                } else {
+                }
+                else {
                     // web common extensions: asp, cgi, [s]htm[l], js, php, pl
                     // android asp, cgi shtm, shtml, js, php, pl => (mimeType == null)
                     return !ext.matches("s*[achjp][sgthl][pim]*[l]*");
@@ -334,6 +340,11 @@ public class FileBackend
 
     /**
      * To guess the mime type of the given uri using the mimeMap or from path name
+     * Unicode uri string must be urlEncoded for android getFileExtensionFromUrl(),
+     * else alwyas return ""
+     *
+     * Note: android returns *.mp3 file as audio/mpeg. See https://tools.ietf.org/html/rfc3003;
+     * and returns as video/mpeg on re-submission with *.mpeg
      *
      * @param ctx the reference Context
      * @param uri content:// or file:// or whatever suitable Uri you want.
@@ -347,7 +358,15 @@ public class FileBackend
             mimeType = cr.getType(uri);
         }
         else {
-            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+            String fileExtension = "";
+            try {
+                // Need to encode unicode uri before proceed; revert all "%3A" and "%2F" to ":" and "/"
+                String uriEncoded = URLEncoder.encode(uri.toString(), "UTF-8").replace("%3A", ":").replace("%2F", "/");
+                fileExtension = MimeTypeMap.getFileExtensionFromUrl(uriEncoded);
+            } catch (UnsupportedEncodingException e) {
+                Timber.w("urlEncode exception: %s", e.getMessage());
+                fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+            }
             if (fileExtension != null)
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase());
         }
@@ -360,6 +379,8 @@ public class FileBackend
                     mimeType = "image/*";
                 else if (fileName.contains("video"))
                     mimeType = "video/*";
+                else if (fileName.contains("audio"))
+                    mimeType = "audio/*";
             }
         }
         return mimeType;
@@ -411,8 +432,8 @@ public class FileBackend
      * @param is an input stream that supports marks.
      * @return a guess at the content type, or {@code null} if none can be determined.
      * @throws IOException if an I/O error occurs while reading the input stream.
-     * @see java.io.InputStream#mark(int)
-     * @see java.io.InputStream#markSupported()
+     * @see InputStream#mark(int)
+     * @see InputStream#markSupported()
      * @see java.net.URLConnection#getContentType()
      */
     private static String guessContentTypeFromStream(InputStream is)

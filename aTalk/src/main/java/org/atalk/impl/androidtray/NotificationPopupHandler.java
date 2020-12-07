@@ -107,6 +107,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
 
         // Must setFullScreenIntent to wake android from sleep and for heads-up to stay on
         // heads-up notification is for both the Jingle Message propose and Jingle call
+        // Do no tie this to Note-10 Edge-light, else call UI is not shown
         String notificationGroup = popupMessage.getGroup();
         switch (notificationGroup) {
             case AndroidNotifications.CALL_GROUP:

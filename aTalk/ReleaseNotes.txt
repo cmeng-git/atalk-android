@@ -1,7 +1,33 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
-Upload Date:	11/071/2020
+Upload Date:	12/08/2020
+Version:		2.4.4 (1144)
+- getFilePathWithCreate((): Obtain the actual filename and extension for android
+  content:// scheme uri to create the tmp file before sending.
+  android getMimeType() for content:// uri link returns audio/mpeg for mp3 file (with no ext);
+  do not tag file with .mpeg, else it get treated as video/mpeg on both at sender and recipient.
+- FileBackend#getMimeType() update to support uri with unicode characters; use URLEncode()
+- MciStorageManager#processGroupContact() included a catch for IllegalArgumentException to delete any empty MetaContact.
+  Otherwise incomplete contacts loading and no media call buttons are shown
+- ZrtpControlImpl#generateMyZid() must regenerate a new ZIDSalt if none is defined for the current accountID;
+  Passing in an empty string lead to NumberFormatException.
+- startConnectivityEstablishment#startConnectivityEstablishment(): must check for
+  (component != null); else findRemoteCandidate()' on a null object reference exception
+- Use proper play-pause icon in Events UI for ring tone playing
+- The latest ice4j-2.0.0-20190607.184546-36.jar seems OK with AWS_HARVESTER_PNAME => false
+  * ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
+  * Remove System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
+- ice4j dependency lib weupnp not working for android: see https://github.com/bitletorg/weupnp/issues/20
+  need to define the xmp parser for weupnp for android i.e.
+  System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
+- Remove deprecated ndk.dir in local.properties and include it in build.gradle i.e
+  // aTalk is only compatible to ndkVersion '20.0.5594570' max
+  ndkDir = "/opt/android/android-sdk/ndk/20.0.5594570"
+
+=========================================================================
+Author:         cmeng
+Upload Date:	11/07/2020
 Version:		2.4.3 (1143)
 - Change ConnectionInfo#loadDetails() to use ISAddress.getHostString() instead of ISAddress.getHostName();
   Later may lead to a network access for reverse IP lookup and cause NetworkOnMainThreadException.
