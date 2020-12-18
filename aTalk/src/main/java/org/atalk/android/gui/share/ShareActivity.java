@@ -44,8 +44,8 @@ import androidx.viewpager.widget.ViewPager;
  * ShareActivity is defined as SingleTask, to avoid multiple instances being created if user does not exit
  * this activity before start another sharing.
  *
- * ShareActivity provides multiple contacts sharing. However this requires aTalk does not have any
- * chatFragment current in active open state. Otherwise Android OS destroys this activity on first
+ * ShareActivity provides multiple contacts sharing. However, this requires aTalk does not have any
+ * chatFragment current in active open state. Otherwise, Android OS destroys this activity on first
  * contact sharing; and multiple contacts sharing is no possible.
  *
  * @author Eng Chong Meng
@@ -136,7 +136,6 @@ public class ShareActivity extends ExitMenuActivity
      * Decides what should be displayed based on supplied <tt>Intent</tt> and instance state.
      *
      * @param intent <tt>Activity</tt> <tt>Intent</tt>.
-     * @param instanceState <tt>Activity</tt> instance state.
      */
     private void handleIntent(Intent intent)
     {

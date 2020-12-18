@@ -10,7 +10,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
-import org.jivesoftware.smackx.bob.BoBHash;
+import org.jivesoftware.smackx.bob.ContentId;
 
 import javax.xml.namespace.QName;
 
@@ -61,7 +61,7 @@ public class Thumbnail implements ExtensionElement
     public static final String HEIGHT = "height";
 
     private String uri;
-    private BoBHash cid;
+    private ContentId cid;
     private String mimeType;
     private int width;
     private int height;
@@ -100,7 +100,7 @@ public class Thumbnail implements ExtensionElement
     {
         this.uri = uri;
         if (uri.startsWith(CID_PREFIX))
-            cid = BoBHash.fromSrc(uri);
+            cid = ContentId.fromSrc(uri);
         this.mimeType = mimeType;
         this.width = width;
         this.height = height;
@@ -137,7 +137,7 @@ public class Thumbnail implements ExtensionElement
     {
         this.uri = uri;
         if (uri.startsWith(CID_PREFIX)) {
-            cid = BoBHash.fromSrc(uri);
+            cid = ContentId.fromSrc(uri);
         }
     }
 
@@ -166,9 +166,9 @@ public class Thumbnail implements ExtensionElement
      * @param thumbnailData the byte array containing the data
      * @return the cid attribute value for the thumbnail extension
      */
-    private BoBHash createCid(byte[] thumbnailData)
+    private ContentId createCid(byte[] thumbnailData)
     {
-        return new BoBHash(SHA1.hex(thumbnailData), "sha1");
+        return new ContentId(SHA1.hex(thumbnailData), "sha1");
     }
 
     /**
@@ -196,7 +196,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @return the Content-ID, corresponding to this <tt>Thumbnail</tt>
      */
-    public BoBHash getCid()
+    public ContentId getCid()
     {
         return cid;
     }
@@ -206,7 +206,7 @@ public class Thumbnail implements ExtensionElement
      *
      * @param cid the content-ID to set
      */
-    public void setCid(BoBHash cid)
+    public void setCid(ContentId cid)
     {
         this.cid = cid;
     }

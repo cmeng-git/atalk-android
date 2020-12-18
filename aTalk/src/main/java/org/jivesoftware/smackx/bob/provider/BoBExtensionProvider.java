@@ -22,7 +22,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.bob.BoBData;
-import org.jivesoftware.smackx.bob.BoBHash;
+import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.bob.element.BoBExt;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class BoBExtensionProvider extends ExtensionElementProvider<BoBExt>
             throws IOException, XmlPullParserException
     {
         String cid = parser.getAttributeValue("", BoBExt.ATTR_CID);
-        BoBHash bobHash = BoBHash.fromCid(cid);
+        ContentId bobHash = ContentId.fromCid(cid);
 
         String dataType = parser.getAttributeValue("", BoBExt.ATTR_TYPE);
         int maxAge = ParserUtils.getIntegerAttribute(parser, BoBExt.ATTR_MAX_AGE, -1);

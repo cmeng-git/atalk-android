@@ -12,7 +12,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.bob.BoBHash;
+import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.bob.BoBManager;
 import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
@@ -211,7 +211,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      *
      * @param cid the thumbnail content-ID
      */
-    public void fetchThumbnailAndNotify(final BoBHash cid)
+    public void fetchThumbnailAndNotify(final ContentId cid)
     {
         final BoBManager bobManager = BoBManager.getInstanceFor(jabberProvider.getConnection());
         thumbnailCollector.submit(new Runnable()

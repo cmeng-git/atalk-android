@@ -360,8 +360,11 @@ public class FileBackend
         else {
             String fileExtension = "";
             try {
-                // Need to encode unicode uri before proceed; revert all "%3A" and "%2F" to ":" and "/"
-                String uriEncoded = URLEncoder.encode(uri.toString(), "UTF-8").replace("%3A", ":").replace("%2F", "/");
+                // Need to encode unicode uri before proceed; revert all "%3A", "%2F" and "+" to ":", "/" and "%20"
+                String uriEncoded = URLEncoder.encode(uri.toString(), "UTF-8")
+                        .replaceAll("%3A", ":")
+                        .replaceAll("%2F", "/")
+                        .replaceAll("\\+", "%20");
                 fileExtension = MimeTypeMap.getFileExtensionFromUrl(uriEncoded);
             } catch (UnsupportedEncodingException e) {
                 Timber.w("urlEncode exception: %s", e.getMessage());

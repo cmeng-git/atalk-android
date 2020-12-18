@@ -1,6 +1,40 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	12/18/2020
+Version:		2.4.5 (1145)
+- Fix UPnP for android-8.0(O) API-26 and above: Cleartext HTTP traffic not permitted in UPnP gateway.getDescription()
+  * update network_security_configuration i.e. <base-config cleartextTrafficPermitted="true">
+- Clean up and optimize ice4j#UPNPHarvester.java call to weupnp library
+
+- FileBacken#getMimeType() URI Unicode support; need to revert "%3A|"%2F|+" to ":|/|"%20" after URLEncoder.encode
+
+- Upgrade smack library to v4.4.0
+  * smack-extensions#BoBHash changes to ContentId
+
+- Change NDK build process using android recommended method i.e. externalNativeBuild{}, and remove hard-coded path for ndk.dir
+  See F-Droid can't build #170 https://github.com/cmeng-git/atalk-android/issues/170
+
+- Commented out statement below as it causes NDK debug to crash when enter debug with error i.e.
+  jni/opensles/org_atalk_impl_neomedia_device_OpenSLESSystem.c#78
+  // assert(SL_RESULT_SUCCESS == result);
+  * Debug log indicates it run OK without the statement
+  I/OpenSLES: Create Audio Engine
+  I/OpenSLES: Realize Audio Engine; engineObject_: 0x723c799c00
+  W/libOpenSLES: Leaving Object::GetInterface (SL_RESULT_FEATURE_UNSUPPORTED)
+  E/OpenSLES: Failed: Query Audio Input Capabilities
+
+- upgrade library for:
+    'commons-codec:commons-codec:1.15' from 1.14
+    'org.apache.commons:commons-text:1.9' from 1.8
+    'org.apache.httpcomponents.client5:httpclient5:5.0.3' from 5.0.1
+    'org.apache.httpcomponents:httpmime:4.5.13' from 4.5.10
+
+- This file is not part of the project. Please include it in the appropriate build file
+  (build.gradle, CMakeLists.txt or Android.mk etc.) and sync the project. AGP bug - need android team to fix
+
+=========================================================================
+Author:         cmeng
 Upload Date:	12/08/2020
 Version:		2.4.4 (1144)
 - getFilePathWithCreate((): Obtain the actual filename and extension for android

@@ -3019,7 +3019,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         try {
             // pre-configure smack in android just to load class to init their static blocks
-            SmackConfiguration.getVersion();
+            Smack.getVersion();
             Class.forName(ServiceDiscoveryManager.class.getName());
             Class.forName(DelayInformation.class.getName());
             Class.forName(DelayInformationProvider.class.getName());

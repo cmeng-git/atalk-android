@@ -6,6 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.4.5 (12/18/2020)" versioncode="1145">
+        <change>Fix UPnP for android-8.0(O) API-26 and above: Cleartext HTTP traffic not permitted in UPnP gateway getDescription</change>
+        <change>Clean up and optimize ice4j#UPNPHarvester.java call to weupnp library</change>
+        <change>Use android recommended method i.e. externalNativeBuild{} NDK build process; remove hard-coded path for ndk.dir</change>
+        <change>Android getMimeType for URI Unicode support; need to revert "%3A"%2F+" to ":/%20" after URLEncoder.encode</change>
+        <change>Upgrade smack library to v4.4.0</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.4.4 (12/08/2020)" versioncode="1144">
         <change>Fetch the actual media filename and extension for android content:scheme uri, to create the tmp file before sending</change>
         <change>Enhance android getMimeType to support uri with unicode characters</change>

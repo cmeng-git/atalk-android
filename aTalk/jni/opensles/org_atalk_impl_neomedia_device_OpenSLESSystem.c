@@ -71,7 +71,11 @@ Java_org_atalk_impl_neomedia_device_OpenSLESSystem_queryAudioInputCapabilities
     ALOG_INFO("Get the Audio IO DEVICE CAPABILITIES interface, implicit");
     result = (*engineObject_)->GetInterface(
         engineObject_, SL_IID_AUDIOIODEVICECAPABILITIES, &AudioIODeviceCapabilitiesItf);
-    assert(SL_RESULT_SUCCESS == result);
+
+    // cmeng 20201215: commented out as it causes NDK debug to crash when enter debug with error
+    // This file is not part of the project. Please include it in the appropriate build file
+    // (build.gradle, CMakeLists.txt or Android.mk etc.) and sync the project.
+    // assert(SL_RESULT_SUCCESS == result);
 
     // ANDROID: obtaining SL_IID_AUDIOIODEVICECAPABILITIES may fail
     if (AudioIODeviceCapabilitiesItf != NULL ) {

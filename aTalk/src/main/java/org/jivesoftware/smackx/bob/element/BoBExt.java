@@ -66,7 +66,7 @@ public class BoBExt implements ExtensionElement
      * algorithm used (e.g., "sha1" for the SHA-1 algorithm as specified in RFC 3174 [11]) and the
      * "hash" is the hex output of the algorithm applied to the binary data itself.
      */
-    private final BoBHash bobHash;
+    private final ContentId bobHash;
 
     private final BoBData bobData;
 
@@ -96,7 +96,7 @@ public class BoBExt implements ExtensionElement
      * @param bobHash the content-ID used to identify this packet in the destination
      * @param bobData the Base64 of the raw image data
      */
-    public BoBExt(BoBHash bobHash, BoBData bobData)
+    public BoBExt(ContentId bobHash, BoBData bobData)
     {
         this.bobHash = bobHash;
         this.bobData = bobData;
@@ -107,7 +107,7 @@ public class BoBExt implements ExtensionElement
      *
      * @return the BoB hash
      */
-    public BoBHash getBoBHash()
+    public ContentId getBoBHash()
     {
         return bobHash;
     }

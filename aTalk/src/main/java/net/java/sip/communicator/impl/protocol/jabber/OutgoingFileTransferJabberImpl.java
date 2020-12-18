@@ -156,7 +156,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         }
 
         BoBManager bobManager = BoBManager.getInstanceFor(protocolProvider.getConnection());
-        for (BoBHash hash : bobInfo.getHashes()) {
+        for (ContentId hash : bobInfo.getHashes()) {
             bobManager.removeBoB(hash);
         }
     }

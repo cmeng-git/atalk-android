@@ -44,7 +44,7 @@ public class ShareUtil
     private static final int REQUEST_CODE_SHARE = 500;
 
     /**
-     * Total wait time for handle multiple intents (text & images)
+     * Total wait time for handling multiple intents (text & images)
      */
     private static final int TIME_DELAY = 12000;
 
@@ -214,7 +214,7 @@ public class ShareUtil
     }
 
     /**
-     * Share BroadcastReceiver call back after user has choose the share app
+     * Share BroadcastReceiver call back after user has chosen the share app
      * Some delay is given for user to pick the buddy before starting the next share intent
      */
     public static class ShareBroadcastReceiver extends BroadcastReceiver

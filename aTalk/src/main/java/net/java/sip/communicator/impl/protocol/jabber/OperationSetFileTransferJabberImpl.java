@@ -185,10 +185,10 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
      * @return the transfer object
      */
-    public FileTransfer sendFile(Contact toContact, Contact fromContact, String remotePath, String localPath, String uuid)
+    public FileTransfer sendFile(Contact toContact, Contact fromContact, String remotePath, String localPath, String msgUuid)
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException
     {
-        return this.sendFile(toContact, new File(localPath), uuid);
+        return this.sendFile(toContact, new File(localPath), msgUuid);
     }
 
     /**
