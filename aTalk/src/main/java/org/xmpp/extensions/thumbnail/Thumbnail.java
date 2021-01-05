@@ -18,6 +18,7 @@ import javax.xml.namespace.QName;
  * The <tt>Thumbnail</tt> represents a "thumbnail" XML element, that is contained in the file
  * element, we're sending to notify for a file transfer. The <tt>Thumbnail</tt>'s role is to
  * advertise a thumbnail. Implementing XEP-0264: Jingle Content Thumbnails v0.4
+ * https://xmpp.org/extensions/xep-0264.html
  *
  * The class is designed mainly to handle only cid
  *
@@ -46,10 +47,10 @@ public class Thumbnail implements ExtensionElement
     public static final String CID_PREFIX = "cid:";
 
     /**
-     * The name of the thumbnail attribute "mime-type".
+     * The name of the thumbnail attribute "media-type".
      */
-    public static final String MIME_TYPE = "mime-type";
 
+    public static final String MEDIA_TYPE = "media-type";
     /**
      * The name of the thumbnail attribute "width".
      */
@@ -62,7 +63,7 @@ public class Thumbnail implements ExtensionElement
 
     private String uri;
     private ContentId cid;
-    private String mimeType;
+    private String mediaType;
     private int width;
     private int height;
 
@@ -83,25 +84,25 @@ public class Thumbnail implements ExtensionElement
      * Creates a <tt>ThumbnailExtensionElement</tt> by specifying all extension attributes.
      *
      * @param thumbnailData the byte array containing the thumbnail data
-     * @param mimeType the mime type attribute
+     * @param mediaType the mime type attribute
      * @param width the width of the thumbnail
      * @param height the height of the thumbnail
      */
-    public Thumbnail(byte[] thumbnailData, String mimeType, int width, int height)
+    public Thumbnail(byte[] thumbnailData, String mediaType, int width, int height)
     {
         this.cid = createCid(thumbnailData);
-        this.mimeType = mimeType;
+        this.mediaType = mediaType;
         this.width = width;
         this.height = height;
         setUri(cid.toSrc());
     }
 
-    public Thumbnail(String uri, String mimeType, int width, int height)
+    public Thumbnail(String uri, String mediaType, int width, int height)
     {
         this.uri = uri;
         if (uri.startsWith(CID_PREFIX))
             cid = ContentId.fromSrc(uri);
-        this.mimeType = mimeType;
+        this.mediaType = mediaType;
         this.width = width;
         this.height = height;
     }
@@ -116,7 +117,7 @@ public class Thumbnail implements ExtensionElement
     public Thumbnail(XmlPullParser parser)
     {
         parseUri(parser.getAttributeValue("", URI));
-        mimeType = parser.getAttributeValue("", MIME_TYPE);
+        mediaType = parser.getAttributeValue("", MEDIA_TYPE);
         String parserWidth = parser.getAttributeValue("", WIDTH);
         String parserHeight = parser.getAttributeValue("", HEIGHT);
         try {
@@ -153,7 +154,7 @@ public class Thumbnail implements ExtensionElement
 
         // adding thumbnail uri parameters
         xml.attribute(URI, uri);
-        xml.attribute(MIME_TYPE, getMimeType());
+        xml.attribute(MEDIA_TYPE, getMediaType());
         xml.attribute(WIDTH, getWidth());
         xml.attribute(HEIGHT, getHeight());
         xml.closeEmptyElement();
@@ -216,19 +217,19 @@ public class Thumbnail implements ExtensionElement
      *
      * @return the mime type of this <tt>Thumbnail</tt>
      */
-    public String getMimeType()
+    public String getMediaType()
     {
-        return mimeType;
+        return mediaType;
     }
 
     /**
      * Sets the mime type of the thumbnail.
      *
-     * @param mimeType the mime type of the thumbnail
+     * @param mediaType the mime type of the thumbnail
      */
-    public void setMimeType(String mimeType)
+    public void setMediaType(String mediaType)
     {
-        this.mimeType = mimeType;
+        this.mediaType = mediaType;
     }
 
     /**

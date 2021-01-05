@@ -25,7 +25,7 @@ import org.atalk.service.osgi.OSGiFragment;
 import androidx.annotation.NonNull;
 
 /**
- * Fragement for history message delete with media delete option
+ * Fragment for history message delete with media delete option
  *
  * @author Eng Chong Meng
  */

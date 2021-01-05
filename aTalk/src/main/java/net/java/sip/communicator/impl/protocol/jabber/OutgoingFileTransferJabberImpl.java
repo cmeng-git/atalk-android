@@ -35,6 +35,9 @@ import timber.log.Timber;
 
 public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer implements StanzaListener
 {
+    // must include this attribute in bobData; else smack 4.4.0 throws NPE
+    private static final int maxAge = 86400;
+
     private final String id;
     private final Contact receiver;
     private final File file;
@@ -185,7 +188,9 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
 
             BoBData bobData = new BoBData(
                     thumbnailedFile.getThumbnailMimeType(),
-                    thumbnailedFile.getThumbnailData());
+                    thumbnailedFile.getThumbnailData(),
+                    maxAge);
+
             BoBManager bobManager = BoBManager.getInstanceFor(connection);
             bobInfo = bobManager.addBoB(bobData);
             thumbnail = new Thumbnail(

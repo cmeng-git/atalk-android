@@ -200,7 +200,7 @@ public class EntityListHelper
                 {
                     public boolean onConfirmClicked(DialogActivity dialog)
                     {
-                        CheckBox cbMediaDelete = dialog.findViewById(cb_media_delete);
+                        CheckBox cbMediaDelete = dialog.findViewById(R.id.cb_media_delete);
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
                         // EntityListHelper mErase = new EntityListHelper();
@@ -218,6 +218,8 @@ public class EntityListHelper
     /**
      * Perform history message delete in background.
      * Purge all history messages for the descriptor if messageUUIDs is null
+     *
+     * Note: if the sender deletes the media content immediately after sending, only the tmp copy is deleted
      */
     private static class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer>
     {

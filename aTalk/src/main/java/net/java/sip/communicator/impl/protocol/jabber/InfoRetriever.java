@@ -132,7 +132,7 @@ public class InfoRetriever
      */
     protected synchronized List<GenericDetail> retrieveDetails(BareJid bareJid)
     {
-        Timber.w(new Exception("Retrieve Details (debug-ignore): " + bareJid.toString()));
+        Timber.w(new Exception("Retrieve Details (testing debug info: ignore): " + bareJid.toString()));
 
         List<GenericDetail> result = new LinkedList<>();
         XMPPConnection connection = jabberProvider.getConnection();

@@ -17,24 +17,25 @@
 package org.atalk.android.gui.webview;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.*;
 import android.view.View.OnKeyListener;
 import android.webkit.*;
 import android.widget.ProgressBar;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.*;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,22 +50,20 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
 {
     private WebView webview;
     private ProgressBar progressbar;
-    private HashMap<String, List<String>> notifs = new HashMap<>();
     private static Context instance;
-    private static Stack<String> urlStack = new Stack<>();
+    private static final Stack<String> urlStack = new Stack<>();
 
     // stop webView.goBack() once we have started reload from urlStack
     private boolean isLoadFromStack = false;
 
     private String webUrl = null;
-    private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessageArray;
 
-    private final static int FILE_REQUEST_CODE = 1;
+    private ActivityResultLauncher<String> mGetContents;
 
     @SuppressLint("JavascriptInterface")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // init webUrl with urlStack.pop() if non-empty, else load from default in DB
         if (urlStack.isEmpty()) {
@@ -90,11 +89,9 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            webSettings.setMixedContentMode(0);
-            webSettings.setAllowUniversalAccessFromFileURLs(true);
-        }
+        webSettings.setMixedContentMode(0);
+        webSettings.setAllowUniversalAccessFromFileURLs(true);
+        mGetContents = getFileUris();
 
         webview.setWebChromeClient(new WebChromeClient()
         {
@@ -110,27 +107,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
                 }
             }
 
-            public void openFileChooser(ValueCallback<Uri> uploadMsg)
-            {
-                openFileChooser(uploadMsg, null, null);
-            }
-
-            public void openFileChooser(ValueCallback uploadMsg, String acceptType)
-            {
-                openFileChooser(uploadMsg, acceptType, null);
-            }
-
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture)
-            {
-                mUploadMessage = uploadMsg;
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType(acceptType);
-
-                Intent chooseFile = Intent.createChooser(i, "File Browser");
-                startActivityForResult(chooseFile, FILE_REQUEST_CODE);
-            }
-
+            @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMessageArray,
                     FileChooserParams fileChooserParams)
             {
@@ -138,13 +115,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
                     mUploadMessageArray.onReceiveValue(null);
 
                 mUploadMessageArray = uploadMessageArray;
-
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("*/*");
-
-                Intent chooseFile = Intent.createChooser(i, "File Browser");
-                startActivityForResult(chooseFile, FILE_REQUEST_CODE);
+                mGetContents.launch("*/*");
                 return true;
             }
         });
@@ -165,9 +136,31 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         webview.setOnKeyListener(this);
     }
 
+    /**
+     * Opens a FileChooserDialog to let the user pick files for upload
+     */
+    private ActivityResultLauncher<String> getFileUris()
+    {
+        return registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), uris -> {
+            if (uris != null) {
+                if (mUploadMessageArray == null)
+                    return;
+
+                Uri[] uriArray = new Uri[uris.size()];
+                uriArray = uris.toArray(uriArray);
+
+                mUploadMessageArray.onReceiveValue(uriArray);
+                mUploadMessageArray = null;
+            }
+            else {
+                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+            }
+        });
+    }
+
     // Prevent the webView from reloading on device rotation
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
+    public void onConfigurationChanged(@NotNull Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
     }
@@ -196,30 +189,6 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         isLoadFromStack = false;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode != FILE_REQUEST_CODE || resultCode != Activity.RESULT_OK || data.getData() == null)
-            return;
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            if (mUploadMessageArray == null)
-                return;
-
-            mUploadMessageArray.onReceiveValue(new Uri[]{data.getData()});
-            mUploadMessageArray = null;
-        }
-        else {
-            if (mUploadMessage == null)
-                return;
-
-            mUploadMessage.onReceiveValue(data.getData());
-            mUploadMessage = null;
-        }
-    }
-
     public static Bitmap getBitmapFromURL(String src)
     {
         try {
@@ -235,6 +204,16 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         }
     }
 
+    /**
+     * Handler for user enter Back Key
+     * User Back Key entry will return to previous web access pages until root; before return to caller
+     *
+     * @param v view
+     * @param keyCode the entered key keycode
+     * @param event the key Event
+     *
+     * @return true if process
+     */
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event)
     {
@@ -244,6 +223,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
                 webview.loadUrl("javascript:MovimTpl.toggleMenu()");
                 return true;
             }
+
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 if (!isLoadFromStack && webview.canGoBack()) {
                     if (!urlStack.isEmpty())

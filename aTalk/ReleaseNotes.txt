@@ -1,6 +1,24 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	01/05/2021
+Version:		2.4.6 (1146)
+- Fix file sharing failed when sending thumbnail on request; smack throws NPE without max-age attribute in BoBData
+  Include the recommended max-age attribute in new BoBData(), else smack throws NPE in BoBIQ#getIQChildElementBuilder
+  when aTalk send BoBIQ#BoBData without one.
+- Update BoBExt to confirm to the same as BoBIQ method call i.e. getBoBHash() => getContentId()
+- Change mime-type to media-type in Thumbnail class to be compile to XEP-0264: Jingle Content Thumbnails
+  v0.4 (2015-08-26) https://xmpp.org/extensions/xep-0264.html
+- Migrate all the StartActivityForResult calls to new android ActivityResultContract implementations in:
+  AccountInfoPresenceActivity, ChatActivity (attachments), NotificationDetails (pickRingTone), CertConfigEntryDialog#browseKeyStore
+  PermissionsActivity#GetBatteryOptimization(), TTSActivity#mStartForResult, WebViewFragment
+- Move SettingsFragment init process from onStart() to onResume(): hopefully help mConfigService NPE from field
+  Also handle mConfigService == null in initNotificationPreferences()
+- Handle (mRecipient == null) in ChatActivity#setOptionItem() => isDomainJid = true;
+- Remove openFileChooser() support in WebViewFragment
+
+=========================================================================
+Author:         cmeng
 Upload Date:	12/18/2020
 Version:		2.4.5 (1145)
 - Fix UPnP for android-8.0(O) API-26 and above: Cleartext HTTP traffic not permitted in UPnP gateway.getDescription()

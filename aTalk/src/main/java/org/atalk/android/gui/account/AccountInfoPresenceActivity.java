@@ -17,6 +17,10 @@ import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import androidx.activity.result.ActivityResultCaller;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter.CalendarDay;
 import com.yalantis.ucrop.UCrop;
@@ -94,7 +98,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     static public final String INTENT_ACCOUNT_ID = "account_id";
 
     /**
-     * The id for the "select image from gallery" intent result
+     * The id for the "select image from the gallery" intent result
      */
     static private final int SELECT_IMAGE = 1;
 
@@ -173,6 +177,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     private ImageDetail avatarDetail;
     private DateFormat dateFormat;
 
+    private ActivityResultLauncher<String> mGetContent;
+
     /**
      * Container for apply and cancel buttons; auto- hide when field text entry is active
      */
@@ -191,6 +197,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         setContentView(R.layout.account_info_presence_status);
         mButtonContainer = findViewById(R.id.button_Container);
 
+        mGetContent = getAvatarContent();
         avatarView = findViewById(R.id.accountAvatar);
         registerForContextMenu(avatarView);
         avatarView.setOnClickListener(v -> openContextMenu(avatarView));
@@ -1153,13 +1160,16 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             case R.id.avatar_ChoosePicture:
                 onAvatarClicked(avatarView);
                 return true;
+
             case R.id.avatar_RemovePicture:
                 imageUrlField.setText(AVATAR_ICON_REMOVE);
                 avatarView.setImageResource(R.drawable.person_photo);
                 hasChanges = true;
                 return true;
+
             case R.id.avatar_Cancel:
                 return true;
+
             default:
                 return super.onContextItemSelected(item);
         }
@@ -1170,19 +1180,41 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      *
      * @param avatarView the {@link View} that has been clicked
      */
-    @SuppressWarnings("unused")
     public void onAvatarClicked(View avatarView)
     {
         if (mAccount.getAvatarOpSet() == null) {
             Timber.w("Avatar operation set is not supported by %s", mAccount.getAccountName());
+            showAvatarChangeError();
             return;
         }
-        // Intent pickIntent = new Intent(Intent.ACTION_PICK_ACTIVITY);
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        // Intent camIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-        intent.putExtra(Intent.EXTRA_TITLE, R.string.service_gui_SELECT_AVATAR);
-        startActivityForResult(intent, SELECT_IMAGE);
+        mGetContent.launch("image/*");
+    }
+
+    /**
+     * A contract specifying that an activity can be called with an input of type I
+     * and produce an output of type O
+     *
+     * @return an instant of ActivityResultLauncher<String>
+     * @see ActivityResultCaller
+     */
+    private ActivityResultLauncher<String> getAvatarContent()
+    {
+        return registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if (uri == null) {
+                Timber.e("No image data selected for avatar!");
+                showAvatarChangeError();
+            }
+            else {
+                String fileName = "cropImage";
+                File tmpFile = new File(this.getCacheDir(), fileName);
+                Uri destinationUri = Uri.fromFile(tmpFile);
+
+                UCrop.of(uri, destinationUri)
+                        .withAspectRatio(1, 1)
+                        .withMaxResultSize(CROP_MAX_SIZE, CROP_MAX_SIZE)
+                        .start(this);
+            }
+        });
     }
 
     /**
@@ -1199,30 +1231,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
             return;
 
         switch (requestCode) {
-            case SELECT_IMAGE:
-                final OperationSetAvatar avatarOpSet = mAccount.getAvatarOpSet();
-                if (avatarOpSet == null) {
-                    Timber.w("No avatar operation set found for %s", mAccount.getAccountName());
-                    showAvatarChangeError();
-                    break;
-                }
-
-                Uri uri = data.getData();
-                if (uri == null) {
-                    Timber.e("No image data selected: %s", data);
-                    showAvatarChangeError();
-                }
-                else {
-                    String fileName = "cropImage";
-                    File tmpFile = new File(this.getCacheDir(), fileName);
-                    Uri destinationUri = Uri.fromFile(tmpFile);
-                    UCrop.of(uri, destinationUri)
-                            .withAspectRatio(1, 1)
-                            .withMaxResultSize(CROP_MAX_SIZE, CROP_MAX_SIZE)
-                            .start(this);
-                }
-                break;
-
             case UCrop.REQUEST_CROP:
                 final Uri resultUri = UCrop.getOutput(data);
                 if (resultUri == null)

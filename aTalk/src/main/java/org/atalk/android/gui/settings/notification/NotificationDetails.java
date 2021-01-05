@@ -15,6 +15,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import net.java.sip.communicator.plugin.notificationwiring.SoundProperties;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
@@ -39,8 +44,6 @@ import org.atalk.service.resources.ResourceManagementService;
 public class NotificationDetails extends OSGiActivity
         implements NotificationChangeListener, ActionBarToggleFragment.ActionBarToggleModel
 {
-    private static final int SELECT_RING_TONE = 100;
-
     /**
      * Event type extra key
      */
@@ -117,7 +120,16 @@ public class NotificationDetails extends OSGiActivity
         this.soundNotification = findViewById(R.id.soundNotification);
         this.soundPlayback = findViewById(R.id.soundPlayback);
         this.vibrate = findViewById(R.id.vibrate);
+
+        ActivityResultLauncher<Integer> mPickRingTone = pickRingTone();
         mSoundDescriptor = findViewById(R.id.sound_descriptor);
+        mSoundDescriptor.setOnClickListener(view -> {
+            // set RingTone picker to show only the relevant notification or ringtone
+            if (soundHandler.getLoopInterval() < 0)
+                mPickRingTone.launch(RingtoneManager.TYPE_NOTIFICATION);
+            else
+                mPickRingTone.launch(RingtoneManager.TYPE_RINGTONE);
+        });
 
         // ActionBarUtil.setTitle(this, aTalkApp.getStringResourceByName(NotificationSettings.N_PREFIX + eventType));
         eventTitle = rms.getI18NString(NotificationSettings.NOTICE_PREFIX + eventType);
@@ -295,44 +307,46 @@ public class NotificationDetails extends OSGiActivity
     }
 
     /**
-     * Launch the RingToneManager when user click on the sound descriptor button
-     *
-     * @param v sound file descriptor button view
+     * PIckRingtone class ActivityResultContract implementation, with ringtoneType of either:
+     * 1. RingtoneManager.TYPE_NOTIFICATION
+     * 2. RingtoneManager.TYPE_RINGTONE
      */
-    public void onDescriptorClicked(View v)
+    public class PickRingtone extends ActivityResultContract<Integer, Uri>
     {
-        final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, eventTitle);
-        // set RingTone picker to show only the relevant notification or ringtone
-        if (soundHandler.getLoopInterval() < 0)
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        else
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, @NonNull Integer ringtoneType)
+        {
+            final Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, eventTitle);
 
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, soundDefaultUri);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, soundDescriptorUri);
-        startActivityForResult(intent, SELECT_RING_TONE);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, ringtoneType);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, soundDefaultUri);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, soundDescriptorUri);
+            return intent;
+        }
+
+        @Override
+        public Uri parseResult(int resultCode, @Nullable Intent result)
+        {
+            if (resultCode != Activity.RESULT_OK || result == null) {
+                return null;
+            }
+            return result.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        }
     }
 
     /**
-     * Process the user selected RingTone
-     *
-     * @param requestCode RingTone request code
-     * @param resultCode result
-     * @param intent return intent from RingTone Manager
+     * Opens a FileChooserDialog to let the user pick attachments
      */
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent)
+    private ActivityResultLauncher<Integer> pickRingTone()
     {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode == Activity.RESULT_OK && requestCode == SELECT_RING_TONE) {
-            Uri ringToneUri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-
-            if (ringToneUri == null)
+        return registerForActivityResult(new PickRingtone(), ringToneUri -> {
+            if (ringToneUri == null) {
                 ringToneUri = soundDefaultUri;
-
+            }
             updateSoundNotification(ringToneUri);
-        }
+        });
     }
 
     /**
