@@ -235,7 +235,7 @@ public class AndroidLoginRenderer implements LoginRenderer
 
         }
         else {
-            // There are no active providers so we consider to be in the offline state
+            // There are no active providers, so we consider to be in the offline state
             status = aTalkApp.getResString(R.string.service_gui_OFFLINE);
         }
 

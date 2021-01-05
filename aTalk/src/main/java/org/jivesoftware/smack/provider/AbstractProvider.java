@@ -44,8 +44,8 @@ public class AbstractProvider<E extends Element> {
         } else {
             // required by aTalk class otherwise elementType is only resolved to <EE>
             elementClass =  (Class<E>)  elementType.getClass();
-//            throw new AssertionError(
-//                    "Element type '" + elementType + "' is neither of type Class or ParameterizedType");
+            // throw new AssertionError(
+            //        "Element type '" + elementType + "' is neither of type Class or ParameterizedType");
         }
     }
 

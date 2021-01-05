@@ -19,9 +19,9 @@ package org.atalk.android.plugin.permissions;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
+import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -30,6 +30,12 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.annotation.*;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -46,9 +52,6 @@ import org.atalk.service.osgi.OSGiActivity;
 import java.util.LinkedList;
 import java.util.List;
 
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import butterknife.*;
 import timber.log.Timber;
 
@@ -57,8 +60,6 @@ import timber.log.Timber;
  */
 public class PermissionsActivity extends OSGiActivity
 {
-    private static final int REQUEST_BATTERY_OP = 100;
-
     @BindView(R.id.camera_permission_feedback)
     TextView cameraPermissionFeedbackView;
     @BindView(R.id.contacts_permission_feedback)
@@ -86,6 +87,8 @@ public class PermissionsActivity extends OSGiActivity
     private PermissionListener storagePermissionListener;
     private PermissionRequestErrorListener errorListener;
 
+    private ActivityResultLauncher<Void> mBatteryOptimization;
+
     protected static List<PermissionGrantedResponse> grantedPermissionResponses = new LinkedList<>();
     protected static List<PermissionDeniedResponse> deniedPermissionResponses = new LinkedList<>();
 
@@ -109,7 +112,8 @@ public class PermissionsActivity extends OSGiActivity
             aTalkApp.permissionFirstRequest = false;
 
             // Request user to add aTalk to BatteryOptimization whitelist
-            // Otherwise aTalk will be put to sleep on system doze-standby
+            // Otherwise, aTalk will be put to sleep on system doze-standby
+            mBatteryOptimization = requestBatteryOptimization();
             boolean showBatteryOptimizationDialog = openBatteryOptimizationDialogIfNeeded();
 
             ButterKnife.bind(this);
@@ -150,7 +154,7 @@ public class PermissionsActivity extends OSGiActivity
 
     public void onAllPermissionsCheck()
     {
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermissions(
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_CONTACTS,
@@ -171,7 +175,7 @@ public class PermissionsActivity extends OSGiActivity
         grantedPermissionResponses.clear();
         deniedPermissionResponses.clear();
 
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermissions(
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_CONTACTS,
@@ -188,7 +192,7 @@ public class PermissionsActivity extends OSGiActivity
     @OnClick(R.id.camera_permission_button)
     public void onCameraPermissionButtonClicked()
     {
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(cameraPermissionListener)
                 .withErrorListener(errorListener)
@@ -198,7 +202,7 @@ public class PermissionsActivity extends OSGiActivity
     @OnClick(R.id.contacts_permission_button)
     public void onContactsPermissionButtonClicked()
     {
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_CONTACTS)
                 .withListener(contactsPermissionListener)
                 .withErrorListener(errorListener)
@@ -208,7 +212,7 @@ public class PermissionsActivity extends OSGiActivity
     @OnClick(R.id.location_permission_button)
     public void onLocationPermissionButtonClicked()
     {
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 .withListener(locationPermissionListener)
                 .withErrorListener(errorListener)
@@ -218,7 +222,7 @@ public class PermissionsActivity extends OSGiActivity
     @OnClick(R.id.audio_permission_button)
     public void onAudioPermissionButtonClicked()
     {
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermission(Manifest.permission.RECORD_AUDIO)
                 .withListener(audioPermissionListener)
                 .withErrorListener(errorListener)
@@ -228,7 +232,7 @@ public class PermissionsActivity extends OSGiActivity
     @OnClick(R.id.phone_permission_button)
     public void onPhonePermissionButtonClicked()
     {
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_PHONE_STATE)
                 .withListener(phonePermissionListener)
                 .withErrorListener(errorListener)
@@ -238,7 +242,7 @@ public class PermissionsActivity extends OSGiActivity
     @OnClick(R.id.storage_permission_button)
     public void onStoragePermissionButtonClicked()
     {
-        Dexter.withActivity(this)
+        Dexter.withContext(this)
                 .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(storagePermissionListener)
                 .withErrorListener(errorListener)
@@ -497,13 +501,12 @@ public class PermissionsActivity extends OSGiActivity
         return feedbackView;
     }
 
-    /* **********************************************
-     * Android Battery Usage Optimization Request
-     ************************************************/
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    /**********************************************************************************************
+     * Android Battery Usage Optimization Request; Will only be called if >= Build.VERSION_CODES.M
+     ***********************************************************************************************/
     private boolean openBatteryOptimizationDialogIfNeeded()
     {
-        // Will always request for battery optimization disable for aTalk if not so on aTalk new launch
+        // Will always request for battery optimization disable for aTalk on every aTalk new launch, if not disabled
         if (isOptimizingBattery()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.battery_optimizations);
@@ -511,14 +514,7 @@ public class PermissionsActivity extends OSGiActivity
 
             builder.setPositiveButton(R.string.next, (dialog, which) -> {
                 dialog.dismiss();
-                Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                Uri uri = Uri.parse("package:" + getPackageName());
-                intent.setData(uri);
-                try {
-                    startActivityForResult(intent, REQUEST_BATTERY_OP);
-                } catch (ActivityNotFoundException e) {
-                    aTalkApp.showToastMessage(R.string.device_does_not_support_battery_op);
-                }
+                mBatteryOptimization.launch(null);
             });
 
             AlertDialog dialog = builder.create();
@@ -538,22 +534,39 @@ public class PermissionsActivity extends OSGiActivity
         return (pm != null) && !pm.isIgnoringBatteryOptimizations(getPackageName());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data)
+    /**
+     * GetBatteryOptimization class ActivityResultContract implementation.
+     */
+    @TargetApi(Build.VERSION_CODES.M)
+    @SuppressLint("BatteryLife")
+    public class GetBatteryOptimization extends ActivityResultContract<Void, Boolean>
     {
-        super.onActivityResult(requestCode, resultCode, data);
-        // RESULT_OK is returned if disable optimization is alloed
-        if (requestCode == REQUEST_BATTERY_OP) {
-            if (resultCode != RESULT_OK) {
-                aTalkApp.showToastMessage(R.string.battery_optimization_on);
-            }
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, @Nullable Void input)
+        {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            Uri uri = Uri.parse("package:" + getPackageName());
+            intent.setData(uri);
+            return intent;
+        }
+
+        @Override
+        public Boolean parseResult(int resultCode, @Nullable Intent result)
+        {
+            return (resultCode == Activity.RESULT_OK);
         }
     }
 
-    private String getBatteryOptimizationPreferenceKey()
+    /**
+     * Return success == true if disable battery optimization for aTalk is allowed
+     */
+    private ActivityResultLauncher<Void> requestBatteryOptimization()
     {
-        @SuppressLint("HardwareIds")
-        String device = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        return "pref_key_show_battery_optimization_" + (device == null ? "" : device);
+        return registerForActivityResult(new GetBatteryOptimization(), success -> {
+            if (!success) {
+                aTalkApp.showToastMessage(R.string.battery_optimization_on);
+            }
+        });
     }
 }

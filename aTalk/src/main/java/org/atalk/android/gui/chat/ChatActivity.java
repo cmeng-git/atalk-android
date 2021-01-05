@@ -13,12 +13,18 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
@@ -64,10 +70,6 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.*;
 
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import timber.log.Timber;
 
 import static org.atalk.persistance.FileBackend.getMimeType;
@@ -82,13 +84,7 @@ import static org.atalk.persistance.FileBackend.getMimeType;
 public class ChatActivity extends OSGiActivity
         implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener, ChatRoomConfiguration.ChatRoomConfigListener
 {
-    private static final int REQUEST_CODE_SELECT_PHOTO = 100;
-    private static final int REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY = 101;
-    private static final int REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY = 102;
-    private static final int REQUEST_CODE_SELECT_VIDEO = 103;
-    private static final int REQUEST_CODE_CHOOSE_FILE_ACTIVITY = 104;
     private static final int REQUEST_CODE_OPEN_FILE = 105;
-
     private static final int REQUEST_CODE_SHARE_WITH = 200;
     private static final int REQUEST_CODE_FORWARD = 201;
 
@@ -160,6 +156,10 @@ public class ChatActivity extends OSGiActivity
      * file for camera picture or video capture
      */
     private static File mCameraFilePath = null;
+
+    private ActivityResultLauncher<String> mGetContents;
+    private ActivityResultLauncher<Uri> mTakePhoto;
+    private ActivityResultLauncher<Uri> mTakeVideo;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -247,6 +247,10 @@ public class ChatActivity extends OSGiActivity
         // setCurrentChatId(chatPanel.getChatSession().getChatId());
         setCurrentChatId(chatId);
         chatPager.setCurrentItem(chatPagerAdapter.getChatIdx(currentChatId));
+
+        mGetContents = getAttachments();
+        mTakePhoto = takePhoto();
+        mTakeVideo = takeVideo();
 
         if (intent.getClipData() != null) {
             if (intent.getCategories() != null)
@@ -441,7 +445,7 @@ public class ChatActivity extends OSGiActivity
                 mLeaveChatRoom.setVisible(false);
                 mDestroyChatRoom.setVisible(false);
                 mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
-                boolean isDomainJid = mRecipient.getJid() instanceof DomainBareJid;
+                boolean isDomainJid = (mRecipient == null) || (mRecipient.getJid() instanceof DomainBareJid);
 
                 // check if to show call buttons.
                 Object metaContact = chatSession.getDescriptor();
@@ -831,69 +835,97 @@ public class ChatActivity extends OSGiActivity
 
     public void sendAttachment(AttachOptionItem attachOptionItem)
     {
-        Intent intent = new Intent();
         Uri fileUri;
 
         switch (attachOptionItem) {
             case pic:
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_PHOTO);
+                String contentType = "image/*";
+                mGetContents.launch(contentType);
                 break;
 
             case video:
-                intent.setType("video/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
+                contentType = "video/*";
+                mGetContents.launch(contentType);
+                break;
+
+            case share_file:
+                contentType = "*/*";
+                mGetContents.launch(contentType);
                 break;
 
             case camera:
-                // create a file to save the image
-                mCameraFilePath = FileBackend.getOutputMediaFile(FileBackend.MEDIA_TYPE_IMAGE);
-                fileUri = FileBackend.getUriForFile(this, mCameraFilePath);
-
-                // create Intent to take a picture and return control to the calling application
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                // Take a photo and save to fileUri; then return control to the calling application
                 try {
-                    startActivityForResult(intent, REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY);
+                    // create a image file to save the photo
+                    mCameraFilePath = FileBackend.getOutputMediaFile(FileBackend.MEDIA_TYPE_IMAGE);
+                    fileUri = FileBackend.getUriForFile(this, mCameraFilePath);
+                    mTakePhoto.launch(fileUri);
                 } catch (SecurityException e) {
                     aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
                 }
                 break;
 
             case video_record:
-                // create a file to record video
-                mCameraFilePath = FileBackend.getOutputMediaFile(FileBackend.MEDIA_TYPE_VIDEO);
-                fileUri = FileBackend.getUriForFile(this, mCameraFilePath);
-
-                // create Intent to record video and return control to the calling application
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-                intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
                 try {
-                    startActivityForResult(intent, REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
+                    // create a mp4 file to save the video
+                    mCameraFilePath = FileBackend.getOutputMediaFile(FileBackend.MEDIA_TYPE_VIDEO);
+                    fileUri = FileBackend.getUriForFile(this, mCameraFilePath);
+                    mTakeVideo.launch(fileUri);
                 } catch (SecurityException e) {
                     aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
                 }
                 break;
-
-            case share_file:
-                intent.setType("*/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                try {
-                    Intent chooseFile = Intent.createChooser(intent, getString(R.string.choose_file_activity_title));
-                    startActivityForResult(chooseFile, REQUEST_CODE_CHOOSE_FILE_ACTIVITY);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    showToastMessage(R.string.service_gui_FOLDER_OPEN_NO_APPLICATION);
-                }
-                break;
         }
+    }
+
+    /**
+     * Opens a FileChooserDialog to let the user pick attachments
+     */
+    private ActivityResultLauncher<String> getAttachments()
+    {
+        return registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), uris -> {
+            if (uris != null) {
+                List<Attachment> attachments = Attachment.of(this, uris);
+                mediaPreviewAdapter.addMediaPreviews(attachments);
+            }
+            else {
+                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+            }
+        });
+    }
+
+    /**
+     * Callback from camera capture a photo with success status true or false
+     */
+    private ActivityResultLauncher<Uri> takePhoto()
+    {
+        return registerForActivityResult(new ActivityResultContracts.TakePicture(), success -> {
+            if (success) {
+                Uri uri = FileBackend.getUriForFile(this, mCameraFilePath);
+                List<Attachment> attachments = Attachment.of(this, uri, Attachment.Type.IMAGE);
+                mediaPreviewAdapter.addMediaPreviews(attachments);
+            }
+            else {
+                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+            }
+        });
+    }
+
+    /**
+     * Callback from camera capture a video with return thumbnail
+     */
+    private ActivityResultLauncher<Uri> takeVideo()
+    {
+        return registerForActivityResult(new ActivityResultContracts.TakeVideo(), thumbnail -> {
+            if (mCameraFilePath.length() != 0) {
+                Uri uri = FileBackend.getUriForFile(this, mCameraFilePath);
+                List<Attachment> attachments = Attachment.of(this, uri, Attachment.Type.IMAGE);
+                mediaPreviewAdapter.addMediaPreviews(attachments);
+            }
+            else {
+                aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+            }
+        });
     }
 
     @Override
@@ -905,22 +937,6 @@ public class ChatActivity extends OSGiActivity
             List<Attachment> attachments;
 
             switch (requestCode) {
-                case REQUEST_CODE_SELECT_PHOTO:
-                case REQUEST_CODE_SELECT_VIDEO:
-                case REQUEST_CODE_CHOOSE_FILE_ACTIVITY:
-                    attachments = Attachment.extractAttachments(this, intent, Attachment.Type.IMAGE);
-                    mediaPreviewAdapter.addMediaPreviews(attachments);
-                    break;
-
-                case REQUEST_CODE_CAPTURE_IMAGE_ACTIVITY:
-                case REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY:
-                    if ((mCameraFilePath != null) && mCameraFilePath.exists()) {
-                        Uri uri = FileBackend.getUriForFile(this, mCameraFilePath);
-                        attachments = Attachment.of(this, uri, Attachment.Type.IMAGE);
-                        mediaPreviewAdapter.addMediaPreviews(attachments);
-                    }
-                    break;
-
                 case REQUEST_CODE_OPEN_FILE:
                     if (intent != null) {
                         Uri uri = intent.getData();

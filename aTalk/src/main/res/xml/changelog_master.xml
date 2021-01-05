@@ -6,6 +6,13 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+
+    <release version="2.4.6 (01/05/2021)" versioncode="1146">
+        <change>Fix file sharing failed when sending thumbnail on request; smack throws NPE without max-age attribute in BoBData</change>
+        <change>Migrate all the StartActivityForResult calls to new android ActivityResultContract implementations</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.4.5 (12/18/2020)" versioncode="1145">
         <change>Fix UPnP for android-8.0(O) API-26 and above: Cleartext HTTP traffic not permitted in UPnP gateway getDescription</change>
         <change>Clean up and optimize ice4j#UPNPHarvester.java call to weupnp library</change>

@@ -176,12 +176,13 @@ public class SettingsActivity extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public void onStart()
+        public void onResume()
         {
-            super.onStart();
+            super.onResume();
 
             // FFR: v2.1.5 NPE; use UtilActivator instead of AndroidGUIActivator which was initialized much later
             mConfigService = UtilActivator.getConfigurationService();
+
             preferenceScreen = getPreferenceScreen();
             shPrefs = getPreferenceManager().getSharedPreferences();
 
@@ -446,7 +447,10 @@ public class SettingsActivity extends OSGiActivity
             values[0] = "Auto";
             int selectedIdx = 0; // Auto by default
 
-            String configuredHandler = mConfigService.getString("systray.POPUP_HANDLER");
+            // mCongService may be null feedback NPE from the field report, so just assume null i.e.
+            // "Auto" selected. Delete the user's preference and select the best available handler.
+            String configuredHandler = (mConfigService == null) ?
+                    null : mConfigService.getString("systray.POPUP_HANDLER");
             int idx = 1;
             for (ServiceReference<PopupMessageHandler> ref : handlerRefs) {
                 PopupMessageHandler handler = bc.getService(ref);

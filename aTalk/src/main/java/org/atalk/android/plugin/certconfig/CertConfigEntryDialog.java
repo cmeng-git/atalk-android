@@ -16,14 +16,14 @@
  */
 package org.atalk.android.plugin.certconfig;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import net.java.sip.communicator.impl.certificate.CertificateVerificationActivator;
 import net.java.sip.communicator.service.certificate.*;
@@ -45,7 +45,6 @@ import java.util.*;
 
 import javax.security.auth.callback.*;
 
-import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 /**
@@ -59,8 +58,6 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     // ------------------------------------------------------------------------
     // Fields and services
     // ------------------------------------------------------------------------
-    private static final int REQUEST_CODE_OPEN_FILE = 105;
-
     private static final KeyStoreType KS_NONE =
             new KeyStoreType(aTalkApp.getResString(R.string.service_gui_LIST_NONE), new String[]{""}, false);
 
@@ -126,8 +123,8 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
         txtDisplayName = contentView.findViewById(R.id.certDisplayName);
         txtKeyStore = contentView.findViewById(R.id.certFileName);
 
-        ImageButton cmdBrowse = contentView.findViewById(R.id.browse);
-        cmdBrowse.setOnClickListener(this);
+        ActivityResultLauncher<String> mGetContent = browseKeyStore();
+        contentView.findViewById(R.id.browse).setOnClickListener(view -> mGetContent.launch("*/*"));
 
         // Init the keyStore Type Spinner
         cboKeyStoreType = contentView.findViewById(R.id.cboKeyStoreType);
@@ -171,9 +168,7 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
     }
 
     /**
-     * Initialization the edited certificate or add new certficate
-     *
-     * @param e the <tt>CertificateConfigEntry</tt>
+     * Initialization the edited certificate or add new certificate
      */
     public void CertConfigEntryInit()
     {
@@ -308,62 +303,43 @@ public class CertConfigEntryDialog extends OSGiDialogFragment
      * Opens a FileChooserDialog to let the user pick a keystore and tries to
      * auto-detect the keystore type using the file extension
      */
-    private void browseKeyStore()
+    private ActivityResultLauncher<String> browseKeyStore()
     {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
+        return registerForActivityResult(new ActivityResultContracts.GetContent(), fileUri -> {
+            if (fileUri != null) {
+                File inFile = new File(FilePathHelper.getFilePath(mContext, fileUri));
+                if (inFile.exists()) {
+                    newInstall = true;
+                    cboKeyStoreType.setEnabled(true);
+                    cboKeyStoreType.setSelection(0);
+                    cboAlias.setEnabled(true);
 
-        Intent chooseFile = Intent.createChooser(intent, "File Browser");
-        startActivityForResult(chooseFile, REQUEST_CODE_OPEN_FILE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent)
-    {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode == Activity.RESULT_OK) {
-            if ((requestCode == REQUEST_CODE_OPEN_FILE) && (intent != null)) {
-                Uri fileUri = intent.getData();
-                if (fileUri != null) {
-                    File inFile = new File(FilePathHelper.getFilePath(mContext, fileUri));
-                    if (inFile.exists()) {
-                        newInstall = true;
-                        cboKeyStoreType.setEnabled(true);
-                        cboKeyStoreType.setSelection(0);
-                        cboAlias.setEnabled(true);
-
-                        txtDisplayName.setText(inFile.getName());
-                        txtKeyStore.setText(inFile.getAbsolutePath());
-                        boolean resolved = false;
-                        for (KeyStoreType kt : cs.getSupportedKeyStoreTypes()) {
-                            for (String ext : kt.getFileExtensions()) {
-                                if (inFile.getName().endsWith(ext)) {
-                                    cboKeyStoreType.setSelection(getIndexForType(kt));
-                                    resolved = true;
-                                    break;
-                                }
-                            }
-                            if (resolved) {
+                    txtDisplayName.setText(inFile.getName());
+                    txtKeyStore.setText(inFile.getAbsolutePath());
+                    boolean resolved = false;
+                    for (KeyStoreType kt : cs.getSupportedKeyStoreTypes()) {
+                        for (String ext : kt.getFileExtensions()) {
+                            if (inFile.getName().endsWith(ext)) {
+                                cboKeyStoreType.setSelection(getIndexForType(kt));
+                                resolved = true;
                                 break;
                             }
                         }
+                        if (resolved) {
+                            break;
+                        }
                     }
-                    else
-                        aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                 }
+                else
+                    aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
             }
-        }
+        });
     }
 
     @Override
     public void onClick(View v)
     {
         switch (v.getId()) {
-            case R.id.browse:
-                browseKeyStore();
-                break;
-
             case R.id.showCert:
                 showSelectedCertificate();
                 break;

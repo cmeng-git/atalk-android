@@ -15,6 +15,8 @@ import android.view.*;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.core.content.ContextCompat;
+
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
@@ -36,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.List;
 
-import androidx.core.content.ContextCompat;
 import timber.log.Timber;
 
 /**

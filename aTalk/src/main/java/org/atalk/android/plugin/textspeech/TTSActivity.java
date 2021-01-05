@@ -1,6 +1,7 @@
 package org.atalk.android.plugin.textspeech;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
@@ -18,13 +24,12 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.persistance.FileBackend;
 import org.atalk.service.osgi.OSGiActivity;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import timber.log.Timber;
 
 public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitListener, View.OnClickListener,
@@ -50,6 +55,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
 
     private TextToSpeech mTTS;
     private static State mState = State.UNKNOWN;
+    private int requestCode = REQUEST_DEFAULT;
 
     public enum State
     {
@@ -65,6 +71,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tts_main);
+
         mTtsText = findViewById(R.id.tts_text);
         mTtsText.addTextChangedListener(mTextWatcher);
 
@@ -78,8 +85,13 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
         mTtsDelay.setText(ttsDelay);
         mTtsDelay.addTextChangedListener(mTextWatcher);
 
-        Button btnSetting = findViewById(R.id.tts_setting);
-        btnSetting.setOnClickListener(this);
+        // Use standard ActivityResultContract instead (both methods work)
+        // ActivityResultLauncher<String> mGetTTSInfo = getTTSInfo();
+        findViewById(R.id.tts_setting).setOnClickListener(view -> {
+            requestCode = REQUEST_DEFAULT;
+            // mGetTTSInfo.launch(ACTION_TTS_SETTINGS);
+            mStartForResult.launch(new Intent(ACTION_TTS_SETTINGS));
+        });
 
         btnPlay = findViewById(R.id.tts_play);
         btnPlay.setOnClickListener(this);
@@ -102,9 +114,15 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
 
         setState(State.LOADING);
 
-        // Device without TTS engine will cause aTalk to crash.
+        /*
+         * Device without TTS engine will cause aTalk to crash; Check to see if we have TTS voice data
+         * Launcher the voice data verifier.
+         */
         try {
-            checkVoiceData();
+            requestCode = ACT_CHECK_TTS_DATA;
+            // mGetTTSInfo.launch(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+            mStartForResult.launch(new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA));
+
         } catch (ActivityNotFoundException ex) {
             aTalkApp.showToastMessage(ex.getMessage());
             finish();
@@ -180,11 +198,6 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     {
         String ttsText = ViewUtil.toString(mTtsText);
         switch (v.getId()) {
-            case R.id.tts_setting:
-                Intent intent = new Intent(ACTION_TTS_SETTINGS);
-                startActivityForResult(intent, REQUEST_DEFAULT);
-                break;
-
             case R.id.tts_play:
                 if (ttsText != null) {
                     Intent spkIntent = new Intent(this, TTSService.class);
@@ -208,36 +221,70 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
     {
-        switch (buttonView.getId()) {
-            case R.id.tts_enable:
-                ConfigurationUtils.setTtsEnable(isChecked);
-                break;
+        if (buttonView.getId() == R.id.tts_enable) {
+            ConfigurationUtils.setTtsEnable(isChecked);
         }
     }
+
+      /* Use standard ActivityResultContract instead */
+//    /**
+//     * GetTTSInfo class ActivityResultContract implementation.
+//     */
+//    public class GetTTSInfo extends ActivityResultContract<String, Integer>
+//    {
+//        @NonNull
+//        @Override
+//        public Intent createIntent(@NonNull Context context, @NonNull String action)
+//        {
+//            return new Intent(action);
+//        }
+//
+//        @Override
+//        public Integer parseResult(int resultCode, @Nullable Intent result)
+//        {
+//            if (((REQUEST_DEFAULT == requestCode) && resultCode != Activity.RESULT_OK || result == null)) {
+//                return null;
+//            }
+//            return resultCode;
+//        }
+//    }
+//
+//    /**
+//     * Handler for Activity Result callback
+//     */
+//    private ActivityResultLauncher<String> getTTSInfo()
+//    {
+//        return registerForActivityResult(new GetTTSInfo(), resultCode -> {
+//            switch (requestCode) {
+//                case ACT_CHECK_TTS_DATA:
+//                    onDataChecked(resultCode);
+//                    break;
+//
+//                case REQUEST_DEFAULT:
+//                    initializeEngine();
+//                    break;
+//            }
+//        });
+//    }
 
     /**
-     * Check to see if we have TTS voice data
-     * Launcher the voice data verifier.
-     */
-    private void checkVoiceData()
-    {
-        final Intent checkIntent = new Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkIntent, ACT_CHECK_TTS_DATA);
-    }
+     * standard ActivityResultContract#StartActivityForResult
+     **/
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new StartActivityForResult(), result -> {
+        int resultCode = result.getResultCode();
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
         switch (requestCode) {
             case ACT_CHECK_TTS_DATA:
-                onDataChecked(resultCode, data);
+                onDataChecked(resultCode);
                 break;
+
             case REQUEST_DEFAULT:
-                initializeEngine();
+                if (resultCode == Activity.RESULT_OK) {
+                    initializeEngine();
+                }
                 break;
         }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+    });
 
     /**
      * Handles the result of voice data verification. If verification fails
@@ -245,9 +292,8 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
      * either launches the installer or attempts to initialize the TTS engine.
      *
      * @param resultCode The result of voice data verification.
-     * @param data The intent containing available voices.
      */
-    private void onDataChecked(int resultCode, Intent data)
+    private void onDataChecked(int resultCode)
     {
         if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 //            Intent intent = new Intent(this, TTSService.class);
@@ -284,28 +330,23 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     private void setState(State state)
     {
         mState = state;
-        switch (mState) {
-            case LOADING:
-                findViewById(R.id.loading).setVisibility(View.VISIBLE);
-                findViewById(R.id.success).setVisibility(View.GONE);
-                break;
-            default:
-                findViewById(R.id.loading).setVisibility(View.GONE);
-                findViewById(R.id.success).setVisibility(View.VISIBLE);
-                break;
+        if (mState == State.LOADING) {
+            findViewById(R.id.loading).setVisibility(View.VISIBLE);
+            findViewById(R.id.success).setVisibility(View.GONE);
+        }
+        else {
+            findViewById(R.id.loading).setVisibility(View.GONE);
+            findViewById(R.id.success).setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    permissionCount++;
-            default:
-                break;
+        if (requestCode == REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                permissionCount++;
         }
     }
 
