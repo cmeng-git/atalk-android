@@ -6,6 +6,12 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.4.7 (01/12/2021)" versioncode="1147">
+        <change>Fix chat session abort: must only register ActivityResultContracts in onCreate cycle and not in onNewIntent->handleIntent</change>
+        <change>Must re-init the option menu items in group chat session upon user joins the conference e.g. after captcha challenge</change>
+        <change>Include validity check for user account in new account creation</change>
+        <change>Change background light-color theme from grey50 to grey200</change>
+    </release>
 
     <release version="2.4.6 (01/05/2021)" versioncode="1146">
         <change>Fix file sharing failed when sending thumbnail on request; smack throws NPE without max-age attribute in BoBData</change>

@@ -7,9 +7,14 @@
 package net.java.sip.communicator.plugin.jabberaccregwizz;
 
 import android.text.TextUtils;
+import android.util.Patterns;
 
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
@@ -81,9 +86,14 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
             String userName, String password, Map<String, String> accountProperties)
             throws OperationFailedException
     {
+        // check for valid user account; will request password in actual login process if password is null
+        if (TextUtils.isEmpty(userName) || !Patterns.EMAIL_ADDRESS.matcher(userName).matches()) {
+            throw new OperationFailedException("Should specify a valid user name and password "
+                    + userName + ".", OperationFailedException.ILLEGAL_ARGUMENT);
+        }
         Timber.log(TimberLog.FINER, "Preparing to install account for user %s", userName);
 
-        // if server address is null, just extract it from userID even for when server override option is set
+        // if server address is null, just extract it from userID even when server override option is set
         if (accountProperties.get(ProtocolProviderFactory.SERVER_ADDRESS) == null) {
             String serverAddress = XmppStringUtils.parseDomain(userName);
             if (!TextUtils.isEmpty(serverAddress))
@@ -153,12 +163,12 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      */
     public boolean isPreferredProtocol()
     {
-          // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
-//        String prefWName = JabberAccountRegistrationActivator.getResources().
-//            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
-//
-//        if(!TextUtils.isEmpty(prefWName) > 0 && prefWName.equals(this.getClass().getName()))
-//            return true;
+        // Check for preferred account through the PREFERRED_ACCOUNT_WIZARD property.
+        //        String prefWName = JabberAccountRegistrationActivator.getResources().
+        //            getSettingsString("gui.PREFERRED_ACCOUNT_WIZARD");
+        //
+        //        if(!TextUtils.isEmpty(prefWName) > 0 && prefWName.equals(this.getClass().getName()))
+        //            return true;
 
         return true;
     }

@@ -31,6 +31,8 @@ import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.sf.fmj.utility.IOUtils;
 
@@ -82,7 +84,8 @@ import static org.atalk.persistance.FileBackend.getMimeType;
  * @author Eng Chong Meng
  */
 public class ChatActivity extends OSGiActivity
-        implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener, ChatRoomConfiguration.ChatRoomConfigListener
+        implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener,
+        ChatRoomConfiguration.ChatRoomConfigListener, LocalUserChatRoomPresenceListener
 {
     private static final int REQUEST_CODE_OPEN_FILE = 105;
     private static final int REQUEST_CODE_SHARE_WITH = 200;
@@ -204,6 +207,12 @@ public class ChatActivity extends OSGiActivity
         mediaPreviewAdapter = new MediaPreviewAdapter(this, imagePreview);
         mediaPreview.setAdapter(mediaPreviewAdapter);
 
+        // Must do this in onCreate cycle else IllegalStateException if do it in onNewIntent->handleIntent:
+        // attempting to register while current state is STARTED. LifecycleOwners must call register before they are STARTED.
+        mGetContents = getAttachments();
+        mTakePhoto = takePhoto();
+        mTakeVideo = takeVideo();
+
         // Registered location listener - only use by playStore version
         GeoLocation.registeredLocationListener(this);
         handleIntent(getIntent(), savedInstanceState);
@@ -248,16 +257,11 @@ public class ChatActivity extends OSGiActivity
         setCurrentChatId(chatId);
         chatPager.setCurrentItem(chatPagerAdapter.getChatIdx(currentChatId));
 
-        mGetContents = getAttachments();
-        mTakePhoto = takePhoto();
-        mTakeVideo = takeVideo();
-
         if (intent.getClipData() != null) {
             if (intent.getCategories() != null)
                 onActivityResult(REQUEST_CODE_FORWARD, RESULT_OK, intent);
             else
                 onActivityResult(REQUEST_CODE_SHARE_WITH, RESULT_OK, intent);
-
         }
     }
 
@@ -272,7 +276,7 @@ public class ChatActivity extends OSGiActivity
     {
         super.onResume();
         if (currentChatId != null) {
-            lastSelectedIdx = -1; // always force to update on resume
+            lastSelectedIdx = -1; // always force update on resume
             updateSelectedChatInfo(chatPager.getCurrentItem());
         }
         else {
@@ -348,13 +352,20 @@ public class ChatActivity extends OSGiActivity
         ChatSessionManager.setCurrentChatId(chatId);
 
         selectedChatPanel = ChatSessionManager.getActiveChat(chatId);
-        // field feeback = can have null?
+        // field feedback = can have null?
         if (selectedChatPanel == null)
             return;
 
         ChatSession chatSession = selectedChatPanel.getChatSession();
         if (chatSession instanceof MetaContactChatSession) {
             mRecipient = selectedChatPanel.getMetaContact().getDefaultContact();
+        } else {
+            // register for LocalUserChatRoomPresenceChangeEvent to update optionItem onJoin
+            OperationSetMultiUserChat opSetMultiUChat
+                    = selectedChatPanel.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
+            if (opSetMultiUChat != null) {
+                opSetMultiUChat.addPresenceListener(this);
+            }
         }
 
         // Leave last chat intent by updating general notification
@@ -431,17 +442,17 @@ public class ChatActivity extends OSGiActivity
     private void setOptionItem()
     {
         if ((mMenu != null) && (selectedChatPanel != null)) {
-            boolean hasUploadService = false;
-            ChatSession chatSession = selectedChatPanel.getChatSession();
-            XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
-            if (connection != null) {
-                HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
-                hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
-            }
-
             // Enable/disable certain menu items based on current transport type
+            ChatSession chatSession = selectedChatPanel.getChatSession();
             boolean contactSession = (chatSession instanceof MetaContactChatSession);
             if (contactSession) {
+                boolean hasUploadService = false;
+                XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+                if (connection != null) {
+                    HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
+                    hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
+                }
+
                 mLeaveChatRoom.setVisible(false);
                 mDestroyChatRoom.setVisible(false);
                 mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
@@ -475,36 +486,7 @@ public class ChatActivity extends OSGiActivity
                 mOtr_Session.setVisible(!isDomainJid);
             }
             else {
-                // Only room owner is allowed to destroy chatRoom - role should not be null for joined room
-                ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) chatSession.getDescriptor();
-                ChatRoomMemberRole role = chatRoomWrapper.getChatRoom().getUserRole();
-
-                mDestroyChatRoom.setVisible(ChatRoomMemberRole.OWNER.equals(role));
-                mChatRoomConfig.setVisible(ChatRoomMemberRole.OWNER.equals(role));
-
-                boolean isJoined = chatRoomWrapper.getChatRoom().isJoined();
-                mLeaveChatRoom.setVisible(isJoined);
-                mSendFile.setVisible(isJoined && hasUploadService);
-                mSendLocation.setVisible(isJoined);
-
-                mTtsEnable.setVisible(isJoined);
-                mTtsEnable.setTitle(chatRoomWrapper.isTtsEnable()
-                        ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
-
-                mStatusEnable.setVisible(true);
-                mStatusEnable.setTitle(chatRoomWrapper.isRoomStatusEnable()
-                        ? R.string.service_gui_CHATROOM_STATUS_OFF : R.string.service_gui_CHATROOM_STATUS_ON);
-
-                mChatRoomNickSubject.setVisible(isJoined);
-
-                mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
-                mChatRoomInfo.setVisible(true);
-                mChatRoomMember.setVisible(true);
-
-                // not available in chatRoom
-                mCallAudioContact.setVisible(false);
-                mCallVideoContact.setVisible(false);
-                mOtr_Session.setVisible(false);
+                setupChatRoomOptionItem();
             }
             // Show the TTS enable option only if global TTS option is enabled.
             mTtsEnable.setVisible(ConfigurationUtils.isTtsEnable());
@@ -514,6 +496,56 @@ public class ChatActivity extends OSGiActivity
                 mPadlock.setVisible(contactSession);
             }
         }
+    }
+
+    private void setupChatRoomOptionItem() {
+        if ((mMenu != null) && (selectedChatPanel != null)) {
+            ChatSession chatSession = selectedChatPanel.getChatSession();
+
+            boolean hasUploadService = false;
+            XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+            if (connection != null) {
+                HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
+                hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
+            }
+
+            // Only room owner is allowed to destroy chatRoom - role should not be null for joined room
+            ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) chatSession.getDescriptor();
+            ChatRoomMemberRole role = chatRoomWrapper.getChatRoom().getUserRole();
+
+            mDestroyChatRoom.setVisible(ChatRoomMemberRole.OWNER.equals(role));
+            mChatRoomConfig.setVisible(ChatRoomMemberRole.OWNER.equals(role));
+
+            boolean isJoined = chatRoomWrapper.getChatRoom().isJoined();
+            mLeaveChatRoom.setVisible(isJoined);
+            mSendFile.setVisible(isJoined && hasUploadService);
+            mSendLocation.setVisible(isJoined);
+
+            mTtsEnable.setVisible(isJoined);
+            mTtsEnable.setTitle(chatRoomWrapper.isTtsEnable()
+                    ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
+
+            mStatusEnable.setVisible(true);
+            mStatusEnable.setTitle(chatRoomWrapper.isRoomStatusEnable()
+                    ? R.string.service_gui_CHATROOM_STATUS_OFF : R.string.service_gui_CHATROOM_STATUS_ON);
+
+            mChatRoomNickSubject.setVisible(isJoined);
+
+            mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
+            mChatRoomInfo.setVisible(true);
+            mChatRoomMember.setVisible(true);
+
+            // not available in chatRoom
+            mCallAudioContact.setVisible(false);
+            mCallVideoContact.setVisible(false);
+            mOtr_Session.setVisible(false);
+        }
+    }
+
+    @Override
+    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
+    {
+        setupChatRoomOptionItem();
     }
 
     /**

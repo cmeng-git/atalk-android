@@ -1,6 +1,19 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	01/12/2021
+Version:		2.4.7 (1147)
+- ChatActivity: must only register ActivityResultContracts in onCreate cycle and not in onNewIntent->handleIntent; else
+  java.lang.RuntimeException: Unable to resume activity {org.atalk.android/org.atalk.android.gui.chat.ChatActivity}:
+  java.lang.IllegalStateException: LifecycleOwner org.atalk.android.gui.chat.ChatActivity@b4a2159 is attempting
+  to register while current state is STARTED. LifecycleOwners must call register before they are STARTED.
+- ChatActivity for group chat session must re-init the optionItem on LocalUserChatRoomPresenceChangeEvent e.g. captcha challenge
+- AccountRegistrationImpl#installAccount(): Add check for valid xmpp user account in new account creation.
+- Change color background light-color theme from grey50 to grey200
+- Update smack AbstractProvider class as per smack v4.4.1 TBR
+
+=========================================================================
+Author:         cmeng
 Upload Date:	01/05/2021
 Version:		2.4.6 (1146)
 - Fix file sharing failed when sending thumbnail on request; smack throws NPE without max-age attribute in BoBData

@@ -885,9 +885,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Leave this chat room
      *
-     * @param reason reason for leaving the room
      * @param alternateAddress alternate chatRoom to join
-     * @param hasLeft true when then room is destroyed (smack patch)
+     * @param reason reason for leaving the room
      */
     private void leave(EntityBareJid alternateAddress, String reason)
     {
