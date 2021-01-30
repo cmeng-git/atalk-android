@@ -315,7 +315,9 @@ public class CryptoFragment extends OSGiFragment
     {
         // return: nothing to do if not enable
         isOmemoMode = enable;
-        if (!enable || (mDescriptor == null) || !activeChat.getProtocolProvider().isRegistered())
+        ProtocolProviderService pps = activeChat.getProtocolProvider();
+
+        if (!enable || (mDescriptor == null) || !pps.isRegistered())
             return;
 
         // Linked map between OmemoDevice and its fingerprint.

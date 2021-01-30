@@ -130,7 +130,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     private static final int STATE_PLAY = 3;
 
-    private static Map<Uri, BroadcastReceiver> bcRegisters = new HashMap<>();
+    private static final Map<Uri, BroadcastReceiver> bcRegisters = new HashMap<>();
 
     private int playerState = STATE_STOP;
 
@@ -616,13 +616,13 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Handles buttons click action events.
      */
     @Override
-    public void onClick(View v)
+    public void onClick(View view)
     {
-        switch (v.getId()) {
+        switch (view.getId()) {
             case R.id.button_file:
             case R.id.sticker:
                 if (mChatActivity != null)
-                    mChatActivity.openDownloadable(mXferFile);
+                    mChatActivity.openDownloadable(mXferFile, view);
                 break;
 
             case R.id.playback_play:
@@ -789,7 +789,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * Media player BroadcastReceiver to animate and update player view holder info
      */
-    private BroadcastReceiver mReceiver = new BroadcastReceiver()
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)

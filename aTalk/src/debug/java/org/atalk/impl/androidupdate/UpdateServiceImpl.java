@@ -353,6 +353,16 @@ public class UpdateServiceImpl implements UpdateService
     }
 
     /**
+     * Gets the current (software) version.
+     *
+     * @return the current (software) version
+     */
+    public static long getCurrentVersionCode()
+    {
+        return getVersionService().getCurrentVersionCode();
+    }
+
+    /**
      * Gets the latest available (software) version online.
      *
      * @return the latest (software) version

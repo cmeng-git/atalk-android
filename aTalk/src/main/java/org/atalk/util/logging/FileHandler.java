@@ -15,6 +15,8 @@
  */
 package org.atalk.util.logging;
 
+import org.atalk.service.configuration.ConfigurationService;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.LogManager;
@@ -126,8 +128,8 @@ public class FileHandler extends java.util.logging.FileHandler
         if (pattern == null) {
             pattern = LogManager.getLogManager().getProperty(FileHandler.class.getName() + ".pattern");
 
-            String homeLocation = System.getProperty("net.java.sip.communicator.SC_HOME_DIR_LOCATION");
-            String dirName = System.getProperty("net.java.sip.communicator.SC_HOME_DIR_NAME");
+            String homeLocation = System.getProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
+            String dirName = System.getProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME);
 
             if (homeLocation != null && dirName != null) {
                 if (pattern == null)

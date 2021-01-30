@@ -141,6 +141,7 @@ Libraries used in this project:
 * [ckChangeLog](https://github.com/cketti/ckChangeLog)
 * [commons-text](https://commons.apache.org/proper/commons-text/)
 * [Dexter](https://github.com/Karumi/Dexter)
+* [ExoPlayer](https://github.com/google/ExoPlayer)
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg)
 * [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)

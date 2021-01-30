@@ -19,7 +19,6 @@ public class MyGlideApp extends AppGlideModule
      * @param viewHolder image preview holder
      * @param file the image file
      * @param isHistory History file image view is only a small preview
-     * @param isTypeMedia True if pre-determined mimeType from caller is a media file
      */
     public static void loadImage(ImageView viewHolder, File file, Boolean isHistory)
     {

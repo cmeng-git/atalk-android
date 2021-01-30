@@ -42,7 +42,7 @@ import de.cketti.library.changelog.ChangeLog;
  */
 public class About extends OSGiActivity implements View.OnClickListener
 {
-    private static String[][] USED_LIBRARIES = new String[][]{
+    private static final String[][] USED_LIBRARIES = new String[][]{
             new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
             new String[]{"android-betterpickers", "https://github.com/code-troopers/android-betterpickers"},
             new String[]{"Android-EasyLocation", "https://github.com/akhgupta/Android-EasyLocation"},
@@ -53,6 +53,7 @@ public class About extends OSGiActivity implements View.OnClickListener
             new String[]{"commons-lang", "https://commons.apache.org/proper/commons-lang/"},
             new String[]{"Dexter", "https://github.com/Karumi/Dexter"},
             new String[]{"dhcp4java", "https://github.com/ggrandes-clones/dhcp4java"},
+            new String[]{"ExoPlayer", "https://github.com/google/ExoPlayer"},
             new String[]{"FFmpeg", "https://github.com/FFmpeg/FFmpeg"},
             new String[]{"glide", "https://github.com/bumptech/glide"},
             new String[]{"Google Play Services", "https://developers.google.com/android/guides/overview"},
@@ -83,7 +84,7 @@ public class About extends OSGiActivity implements View.OnClickListener
             new String[]{"zrtp4j-light", "https://github.com/jitsi/zrtp4j"},
     };
 
-    private static String[][] SUPPORTED_XEP = new String[][]{
+    private static final String[][] SUPPORTED_XEP = new String[][]{
             new String[]{"XEP-0012: Last Activity", "https://xmpp.org/extensions/xep-0012.html"},
             new String[]{"XEP-0030: Service Discovery", "https://xmpp.org/extensions/xep-0030.html"},
             new String[]{"XEP-0045: Multi-User Chat", "https://xmpp.org/extensions/xep-0045.html"},

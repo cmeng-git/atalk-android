@@ -110,7 +110,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     {
         isOmemoInitSuccessful = true;
         mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
-        Timber.d("Initialize OmemoManager successful for %s", mConnection.getUser());
+        Timber.d("Initialize OmemoManager successful for %s", manager.getOwnDevice());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
         String errMsg = cause.getMessage();
         Timber.w("%s: %s", title, errMsg);
         if (errMsg != null) {
-            if (errMsg.contains("CorruptedOmemoKeyException")) {
+            if (errMsg.contains("Invalid IdentityKeyPairs") || errMsg.contains("CorruptedOmemoKeyException")) {
                 String msg = aTalkApp.getResString(R.string.omemo_init_failed_CorruptedOmemoKeyException,
                         mOmemoManager.getOwnDevice(), errMsg);
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);

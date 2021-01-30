@@ -40,7 +40,7 @@ public class RemoveAccountDialog
 
     private static void onRemoveClicked(DialogInterface dialog, final Account account, OnAccountRemovedListener l)
     {
-        // Fix "network on main thread"
+        // Fix "network access on the main thread"
         final Thread removeAccountThread = new Thread()
         {
             @Override

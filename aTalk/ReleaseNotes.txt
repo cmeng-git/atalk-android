@@ -1,6 +1,36 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	01/30/2021
+Version:		2.5.0 (1150)
+- Add embedded ExoPlayer for video media files or youtube media links play back
+- Image content display can either use embedded glide image viewer or external image view application
+- Improve process handlers for "Regenerate OMEMO identities", "Purge unused identities" and "Purge Corrupted OmemoKey"
+  * SQLiteOmemoStore#purgeBundleDeviceList for server omemo data cleanup must purge the bundle and update devicelist
+  * Add new method SQLiteOmemoStore#purgeCorruptedOmemoKey to properly handle in purging the corrupted omemoKey
+  * Modified SQLiteOmemoStore#purgeInactiveUserDevices() to continue to the next device if exception occurs for current userJid
+- Display alert dialog on Corrupted Omemo IdentityKeyPair to user to Regenerate omemo identities.
+  * smack-omemo does not handle Corrupted KeyPair
+- Update OmemoDevices table Unique constraint to contain only jid i.e. each user can only has one omemoDevice defined
+- Improve "Report Bugs" to ensure the most recent aTalk logcat is included, with android OS and app version
+  * Ensure the "atalk-logcat.txt" is log collected for debug log sending.
+  * When report bug, insert android device OS info and aTalk apk version in log info
+- Fix Writing exception to parcel in LogUploadServiceImpl#sendLogs()
+  * ctx.grantUriPermission("android", logsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+  SecurityException: Permission Denial: reading androidx.core.content.FileProvider uri content://...
+  requires the provider be exported, or grantUriPermission()
+- LaunchArgHandler: Use common defined strings in ConfigurationService
+- Add <queries/> element in manifest file for Android 11 (API level 30)
+- Found problem in Note-3 with setIdentityKeyTrust, following causes it to update to two rows. Doing 2/3 majority poll?
+  Setting both peacock@atalk.sytes.net:17642636 & peacock@atalk.sytes.net:1701516316 trust state at the same time;
+  both have same fingerPrint values (corrupted?)
+    String[] selectionArgs = {device.getJid().toString(), Integer.toString((device.getDeviceId())), fingerprint};
+    int rows = db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME,
+        fingerprintStatus.toContentValues(), SQLiteOmemoStore.BARE_JID + "=? AND "
+      + SQLiteOmemoStore.DEVICE_ID + "=? AND " + SQLiteOmemoStore.FINGERPRINT + "=?", selectionArgs);
+
+=========================================================================
+Author:         cmeng
 Upload Date:	01/12/2021
 Version:		2.4.7 (1147)
 - ChatActivity: must only register ActivityResultContracts in onCreate cycle and not in onNewIntent->handleIntent; else
