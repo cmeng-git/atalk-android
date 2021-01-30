@@ -9,6 +9,7 @@ package net.java.sip.communicator.util.launchutils;
 import net.java.sip.communicator.util.ScStdOut;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.service.configuration.ConfigurationService;
 
 import java.io.*;
 import java.util.Properties;
@@ -32,27 +33,6 @@ public class LaunchArgHandler
      */
     private static final net.java.sip.communicator.util.Logger logger =
             net.java.sip.communicator.util.Logger.getLogger(LaunchArgHandler.class);
-
-    /**
-     * The name of the property that contains the location of the SC configuration directory.
-     */
-    private static final String PNAME_SC_HOME_DIR_LOCATION = "net.java.sip.communicator.SC_HOME_DIR_LOCATION";
-
-    /**
-     * The name of the property that stores the home dir for cache data, such
-     * as avatars or spelling dictionaries.
-     */
-    private static final String PNAME_SC_CACHE_DIR_LOCATION = "net.java.sip.communicator.SC_CACHE_DIR_LOCATION";
-
-    /**
-     * The name of the property that stores the home dir for application logs (not history).
-     */
-    private static final String PNAME_SC_LOG_DIR_LOCATION = "net.java.sip.communicator.SC_LOG_DIR_LOCATION";
-
-    /**
-     * The name of the property that contains the name of the SC configuration directory.
-     */
-    private static final String PNAME_SC_HOME_DIR_NAME = "net.java.sip.communicator.SC_HOME_DIR_NAME";
 
     /**
      * Returned by the <tt>handleArgs</tt> methods when the arguments that have
@@ -363,10 +343,10 @@ public class LaunchArgHandler
             return ACTION_ERROR;
         }
 
-        System.setProperty(PNAME_SC_HOME_DIR_LOCATION, configDir.getParent());
-        System.setProperty(PNAME_SC_CACHE_DIR_LOCATION, configDir.getParent());
-        System.setProperty(PNAME_SC_LOG_DIR_LOCATION, configDir.getParent());
-        System.setProperty(PNAME_SC_HOME_DIR_NAME, configDir.getName());
+        System.setProperty(ConfigurationService.PNAME_SC_HOME_DIR_LOCATION, configDir.getParent());
+        System.setProperty(ConfigurationService.PNAME_SC_CACHE_DIR_LOCATION, configDir.getParent());
+        System.setProperty(ConfigurationService.PNAME_SC_LOG_DIR_LOCATION, configDir.getParent());
+        System.setProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME, configDir.getName());
 
         //we instantiated our class logger before we had a chance to change
         //the dir so we need to reset it now.

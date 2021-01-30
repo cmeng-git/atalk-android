@@ -17,39 +17,92 @@
 package org.atalk.android.gui.chat;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.*;
-import android.text.*;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.SparseBooleanArray;
-import android.view.*;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+import net.java.sip.communicator.util.ByteFormat;
+import net.java.sip.communicator.util.GuiUtils;
+import net.java.sip.communicator.util.StatusUtil;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
-import org.atalk.android.gui.chat.filetransfer.*;
+import org.atalk.android.gui.chat.filetransfer.FileHistoryConversation;
+import org.atalk.android.gui.chat.filetransfer.FileHttpDownloadConversation;
+import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.share.ShareUtil;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.EntityListHelper;
+import org.atalk.android.gui.util.HtmlImageGetter;
+import org.atalk.android.gui.util.XhtmlImageParser;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
@@ -66,12 +119,14 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import timber.log.Timber;
 
 /**
@@ -1027,8 +1082,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                     MessageViewHolder viewHolder = viewHolders.get(msgIdx);
                     if (viewHolder != null) {
-                        // Just update the corrected message body without refresh the whole view
-                        viewHolder.messageView.setText(msgDisplay.getBody(null));
+                        // Just update the corrected message body without refreshing the whole view
+                        msgDisplay.getBody(viewHolder.messageView);
                     }
                 }
             });
@@ -1169,8 +1224,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     ChatMessage chatMessage = message.updateDeliveryStatus(msgId, receiptStatus);
                     if (viewHolder != null) {
                         // Need to update merged messages new receipt statuses
-                        if (chatMessage instanceof MergedMessage)
-                            viewHolder.messageView.setText(message.getBody(null));
+                        if (chatMessage instanceof MergedMessage) {
+                            message.getBody(viewHolder.messageView);
+                        }
+
                         setMessageReceiptStatus(viewHolder.msgReceiptView, receiptStatus);
                     }
                     return viewHolder;
@@ -1505,8 +1562,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 }
 
                 // getBody() will return null if there is img src tag to be updated via async
-                if (body != null)
-                    messageViewHolder.messageView.setText(body);
+                // if (body != null)
+                //     messageViewHolder.messageView.setText(body);
 
                 // Set clicks adapter for re-edit last outgoing message OR HTTP link download support
                 messageViewHolder.messageView.setOnClickListener(msgClickAdapter);
@@ -1763,7 +1820,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             protected double longitude;
 
             /**
-             * Creates new instance of <tt>MessageDisplay</tt> that will be used for displaying
+             * Creates a new instance of <tt>MessageDisplay</tt> that will be used for displaying
              * given <tt>ChatMessage</tt>.
              *
              * @param msg the <tt>ChatMessage</tt> that will be displayed by this instance.
@@ -1822,7 +1879,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
 
             /**
-             * Perform google street and map view fetch when user click the show map button
+             * Perform google street and map view fetch when user clicks the show map button
              *
              * @param view view
              */
@@ -1948,12 +2005,36 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             Timber.w("Error in Linkify process: %s", msgBody);
                         }
                     }
+
+                    SpannableStringBuilder strBuilder = new SpannableStringBuilder(msgBody);
+                    URLSpan[] urls = strBuilder.getSpans(0, msgBody.length(), URLSpan.class);
+                    for (URLSpan span : urls) {
+                        makeLinkClickable(strBuilder, span);
+                    }
+                    if (msgView != null)
+                        msgView.setText(strBuilder);
                 }
                 return msgBody;
             }
 
+            protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan urlSpan)
+            {
+                int start = strBuilder.getSpanStart(urlSpan);
+                int end = strBuilder.getSpanEnd(urlSpan);
+                int flags = strBuilder.getSpanFlags(urlSpan);
+                ClickableSpan clickable = new ClickableSpan()
+                {
+                    public void onClick(View view)
+                    {
+                        mChatActivity.playVideoOrActionView(Uri.parse(urlSpan.getURL()));
+                    }
+                };
+                strBuilder.setSpan(clickable, start, end, flags);
+                strBuilder.removeSpan(urlSpan);
+            }
+
             /**
-             * Updates this display instance with new message.
+             * Updates this display instance with a new message.
              * Both receiptStatus and serverMsgId of the message will use the new chatMessage
              *
              * @param chatMessage new message content
@@ -2038,25 +2119,25 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public TextView estTimeRemain = null;
     }
 
-//    class IdRow2 // need to include in MessageViewHolder for stealth support
-//    {
-//        public int mId;
-//        public View mRow;
-//        public int mCountDownValue;
-//        public boolean deleteFlag;
-//        public boolean mStartCountDown;
-//        public boolean mFileIsOpened;
-//
-//        public IdRow2(int id, View row, int startValue)
-//        {
-//            mId = id;
-//            mRow = row;
-//            mCountDownValue = startValue;
-//            deleteFlag = false;
-//            mStartCountDown = false;
-//            mFileIsOpened = false;
-//        }
-//    }
+    //    class IdRow2 // need to include in MessageViewHolder for stealth support
+    //    {
+    //        public int mId;
+    //        public View mRow;
+    //        public int mCountDownValue;
+    //        public boolean deleteFlag;
+    //        public boolean mStartCountDown;
+    //        public boolean mFileIsOpened;
+    //
+    //        public IdRow2(int id, View row, int startValue)
+    //        {
+    //            mId = id;
+    //            mRow = row;
+    //            mCountDownValue = startValue;
+    //            deleteFlag = false;
+    //            mStartCountDown = false;
+    //            mFileIsOpened = false;
+    //        }
+    //    }
 
     /**
      * Loads the history in an asynchronous thread and then adds the history messages to the user interface.

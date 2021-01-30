@@ -162,6 +162,11 @@
     <string name="service_gui_SHARE_FILE">Recurso compartido de archivos&#8230;</string>
     <string name="service_gui_SNOOZE">dormitar</string>
 
+    <!-- ExoPlayer -->
+    <string name="gui_playback_error">No se puede encontrar ningún contenido multimedia para reproducir</string>
+    <string name="gui_playback_buffering">Buffering&#8230;</string>
+    <string name="gui_playback_completed">Fin de reproducción multimedia</string>
+
     <!-- Conference Chat -->
 	<string name="service_gui_AUTOJOIN">Unirse automáticamente</string>
 	<string name="service_gui_CHANGE_NICK">Cambiar el apodo</string>

@@ -46,7 +46,7 @@ public class MergedMessage implements ChatMessage
     private String serverMsgIds;
 
     /**
-     * Creates new instance of <tt>MergedMessage</tt> where the given message will become its
+     * Creates a new instance of <tt>MergedMessage</tt> where the given message will become its
      * rootMessage on which other new messages are being merged.
      *
      * @param rootMsg the rootMessage message for this merged instance.
@@ -268,8 +268,7 @@ public class MergedMessage implements ChatMessage
     /**
      * Get the status display for the given message.
      *
-     * @param receiptStatusView the encryption state view
-     * @param deliveryStatus the encryption
+     * @param chatMessage Chat message
      */
     private static String getReceiptStatus(ChatMessage chatMessage)
     {

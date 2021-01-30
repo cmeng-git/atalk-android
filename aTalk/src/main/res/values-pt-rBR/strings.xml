@@ -158,6 +158,11 @@
     <string name="service_gui_SHARE_FILE">Compartilhar arquivo&#8230;</string>
     <string name="service_gui_SNOOZE">Sesta</string>
 
+    <!-- ExoPlayer -->
+    <string name="gui_playback_error">Não é possível encontrar nenhum conteúdo de mídia para reprodução</string>
+    <string name="gui_playback_buffering">Carregando&#8230;</string>
+    <string name="gui_playback_completed">Fim da reprodução de mídia</string>
+
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Auto-adesão</string>
     <string name="service_gui_CHANGE_NICK">Alterar o apelido</string>

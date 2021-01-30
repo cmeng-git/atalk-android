@@ -41,8 +41,8 @@ public class JidToHashCacheFile implements JidToHashCache
 	 * /**
 	 * Creates a new directory for keeping JidToHashCache object.
 	 * <p>
-	 * Default filename encoder {@link Base32}, as this will work on all file systems, both case
-	 * sensitive and case insensitive. It does however produce longer filenames.
+	 * Default filename encoder {@link Base32}, as this will work on all file systems,
+     * both case-sensitive and case-insensitive. It does however produce longer filenames.
 	 *
 	 * @param storeDir
 	 * 		The directory used to store the data.

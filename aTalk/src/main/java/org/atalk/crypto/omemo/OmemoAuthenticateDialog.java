@@ -21,7 +21,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.ListView;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
@@ -38,7 +40,10 @@ import org.jivesoftware.smackx.omemo.trust.TrustState;
 import org.jxmpp.jid.BareJid;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -171,14 +176,14 @@ public class OmemoAuthenticateDialog extends OSGiActivity
             Boolean fpCheck = entry.getValue();
             allTrusted = fpCheck && allTrusted;
             if (fpCheck) {
+                mOmemoDevices.remove(omemoDevice);
+
                 fingerprint = buddyFingerprints.get(omemoDevice);
                 if (Corrupted_OmemoKey.equals(fingerprint)) {
-                    mOmemoStore.purgeOwnDeviceKeys(omemoDevice);
-                    mOmemoDevices.remove(omemoDevice);
+                    mOmemoStore.purgeCorruptedOmemoKey(mOmemoManager, omemoDevice);
                 }
                 else {
                     trustOmemoFingerPrint(omemoDevice, fingerprint);
-                    mOmemoDevices.remove(omemoDevice);
                 }
             }
             else {
@@ -233,7 +238,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         private final Map<OmemoDevice, String> buddyFPs;
 
         /**
-         * Creates new instance of <tt>FingerprintListAdapter</tt>.
+         * Creates a new instance of <tt>FingerprintListAdapter</tt>.
          *
          * @param linkedHashMap list of <tt>Contact</tt> for which OTR fingerprints will be displayed.
          */

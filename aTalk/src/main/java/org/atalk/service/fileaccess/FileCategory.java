@@ -14,21 +14,18 @@ public enum FileCategory
 {
 	/**
 	 * For files or directories that contain configuration data or similar data that belongs to a
-	 * specific user, but might non-simultaneously be shared across different computers or
-	 * operating systems.
+	 * specific user, but might non-simultaneously be shared across different computers or operating systems.
 	 */
 	PROFILE,
 
 	/**
-	 * For files or directories that contain cached data. It must be safe to delete these files at
-	 * any time.
+	 * For files or directories that contain cached data. It must be safe to delete these files at  any time.
 	 */
 	CACHE,
 
 	/**
 	 * For files or directories that contain log data that is bound to a specific user and
-	 * computer. This is NOT for
-	 * history related data.
+	 * computer. This is NOT for history related data.
 	 */
 	LOG
 }

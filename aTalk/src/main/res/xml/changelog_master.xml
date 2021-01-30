@@ -6,6 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.5.0 (01/30/2021)" versioncode="1150">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html'&gt;aTalk online help&lt;/a&gt; before using aTalk.</change>
+        <change>Add embedded ExoPlayer for video media files or youtube media links play back</change>
+        <change>Image content display can either use embedded glide image viewer or external image view application</change>
+        <change>Improve process handlers for "Regenerate OMEMO identities", "Purge unused identities" and "Purge Corrupted OmemoKey"</change>
+        <change>Display an alert dialog on Corrupted Omemo IdentityKeyPair to user; advice user to manually Regenerate omemo identities if the problem persist</change>
+        <change>Improve "Report Bugs" routine to ensure the most recent aTalk logcat is always included, and add android OS and aTalk app version info</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.4.7 (01/12/2021)" versioncode="1147">
         <change>Fix chat session abort: must only register ActivityResultContracts in onCreate cycle and not in onNewIntent->handleIntent</change>
         <change>Must re-init the option menu items in group chat session upon user joins the conference e.g. after captcha challenge</change>

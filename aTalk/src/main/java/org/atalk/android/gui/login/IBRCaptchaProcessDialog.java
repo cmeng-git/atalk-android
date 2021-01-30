@@ -480,7 +480,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     xmppError = StanzaError.from(Condition.not_acceptable, errMsg).build();
                 }
                 Timber.e("Exception: %s; %s", errMsg, errDetails);
-                if (errMsg.contains("conflict") && errDetails.contains("exists"))
+                if ((errMsg != null) && errMsg.contains("conflict") && errDetails.contains("exists"))
                     mAccountId.setIbRegistration(false);
                 mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
             }

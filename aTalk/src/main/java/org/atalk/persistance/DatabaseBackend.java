@@ -65,7 +65,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
      * Increment DATABASE_VERSION when there is a change in database records
      */
     public static final String DATABASE_NAME = "dbRecords.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static DatabaseBackend instance = null;
     private ProtocolProviderService mProvider;
 
@@ -76,7 +76,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             + SQLiteOmemoStore.OMEMO_REG_ID + " INTEGER, "
             + SQLiteOmemoStore.CURRENT_SIGNED_PREKEY_ID + " INTEGER, "
             + SQLiteOmemoStore.LAST_PREKEY_ID + " INTEGER, UNIQUE("
-            + SQLiteOmemoStore.OMEMO_JID + ", " + SQLiteOmemoStore.OMEMO_REG_ID
+            + SQLiteOmemoStore.OMEMO_JID
             + ") ON CONFLICT REPLACE);";
 
     // Create preKeys table
@@ -449,7 +449,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
     }
 
     // ========= OMEMO Devices =========
-    public SortedSet<Integer> loadDevideIdsOf(BareJid user)
+    public SortedSet<Integer> loadDeviceIdsOf(BareJid user)
     {
         SortedSet<Integer> deviceIds = new TreeSet<>();
         int registrationId;
@@ -534,8 +534,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         values.put(SQLiteOmemoStore.CURRENT_SIGNED_PREKEY_ID, currentSignedPreKeyId);
 
         int row = db.update(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, values,
-                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?",
-                selectionArgs);
+                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?", selectionArgs);
         if (row == 0) {
             db.insert(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, null, values);
         }
@@ -576,8 +575,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         values.put(SQLiteOmemoStore.LAST_PREKEY_ID, lastPreKeyId);
 
         int row = db.update(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, values,
-                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?",
-                selectionArgs);
+                SQLiteOmemoStore.OMEMO_JID + "=? AND " + SQLiteOmemoStore.OMEMO_REG_ID + "=?", selectionArgs);
         if (row == 0) {
             db.insert(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, null, values);
         }
@@ -1014,8 +1012,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 
             int row = db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, values,
-                    SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?",
-                    selectionArgs);
+                    SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", selectionArgs);
 
             if (row == 0) {
                 /*
@@ -1043,8 +1040,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 
             int row = db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, values,
-                    SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?",
-                    selectionArgs);
+                    SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", selectionArgs);
             if (row == 0) {
                 Timber.w("Identities table contains no inactiveDevice (create new): %s:%s", contact, deviceId);
                 values.put(SQLiteOmemoStore.BARE_JID, contact.toString());
@@ -1168,8 +1164,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         );
     }
 
-    public void storePreVerification(OmemoDevice device, String fingerprint,
-            FingerprintStatus status)
+    public void storePreVerification(OmemoDevice device, String fingerprint, FingerprintStatus status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -1180,12 +1175,10 @@ public class DatabaseBackend extends SQLiteOpenHelper
         db.insert(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, null, values);
     }
 
-    public boolean setIdentityKeyTrust(OmemoDevice device, String fingerprint,
-            FingerprintStatus fingerprintStatus)
+    public boolean setIdentityKeyTrust(OmemoDevice device, String fingerprint, FingerprintStatus fingerprintStatus)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] selectionArgs = {device.getJid().toString(),
-                Integer.toString((device.getDeviceId())), fingerprint};
+        String[] selectionArgs = {device.getJid().toString(), Integer.toString((device.getDeviceId())), fingerprint};
         int rows = db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME,
                 fingerprintStatus.toContentValues(), SQLiteOmemoStore.BARE_JID + "=? AND "
                         + SQLiteOmemoStore.DEVICE_ID + "=? AND " + SQLiteOmemoStore.FINGERPRINT + "=?", selectionArgs);
@@ -1333,19 +1326,19 @@ public class DatabaseBackend extends SQLiteOpenHelper
      */
     public void purgeOmemoDb(AccountID accountId)
     {
-        String account = accountId.getAccountJid();
-        Timber.d(">>> Wiping OMEMO database for account : %s", account);
+        String accountJid = accountId.getAccountJid();
+        Timber.d(">>> Wiping OMEMO database for account : %s", accountJid);
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] args = {account};
+        String[] args = {accountJid};
 
         db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, SQLiteOmemoStore.OMEMO_JID + "=?", args);
         db.delete(SQLiteOmemoStore.PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
         db.delete(SQLiteOmemoStore.SIGNED_PREKEY_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
 
-        // Cleanup all the session and identities records for own resources and the contacts
+        // Cleanup all the session and identities records for own resources, and the contacts
         List<String> identityJids = getContactsForAccount(accountId.getAccountUuid());
-        identityJids.add(account);
+        identityJids.add(accountJid);
         for (String identityJid : identityJids) {
             args = new String[]{identityJid};
             db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);

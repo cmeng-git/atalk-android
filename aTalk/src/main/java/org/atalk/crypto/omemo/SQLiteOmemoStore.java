@@ -26,24 +26,41 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoStore;
-import org.jivesoftware.smackx.omemo.trust.*;
+import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
+import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
+import org.jivesoftware.smackx.omemo.trust.TrustState;
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.whispersystems.libsignal.IdentityKey;
 import org.whispersystems.libsignal.IdentityKeyPair;
-import org.whispersystems.libsignal.state.*;
+import org.whispersystems.libsignal.state.PreKeyRecord;
+import org.whispersystems.libsignal.state.SessionRecord;
+import org.whispersystems.libsignal.state.SignedPreKeyRecord;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 import timber.log.Timber;
 
@@ -175,7 +192,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     @Override
     public SortedSet<Integer> localDeviceIdsOf(BareJid localUser)
     {
-        return mDB.loadDevideIdsOf(localUser);
+        return mDB.loadDeviceIdsOf(localUser);
     }
 
     /**
@@ -223,7 +240,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     }
 
     /**
-     * Store a PreKey in storage.
+     * Store a contact PreKey in storage.
      *
      * @param userDevice our OmemoDevice.
      * @param preKeyId id of the key
@@ -240,7 +257,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * with us.
      *
      * @param userDevice our OmemoDevice.
-     * @param preKeyId id of the used key that will be deleted
+     * @param preKeyId id of the used key to be deleted
      */
     @Override
     public void removeOmemoPreKey(OmemoDevice userDevice, int preKeyId)
@@ -350,7 +367,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
         try {
             identityKeyPair = mDB.loadIdentityKeyPair(userDevice);
         } catch (CorruptedOmemoKeyException e) {
-            Timber.w("Corrupted Omemo IdentityKeyPair: %s", e.getMessage());
+            Timber.e("Corrupted Omemo IdentityKeyPair: %s", e.getMessage());
             throw new CorruptedOmemoKeyException(e.getMessage());
         }
         if (identityKeyPair == null) {
@@ -403,7 +420,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             identityKey = mDB.loadIdentityKey(contactDevice);
         } catch (CorruptedOmemoKeyException e) {
             // throw only if key is corrupted else return null
-            Timber.w("Corrupted Omemo IdentityKey: %s", e.getMessage());
+            Timber.e("Corrupted Omemo IdentityKey: %s", e.getMessage());
             throw new CorruptedOmemoKeyException(e.getMessage());
         }
         return identityKey;
@@ -415,7 +432,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * If new device, initialize its fingerprint trust status basing on:
      * - found no previously manually verified fingerprints for the contact AND
      * - pending user option BlindTrustBeforeVerification.
-     * Otherwise just set its status to active and update lastActivation to current.
+     * Otherwise, just set its status to active and update lastActivation to current.
      *
      * Daniel Gultsch wrote a nice article about BTBV. Basically BTBV works as follows:
      * When a new key k is received for a Jid J, then k is only considered automatically trusted,
@@ -430,6 +447,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     @Override
     public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactDevice, IdentityKey contactKey)
     {
+        if (userDevice.equals(contactDevice)) {
+            Timber.w("Attempt to overwrite own device IdentityKeyPars with IdentityKey; ignore request!: %s", contactDevice);
+            return;
+        }
+
         String bareJid = contactDevice.getJid().toString();
         String fingerprint = keyUtil().getFingerprintOfIdentityKey(contactKey).toString();
 
@@ -453,14 +475,14 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             mDB.storeIdentityKey(contactDevice, contactKey, fingerprint, fpStatus);
             trustCache.remove(fingerprint);
         }
-//        else {
-//            // Timber.d("Skip Update duplicated identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
-//            // Code for testing only
-//            // if (contactDevice.getJid().toString().contains("atalkuser1")) {
-//            //     contactDevice = new OmemoDevice(contactDevice.getJid(),1367773246);
-//            //     removeOmemoIdentityKey(null, contactDevice);
-//            // }
-//        }
+        // else {
+        //     // Timber.d("Skip Update duplicated identityKey for: %s; %s; %s", contactDevice, contactKey.toString(), fingerprint);
+        //     // Code for testing only
+        //     if (contactDevice.getJid().toString().contains("atalkuser1")) {
+        //         contactDevice = new OmemoDevice(contactDevice.getJid(),1367773246);
+        //         removeOmemoIdentityKey(null, contactDevice);
+        //     }
+        // }
     }
 
     /**
@@ -765,6 +787,8 @@ public class SQLiteOmemoStore extends SignalOmemoStore
         return mDB.getOmemoMessageCounter(contactsDevice);
     }
 
+    // ========== aTalk methods to handle omemo specific tasks ==========
+
     /**
      * Delete this device's IdentityKey, PreKeys, SignedPreKeys and Sessions.
      *
@@ -778,45 +802,63 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     }
 
     /**
-     * Clean up omemo database and omemo bundle data on server for user account when deleted.
+     * Clean up omemo bundle and devicelist on the server for the specified omemoDevice:
      *
-     * @param accountId the omemo local database/server of the accountID to be purged.
+     * @param connection XMPPConnection
+     * @param userJid Account userJid
+     * @param omemoDevice of which the bundle and devicelist items are to be removed from server
      */
-
-    public void purgeUserOmemoData(AccountID accountId)
+    private void purgeBundleDeviceList(XMPPConnection connection, BareJid userJid, OmemoDevice omemoDevice)
     {
-        // Purge server omemo bundle nodes for the deleted account (only if online and registered)
-        ProtocolProviderService pps = accountId.getProtocolProvider();
-        if (pps != null) {
-            XMPPConnection connection = pps.getConnection();
-            if ((connection != null) && connection.isAuthenticated()) {
-                BareJid userJid = accountId.getBareJid();
-                PubSubManager pubsubManager = PubSubManager.getInstanceFor(connection, userJid);
-                OmemoCachedDeviceList deviceList = mDB.loadCachedDeviceList(userJid);
-                try {
-                    for (int deviceId : deviceList.getAllDevices()) {
-                        String nodeId = new OmemoDevice(userJid, deviceId).getBundleNodeName();
-                        LeafNode leafNode = pubsubManager.getLeafNode(nodeId);
-                        leafNode.deleteAllItems();
-                        pubsubManager.deleteNode(nodeId);
-                    }
-                } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
-                    aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, userJid);
+        Timber.d("Purge server bundle and deviceList for old omemo device: %s", omemoDevice);
+        PubSubManager pubsubManager = PubSubManager.getInstanceFor(connection, userJid);
+        PepManager pepManager = PepManager.getInstanceFor(connection);
+
+        // First refresh omemo devicelist on the server i.e. removed old id
+        Set<Integer> deviceIds = Collections.emptySet();
+        try {
+            String nodeName = OmemoConstants.PEP_NODE_DEVICE_LIST;
+            LeafNode leafNode = pubsubManager.getLeafNode(nodeName);
+            if (leafNode != null) {
+                List<PayloadItem<OmemoDeviceListElement>> items = leafNode.getItems();
+                if (!items.isEmpty()) {
+                    // These will completely remove the deviceList - mny not be good
+                    // leafNode.deleteAllItems();
+                    // pubsubManager.deleteNode(nodeName);
+
+                    OmemoDeviceListElement publishedList = items.get(items.size() - 1).getPayload();
+                    deviceIds = publishedList.copyDeviceIds();  // need a copy of the unmodifiable list
+                    deviceIds.remove(omemoDevice.getDeviceId());
                 }
             }
+            OmemoDeviceListElement deviceList = new OmemoDeviceListElement_VAxolotl(deviceIds);
+            pepManager.publish(nodeName, new PayloadItem<>(deviceList));
+
+        } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
+            aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, omemoDevice);
         }
-        // Purge local omemo database for the deleted account
-        mDB.purgeOmemoDb(accountId);
-        trustCache.evictAll();
+
+        // Only then purge omemo preKeys table/bundles on server
+        try {
+            String nodeName = omemoDevice.getBundleNodeName();
+            LeafNode leafNode = pubsubManager.getLeafNode(nodeName);
+            if (leafNode != null) {
+                leafNode.deleteAllItems();
+                pubsubManager.deleteNode(nodeName);
+            }
+        } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
+            aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, omemoDevice);
+        }
     }
 
     /**
-     * Regenerate new omemo identity for the device
-     * 1. Purge account Omemo info in database
+     * Regenerate new omemo device identity for the specified user accountId in the following order
+     * 1. Purge account Omemo info in the local database
      * 2. Call via AndroidOmemoService() to:
      * a. create new Omemo deviceId
-     * b. generate fresh user identityKeyPairs, bundle
+     * b. generate fresh user identityKeyPairs, preKeys and save to local DB
      * c. publish it to the server.
+     * 3. Purge server bundle data and devicelist for the old omemoDevice
      */
     public void regenerate(AccountID accountId)
     {
@@ -824,22 +866,37 @@ public class SQLiteOmemoStore extends SignalOmemoStore
         if (pps != null) {
             XMPPConnection connection = pps.getConnection();
             if ((connection != null) && connection.isAuthenticated()) {
-                // Purge all omemo devices info in database and server for the specific account
-                purgeUserOmemoData(accountId);
+                BareJid userJid = accountId.getBareJid();
+                OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
+                // stop old omemo manager to update cached data
+                omemoManager.stopStanzaAndPEPListeners();
+
+                // Purge bundle and refresh devicelist for the old omemoDevice
+                OmemoDevice omemoDevice = omemoManager.getOwnDevice();
+                purgeBundleDeviceList(connection, userJid, omemoDevice);
+
+                // Purge all omemo devices info in the local database for the specified accountId
+                mDB.purgeOmemoDb(accountId);
+                trustCache.evictAll();
+
+                // Create new omemoDeice
                 new AndroidOmemoService(pps).initOmemoDevice();
             }
         }
     }
 
     /**
-     * Purge owner old unused devices on the published server deviceList and local database
-     * Remove bundle node data from the server and
+     * The method performs the following functions:
+     * 1. Purge all inactive devices and devices with null IdentityKeys;
+     * 2. Remove all inactive devices associated table data if any;
+     * 3. Refresh devicelist on the server with own device and cached active devices
+     * 4. Clean up any omemo orphan data
      *
-     * Remove the local database for:
-     * 1. perKeyPairs
-     * 2. signed preKeys
-     * 3. identities table entries
-     * 4. session table entries
+     * Remove the associated local database include the followings:
+     * a. preKeyPairs
+     * b. signed preKeys
+     * c. identities table entries
+     * d. session table entries
      *
      * @param pps protocolProvider of the user account.
      */
@@ -850,26 +907,24 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             if ((connection != null) && connection.isAuthenticated()) {
                 OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
                 BareJid userJid = omemoManager.getOwnDevice().getJid();
-                PubSubManager pubsubManager = PubSubManager.getInstanceFor(connection, userJid);
+
                 OmemoDevice userDevice;
+                OmemoCachedDeviceList deviceList = mDB.loadCachedDeviceList(userJid);
+                Timber.d("Purge inactive devices associated data for: %s %s", userJid, deviceList.getInactiveDevices());
+
+                // remove the local inactive devices from identities table and all their associated data if any
+                for (int deviceId : deviceList.getInactiveDevices()) {
+                    userDevice = new OmemoDevice(userJid, deviceId);
+                    purgeOwnDeviceKeys(userDevice);
+                }
+
+                // Also delete all devices with null Identity key - omemoService will re-create them if needed
+                int count = mDB.deleteNullIdentityKeyDevices();
+                Timber.d("Number of null identities deleted: %s", count);
+
+                // publish a new device list with our own deviceId and cached active devices
                 try {
                     omemoManager.purgeDeviceList();
-                    OmemoCachedDeviceList deviceList = mDB.loadCachedDeviceList(userJid);
-                    Timber.d("Purge inactive device for: %s %s", userJid, deviceList.getInactiveDevices());
-                    for (int deviceId : deviceList.getInactiveDevices()) {
-                        userDevice = new OmemoDevice(userJid, deviceId);
-                        String nodeId = userDevice.getBundleNodeName();
-                        // Remove old bundle nodes on the xmpp server
-                        LeafNode leafNode = pubsubManager.getLeafNode(nodeId);
-                        leafNode.deleteAllItems();
-                        pubsubManager.deleteNode(nodeId);
-                        purgeOwnDeviceKeys(userDevice);
-                    }
-
-                    // Also delete all devices with null Identity key - omemoService will re-create if needed
-                    int count = mDB.deleteNullIdentityKeyDevices();
-                    Timber.d("Number of null identities deleted: %s", count);
-
                 } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException | IOException e) {
                     aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, userJid);
                 }
@@ -877,6 +932,60 @@ public class SQLiteOmemoStore extends SignalOmemoStore
         }
         // Cleanup orphan's Omemo Tables
         cleanUpOmemoDB();
+    }
+
+    /**
+     * Remove the corrupted omemoDevice from the table; remove null identities and clean up the server devicelist
+     *
+     * @param omemoManager OmemoManager
+     * @param omemoDevice the corrupted device
+     */
+    public void purgeCorruptedOmemoKey(OmemoManager omemoManager, OmemoDevice omemoDevice)
+    {
+        Timber.d("Purging corrupted KeyIdentity for omemo device: %s", omemoDevice);
+
+        // remove the local corrupted device from db first; in case network access throws exception
+        purgeOwnDeviceKeys(omemoDevice);
+
+        // Also delete all devices with null Identity key - omemoService will re-create them if needed
+        int count = mDB.deleteNullIdentityKeyDevices();
+        Timber.d("Number of null identities deleted: %s", count);
+
+        // publish a new device list with our own deviceId and cached active devices
+        try {
+            omemoManager.purgeDeviceList();
+        } catch (SmackException | InterruptedException | XMPPException.XMPPErrorException | IOException e) {
+            aTalkApp.showToastMessage(R.string.omemo_purge_inactive_device_error, omemoDevice);
+        }
+    }
+
+    /**
+     * Clean up omemo local database, and omemo bundle and devicelist on the server for the specified accountId when:
+     * 1. When a user account is deleted.
+     * 2. During Regenerate OMEMO identities
+     *
+     * @param accountId the omemo local database/server of the accountID to be purged.
+     */
+    public void purgeUserOmemoData(AccountID accountId)
+    {
+        // Retain a copy of the old device to purge data on server
+        BareJid userJid = accountId.getBareJid();
+        Integer deviceId = localDeviceIdsOf(userJid).first();
+        OmemoDevice omemoDevice = new OmemoDevice(userJid, deviceId);
+
+        // Must first remove the omemoDevice and associated data from local database
+        // Purge local omemo database for the specified account
+        mDB.purgeOmemoDb(accountId);
+        trustCache.evictAll();
+
+        // Purge server omemo bundle nodes for the deleted account (only if online and authenticated)
+        ProtocolProviderService pps = accountId.getProtocolProvider();
+        if (pps != null) {
+            XMPPConnection connection = pps.getConnection();
+            if ((connection != null) && connection.isAuthenticated()) {
+                purgeBundleDeviceList(connection, userJid, omemoDevice);
+            }
+        }
     }
 
     /**

@@ -15,7 +15,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.Surface;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,20 +37,32 @@ import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.sf.fmj.utility.IOUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.*;
+import org.atalk.android.BuildConfig;
+import org.atalk.android.MyGlideApp;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
-import org.atalk.android.gui.chatroomslist.*;
+import org.atalk.android.gui.chatroomslist.ChatRoomConfiguration;
+import org.atalk.android.gui.chatroomslist.ChatRoomDestroyDialog;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoDialog;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
@@ -54,11 +73,14 @@ import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
+import org.atalk.android.plugin.video.MediaExoPlayer;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.json.JSONException;
@@ -66,11 +88,15 @@ import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -359,7 +385,8 @@ public class ChatActivity extends OSGiActivity
         ChatSession chatSession = selectedChatPanel.getChatSession();
         if (chatSession instanceof MetaContactChatSession) {
             mRecipient = selectedChatPanel.getMetaContact().getDefaultContact();
-        } else {
+        }
+        else {
             // register for LocalUserChatRoomPresenceChangeEvent to update optionItem onJoin
             OperationSetMultiUserChat opSetMultiUChat
                     = selectedChatPanel.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
@@ -498,7 +525,8 @@ public class ChatActivity extends OSGiActivity
         }
     }
 
-    private void setupChatRoomOptionItem() {
+    private void setupChatRoomOptionItem()
+    {
         if ((mMenu != null) && (selectedChatPanel != null)) {
             ChatSession chatSession = selectedChatPanel.getChatSession();
 
@@ -975,7 +1003,7 @@ public class ChatActivity extends OSGiActivity
                         if (uri != null) {
                             filePath = FilePathHelper.getFilePath(this, uri);
                             if (StringUtils.isNotEmpty(filePath))
-                                openDownloadable(new File(filePath));
+                                openDownloadable(new File(filePath), null);
                             else
                                 aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                         }
@@ -1049,7 +1077,7 @@ public class ChatActivity extends OSGiActivity
      *
      * @param file the file to open
      */
-    public void openDownloadable(File file)
+    public void openDownloadable(File file, View view)
     {
         if (!file.exists()) {
             showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
@@ -1070,27 +1098,57 @@ public class ChatActivity extends OSGiActivity
             mimeType = "*/*";
         }
 
-        Intent openIntent = new Intent(Intent.ACTION_VIEW);
         if (mimeType.contains("audio") || mimeType.contains("3gp")) {
-            openIntent = new Intent(this, AudioBgService.class);
+            Intent openIntent = new Intent(this, AudioBgService.class);
             openIntent.setAction(AudioBgService.ACTION_PLAYBACK_PLAY);
             openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             openIntent.setDataAndType(uri, mimeType);
             startService(openIntent);
-            return;
         }
+        // Use android Intent.ACTION_VIEW if user clicks on the file icon, else use glide for image
+        else if (mimeType.contains("image") && !(view instanceof ImageButton)) {
+            MyGlideApp.loadImage((ImageView) view, file, false);
+        }
+        // User ExoPlayer to play video/youtube link or default android ACTION_VIEW
+        else {
+            playVideoOrActionView(uri);
+        }
+    }
 
-        openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        openIntent.setDataAndType(uri, mimeType);
-        PackageManager manager = getPackageManager();
-        List<ResolveInfo> info = manager.queryIntentActivities(openIntent, 0);
-        if (info.size() == 0) {
-            openIntent.setDataAndType(uri, "*/*");
+    /**
+     * Start playback if it is a video file or youtube link; else start android ACTION_VIEW activity
+     *
+     * @param uri the video url link
+     */
+    public void playVideoOrActionView(Uri uri)
+    {
+        String videoUrl = uri.toString();
+        String mimeType = FileBackend.getMimeType(this, uri);
+        if ((!TextUtils.isEmpty(mimeType) && mimeType.contains("video"))
+                || videoUrl.matches("http[s]*://[w.]*youtu[.]*be.*")) {
+            Bundle bundle = new Bundle();
+            bundle.putString(MediaExoPlayer.ATTR_VIDEO_URL, videoUrl);
+
+            Intent intent = new Intent(this, MediaExoPlayer.class);
+            intent.putExtras(bundle);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
-        try {
-            startActivity(openIntent);
-        } catch (ActivityNotFoundException e) {
-            showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+        else {
+            Intent openIntent = new Intent(Intent.ACTION_VIEW);
+            openIntent.setDataAndType(uri, mimeType);
+            openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            PackageManager manager = getPackageManager();
+            List<ResolveInfo> info = manager.queryIntentActivities(openIntent, 0);
+            if (info.size() == 0) {
+                openIntent.setDataAndType(uri, "*/*");
+            }
+            try {
+                startActivity(openIntent);
+            } catch (ActivityNotFoundException e) {
+                showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+            }
         }
     }
 

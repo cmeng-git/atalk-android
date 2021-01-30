@@ -18,9 +18,16 @@ package net.java.sip.communicator.plugin.loggingutils;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.util.OSUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -28,7 +35,7 @@ import java.util.zip.ZipOutputStream;
 import timber.log.Timber;
 
 /**
- * Collects logs and save them in compressed zip file.
+ * Collect logs and save them in compressed zip file.
  *
  * @author Damian Minkov
  * @author Eng Chong Meng
@@ -48,16 +55,16 @@ public class LogsCollector
     /**
      * The date format used in file names.
      */
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd@HH.mm.ss");
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd@HH.mm.ss", Locale.US);
 
     /**
-     * The pattern we use to match crash logs.
+     * The pattern uses to match crash logs.
      */
-    private static Pattern JAVA_ERROR_LOG_PATTERN
+    private static final Pattern JAVA_ERROR_LOG_PATTERN
             = Pattern.compile(Pattern.quote("sip.communicator"), Pattern.CASE_INSENSITIVE);
 
     /**
-     * Save the log files in archive file. If destination is a folder, we generate filename with
+     * Save the log files in archive file. If destination is a folder, we generate the filename with
      * current date and time. If the destination is null we do nothing and if it is a file we use
      * as it, as we check does it end with zip extension, is missing we add it.
      *
@@ -80,8 +87,8 @@ public class LogsCollector
             destination = new File(destination, getDefaultFileName());
         }
         ZipOutputStream out = new ZipOutputStream(new FileOutputStream(destination));
-        collectHomeFolderLogs(out);
         collectJavaCrashLogs(out);
+        collectHomeFolderLogs(out);
 
         if (optional != null) {
             addFileToZip(optional, out);
@@ -106,8 +113,7 @@ public class LogsCollector
     }
 
     /**
-     * Collects all files from log folder except the lock file; and put them in the zip file as
-     * zip entries.
+     * Collects all files from log folder except the lock file; and put them in the zip file as zip entries.
      *
      * @param out the output zip file.
      */
@@ -117,10 +123,12 @@ public class LogsCollector
             File[] fs = LoggingUtilsActivator.getFileAccessService()
                     .getPrivatePersistentDirectory(LOGGING_DIR_NAME, FileCategory.LOG).listFiles();
 
-            for (File f : fs) {
-                if (f.getName().endsWith(".lck"))
-                    continue;
-                addFileToZip(f, out);
+            if (fs != null) {
+                for (File f : fs) {
+                    if (f.getName().endsWith(".lck"))
+                        continue;
+                    addFileToZip(f, out);
+                }
             }
         } catch (Exception e) {
             Timber.e(e, "Error obtaining logs folder");
@@ -203,8 +211,11 @@ public class LogsCollector
             // windows TMP or TEMP environment variable is the temporary folder
 
             //java.io.tmpdir
-            File[] tempFiles = new File(System.getProperty("java.io.tmpdir")).listFiles();
-            addCrashFilesToArchive(tempFiles, JAVA_ERROR_LOG_PREFIX, out);
+            String tmpDir;
+            if ((tmpDir = System.getProperty("java.io.tmpdir")) != null) {
+                File[] tempFiles = new File(tmpDir).listFiles();
+                addCrashFilesToArchive(tempFiles, JAVA_ERROR_LOG_PREFIX, out);
+            }
         }
     }
 
@@ -215,7 +226,7 @@ public class LogsCollector
      * @param filterStartsWith a prefix for the files, can be null if no prefix check should be made.
      * @param out the output archive stream.
      */
-    private static void addCrashFilesToArchive(File files[], String filterStartsWith, ZipOutputStream out)
+    private static void addCrashFilesToArchive(File[] files, String filterStartsWith, ZipOutputStream out)
     {
         // no files to add
         if (files == null)
@@ -240,18 +251,13 @@ public class LogsCollector
      */
     private static boolean isOurCrashLog(File file)
     {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (JAVA_ERROR_LOG_PATTERN.matcher(line).find())
-                        return true;
-                }
-            } finally {
-                reader.close();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (JAVA_ERROR_LOG_PATTERN.matcher(line).find())
+                    return true;
             }
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
         }
         return false;
     }

@@ -5,15 +5,27 @@
  */
 package org.atalk.android;
 
-import android.app.*;
+import android.app.Activity;
+import android.app.Application;
+import android.app.DownloadManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.os.*;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
 import android.webkit.WebView;
 import android.widget.Toast;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
@@ -21,8 +33,10 @@ import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
-import org.atalk.android.gui.*;
+import org.atalk.android.gui.Splash;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
@@ -37,7 +51,6 @@ import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
-import androidx.lifecycle.*;
 import timber.log.Timber;
 
 /**
@@ -117,6 +130,7 @@ public class aTalkApp extends Application implements LifecycleObserver
 
         // Trigger the aTalk database upgrade or creation if none exist
         DatabaseBackend.getInstance(this);
+        // MigrationTo5.updateOmemoDevicesTable(DatabaseBackend.getInstance(this).getWritableDatabase());
 
         // Do this after WebView(this).destroy(); Set up contextWrapper to use aTalk user selected Language
         mInstance = this;
@@ -293,8 +307,7 @@ public class aTalkApp extends Application implements LifecycleObserver
     /**
      * Returns Android string resource for given <tt>id</tt> and format arguments that will be used for substitution.
      *
-     * @param id the string identifier.
-     * @param arg the format arguments that will be used for substitution.
+     * @param aString the string identifier.
      * @return Android string resource for given <tt>id</tt> and format arguments.
      */
 

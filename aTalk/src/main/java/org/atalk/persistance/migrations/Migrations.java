@@ -28,6 +28,8 @@ public class Migrations {
                 MigrationTo3.updateSQLDatabase(db);
             case 3:
                 MigrationTo4.updateOmemoIdentitiesTable(db);
+            case 4:
+                MigrationTo5.updateOmemoDevicesTable(db);
         }
     }
 }
