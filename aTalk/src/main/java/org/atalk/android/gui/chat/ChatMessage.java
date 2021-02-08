@@ -19,6 +19,9 @@ import java.util.Date;
  */
 public interface ChatMessage
 {
+    // <a href="...">...</a>; <font ...>
+    String HTML_MARKUP = "(?s).*?<[A-Za-z]+.*?>.*?</[A-Za-z]+>.*?";
+
     /* DB database column  fields */
     String TABLE_NAME = "messages";
     String UUID = "uuid";   // msg Unique identification in database (deletion Id)

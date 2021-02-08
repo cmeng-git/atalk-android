@@ -2079,7 +2079,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // set up default in case XHTMLExtension contains no message
             // if msgBody contains markup text then set as ENCODE_HTML mode
             int encType = IMessage.ENCODE_PLAIN;
-            if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+            if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
                 encType = IMessage.ENCODE_HTML;
             }
             IMessage newMessage = createMessage(msgBody, encType, null);

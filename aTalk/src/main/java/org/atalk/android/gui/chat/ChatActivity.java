@@ -1111,7 +1111,7 @@ public class ChatActivity extends OSGiActivity
         }
         // User ExoPlayer to play video/youtube link or default android ACTION_VIEW
         else {
-            playVideoOrActionView(uri);
+            playMediaOrActionView(uri);
         }
     }
 
@@ -1120,18 +1120,17 @@ public class ChatActivity extends OSGiActivity
      *
      * @param uri the video url link
      */
-    public void playVideoOrActionView(Uri uri)
+    public void playMediaOrActionView(Uri uri)
     {
-        String videoUrl = uri.toString();
+        String mediaUrl = uri.toString();
         String mimeType = FileBackend.getMimeType(this, uri);
-        if ((!TextUtils.isEmpty(mimeType) && mimeType.contains("video"))
-                || videoUrl.matches("http[s]*://[w.]*youtu[.]*be.*")) {
+        if ((!TextUtils.isEmpty(mimeType) && (mimeType.contains("video") || mimeType.contains("audio")))
+                || mediaUrl.matches("http[s]*://[w.]*youtu[.]*be.*")) {
             Bundle bundle = new Bundle();
-            bundle.putString(MediaExoPlayer.ATTR_VIDEO_URL, videoUrl);
+            bundle.putString(MediaExoPlayer.ATTR_MEDIA_URL, mediaUrl);
 
             Intent intent = new Intent(this, MediaExoPlayer.class);
             intent.putExtras(bundle);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
         else {

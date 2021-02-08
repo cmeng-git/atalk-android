@@ -828,7 +828,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
         String msgBody = decryptedOmemoMessage.getBody();
 
         // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
-        if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+        if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
         }
         else {

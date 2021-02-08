@@ -1975,7 +1975,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             {
                 String body = msg.getMessage();
                 if ((msgBody == null) && !TextUtils.isEmpty(body)) {
-                    boolean hasHtmlTag = body.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
+                    boolean hasHtmlTag = body.matches(ChatMessage.HTML_MARKUP);
                     boolean hasImgSrcTag = hasHtmlTag && body.contains("<img");
 
                     // Convert to Spanned body to support text mark up display
@@ -2026,7 +2026,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 {
                     public void onClick(View view)
                     {
-                        mChatActivity.playVideoOrActionView(Uri.parse(urlSpan.getURL()));
+                        mChatActivity.playMediaOrActionView(Uri.parse(urlSpan.getURL()));
                     }
                 };
                 strBuilder.setSpan(clickable, start, end, flags);

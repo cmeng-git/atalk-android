@@ -413,7 +413,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
             Html.ImageGetter imageGetter = new HtmlImageGetter();
             String body = replyMessage.getMessage();
-            if (!body.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+            if (!body.matches(ChatMessage.HTML_MARKUP)) {
                 body = body.replace("\n", "<br/>");
             }
             quotedMessage = aTalkApp.getResString(R.string.service_gui_CHAT_REPLY,
@@ -472,7 +472,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                         }
 
                         // if text contains markup tag then send message as ENCODE_HTML mode
-                        if (textEdit.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+                        if (textEdit.matches(ChatMessage.HTML_MARKUP)) {
                             Timber.d("HTML text entry detected: %s", textEdit);
                             msgEdit.setText(textEdit);
                             sendMessage(textEdit, IMessage.ENCODE_HTML);

@@ -1,6 +1,23 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	02/08/2021
+Version:		2.5.1 (1151)
+- Enable ExoPlayer advance features/options for playback repeat and speed etc; use StyledPlayerView.
+- Check and allow ExoPlayer for media audio url link playback
+- MediaExoPlayer: onSaveInstanceState() may be called after or prior to onStop pending on OS version
+  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
+     onSaveInstanceState is called after onPause but before onStop
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+    onSaveInstanceState is called only after onStop
+  Execute releasePlayer() in onPause for all OS; and save a copy of mExoPlayer.getCurrentPosition() in startPositionMs before release ExoPlayer.
+- Fix logical check for ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) && isFinishing()) leads to
+  MediaExoPlayer not properly stop; and keep adding new instance on screen rotation.
+- HTML markup text check must also include <a href ..> etc syntax; define and use global HTML_MARKUP string
+  String HTML_MARKUP = "(?s).*?<[A-Za-z]+.*?>.*?</[A-Za-z]+>.*?";
+
+=========================================================================
+Author:         cmeng
 Upload Date:	01/30/2021
 Version:		2.5.0 (1150)
 - Add embedded ExoPlayer for video media files or youtube media links play back

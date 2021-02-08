@@ -487,7 +487,7 @@ public class ChatMessageImpl implements ChatMessage
 
         boolean isHttpFTMsg = isNonEmpty && message.matches("(?s)^aesgcm:.*|^http[s].*");
 
-        boolean isMarkUpText = isNonEmpty && message.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
+        boolean isMarkUpText = isNonEmpty && message.matches(ChatMessage.HTML_MARKUP);
 
         // New LatLng message always treated as non-consecutiveMessage
         boolean isLatLng = isNonEmpty && message.contains("LatLng:");
@@ -530,7 +530,7 @@ public class ChatMessageImpl implements ChatMessage
         boolean isHttpFTMsg = isNonEmpty && bodyText.matches("(?s)^aesgcm:.*|^http[s].*");
 
         // XHTML markup message always treated as non-consecutiveMessage
-        boolean isMarkUpText = isNonEmpty && bodyText.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?");
+        boolean isMarkUpText = isNonEmpty && bodyText.matches(ChatMessage.HTML_MARKUP);
 
         // LatLng message always treated as non-consecutiveMessage
         boolean isLatLng = isNonEmpty && bodyText.contains("LatLng:");
