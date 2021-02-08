@@ -351,7 +351,7 @@ public class IBRCaptchaProcessDialog extends Dialog
 
         mSubmitButton.setOnClickListener(v -> {
             // server disconnect user if waited for too long
-            if (mConnection.isConnected()) {
+            if ((mConnection != null) && mConnection.isConnected()) {
                 if (updateAccount()) {
                     onSubmitClicked();
                     showResult();
@@ -480,7 +480,7 @@ public class IBRCaptchaProcessDialog extends Dialog
                     xmppError = StanzaError.from(Condition.not_acceptable, errMsg).build();
                 }
                 Timber.e("Exception: %s; %s", errMsg, errDetails);
-                if ((errMsg != null) && errMsg.contains("conflict") && errDetails.contains("exists"))
+                if ((errMsg != null) && errMsg.contains("conflict") && (errDetails != null) &&  errDetails.contains("exists"))
                     mAccountId.setIbRegistration(false);
                 mPPS.accountIBRegistered.reportFailure(new XMPPException.XMPPErrorException(null, xmppError));
             }

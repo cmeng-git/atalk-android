@@ -345,7 +345,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE) {
-            if ((grantResults.length != 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED))
+            if ((grantResults.length != 0) && (PackageManager.PERMISSION_GRANTED == grantResults[0]))
                 permissionCount++;
         }
     }

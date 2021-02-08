@@ -6,11 +6,14 @@
     android:background="@color/background_dark"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.cog.hymnchtv.MediaExoPlayer" >
+    tools:context="org.atalk.android.plugin.video.MediaExoPlayer" >
 
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/video_player_view"
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/exoplayerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent"
+        app:controller_layout_id="@layout/exo_styled_player_control_view"
+        app:show_buffering="when_playing"
+        app:show_subtitle_button="true"
+        app:repeat_toggle_modes="one" />
 </androidx.constraintlayout.widget.ConstraintLayout>

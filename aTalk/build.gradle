@@ -74,8 +74,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1150
-        versionName "2.5.0"
+        versionCode 1151
+        versionName "2.5.1"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -233,7 +233,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.preference:preference:1.1.1"
 
-    implementation "com.google.android.material:material:1.2.1"
+    implementation "com.google.android.material:material:1.3.0"
 
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
@@ -250,7 +250,7 @@ dependencies {
     // Need latest release to fix incorrect youtube link extraction
     implementation 'com.github.HaarigerHarald:android-youtubeExtractor:69f7045'
     implementation 'com.github.yalantis:ucrop:2.2.6'
-    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.3'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.5'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'

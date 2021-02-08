@@ -822,7 +822,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         // set up default in case XHTMLExtension contains no message
         // if msgBody contains markup text then set as ENCODE_HTML mode
-        if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+        if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType = encryption | IMessage.ENCODE_HTML;
         }
         else {
@@ -1033,7 +1033,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         String msgBody = decryptedMessage.getBody();
 
         // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
-        if (msgBody.matches("(?s).*?<[A-Za-z]+>.*?</[A-Za-z]+>.*?")) {
+        if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
         }
         else {

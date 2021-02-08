@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.5.1 (02/08/2021)" versioncode="1151">
+        <change>Enable ExoPlayer advance features/options for playback repeat and speed etc</change>
+        <change>Check and allow ExoPlayer for the media audio url link playback</change>
+        <change>Prevent multiple ExoPlayer instances get created when the screen is rotated</change>
+        <change>Fix system crashes on screen rotation for OS &lt; android-N </change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.5.0 (01/30/2021)" versioncode="1150">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html'&gt;aTalk online help&lt;/a&gt; before using aTalk.</change>
         <change>Add embedded ExoPlayer for video media files or youtube media links play back</change>

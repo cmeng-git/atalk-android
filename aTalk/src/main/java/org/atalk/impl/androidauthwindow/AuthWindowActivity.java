@@ -54,6 +54,10 @@ public class AuthWindowActivity extends OSGiActivity
 
         // Server name
         mAuthWindow = AuthWindowServiceImpl.getAuthWindow(requestId);
+        // NPE return from field
+        if (mAuthWindow == null)
+            return;
+
         String server = mAuthWindow.getServer();
 
         // Title
