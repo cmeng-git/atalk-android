@@ -14,7 +14,7 @@ import timber.log.Timber;
 /**
  * <tt>ViewDependentProvider</tt> is used to implement classes that provide objects dependent on
  * <tt>View</tt> visibility state. It means that they can provide it only when <tt>View</tt> is
- * visible and they have to release such object before <tt>View</tt> is hidden.
+ * visible, and they have to release the object before <tt>View</tt> is hidden.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -52,7 +52,7 @@ public abstract class ViewDependentProvider<T>
     protected T providedObject;
 
     /**
-     * Creates new instance of <tt>ViewDependentProvider</tt>.
+     * Create a new instance of <tt>ViewDependentProvider</tt>.
      *
      * @param activity parent <tt>Activity</tt> that manages the <tt>container</tt>.
      * @param container the container that will hold maintained <tt>View</tt>.
@@ -140,7 +140,7 @@ public abstract class ViewDependentProvider<T>
     }
 
     /**
-     * Checks if provider has already the object and returns it immediately. If there is no object
+     * Checks if provider has already the object and returns it immediately. If there is no object,
      * and we would have to wait for it, then the <tt>null</tt> is returned.
      *
      * @return the object if it is currently held by this provider or <tt>null</tt> otherwise.
@@ -180,7 +180,7 @@ public abstract class ViewDependentProvider<T>
     }
 
     /**
-     * Blocks current thread until subject object is released. It should be used to block UI thread
+     * Blocks the current thread until subject object is released. It should be used to block UI thread
      * before the <tt>View</tt> is hidden.
      */
     synchronized public void waitForObjectRelease()

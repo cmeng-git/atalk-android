@@ -757,8 +757,7 @@ public class MediaUtils
      * "RTP Profile for Audio and Video Conferences with Minimal Control".
      *
      * @param encoding the well-known encoding (name) to get the corresponding <tt>MediaFormat</tt>s of
-     * @return a <tt>List</tt> of <tt>MediaFormat</tt>s corresponding to the specified encoding
-     * (name)
+     * @return a <tt>List</tt> of <tt>MediaFormat</tt>s corresponding to the specified encoding (name)
      */
     @SuppressWarnings("unchecked")
     public static List<MediaFormat> getMediaFormats(String encoding)

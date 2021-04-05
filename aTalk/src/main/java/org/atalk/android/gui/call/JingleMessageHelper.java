@@ -75,7 +75,7 @@ public final class JingleMessageHelper implements JingleMessageListener
 
     private static final Map<XMPPConnection, ProtocolProviderService> mProviders = new HashMap<>();
 
-    private static List<CallEndListener> callEndListeners = new ArrayList<>();
+    private static final List<CallEndListener> callEndListeners = new ArrayList<>();
 
     private static boolean isVideoCall = false;
 
@@ -152,7 +152,6 @@ public final class JingleMessageHelper implements JingleMessageListener
     /**
      * Start JingleMessage Activity with UI allowing caller to retract call
      *
-     * @param callee the callee Jid
      * @param id of Jingle Message
      */
     private static void startJMActivity(String id)
@@ -287,7 +286,10 @@ public final class JingleMessageHelper implements JingleMessageListener
 
     /**
      * On user accepted call, send an "accept: message to own bareJid; server will then forward to all our resources
-     * Note: the attached message are with to/from reversed for sendJingleMessage requirements
+     * Cancel vibrate in progress; The ending of ring tone is handled by the caller
+     * i.e. NotificationPopupHandler.removeCallNotification(id);
+     *
+     * Note: the attached message is with to/from reversed for sendJingleMessage requirements
      *
      * @param id the intended Jingle Message call id
      */
@@ -301,10 +303,11 @@ public final class JingleMessageHelper implements JingleMessageListener
                 JingleMessage msgAccept = new JingleMessage(JingleMessage.ACTION_ACCEPT, id);
                 MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
                         .ofType(Message.Type.chat)
-                        .from(callee.asBareJid())   // actual message send to
-                        .to(callee);                // actual message send from
+                        .from(callee.asBareJid())   // the actual message send to
+                        .to(callee);                // the actual message send from
 
                 sendJingleMessage(connection, msgAccept, messageBuilder.build());
+                new VibrateHandlerImpl().cancel();
             }
         }
     }
@@ -331,6 +334,7 @@ public final class JingleMessageHelper implements JingleMessageListener
                 message.setFrom(caller);  // message actual send to
                 JingleMessage msgProceed = new JingleMessage(JingleMessage.ACTION_PROCEED, id);
                 sendJingleMessage(connection, msgProceed, message);
+                aTalkApp.showToastMessage(R.string.service_gui_CONNECTING_ACCOUNT, caller);
             }
             else {
                 endJmCallProcess(jingleMessage.getId(), R.string.service_gui_CALL_ANSWER, message.getTo());
@@ -376,7 +380,7 @@ public final class JingleMessageHelper implements JingleMessageListener
 
         Jid caller = mJingleCalls.get(id);
         if (caller != null) {
-            endJmCallProcess(jingleMessage.getId(), R.string.service_gui_CALL_END, message.getFrom());
+            endJmCallProcess(id, R.string.service_gui_CALL_END, message.getFrom());
 
             // fired a missed call notification
             Map<String, Object> extras = new HashMap<>();

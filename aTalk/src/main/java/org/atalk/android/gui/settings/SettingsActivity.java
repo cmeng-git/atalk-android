@@ -563,7 +563,7 @@ public class SettingsActivity extends OSGiActivity
 
             // Summaries mapping
             summaryMapper.includePreference(cameraList, getString(R.string.service_gui_settings_NO_CAMERA));
-            summaryMapper.includePreference(resList, "1280x720");
+            summaryMapper.includePreference(resList, "720x480");
             summaryMapper.includePreference(targetFpsPref, defaultFpsStr);
             summaryMapper.includePreference(maxBWPref, Integer.toString(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD));
             summaryMapper.includePreference(bitratePref, Integer.toString(DeviceConfiguration.DEFAULT_VIDEO_BITRATE));

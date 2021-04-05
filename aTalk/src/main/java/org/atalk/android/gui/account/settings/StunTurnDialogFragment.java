@@ -16,7 +16,14 @@ import net.java.sip.communicator.service.protocol.StunServerDescriptor;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
+import org.jetbrains.annotations.NotNull;
+
 import androidx.fragment.app.DialogFragment;
+
+import inet.ipaddr.HostName;
+import inet.ipaddr.HostNameException;
+import inet.ipaddr.IPAddress;
+import timber.log.Timber;
 
 import static net.java.sip.communicator.service.protocol.jabber.JabberAccountID.DEFAULT_STUN_PORT;
 
@@ -39,12 +46,7 @@ public class StunTurnDialogFragment extends DialogFragment
      */
     private StunServerAdapter parentAdapter;
 
-    private CheckBox useTurnCbox;
-    private EditText ipAddress;
-    private EditText ipPort;
-    private EditText turnUser;
     private EditText turnPassword;
-    private Spinner turnProtocolSpinner;
 
     public StunTurnDialogFragment()
     {
@@ -68,6 +70,7 @@ public class StunTurnDialogFragment extends DialogFragment
         return dialogFragmentST;
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -85,19 +88,19 @@ public class StunTurnDialogFragment extends DialogFragment
             builder = builder.setNegativeButton(R.string.service_gui_SERVERS_LIST_REMOVE, null);
         }
 
-        ipAddress = contentView.findViewById(R.id.ipAddress);
-        ipPort = contentView.findViewById(R.id.serverPort);
-        turnUser = contentView.findViewById(R.id.usernameField);
+        EditText ipAddress = contentView.findViewById(R.id.ipAddress);
+        EditText ipPort = contentView.findViewById(R.id.serverPort);
+        EditText turnUser = contentView.findViewById(R.id.usernameField);
         turnPassword = contentView.findViewById(R.id.passwordField);
 
-        turnProtocolSpinner = contentView.findViewById(R.id.TURNProtocol);
+        Spinner turnProtocolSpinner = contentView.findViewById(R.id.TURNProtocol);
         ArrayAdapter<CharSequence> adapterType = ArrayAdapter.createFromResource(getActivity(),
                 R.array.TURN_protocol, R.layout.simple_spinner_item);
         adapterType.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         turnProtocolSpinner.setAdapter(adapterType);
 
         View turnSetting = contentView.findViewById(R.id.turnSetting);
-        useTurnCbox = contentView.findViewById(R.id.useTurnCheckbox);
+        CheckBox useTurnCbox = contentView.findViewById(R.id.useTurnCheckbox);
         useTurnCbox.setOnCheckedChangeListener((cButton, b) -> {
             turnSetting.setVisibility(b ? View.VISIBLE : View.GONE);
         });
@@ -164,11 +167,10 @@ public class StunTurnDialogFragment extends DialogFragment
         final Spinner protocolSpinner = dialog.findViewById(R.id.TURNProtocol);
         final String protocol = convertTURNProtocolTextToType((String) protocolSpinner.getSelectedItem());
 
-        if ((ipAddress == null) || (portStr == null)) {
-            aTalkApp.showToastMessage("The ip and port can not be empty");
+        if ((ipAddress == null) || !isValidIpAddress(ipAddress) || (portStr == null)) {
+            aTalkApp.showToastMessage(R.string.service_gui_INVALID_ADDRESS, ipAddress + ":" + portStr);
             return false;
         }
-
         int port = Integer.parseInt(portStr);
 
         // Create descriptor if new entry
@@ -184,6 +186,23 @@ public class StunTurnDialogFragment extends DialogFragment
             descriptor.setPassword(password);
             descriptor.setProtocol(protocol);
             parentAdapter.updateServer(descriptor);
+        }
+        return true;
+    }
+
+    static boolean isValidIpAddress(String hostStr) {
+        HostName host = new HostName(hostStr);
+        try {
+            // triggers exception for invalid
+            host.validate();
+            if(host.isAddress()) {
+                IPAddress address = host.asAddress();
+                Timber.d("%s address: %s", address.getIPVersion(), address);
+            } else {
+                Timber.d("Host name: %s", host);
+            }
+        } catch(HostNameException e) {
+            return false;
         }
         return true;
     }

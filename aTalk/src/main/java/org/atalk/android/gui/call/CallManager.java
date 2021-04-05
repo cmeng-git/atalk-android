@@ -1469,7 +1469,7 @@ public class CallManager
     }
 
     /**
-     * Creates the enable local video call thread.
+     * Creates the EnableLocalVideoThread.
      */
     private static class EnableLocalVideoThread extends Thread
     {
@@ -1477,7 +1477,7 @@ public class CallManager
         private final boolean enable;
 
         /**
-         * Creates the enable local video call thread.
+         * Creates the EnableLocalVideoThread.
          *
          * @param call the call, for which to enable/disable
          * @param enable allow to have LocalVideo streaming if true

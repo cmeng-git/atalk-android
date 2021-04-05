@@ -30,7 +30,9 @@ import android.widget.TextView;
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.*;
+import org.atalk.android.BuildConfig;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.service.osgi.OSGiActivity;
 
 import de.cketti.library.changelog.ChangeLog;
@@ -58,6 +60,7 @@ public class About extends OSGiActivity implements View.OnClickListener
             new String[]{"glide", "https://github.com/bumptech/glide"},
             new String[]{"Google Play Services", "https://developers.google.com/android/guides/overview"},
             new String[]{"httpclient-android", "https://github.com/smarek/httpclient-android"},
+            new String[]{"IPAddress", "https://github.com/seancfoley/IPAddress"},
             new String[]{"ice4j", "https://github.com/jitsi/ice4j"},
             new String[]{"jitsi", "https://github.com/jitsi/jitsi"},
             new String[]{"jitsi-android", "https://github.com/jitsi/jitsi-android"},

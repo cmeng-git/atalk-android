@@ -574,8 +574,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Updates the state of this <tt>CallPeer</tt> to match the locally-on-hold status of our media
-     * handler.
+     * Updates the state of this <tt>CallPeer</tt> to match the locally-on-hold status of our media handler.
      */
     public void reevalLocalHoldStatus()
     {

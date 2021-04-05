@@ -66,8 +66,6 @@ import org.jivesoftware.smackx.avatar.useravatar.provider.AvatarMetadataProvider
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jivesoftware.smackx.avatar.vcardavatar.provider.VCardTempXUpdateProvider;
-import org.jivesoftware.smackx.bob.element.BoBExt;
-import org.jivesoftware.smackx.bob.provider.BoBExtensionProvider;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
@@ -275,8 +273,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private static final String IS_CALLING_DISABLED = "protocol.jabber.CALLING_DISABLED";
 
     /**
-     * Smack packet maximum reply timeout - Smack will immediately return on reply or until timeout
-     * before issues exception. Need this to take care for some servers response on some packages
+     * Smack packet maximum reply timeout - Smack will immediately return on a reply or until a timeout
+     * before issues exception. Need this to take care for some servers' response on some packages
      * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung SII takes up to 30
      * Sec to response to sasl authentication challenge on first login
      */
@@ -364,7 +362,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private Roster mRoster = null;
 
     /**
-     * A set of features supported by our Jabber implementation. In general, we add new feature(s)
+     * A set of features supported by our Jabber implementation. In general, we add the new feature(s)
      * when we add new operation sets.
      * (see xep-0030 : https://www.xmpp.org/extensions/xep-0030.html#info).
      * Example : to tell the world that we support jingle, we simply have to do :
@@ -1914,9 +1912,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // XEP-0096: SI File Transfer
         supportedFeatures.add(FileTransferNegotiator.SI_PROFILE_FILE_TRANSFER_NAMESPACE);
 
-        // XEP-0231: Bits of Binary
-        supportedFeatures.add(BoBExt.NAMESPACE);
-
         // XEP-0264: File Transfer Thumbnails
         supportedFeatures.add(Thumbnail.NAMESPACE);
 
@@ -2160,9 +2155,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             ProviderManager.addExtensionProvider(CapsExtension.ELEMENT, CapsExtension.NAMESPACE,
                     new CapsExtensionProvider());
-
-            // XEP-0231: Bits of Binary Extension - aTalk Bob Extension Provider support
-            ProviderManager.addExtensionProvider(BoBExt.ELEMENT, BoBExt.NAMESPACE, new BoBExtensionProvider());
 
             // XEP-0084: User Avatar (metadata) + notify
             ProviderManager.addExtensionProvider(AvatarMetadata.ELEMENT, AvatarMetadata.NAMESPACE,

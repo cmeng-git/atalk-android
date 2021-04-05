@@ -8,21 +8,26 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 
 import java.io.IOException;
 import java.util.LinkedList;
 
 import javax.media.Buffer;
+import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 
 import timber.log.Timber;
 
 /**
- * Video stream that captures frames using camera preview callbacks in YUV format. As an input
+ * The video stream captures frames using camera preview callbacks in YUV format. As an input
  * Android YV12 format is used which is almost YUV420 planar except that for some dimensions padding
- * is added to U,V strides. See {@link #//YV12toYUV420Planar(byte[], byte[], int, int)}.
+ * is added to U,V strides. See {@link #YV12toYUV420PlanarRotate(byte[], byte[], int, int, int)}.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -38,6 +43,8 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     /* In use camera rotation - for video streaming */
     private int cameraRotation;
 
+    private static PreviewStream instance;
+
     /**
      * Creates a new instance of <tt>PreviewStream</tt>.
      *
@@ -47,6 +54,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     public PreviewStream(DataSource dataSource, FormatControl formatControl)
     {
         super(dataSource, formatControl);
+        instance = this;
     }
 
     /**
@@ -58,6 +66,11 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     {
         super.start();
         startImpl();
+    }
+
+    public static PreviewStream getInstance()
+    {
+        return instance;
     }
 
     /**
@@ -79,18 +92,18 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         else {
             cameraRotation = mRotation;
         }
-        boolean swap = (mRotation == 90) || (mRotation == 270);
 
         // Alloc two buffers
         Camera.Parameters params = mCamera.getParameters();
         Camera.Size previewSize = params.getPreviewSize();
-        int bufferSize = calcYV12Size(previewSize, swap);
+
+        // aTalk native camera preview is always set to landscape mode
+        int bufferSize = calcYV12Size(previewSize, false);
 
         Timber.i("Camera captured preview = %dx%d @%d-DEG with buffer size: %d for image format: %08x",
                 previewSize.width, previewSize.height, cameraRotation, bufferSize, params.getPreviewFormat());
 
         mCamera.addCallbackBuffer(new byte[bufferSize]);
-
         SurfaceHolder previewSurface = CameraUtils.obtainPreviewSurface();
         mCamera.setPreviewDisplay(previewSurface);
         mCamera.setPreviewCallbackWithBuffer(this);
@@ -146,7 +159,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
 
     /**
      * http://www.wordsaretoys.com/2013/10/25/roll-that-camera-zombie-rotation-and-coversion-from-yv12-to-yuv420planar/
-     * Original code has been modified and optimised for aTalk rotation without image stretching
+     * Original code has been modified and optimised for aTalk rotation without stretching the image
      *
      * Converts Android YV12 format to YUV420 planar and rotate according to camera orientation.
      * ## Swap: means swapping the x & y coordinates, which provides a 90-degree anticlockwise rotation,
@@ -159,7 +172,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
      * @param height final output stream image height.
      * @param rotation camera/preview rotation: 270 = phone rotated clockwise 90 degree (portrait mode)
      */
-    private static void YV12toYUV420PlanarRotate(byte[] input, byte[] output, int width, int height, int rotation)
+    private void YV12toYUV420PlanarRotate(byte[] input, byte[] output, int width, int height, int rotation)
     {
         boolean swap = (rotation == 90 || rotation == 270);
         boolean flip = (rotation == 90 || rotation == 180);
@@ -179,7 +192,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
 
         // Constants for UV planes transformation on input preview frame buffer
         int yStride = (int) Math.ceil(wp / 16.0) * 16;
-        int uvStride = (int) Math.ceil((yStride / 2) / 16.0) * 16;
+        int uvStride = (int) Math.ceil((yStride / 2.0) / 16.0) * 16;
         int ySize = yStride * hp;
         int uvSize = uvStride * (hp >> 1);
 
@@ -193,7 +206,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
                 // default input index for direct 1:1 transform
                 int xi = xo, yi = yo;
 
-                // video frame: w and h are swapped at input frame - no image stretch required
+                // The video frame: w and h are swapped at input frame - no image stretch required
                 if (swap && flip) {
                     xi = yo;
                     yi = wi - xo;
@@ -234,9 +247,14 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     }
 
     /**
-     * Calculates YV12 image data bufferSize in bytes.
-     * The buffer is used to receive the generated preview streaming data,
-     * hence need to consider when image is swap (rotated)
+     * Calculates YV12 image data bufferSize in bytes. The buffer is used to receive the generated preview streaming data,
+     * hence need to consider when image is swap (rotated). aTalk always set for native camera preview in landscape mode.
+     *
+     * For resolutions: 1920x1080, 1440x1080, 1280x720, 960x720, 720x480*, 640x480, 320x240
+     * Except for 720x480*, the calculated buffer sizes for all other resolutions are always larger when swap is true.
+     *
+     * Note: lower buffer size than required will cause android to throw:
+     * E/Camera-JNI: Callback buffer was too small! Expected 522240 bytes, but got 518400 bytes!
      *
      * @param previewSize camera preview size.
      * @param swap indicate the camera is rotated, and width and height must be swapped to get the buffer size
@@ -252,26 +270,19 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         }
 
         float yStride = (int) Math.ceil(wp / 16.0) * 16;
-        float uvStride = (int) Math.ceil((yStride / 2) / 16.0) * 16;
+        float uvStride = (int) Math.ceil((yStride / 2.0) / 16.0) * 16;
         float ySize = yStride * hp;
         float uvSize = uvStride * hp / 2;
-        // float yRowIndex = yStride * y;
-        // float uRowIndex = ySize + uvSize + uvStride * c;
-        // float vRowIndex = ySize + uvStride * c;
         return (int) (ySize + uvSize * 2);
     }
 
     //    /**
     //     * Converts Android YV12 format to YUV420 planar without rotation support
     //     *
-    //     * @param input
-    //     *         input YV12 image bytes.
-    //     * @param output
-    //     *         output buffer.
-    //     * @param width
-    //     *         image width.
-    //     * @param height
-    //     *         image height.
+    //     * @param input: input YV12 image bytes.
+    //     * @param output: output buffer.
+    //     * @param width: image width.
+    //     * @param height: image height.
     //     */
     //    static void YV12toYUV420Planar(final byte[] input, final byte[] output, final int width, final int height)
     //    {
@@ -307,4 +318,65 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     //            }
     //        }
     //    }
+
+    /**
+     * Update cameraRotation for YV12toYUV420PlanarRotate(); both mPreviewSize and cameraRotation must be updated
+     * Set camera local preview display orientation according to device rotation in setDisplayOrientation()
+     */
+    public void initCameraOnRotation()
+    {
+        Camera.CameraInfo camInfo = new Camera.CameraInfo();
+        Camera.getCameraInfo(mCameraId, camInfo);
+        int rotation = CameraUtils.getCameraDisplayRotation(mCameraId);
+        boolean swap = (rotation == 90) || (rotation == 270);
+
+        if (swap) {
+            mPreviewSize = new Dimension(optimizedSize.height, optimizedSize.width);
+        }
+        else {
+            mPreviewSize = optimizedSize;
+        }
+
+        // Streaming video always send in dimension according to the phone orientation
+        mFormat.setVideoSize(mPreviewSize);
+
+        if (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            cameraRotation = (360 - rotation) % 360;
+        }
+        else {
+            cameraRotation = rotation;
+        }
+
+        Timber.d("set camera display orientation: %s : %s", swap, rotation);
+        // To take care user rotate device before mCamera is initialized.
+        if (mCamera != null)
+            mCamera.setDisplayOrientation(rotation);
+    }
+
+    /**
+     * Switch to the camera selected by user. Show preview only if local video streaming is enabled
+     * User needs to enable the camera to send the video stream to remote user.
+     *
+     * @param cameraLocator MediaLocator
+     * @param isLocalVideoEnable true is local video is enabled for sending
+     */
+    public void switchCamera(MediaLocator cameraLocator, boolean isLocalVideoEnable)
+    {
+        AndroidCamera.setSelectedCamera(cameraLocator);
+        mCameraId = AndroidCamera.getCameraId(cameraLocator);
+
+        // Stop preview and release the current camera if any before switching, otherwise app will crash
+        if (mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.release();
+        }
+
+        if (isLocalVideoEnable) {
+            try {
+                start();
+            } catch (IOException e) {
+                aTalkApp.showToastMessage(R.string.service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED, cameraLocator, e.getMessage());
+            }
+        }
+    }
 }

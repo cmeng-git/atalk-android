@@ -19,6 +19,7 @@ import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.osgi.OSGiActivity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -33,6 +34,7 @@ import java.util.*;
  * indicating whether any changes has been made under key: {@link #EXTRA_KEY_HAS_CHANGES}.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class MediaEncodingActivity extends OSGiActivity
         implements ActionBarToggleFragment.ActionBarToggleModel
@@ -65,7 +67,7 @@ public class MediaEncodingActivity extends OSGiActivity
     /**
      * Holds the properties we need to get/set for the encoding preferences
      */
-    private Map<String, String> encodingProperties = new HashMap<>();
+    private final Map<String, String> encodingProperties = new HashMap<>();
 
     /**
      * The encoding configuration object used to manipulate on the properties
@@ -104,7 +106,6 @@ public class MediaEncodingActivity extends OSGiActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         loadEncodings(savedInstanceState);
 
         if (savedInstanceState == null) {
@@ -123,13 +124,11 @@ public class MediaEncodingActivity extends OSGiActivity
     private void loadEncodings(Bundle savedInstanceState)
     {
         Intent intent = getIntent();
-
         if (savedInstanceState == null) {
             mEncReg = (EncodingsRegistrationUtil) intent.getSerializableExtra(EXTRA_KEY_ENC_REG);
         }
         else {
-            mEncReg = (EncodingsRegistrationUtil) savedInstanceState
-                    .getSerializable(STATE_ENC_REG);
+            mEncReg = (EncodingsRegistrationUtil) savedInstanceState.getSerializable(STATE_ENC_REG);
             hasChanges = savedInstanceState.getBoolean(STATE_HAS_CHANGES);
         }
 
@@ -174,7 +173,6 @@ public class MediaEncodingActivity extends OSGiActivity
     public static List<MediaFormat> getEncodings(final EncodingConfiguration encodingConfig, MediaType mediaType)
     {
         MediaFormat[] availableEncodings = encodingConfig.getAllEncodings(mediaType);
-
         HashMap<String, MediaFormat> availableEncodingSet = new HashMap<>();
 
         for (MediaFormat availableEncoding : availableEncodings) {
@@ -186,22 +184,18 @@ public class MediaEncodingActivity extends OSGiActivity
 
         MediaFormat[] encodings = new MediaFormat[encodingCount];
         System.arraycopy(availableEncodings, 0, encodings, 0, encodingCount);
-        // Display the encodings in decreasing priority.
-        Arrays.sort(encodings, 0, encodingCount, new Comparator<MediaFormat>()
-        {
-            public int compare(MediaFormat format0, MediaFormat format1)
-            {
-                int ret = encodingConfig.getPriority(format1)
-                        - encodingConfig.getPriority(format0);
 
+        // Display the encodings in decreasing priority.
+        Arrays.sort(encodings, 0, encodingCount, (format0, format1) -> {
+            int ret = encodingConfig.getPriority(format1) - encodingConfig.getPriority(format0);
+
+            if (ret == 0) {
+                ret = format0.getEncoding().compareToIgnoreCase(format1.getEncoding());
                 if (ret == 0) {
-                    ret = format0.getEncoding().compareToIgnoreCase(format1.getEncoding());
-                    if (ret == 0) {
-                        ret = Double.compare(format1.getClockRate(), format0.getClockRate());
-                    }
+                    ret = Double.compare(format1.getClockRate(), format0.getClockRate());
                 }
-                return ret;
             }
+            return ret;
         });
 
         List<MediaFormat> outList = new ArrayList<>(encodings.length);
@@ -268,7 +262,7 @@ public class MediaEncodingActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState)
+    protected void onSaveInstanceState(@NotNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
         commitChanges();

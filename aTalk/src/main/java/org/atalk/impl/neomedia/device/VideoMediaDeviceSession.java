@@ -313,33 +313,27 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
             float frameRate;
             DeviceConfiguration deviceConfig = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
 
-            // Apply the video size and the frame rate configured by the user.
+            // Apply the video size and frame rate configured by the user.
             if (DeviceSystem.LOCATOR_PROTOCOL_IMGSTREAMING.equals(protocol)) {
                 /*
-                 * It is not clear at this time what the default frame rate for desktop streaming
-                 * should be.
+                 * It is not clear at this time what the default frame rate for desktop streaming should be.
                  */
                 frameRate = 10;
             }
             else {
                 Dimension videoSize = deviceConfig.getVideoSize();
-
-                // if we have an output size that is smaller than our current
-                // settings, respect that size
+                // if we have an output size smaller than our current settings, respect that size
                 if (outputSize != null && videoSize.height > outputSize.height
                         && videoSize.width > outputSize.width)
                     videoSize = outputSize;
 
                 Dimension dim = VideoMediaStreamImpl.selectVideoSize(captureDevice, videoSize.width, videoSize.height);
                 frameRate = deviceConfig.getFrameRate();
-
-                // print initial video resolution, when starting video
                 if (dim != null)
                     Timber.i("video send resolution: %dx%d", dim.width, dim.height);
             }
 
-            FrameRateControl frameRateControl
-                    = (FrameRateControl) captureDevice.getControl(FrameRateControl.class.getName());
+            FrameRateControl frameRateControl = (FrameRateControl) captureDevice.getControl(FrameRateControl.class.getName());
             if (frameRateControl != null) {
                 float maxSupportedFrameRate = frameRateControl.getMaxSupportedFrameRate();
 
@@ -354,7 +348,6 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
 
             if (!(captureDevice instanceof SourceCloneable)) {
                 DataSource cloneableDataSource = Manager.createCloneableDataSource(captureDevice);
-
                 if (cloneableDataSource != null)
                     captureDevice = cloneableDataSource;
             }
@@ -1002,9 +995,9 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
 
         if (visualComponent != null) {
             /*
-             * The Player will notify the new size and will notify about it before it reaches the
-             * Renderer. The notification/event may as well arrive before the Renderer reflects the
-             * new size onto the preferredSize of the Component. In order to make sure that the new
+             * The Player will notify the new size, and before it reaches the Renderer.
+             * The notification/event may as well arrive before the Renderer reflects the
+             * new size onto the preferredSize of the Component. In order to make sure the new
              * size is reflected on the preferredSize of the Component before the notification/event
              * arrives to its destination/listener, reflect it as soon as possible i.e. now.
              */
@@ -1017,9 +1010,8 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                     visualComponent.setPreferredSize(new Dimension(width, height));
                 }
             } finally {
-                fireVideoEvent(
-                        new SizeChangeVideoEvent(this, visualComponent, origin, width, height), false);
-                Timber.i("Size Change Video Event: %dx%d", width, height);
+                fireVideoEvent(new SizeChangeVideoEvent(this, visualComponent, origin, width, height), false);
+                Timber.d("Remote video size change event: %dx%d", width, height);
             }
         }
     }
@@ -1028,8 +1020,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
      * Notify this instance that the visual <tt>Component</tt> of a <tt>Player</tt> rendering
      * remote content has been resized.
      *
-     * @param player the <tt>Player</tt> rendering remote content the visual <tt>Component</tt> of which
-     * has been resized
+     * @param player the <tt>Player</tt> rendering remote content the visual <tt>Component</tt> of which has been resized
      * @param ev a <tt>ComponentEvent</tt> which specifies the resized <tt>Component</tt>
      */
     private void playerVisualComponentResized(Processor player, ComponentEvent ev)

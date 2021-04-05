@@ -6,7 +6,6 @@
 package org.atalk.impl.neomedia.codec.video.h264;
 
 import net.iharder.Base64;
-import net.sf.fmj.media.AbstractCodec;
 
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
@@ -20,7 +19,9 @@ import org.atalk.service.neomedia.control.KeyFrameControl;
 
 import java.io.ByteArrayOutputStream;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 
 import timber.log.Timber;
@@ -33,12 +34,12 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class JNIDecoder extends AbstractCodec
+public class JNIDecoder extends AbstractCodec2
 {
     /**
      * The default output <tt>VideoFormat</tt>.
      */
-    private static final VideoFormat[] DEFAULT_OUTPUT_FORMATS
+    private static final VideoFormat[] SUPPORTED_OUTPUT_FORMATS
             = new VideoFormat[]{new AVFrameFormat(FFmpeg.PIX_FMT_YUV420P)};
 
     /**
@@ -57,7 +58,7 @@ public class JNIDecoder extends AbstractCodec
     private AVFrame avframe;
 
     /**
-     * If decoder has got a picture.
+     * If decoder has got a picture. Use array to pass a pointer
      */
     private final boolean[] got_picture = new boolean[1];
 
@@ -86,20 +87,24 @@ public class JNIDecoder extends AbstractCodec
     private int width;
 
     /**
-     * Initializes a new <tt>JNIDecoder</tt> instance which is to decode H.264 NAL units into
-     * frames in YUV format.
+     * Initializes a new <tt>JNIDecoder</tt> instance which is to decode H.264 NAL units into frames in YUV format.
      */
     public JNIDecoder()
     {
+        super("H.264 Decoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
+
         /*
          * Explicitly state both ParameterizedVideoFormat (to receive any format parameters which
          * may be of concern to this JNIDecoder) and VideoFormat (to make sure that nothing
          * breaks because of equality and/or matching tests involving ParameterizedVideoFormat).
          */
+        inputFormat = null;
+        outputFormat = null;
+
         inputFormats = new VideoFormat[]{
                 new ParameterizedVideoFormat(Constants.H264),
                 new VideoFormat(Constants.H264)};
-        outputFormats = DEFAULT_OUTPUT_FORMATS;
+        outputFormats = SUPPORTED_OUTPUT_FORMATS;
     }
 
     /**
@@ -117,22 +122,119 @@ public class JNIDecoder extends AbstractCodec
      * Close <tt>Codec</tt>.
      */
     @Override
-    public synchronized void close()
+    protected void doClose()
     {
-        if (opened) {
-            opened = false;
-            super.close();
+        Timber.d("Closing decoder");
+        FFmpeg.avcodec_close(avctx);
+        FFmpeg.av_free(avctx);
+        avctx = 0;
 
-            FFmpeg.avcodec_close(avctx);
-            FFmpeg.av_free(avctx);
-            avctx = 0;
-
-            if (avframe != null) {
-                avframe.free();
-                avframe = null;
-            }
-            gotPictureAtLeastOnce = false;
+        if (avframe != null) {
+            avframe.free();
+            avframe = null;
         }
+        gotPictureAtLeastOnce = false;
+    }
+
+    /**
+     * Init the codec instances.
+     */
+    @Override
+    protected void doOpen() throws ResourceUnavailableException
+    {
+        Timber.d("Opening decoder");
+        if (avframe != null) {
+            avframe.free();
+            avframe = null;
+        }
+        avframe = new AVFrame();
+
+        long avcodec = FFmpeg.avcodec_find_decoder(FFmpeg.CODEC_ID_H264);
+        if (avcodec == 0) {
+            throw new ResourceUnavailableException("Could not find H.264 decoder.");
+        }
+
+        avctx = FFmpeg.avcodec_alloc_context3(avcodec);
+        FFmpeg.avcodeccontext_set_workaround_bugs(avctx, FFmpeg.FF_BUG_AUTODETECT);
+
+        /* allow to pass the incomplete frame to decoder */
+        FFmpeg.avcodeccontext_add_flags2(avctx, FFmpeg.CODEC_FLAG2_CHUNKS);
+
+        if (FFmpeg.avcodec_open2(avctx, avcodec) < 0)
+            throw new RuntimeException("Could not open H.264 decoder.");
+
+        gotPictureAtLeastOnce = false;
+
+        /*
+         * After this JNIDecoder has been opened, handle format parameters such as
+         * sprop-parameter-sets which require this JNIDecoder to be in the opened state.
+         */
+        handleFmtps();
+    }
+
+    /**
+     * Decodes H.264 media data read from a specific input <tt>Buffer</tt> into a specific output <tt>Buffer</tt>.
+     *
+     * @param inBuf input <tt>Buffer</tt>
+     * @param outBuf output <tt>Buffer</tt>
+     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>in</tt> has been successfully processed
+     */
+    @Override
+    protected int doProcess(Buffer inBuf, Buffer outBuf)
+    {
+        // Ask FFmpeg to decode.
+        got_picture[0] = false;
+        // TODO Take into account the offset of the input Buffer.
+        FFmpeg.avcodec_decode_video(avctx, avframe.getPtr(), got_picture, (byte[]) inBuf.getData(), inBuf.getLength());
+
+        if (!got_picture[0]) {
+            if ((inBuf.getFlags() & Buffer.FLAG_RTP_MARKER) != 0) {
+                if (keyFrameControl != null)
+                    keyFrameControl.requestKeyFrame(!gotPictureAtLeastOnce);
+            }
+            outBuf.setDiscard(true);
+            return BUFFER_PROCESSED_OK;
+        }
+        gotPictureAtLeastOnce = true;
+
+        // format: cmeng: must get the output dimension to allow auto rotation
+        int width = FFmpeg.avcodeccontext_get_width(avctx);
+        int height = FFmpeg.avcodeccontext_get_height(avctx);
+
+        // cmeng (20210309) = decoded avframe.width and avframe.height do not get updated when inBuf video data is rotated.
+        // Hence cannot support auto rotation when remote camera is rotated. VP8 is OK
+        if ((width > 0) && (height > 0) && ((this.width != width) || (this.height != height))) {
+            Timber.d("H264 video size changed (wxh): %s(%s) x %s(%s)", width, this.width, height, this.height);
+            this.width = width;
+            this.height = height;
+
+            // Output in same size and frame rate as input.
+            Dimension outSize = new Dimension(this.width, this.height);
+            VideoFormat inFormat = (VideoFormat) inBuf.getFormat();
+            float outFrameRate = ensureFrameRate(inFormat.getFrameRate());
+
+            outputFormat = new AVFrameFormat(outSize, outFrameRate, FFmpeg.PIX_FMT_YUV420P);
+        }
+        outBuf.setFormat(outputFormat);
+
+        // data
+        if (outBuf.getData() != avframe)
+            outBuf.setData(avframe);
+
+        // timeStamp
+        long pts = FFmpeg.avframe_get_pts(avframe.getPtr()); //  FFmpeg.AV_NOPTS_VALUE; // TODO avframe_get_pts(avframe);
+        if (pts == FFmpeg.AV_NOPTS_VALUE) {
+            outBuf.setTimeStamp(Buffer.TIME_UNKNOWN);
+        }
+        else {
+            outBuf.setTimeStamp(pts);
+            int outFlags = outBuf.getFlags();
+
+            outFlags |= Buffer.FLAG_RELATIVE_TIME;
+            outFlags &= ~(Buffer.FLAG_RTP_TIME | Buffer.FLAG_SYSTEM_TIME);
+            outBuf.setFlags(outFlags);
+        }
+        return BUFFER_PROCESSED_OK;
     }
 
     /**
@@ -258,125 +360,6 @@ public class JNIDecoder extends AbstractCodec
             else
                 Timber.e(t, "Failed to handle format parameters");
         }
-    }
-
-    /**
-     * Inits the codec instances.
-     *
-     * @throws ResourceUnavailableException if codec initialization failed
-     */
-    @Override
-    public synchronized void open()
-            throws ResourceUnavailableException
-    {
-        if (opened)
-            return;
-
-        if (avframe != null) {
-            avframe.free();
-            avframe = null;
-        }
-        avframe = new AVFrame();
-
-        long avcodec = FFmpeg.avcodec_find_decoder(FFmpeg.CODEC_ID_H264);
-
-        if (avcodec == 0) {
-            throw new ResourceUnavailableException("Could not find H.264 decoder.");
-        }
-
-        avctx = FFmpeg.avcodec_alloc_context3(avcodec);
-        FFmpeg.avcodeccontext_set_workaround_bugs(avctx, FFmpeg.FF_BUG_AUTODETECT);
-
-        /* allow to pass incomplete frame to decoder */
-        FFmpeg.avcodeccontext_add_flags2(avctx, FFmpeg.CODEC_FLAG2_CHUNKS);
-
-        if (FFmpeg.avcodec_open2(avctx, avcodec) < 0)
-            throw new RuntimeException("Could not open H.264 decoder.");
-
-        gotPictureAtLeastOnce = false;
-
-        opened = true;
-        super.open();
-
-        /*
-         * After this JNIDecoder has been opened, handle format parameters such as
-         * sprop-parameter-sets which require this JNIDecoder to be in the opened state.
-         */
-        handleFmtps();
-    }
-
-    /**
-     * Decodes H.264 media data read from a specific input <tt>Buffer</tt> into a specific output <tt>Buffer</tt>.
-     *
-     * @param in input <tt>Buffer</tt>
-     * @param out output <tt>Buffer</tt>
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>in</tt> has been successfully processed
-     */
-    @Override
-    public synchronized int process(Buffer in, Buffer out)
-    {
-        if (!checkInputBuffer(in))
-            return BUFFER_PROCESSED_FAILED;
-        if (isEOM(in) || !opened) {
-            propagateEOM(out);
-            return BUFFER_PROCESSED_OK;
-        }
-        if (in.isDiscard()) {
-            out.setDiscard(true);
-            return BUFFER_PROCESSED_OK;
-        }
-
-        // Ask FFmpeg to decode.
-        got_picture[0] = false;
-        // TODO Take into account the offset of the input Buffer.
-        FFmpeg.avcodec_decode_video(avctx, avframe.getPtr(), got_picture, (byte[]) in.getData(), in.getLength());
-
-        if (!got_picture[0]) {
-            if ((in.getFlags() & Buffer.FLAG_RTP_MARKER) != 0) {
-                if (keyFrameControl != null)
-                    keyFrameControl.requestKeyFrame(!gotPictureAtLeastOnce);
-            }
-            out.setDiscard(true);
-            return BUFFER_PROCESSED_OK;
-        }
-        gotPictureAtLeastOnce = true;
-
-        // format: cmeng: must get the output dimension to allow auto rotation
-        int width = FFmpeg.avcodeccontext_get_width(avctx);
-        int height = FFmpeg.avcodeccontext_get_height(avctx);
-
-        // Timber.w("H264 video input size compare: " + this.width +"=" + width + "; " + this.height + "=" +height);
-        if ((width > 0) && (height > 0) && ((this.width != width) || (this.height != height))) {
-            this.width = width;
-            this.height = height;
-
-            // Output in same size and frame rate as input.
-            Dimension outSize = new Dimension(this.width, this.height);
-            VideoFormat inFormat = (VideoFormat) in.getFormat();
-            float outFrameRate = ensureFrameRate(inFormat.getFrameRate());
-
-            outputFormat = new AVFrameFormat(outSize, outFrameRate, FFmpeg.PIX_FMT_YUV420P);
-        }
-        out.setFormat(outputFormat);
-
-        // data
-        if (out.getData() != avframe)
-            out.setData(avframe);
-
-        // timeStamp
-        long pts = FFmpeg.AV_NOPTS_VALUE; // TODO avframe_get_pts(avframe);
-        if (pts == FFmpeg.AV_NOPTS_VALUE) {
-            out.setTimeStamp(Buffer.TIME_UNKNOWN);
-        }
-        else {
-            out.setTimeStamp(pts);
-            int outFlags = out.getFlags();
-
-            outFlags |= Buffer.FLAG_RELATIVE_TIME;
-            outFlags &= ~(Buffer.FLAG_RTP_TIME | Buffer.FLAG_SYSTEM_TIME);
-            out.setFlags(outFlags);
-        }
-        return BUFFER_PROCESSED_OK;
     }
 
     /**

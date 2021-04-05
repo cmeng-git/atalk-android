@@ -12,12 +12,13 @@ import android.widget.*;
 import org.atalk.android.R;
 import org.atalk.android.gui.widgets.TouchInterceptor;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * The fragments allows user to edit encodings and their priorities.
+ * The fragment allows user to edit encodings and their priorities.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -33,11 +34,6 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
      * Argument key for encodings priorities.
      */
     public static final String ARG_PRIORITIES = "arg.priorities";
-
-    /**
-     * The {@link TouchInterceptor} widget that allows user to drag items to set their order
-     */
-    private TouchInterceptor listWidget;
 
     /**
      * Adapter encapsulating manipulation of encodings list and their priorities
@@ -98,7 +94,10 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
 
         View content = inflater.inflate(R.layout.encoding, container, false);
 
-        this.listWidget = (TouchInterceptor) content.findViewById(R.id.encodingList);
+        /**
+         * The {@link TouchInterceptor} widget that allows user to drag items to set their order
+         */
+        TouchInterceptor listWidget = (TouchInterceptor) content.findViewById(R.id.encodingList);
         this.adapter = new OrderListAdapter(R.layout.encoding_item);
 
         listWidget.setAdapter(adapter);
@@ -110,7 +109,7 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
      * {@inheritDoc}
      */
     @Override
-    public void onSaveInstanceState(Bundle outState)
+    public void onSaveInstanceState(@NotNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
 
@@ -192,8 +191,8 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
     }
 
     /**
-     * Class implements encodings model for the list widget. Enables/disables each encoding and sets it's priority.
-     * Also responsible for creating Views for list rows.
+     * Class implements encodings model for the list widget. Enables/disables each encoding and sets its priority.
+     * It is also responsible for creating Views for list rows.
      */
     class OrderListAdapter extends BaseAdapter
     {
@@ -203,7 +202,7 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
         private final int viewResId;
 
         /**
-         * Creates new instance of {@link OrderListAdapter}.
+         * Creates a new instance of {@link OrderListAdapter}.
          *
          * @param viewResId ID of the list row layout
          */
@@ -223,8 +222,8 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
             // Swap positions
             String swap = encodings.get(from);
             int swapPrior = priorities.get(from);
-            encodings.remove((int) from);
-            priorities.remove((int) from);
+            encodings.remove(from);
+            priorities.remove(from);
 
             // Swap priorities
             encodings.add(to, swap);
@@ -266,16 +265,13 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
             // Creates the list row view
             ViewGroup gv = (ViewGroup) getActivity().getLayoutInflater().inflate(this.viewResId, viewGroup, false);
             // Creates the enable/disable button
-            CompoundButton cb = (CompoundButton) gv.findViewById(android.R.id.checkbox);
+            CompoundButton cb = gv.findViewById(android.R.id.checkbox);
             cb.setChecked(priorities.get(i) > 0);
-            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-            {
-                public void onCheckedChanged(CompoundButton cButton, boolean b)
-                {
-                    priorities.set(i, b ? calcPriority(i) : 0);
-                    hasChanges = true;
-                }
+            cb.setOnCheckedChangeListener((cButton, isChecked) -> {
+                priorities.set(i, isChecked ? calcPriority(i) : 0);
+                hasChanges = true;
             });
+
             // Create string for given format entry
             String mf = encodings.get(i);
             TextView tv = gv.findViewById(android.R.id.text1);

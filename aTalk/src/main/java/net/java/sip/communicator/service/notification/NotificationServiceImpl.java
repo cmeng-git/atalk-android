@@ -266,9 +266,8 @@ class NotificationServiceImpl implements NotificationService
      * notification is currently activated, we go through the list of registered actions and execute them.
      *
      * @param eventType the type of the event that we'd like to fire a notification for.
-     * @param msgType the notification sub-category message type
      * @return An object referencing the notification. It may be used to stop a still running
-     * notification. Can be null if the eventType is unknown or the notification is not active.
+     * notification. Can be null if the eventType is unknown, or the notification is not active.
      */
     public NotificationData fireNotification(String eventType)
     {

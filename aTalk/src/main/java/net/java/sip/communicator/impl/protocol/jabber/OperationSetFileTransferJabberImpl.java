@@ -108,10 +108,10 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         if (file.length() > getMaximumFileLength())
             throw new IllegalArgumentException(aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG, mPPS.getOurJID()));
 
-        Jid contactJid = contact.getJid();  // bareJid from roster unless is volatile contact
+        Jid contactJid = contact.getJid();  // bareJid from the roster unless is volatile contact
 
-        // Find the jid of the contact which support file transfer and is with highest priority
-        // if more than one found; if we have equals priorities choose the one that is more available
+        // Find the jid of the contact which support file transfer and is with the highest priority
+        // if more than one found; if we have equals priorities choose the one more available
         OperationSetMultiUserChat mucOpSet = mPPS.getOperationSet(OperationSetMultiUserChat.class);
         if ((mucOpSet == null) || !mucOpSet.isPrivateMessagingContact(contact.getAddress())) {
             List<Presence> presences = Roster.getInstanceFor(mPPS.getConnection()).getPresences(contactJid.asBareJid());
@@ -141,7 +141,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             }
         }
 
-        // False if file transfer is not supported by this contact or the contact is offline.
+        // False if file transfer is not supported by this contact, or the contact is offline.
         // Throws OperationNotSupportedException for caller to try alternative method
         if (!(contactJid instanceof EntityFullJid)) {
             throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));

@@ -53,7 +53,7 @@ public class AndroidCallUtil
     }
 
     /**
-     * Shows "call via" menu allowing user to selected from multiple providers.
+     * Shows "call via" menu allowing user to select from multiple providers.
      *
      * @param context the android context
      * @param calleeJid the target callee name that will be used.
@@ -123,7 +123,6 @@ public class AndroidCallUtil
      * @param context the android context
      * @param provider the provider that will be used to make a call.
      * @param callee target callee Jid.
-     * @param id the Jingle Message call id (must use this to send session-initiate if not null)
      * @param isVideoCall true for video call setup
      */
     public static void createCall(final Context context, final ProtocolProviderService provider,
@@ -139,9 +138,10 @@ public class AndroidCallUtil
             return;
         }
 
-        final long dialogId = ProgressDialogFragment.showProgressDialog(
-                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING),
-                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING_MSG, callee));
+        // cmeng (20210319: Seems to have no chance to show; and it causes waitForDialogOpened() (10s) error often, so remove it
+//        final long dialogId = ProgressDialogFragment.showProgressDialog(
+//                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING),
+//                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING_MSG, callee));
 
         createCallThread = new Thread("Create call thread")
         {
@@ -153,12 +153,12 @@ public class AndroidCallUtil
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
                     AndroidUtils.showAlertDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());
                 } finally {
-                    if (DialogActivity.waitForDialogOpened(dialogId)) {
-                        DialogActivity.closeDialog(dialogId);
-                    }
-                    else {
-                        Timber.e("Failed to wait for the dialog: %s", dialogId);
-                    }
+//                    if (DialogActivity.waitForDialogOpened(dialogId)) {
+//                        DialogActivity.closeDialog(dialogId);
+//                    }
+//                    else {
+//                        Timber.e("Failed to wait for the dialog: %s", dialogId);
+//                    }
                     createCallThread = null;
                 }
             }

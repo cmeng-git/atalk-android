@@ -487,7 +487,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      *
      * @param callId call Id / Jingle Sid
      * @see JingleMessageHelper#onCallProposed(Jid, String)
-     * @see getCallNotificationId
+     * @see #getCallNotificationId(String) 
      */
     public static void removeCallNotification(String callId)
     {

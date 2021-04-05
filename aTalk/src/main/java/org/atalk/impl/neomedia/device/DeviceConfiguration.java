@@ -955,17 +955,18 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     {
         if (videoCaptureDevice != device) {
             CaptureDeviceInfo oldDevice = videoCaptureDevice;
-
             videoCaptureDevice = device;
 
             if (save) {
                 ConfigurationService cfg = LibJitsi.getConfigurationService();
-
                 if (cfg != null) {
                     cfg.setProperty(PROP_VIDEO_DEVICE, (videoCaptureDevice == null)
                             ? NoneAudioSystem.LOCATOR_PROTOCOL : videoCaptureDevice.getName());
                 }
             }
+
+            // cmeng (20210402), new implementation to switch camera without involving jingle message sending
+            // Deos not require blocking after the latest change in MediaStreamImpl@setDevice()
             firePropertyChange(VIDEO_CAPTURE_DEVICE, oldDevice, device);
         }
     }

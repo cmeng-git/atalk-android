@@ -68,7 +68,7 @@ public class VPXEncoder extends AbstractCodec2
     /**
      * Flags passed when (re-)initializing the encoder context
      */
-    private long flags = 0;
+    private final long flags = 0;
 
     /**
      * Number of encoder frames so far. Used as pst (presentation time stamp)
@@ -82,9 +82,10 @@ public class VPXEncoder extends AbstractCodec2
     private long img = 0;
 
     /**
-     * Iterator for the compressed frames in the encoder context. Can be re-initialized by setting its only element to 0.
+     * Iterator for the compressed frames in the encoder context.
+     * Can be re-initialized by setting its only element to 0.
      */
-    private long[] iter = new long[1];
+    private final long[] iter = new long[1];
 
     /**
      * Whether there are unprocessed packets left from a previous call to VP9.codec_encode()
@@ -186,7 +187,8 @@ public class VPXEncoder extends AbstractCodec2
         VPX.codec_enc_cfg_set_kf_mode(cfg, VPX.KF_MODE_AUTO);
         VPX.codec_enc_cfg_set_w(cfg, width);
         VPX.codec_enc_cfg_set_h(cfg, height);
-        VPX.codec_enc_cfg_set_error_resilient(cfg, VPX.ERROR_RESILIENT_DEFAULT | VPX.ERROR_RESILIENT_PARTITIONS);
+        VPX.codec_enc_cfg_set_error_resilient(cfg,
+                VPX.ERROR_RESILIENT_DEFAULT | VPX.ERROR_RESILIENT_PARTITIONS);
 
         context = VPX.codec_ctx_malloc();
         int ret = VPX.codec_enc_init(context, INTERFACE, cfg, flags);
@@ -240,11 +242,6 @@ public class VPXEncoder extends AbstractCodec2
     @Override
     protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
     {
-        if (inputBuffer.isDiscard()) {
-            outputBuffer.setDiscard(true);
-            return BUFFER_PROCESSED_OK;
-        }
-
         int ret = BUFFER_PROCESSED_OK;
         byte[] output;
         if (leftoverPackets) {
@@ -337,14 +334,13 @@ public class VPXEncoder extends AbstractCodec2
             return ret | INPUT_BUFFER_NOT_CONSUMED;
         else
             return ret;
-
     }
 
     /**
      * Gets the matching output formats for a specific format.
      *
      * @param inputFormat input format
-     * @return array of formats matching input format.
+     * @return array of formats matching input format
      */
     @Override
     protected Format[] getMatchingOutputFormats(Format inputFormat)
@@ -361,7 +357,7 @@ public class VPXEncoder extends AbstractCodec2
     }
 
     /**
-     * Re-initializes the encoder context. Needed when the input size changes.
+     * Re-initialize the encoder context. Needed when the input size changes.
      */
     private void reinit()
     {
