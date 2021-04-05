@@ -393,9 +393,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             }
 
             final long ssrc = getReceiveStreamSSRC(receiveStream);
-
             ReceiveStreamDesc receiveStreamDesc = findReceiveStream(ssrc);
-
             if (receiveStreamDesc != null) {
                 String s = "NewReceiveStreamEvent for an existing SSRC. ";
                 if (receiveStream != receiveStreamDesc.receiveStream)

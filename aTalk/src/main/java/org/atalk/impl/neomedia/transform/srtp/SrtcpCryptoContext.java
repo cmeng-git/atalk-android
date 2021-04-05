@@ -108,7 +108,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      */
     SrtpErrorStatus checkReplay(int index)
     {
-        // Compute the index of previously received packet and its delta to the new received packet.
+        // Compute the index of the previously received packet and its delta to the new received packet.
         long delta = index - receivedIndex;
 
         if (delta > 0)

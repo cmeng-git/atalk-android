@@ -52,15 +52,15 @@ public class VPXDecoder extends AbstractCodec2
 
     /**
      * Pointer to a native vpx_image structure, containing a decoded frame.
-     * When doProcess() is called, this is either 0 or it has the address of
-     * the next unprocessed image from the decoder
+     * When doProcess() is called, this is either 0, or it has the address of
+     * the next unprocessed image from the decoder.
      */
     private long img = 0;
 
     /**
      * Iterator for the frames in the decoder context. Can be re-initialized by setting its only element to 0.
      */
-    private long[] iter = new long[1];
+    private final long[] iter = new long[1];
 
     /**
      * Whether there are unprocessed frames left from a previous call to VP8.codec_decode()
@@ -68,8 +68,7 @@ public class VPXDecoder extends AbstractCodec2
     private boolean leftoverFrames = false;
 
     /**
-     * The last known height of the video output by this
-     * <tt>VPXDecoder</tt>. Used to detect changes in the output size.
+     * The last known height of the video output by this <tt>VPXDecoder</tt>. Used to detect changes in the output size.
      */
     private int width;
 
@@ -123,7 +122,7 @@ public class VPXDecoder extends AbstractCodec2
 
     /**
      * {@inheritDoc}
-     * <p>
+     *
      * Decodes a VP8 frame contained in <tt>inputBuffer</tt> into <tt>outputBuffer</tt> (in <tt>AVFrameFormat</tt>)
      *
      * @param inputBuffer input <tt>Buffer</tt>
@@ -135,8 +134,7 @@ public class VPXDecoder extends AbstractCodec2
     {
         if (leftoverFrames) {
             /*
-             * There are more decoded frames available in the context. Fill
-             * outputBuffer with the next frame.
+             * There are more decoded frames available in the context. Fill outputBuffer with the next frame.
              */
             updateOutputFormat(
                     VPX.img_get_d_w(img),
@@ -186,7 +184,6 @@ public class VPXDecoder extends AbstractCodec2
                     ((VideoFormat) inputBuffer.getFormat()).getFrameRate());
             outputBuffer.setFormat(outputFormat);
 
-
             AVFrame avframe = makeAVFrame(img);
             outputBuffer.setData(avframe);
 
@@ -194,7 +191,6 @@ public class VPXDecoder extends AbstractCodec2
             outputBuffer.setLength(width * height * 3 / 2);
             outputBuffer.setTimeStamp(inputBuffer.getTimeStamp());
         }
-
 
         /*
          * outputBuffer is all setup now. Check the decoder context for more decoded frames.
@@ -262,8 +258,8 @@ public class VPXDecoder extends AbstractCodec2
      * Sets the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>.
      *
      * @param format the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
-     * @return the <tt>Format</tt> of the media data to be input for processing
-     * in this <tt>Codec</tt> if <tt>format</tt> is compatible with this <tt>Codec</tt>; otherwise, <tt>null</tt>
+     * @return the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
+     * if <tt>format</tt> is compatible with this <tt>Codec</tt>; otherwise, <tt>null</tt>
      */
     @Override
     public Format setInputFormat(Format format)

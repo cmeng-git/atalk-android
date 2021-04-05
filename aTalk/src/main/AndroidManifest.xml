@@ -56,11 +56,11 @@
         android:name=".aTalkApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
-        tools:replace="android:label"
         android:label="@string/APPLICATION_NAME"
         android:logo="@drawable/ic_notification"
+        android:networkSecurityConfig="@xml/network_security_configuration"
         android:requestLegacyExternalStorage="true"
-        android:networkSecurityConfig="@xml/network_security_configuration" >
+        tools:replace="android:label">
 
         <!-- Apache HTTP client deprecation: (no effect so far)
          https://developer.android.com/about/versions/pie/android-9.0-changes-28#apache-p
@@ -181,6 +181,7 @@
         </activity>
         <activity
             android:name=".gui.call.VideoCallActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
             android:hardwareAccelerated="true"
             android:label="@string/APPLICATION_NAME" />
         <activity

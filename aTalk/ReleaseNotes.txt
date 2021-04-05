@@ -1,6 +1,60 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	04/05/2021
+Version:		2.6.0 (206000)
+- Check for user valid ipAddress entry in STUN/TURN setting configuration
+- Cancel vibrator immediately upon call accepted by user i.e. JingleMessageHelper.sendJingleAccept()
+  and showToaste message "Connecting caller" on received JingleProceed message
+- Remove ProgressDialogFragment.showProgressDialog() in AndroidCallUtil#createCall(). Does not have chance to display and
+  often have error in DialogActivity.waitForDialogOpened(dialogId), leaving an un-closeable (by user) dialog fragment
+- Android throws the following error when camera resolution is set to 720x480 in portrait mode;
+  522240 is for landscape size calculated by by PreviewStream#calcYV12Size:
+  E/Camera-JNI: Callback buffer was too small! Expected 522240 bytes, but got 518400 bytes!
+  Reason: aTalk always set to use landscape (0 deg) in camera preview; see PreviewStream#calcYV12Size()
+- Default enable VP8 codec and set as first priority. Default video resolution to "720x480"
+- RemoteVideoLayout#setVideoPreferredSize() Size change algorithm must use preferredSize and videoSize ratio compare;
+  Otherwise, not null remoteVideoView will also return false for sizeChange when remote video dimension changes
+  due to device orientation change; removed this test as it is unnecessary.
+
+======== Video call with device orientation change ==========
+Three approaches: #3 is selected for final implementation to give the best result:
+1: In VideoCallActivity#onCreate, use setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_XXX)
+   When sender changes orientation, recipient needs to change his device orientation to make the remote video view upright -> then sender remote view becomes OK.
+   The video stream encryption with Replay protect should work properly as there is not interruption in stream sending.
+   However when switch to back camera, the remote video is inverted. Both sender & recipient must switch to back cameras to work properly.
+2. Approach aborted due to complexity and NewReceiveStreamEvent is not always gets triggered - reliability issue
+   Do not send content-modify when the sender device orientation change as there is no change in senders attribute.
+   see https://xmpp.org/extensions/xep-0166.html#def-action-content-modify
+   The content-modify action is used to change the direction of an existing content definition through modification of the 'senders' attribute.
+3. Use VideoActivity#onConfigurationChanged() event, and let app handles all the required changes i.e.
+   a. Local content view redraw
+   b. Need to check camera rotation; front/back to correctly transform video data for streaming; to avoid stretch and orientation
+   b. Rotated camera preview sending, requires recipient CODEC to auto detect video stream size change. Currently only VP8 can support
+
+======== Video call with camera switching ==========
+- see PreviewStream#switchCamera(); release current camera and start user selected camera.
+  # MediaStreamImpl#setDevice: remove check for device change in "if ((deviceSession == null) || (deviceSession.getDevice() != device))"
+  # Seems not necessary after the above change, so reinsert back:
+    Block DeviceConfiguration#setVideoCaptureDevice to firePropertyChange(VIDEO_CAPTURE_DEVICE, oldDevice, device);
+    to avoid triggering of JIngle messages (content modify) sending
+
+- The above two new implementations should improve SRTP replay protection reliability on screen rotation or switching camera
+
+- The H.264 encoder and decoder are now extended with AbstractCodec2; and cleanup VPX codec
+- H.264 codec cannot dynamically obtain remote video dimension, hence cannot support auto rotate remote view container: JNIDecoder#doProcess()
+- Note: this is not required if using method #1 implementation; but show corrupted display for method #3 implementation.
+
+- Port to fmj-1.0.1-jitsi.jar: only minor changes in pom.xml (no change in source)
+- Upgrade to smack 4.4.2 release:
+  * Remove jarjar smack-core (aTalk): omit AbstractProvider.java and Function.java classes in aTalk source
+  * Port aTalk BoBExt and BoBExtensionProvider to use smack BoBDataExtension and BoBDataExtensionProvider respectively
+- JCenter deprecation and end of service: https://developer.android.com/studio/build/jcenter-migration
+  https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/
+  aTalk dependency on jCenter: jarjar, exoplayer, kotlin
+
+=========================================================================
+Author:         cmeng
 Upload Date:	02/08/2021
 Version:		2.5.1 (1151)
 - Enable ExoPlayer advance features/options for playback repeat and speed etc; use StyledPlayerView.
@@ -425,7 +479,7 @@ Version:		2.3.0 (1130)
     TlsServerImpl.getCertificateRequest to include ClientCertificateType.ecdsa_sign i.e:
     short[] certificateTypes = new short[]{ ClientCertificateType.rsa_sign, ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
   * aTalk Video call with conversations cause conversations to crash for h264 codec:
-    eu.siacs.conversations W/System.err: java.lang.IllegalArgumentException: h264 is not a constant in org.webrtc.VideoCodecType
+     eu.siacs.conversations W/System.err: java.lang.IllegalArgumentException: h264 is not a constant in org.webrtc.VideoCodecType
      When remove H264 from codec offer, aTalk is then able to send/received VP8 video without problem;
      However conversations still has problem decode and display VP8 video.
      Reason: aTalk hardware codedc supported packetization-mode does not really match Conversations (no common codec): need more investigation

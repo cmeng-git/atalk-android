@@ -33,7 +33,7 @@ import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Body;
-import org.jivesoftware.smackx.bob.element.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -275,9 +275,9 @@ public class CaptchaDialog extends Dialog
             }
 
             Bitmap bmCaptcha = null;
-            BoBExt bob = mMessage.getExtension(BoBExt.class);
+            BoBDataExtension bob = mMessage.getExtension(BoBDataExtension.class);
             if (bob != null) {
-                byte[] bytData = bob.getBoBData().getContent();
+                byte[] bytData = bob.getBobData().getContent();
                 InputStream stream = new ByteArrayInputStream(bytData);
                 bmCaptcha = BitmapFactory.decodeStream(stream);
             }

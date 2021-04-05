@@ -9,12 +9,18 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.*;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import net.java.sip.communicator.service.gui.call.CallPeerRenderer;
 import net.java.sip.communicator.service.gui.call.CallRenderer;
@@ -35,10 +41,12 @@ import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
+import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
 import org.atalk.impl.neomedia.transform.sdes.SDesControlImpl;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.MediaType;
+import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
@@ -46,8 +54,6 @@ import java.beans.PropertyChangeListener;
 import java.util.EventObject;
 import java.util.Iterator;
 
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.*;
 import timber.log.Timber;
 
 /**
@@ -63,7 +69,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         VideoHandlerFragment.OnRemoteVideoChangeListener
 {
     /**
-     * Tag name for fragment that handles proximity sensor in order to turn the screen on and off.
+     * Tag name for the fragment that handles proximity sensor in order to turn the screen on and off.
      */
     private static final String PROXIMITY_FRAGMENT_TAG = "proximity";
 
@@ -169,6 +175,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
      * Note: Otherwise it is null.
      */
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -228,7 +235,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             videoFragment = new VideoHandlerFragment();
             volControl = new CallVolumeCtrlFragment();
             /*
-             * Adds fragment that turns on and off the screen when proximity sensor detects FAR/NEAR distance.
+             * Adds a fragment that turns on and off the screen when proximity sensor detects FAR/NEAR distance.
              */
             getSupportFragmentManager().beginTransaction()
                     .add(volControl, VOLUME_CTRL_TAG)
@@ -245,6 +252,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             autoHide = (AutoHideController) fragmentManager.findFragmentByTag(AUTO_HIDE_TAG);
             volControl = (CallVolumeCtrlFragment) fragmentManager.findFragmentByTag(VOLUME_CTRL_TAG);
         }
+
+        //        if (aTalkApp.isPortrait)
+        //            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //        else
+        //            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override
@@ -256,7 +268,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState)
+    protected void onSaveInstanceState(@NotNull Bundle outState)
     {
         if (sasToastController != null)
             sasToastController.onSaveInstanceState(outState);
@@ -360,7 +372,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
         finishing = true;
         new Thread(() -> {
-            // Waits for camera to be stopped
+            // Waits for the camera to be stopped
             videoFragment.ensureCameraClosed();
 
             runOnUiThread(() -> {
@@ -420,7 +432,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Handles buttons action events- the <tt>ActionEvent</tt> that notified us
+     * Handle buttons action events- the <tt>ActionEvent</tt> that notified us
      */
     @Override
     public void onClick(View v)
@@ -470,7 +482,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Handles buttons longPress action events - the <tt>ActionEvent</tt> that notified us
+     * Handle buttons longPress action events - the <tt>ActionEvent</tt> that notified us
      */
     @Override
     public boolean onLongClick(View v)
@@ -1006,7 +1018,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         boolean isSecure = false;
         boolean isVerified = false;
-        ZrtpControl zrtpCtrl = null;
+        ZrtpControl zrtpCtrl;
         SrtpControlType srtpControlType = SrtpControlType.NULL;
 
         Iterator<? extends CallPeer> callPeers = call.getCallPeers();
@@ -1054,13 +1066,12 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             if (isVerified) {
                 // Security on
                 setPadlockColor(R.color.padlock_green);
-                setPadlockSecure(true);
             }
             else {
                 // Security pending
                 setPadlockColor(R.color.padlock_orange);
-                setPadlockSecure(true);
             }
+            setPadlockSecure(true);
         }
         else {
             // Security off
@@ -1143,7 +1154,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         runOnUiThread(() -> {
             SrtpControl srtpCtrl = evt.getSecurityController();
             boolean isVerified = false;
-            ZrtpControl zrtpControl = null;
+            ZrtpControl zrtpControl;
             SrtpControlType srtpControlType = SrtpControlType.NULL;
 
             if (srtpCtrl instanceof ZrtpControl) {
@@ -1217,5 +1228,31 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         String callDuration = "";
         String errorReason = "";
         boolean callEnded = false;
+    }
+
+    /*
+     * This method requires the codec to support auto-detect remote video size change. Only VP8 codec supports this currently
+     * App handling of device rotation during video call to:
+     * a. Update local video view container dimension change
+     * b. Perform camera rotation for swap & flip, for properly video data transformation before sending
+     * c. Update camera setDisplayOrientation(rotation)
+     *
+     * Note: If setRequestedOrientation() in onCreate; this method will never get call even
+     * it is defined in manifest android:configChanges="orientation|screenSize|screenLayout"
+     */
+    @Override
+    public void onConfigurationChanged(@NotNull Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+
+        if (call.getCallState() != CallState.CALL_ENDED) {
+            videoFragment.initLocalPreviewContainer();
+            // cmeng: does not seem to help when call starts in landscape, so omit it for now
+            // videoFragment.initRemoteVideoContainer(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
+
+            PreviewStream instance = PreviewStream.getInstance();
+            if (instance != null)
+                instance.initCameraOnRotation();
+        }
     }
 }

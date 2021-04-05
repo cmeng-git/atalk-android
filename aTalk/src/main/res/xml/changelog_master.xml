@@ -6,6 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.6.0 (04/05/2021)" versioncode="206000">
+        <change>Enhance video streaming handler during media call on device rotation. Require VP8 video codec to support video size change detection</change>
+        <change>Enhance implementation in handling camera switching by user, without using the jingle content modify messages</change>
+        <change>The two implementations improve SRTP Replay Protection reliability, and smooth video playback transition on a remote device, when sender device rotate or switch camera during call</change>
+        <change>Check for user valid IP Address entry in user STUN/TURN setting configuration</change>
+        <change>Cancel vibrator immediately upon call accepted by user and show status message "Connecting ..."</change>
+        <change>Default to enable VP8 codec and set as first priority; default video resolution to "720x480"</change>
+        <change>Fix camera JNI error when camera resolution is set to 720x480</change>
+        <change>Upgrade smack to 4.4.2 release; and fmj to v1.0.1</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.5.1 (02/08/2021)" versioncode="1151">
         <change>Enable ExoPlayer advance features/options for playback repeat and speed etc</change>
         <change>Check and allow ExoPlayer for the media audio url link playback</change>

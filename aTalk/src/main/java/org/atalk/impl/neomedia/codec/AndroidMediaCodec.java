@@ -5,19 +5,21 @@
  */
 package org.atalk.impl.neomedia.codec;
 
-import android.annotation.TargetApi;
 import android.media.*;
-import android.os.Build;
 
 import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.impl.neomedia.codec.video.*;
+import org.atalk.impl.neomedia.codec.video.AVFrame;
+import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
+import org.atalk.impl.neomedia.codec.video.ByteBuffer;
 import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
 import org.atalk.service.neomedia.codec.Constants;
 
 import java.io.IOException;
 import java.util.*;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 
 import timber.log.Timber;
@@ -416,7 +418,6 @@ public class AndroidMediaCodec extends AbstractCodec2
     public AndroidMediaCodec()
     {
         super("MediaCodec", Format.class, SUPPORTED_OUTPUT_FORMATS);
-
         inputFormats = SUPPORTED_INPUT_FORMATS;
     }
 
@@ -812,8 +813,7 @@ public class AndroidMediaCodec extends AbstractCodec2
                 }
 
                 // Well, this Codec is either an encoder or a decoder so it
-                // seems like only its inputFormat may specify
-                // the size/Dimension.
+                // seems like only its inputFormat may specify the size/Dimension.
                 if (inputFormat instanceof VideoFormat) {
                     Dimension size = ((VideoFormat) inputFormat).getSize();
                     if (size == null)

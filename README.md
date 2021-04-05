@@ -146,6 +146,7 @@ Libraries used in this project:
 * [glide](https://github.com/bumptech/glide)
 * [Google Play Services](https://developers.google.com/android/guides/overview)
 * [httpcore](https://hc.apache.org/httpcomponents-client-4.5.x/)
+* [IPAddress](https://github.com/seancfoley/IPAddress)
 * [ice4j](https://github.com/jitsi/ice4j)
 * [jitsi](https://github.com/jitsi/jitsi)
 * [jitsi-android](https://github.com/jitsi/jitsi-android)

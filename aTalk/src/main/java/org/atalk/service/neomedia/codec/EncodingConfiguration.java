@@ -14,7 +14,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * A base class that manages encoding configurations. It holds information about supported formats.
+ * A base class manages encoding configurations. It holds information about supported formats.
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -102,7 +102,7 @@ public abstract class EncodingConfiguration
         String encodingEncoding = encoding.getEncoding();
 
         /*
-         * Since we'll be remembering the priority in the ConfigurationService by associating it
+         * Since we'll remember the priority in the ConfigurationService by associating it
          * with a property name/key based on encoding and clock rate only, it does not make sense to
          * store the MediaFormat in encodingPreferences because MediaFormat is much more specific
          * than just encoding and clock rate.

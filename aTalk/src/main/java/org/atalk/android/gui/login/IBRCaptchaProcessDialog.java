@@ -43,7 +43,7 @@ import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smackx.bob.element.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
@@ -216,9 +216,9 @@ public class IBRCaptchaProcessDialog extends Dialog
                         return false;
 
                     mDataForm = dataForm;
-                    BoBExt bob = info.getBoB();
+                    BoBDataExtension bob = info.getBoB();
                     if (bob != null) {
-                        byte[] bytData = bob.getBoBData().getContent();
+                        byte[] bytData = bob.getBobData().getContent();
                         InputStream stream = new ByteArrayInputStream(bytData);
                         mCaptcha = BitmapFactory.decodeStream(stream);
                     }

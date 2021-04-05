@@ -1,3 +1,5 @@
+
+
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  *
@@ -29,7 +31,9 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.*;
+import org.atalk.util.ByteArrayBuffer;
+import org.atalk.util.MediaType;
+import org.atalk.util.RTPUtils;
 import org.atalk.util.logging.DiagnosticContext;
 
 import java.beans.PropertyChangeEvent;
@@ -38,7 +42,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.*;
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.media.Format;
 import javax.media.MediaLocator;
@@ -47,7 +53,9 @@ import javax.media.format.UnsupportedFormatException;
 import javax.media.protocol.*;
 import javax.media.rtp.*;
 import javax.media.rtp.event.*;
-import javax.media.rtp.rtcp.*;
+import javax.media.rtp.rtcp.Feedback;
+import javax.media.rtp.rtcp.Report;
+import javax.media.rtp.rtcp.SenderReport;
 
 import timber.log.Timber;
 
@@ -481,7 +489,7 @@ public class MediaStreamImpl extends AbstractMediaStream
 
         writeLock.lock();
         try {
-            // Downgrade the write lock to a read lock in order to allow readers during the invocation of
+            // Downgrade the writeLock to a read lock in order to allow readers during the invocation of
             // MediaDeviceSession.addReceiveStream(ReceiveStream) (and disallow writers, of course).
             if (!receiveStreams.contains(receiveStream) && receiveStreams.add(receiveStream)) {
                 readLock.lock();
@@ -1981,7 +1989,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         try {
             if (receiveStreams.remove(receiveStream)) {
                 /*
-                 * Downgrade the write lock to a read lock in order to allow readers during the invocation of
+                 * Downgrade the writeLock to a readLock in order to allow readers during the invocation of
                  * MediaDeviceSession#removeReceiveStream(ReceiveStream) (and disallow writers, of course).
                  */
                 readLock.lock();
@@ -2201,7 +2209,10 @@ public class MediaStreamImpl extends AbstractMediaStream
         // Require AbstractMediaDevice for MediaDeviceSession support.
         AbstractMediaDevice abstractMediaDevice = (AbstractMediaDevice) device;
 
-        if ((deviceSession == null) || (deviceSession.getDevice() != device)) {
+        // cmeng: 20210403, new camera switching restricts to camera device preview handling only, does not
+        // trigger codec close/open, so remove device change check. See PreviewStream#switchCamera()
+        // if ((deviceSession == null) || (deviceSession.getDevice() != device)) {
+        if (deviceSession == null) {
             assertDirection(direction, device.getDirection(), "device");
 
             MediaDeviceSession oldValue = deviceSession;
@@ -2773,25 +2784,26 @@ public class MediaStreamImpl extends AbstractMediaStream
     @Override
     public void update(ReceiveStreamEvent ev)
     {
+        ReceiveStream receiveStream = ev.getReceiveStream();
+        boolean hasStream = receiveStream != null;
+
         if (ev instanceof NewReceiveStreamEvent) {
             // XXX we might consider not adding (or not starting) new ReceiveStreams
             // unless this MediaStream's direction allows receiving.
 
-            ReceiveStream receiveStream = ev.getReceiveStream();
-            if (receiveStream != null) {
+            Timber.d("Received ReceiveStreamEvent (new): %s = %s", receiveStreams.contains(receiveStream), ev);
+            if (hasStream) {
                 long receiveStreamSSRC = 0xFFFFFFFFL & receiveStream.getSSRC();
-                Timber.log(TimberLog.FINER, "Received new ReceiveStream with ssrc %s", receiveStreamSSRC);
 
                 addRemoteSourceID(receiveStreamSSRC);
                 addReceiveStream(receiveStream);
             }
         }
         else if (ev instanceof TimeoutEvent) {
-            ReceiveStream evReceiveStream = ev.getReceiveStream();
             Participant participant = ev.getParticipant();
 
-            // If we recreate streams, we will already have restarted zrtpControl. But when
-            // on the other end someone recreates his streams, we will receive a
+            // If we recreate streams, we will already have restarted zrtpControl,
+            // but when on the other end someone recreates his streams, we will receive a
             // ByeEvent (which extends TimeoutEvent) and then we must also restart our ZRTP.
             // This happens, for example, when we are already in a call and the remote peer
             // converts his side of the call into a conference call.
@@ -2799,41 +2811,38 @@ public class MediaStreamImpl extends AbstractMediaStream
             //		restartZrtpControl();
 
             List<ReceiveStream> receiveStreamsToRemove = new ArrayList<>();
-            if (evReceiveStream != null) {
-                receiveStreamsToRemove.add(evReceiveStream);
-                Timber.w("### Receiving stream TimeoutEvent occurred for: %s", evReceiveStream);
+            if (hasStream) {
+                receiveStreamsToRemove.add(receiveStream);
+                Timber.w("### Receiving stream TimeoutEvent occurred for: %s", receiveStream);
             }
             else if (participant != null) {
                 Collection<ReceiveStream> receiveStreams = getReceiveStreams();
                 Collection<?> rtpManagerReceiveStreams = rtpManager.getReceiveStreams();
 
-                for (ReceiveStream receiveStream : receiveStreams) {
-                    if (participant.equals(receiveStream.getParticipant())
-                            && !participant.getStreams().contains(receiveStream)
-                            && !rtpManagerReceiveStreams.contains(receiveStream)) {
-                        receiveStreamsToRemove.add(receiveStream);
+                for (ReceiveStream receiveStreamX : receiveStreams) {
+                    if (participant.equals(receiveStreamX.getParticipant())
+                            && !participant.getStreams().contains(receiveStreamX)
+                            && !rtpManagerReceiveStreams.contains(receiveStreamX)) {
+                        receiveStreamsToRemove.add(receiveStreamX);
                     }
                 }
             }
 
             // cmeng: can happen when remote video streaming is enabled but arriving
             // late/TimeoutEvent happen or remote video streaming is stop/terminated
-            for (ReceiveStream receiveStream : receiveStreamsToRemove) {
-                removeReceiveStream(receiveStream);
+            for (ReceiveStream receiveStreamX : receiveStreamsToRemove) {
+                removeReceiveStream(receiveStreamX);
 
                 // The DataSource needs to be disconnected, because otherwise
                 // its RTPStream thread will stay alive. We do this here because
                 // we observed that in certain situations it fails to be done earlier.
-                DataSource dataSource = receiveStream.getDataSource();
-
+                DataSource dataSource = receiveStreamX.getDataSource();
                 if (dataSource != null)
                     dataSource.disconnect();
             }
         }
         else if (ev instanceof RemotePayloadChangeEvent) {
-            ReceiveStream receiveStream = ev.getReceiveStream();
-
-            if (receiveStream != null) {
+            if (hasStream) {
                 MediaDeviceSession devSess = getDeviceSession();
 
                 if (devSess != null) {

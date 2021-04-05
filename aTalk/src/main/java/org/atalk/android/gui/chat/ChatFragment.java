@@ -2575,7 +2575,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         mEncryption = IMessage.ENCRYPTION_NONE;
                     }
                     // Timber.w("HTTP link: %s: %s", mFile.getName(), urlLink);
-                    if (StringUtils.isEmpty(urlLink)) {
+                    if (TextUtils.isEmpty(urlLink)) {
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption);
                     }
                     else {

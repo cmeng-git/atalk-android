@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smackx.bob.element.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -50,7 +50,7 @@ public class RegistrationProvider extends IQProvider<Registration>
 
         DataForm dataForm = null;
         boolean isRegistered = false;
-        BoBExt boBExt = null;
+        BoBDataExtension boBExt = null;
 
         List<ExtensionElement> packetExtensions = new LinkedList<>();
         outerloop:
@@ -87,9 +87,9 @@ public class RegistrationProvider extends IQProvider<Registration>
                             dataForm = (DataForm) PacketParserUtils.parseExtensionElement(DataForm.ELEMENT,
                                     DataForm.NAMESPACE, parser, xmlEnvironment);
                             break;
-                        case BoBExt.NAMESPACE:
-                            boBExt = (BoBExt) PacketParserUtils.parseExtensionElement(BoBExt.ELEMENT,
-                                    BoBExt.NAMESPACE, parser, xmlEnvironment);
+                        case BoBDataExtension.NAMESPACE:
+                            boBExt = (BoBDataExtension) PacketParserUtils.parseExtensionElement(BoBDataExtension.ELEMENT,
+                                    BoBDataExtension.NAMESPACE, parser, xmlEnvironment);
                             break;
                         // In case there are more packet extension.
                         default:

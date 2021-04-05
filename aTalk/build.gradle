@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
-        classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1' // working jarjar.repackage version
+        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1' // working jarjar.repackage version in jcenter()
     }
 }
 
@@ -52,7 +52,7 @@ configurations.all {
     it.resolutionStrategy {
         eachDependency { details ->
             // multiple actions can be specified
-            if (details.requested.group == "org.igniterealtime.smack" && ['smack-core', 'smack-experimental', 'smack-extensions'].contains(details.requested.name)) {
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions'].contains(details.requested.name)) {
                 //changing the name reference to smack libraries to its individual jar
                 details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
             }
@@ -74,8 +74,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 1151
-        versionName "2.5.1"
+        versionCode 206000
+        versionName "2.6.0"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -208,7 +208,7 @@ android {
 ext {
     // for official maven release
     // smackVersion = '4.4.0-beta2'
-    smackVersion = '4.4.0'
+    smackVersion = '4.4.2'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
@@ -223,8 +223,8 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.activity:activity:1.2.0-rc01"
-    implementation "androidx.fragment:fragment:1.3.0-rc02"
+    implementation "androidx.activity:activity:1.3.0-alpha05"
+    implementation "androidx.fragment:fragment:1.3.2"
 
     implementation "androidx.legacy:legacy-support-v4:${rootProject.supportLibraryVersion}"
     implementation "androidx.legacy:legacy-support-v13:${rootProject.supportLibraryVersion}"
@@ -247,6 +247,8 @@ dependencies {
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.github.seancfoley:ipaddress:5.3.3'
+
     // Need latest release to fix incorrect youtube link extraction
     implementation 'com.github.HaarigerHarald:android-youtubeExtractor:69f7045'
     implementation 'com.github.yalantis:ucrop:2.2.6'
@@ -309,13 +311,13 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
-    implementation 'org.jxmpp:jxmpp-jid:1.0.0'
+    implementation 'org.jxmpp:jxmpp-jid:1.0.1'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'org.osgi:osgi.core:7.0.0'
 
-    playstoreImplementation "com.google.android.gms:play-services-location:17.1.0"
+    playstoreImplementation "com.google.android.gms:play-services-location:18.0.0"
     playstoreImplementation "com.google.android.gms:play-services-maps:${rootProject.gmsPlayServicesVersion}"
     playstoreImplementation "com.google.android.gms:play-services-panorama:${rootProject.gmsPlayServicesVersion}"
 
@@ -327,9 +329,9 @@ dependencies {
      * May use className and className$** to delete only the related, but excluding classes with same prefix
      */
     implementation jarjar.repackage {
-        from('org.jitsi:fmj:1.0.0-jitsi')
+        from('org.jitsi:fmj:1.0.1-jitsi')
         destinationDir new File("${projectDir}/libs")
-        destinationName "fmj-1.0.0-jitsi.jar"
+        destinationName "fmj-1.0.1-jitsi.jar"
 
         classRename 'java.awt.**', 'org.atalk.android.util.java.awt.@1'
         classRename 'java.beans.**', 'org.atalk.android.util.java.beans.@1'

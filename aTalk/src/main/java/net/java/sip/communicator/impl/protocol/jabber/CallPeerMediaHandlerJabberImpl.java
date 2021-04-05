@@ -1077,7 +1077,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * Each Jingle session-accept can contain both audio and video; and will be process individually
      *
      * @param content a <tt>JingleContent</tt>
-     * @param modify if it correspond to a content-modify for resolution change
+     * @param modify if it corresponds to a content-modify for resolution change
      * @param masterStream whether the stream to be used as master
      * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing to
      * initialize media devices or streams.
@@ -1105,7 +1105,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         /*
          * If transport and session-accept are received one after the other, then must wait for transport
-         * processing to be completed before attempt again. Otherwise getStream(MediaType) will always return nul
+         * processing to be completed before attempt again. Otherwise, getStream(MediaType) will always return nul
          */
         if (target == null) {
             Timber.e("### Waiting transport processing to complete, bind mediaStream is null for: %s", mediaType);
@@ -1120,8 +1120,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         Timber.d("### Process media content for: sender = %s: %s => %s", sender, mediaType, target);
 
-        // aborted if associated target address is not available: Process transport-info completed ~120ms
-        // lead time on Note-10 (aTalk-initiator) send from Note-3 (conversations-responder)
+        // aborted if associated target address is not available: Process transport-info completed
+        // ~120ms lead time on Note-10 (aTalk-initiator) send from Note-3 (conversations-responder)
         if ((target == null) || (target.getDataAddress() == null)) {
             closeStream(mediaType);
             return;
@@ -1342,6 +1342,13 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         });
 
         /*
+         * cmeng (20210405): with mux on RTP channel has greatly improved the connection speed.
+         * cmeng: newly added (20200112)? need to check if it helps - may not be needed anymore as stated above.
+         * In order to minimize post-pickup delay, start establishing the connectivity prior to ringing.
+         */
+        // harvestCandidates(offer, answer, infoSender);
+
+        /*
          * While it may sound like we can completely eliminate the post-pickup delay by waiting for
          * the connectivity establishment to finish, it may not be possible in all cases. We are
          * the Jingle session responder so, in the case of the ICE UDP transport, we are not the
@@ -1415,7 +1422,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param name name of the Jingle content
      * @param content media content
-     * @param modify if it correspond to a content-modify for resolution change
+     * @param modify if it corresponds to a content-modify for resolution change
      * @throws OperationFailedException if we fail to handle <tt>content</tt> for reasons like failing to
      * initialize media devices or streams.
      * @throws IllegalArgumentException if there's a problem with the syntax or the semantics of <tt>content</tt>.

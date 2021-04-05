@@ -29,7 +29,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
     private final boolean setZMediaOverlay;
 
     /**
-     * Creates new instance of <tt>PreviewSurfaceProvider</tt>.
+     * Create a new instance of <tt>PreviewSurfaceProvider</tt>.
      *
      * @param parent parent <tt>OSGiActivity</tt> instance.
      * @param container the <tt>ViewGroup</tt> that will hold maintained <tt>SurfaceView</tt>.

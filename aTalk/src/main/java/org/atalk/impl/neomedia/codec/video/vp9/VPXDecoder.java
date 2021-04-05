@@ -70,7 +70,7 @@ public class VPXDecoder extends AbstractCodec2
     /**
      * Iterator for the frames in the decoder context. Can be re-initialized by setting its only element to 0.
      */
-    private long[] iter = new long[1];
+    private final long[] iter = new long[1];
 
     /**
      * Whether there are unprocessed frames left from a previous call to VP9.codec_decode()
@@ -193,7 +193,6 @@ public class VPXDecoder extends AbstractCodec2
                     VPX.img_get_d_h(img),
                     ((VideoFormat) inputBuffer.getFormat()).getFrameRate());
             outputBuffer.setFormat(outputFormat);
-
 
             AVFrame avframe = makeAVFrame(img);
             outputBuffer.setData(avframe);

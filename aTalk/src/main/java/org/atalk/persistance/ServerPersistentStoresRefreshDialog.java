@@ -81,8 +81,6 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * should pass the listener here or <tt>null</tt> otherwise.
      *
      * @param parent the parent <tt>Activity</tt>
-     * @param createListener listener for contact group created event that will receive newly created instance of
-     * the contact group or <tt>null</tt> in case user cancels the dialog.
      */
     public void show(Activity parent)
     {
@@ -159,7 +157,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
                 try {
                     FileBackend.deleteRecursive(rosterStoreDirectory);
                 } catch (IOException e) {
-                    Timber.e("Failed to purchase store for: %s", R.string.service_gui_REFRESH_STORES_ROSTER);
+                    Timber.e("Failed to purge store for: %s", R.string.service_gui_REFRESH_STORES_ROSTER);
                 }
                 jabberProvider.initRosterStore();
             }
@@ -188,7 +186,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
     }
 
     /**
-     * Process to refresh Disco#info store for each accounts
+     * Process to refresh Disco#info store for all accounts
      * Persistent Store for XEP-0030:Service Discovery
      */
     private void refreshDiscoInfoStore()

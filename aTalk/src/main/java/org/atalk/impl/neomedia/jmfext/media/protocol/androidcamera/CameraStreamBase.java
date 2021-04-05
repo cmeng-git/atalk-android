@@ -46,7 +46,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     /**
      * Camera object.
      */
-    protected static Camera mCamera;
+    protected Camera mCamera;
 
     /**
      * Format of this stream.
@@ -58,6 +58,8 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
      */
     protected static Dimension mPreviewSize;
 
+    protected Dimension optimizedSize;
+
     // Camera rotation
     protected int mRotation;
 
@@ -67,11 +69,11 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
      * Fps statistics
      */
     private long last = System.currentTimeMillis();
-    private long[] avg = new long[10];
+    private final long[] avg = new long[10];
     private int idx = 0;
 
     /**
-     * Creates new instance of <tt>CameraStreamBase</tt>.
+     * Create a new instance of <tt>CameraStreamBase</tt>.
      *
      * @param parent parent <tt>DataSource</tt>.
      * @param formatControl format control used by this stream.
@@ -86,13 +88,13 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     /**
      * Method should be called by extending classes in order to start the camera:
      *
-     * Obtain optimized dimension from device supported preview sizes with the given desired size.
+     * Obtain optimized dimension from the device supported preview sizes with the given desired size.
      * - Final stream/send video dimension is always in landscape mode.
      * - Local preview dimension must follow current display orientation to maintain image aspect ratio
      * and width and height is interchanged if necessary. Transformation of preview stream video for sending
      * is carried out in {@link PreviewStream#YV12toYUV420PlanarRotate(byte[], byte[], int, int, int)}
      *
-     * Note: Samsung note8 has problem of supporting the rotated 4:3 dimension in portrait mode. So use 1:1
+     * Note: Samsung Note8 has the problem of supporting the rotated 4:3 dimension in portrait mode. So use 1:1
      *
      * @throws IOException IO exception
      */
@@ -116,7 +118,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
 
             // Find optimised video resolution with user selected against device support formats
             List<Size> supportedPreviewSizes = params.getSupportedPreviewSizes();
-            Dimension optimizedSize = CameraUtils.getOptimalPreviewSize(videoSize, supportedPreviewSizes);
+            optimizedSize = CameraUtils.getOptimalPreviewSize(videoSize, supportedPreviewSizes);
             // Set preview display orientation according to device rotation
             if (swap) {
                 mPreviewSize = new Dimension(optimizedSize.height, optimizedSize.width);
@@ -127,7 +129,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
 
             // Streaming video always send in dimension according to the phone orientation
             mFormat.setVideoSize(mPreviewSize);
-            Timber.i("Camera stream format: %s", mFormat);
+            Timber.d("Camera data stream format: %s", mFormat);
 
             params.setRotation(mRotation);
             // Always set camera capture in its native dimension - otherwise may not be supported.
@@ -154,7 +156,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     }
 
     /**
-     * Method called before camera preview is started. Extending classes should configure preview at this point.
+     * Method called before camera preview is started. Extending classes should configure the preview at this point.
      *
      * @throws IOException ioException on error
      */
@@ -243,13 +245,5 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     public static int getCameraId()
     {
         return mCameraId;
-    }
-
-    /**
-     * @return the current selected cameraId
-     */
-    public static Camera getCamera()
-    {
-        return mCamera;
     }
 }

@@ -43,12 +43,10 @@ public class VPXEncoder extends AbstractCodec2
     /**
      * Default output formats
      */
-    private static final VideoFormat[] SUPPORTED_OUTPUT_FORMATS
-            = new VideoFormat[]{new VideoFormat(Constants.VP8)};
+    private static final VideoFormat[] SUPPORTED_OUTPUT_FORMATS = new VideoFormat[]{new VideoFormat(Constants.VP8)};
 
     /**
-     * Pointer to a native vpx_codec_dec_cfg structure containing
-     * encoder configuration
+     * Pointer to a native vpx_codec_dec_cfg structure containing encoder configuration
      */
     private long cfg = 0;
 
@@ -60,7 +58,7 @@ public class VPXEncoder extends AbstractCodec2
     /**
      * Flags passed when (re-)initializing the encoder context
      */
-    private long flags = 0;
+    private final long flags = 0;
 
     /**
      * Number of encoder frames so far. Used as pst (presentation time stamp)
@@ -74,14 +72,13 @@ public class VPXEncoder extends AbstractCodec2
     private long img = 0;
 
     /**
-     * Iterator for the compressed frames in the encoder context. Can be
-     * re-initialized by setting its only element to 0.
+     * Iterator for the compressed frames in the encoder context.
+     * Can be re-initialized by setting its only element to 0.
      */
-    private long[] iter = new long[1];
+    private final long[] iter = new long[1];
 
     /**
-     * Whether there are unprocessed packets left from a previous call to
-     * VP8.codec_encode()
+     * Whether there are unprocessed packets left from a previous call to VP8.codec_encode()
      */
     private boolean leftoverPackets = false;
 
@@ -225,9 +222,8 @@ public class VPXEncoder extends AbstractCodec2
 
     /**
      * {@inheritDoc}
-     * <p>
-     * Encodes the frame in <tt>inputBuffer</tt> (in <tt>YUVFormat</tt>) into a VP8 frame (in
-     * <tt>outputBuffer</tt>)
+     *
+     * Encodes the frame in <tt>inputBuffer</tt> (in <tt>YUVFormat</tt>) into a VP8 frame (in <tt>outputBuffer</tt>)
      *
      * @param inputBuffer input <tt>Buffer</tt>
      * @param outputBuffer output <tt>Buffer</tt>
@@ -236,11 +232,6 @@ public class VPXEncoder extends AbstractCodec2
     @Override
     protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
     {
-        if (inputBuffer.isDiscard()) {
-            outputBuffer.setDiscard(true);
-            return BUFFER_PROCESSED_OK;
-        }
-
         int ret = BUFFER_PROCESSED_OK;
         byte[] output;
         if (leftoverPackets) {
@@ -333,7 +324,6 @@ public class VPXEncoder extends AbstractCodec2
             return ret | INPUT_BUFFER_NOT_CONSUMED;
         else
             return ret;
-
     }
 
     /**
@@ -357,7 +347,7 @@ public class VPXEncoder extends AbstractCodec2
     }
 
     /**
-     * Reinitializes the encoder context. Needed when the input size changes.
+     * Re-initialize the encoder context. Needed when the input size changes.
      */
     private void reinit()
     {
@@ -398,8 +388,7 @@ public class VPXEncoder extends AbstractCodec2
      *
      * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
      * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this
-     * <tt>Codec</tt>
+     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this <tt>Codec</tt>
      */
     @Override
     public Format setOutputFormat(Format format)

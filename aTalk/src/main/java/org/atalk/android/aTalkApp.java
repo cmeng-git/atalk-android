@@ -5,27 +5,20 @@
  */
 package org.atalk.android;
 
-import android.app.Activity;
-import android.app.Application;
-import android.app.DownloadManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.PowerManager;
+import android.os.*;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.OnLifecycleEvent;
-import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.lifecycle.*;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
@@ -33,10 +26,8 @@ import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
-import org.atalk.android.gui.Splash;
-import org.atalk.android.gui.aTalk;
+import org.atalk.android.gui.*;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
@@ -72,7 +63,7 @@ public class aTalkApp extends Application implements LifecycleObserver
     public static final String ACTION_EXIT = "org.atalk.android.exit";
 
     /**
-     * Indicate if aTalk is in foreground (true) or background (false)
+     * Indicate if aTalk is in the foreground (true) or background (false)
      */
     public static boolean isForeground = false;
 
@@ -102,6 +93,9 @@ public class aTalkApp extends Application implements LifecycleObserver
      * Used to track current <tt>Activity</tt>. This monitor is notified each time current <tt>Activity</tt> changes.
      */
     private static final Object currentActivityMonitor = new Object();
+
+    public static int screenWidth;
+    public static int screenHeight;
 
     /**
      * {@inheritDoc}
@@ -140,6 +134,21 @@ public class aTalkApp extends Application implements LifecycleObserver
         super.onCreate();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         AndroidThreeTen.init(this);
+
+        // Get android device screen display size
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            Point size = new Point();
+            ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
+            screenWidth = size.x;
+            screenHeight = size.y;
+        }
+        else {
+            // UnsupportedOperationException: in Xiaomi Mi 11 Android 11 (SDK 30)
+            // mInstance.getDisplay().getSize(size);
+            Rect mBounds = ((WindowManager) getSystemService(WINDOW_SERVICE)).getCurrentWindowMetrics().getBounds();
+            screenWidth = Math.abs(mBounds.width());
+            screenHeight = Math.abs(mBounds.height());
+        }
     }
 
     /**

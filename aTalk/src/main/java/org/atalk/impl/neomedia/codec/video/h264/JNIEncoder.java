@@ -5,8 +5,6 @@
  */
 package org.atalk.impl.neomedia.codec.video.h264;
 
-import net.sf.fmj.media.AbstractCodec;
-
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
@@ -24,7 +22,9 @@ import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
 
@@ -38,7 +38,7 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class JNIEncoder extends AbstractCodec
+public class JNIEncoder extends AbstractCodec2
         implements RTCPFeedbackMessageListener
 {
     /**
@@ -122,14 +122,9 @@ public class JNIEncoder extends AbstractCodec
     public static final String KEYINT_PNAME = "neomedia.codec.video.h264.keyint";
 
     /**
-     * Minimum interval between two PLI request processing (in milliseconds).
+     * The minimum interval between two PLI request processing (in milliseconds).
      */
     private static final long PLI_INTERVAL = 3000;
-
-    /**
-     * Name of the code.
-     */
-    private static final String PLUGIN_NAME = "H.264 Encoder";
 
     /**
      * The name of the <tt>ConfigurationService</tt> property which specifies the x264 preset to
@@ -143,10 +138,8 @@ public class JNIEncoder extends AbstractCodec
      * The list of <tt>Formats</tt> supported by <tt>JNIEncoder</tt> instances as output.
      */
     static final Format[] SUPPORTED_OUTPUT_FORMATS = {
-            new ParameterizedVideoFormat(
-                    Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0"),
-            new ParameterizedVideoFormat(
-                    Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "1")};
+            new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0"),
+            new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "1")};
 
     public static final int X264_KEYINT_MAX_INFINITE = 1 << 30;
 
@@ -247,6 +240,8 @@ public class JNIEncoder extends AbstractCodec
      */
     public JNIEncoder()
     {
+        super("H.264 Encoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
+
         inputFormats = new Format[]{new YUVFormat(
                 null, /* size */
                 Format.NOT_SPECIFIED, /* maxDataLength */
@@ -267,162 +262,36 @@ public class JNIEncoder extends AbstractCodec
      * Closes this <tt>Codec</tt>.
      */
     @Override
-    public synchronized void close()
+    protected void doClose()
     {
-        if (opened) {
-            opened = false;
-            super.close();
-
-            if (avctx != 0) {
-                FFmpeg.avcodec_close(avctx);
-                FFmpeg.av_free(avctx);
-                avctx = 0;
-            }
-
-            if (avFrame != 0) {
-                FFmpeg.avcodec_free_frame(avFrame);
-                avFrame = 0;
-            }
-            if (rawFrameBuffer != 0) {
-                FFmpeg.av_free(rawFrameBuffer);
-                rawFrameBuffer = 0;
-            }
-
-            if (keyFrameRequestee != null) {
-                if (keyFrameControl != null)
-                    keyFrameControl.removeKeyFrameRequestee(keyFrameRequestee);
-                keyFrameRequestee = null;
-            }
-        }
-    }
-
-    /**
-     * Gets the matching output formats for a specific format.
-     *
-     * @param inputFormat input format
-     * @return array for formats matching input format
-     */
-    private Format[] getMatchingOutputFormats(Format inputFormat)
-    {
-        VideoFormat inputVideoFormat = (VideoFormat) inputFormat;
-
-        String[] packetizationModes = (this.packetizationMode == null)
-                ? new String[]{"0", "1"} : new String[]{this.packetizationMode};
-        Format[] matchingOutputFormats = new Format[packetizationModes.length];
-        Dimension size = inputVideoFormat.getSize();
-        float frameRate = inputVideoFormat.getFrameRate();
-
-        for (int index = packetizationModes.length - 1; index >= 0; index--) {
-            matchingOutputFormats[index] = new ParameterizedVideoFormat(
-                    Constants.H264, size,
-                    Format.NOT_SPECIFIED, /* maxDataLength */
-                    Format.byteArray,
-                    frameRate,
-                    ParameterizedVideoFormat.toMap(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, packetizationModes[index]));
-        }
-        return matchingOutputFormats;
-    }
-
-    /**
-     * Gets the name of this <tt>Codec</tt>.
-     *
-     * @return codec name
-     */
-    @Override
-    public String getName()
-    {
-        return PLUGIN_NAME;
-    }
-
-    /**
-     * Returns the list of formats supported at the output.
-     *
-     * @param in input <tt>Format</tt> to determine corresponding output <tt>Format</tt>s
-     * @return array of formats supported at output
-     */
-    @Override
-    public Format[] getSupportedOutputFormats(Format in)
-    {
-        Format[] supportedOutputFormats;
-
-        // null input format
-        if (in == null)
-            supportedOutputFormats = SUPPORTED_OUTPUT_FORMATS;
-            // mismatch input format
-        else if (!(in instanceof VideoFormat)
-                || (null == AbstractCodec2.matches(in, inputFormats)))
-            supportedOutputFormats = new Format[0];
-        else
-            supportedOutputFormats = getMatchingOutputFormats(in);
-        return supportedOutputFormats;
-    }
-
-    /**
-     * Determines whether the encoding of {@link #avFrame} is to produce a keyframe. The returned
-     * value will be set on <tt>avFrame</tt> via a call to
-     * {@link FFmpeg#avframe_set_key_frame(long, boolean)}.
-     *
-     * @return <tt>true</tt> if the encoding of <tt>avFrame</tt> is to produce a keyframe; otherwise <tt>false</tt>
-     */
-    private boolean isKeyFrame()
-    {
-        boolean keyFrame;
-
-        if (forceKeyFrame) {
-            keyFrame = true;
-
-            /*
-             * The first frame is a keyframe but it is at the very beginning of the video
-             * transmission and, consequently, there is a higher risk that pieces of it will be
-             * lost on their way through the network. To mitigate possible issues in the case of
-             * network loss, the second frame is also a keyframe.
-             */
-            if (secondKeyFrame) {
-                secondKeyFrame = false;
-                forceKeyFrame = true;
-            }
-            else
-                forceKeyFrame = false;
-        }
-        else {
-            /*
-             * In order to be sure that keyint will be respected, we will implement it ourselves
-             * (regardless of the fact that we have told FFmpeg and x264 about it). Otherwise, we
-             * may end up not generating keyframes at all (apart from the two generated after
-             * open).
-             */
-            keyFrame = (lastKeyFrame == keyint);
+        if (avctx != 0) {
+            FFmpeg.avcodec_close(avctx);
+            FFmpeg.av_free(avctx);
+            avctx = 0;
         }
 
-        return keyFrame;
-    }
-
-    /**
-     * Notifies this <tt>JNIEncoder</tt> that the remote peer has requested a key frame from this Local peer.
-     *
-     * @return <tt>true</tt> if this <tt>JNIEncoder</tt> has honored the request for a key frame; otherwise <tt>false</tt>
-     */
-    private boolean keyFrameRequest()
-    {
-        long now = System.currentTimeMillis();
-
-        if (now > (lastKeyFrameRequestTime + PLI_INTERVAL)) {
-            lastKeyFrameRequestTime = now;
-            forceKeyFrame = true;
+        if (avFrame != 0) {
+            FFmpeg.avcodec_free_frame(avFrame);
+            avFrame = 0;
         }
-        return true;
+        if (rawFrameBuffer != 0) {
+            FFmpeg.av_free(rawFrameBuffer);
+            rawFrameBuffer = 0;
+        }
+
+        if (keyFrameRequestee != null) {
+            if (keyFrameControl != null)
+                keyFrameControl.removeKeyFrameRequestee(keyFrameRequestee);
+            keyFrameRequestee = null;
+        }
     }
 
     /**
      * Opens this <tt>Codec</tt>.
      */
     @Override
-    public synchronized void open()
-            throws ResourceUnavailableException
+    protected void doOpen() throws ResourceUnavailableException
     {
-        if (opened)
-            return;
-
         VideoFormat inputVideoFormat = (VideoFormat) inputFormat;
         VideoFormat outputVideoFormat = (VideoFormat) outputFormat;
 
@@ -594,9 +463,6 @@ public class JNIEncoder extends AbstractCodec
         }
         if (keyFrameControl != null)
             keyFrameControl.addKeyFrameRequestee(-1, keyFrameRequestee);
-
-        opened = true;
-        super.open();
     }
 
     /**
@@ -607,19 +473,8 @@ public class JNIEncoder extends AbstractCodec
      * @return <tt>BUFFER_PROCESSED_OK</tt> if buffer has been successfully processed
      */
     @Override
-    public synchronized int process(Buffer inBuffer, Buffer outBuffer)
+    protected int doProcess(Buffer inBuffer, Buffer outBuffer)
     {
-        if (isEOM(inBuffer)) {
-            propagateEOM(outBuffer);
-            reset();
-            return BUFFER_PROCESSED_OK;
-        }
-        if (inBuffer.isDiscard()) {
-            outBuffer.setDiscard(true);
-            reset();
-            return BUFFER_PROCESSED_OK;
-        }
-
         Format inFormat = inBuffer.getFormat();
         if ((inFormat != inputFormat) && !inFormat.equals(inputFormat)) {
             setInputFormat(inFormat);
@@ -650,14 +505,97 @@ public class JNIEncoder extends AbstractCodec
         byte[] out = AbstractCodec2.validateByteArraySize(outBuffer, rawFrameLen, false);
         int outLength = FFmpeg.avcodec_encode_video(avctx, out, out.length, avFrame);
 
-//        if (lastKeyFrame < 3) {
-//            Timber.w("H264 encoded packet length: %s", outLength);
-//        }
+        //        if (lastKeyFrame < 3) {
+        //            Timber.w("H264 encoded packet length: %s", outLength);
+        //        }
 
         outBuffer.setLength(outLength);
         outBuffer.setOffset(0);
         outBuffer.setTimeStamp(inBuffer.getTimeStamp());
         return BUFFER_PROCESSED_OK;
+    }
+
+    /**
+     * Gets the matching output formats for a specific format.
+     *
+     * @param inputFormat input format
+     * @return array for formats matching input format
+     */
+    protected Format[] getMatchingOutputFormats(Format inputFormat)
+    {
+        VideoFormat inputVideoFormat = (VideoFormat) inputFormat;
+
+        String[] packetizationModes = (this.packetizationMode == null)
+                ? new String[]{"0", "1"} : new String[]{this.packetizationMode};
+        Format[] matchingOutputFormats = new Format[packetizationModes.length];
+        Dimension size = inputVideoFormat.getSize();
+        float frameRate = inputVideoFormat.getFrameRate();
+
+        for (int index = packetizationModes.length - 1; index >= 0; index--) {
+            matchingOutputFormats[index] = new ParameterizedVideoFormat(
+                    Constants.H264, size,
+                    Format.NOT_SPECIFIED, /* maxDataLength */
+                    Format.byteArray,
+                    frameRate,
+                    ParameterizedVideoFormat.toMap(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, packetizationModes[index]));
+        }
+        return matchingOutputFormats;
+    }
+
+    /**
+     * Determines whether the encoding of {@link #avFrame} is to produce a keyframe. The returned
+     * value will be set on <tt>avFrame</tt> via a call to
+     * {@link FFmpeg#avframe_set_key_frame(long, boolean)}.
+     *
+     * @return <tt>true</tt> if the encoding of <tt>avFrame</tt> is to produce a keyframe; otherwise <tt>false</tt>
+     */
+    private boolean isKeyFrame()
+    {
+        boolean keyFrame;
+
+        if (forceKeyFrame) {
+            keyFrame = true;
+
+            /*
+             * The first frame is a keyframe, but it is at the very beginning of the video
+             * transmission and, consequently, there is a higher risk that pieces of it will be
+             * lost on their way through the network. To mitigate possible issues in the case of
+             * network loss, the second frame is also a keyframe.
+             */
+            if (secondKeyFrame) {
+                secondKeyFrame = false;
+                forceKeyFrame = true;
+            }
+            else
+                forceKeyFrame = false;
+        }
+        else {
+            /*
+             * In order to be sure that keyint will be respected, we will implement it ourselves
+             * (regardless of the fact that we have told FFmpeg and x264 about it). Otherwise, we
+             * may end up not generating keyframes at all (apart from the two generated after
+             * open).
+             */
+            keyFrame = (lastKeyFrame == keyint);
+        }
+
+        return keyFrame;
+    }
+
+    /**
+     * Notifies this <tt>JNIEncoder</tt> that the remote peer has requested a key frame from this Local peer.
+     *
+     * @return <tt>true</tt> if this <tt>JNIEncoder</tt> has honored the request for a key frame; otherwise <tt>false</tt>
+     */
+    private boolean keyFrameRequest()
+    {
+        long now = System.currentTimeMillis();
+
+        if (now > (lastKeyFrameRequestTime + PLI_INTERVAL)) {
+            lastKeyFrameRequestTime = now;
+            forceKeyFrame = true;
+        }
+        return true;
     }
 
     /**
@@ -671,8 +609,7 @@ public class JNIEncoder extends AbstractCodec
     {
         /*
          * If RTCP message is a Picture Loss Indication (PLI) or a Full Intra-frame Request (FIR)
-         * the encoder will force
-         * the next frame to be a keyframe.
+         * the encoder will force the next frame to be a keyframe.
          */
         if (ev.getPayloadType() == RTCPFeedbackMessageEvent.PT_PS) {
             switch (ev.getFeedbackMessageType()) {
@@ -695,31 +632,6 @@ public class JNIEncoder extends AbstractCodec
     public void setAdditionalCodecSettings(Map<String, String> additionalCodecSettings)
     {
         this.additionalCodecSettings = additionalCodecSettings;
-    }
-
-    /**
-     * Sets the <tt>Format</tt> of the media data to be input to this <tt>Codec</tt>.
-     *
-     * @param format the <tt>Format</tt> of media data to set on this <tt>Codec</tt>
-     * @return the <tt>Format</tt> of media data set on this <tt>Codec</tt> or <tt>null</tt> if
-     * the specified <tt>format</tt> is not supported by this <tt>Codec</tt>
-     */
-    @Override
-    public Format setInputFormat(Format format)
-    {
-        // mismatch input format
-        if (!(format instanceof VideoFormat)
-                || (null == AbstractCodec2.matches(format, inputFormats)))
-            return null;
-
-        YUVFormat yuvFormat = (YUVFormat) format;
-        if (yuvFormat.getOffsetU() > yuvFormat.getOffsetV())
-            return null;
-
-        inputFormat = AbstractCodec2.specialize(yuvFormat, Format.byteArray);
-
-        // Return the selected inputFormat
-        return inputFormat;
     }
 
     /**
@@ -792,7 +704,7 @@ public class JNIEncoder extends AbstractCodec
     }
 
     /**
-     * Sets the packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>
+     * Sets the packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>,
      * and the associated packetizer.
      *
      * @param packetizationMode the packetization mode to be used for the H.264 RTP payload output by this

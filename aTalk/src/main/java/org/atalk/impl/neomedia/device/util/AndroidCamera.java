@@ -165,9 +165,9 @@ public class AndroidCamera extends CaptureDeviceInfo
     }
 
     /**
-     * Returns device info of currently selected camera.
+     * Returns device info of the currently selected camera.
      *
-     * @return device info of currently selected camera.
+     * @return device info of the currently selected camera.
      */
     public static AndroidCamera getSelectedCameraDevInfo()
     {

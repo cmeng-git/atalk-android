@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.iqregisterx.packet;
 
 import org.jivesoftware.smack.packet.*;
-import org.jivesoftware.smackx.bob.element.BoBExt;
+import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import java.util.Map;
@@ -67,7 +67,7 @@ public class Registration extends IQ {
 
     private final DataForm mDataForm;
     private boolean hasRegistered = false;
-    private BoBExt mBoB = null;
+    private BoBDataExtension mBoB = null;
 
     public Registration() {
         this(null, null, null);
@@ -136,11 +136,11 @@ public class Registration extends IQ {
      *
      * @return the BoBExt in the registration.
      */
-    public BoBExt getBoB() {
+    public BoBDataExtension getBoB() {
         return mBoB;
     }
 
-    public void setBoB(BoBExt bob) {
+    public void setBoB(BoBDataExtension bob) {
         mBoB = bob;
     }
 

@@ -83,7 +83,6 @@ public class PropertyChangeNotifier
     protected void firePropertyChange(String property, Object oldValue, Object newValue)
     {
         PropertyChangeListener[] ls;
-
         synchronized (listeners) {
             ls = listeners.toArray(new PropertyChangeListener[0]);
         }

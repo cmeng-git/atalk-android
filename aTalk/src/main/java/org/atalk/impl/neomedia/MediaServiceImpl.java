@@ -138,13 +138,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * The <tt>PropertyChangeListener</tt> which listens to {@link #deviceConfiguration}.
      */
-    private final PropertyChangeListener deviceConfigurationPropertyChangeListener = new PropertyChangeListener()
-    {
-        public void propertyChange(PropertyChangeEvent event)
-        {
-            deviceConfigurationPropertyChange(event);
-        }
-    };
+    private final PropertyChangeListener deviceConfigurationPropertyChangeListener
+            = event -> deviceConfigurationPropertyChange(event);
 
     /**
      * The list of audio <tt>MediaDevice</tt>s reported by this instance when its
@@ -154,8 +149,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     private final List<MediaDeviceImpl> audioDevices = new ArrayList<>();
 
     /**
-     * The {@link EncodingConfiguration} instance that holds the current (global) list of formats
-     * and their preference.
+     * The {@link EncodingConfiguration} instance that holds the current (global) list of formats and their preference.
      */
     private final EncodingConfiguration currentEncodingConfiguration;
 
@@ -190,8 +184,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * {@link MediaFormat}s with no static payload type. The method is useful for formats such as
      * "telephone-event" for example that is statically assigned the 101 payload type by some
      * legacy systems. Signalling protocol implementations such as SIP and XMPP should make sure
-     * that, whenever this is possible, they assign to formats the dynamic payload type returned
-     * in this {@link Map}.
+     * whenever this is possible, they assign to format the dynamic payload type returned in this {@link Map}.
      */
     private static Map<MediaFormat, Byte> dynamicPayloadTypePreferences;
 
@@ -227,8 +220,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         currentEncodingConfiguration = new EncodingConfigurationConfigImpl(ENCODING_CONFIG_PROP_PREFIX);
 
         /*
-         * Perform one-time initialization after initializing the first instance of
-         * MediaServiceImpl.
+         * Perform one-time initialization after initializing the first instance of MediaServiceImpl.
          */
         synchronized (MediaServiceImpl.class) {
             if (!postInitializeOnce) {
@@ -241,7 +233,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * Create a <tt>MediaStream</tt> which will use a specific <tt>MediaDevice</tt> for capture and
      * playback of media. The new instance will not have a <tt>StreamConnector</tt> at the time of
-     * its construction and a <tt>StreamConnector</tt> will be specified later on in order to
+     * its construction, and a <tt>StreamConnector</tt> will be specified later on in order to
      * enable the new instance to send and receive media.
      *
      * @param device the <tt>MediaDevice</tt> to be used by the new instance for capture and playback of media
@@ -1167,8 +1159,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         String propertyName = event.getPropertyName();
 
         /*
-         * While AUDIO_CAPTURE_DEVICE is sure to affect the DEFAULT_DEVICE, AUDIO_PLAYBACK_DEVICE is
-         * not. Anyway, MediaDevice is supposed to represent the device to be used for capture AND
+         * While the AUDIO_CAPTURE_DEVICE is sure to affect the DEFAULT_DEVICE, AUDIO_PLAYBACK_DEVICE is not.
+         * Anyway, MediaDevice is supposed to represent the device to be used for capture AND
          * playback (though its current implementation MediaDeviceImpl may be incomplete with
          * respect to the playback representation). Since it is not clear at this point of the
          * execution whether AUDIO_PLAYBACK_DEVICE really affects the DEFAULT_DEVICE and for the
@@ -1180,8 +1172,8 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                 || DeviceConfiguration.VIDEO_CAPTURE_DEVICE.equals(propertyName)) {
             /*
              * We do not know the old value of the property at the time of this writing. We cannot
-             * report the new value either because we do not know the MediaType and the
-             * MediaUseCase.
+             * report the new value either because we do not know the MediaType and the MediaUseCase.
+             * cmeng (20210322): must not forward the received event values, otherwise toggle camera does not work.
              */
             firePropertyChange(DEFAULT_DEVICE, null, null);
         }

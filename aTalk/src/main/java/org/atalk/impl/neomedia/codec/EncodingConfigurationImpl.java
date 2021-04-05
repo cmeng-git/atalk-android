@@ -41,13 +41,14 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     }
 
     /**
-     * Sets default format preferences.
+     * Sets default format preferences, and their priorities in descending order of the number values;
+     * Set the value to zero to disable the codec.
      */
     private void initializeFormatPreferences()
     {
         // first init default preferences video
         setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1100);
-        setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,0);
+        setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1200);
         setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,0);
         setEncodingPreference("JPEG", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,950);
         setEncodingPreference("H261", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,800);
@@ -138,7 +139,7 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
         if (res == 0) {
             res = enc1.getEncoding().compareToIgnoreCase(enc2.getEncoding());
             /*
-             * There are formats with one and the same encoding (name) but different clock rates.
+             * There are formats with one and same encoding (name) but different clock rates.
              */
             if (res == 0) {
                 res = Double.compare(enc2.getClockRate(), enc1.getClockRate());

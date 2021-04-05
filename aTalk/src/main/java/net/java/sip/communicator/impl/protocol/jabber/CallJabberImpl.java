@@ -629,9 +629,13 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
 
     /**
      * Updates the Jingle sessions for the <tt>CallPeer</tt>s of this <tt>Call</tt>, to reflect the
-     * current state of the the video contents of this <tt>Call</tt>. Sends a
-     * <tt>content-modify</tt>, <tt>content-add</tt> or <tt>content-remove</tt> message to each of
-     * the current <tt>CallPeer</tt>s.
+     * current state of the video contents of this <tt>Call</tt>. Sends a <tt>content-modify</tt>,
+     * <tt>content-add</tt> or <tt>content-remove</tt> message to each of the current <tt>CallPeer</tt>s.
+     *
+     * cmeng (20210321): Approach aborted due to complexity and NewReceiveStreamEvent not alway gets triggered:
+     * - content-remove/content-add are not used on device orientation changed - use blocking impl is aborted due
+     *   to its complexity.
+     * - @see CallPeerJabberImpl#getDirectionForJingle(MediaType)
      *
      * @throws OperationFailedException if a problem occurred during message generation or there was a network problem
      */
@@ -639,7 +643,6 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             throws OperationFailedException
     {
         Timber.d("Updating video content for %s", this);
-
         boolean change = false;
         for (CallPeerJabberImpl peer : getCallPeerList()) {
             try {

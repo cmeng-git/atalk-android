@@ -13,7 +13,9 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.MediaStream;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -117,7 +119,7 @@ public class CallPeerJabberImpl
      */
     private Jingle sessionInitIQ;
 
-    private XMPPConnection mConnection;
+    private final XMPPConnection mConnection;
 
     /**
      * Creates a new call peer with address <tt>peerAddress</tt>.
@@ -937,7 +939,8 @@ public class CallPeerJabberImpl
      * in the Jingle session for this <tt>CallPeer</tt>. If we are the focus of a conference and are doing
      * RTP translation, takes into account the other <tt>CallPeer</tt>s in the <tt>Call</tt>.
      *
-     * @param mediaType the <tt>MediaType</tt> for which to return the <tt>MediaDirection</tt>
+     * @param mediaType the <tt>MediaType</tt> for which to return the <tt>MediaDirection</tt>.
+     * Only use by MediaType.VIDEO currently.
      * @return the <tt>MediaDirection</tt> that should be used for the content of type
      * <tt>mediaType</tt> in the Jingle session for this <tt>CallPeer</tt>.
      */
@@ -945,20 +948,29 @@ public class CallPeerJabberImpl
     {
         MediaDirection direction = MediaDirection.INACTIVE;
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
+        Senders senders = getSenders(mediaType);
 
-        // If we are streaming media, the direction should allow sending
+        //  cmeng (20210321): Approach aborted due to complexity and NewReceiveStreamEvent not alway gets triggered:
+        // If we are streaming the media, the direction should allow sending; device orientation change does not
+        // constitute to a content-modify, see https://xmpp.org/extensions/xep-0166.html#def-action-content-modify
+//        boolean orientationChange = (PreviewStream.previewPortrait != aTalkApp.isPortrait);
+//        if ((MediaType.AUDIO == mediaType && mediaHandler.isLocalAudioTransmissionEnabled())
+//                || ((MediaType.VIDEO == mediaType) && (isLocalVideoStreaming()
+//                || (orientationChange && (senders == Senders.both
+//                || (initiator && senders == Senders.responder)
+//                || (!initiator && senders == Senders.initiator))))))
+
         if ((MediaType.AUDIO == mediaType && mediaHandler.isLocalAudioTransmissionEnabled())
                 || ((MediaType.VIDEO == mediaType) && isLocalVideoStreaming()))
             direction = direction.or(MediaDirection.SENDONLY);
 
         // If we are receiving media from this CallPeer, the direction should allow receiving
-        Senders senders = getSenders(mediaType);
         if (senders == null || senders == Senders.both
                 || (isInitiator() && senders == Senders.initiator)
                 || (!isInitiator() && senders == Senders.responder))
             direction = direction.or(MediaDirection.RECVONLY);
 
-        // If we are the focus of a conference and we are receiving media from
+        // If we are the focus of a conference, and we are receiving media from
         // another CallPeer in the same Call, the direction should allow sending
         CallJabberImpl call = getCall();
         if (call != null && call.isConferenceFocus()) {
@@ -974,11 +986,13 @@ public class CallPeerJabberImpl
                 }
             }
         }
+
+        // Timber.w("Media Sender direction %s <= %s || (%s && %s) %s", direction, isLocalVideoStreaming(), orientationChange, senders, initiator);
         return direction;
     }
 
     /**
-     * Send, if necessary, a jingle <tt>content</tt> message to reflect change in video setup.
+     * Send, if necessary, a jingle <tt>content</tt> message to reflect change in the video setup.
      * Whether the jingle session should have a video content, and if so, the value of the
      * <tt>senders</tt> field is determined based on whether we are streaming local video and, if we
      * are the focus of a conference, on the other peers in the conference. The message can be
@@ -1058,7 +1072,7 @@ public class CallPeerJabberImpl
     }
 
     /**
-     * Send a <tt>content</tt> message to reflect change in video setup (start or stop).
+     * Send a <tt>content</tt> message to reflect change in the video setup (start or stop).
      */
     public void sendModifyVideoResolutionContent()
             throws NotConnectedException, InterruptedException
@@ -1297,7 +1311,7 @@ public class CallPeerJabberImpl
      * @return the current value of the <tt>senders</tt> field of the content with name
      * <tt>mediaType</tt> in the Jingle session with this <tt>CallPeer</tt>.
      */
-    public JingleContent.Senders getSenders(MediaType mediaType)
+    public Senders getSenders(MediaType mediaType)
     {
         switch (mediaType) {
             case AUDIO:
