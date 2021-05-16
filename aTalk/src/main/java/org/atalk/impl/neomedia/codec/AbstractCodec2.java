@@ -17,6 +17,7 @@ import javax.media.format.YUVFormat;
  * Extends FMJ's <tt>AbstractCodec</tt> to make it even easier to implement a <tt>Codec</tt>.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class AbstractCodec2 extends AbstractCodec
 {
@@ -62,7 +63,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * <tt>seqNo</tt> for the purposes of Codec implementations which repeatedly process one
      * and the same input Buffer multiple times.
      * @param seqNo the current sequence number. May be equal to <tt>lastSeqNo</tt> for the purposes of
-     * Codec implementations which repeatedly process one and the same input Buffer multiple times.
+     * Codec implementations which repeatedly process the same input Buffer multiple times.
      * @return the number of sequences (between <tt>lastSeqNo</tt> and <tt>seqNo</tt>) which have
      * been lost i.e. which have not been received
      */
@@ -108,7 +109,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * @param outs array of output formats
      * @return the first output format that is supported
      */
-    public static Format matches(Format in, Format outs[])
+    public static Format matches(Format in, Format[] outs)
     {
         for (Format out : outs)
             if (in.matches(out))
@@ -248,8 +249,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * @param formatClass the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
      * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output
      */
-    protected AbstractCodec2(String name, Class<? extends Format> formatClass,
-            Format[] supportedOutputFormats)
+    protected AbstractCodec2(String name, Class<? extends Format> formatClass, Format[] supportedOutputFormats)
     {
         this.formatClass = formatClass;
         this.name = name;
@@ -365,8 +365,8 @@ public abstract class AbstractCodec2 extends AbstractCodec
     /**
      * Implements <tt>AbstractCodec#process(Buffer, Buffer)</tt>.
      *
-     * @param inBuf
-     * @param outBuf
+     * @param inBuf input buffer
+     * @param outBuf out buffer
      * @return <tt>BUFFER_PROCESSED_OK</tt> if the specified <tt>inBuff</tt> was successfully
      * processed or <tt>BUFFER_PROCESSED_FAILED</tt> if the specified was not successfully processed
      * @see AbstractCodec#process(Buffer, Buffer)
@@ -482,5 +482,20 @@ public abstract class AbstractCodec2 extends AbstractCodec
         }
         buffer.setData(newShorts);
         return newShorts;
+    }
+
+    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    public static String bytesToHex(byte[] bytes, int length) {
+        int k = 0;
+        char[] hexChars = new char[length * 2 + length/4];
+        for (int j = 0; j < length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2 + k] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1 + k] = HEX_ARRAY[v & 0x0F];
+            if (j % 4 == 3) {
+                hexChars[j * 2 + 2 + k++] = 0x20;
+            }
+        }
+        return new String(hexChars);
     }
 }

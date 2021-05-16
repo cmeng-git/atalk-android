@@ -1,12 +1,12 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a
+prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/include
+libdir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64/lib
+includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64/include
 
 Name: libswscale
 Description: FFmpeg image rescaling library
-Version: 4.8.100
-Requires: libavutil >= 55.78.100
+Version: 5.9.100
+Requires: libavutil >= 56.70.100
 Requires.private: 
 Conflicts:
 Libs: -L${libdir}  -lswscale -lm

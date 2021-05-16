@@ -18,8 +18,8 @@ import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.*;
 
 /**
- * Implements a <tt>TransformEngine</tt> which replaces the timestamps in abs-send-time RTP
- * extensions with timestamps generated locally.
+ * Implements a <tt>TransformEngine</tt> which replaces the timestamps in
+ * abs-send-time RTP extensions with timestamps generated locally.
  *
  * See https://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
  *

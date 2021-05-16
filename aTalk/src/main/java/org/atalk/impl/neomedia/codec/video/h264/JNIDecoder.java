@@ -65,12 +65,6 @@ public class JNIDecoder extends AbstractCodec2
     private boolean gotPictureAtLeastOnce;
 
     /**
-     * The last known height of {@link #avctx} i.e. the video output by this <tt>JNIDecoder</tt>.
-     * Used to detect changes in the output size.
-     */
-    private int height;
-
-    /**
      * The <tt>KeyFrameControl</tt> used by this <tt>JNIDecoder</tt> to control its key frame-related logic.
      */
     private KeyFrameControl keyFrameControl;
@@ -84,7 +78,13 @@ public class JNIDecoder extends AbstractCodec2
      * The last known width of {@link #avctx} i.e. the video output by this <tt>JNIDecoder</tt>.
      * Used to detect changes in the output size.
      */
-    private int width;
+    private int mWidth;
+
+    /**
+     * The last known height of {@link #avctx} i.e. the video output by this <tt>JNIDecoder</tt>.
+     * Used to detect changes in the output size.
+     */
+    private int mHeight;
 
     /**
      * Initializes a new <tt>JNIDecoder</tt> instance which is to decode H.264 NAL units into frames in YUV format.
@@ -98,12 +98,10 @@ public class JNIDecoder extends AbstractCodec2
          * may be of concern to this JNIDecoder) and VideoFormat (to make sure that nothing
          * breaks because of equality and/or matching tests involving ParameterizedVideoFormat).
          */
-        inputFormat = null;
-        outputFormat = null;
-
         inputFormats = new VideoFormat[]{
                 new ParameterizedVideoFormat(Constants.H264),
                 new VideoFormat(Constants.H264)};
+
         outputFormats = SUPPORTED_OUTPUT_FORMATS;
     }
 
@@ -201,15 +199,16 @@ public class JNIDecoder extends AbstractCodec2
         int width = FFmpeg.avcodeccontext_get_width(avctx);
         int height = FFmpeg.avcodeccontext_get_height(avctx);
 
-        // cmeng (20210309) = decoded avframe.width and avframe.height do not get updated when inBuf video data is rotated.
-        // Hence cannot support auto rotation when remote camera is rotated. VP8 is OK
-        if ((width > 0) && (height > 0) && ((this.width != width) || (this.height != height))) {
-            Timber.d("H264 video size changed (wxh): %s(%s) x %s(%s)", width, this.width, height, this.height);
-            this.width = width;
-            this.height = height;
+        // cmeng (20210309) = decoded avframe.width and avframe.height; does not get updated when inBuf video data is rotated.
+        // There h264 currently cannot support auto rotation when remote camera is rotated. VP8 is OK
+        if ((width > 0) && (height > 0) && ((mWidth != width) || (mHeight != height))) {
+            Timber.d("H264 decode video size changed: [width=%s, height=%s]=>[width=%s, height=%s]",  mWidth, mHeight, width, height);
+
+            mWidth = width;
+            mHeight = height;
 
             // Output in same size and frame rate as input.
-            Dimension outSize = new Dimension(this.width, this.height);
+            Dimension outSize = new Dimension(mWidth, mHeight);
             VideoFormat inFormat = (VideoFormat) inBuf.getFormat();
             float outFrameRate = ensureFrameRate(inFormat.getFrameRate());
 

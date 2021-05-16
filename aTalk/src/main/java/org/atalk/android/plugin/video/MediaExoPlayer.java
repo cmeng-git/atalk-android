@@ -49,6 +49,9 @@ import timber.log.Timber;
  * The class handles the actual content source address decoding for the user selected hymn
  * see https://developer.android.com/codelabs/exoplayer-intro#0
  *
+ * Orientation change is handled by exoPlayer itself for smooth audio/video playback
+ * android:configChanges="keyboardHidden|orientation|screenSize"
+ *
  * @author Eng Chong Meng
  */
 public class MediaExoPlayer extends FragmentActivity
@@ -56,16 +59,12 @@ public class MediaExoPlayer extends FragmentActivity
     // Tag for the instance state bundle.
     public static final String ATTR_MEDIA_URL = "mediaUrl";
     public static final String ATTR_MEDIA_URLS = "mediaUrls";
-    private static final String START_POSITION = "start_position";
 
     private static final String sampleUrl = "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4";
 
     // Start playback video url
     private String mediaUrl = sampleUrl;
     private ArrayList<String> mediaUrls = null;
-
-    // Playback position (in milliseconds).
-    private long startPositionMs = 0;
 
     private SimpleExoPlayer mExoPlayer = null;
     private StyledPlayerView mPlayerView;
@@ -78,40 +77,10 @@ public class MediaExoPlayer extends FragmentActivity
         setContentView(R.layout.media_player_exo_ui);
         mPlayerView = findViewById(R.id.exoplayerView);
 
-        if (savedInstanceState != null) {
-            mediaUrl = savedInstanceState.getString(ATTR_MEDIA_URL);
-            mediaUrls = savedInstanceState.getStringArrayList(ATTR_MEDIA_URLS);
-            startPositionMs = savedInstanceState.getLong(START_POSITION);
-        }
-        else {
-            Bundle bundle = getIntent().getExtras();
-            mediaUrl = bundle.getString(ATTR_MEDIA_URL);
-            mediaUrls = bundle.getStringArrayList(ATTR_MEDIA_URLS);
-        }
+        Bundle bundle = getIntent().getExtras();
+        mediaUrl = bundle.getString(ATTR_MEDIA_URL);
+        mediaUrls = bundle.getStringArrayList(ATTR_MEDIA_URLS);
         playbackStateListener = new PlaybackStateListener();
-    }
-
-    /**
-     * Save a copy of the current player info to the instance state bundle for:
-     * a. Playback video url
-     * b. Current playback position using getCurrentPosition (in milliseconds).
-     *
-     * if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
-     *   onSaveInstanceState is called after onPause but before onStop
-     * if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-     *   onSaveInstanceState is called only after onStop
-     * So call releasePlayer() in onPause to save startPositionMs = mExoPlayer.getCurrentPosition();
-     *
-     * @param outState Bundle
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-
-        outState.putString(ATTR_MEDIA_URL, mediaUrl);
-        outState.putStringArrayList(ATTR_MEDIA_URLS, mediaUrls);
-        outState.putLong(START_POSITION, startPositionMs);
     }
 
     @Override
@@ -119,7 +88,7 @@ public class MediaExoPlayer extends FragmentActivity
     {
         super.onResume();
         hideSystemUi();
-        // Load the media each time onStart() is called.
+        // Load the media each time onResume() is called.
         initializePlayer();
     }
 
@@ -149,6 +118,21 @@ public class MediaExoPlayer extends FragmentActivity
     }
 
     /**
+     * Media play-back takes a lot of resources, so everything should be stopped and released at this time.
+     * Release all media-related resources. In a more complicated app this
+     * might involve unregistering listeners or releasing audio focus.
+     */
+    private void releasePlayer()
+    {
+        if (mExoPlayer != null) {
+            mExoPlayer.setPlayWhenReady(false);
+            mExoPlayer.removeListener(playbackStateListener);
+            mExoPlayer.release();
+            mExoPlayer = null;
+        }
+    }
+
+    /**
      * Prepare and play the specified mediaItem
      *
      * @param mediaItem for playback
@@ -156,7 +140,7 @@ public class MediaExoPlayer extends FragmentActivity
     private void playMedia(MediaItem mediaItem)
     {
         if (mediaItem != null) {
-            mExoPlayer.setMediaItem(mediaItem, startPositionMs);
+            mExoPlayer.setMediaItem(mediaItem, 0);
             mExoPlayer.setPlayWhenReady(true);
             mExoPlayer.prepare();
         }
@@ -235,22 +219,6 @@ public class MediaExoPlayer extends FragmentActivity
             }.extract(youtubeLink, true, true);
         } catch (Exception e) {
             Timber.e("YouTubeExtractor Exception: %s", e.getMessage());
-        }
-    }
-
-    /**
-     * Media play-back takes a lot of resources, so everything should be stopped and released at this time.
-     * Release all media-related resources. In a more complicated app this
-     * might involve unregistering listeners or releasing audio focus.
-     */
-    private void releasePlayer()
-    {
-        if (mExoPlayer != null) {
-            startPositionMs = mExoPlayer.getCurrentPosition();
-            mExoPlayer.setPlayWhenReady(false);
-            mExoPlayer.removeListener(playbackStateListener);
-            mExoPlayer.release();
-            mExoPlayer = null;
         }
     }
 

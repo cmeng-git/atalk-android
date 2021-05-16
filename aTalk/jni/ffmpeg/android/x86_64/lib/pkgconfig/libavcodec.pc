@@ -1,14 +1,14 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a
+prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/include
+libdir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64/lib
+includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64/include
 
 Name: libavcodec
 Description: FFmpeg codec library
-Version: 57.107.100
-Requires: libavutil >= 55.78.100
+Version: 58.134.100
+Requires: libavutil >= 56.70.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavcodec -L/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib -lx264 -lm -lm -lz -pthread -pthread -lgcc -lstdc++
+Libs: -L${libdir}  -lavcodec -pthread -lm -L/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64/lib -lx264 -lm
 Libs.private: 
 Cflags: -I${includedir}

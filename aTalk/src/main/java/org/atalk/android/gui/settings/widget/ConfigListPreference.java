@@ -16,7 +16,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
- * List preference that stores it's value through the <tt>ConfigurationService</tt>. It also supports
+ * List preference that stores its value through the <tt>ConfigurationService</tt>. It also supports
  * "disable dependents value" attribute.
  *
  * @author Pawel Domas
@@ -24,7 +24,7 @@ import org.atalk.service.configuration.ConfigurationService;
 public class ConfigListPreference extends ListPreference
 {
     /**
-     * Optional attribute which contains value that disables all dependents.
+     * The optional attribute which contains value that disables all dependents.
      */
     private String dependentValue;
     /**

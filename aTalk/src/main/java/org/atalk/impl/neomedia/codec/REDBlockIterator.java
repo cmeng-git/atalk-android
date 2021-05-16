@@ -136,13 +136,14 @@ public class REDBlockIterator implements Iterator<REDBlock>
     }
 
     /**
-     * Returns {@code true} if a specific RED packet contains multiple blocks; {@code false},
-     * otherwise.
+     * Returns {@code true} if a specific RED packet contains multiple blocks;
+     * {@code false}, otherwise.
      *
      * @param buffer the byte buffer that contains the RED payload.
      * @param offset the offset in the buffer where the RED payload begins.
      * @param length the length of the RED payload.
-     * @return {@code true if {@pkt} contains multiple RED blocks; otherwise, {@code false}
+     * @return {@code true if {@pkt} contains multiple RED blocks; otherwise,
+     * {@code false}
      */
     public static boolean isMultiBlock(byte[] buffer, int offset, int length)
     {

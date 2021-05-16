@@ -18,8 +18,8 @@
 # set -x
 if [[ $ANDROID_NDK = "" ]]; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
-	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk"
-	echo "e.g. export ANDROID_NDK=/opt/android/android-ndk-r15c"
+	echo "Use: export ANDROID_NDK=/your_path_to_android_ndk"
+	echo "e.g. export ANDROID_NDK=/opt/android/android-ndk-r18b"
 	exit 1
 fi
 set -u
@@ -158,7 +158,8 @@ fi
 
 # Define the install directory of the libs and include files etc
 # lame needs absolute path
-PREFIX=${BASEDIR}/android/$1
+# PREFIX=${BASEDIR}/android/$1
+PREFIX=${BASEDIR}/../../ffmpeg/android/$1
 
 # Add the standalone toolchain to the search path.
 export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH

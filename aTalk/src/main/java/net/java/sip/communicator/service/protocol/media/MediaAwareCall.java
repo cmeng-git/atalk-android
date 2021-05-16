@@ -8,7 +8,8 @@ package net.java.sip.communicator.service.protocol.media;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaUseCase;
+import org.atalk.service.neomedia.RTPTranslator;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.recording.Recorder;
@@ -16,7 +17,9 @@ import org.atalk.util.MediaType;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A utility class implementing media control code shared between current telephony implementations.

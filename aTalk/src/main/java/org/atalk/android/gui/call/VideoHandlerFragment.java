@@ -56,9 +56,11 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Default remote video view dimension (aTalk default) - must also be valid for OpenGL else crash
      * Note: Other dimension ratio e.g. (1x1) will cause Invalid Operation in OpenGL
      * Static variable must only be init in constructor for android Fragment
+     *
+     * Assuming the received video is in portrait and using aTalk default
      */
-    protected static int DEFAULT_VIDEO_WIDTH = 480;
-    protected static int DEFAULT_VIDEO_HEIGHT = 720;
+    protected static int DEFAULT_WIDTH = DeviceConfiguration.DEFAULT_VIDEO_HEIGHT;
+    protected static int DEFAULT_HEIGHT = DeviceConfiguration.DEFAULT_VIDEO_WIDTH;
 
     // Default local preview width
     private static final int DEFAULT_PREVIEW_WIDTH = 160;
@@ -665,11 +667,11 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     {
         // There is no remote video View, so returns the default video dimension.
         if ((remoteVideoView == null) || (visualComponent == null)) {
-            return new Dimension(DEFAULT_PREVIEW_WIDTH, DEFAULT_VIDEO_HEIGHT);
+            return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         }
 
-        int width = DEFAULT_VIDEO_WIDTH;
-        int height = DEFAULT_VIDEO_HEIGHT;
+        int width = DEFAULT_WIDTH;
+        int height = DEFAULT_HEIGHT;
         /*
          * The SizeChangeVideoEvent may have been delivered with a delay and thus may not
          * represent the up-to-date size of the remote video. The visualComponent is taken

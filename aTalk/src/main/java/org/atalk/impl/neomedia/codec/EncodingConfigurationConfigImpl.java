@@ -16,6 +16,7 @@ import java.util.Map;
  * An EncodingConfiguration implementation that synchronizes its preferences with a ConfigurationService.
  *
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class EncodingConfigurationConfigImpl extends EncodingConfigurationImpl
 {

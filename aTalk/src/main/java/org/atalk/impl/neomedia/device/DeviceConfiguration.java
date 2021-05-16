@@ -102,12 +102,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * The default video width.
      */
-    public static final int DEFAULT_VIDEO_WIDTH = 1280;
+    public static final int DEFAULT_VIDEO_WIDTH = 720;
 
     /**
      * The default video height.
      */
-    public static final int DEFAULT_VIDEO_HEIGHT = 720;
+    public static final int DEFAULT_VIDEO_HEIGHT = 480;
 
     /**
      * The default value for video maximum bandwidth.
@@ -714,12 +714,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     {
         if (videoSize == null) {
             ConfigurationService cfg = LibJitsi.getConfigurationService();
-            int height = DEFAULT_VIDEO_HEIGHT;
             int width = DEFAULT_VIDEO_WIDTH;
+            int height = DEFAULT_VIDEO_HEIGHT;
 
             if (cfg != null) {
-                height = cfg.getInt(PROP_VIDEO_HEIGHT, height);
                 width = cfg.getInt(PROP_VIDEO_WIDTH, width);
+                height = cfg.getInt(PROP_VIDEO_HEIGHT, height);
             }
             videoSize = new Dimension(width, height);
         }

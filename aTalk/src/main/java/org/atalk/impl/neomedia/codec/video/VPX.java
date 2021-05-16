@@ -63,10 +63,20 @@ public class VPX
      * I420 format constant
      * Corresponds to <tt>VPX_IMG_FMT_I420</tt> from <tt>vpx/vpx_image.h</tt>
      */
+
+    /* See vpx_image.h
+        define VPX_IMG_FMT_PLANAR 0x100  Image is a planar format.
+
+        brief List of supported image formats
+        VPX_IMG_FMT_I420 = VPX_IMG_FMT_PLANAR | 2,
+        VPX_IMG_FMT_I422 = VPX_IMG_FMT_PLANAR | 5,
+        VPX_IMG_FMT_I444 = VPX_IMG_FMT_PLANAR | 6,
+        VPX_IMG_FMT_I440 = VPX_IMG_FMT_PLANAR | 7,
+     */
     public static final int IMG_FMT_I420 = 258;
-    public static final int IMG_FMT_I422 = 231;
-    public static final int IMG_FMT_I444 = 232;
-    public static final int IMG_FMT_I440 = 233;
+    public static final int IMG_FMT_I422 = 261;
+    public static final int IMG_FMT_I444 = 262;
+    public static final int IMG_FMT_I440 = 263;
 
     /**
      * Variable Bitrate mode.
@@ -112,6 +122,8 @@ public class VPX
      * Corresponds to <tt>VPX_CODEC_CX_FRAME_PKT</tt> from <tt>vpx/vpx_encoder.h</tt>
      */
     public static final int CODEC_CX_FRAME_PKT = 0;
+
+    public static final int  VP9E_SET_LOSSLESS = 32;
 
     /**
      * Constant for VP8 decoder interface
@@ -205,6 +217,16 @@ public class VPX
     public static native int codec_enc_init(long context, int iface, long cfg, long flags);
 
     /**
+     * @param context Pointer to the codec context on which to set the control
+     * @param ctrl_id control parameter to set.
+     * @param arg arg to set to.
+     *
+     * @return <tt>CODEC_OK</tt> on success, or an error code otherwise. The error code can be
+     * converted to a <tt>String</tt> with {@link VPX#codec_err_to_string(int)}
+     */
+    public static native int codec_control(long context, int ctrl_id, int arg);
+
+    /**
      * @param context Pointer to the codec context on which to set the configuration
      * @param cfg Pointer to a <tt>vpx_codec_enc_cfg_t</tt> to set.
      * @return <tt>CODEC_OK</tt> on success, or an error code otherwise. The error code can be
@@ -238,6 +260,8 @@ public class VPX
     public static native int codec_encode(long context, long img, byte[] buf, int offset0,
             int offset1, int offset2, long pts, long duration, long flags, long deadline);
 
+    public static native long codec_encode_frame(long context, long img, byte[] buf, int offset0,
+            int offset1, int offset2, long pts, long duration, long flags, long deadline, long[] iter);
     /**
      * Encoded data iterator.
      * Iterates over a list of data packets to be passed from the encoder to the application. The
@@ -278,13 +302,14 @@ public class VPX
     public static native long codec_cx_pkt_get_data(long pkt);
 
     //============ img ============
-
     /**
      * Allocates memory for a <tt>vpx_image_t</tt> on the heap.
      *
      * @return A pointer to the allocated memory.
      */
     public static native long img_malloc();
+
+    public static native long img_alloc(long img, int img_fmt, int frame_width, int frame_height, int align);
 
     /**
      * Returns the value of the <tt>w</tt> (width) field of a <tt>vpx_image_t</tt>.
@@ -542,6 +567,9 @@ public class VPX
      * @param value The value to set.
      */
     public static native void codec_enc_cfg_set_h(long cfg, int value);
+
+    public static native void codec_enc_cfg_set_tbnum(long cfg, int value);
+    public static native void codec_enc_cfg_set_tbden(long cfg, int value);
 
     /**
      * Sets the <tt>g_error_resilient</tt> field of a <tt>vpx_codec_enc_cfg_t</tt>.

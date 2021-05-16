@@ -1,14 +1,14 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a
+prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/armeabi-v7a
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/include
+libdir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/armeabi-v7a/lib
+includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/armeabi-v7a/include
 
 Name: libavutil
 Description: FFmpeg utility library
-Version: 55.78.100
+Version: 56.70.100
 Requires: 
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavutil -lm
+Libs: -L${libdir}  -lavutil -pthread -lm
 Libs.private: 
 Cflags: -I${includedir}

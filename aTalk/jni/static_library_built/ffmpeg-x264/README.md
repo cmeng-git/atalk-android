@@ -1,22 +1,22 @@
 ## Build scripts for ffmpeg-x264 with android-ndk for aTalk
-The scripts are used to build ffmpeg-x264 for aTalk > v1.8.1 i.e. libjnffmpeg.so<br/>
-aTalk v1.8.1 and above are compatible with ffmpeg-v3.4.6 and libx264-157
+The scripts are used to build ffmpeg-x264 for aTalk >= v2.6.1 i.e. libjnffmpeg.so<br/>
+aTalk v2.6.1 and above are compatible with ffmpeg-v4.4 and libx264-161.3049
 
 ### Source files:
-The ffmpeg-v3.4.6 and libx264-v157 source:<br/>
-  a. URL: https://www.ffmpeg.org/releases/ffmpeg-3.4.6.tar.bz2<br/>
-  b. URL: https://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20190407-2245-stable.tar.bz2<br/>
-     contains source for the x264-157 library build; 
+The ffmpeg-v4.4 and libx264-v161 source are downloaded from:<br/>
+  a. wget https://www.ffmpeg.org/releases/ffmpeg-4.4.tar.bz2<br/>
+  b. git clone https://code.videolan.org/videolan/x264.git --branch stable<br/>
+     contains source for the x264-161.3049 library build at the time of writting;
 
-### ffmpeg build instruction:
+### ffmpeg build instructions:
 * Optional - execute script below to fetch libraries sources for both ffmpeg and x264<br/>
   ./init_update_libs.sh<br/>
-* Run ffmpeg-atalk_build.sh to build all ABIS architectures as defined in _settings.sh \<ABIS> OR<br/>
+  Note: You must run this script if you want to update the existing ffmpeg and/or x264 sources<br/>
+* Run ffmpeg-atalk_build.sh to build all ABIS architectures as defined in _settings.sh &lt;ABIS> OR<br/>
   e.g. ffmpeg-atalk_build.sh arm64-v8a for a specific 'arm64-v8a' architecture built
-* All the final built libs *.a, *.so and include files are in the ./android/\<ABI>
-* Copy all the ./android/\<ABI> static lib and include files to aTalk jni/ffmpeg/\<ABI>
+* All the final built static libs *.a and include files are installed in the ./aTalk/jni/ffmpeg/android/&lt;ABI>
 * Note:<br/>
- a. Before build, ffmpeg-atalk_build.sh fetches source if not found and applies the required patches to the libraries sources<br/>
+ a. Before building, ffmpeg-atalk_build.sh fetches source if not found and applies the required patches to the libraries sources<br/>
  b. aTalk current android_a.mk script for ffmpeg-x264 support uses only static .a libraries<br/>
  c. You may edit _settings.sh ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64") that you wish to omit OR<br/>
  set STANDALONE_TOOLCHAINS to 0:SDK toolchains OR 1:standalone toolchains<br/>
@@ -36,11 +36,11 @@ The ffmpeg-v3.4.6 and libx264-v157 source:<br/>
 ## Note:
 * The scripts in this folder are not compatible with Unified Headers:
 * See https://android.googlesource.com/platform/ndk/+/master/docs/UnifiedHeaders.md#supporting-unified-headers-in-your-build-system
-* Current aTalk v1.8.2 ffmpeg support may have deprecated functions when using ffmpeg version > 3.4.6
+* Current aTalk v2.6.1 ffmpeg support have updated all deprecated functions when using ffmpeg version >= 4.4
 * If a higher ffmpeg version is required, you need to update both the following two files:
-  - .jni\ffmpeg\org_atalk_impl_neomedia_codec_FFmpeg.c and
+  - .jni\ffmpeg\FFmpeg.c and
   - atalk-android\aTalk\src\main\java\org\atalk\impl\neomedia\codec\FFmpeg.java
-* Building of arch64-bit required api-21 and must apply throughout all scripts and in AS JNI application.mk
+* Building of arch64-bit required api-21 and must apply throughout all scripts and in AS JNI application.mk<br/>
 i.e. APP_PLATFORM := android-21
 
 ===============================================================

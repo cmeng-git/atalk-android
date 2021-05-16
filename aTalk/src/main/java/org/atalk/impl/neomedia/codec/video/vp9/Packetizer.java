@@ -18,7 +18,6 @@ package org.atalk.impl.neomedia.codec.video.vp9;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.codec.video.vp9.DePacketizer;
 import org.atalk.service.neomedia.codec.Constants;
 
 import javax.media.Buffer;
@@ -28,12 +27,11 @@ import timber.log.Timber;
 
 /**
  * Packetizes VP9 encoded frames in accord with
- * {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-10"}
+ * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-12"}
  *
  * Uses the simplest possible scheme, only splitting large packets. Extended
- * bits are never added, and PartID is always set to 0. The only bit that
- * changes is the Start of Partition bit, which is set only for the first packet
- * encoding a frame.
+ * bits are never added, and PartID is always set to 0. The only bit that changes
+ * is the Start of Partition bit, which is set only for the first packet encoding a frame.
  *
  * @author Eng Chong Meng
  */
@@ -94,7 +92,7 @@ public class Packetizer extends AbstractCodec2
         int offset;
         int pdMaxLen = DePacketizer.VP9PayloadDescriptor.MAX_LENGTH;
 
-        //The input will fit in a single packet
+        // The input will fit in a single packet
         int inOff = inputBuffer.getOffset();
         int len = Math.min(inLen, MAX_SIZE);
 
@@ -102,16 +100,17 @@ public class Packetizer extends AbstractCodec2
         output = validateByteArraySize(outputBuffer, offset + len, true);
         System.arraycopy(inputBuffer.getData(), inOff, output, offset, len);
 
-        //get the payload descriptor and copy it to the output
+        // get the payload descriptor and copy it to the output
         byte[] pd = DePacketizer.VP9PayloadDescriptor.create(firstPacket);
         System.arraycopy(pd, 0, output, offset - pd.length, pd.length);
         offset -= pd.length;
 
-        //set up the output buffer
+        // set up the output buffer
         outputBuffer.setFormat(new VideoFormat(Constants.VP9_RTP));
         outputBuffer.setOffset(offset);
         outputBuffer.setLength(len + pd.length);
 
+        Timber.d("VP9 Paketizer: %s %s", pdMaxLen, offset);
         if (inLen <= MAX_SIZE) {
             firstPacket = true;
             outputBuffer.setFlags(outputBuffer.getFlags() | Buffer.FLAG_RTP_MARKER);

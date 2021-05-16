@@ -74,7 +74,7 @@ public class SurfaceStream extends CameraStreamBase
     private boolean paintDone;
 
     /**
-     * Creates new instance of <tt>SurfaceStream</tt>.
+     * Creates a new instance of <tt>SurfaceStream</tt>.
      *
      * @param parent parent <tt>DataSource</tt>.
      * @param formatControl format control used by this instance.

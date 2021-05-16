@@ -1,14 +1,14 @@
-prefix=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a
+prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64
 exec_prefix=${prefix}
-libdir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib
-includedir=/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/include
+libdir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64/lib
+includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/x86_64/include
 
 Name: libavfilter
 Description: FFmpeg audio/video filtering library
-Version: 6.107.100
-Requires: libswscale >= 4.8.100, libavutil >= 55.78.100
+Version: 7.110.100
+Requires: libswscale >= 5.9.100, libavutil >= 56.70.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavfilter -L/home/cmeng/workspace/ndk/ffmpeg-x264/android/armeabi-v7a/lib -lx264 -lm -lm -lz -pthread -pthread -lgcc -lstdc++
+Libs: -L${libdir}  -lavfilter -pthread -lm
 Libs.private: 
 Cflags: -I${includedir}

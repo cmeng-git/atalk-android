@@ -29,7 +29,7 @@ public class EncodingSettings extends OSGiActivity
     public static final String MEDIA_TYPE_AUDIO = "media_type.AUDIO";
     public static final String MEDIA_TYPE_VIDEO = "media_type.VIDEO";
     private MediaEncodingsFragment encodingsFragment;
-    private MediaType mediaType;
+    private MediaType mMediaType;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -37,10 +37,10 @@ public class EncodingSettings extends OSGiActivity
         super.onCreate(savedInstanceState);
         String mediaTypeStr = getIntent().getStringExtra(EXTRA_MEDIA_TYPE);
         if (MEDIA_TYPE_AUDIO.equals(mediaTypeStr)) {
-            this.mediaType = MediaType.AUDIO;
+            mMediaType = MediaType.AUDIO;
         }
         else if (MEDIA_TYPE_VIDEO.equals(mediaTypeStr)) {
-            this.mediaType = MediaType.VIDEO;
+            mMediaType = MediaType.VIDEO;
         }
 
         if (savedInstanceState == null) {
@@ -48,7 +48,7 @@ public class EncodingSettings extends OSGiActivity
             if (mediaSrvc != null) {
                 EncodingConfiguration encConfig = mediaSrvc.getCurrentEncodingConfiguration();
 
-                List<MediaFormat> formats = MediaEncodingActivity.getEncodings(encConfig, mediaType);
+                List<MediaFormat> formats = MediaEncodingActivity.getEncodings(encConfig, mMediaType);
                 List<String> encodings = MediaEncodingActivity.getEncodingsStr(formats.iterator());
                 List<Integer> priorities = MediaEncodingActivity.getPriorities(formats, encConfig);
 
@@ -72,7 +72,7 @@ public class EncodingSettings extends OSGiActivity
         if ((keyCode == KeyEvent.KEYCODE_BACK) && (mediaSrvc != null)) {
             MediaEncodingActivity.commitPriorities(
                     NeomediaActivator.getMediaServiceImpl().getCurrentEncodingConfiguration(),
-                    mediaType, encodingsFragment);
+                    mMediaType, encodingsFragment);
             finish();
             return true;
         }

@@ -48,7 +48,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * A jabber implementation of the multi user chat operation set.
+ * A jabber implementation of the multiUser chat operation set.
  *
  * @author Emil Ivov
  * @author Yana Stamcheva
@@ -382,7 +382,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     }
 
     /**
-     * Returns true if <tt>contact</tt> supports multi user chat sessions.
+     * Returns true if <tt>contact</tt> supports multiUser chat sessions.
      *
      * @param contact reference to the contact whose support for chat rooms we are currently querying.
      * @return a boolean indicating whether <tt>contact</tt> supports chatRooms.
