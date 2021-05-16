@@ -1,12 +1,12 @@
-# pkg-config file from libvpx v1.8.2
-prefix=/home/cmeng/workspace/ndk/vpx-android/output/android/x86
+# pkg-config file from libvpx v1.10.0
+prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/libvpx/../../vpx/android/x86
 exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
 Name: vpx
 Description: WebM Project VPx codec implementation
-Version: 1.8.2
+Version: 1.10.0
 Requires:
 Conflicts:
 Libs: -L${libdir} -lvpx -lm

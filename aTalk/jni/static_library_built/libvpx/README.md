@@ -4,16 +4,17 @@
 <thead>
 <tr><td>library</td><td>version</td><td>platform support</td><td>arch support</td></tr>
 </thead>
-<tr><td>libvpx</td><td>1.8.2</td><td>android</td><td>armeabi-v7a arm64-v8a x86 x86_64</td></tr>
+<tr><td>libvpx</td><td>1.10.0</td><td>android</td><td>armeabi-v7a arm64-v8a x86 x86_64</td></tr>
 </table>
 
 ### Build For Android
 - Follow the instructions below to build libvpx for android
+- aTalk v2.6.1 release is compatible with libvpx-1.10.0 (use android-ndk-r18b) <br/>
 - aTalk v1.8.2 release is compatible with libvpx-1.8.0 (must use android-ndk-r17c or lower) <br/>
 - aTalk v2.3.2 release uses libvpx-1.8.2 (work with android-ndk-r17c or android-ndk-r18b)<br/>
 - Following problem has been fixed with inclusion of configure option --disable-avx2<br/>
   see <https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1><br/>
-  i.e.: The compiled libjnvpx.so for aTalk has problem when exec on x86_64 android platform (libvpx asm source errors):<br/>
+  i.e.: The compiled libjnvpx.so for aTalk has a problem when exec on x86_64 android platform (libvpx asm source errors):<br/>
   org.atalk.android A/libc: Fatal signal 31 (SIGSYS), code 1 in tid 5833 (Loop thread: ne), pid 4781 (g.atalk.android)
 - For armeabi-v7a build, need to add --disable-neon-asm for libvpx v1.8.2, otherwise:<br/>
   --clang70: error: linker command failed with exit code 1 (use -v to see invocation)<br/>
@@ -36,7 +37,7 @@ cd vpx-android
 ## Use Android NDK: android-ndk-r18b (libvpx v1.8.2)
 export ANDROID_NDK=/opt/android/android-ndk-r18b
 
-## setup the required libvpx; default "libvpx-1.8.2" or change LIB_GIT in ./init_libvpx.sh
+## setup the required libvpx; default "libvpx-1.10.0" or change LIB_GIT in ./init_libvpx.sh
 ./init_libvpx.sh (Optional as next command will load the source if not found)
 
 ## use one of the following to build libvpx i.e.

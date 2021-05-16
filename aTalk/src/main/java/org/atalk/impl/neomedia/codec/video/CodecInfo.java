@@ -10,6 +10,7 @@ import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 
 import org.atalk.service.neomedia.codec.Constants;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -217,6 +218,7 @@ public abstract class CodecInfo
         return profileLevels;
     }
 
+    @NotNull
     @Override
     public String toString()
     {
@@ -303,6 +305,7 @@ public abstract class CodecInfo
             this.level = l;
         }
 
+        @NotNull
         @Override
         public String toString()
         {
@@ -322,6 +325,7 @@ public abstract class CodecInfo
             this.name = name;
         }
 
+        @NotNull
         @Override
         public String toString()
         {
@@ -341,6 +345,7 @@ public abstract class CodecInfo
             this.name = name;
         }
 
+        @NotNull
         @Override
         public String toString()
         {

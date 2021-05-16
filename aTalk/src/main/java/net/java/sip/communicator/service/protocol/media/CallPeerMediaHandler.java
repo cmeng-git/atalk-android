@@ -5,6 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
+import net.java.sip.communicator.service.credentialsstorage.MasterPasswordInputService;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
@@ -120,7 +121,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
     /**
      * The <tt>PropertyChangeListener</tt> which listens to changes in the values of the properties
-     * of the <tt>Call</tt> of {@link #peer}.
+     * of the <tt>Call</tt> of {@link #mPeer}.
      */
     private final CallPropertyChangeListener callPropertyChangeListener;
 
@@ -192,7 +193,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * A reference to the CallPeer instance that this handler is managing media streams for.
      */
-    protected final T peer;
+    protected final T mPeer;
 
     /**
      * Contains all RTP extension mappings (those made through the extmap attribute) that have been
@@ -285,14 +286,14 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public CallPeerMediaHandler(T peer, SrtpListener srtpListener)
     {
-        this.peer = peer;
+        mPeer = peer;
         this.srtpListener = srtpListener;
         setMediaHandler(new MediaHandler());
 
         /*
          * Listen to the call of peer in order to track the user's choice with respect to the default audio device.
          */
-        MediaAwareCall<?, ?, ?> call = this.peer.getCall();
+        MediaAwareCall<?, ?, ?> call = mPeer.getCall();
         if (call == null)
             callPropertyChangeListener = null;
         else {
@@ -326,7 +327,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
     /**
      * Notifies this instance that a value of a specific property of the <tt>Call</tt> of
-     * {@link #peer} has changed from a specific old value to a specific new value.
+     * {@link #mPeer} has changed from a specific old value to a specific new value.
      *
      * @param ev a <tt>PropertyChangeEvent</tt> which specified the property which had its value
      * changed and the old and new values of that property
@@ -337,7 +338,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         boolean callConferenceChange = MediaAwareCall.CONFERENCE.equals(propertyName);
 
         if (callConferenceChange || MediaAwareCall.DEFAULT_DEVICE.equals(propertyName)) {
-            MediaAwareCall<?, ?, ?> call = getPeer().getCall();
+            MediaAwareCall<?, ?, ?> call = mPeer.getCall();
             if (call == null)
                 return;
 
@@ -393,7 +394,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     protected void closeStream(MediaType mediaType)
     {
-        Timber.d("Closing %s stream for %s", mediaType, getPeer());
+        Timber.d("Closing %s stream for %s", mediaType, mPeer);
         /*
          * This CallPeerMediaHandler releases its reference to the MediaStream it has initialized via #initStream().
          */
@@ -518,7 +519,12 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     protected MediaDevice getDefaultDevice(MediaType mediaType)
     {
-        return getPeer().getCall().getDefaultDevice(mediaType);
+        if (mPeer.getCall() == null) {
+            // cmeng (20210504): Call with/initiated by Conversation may get terminated abruptly, when h264 video codec is used
+            Timber.w("Get default device with null call: %s %s", mPeer, mediaType);
+            aTalkApp.showToastMessage(R.string.service_gui_CALL_END, mPeer.getEntity());
+        }
+        return mPeer.getCall().getDefaultDevice(mediaType);
     }
 
     /**
@@ -725,7 +731,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     {
         List<MediaFormat> supportFormats = Collections.emptyList();
         if (mediaDevice != null) {
-            Map<String, String> accountProperties = getPeer().getProtocolProvider().getAccountID().getAccountProperties();
+            Map<String, String> accountProperties = mPeer.getProtocolProvider().getAccountID().getAccountProperties();
             String overrideEncodings = accountProperties.get(ProtocolProviderFactory.OVERRIDE_ENCODINGS);
 
             if (Boolean.parseBoolean(overrideEncodings)) {
@@ -804,7 +810,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public T getPeer()
     {
-        return peer;
+        return mPeer;
     }
 
     /**
@@ -943,7 +949,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
             throws OperationFailedException
     {
         MediaType mediaType = device.getMediaType();
-        Timber.d("Initializing %s stream for %s", mediaType, getPeer());
+        Timber.d("Initializing %s stream for %s", mediaType, mPeer);
 
         /*
          * Do make sure no unintentional streaming of media generated by the user without prior consent will happen.
@@ -1022,7 +1028,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
                                 FORMAT_PARAMETER_ATTR_IMAGEATTR, remoteFormat, localFormat);
                     }
                     else
-                        imageAttrs.put(peer.getPeerJid(), true);
+                        imageAttrs.put(mPeer.getPeerJid(), true);
                 }
                 ret.add(localFormat);
             }
@@ -1198,7 +1204,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public boolean isRTPTranslationEnabled(MediaType mediaType)
     {
-        T peer = getPeer();
+        T peer = mPeer;
         MediaAwareCall<?, ?, ?> call = peer.getCall();
 
         if ((call != null) && call.isConferenceFocus() && !call.isLocalVideoStreaming()) {
@@ -1387,7 +1393,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         // On hold.
         if (locallyOnHold) {
             MediaStream audioStream = getStream(MediaType.AUDIO);
-            MediaDirection direction = (getPeer().getCall().isConferenceFocus() || audioStream == null)
+            MediaDirection direction = (mPeer.getCall().isConferenceFocus() || audioStream == null)
                     ? MediaDirection.INACTIVE : audioStream.getDirection().and(MediaDirection.SENDONLY);
 
             // the direction in situation where audioStream is null is ignored (just avoiding NPE)
@@ -1398,7 +1404,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
             MediaStream videoStream = getStream(MediaType.VIDEO);
             if (videoStream != null) {
-                direction = getPeer().getCall().isConferenceFocus()
+                direction = mPeer.getCall().isConferenceFocus()
                         ? MediaDirection.INACTIVE : videoStream.getDirection().and(MediaDirection.SENDONLY);
                 videoStream.setDirection(direction);
                 videoStream.setMute(true);
@@ -1407,7 +1413,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         /*
          * Off hold. Make sure that we re-enable sending only if other party is not on hold.
          */
-        else if (!CallPeerState.ON_HOLD_MUTUALLY.equals(getPeer().getState())) {
+        else if (!CallPeerState.ON_HOLD_MUTUALLY.equals(mPeer.getState())) {
             MediaStream audioStream = getStream(MediaType.AUDIO);
 
             if (audioStream != null) {
@@ -1499,7 +1505,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
                 // We intentionally do not remove our Call from the list of DTMF listeners. It
                 // should stay there as long as the MediaHandler is used by at least one
-                // CallPeer/CPMH. this.mediaHandler.removeDtmfListener(getPeer().getCall());
+                // CallPeer/CPMH. this.mediaHandler.removeDtmfListener(mPeer.getCall());
             }
 
             this.mediaHandler = mediaHandler;
@@ -1525,7 +1531,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
                 if (srtpListener != null)
                     this.mediaHandler.addSrtpListener(srtpListener);
                 this.mediaHandler.addVideoListener(videoStreamVideoListener);
-                this.mediaHandler.addDtmfListener(getPeer().getCall());
+                this.mediaHandler.addDtmfListener(mPeer.getCall());
             }
         }
     }
@@ -1688,7 +1694,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
 
     /**
      * Represents the <tt>PropertyChangeListener</tt> which listens to changes in the values of the
-     * properties of the <tt>Call</tt> of {@link #peer}. Remembers the <tt>Call</tt> it has been added to
+     * properties of the <tt>Call</tt> of {@link #mPeer}. Remembers the <tt>Call</tt> it has been added to
      * because <tt>peer</tt> does not have a <tt>call</tt> anymore at the time {@link #close()} is called.
      */
     private class CallPropertyChangeListener implements PropertyChangeListener

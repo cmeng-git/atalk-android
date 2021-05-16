@@ -12,7 +12,6 @@ import org.atalk.impl.neomedia.device.*;
 import org.atalk.impl.neomedia.rtcp.RTCPReceiverFeedbackTermination;
 import org.atalk.impl.neomedia.rtp.*;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateEstimatorWrapper;
-import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateObserver;
 import org.atalk.impl.neomedia.rtp.sendsidebandwidthestimation.BandwidthEstimatorImpl;
 import org.atalk.impl.neomedia.transform.*;
 import org.atalk.impl.neomedia.transform.fec.FECTransformEngine;
@@ -27,7 +26,9 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.BandwidthEstimator;
 import org.atalk.util.OSUtils;
 import org.atalk.util.concurrent.RecurringRunnableExecutor;
-import org.atalk.util.event.*;
+import org.atalk.util.event.VideoEvent;
+import org.atalk.util.event.VideoListener;
+import org.atalk.util.event.VideoNotifierSupport;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -70,12 +71,12 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      */
     public static Dimension[] parseSendRecvResolution(String imgattr)
     {
-        Dimension res[] = new Dimension[2];
+        Dimension[] res = new Dimension[2];
         String token;
-        Pattern pSendSingle = Pattern.compile("send \\[x=[0-9]+,y=[0-9]+\\]");
-        Pattern pRecvSingle = Pattern.compile("recv \\[x=[0-9]+,y=[0-9]+\\]");
-        Pattern pSendRange = Pattern.compile("send \\[x=\\[[0-9]+(-|:)[0-9]+\\],y=\\[[0-9]+(-|:)[0-9]+\\]\\]");
-        Pattern pRecvRange = Pattern.compile("recv \\[x=\\[[0-9]+(-|:)[0-9]+\\],y=\\[[0-9]+(-|:)[0-9]+\\]\\]");
+        Pattern pSendSingle = Pattern.compile("send \\[x=[0-9]+,y=[0-9]+]");
+        Pattern pRecvSingle = Pattern.compile("recv \\[x=[0-9]+,y=[0-9]+]");
+        Pattern pSendRange = Pattern.compile("send \\[x=\\[[0-9]+([-:])[0-9]+],y=\\[[0-9]+([-:])[0-9]+]]");
+        Pattern pRecvRange = Pattern.compile("recv \\[x=\\[[0-9]+([-:])[0-9]+],y=\\[[0-9]+([-:])[0-9]+]]");
         Pattern pNumeric = Pattern.compile("[0-9]+");
         Matcher mSingle;
         Matcher mRange;
@@ -97,7 +98,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         mRange = pSendRange.matcher(imgattr);
 
         if (mSingle.find()) {
-            int val[] = new int[2];
+            int[] val = new int[2];
             int i = 0;
             token = imgattr.substring(mSingle.start(), mSingle.end());
             m = pNumeric.matcher(token);
@@ -110,7 +111,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         }
         else if (mRange.find()) /* try with range */ {
             /* have two value for width and two for height (min-max) */
-            int val[] = new int[4];
+            int[] val = new int[4];
             int i = 0;
             token = imgattr.substring(mRange.start(), mRange.end());
             m = pNumeric.matcher(token);
@@ -127,7 +128,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         mRange = pRecvRange.matcher(imgattr);
 
         if (mSingle.find()) {
-            int val[] = new int[2];
+            int[] val = new int[2];
             int i = 0;
             token = imgattr.substring(mSingle.start(), mSingle.end());
             m = pNumeric.matcher(token);
@@ -140,7 +141,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         }
         else if (mRange.find()) /* try with range */ {
             /* have two value for width and two for height (min-max) */
-            int val[] = new int[4];
+            int[] val = new int[4];
             int i = 0;
             token = imgattr.substring(mRange.start(), mRange.end());
             m = pNumeric.matcher(token);
@@ -242,13 +243,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                 }
             }
             if (selectedFormat == null) {
-                Arrays.sort(infos, new Comparator<FormatInfo>()
-                {
-                    public int compare(FormatInfo info0, FormatInfo info1)
-                    {
-                        return Double.compare(info0.difference, info1.difference);
-                    }
-                });
+                Arrays.sort(infos, (info0, info1) -> Double.compare(info0.difference, info1.difference));
                 selectedFormat = infos[0].format;
             }
 
@@ -271,13 +266,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                 for (int i = 0; i < supportedInfos.length; i++) {
                     supportedInfos[i] = new FormatInfo(DeviceConfiguration.SUPPORTED_RESOLUTIONS[i]);
                 }
-                Arrays.sort(infos, new Comparator<FormatInfo>()
-                {
-                    public int compare(FormatInfo info0, FormatInfo info1)
-                    {
-                        return Double.compare(info0.difference, info1.difference);
-                    }
-                });
+                Arrays.sort(infos, (info0, info1) -> Double.compare(info0.difference, info1.difference));
 
                 FormatInfo preferredFormat = new FormatInfo(new Dimension(preferredWidth, preferredHeight));
                 Dimension closestAspect = null;
@@ -312,8 +301,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
 
     /**
      * The <tt>VideoListener</tt> which handles <tt>VideoEvent</tt>s from the <tt>MediaDeviceSession</tt> of this
-     * instance and fires respective <tt>VideoEvent</tt>s from this <tt>VideoMediaStream</tt> to its
-     * <tt>VideoListener</tt>s.
+     * instance and fires respective <tt>VideoEvent</tt>s from this <tt>VideoMediaStream</tt> to its <tt>VideoListener</tt>s.
      */
     private VideoListener deviceSessionVideoListener;
 
@@ -345,7 +333,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     /**
      * The transformer which handles incoming and outgoing fec
      */
-    private TransformEngineWrapper<FECTransformEngine> fecTransformEngineWrapper = new TransformEngineWrapper<>();
+    private final TransformEngineWrapper<FECTransformEngine> fecTransformEngineWrapper = new TransformEngineWrapper<>();
 
     /**
      * The instance that terminates RRs and REMBs.
@@ -361,14 +349,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      * The <tt>RemoteBitrateEstimator</tt> which computes bitrate estimates for the incoming RTP streams.
      */
     private final RemoteBitrateEstimatorWrapper remoteBitrateEstimator = new RemoteBitrateEstimatorWrapper(
-            new RemoteBitrateObserver()
-            {
-                @Override
-                public void onReceiveBitrateChanged(Collection<Long> ssrcs, long bitrate)
-                {
-                    VideoMediaStreamImpl.this.remoteBitrateEstimatorOnReceiveBitrateChanged(ssrcs, bitrate);
-                }
-            }, getDiagnosticContext()
+            VideoMediaStreamImpl.this::remoteBitrateEstimatorOnReceiveBitrateChanged, getDiagnosticContext()
     );
 
     /**
@@ -711,8 +692,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
-            Timber.log(TimberLog.FINER, "Firing VideoEvent with type %s and origin %s",
-                    VideoEvent.typeToString(type), VideoEvent.originToString(origin));
+        Timber.log(TimberLog.FINER, "Firing VideoEvent with type %s and origin %s",
+                VideoEvent.typeToString(type), VideoEvent.originToString(origin));
 
         return videoNotifierSupport.fireVideoEvent(type, visualComponent, origin, wait);
     }
@@ -909,7 +890,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                         break;
 
                     case "CUSTOM":
-                        String args[] = value.split(",");
+                        String[] args = value.split(",");
                         if (args.length < 3)
                             continue;
 
@@ -922,6 +903,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                                 ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                             }
                         } catch (Exception e) {
+                            Timber.e("Exception in handle attribute: %s", e.getMessage());
                         }
                         break;
 
@@ -968,7 +950,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
         // Makes the screen detection with a point inside a real screen i.e.
         // x and y are both greater than or equal to 0.
         ScreenDevice screen = NeomediaServiceUtils.getMediaServiceImpl().getScreenForPoint(
-                new Point((x < 0) ? 0 : x, (y < 0) ? 0 : y));
+                new Point(Math.max(x, 0), Math.max(y, 0)));
 
         if (screen != null) {
             Rectangle bounds = ((ScreenDeviceImpl) screen).getBounds();
@@ -982,8 +964,8 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      * Notifies this <tt>VideoMediaStreamImpl</tt> that {@link #remoteBitrateEstimator} has
      * computed a new bitrate estimate for the incoming streams.
      *
-     * @param ssrcs
-     * @param bitrate
+     * @param ssrcs Remote source
+     * @param bitrate Source bitRate
      */
     private void remoteBitrateEstimatorOnReceiveBitrateChanged(Collection<Long> ssrcs, long bitrate)
     {
@@ -1061,7 +1043,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     {
         for (Map.Entry<String, String> entry : advancedParams.entrySet()) {
             if (entry.getKey().equals("imageattr")) {
-                Dimension res[] = parseSendRecvResolution(entry.getValue());
+                Dimension[] res = parseSendRecvResolution(entry.getValue());
 
                 qualityControl.setRemoteSendMaxPreset(new QualityPreset(res[0]));
                 qualityControl.setRemoteReceiveResolution(res[1]);

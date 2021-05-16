@@ -157,7 +157,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * The MediaStreamStatsImpl object used to compute the statistics about this MediaStreamImpl.
      */
-    private MediaStreamStats2Impl mediaStreamStatsImpl;
+    private final MediaStreamStats2Impl mediaStreamStatsImpl;
 
     /**
      * The indicator which determines whether this <tt>MediaStream</tt> is set to transmit
@@ -458,7 +458,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     }
 
     /**
-     * Adds an additional RTP payload mapping that will overriding one that we've set with
+     * Add an RTP payload mapping that will overriding one we've set with
      * {@link #addDynamicRTPPayloadType(byte, MediaFormat)}. This is necessary so that we can
      * support the RFC3264 case where the answerer has the right to declare what payload type
      * mappings it wants to receive RTP packets with even if they are different from those in the
@@ -1133,12 +1133,11 @@ public class MediaStreamImpl extends AbstractMediaStream
          */
         if (rtpConnectorTarget != null && connector != null) {
             InetSocketAddress oldDataAddr = rtpConnectorTarget.getDataAddress();
-            boolean removeTargets = (oldDataAddr == null) ? (newDataAddr != null) : !oldDataAddr.equals(newDataAddr);
+            boolean removeTargets = !Objects.equals(oldDataAddr, newDataAddr);
 
             if (!removeTargets) {
                 InetSocketAddress oldControlAddr = rtpConnectorTarget.getControlAddress();
-                removeTargets = (oldControlAddr == null)
-                        ? (newControlAddr != null) : !oldControlAddr.equals(newControlAddr);
+                removeTargets = !Objects.equals(oldControlAddr, newControlAddr);
             }
             if (removeTargets) {
                 connector.removeTargets();
@@ -1340,7 +1339,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * Sets the {@link FECTransformEngine} for this {@link MediaStream}
      * By default, nothing is done with the passed engine, allowing extenders to implement it
      *
-     * @param fecTransformEngine
+     * @param fecTransformEngine FEC Transform Engine
      */
     protected void setFecTransformEngine(FECTransformEngine fecTransformEngine)
     {
@@ -2778,7 +2777,7 @@ public class MediaStreamImpl extends AbstractMediaStream
      * with has generated an event related to a <tt>ReceiveStream</tt>.
      *
      * @param ev the <tt>ReceiveStreamEvent</tt> which specifies the <tt>ReceiveStream</tt>
-     * that is the cause of the event and the very type of the event
+     * that is the cause of the event, and the very type of the event
      * @see ReceiveStreamListener#update(ReceiveStreamEvent)
      */
     @Override
@@ -3036,7 +3035,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                     ? rtpConnector.getDataOutputStream(false)
                     : rtpConnector.getControlOutputStream(false);
 
-            // We utilize TransformEngineWrapper so it is possible to have after wrapped. Unless
+            // We utilize TransformEngineWrapper, so it is possible to have after wrapped. Unless
             // we wrap after, pkt will go through the whole TransformEngine chain (which is
             // obviously not the idea of the caller).
             if (after != null) {
@@ -3044,12 +3043,12 @@ public class MediaStreamImpl extends AbstractMediaStream
 
                 // externalTransformerWrapper
                 wrapper = externalTransformerWrapper;
-                if (wrapper != null && wrapper.contains(after)) {
+                if (wrapper.contains(after)) {
                     after = wrapper;
                 }
             }
 
-            outputStream.write(pkt.getBuffer(), pkt.getOffset(), pkt.getLength(), /* context */after);
+            outputStream.write(pkt.getBuffer(), pkt.getOffset(), pkt.getLength(), after);
         } catch (IllegalStateException | IOException | NullPointerException e) {
             throw new TransmissionFailedException(e);
         }
@@ -3127,7 +3126,6 @@ public class MediaStreamImpl extends AbstractMediaStream
         }
 
         final byte vp9PT = getDynamicRTPPayloadType(Constants.VP9);
-
         if (redBlock.getPayloadType() == vp9PT) {
             return org.atalk.impl.neomedia.codec.video.vp9.DePacketizer.VP9PayloadDescriptor
                     .getSpatialLayerIndex(redBlock.getBuffer(), redBlock.getOffset(), redBlock.getLength());
@@ -3139,8 +3137,8 @@ public class MediaStreamImpl extends AbstractMediaStream
     }
 
     /**
-     * Returns a boolean that indicates whether or not our we're able to detect
-     * the frame boundaries for the codec of the packet that is specified as an argument.
+     * Returns a boolean that indicates whether we're able to detect the frame boundaries
+     * for the codec of the packet that is specified as an argument.
      *
      * @param pkt the {@link RawPacket} that holds the RTP packet.
      * @return true if we're able to detect the frame boundaries for the codec
@@ -3212,7 +3210,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     }
 
     /**
-     * Utility method that determines whether or not a packet is an end of frame.
+     * Utility method that determines whether a packet is an end of frame.
      *
      * @param pkt raw rtp packet.
      * @return true if the packet is the end of a frame, false otherwise.

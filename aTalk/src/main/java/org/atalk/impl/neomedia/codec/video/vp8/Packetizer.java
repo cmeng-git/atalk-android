@@ -17,8 +17,8 @@ import timber.log.Timber;
 
 /**
  * Packetizes VP8 encoded frames in accord with
- * {@link "https://tools.ietf.org/html/draft-ietf-payload-vp8-07"}
- * <p>
+ * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp8-17"}
+ *
  * Uses the simplest possible scheme, only splitting large packets. Extended
  * bits are never added, and PartID is always set to 0. The only bit that
  * changes is the Start of Partition bit, which is set only for the first packet

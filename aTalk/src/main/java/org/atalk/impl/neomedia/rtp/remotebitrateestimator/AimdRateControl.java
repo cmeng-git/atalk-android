@@ -281,7 +281,7 @@ class AimdRateControl
     private void reset(long minBitrateBps)
     {
         minConfiguredBitrateBps = minBitrateBps;
-        currentBitrateBps = /* maxConfiguredBitrateBps */30000000L;
+        currentBitrateBps = /* maxConfiguredBitrateBps */ 30000000L;
         avgMaxBitrateKbps = -1F;
         varMaxBitrateKbps = 0.4F;
         rateControlState = RateControlState.kRcHold;

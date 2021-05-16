@@ -33,6 +33,11 @@ import javax.media.MediaLocator;
 public class CameraUtils
 {
     /**
+     * Separator use when save camera formats to DB. Do not change
+     */
+    private static final String FORMAT_SEPARATOR = ", ";
+
+    /**
      * Surface provider used to display camera preview
      */
     private static PreviewSurfaceProvider surfaceProvider;
@@ -56,7 +61,7 @@ public class CameraUtils
     public static final Dimension[] PREFERRED_SIZES = DeviceConfiguration.SUPPORTED_RESOLUTIONS;
 
     /**
-     * Map contains all the phone available cameras and their supported resolution sizes
+     * Map contains all the phone available cameras, and their supported resolution sizes
      * This list is being update at the device start up in.
      * @see org.atalk.impl.neomedia.device.MediaRecorderSystem
      */
@@ -133,9 +138,10 @@ public class CameraUtils
 
         for (int format : formats) {
             if (s.length() != 0)
-                s.append(", ");
+                s.append(FORMAT_SEPARATOR);
 
             switch (format) {
+                // Camera options...
                 case ImageFormat.YV12:
                     s.append("YV12");
                     break;
@@ -271,7 +277,7 @@ public class CameraUtils
     }
 
     /**
-     * Get the optimize size that is supported by the camera resolution capability
+     * Get the optimized size supported by the camera resolution capability
      * closely match to the preview size requested.
      * Note: Camera native natural oritation is always in landscape mode
      *

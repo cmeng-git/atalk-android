@@ -2,7 +2,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -28,7 +28,6 @@ project.ext {
     compileSdkVersion = 30
     buildToolsVersion = '29.0.3'
     supportLibraryVersion = '1.0.0'
-    gmsPlayServicesVersion = '17.0.0'
 }
 
 task clean(type: Delete) {

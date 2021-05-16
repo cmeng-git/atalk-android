@@ -5,9 +5,7 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.annotation.TargetApi;
 import android.graphics.SurfaceTexture;
-import android.os.Build;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
@@ -16,14 +14,14 @@ import timber.log.Timber;
 /**
  * Manages a SurfaceTexture. Creates SurfaceTexture and CameraTextureRender objects, and provides
  * functions that wait for frames and render them to the current EGL surface.
- * <p/>
+ *
  * The SurfaceTexture can be passed to Camera.setPreviewTexture() to receive camera output.
  */
 public class SurfaceTextureManager implements SurfaceTexture.OnFrameAvailableListener
 {
-    private SurfaceTexture surfaceTexture;
+    private SurfaceTexture mSurfaceTexture;
 
-    private CameraTextureRender textureRender;
+    private CameraTextureRender mTextureRender;
 
     /**
      * guards frameAvailable
@@ -33,30 +31,28 @@ public class SurfaceTextureManager implements SurfaceTexture.OnFrameAvailableLis
     private boolean frameAvailable;
 
     /**
-     * Creates instances of CameraTextureRender and SurfaceTexture.
+     * Create instances of CameraTextureRender and SurfaceTexture.
      */
     public SurfaceTextureManager()
     {
+        mTextureRender = new CameraTextureRender();
+        mTextureRender.surfaceCreated();
 
-        textureRender = new CameraTextureRender();
-        textureRender.surfaceCreated();
+        Timber.d("textureID = %s", mTextureRender.getTextureId());
+        mSurfaceTexture = new SurfaceTexture(mTextureRender.getTextureId());
 
-        Timber.d("textureID = %s", textureRender.getTextureId());
-        surfaceTexture = new SurfaceTexture(textureRender.getTextureId());
-
-        surfaceTexture.setOnFrameAvailableListener(this);
+        mSurfaceTexture.setOnFrameAvailableListener(this);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void release()
     {
-        if (textureRender != null) {
-            textureRender.release();
-            textureRender = null;
+        if (mTextureRender != null) {
+            mTextureRender.release();
+            mTextureRender = null;
         }
-        if (surfaceTexture != null) {
-            surfaceTexture.release();
-            surfaceTexture = null;
+        if (mSurfaceTexture != null) {
+            mSurfaceTexture.release();
+            mSurfaceTexture = null;
         }
     }
 
@@ -65,7 +61,7 @@ public class SurfaceTextureManager implements SurfaceTexture.OnFrameAvailableLis
      */
     public SurfaceTexture getSurfaceTexture()
     {
-        return surfaceTexture;
+        return mSurfaceTexture;
     }
 
     /**
@@ -95,8 +91,8 @@ public class SurfaceTextureManager implements SurfaceTexture.OnFrameAvailableLis
         }
 
         // Latch the data.
-        textureRender.checkGlError("before updateTexImage");
-        surfaceTexture.updateTexImage();
+        mTextureRender.checkGlError("before updateTexImage");
+        mSurfaceTexture.updateTexImage();
     }
 
     /**
@@ -104,7 +100,7 @@ public class SurfaceTextureManager implements SurfaceTexture.OnFrameAvailableLis
      */
     public void drawImage()
     {
-        textureRender.drawFrame(surfaceTexture);
+        mTextureRender.drawFrame(mSurfaceTexture);
     }
 
     @Override

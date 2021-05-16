@@ -15,7 +15,9 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.impl.configuration.*;
+import org.atalk.impl.configuration.ConfigurationStore;
+import org.atalk.impl.configuration.DatabaseConfigurationStore;
+import org.atalk.impl.configuration.HashtableConfigurationStore;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.osgi.OSGiService;
 
@@ -141,9 +143,9 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
                     propertyNames.add(cursor.getString(0));
                 }
             }
-		}
-		return propertyNames.toArray(new String[0]);
-	}
+        }
+        return propertyNames.toArray(new String[0]);
+    }
 
     /**
      * Removes all property name-value associations currently present in this
@@ -181,7 +183,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
                     String[] args = {name};
                     mDB.delete(AccountID.TABLE_NAME, AccountID.ACCOUNT_UUID + "=?", args);
                 }
-                // Otherwise remove the accountProperty from the AccountID.TBL_PROPERTIES
+                // Otherwise, remove the accountProperty from the AccountID.TBL_PROPERTIES
                 else {
                     String[] args = {name.substring(0, idx), name.substring(idx + 1)};
                     mDB.delete(AccountID.TBL_PROPERTIES,
@@ -223,12 +225,15 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
             else {
                 contentValues.put(COLUMN_NAME, name);
             }
-            if (mDB.replace(tableName, null, contentValues) == -1)
-                Timber.e("Failed to set non-system property: %s", name);
-        }
 
-        // cmeng to take care of properties and accountProperties ????
+            // Insert the properties in DB, replace if exist
+            long rowId = mDB.replace(tableName, null, contentValues);
+            if (rowId == -1)
+                Timber.e("Failed to set non-system property: %s: %s <= %s", tableName, name, value);
+
+            Timber.log(TimberLog.FINER, "### Set non-system property: %s: %s <= %s", tableName, name, value);
+        }
+        // To take care of cached properties and accountProperties
         super.setNonSystemProperty(name, value);
-        Timber.log(TimberLog.FINER, "### Set setNonSystem Property: %s: %s", name, value);
     }
 }

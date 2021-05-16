@@ -112,7 +112,7 @@ public class RemoteVideoLayout extends LinearLayout
             // NullPointerException from the field? so give it a default
             // Default to 720x480. Dimension(1,1) causes GLSurfaceView Invalid Operation
             if (preferredSize == null)
-                preferredSize = new Dimension(VideoHandlerFragment.DEFAULT_VIDEO_WIDTH, VideoHandlerFragment.DEFAULT_VIDEO_HEIGHT);
+                preferredSize = new Dimension(VideoHandlerFragment.DEFAULT_WIDTH, VideoHandlerFragment.DEFAULT_HEIGHT);
 
             double width = preferredSize.width;
             double height = preferredSize.height;

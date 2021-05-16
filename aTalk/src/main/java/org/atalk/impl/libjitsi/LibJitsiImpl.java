@@ -50,8 +50,8 @@ public class LibJitsiImpl extends LibJitsi
      * Gets a service of a specific type associated with this implementation of the <tt>libjitsi</tt> library.
      *
      * @param serviceClass the type of the service to be retrieved
-     * @return a service of the specified type if there is such an association known to this implementation of the
-     * <tt>libjitsi</tt> library; otherwise, <tt>null</tt>
+     * @return a service of the specified type if there is such an association known to this
+     * implementation of the <tt>libjitsi</tt> library; otherwise, <tt>null</tt>
      */
     @Override
     protected <T> T getService(Class<T> serviceClass)
@@ -62,8 +62,7 @@ public class LibJitsiImpl extends LibJitsi
         synchronized (services) {
             lock = services.get(className);
             if (lock == null) {
-                // Do not allow concurrent and/or repeating requests to create
-                // an instance of the specified serviceClass.
+                // Do not allow concurrent and/or repeating requests to create an instance of the specified serviceClass.
                 lock = new ServiceLock();
                 services.put(className, lock);
             }
@@ -75,7 +74,7 @@ public class LibJitsiImpl extends LibJitsi
     /**
      * Associates an OSGi service {@code Object} and its initialization with a
      * {@code Lock} in order to prevent concurrent, repeating, and/or recursive
-     * initializations of one and the same OSGi service {@code Class}.
+     * initializations are the same OSGi service {@code Class}.
      */
     private static class ServiceLock
     {
@@ -93,8 +92,7 @@ public class LibJitsiImpl extends LibJitsi
          * Gets the OSGi service {@code Object} associated with {@link #_lock}.
          *
          * @param clazz the runtime type of the returned value
-         * @return the OSGi service {@code Object} associated with
-         * {@link #_lock}
+         * @return the OSGi service {@code Object} associated with {@link #_lock}
          */
         @SuppressWarnings("unchecked")
         public <T> T getService(String className, Class<T> clazz)
@@ -121,8 +119,7 @@ public class LibJitsiImpl extends LibJitsi
          * @param <T>
          * @param className the {@code name} of {@code clazz} which has already
          * been retrieved from {@code clazz}
-         * @param clazz the {@code Class} of the OSGi service instance to be
-         * initialized
+         * @param clazz the {@code Class} of the OSGi service instance to be initialized
          * @return a new instance of the specified OSGi service {@code clazz}
          */
         private static <T> T initializeService(String className, Class<T> clazz)
@@ -133,8 +130,7 @@ public class LibJitsiImpl extends LibJitsi
             boolean suppressClassNotFoundException = false;
 
             if (implClassName == null || implClassName.length() == 0) {
-                implClassName
-                        = className.replace(".service.", ".impl.").concat("Impl");
+                implClassName = className.replace(".service.", ".impl.").concat("Impl");
                 // Nobody has explicitly mentioned implClassName, we have just
                 // made it up. If it turns out that it cannot be found, do not
                 // log the resulting ClassNotFountException in order to not

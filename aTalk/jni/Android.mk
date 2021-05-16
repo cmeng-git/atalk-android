@@ -31,10 +31,10 @@ include $(CLEAR_VARS)
 #LOCAL_SRC_FILES := ./libs/libjnffmpeg.so
 #include $(PREBUILT_SHARED_LIBRARY)
 
-### FFMPEG library build using static libraries (v1.0.10) pre-built on ubuntu
+### FFMPEG library build using static libraries (ffmpeg=v4.4 / x264=161.3049) pre-built on ubuntu
 include ./ffmpeg/Android_a.mk
 
-### FFMPEG library build using shared libraries (v1.0.10) - multiple .so generated
+### FFMPEG library build using shared libraries (ffmpeg=v4.4 / x264=161.3049) - multiple .so generated
 #include ./ffmpeg/Android_so.mk
 
 ### FFMPEG Shared Library built from source (see version.h) - not working
@@ -47,7 +47,7 @@ include $(CLEAR_VARS)
 #include ./h264/Android.mk
 
 # ================================= LibVPX (VP8 / VP9) ================================
-### VPX shared library build using static libraries pre-built from source (v1.6.1+) in Ubuntu 16.04
+### VPX shared library build using static libraries pre-built from source (v1.10.0) on Ubuntu
 LOCAL_PATH := $(ROOT)
 include $(CLEAR_VARS)
 include ./vpx/Android.mk

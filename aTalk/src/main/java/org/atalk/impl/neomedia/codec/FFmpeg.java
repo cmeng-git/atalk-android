@@ -42,22 +42,17 @@ public class FFmpeg
     /**
      * AC pred flag.
      */
-    public static final int CODEC_FLAG_AC_PRED = 0x02000000;
+    public static final int CODEC_FLAG_AC_PRED = (1 << 24);
 
     /**
      * Loop filter flag.
      */
-    public static final int CODEC_FLAG_LOOP_FILTER = 0x00000800;
+    public static final int CODEC_FLAG_LOOP_FILTER = (1 << 11);
 
     /**
      * The flag which allows incomplete frames to be passed to a decoder.
      */
-    public static final int CODEC_FLAG2_CHUNKS = 0x00008000;
-
-    /**
-     * Intra refresh flag2.
-     */
-    public static final int CODEC_FLAG2_INTRA_REFRESH = 0x00200000;
+    public static final int CODEC_FLAG2_CHUNKS = (1 << 15);
 
     /**
      * AMR-NB codec ID.
@@ -72,12 +67,12 @@ public class FFmpeg
     /**
      * H264 codec ID.
      */
-    public static final int CODEC_ID_H264 = 28;
+    public static final int CODEC_ID_H264 = 27;
 
     /**
      * MJPEG codec ID.
      */
-    public static final int CODEC_ID_MJPEG = 8;
+    public static final int CODEC_ID_MJPEG = 7;
 
     /**
      * MP3 codec ID.
@@ -87,7 +82,12 @@ public class FFmpeg
     /**
      * VP8 codec ID
      */
-    public static final int CODEC_ID_VP8 = 142;
+    public static final int CODEC_ID_VP8 = 139;
+
+    /**
+     * VP9 codec ID
+     */
+    public static final int CODEC_ID_VP9 = 167;
 
     /**
      * Work around bugs in encoders which sometimes cannot be detected automatically.
@@ -153,7 +153,7 @@ public class FFmpeg
     /**
      * NV12 format.
      */
-    public static final int PIX_FMT_NV12 = 25;
+    public static final int PIX_FMT_NV12 = 23;
 
     /**
      * RGB24 format handled in endian specific manner.
@@ -181,12 +181,12 @@ public class FFmpeg
     /**
      * UYVY422 format.
      */
-    public static final int PIX_FMT_UYVY422 = 17;
+    public static final int PIX_FMT_UYVY422 = 15;
 
     /**
      * UYYVYY411 format.
      */
-    public static final int PIX_FMT_UYYVYY411 = 18;
+    public static final int PIX_FMT_UYYVYY411 = 16;
 
     /**
      * Y41P format
@@ -217,10 +217,6 @@ public class FFmpeg
 
     static {
         System.loadLibrary("jnffmpeg");
-
-        av_register_all();
-        avcodec_register_all();
-        avfilter_register_all();
 
         if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN))
         {
@@ -262,11 +258,6 @@ public class FFmpeg
      * @return native pointer or 0 if av_malloc failed
      */
     public static native long av_malloc(int size);
-
-    /**
-     * Initialize libavformat and register all the muxers, demuxers and protocols.
-     */
-    public static native void av_register_all();
 
     /**
      * Allocates a new <tt>AVCodecContext</tt>.
@@ -394,8 +385,6 @@ public class FFmpeg
      */
     public static native int avcodec_open2(long ctx, long codec, String... options);
 
-    public static native void avcodec_register_all();
-
     /**
      * Add specific flags to AVCodecContext's flags member.
      *
@@ -456,8 +445,8 @@ public class FFmpeg
 
     /**
      * Sets the average bit rate of the specified <tt>AVCodecContext</tt>. The property is to be set
-     * by the user when encoding and is unused for constant quantizer encoding. It is set by
-     * libavcodec when decoding and its value is <tt>0</tt> or some bitrate if this info is
+     * by the user when encoding and is unused for the constant quantizer encoding. It is set by
+     * the libavcodec when decoding and its value is <tt>0</tt> or some bitrate if this info is
      * available in the stream.
      *
      * @param ctx the <tt>AVCodecContext</tt> to set the average bit rate of
@@ -483,7 +472,7 @@ public class FFmpeg
     public static native void avcodeccontext_set_channels(long ctx, int channels);
 
     public static native void avcodeccontext_set_channel_layout(long ctx, int channelLayout);
-    // public static native void avcodeccontext_set_chromaoffset(long ctx, int chromaoffset);
+    public static native void avcodeccontext_set_chromaoffset(long ctx, int chromaoffset);
 
     /**
      * Sets the maximum number of pictures in a group of pictures i.e. the maximum interval between
@@ -518,9 +507,7 @@ public class FFmpeg
 
     public static native void avcodeccontext_set_me_cmp(long ctx, int me_cmp);
 
-
     public static native void avcodeccontext_set_me_method(long ctx, int me_method);
-
 
     public static native void avcodeccontext_set_me_range(long ctx, int me_range);
 
@@ -657,13 +644,13 @@ public class FFmpeg
     /**
      * Initializes the <tt>libavfilter</tt> system and registers all built-in filters.
      */
-    public static native void avfilter_register_all();
-
     public static native long avframe_get_data0(long frame);
 
     public static native int avframe_get_linesize0(long frame);
 
     public static native long avframe_get_pts(long frame);
+
+    public static native void avframe_set_properties(long frame, int format, int width, int height);
 
     public static native void avframe_set_data(long frame, long data0, long offset1, long offset2);
 

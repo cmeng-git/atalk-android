@@ -41,19 +41,19 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     }
 
     /**
-     * Sets default format preferences, and their priorities in descending order of the number values;
+     * Sets default format preferences; their priorities are in descending order of the number values;
      * Set the value to zero to disable the codec.
      */
     private void initializeFormatPreferences()
     {
-        // first init default preferences video
-        setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1100);
+        // first init default preferences for video codecs
         setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1200);
+        setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1100);
         setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,0);
         setEncodingPreference("JPEG", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,950);
         setEncodingPreference("H261", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,800);
 
-        // audio
+        // audio codecs
         setEncodingPreference("opus", 48000, 750);
         setEncodingPreference("SILK", 24000, 714);
         setEncodingPreference("SILK", 16000, 713);
@@ -76,7 +76,7 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     }
 
     /**
-     * Sets <tt>pref</tt> as the preference associated with <tt>encoding</tt>. Use this method for
+     * Sets <tt>pref</tt> as the preference associated with the <tt>encoding</tt>. Use this method for
      * both audio and video encodings and don't worry if preferences are equal since we rarely need
      * to compare prefs of video encodings to those of audio encodings.
      *

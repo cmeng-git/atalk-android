@@ -1,6 +1,38 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	05/16/2021
+Version:		2.6.1 (206010)
+- AndroidCodec: Change implementation to remove all deprecated MediaCodec methods
+  codecInputs = codec.getInputBuffers();
+  codecOutputs = codec.getOutputBuffers();
+- Upgrade libvpx to v 1.10.0; and update VPX.java static constant per libvpx v1.10.0
+- Clean up VPX constants, VP8 codec source; VP9 codec clean up but still not working
+- Upgrade ffmpeg-x264 build to use x264-161.3049 i.e. git clone https://code.videolan.org/videolan/x264.git --branch stable
+- Tested working for ffmpeg v3.4.8 without source modification
+- Upgraded ffmpeg version v4.4; need the following changes
+  * Update all deprecated methods in FFmpeg.c
+  * need to clean up Ffmpeg.java constants as per ffmpeg v4.4 release, e.g. CODEC_ID_VP8 = 139 else
+    net.sf.fmj.media.Log.error()  Unable to handle format: H264/RTP, fmtps={profile-level-id=42E01f,packetization-mode=1}
+  * Need to include FFmpeg.avframe_set_properties(avFrame, FFmpeg.PIX_FMT_YUV420P, mWidth, mHeight);
+- Upgraded openssl to v1.1.1k and uses prebuilt ndk
+- Remove unnecessary calls to deprecated functions in FFmpeg.java
+  av_register_all(); avcodec_register_all(); avfilter_register_all();
+- Update all jni/static_library_build scripts for ffmpeg-x264 and libvpx per latest deployed versions;
+  directly install the generated static libraries to aTalk jni directory for build
+- Enhance x264 encoder to support android device rotation
+- cmeng (20210504): Call with/initiated by Conversation may get terminated abruptly, when h264 video codec is used
+  CallPeerMediaHandel#getDefaultDeivce: display toast message and let it ends with NPE for simple fix;
+  otherwise more unrelated error messages will display
+- Upgrade ExoPlayer to version 2.13.3
+- MediaExoPLayer activity is set to android:configChanges="keyboardHidden|orientation|screenSize",
+  and orientation change is now handled by exoPlayer with smooth audio/video playback on screen rotation.
+- JCenter deprecation and end of service: https://developer.android.com/studio/build/jcenter-migration
+  https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/
+  Replace jCenter with mavenCentral amd omit jCenter from gradle
+
+=========================================================================
+Author:         cmeng
 Upload Date:	04/05/2021
 Version:		2.6.0 (206000)
 - Check for user valid ipAddress entry in STUN/TURN setting configuration
@@ -1254,7 +1286,7 @@ Upload Date:	03/27/2019
 - Fixed undefined reference for x2
 
 - Patch ffmpeg sources to support x264 > v152; build ok but  has problem with x264-157 encode in aTalk media call
-- Continue to us x264-147 - compatible with ffmpeg=1.0.10 for aTalk
+- Continue to use x264-147 - compatible with ffmpeg=1.0.10 for aTalk
 net.sf.fmj.media.Log.error() Failed to realize: net.sf.fmj.media.ProcessEngine@584fa51
 net.sf.fmj.media.Log.error()   Cannot build a flow graph with the customized options:
 net.sf.fmj.media.Log.error()     Unable to transcode format: YUV Video Format: Size = [width=720, height=960] MaxDataLength = -1 DataType = class [B yuvType = -1 StrideY = -1 StrideUV = -1 OffsetY = -1 OffsetU = -1 OffsetV = -1

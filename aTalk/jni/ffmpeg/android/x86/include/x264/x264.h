@@ -1,7 +1,7 @@
 /*****************************************************************************
  * x264.h: x264 public header
  *****************************************************************************
- * Copyright (C) 2003-2018 x264 project
+ * Copyright (C) 2003-2021 x264 project
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Loren Merritt <lorenm@u.washington.edu>
@@ -45,7 +45,20 @@ extern "C" {
 
 #include "x264_config.h"
 
-#define X264_BUILD 157
+#define X264_BUILD 161
+
+#ifdef _WIN32
+#   define X264_DLL_IMPORT __declspec(dllimport)
+#   define X264_DLL_EXPORT __declspec(dllexport)
+#else
+#   if defined(__GNUC__) && (__GNUC__ >= 4)
+#       define X264_DLL_IMPORT
+#       define X264_DLL_EXPORT __attribute__((visibility("default")))
+#   else
+#       define X264_DLL_IMPORT
+#       define X264_DLL_EXPORT
+#   endif
+#endif
 
 /* Application developers planning to link against a shared library version of
  * libx264 from a Microsoft Visual Studio or similar development environment
@@ -53,9 +66,13 @@ extern "C" {
  * This clause does not apply to MinGW, similar development environments, or non
  * Windows platforms. */
 #ifdef X264_API_IMPORTS
-#define X264_API __declspec(dllimport)
+#   define X264_API X264_DLL_IMPORT
 #else
-#define X264_API
+#   ifdef X264_API_EXPORTS
+#       define X264_API X264_DLL_EXPORT
+#   else
+#       define X264_API
+#   endif
 #endif
 
 /* x264_t:
@@ -119,57 +136,57 @@ typedef struct x264_nal_t
 /* CPU flags */
 
 /* x86 */
-#define X264_CPU_MMX                (1<<0)
-#define X264_CPU_MMX2               (1<<1)  /* MMX2 aka MMXEXT aka ISSE */
+#define X264_CPU_MMX                (1U<<0)
+#define X264_CPU_MMX2               (1U<<1)  /* MMX2 aka MMXEXT aka ISSE */
 #define X264_CPU_MMXEXT             X264_CPU_MMX2
-#define X264_CPU_SSE                (1<<2)
-#define X264_CPU_SSE2               (1<<3)
-#define X264_CPU_LZCNT              (1<<4)
-#define X264_CPU_SSE3               (1<<5)
-#define X264_CPU_SSSE3              (1<<6)
-#define X264_CPU_SSE4               (1<<7)  /* SSE4.1 */
-#define X264_CPU_SSE42              (1<<8)  /* SSE4.2 */
-#define X264_CPU_AVX                (1<<9)  /* Requires OS support even if YMM registers aren't used */
-#define X264_CPU_XOP                (1<<10) /* AMD XOP */
-#define X264_CPU_FMA4               (1<<11) /* AMD FMA4 */
-#define X264_CPU_FMA3               (1<<12)
-#define X264_CPU_BMI1               (1<<13)
-#define X264_CPU_BMI2               (1<<14)
-#define X264_CPU_AVX2               (1<<15)
-#define X264_CPU_AVX512             (1<<16) /* AVX-512 {F, CD, BW, DQ, VL}, requires OS support */
+#define X264_CPU_SSE                (1U<<2)
+#define X264_CPU_SSE2               (1U<<3)
+#define X264_CPU_LZCNT              (1U<<4)
+#define X264_CPU_SSE3               (1U<<5)
+#define X264_CPU_SSSE3              (1U<<6)
+#define X264_CPU_SSE4               (1U<<7)  /* SSE4.1 */
+#define X264_CPU_SSE42              (1U<<8)  /* SSE4.2 */
+#define X264_CPU_AVX                (1U<<9)  /* Requires OS support even if YMM registers aren't used */
+#define X264_CPU_XOP                (1U<<10) /* AMD XOP */
+#define X264_CPU_FMA4               (1U<<11) /* AMD FMA4 */
+#define X264_CPU_FMA3               (1U<<12)
+#define X264_CPU_BMI1               (1U<<13)
+#define X264_CPU_BMI2               (1U<<14)
+#define X264_CPU_AVX2               (1U<<15)
+#define X264_CPU_AVX512             (1U<<16) /* AVX-512 {F, CD, BW, DQ, VL}, requires OS support */
 /* x86 modifiers */
-#define X264_CPU_CACHELINE_32       (1<<17) /* avoid memory loads that span the border between two cachelines */
-#define X264_CPU_CACHELINE_64       (1<<18) /* 32/64 is the size of a cacheline in bytes */
-#define X264_CPU_SSE2_IS_SLOW       (1<<19) /* avoid most SSE2 functions on Athlon64 */
-#define X264_CPU_SSE2_IS_FAST       (1<<20) /* a few functions are only faster on Core2 and Phenom */
-#define X264_CPU_SLOW_SHUFFLE       (1<<21) /* The Conroe has a slow shuffle unit (relative to overall SSE performance) */
-#define X264_CPU_STACK_MOD4         (1<<22) /* if stack is only mod4 and not mod16 */
-#define X264_CPU_SLOW_ATOM          (1<<23) /* The Atom is terrible: slow SSE unaligned loads, slow
-                                             * SIMD multiplies, slow SIMD variable shifts, slow pshufb,
-                                             * cacheline split penalties -- gather everything here that
-                                             * isn't shared by other CPUs to avoid making half a dozen
-                                             * new SLOW flags. */
-#define X264_CPU_SLOW_PSHUFB        (1<<24) /* such as on the Intel Atom */
-#define X264_CPU_SLOW_PALIGNR       (1<<25) /* such as on the AMD Bobcat */
+#define X264_CPU_CACHELINE_32       (1U<<17) /* avoid memory loads that span the border between two cachelines */
+#define X264_CPU_CACHELINE_64       (1U<<18) /* 32/64 is the size of a cacheline in bytes */
+#define X264_CPU_SSE2_IS_SLOW       (1U<<19) /* avoid most SSE2 functions on Athlon64 */
+#define X264_CPU_SSE2_IS_FAST       (1U<<20) /* a few functions are only faster on Core2 and Phenom */
+#define X264_CPU_SLOW_SHUFFLE       (1U<<21) /* The Conroe has a slow shuffle unit (relative to overall SSE performance) */
+#define X264_CPU_STACK_MOD4         (1U<<22) /* if stack is only mod4 and not mod16 */
+#define X264_CPU_SLOW_ATOM          (1U<<23) /* The Atom is terrible: slow SSE unaligned loads, slow
+                                              * SIMD multiplies, slow SIMD variable shifts, slow pshufb,
+                                              * cacheline split penalties -- gather everything here that
+                                              * isn't shared by other CPUs to avoid making half a dozen
+                                              * new SLOW flags. */
+#define X264_CPU_SLOW_PSHUFB        (1U<<24) /* such as on the Intel Atom */
+#define X264_CPU_SLOW_PALIGNR       (1U<<25) /* such as on the AMD Bobcat */
 
 /* PowerPC */
-#define X264_CPU_ALTIVEC         0x0000001
+#define X264_CPU_ALTIVEC         0x0000001U
 
 /* ARM and AArch64 */
-#define X264_CPU_ARMV6           0x0000001
-#define X264_CPU_NEON            0x0000002  /* ARM NEON */
-#define X264_CPU_FAST_NEON_MRC   0x0000004  /* Transfer from NEON to ARM register is fast (Cortex-A9) */
-#define X264_CPU_ARMV8           0x0000008
+#define X264_CPU_ARMV6           0x0000001U
+#define X264_CPU_NEON            0x0000002U  /* ARM NEON */
+#define X264_CPU_FAST_NEON_MRC   0x0000004U  /* Transfer from NEON to ARM register is fast (Cortex-A9) */
+#define X264_CPU_ARMV8           0x0000008U
 
 /* MIPS */
-#define X264_CPU_MSA             0x0000001  /* MIPS MSA */
+#define X264_CPU_MSA             0x0000001U  /* MIPS MSA */
 
 /* Analyse flags */
-#define X264_ANALYSE_I4x4       0x0001  /* Analyse i4x4 */
-#define X264_ANALYSE_I8x8       0x0002  /* Analyse i8x8 (requires 8x8 transform) */
-#define X264_ANALYSE_PSUB16x16  0x0010  /* Analyse p16x8, p8x16 and p8x8 */
-#define X264_ANALYSE_PSUB8x8    0x0020  /* Analyse p8x4, p4x8, p4x4 */
-#define X264_ANALYSE_BSUB16x16  0x0100  /* Analyse b16x8, b8x16 and b8x8 */
+#define X264_ANALYSE_I4x4       0x0001U  /* Analyse i4x4 */
+#define X264_ANALYSE_I8x8       0x0002U  /* Analyse i8x8 (requires 8x8 transform) */
+#define X264_ANALYSE_PSUB16x16  0x0010U  /* Analyse p16x8, p8x16 and p8x8 */
+#define X264_ANALYSE_PSUB8x8    0x0020U  /* Analyse p8x4, p4x8, p4x4 */
+#define X264_ANALYSE_BSUB16x16  0x0100U  /* Analyse b16x8, b8x16 and b8x8 */
 
 #define X264_DIRECT_PRED_NONE        0
 #define X264_DIRECT_PRED_SPATIAL     1
@@ -287,7 +304,7 @@ typedef struct x264_zone_t
 typedef struct x264_param_t
 {
     /* CPU flags */
-    unsigned int cpu;
+    uint32_t    cpu;
     int         i_threads;           /* encode multiple frames in parallel */
     int         i_lookahead_threads; /* multiple threads for lookahead analysis */
     int         b_sliced_threads;  /* Whether to use slice-based threading. */
@@ -459,10 +476,10 @@ typedef struct x264_param_t
        non-mod16 video resolutions. */
     struct
     {
-        unsigned int i_left;
-        unsigned int i_top;
-        unsigned int i_right;
-        unsigned int i_bottom;
+        int i_left;
+        int i_top;
+        int i_right;
+        int i_bottom;
     } crop_rect;
 
     /* frame packing arrangement flag */
@@ -566,9 +583,12 @@ typedef struct x264_param_t
      * e.g. if doing multiple encodes in one process.
      */
     void (*nalu_process)( x264_t *h, x264_nal_t *nal, void *opaque );
+
+    /* For internal use only */
+    void *opaque;
 } x264_param_t;
 
-void x264_nal_encode( x264_t *h, uint8_t *dst, x264_nal_t *nal );
+X264_API void x264_nal_encode( x264_t *h, uint8_t *dst, x264_nal_t *nal );
 
 /****************************************************************************
  * H.264 level restriction information
@@ -577,11 +597,11 @@ void x264_nal_encode( x264_t *h, uint8_t *dst, x264_nal_t *nal );
 typedef struct x264_level_t
 {
     uint8_t  level_idc;
-    uint32_t mbps;        /* max macroblock processing rate (macroblocks/sec) */
-    uint32_t frame_size;  /* max frame size (macroblocks) */
-    uint32_t dpb;         /* max decoded picture buffer (mbs) */
-    uint32_t bitrate;     /* max bitrate (kbit/sec) */
-    uint32_t cpb;         /* max vbv buffer (kbit) */
+    int32_t  mbps;        /* max macroblock processing rate (macroblocks/sec) */
+    int32_t  frame_size;  /* max frame size (macroblocks) */
+    int32_t  dpb;         /* max decoded picture buffer (mbs) */
+    int32_t  bitrate;     /* max bitrate (kbit/sec) */
+    int32_t  cpb;         /* max vbv buffer (kbit) */
     uint16_t mv_range;    /* max vertical mv component range (pixels) */
     uint8_t  mvs_per_2mb; /* max mvs per 2 consecutive mbs. */
     uint8_t  slice_rate;  /* ?? */
@@ -600,7 +620,7 @@ X264_API extern const x264_level_t x264_levels[];
 
 /* x264_param_default:
  *      fill x264_param_t with default values and do CPU detection */
-void    x264_param_default( x264_param_t * );
+X264_API void x264_param_default( x264_param_t * );
 
 /* x264_param_parse:
  *  set one parameter by name.
@@ -608,10 +628,19 @@ void    x264_param_default( x264_param_t * );
  *  note: BAD_VALUE occurs only if it can't even parse the value,
  *  numerical range is not checked until x264_encoder_open() or
  *  x264_encoder_reconfig().
- *  value=NULL means "true" for boolean options, but is a BAD_VALUE for non-booleans. */
+ *  value=NULL means "true" for boolean options, but is a BAD_VALUE for non-booleans.
+ *  can allocate memory which should be freed by call of x264_param_cleanup. */
 #define X264_PARAM_BAD_NAME  (-1)
 #define X264_PARAM_BAD_VALUE (-2)
-int x264_param_parse( x264_param_t *, const char *name, const char *value );
+#define X264_PARAM_ALLOC_FAILED (-3)
+X264_API int x264_param_parse( x264_param_t *, const char *name, const char *value );
+
+/* x264_param_cleanup:
+ * Cleans up and frees allocated members of x264_param_t.
+ * This *does not* free the x264_param_t itself, as it may exist on the
+ * stack. It only frees any members of the struct that were allocated by
+ * x264 itself, in e.g. x264_param_parse(). */
+X264_API void x264_param_cleanup( x264_param_t *param );
 
 /****************************************************************************
  * Advanced parameter handling functions
@@ -655,13 +684,13 @@ static const char * const x264_tune_names[] = { "film", "animation", "grain", "s
  *      film, animation, grain, stillimage, psnr, and ssim are psy tunings.
  *
  *      returns 0 on success, negative on failure (e.g. invalid preset/tune name). */
-int     x264_param_default_preset( x264_param_t *, const char *preset, const char *tune );
+X264_API int x264_param_default_preset( x264_param_t *, const char *preset, const char *tune );
 
 /* x264_param_apply_fastfirstpass:
  *      If first-pass mode is set (rc.b_stat_read == 0, rc.b_stat_write == 1),
  *      modify the encoder settings to disable options generally not useful on
  *      the first pass. */
-void    x264_param_apply_fastfirstpass( x264_param_t * );
+X264_API void x264_param_apply_fastfirstpass( x264_param_t * );
 
 /* x264_param_apply_profile:
  *      Applies the restrictions of the given profile.
@@ -676,7 +705,7 @@ static const char * const x264_profile_names[] = { "baseline", "main", "high", "
  *      decrease them.
  *
  *      returns 0 on success, negative on failure (e.g. invalid profile name). */
-int     x264_param_apply_profile( x264_param_t *, const char *profile );
+X264_API int x264_param_apply_profile( x264_param_t *, const char *profile );
 
 /****************************************************************************
  * Picture structures and functions
@@ -785,7 +814,7 @@ typedef struct x264_image_properties_t
     void (*mb_info_free)( void* );
 
     /* The macroblock is constant and remains unchanged from the previous frame. */
-    #define X264_MBINFO_CONSTANT   (1<<0)
+    #define X264_MBINFO_CONSTANT   (1U<<0)
     /* More flags may be added in the future. */
 
     /* Out: SSIM of the the frame luma (if x264_param_t.b_ssim is set) */
@@ -846,17 +875,17 @@ typedef struct x264_picture_t
 /* x264_picture_init:
  *  initialize an x264_picture_t.  Needs to be done if the calling application
  *  allocates its own x264_picture_t as opposed to using x264_picture_alloc. */
-void x264_picture_init( x264_picture_t *pic );
+X264_API void x264_picture_init( x264_picture_t *pic );
 
 /* x264_picture_alloc:
  *  alloc data for a picture. You must call x264_picture_clean on it.
  *  returns 0 on success, or -1 on malloc failure or invalid colorspace. */
-int x264_picture_alloc( x264_picture_t *pic, int i_csp, int i_width, int i_height );
+X264_API int x264_picture_alloc( x264_picture_t *pic, int i_csp, int i_width, int i_height );
 
 /* x264_picture_clean:
  *  free associated resource for a x264_picture_t allocated with
  *  x264_picture_alloc ONLY */
-void x264_picture_clean( x264_picture_t *pic );
+X264_API void x264_picture_clean( x264_picture_t *pic );
 
 /****************************************************************************
  * Encoder functions
@@ -871,7 +900,7 @@ void x264_picture_clean( x264_picture_t *pic );
 
 /* x264_encoder_open:
  *      create a new encoder handler, all parameters from x264_param_t are copied */
-x264_t *x264_encoder_open( x264_param_t * );
+X264_API x264_t *x264_encoder_open( x264_param_t * );
 
 /* x264_encoder_reconfig:
  *      various parameters from x264_param_t are copied.
@@ -886,7 +915,7 @@ x264_t *x264_encoder_open( x264_param_t * );
  *      more so than for other presets, many of the speed shortcuts used in ultrafast cannot be
  *      switched out of; using reconfig to switch between ultrafast and other presets is not
  *      recommended without a more fine-grained breakdown of parameters to take this into account. */
-int     x264_encoder_reconfig( x264_t *, x264_param_t * );
+X264_API int x264_encoder_reconfig( x264_t *, x264_param_t * );
 /* x264_encoder_parameters:
  *      copies the current internal set of parameters to the pointer provided
  *      by the caller.  useful when the calling application needs to know
@@ -894,32 +923,32 @@ int     x264_encoder_reconfig( x264_t *, x264_param_t * );
  *      of the encoder after multiple x264_encoder_reconfig calls.
  *      note that the data accessible through pointers in the returned param struct
  *      (e.g. filenames) should not be modified by the calling application. */
-void    x264_encoder_parameters( x264_t *, x264_param_t * );
+X264_API void x264_encoder_parameters( x264_t *, x264_param_t * );
 /* x264_encoder_headers:
  *      return the SPS and PPS that will be used for the whole stream.
  *      *pi_nal is the number of NAL units outputted in pp_nal.
  *      returns the number of bytes in the returned NALs.
  *      returns negative on error.
  *      the payloads of all output NALs are guaranteed to be sequential in memory. */
-int     x264_encoder_headers( x264_t *, x264_nal_t **pp_nal, int *pi_nal );
+X264_API int x264_encoder_headers( x264_t *, x264_nal_t **pp_nal, int *pi_nal );
 /* x264_encoder_encode:
  *      encode one picture.
  *      *pi_nal is the number of NAL units outputted in pp_nal.
  *      returns the number of bytes in the returned NALs.
  *      returns negative on error and zero if no NAL units returned.
  *      the payloads of all output NALs are guaranteed to be sequential in memory. */
-int     x264_encoder_encode( x264_t *, x264_nal_t **pp_nal, int *pi_nal, x264_picture_t *pic_in, x264_picture_t *pic_out );
+X264_API int x264_encoder_encode( x264_t *, x264_nal_t **pp_nal, int *pi_nal, x264_picture_t *pic_in, x264_picture_t *pic_out );
 /* x264_encoder_close:
  *      close an encoder handler */
-void    x264_encoder_close( x264_t * );
+X264_API void x264_encoder_close( x264_t * );
 /* x264_encoder_delayed_frames:
  *      return the number of currently delayed (buffered) frames
  *      this should be used at the end of the stream, to know when you have all the encoded frames. */
-int     x264_encoder_delayed_frames( x264_t * );
+X264_API int x264_encoder_delayed_frames( x264_t * );
 /* x264_encoder_maximum_delayed_frames( x264_t * ):
  *      return the maximum number of delayed (buffered) frames that can occur with the current
  *      parameters. */
-int     x264_encoder_maximum_delayed_frames( x264_t * );
+X264_API int x264_encoder_maximum_delayed_frames( x264_t * );
 /* x264_encoder_intra_refresh:
  *      If an intra refresh is not in progress, begin one with the next P-frame.
  *      If an intra refresh is in progress, begin one as soon as the current one finishes.
@@ -933,7 +962,7 @@ int     x264_encoder_maximum_delayed_frames( x264_t * );
  *      behavior is undefined.
  *
  *      Should not be called during an x264_encoder_encode. */
-void    x264_encoder_intra_refresh( x264_t * );
+X264_API void x264_encoder_intra_refresh( x264_t * );
 /* x264_encoder_invalidate_reference:
  *      An interactive error resilience tool, designed for use in a low-latency one-encoder-few-clients
  *      system.  When the client has packet loss or otherwise incorrectly decodes a frame, the encoder
@@ -956,7 +985,7 @@ void    x264_encoder_intra_refresh( x264_t * );
  *      Should not be called during an x264_encoder_encode, but multiple calls can be made simultaneously.
  *
  *      Returns 0 on success, negative on failure. */
-int x264_encoder_invalidate_reference( x264_t *, int64_t pts );
+X264_API int x264_encoder_invalidate_reference( x264_t *, int64_t pts );
 
 #ifdef __cplusplus
 }

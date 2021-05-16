@@ -1,9 +1,9 @@
-prefix=/home/cmeng/workspace/ndk/openssl-android/output/android/x86_64
+prefix=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/openssl/../../openssl/android/x86_64
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
 Name: OpenSSL
 Description: Secure Sockets Layer and cryptography libraries and tools
-Version: 1.0.2r
+Version: 1.1.1k
 Requires: libssl libcrypto

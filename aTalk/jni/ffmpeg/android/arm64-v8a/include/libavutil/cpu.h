@@ -55,6 +55,7 @@
 #define AV_CPU_FLAG_FMA3        0x10000 ///< Haswell FMA3 functions
 #define AV_CPU_FLAG_BMI1        0x20000 ///< Bit Manipulation Instruction Set 1
 #define AV_CPU_FLAG_BMI2        0x40000 ///< Bit Manipulation Instruction Set 2
+#define AV_CPU_FLAG_AVX512     0x100000 ///< AVX-512 functions: requires OS support even if YMM/ZMM registers aren't used
 
 #define AV_CPU_FLAG_ALTIVEC      0x0001 ///< standard
 #define AV_CPU_FLAG_VSX          0x0002 ///< ISA 2.06
@@ -69,6 +70,9 @@
 #define AV_CPU_FLAG_ARMV8        (1 << 6)
 #define AV_CPU_FLAG_VFP_VM       (1 << 7) ///< VFPv2 vector mode, deprecated in ARMv7-A and unavailable in various CPUs implementations
 #define AV_CPU_FLAG_SETEND       (1 <<16)
+
+#define AV_CPU_FLAG_MMI          (1 << 0)
+#define AV_CPU_FLAG_MSA          (1 << 1)
 
 /**
  * Return the flags which specify extensions supported by the CPU.

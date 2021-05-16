@@ -327,13 +327,12 @@ public class MediaEncodingActivity extends OSGiActivity
         List<String> encodings = encFragment.getEncodings();
         List<Integer> priorities = encFragment.getPriorities();
         for (int i = 0; i < encodings.size(); i++) {
-            encodingConf.setPriority(getEncodingFromStr(formats.iterator(), encodings.get(i)),
-                    priorities.get(i));
+            encodingConf.setPriority(getEncodingFromStr(formats.iterator(), encodings.get(i)), priorities.get(i));
         }
     }
 
     /**
-     * Commits changes.
+     * Commits user changes.
      */
     private void commitChanges()
     {

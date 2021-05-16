@@ -45,7 +45,7 @@ public class MediaRecorderSystem extends DeviceSystem
 
     private static boolean isMediaRecorderInitialized = false;
 
-    private static BackgroundManager backgroundManager = BackgroundManager.getInstance();
+    private static final BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
     /**
      * Initializes a new <tt>MediaRecorderSystem</tt> instance which discovers and registers

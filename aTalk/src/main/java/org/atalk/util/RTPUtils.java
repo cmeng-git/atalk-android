@@ -27,6 +27,17 @@ import java.util.Comparator;
 public class RTPUtils
 {
     /**
+    The compare() method in Java compares two class specific objects (x, y) given as parameters.
+     It returns the value:
+     a. 0: if (x==y)
+     b. -1: if (x < y)
+     c. 1: if (x > y)
+    */
+    public final static int EQ = 0;
+    public final static int LT = -1;
+    public final static int GT = 1;
+
+    /**
      * Hex characters for converting bytes to readable hex strings
      */
     private final static char[] HEXES = new char[]{
@@ -335,9 +346,9 @@ public class RTPUtils
      * @param len length of array
      * @return a string containing the hex string version of the given byte
      */
-    public static String toHexString(byte[] bytes, int off, int len)
+    public static String toHexString(byte[] bytes, int offset, int len)
     {
-        return toHexString(bytes, off, len, true);
+        return toHexString(bytes, offset, len, true);
     }
 
     /**
@@ -346,7 +357,7 @@ public class RTPUtils
      * @param bytes byte arrays
      * @param offset offset in the array
      * @param len length of array
-     * @param format a boolean that indicates whether or not to format the hex
+     * @param format the boolean indicates whether to format the hex
      * @return a string containing the hex string version of the given byte
      */
     public static String toHexString(byte[] bytes, int offset, int len, boolean format)

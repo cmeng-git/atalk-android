@@ -105,7 +105,7 @@ public final class ChatStateManager extends Manager {
      * not yet exist.
      *
      * @param connection the connection to return the ChatStateManager
-     * @return the ChatStateManager related the the connection.
+     * @return the ChatStateManager related the connection.
      */
     public static synchronized ChatStateManager getInstance(final XMPPConnection connection) {
         ChatStateManager manager = INSTANCES.get(connection);
@@ -242,9 +242,9 @@ public final class ChatStateManager extends Manager {
     }
 
     /**
-     * Sets the current state of the provided mucchat. This method will send an empty bodied Message
-     * stanza with the state attached as a {@link org.jivesoftware.smack.packet.ExtensionElement}, if
-     * and only if the new chat state is different than the last state.
+     * Sets the current state of the provided mucChat. This method will send an empty bodied Message
+     * stanza with the state attached as a {@link org.jivesoftware.smack.packet.ExtensionElement},
+     * if and only if the new chat state is different from the last state.
      *
      * @param newState  the new state of the chat
      * @param mucChat the MultiUserChat instance

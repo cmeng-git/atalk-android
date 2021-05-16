@@ -30,9 +30,11 @@ import javax.media.format.VideoFormat;
 
 import timber.log.Timber;
 
+import static org.atalk.util.RTPUtils.GT;
+
 /**
  * A depacketizer for VP9 codec.
- * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-10"}
+ * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-12"}
  *
  * @author George Politis
  * @author Eng Chong Meng
@@ -43,12 +45,12 @@ public class DePacketizer extends AbstractCodec2
      * Stores the RTP payloads (VP9 payload descriptor stripped) from RTP packets belonging to a
      * single VP9 compressed frame. Maps an RTP sequence number to a buffer which contains the payload.
      */
-    private SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
+    private final SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
 
     /**
      * Stores unused <tt>Container</tt>'s.
      */
-    private Queue<Container> free = new ArrayBlockingQueue<>(100);
+    private final Queue<Container> free = new ArrayBlockingQueue<>(100);
 
     /**
      * Stores the first (earliest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
@@ -102,18 +104,16 @@ public class DePacketizer extends AbstractCodec2
 
     /**
      * Initializes a new <tt>AbstractCodec2</tt> instance with a specific <tt>PlugIn</tt> name, a
-     * specific <tt>Class</tt> of input and output <tt>Format</tt>s and a specific list of
+     * specific <tt>Class</tt> of input and output <tt>Format</tt>s, and a specific list of
      * <tt>Format</tt>s supported as output.
      *
-     * @param name the <tt>PlugIn</tt> name of the new instance
-     * @param formatClass the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
-     * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output
-     * @Super parameters
+     * name: the <tt>PlugIn</tt> name of the new instance
+     * VideoFormat.class: the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
+     * VideoFormat: the list of <tt>Format</tt>s supported by the new instance as output @Super parameters
      */
     public DePacketizer()
     {
-        super("VP9 RTP DePacketizer",
-                VideoFormat.class,
+        super("VP9 RTP DePacketizer", VideoFormat.class,
                 new VideoFormat[]{new VideoFormat(Constants.VP9)});
         inputFormats = new VideoFormat[]{new VideoFormat(Constants.VP9_RTP)};
     }
@@ -133,7 +133,7 @@ public class DePacketizer extends AbstractCodec2
     protected void doOpen()
             throws ResourceUnavailableException
     {
-        Timber.log(TimberLog.FINER, "Opened VP9 dePacketizer");
+        Timber.d("Opened VP9 dePacketizer");
     }
 
     /**
@@ -213,21 +213,21 @@ public class DePacketizer extends AbstractCodec2
         int inPayloadLength = inLength - inPdSize;
 
         if (empty && lastSentSeq != -1
-                && RTPUtils.sequenceNumberComparator.compare(inSeq, lastSentSeq) != 1) {
+                && RTPUtils.sequenceNumberComparator.compare(inSeq, lastSentSeq) != GT) {
             Timber.d("Discarding old packet (while empty) %s", inSeq);
             outBuffer.setDiscard(true);
             return BUFFER_PROCESSED_OK;
         }
 
         if (!empty) {
-            // if the incoming packet has a different PictureID or timestamp than those of the
-            // current frame, then it belongs to a different frame.
+            // if the incoming packet has a different PictureID or timestamp than those of
+            // the current frame, then it belongs to a different frame.
             if ((inPictureId != -1 && pictureId != -1
                     && inPictureId != pictureId)
                     | (timestamp != -1 && inRtpTimestamp != -1
                     && inRtpTimestamp != timestamp)) {
                 //inSeq <= firstSeq
-                if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) != 1) {
+                if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) != GT) {
                     // the packet belongs to a previous frame. discard it
                     Timber.i("Discarding old packet %s", inSeq);
                     outBuffer.setDiscard(true);
@@ -235,8 +235,7 @@ public class DePacketizer extends AbstractCodec2
                 }
                 else //inSeq > firstSeq (and also presumably isSeq > lastSeq)
                 {
-                    // the packet belongs to a subsequent frame (to the one
-                    // currently being held). Drop the current frame.
+                    // the packet belongs to a subsequent frame (to the one currently being held). Drop the current frame.
 
                     Timber.i("Discarding saved packets on arrival of a packet for a subsequent frame: %s", inSeq);
 
@@ -290,10 +289,10 @@ public class DePacketizer extends AbstractCodec2
         // update fields
         frameLength += inPayloadLength;
         if (firstSeq == -1
-                || (RTPUtils.sequenceNumberComparator.compare(firstSeq, inSeq) == 1))
+                || (RTPUtils.sequenceNumberComparator.compare(firstSeq, inSeq) == GT))
             firstSeq = inSeq;
         if (lastSeq == -1
-                || (RTPUtils.sequenceNumberComparator.compare(inSeq, lastSeq) == 1))
+                || (RTPUtils.sequenceNumberComparator.compare(inSeq, lastSeq) == GT))
             lastSeq = inSeq;
 
         if (empty) {
@@ -354,41 +353,41 @@ public class DePacketizer extends AbstractCodec2
      * A class that represents the VP9 Payload Descriptor structure defined
      * in {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-10"}
      *
-     * When F-bit == 1:
+     * ### When F-bit == 1:
      *
-     * 0 1 2 3 4 5 6 7
-     * +-+-+-+-+-+-+-+-+
-     * |I|P|L|F|B|E|V|-| (REQUIRED)
-     * +-+-+-+-+-+-+-+-+
+     *       0 1 2 3 4 5 6 7
+     *      +-+-+-+-+-+-+-+-+
+     *      |I|P|L|F|B|E|V|Z| (REQUIRED)
+     *      +-+-+-+-+-+-+-+-+
      * I:   |M| PICTURE ID  | (REQUIRED)
-     * +-+-+-+-+-+-+-+-+
+     *      +-+-+-+-+-+-+-+-+
      * M:   | EXTENDED PID  | (RECOMMENDED)
-     * +-+-+-+-+-+-+-+-+
-     * L:   |  T  |U|  S  |D| (CONDITIONALLY RECOMMENDED)
-     * +-+-+-+-+-+-+-+-+                             -\
+     *      +-+-+-+-+-+-+-+-+
+     * L:   |  T  |U| SID |D| (CONDITIONALLY RECOMMENDED)
+     *      +-+-+-+-+-+-+-+-+                             -\
      * P,F: | P_DIFF      |N| (CONDITIONALLY REQUIRED)    - up to 3 times
-     * +-+-+-+-+-+-+-+-+                             -/
+     *      +-+-+-+-+-+-+-+-+                             -/
      * V:   | SS            |
-     * | ..            |
-     * +-+-+-+-+-+-+-+-+
+     *      | ..            |
+     *      +-+-+-+-+-+-+-+-+
      *
-     * When F-bit == 0:
+     * ### When F-bit == 0:
      *
-     * 0 1 2 3 4 5 6 7
-     * +-+-+-+-+-+-+-+-+
-     * |I|P|L|F|B|E|V|-| (REQUIRED)
-     * +-+-+-+-+-+-+-+-+
+     *       0 1 2 3 4 5 6 7
+     *      +-+-+-+-+-+-+-+-+
+     *      |I|P|L|F|B|E|V|Z| (REQUIRED)
+     *      +-+-+-+-+-+-+-+-+
      * I:   |M| PICTURE ID  | (RECOMMENDED)
-     * +-+-+-+-+-+-+-+-+
+     *      +-+-+-+-+-+-+-+-+
      * M:   | EXTENDED PID  | (RECOMMENDED)
-     * +-+-+-+-+-+-+-+-+
-     * L:   |  T  |U|  S  |D| (CONDITIONALLY RECOMMENDED)
-     * +-+-+-+-+-+-+-+-+
-     * |   TL0PICIDX   | (CONDITIONALLY REQUIRED)
-     * +-+-+-+-+-+-+-+-+
+     *      +-+-+-+-+-+-+-+-+
+     * L:   |  T  |U| SID |D| (CONDITIONALLY RECOMMENDED)
+     *      +-+-+-+-+-+-+-+-+
+     *      |   TL0PICIDX   | (CONDITIONALLY REQUIRED)
+     *      +-+-+-+-+-+-+-+-+
      * V:   | SS            |
-     * | ..            |
-     * +-+-+-+-+-+-+-+-+
+     *      | ..            |
+     *      +-+-+-+-+-+-+-+-+
      */
     public static class VP9PayloadDescriptor
     {
@@ -396,7 +395,6 @@ public class DePacketizer extends AbstractCodec2
          * I: Picture ID (PID) present; bit from the first byte of the Payload Descriptor.
          */
         private static final byte I_BIT = (byte) 0x80;
-        ;
 
         /**
          * P: Inter-picture predicted layer frame; bit from the first byte of the Payload Descriptor.
@@ -409,7 +407,7 @@ public class DePacketizer extends AbstractCodec2
         private static final byte L_BIT = (byte) 0x20;
 
         /**
-         * F: Flexible mode; bit from the first byte of the Payload Descriptor.
+         * F: The Flexible mode; bit from the first byte of the Payload Descriptor.
          */
         private static final byte F_BIT = (byte) 0x10;
 
@@ -429,7 +427,12 @@ public class DePacketizer extends AbstractCodec2
         private static final byte V_BIT = (byte) 0x02;
 
         /**
-         * M: Extended flag; bit from the PID.
+         * Z: Not a reference frame for upper spatial layers.; bit from the first byte of the Payload Descriptor.
+         */
+        private static final byte Z_BIT = (byte) 0x01;
+
+        /**
+         * M: The Extended flag; bit from the PID.
          */
         private static final byte M_BIT = (byte) 0x80;
 
@@ -496,11 +499,10 @@ public class DePacketizer extends AbstractCodec2
             if (!isValid(buf, off, len) || (buf[off] & L_BIT) == 0) {
                 return -1;
             }
-
             int loff = off + 1;
             if ((buf[off] & I_BIT) != 0) {
                 loff++;
-                // check if it it an extended pid.
+                // check if it is an extended pid.
                 if ((buf[off + 1] & M_BIT) != 0) {
                     loff++;
                 }
@@ -533,13 +535,13 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Check if the current the packet contains a key frame:
+         * Check if the current packet contains a key frame:
          *
          * A key picture is a picture whose base spatial layer frame is a key frame,
          * and which thus completely resets the encoder state. This packet will have:
-         * P bit equal to zero,
-         * SID or D bit (described below) equal to zero,
-         * and B bit (described below) equal to 1.
+         * a. P bit equal to zero,
+         * b. SID or D bit (described below) equal to zero, and
+         * c. B bit (described below) equal to 1.
          *
          * @param buf the byte buffer that holds the VP9 payload.
          * @param off the offset in the byte buffer where the VP9 payload starts.
@@ -555,7 +557,7 @@ public class DePacketizer extends AbstractCodec2
                 return false;
             }
 
-            // P_BIT must be 0 and B_BIT 1
+            // P_BIT must be 0 and B_BIT is 1
             // L_BIT must be 1 to ensure we can do further checks for SID and D
             if ((buf[off] & P_BIT) != 0 ||
                     (buf[off] & B_BIT) == 0 ||
@@ -567,11 +569,11 @@ public class DePacketizer extends AbstractCodec2
             if ((buf[off] & I_BIT) != 0) {
                 loff += 1;
                 if ((buf[off + 1] & (1 << 7)) != 0) {
-                    // extended pid.
+                    // an extended pid.
                     loff += 1;
                 }
             }
-            //SID or D bit equal to zero
+            // SID or D bit equal to zero
             return ((buf[loff] & SID_MASK) >> 1) == 0 || (buf[loff] & D_MASK) == 0;
         }
 
@@ -617,14 +619,13 @@ public class DePacketizer extends AbstractCodec2
         public static int getSize(byte[] buf, int off, int len)
         {
             // Y-bit from the Scalability Structure (SS)_header: spatial layer's frame resolution present flag.
-            final byte Y_BIT = (byte) 0x10; //Each spatial layer's frame resolution present
+            final byte Y_BIT = (byte) 0x10; // Each spatial layer's frame resolution present
 
             // Y bit from the ss_header: GOF description present flag.
             final byte G_BIT = (byte) 0x08;
 
             // Value N_S mask: the number of spatial layers in SS group.
             final byte N_S_MASK = (byte) 0xC0;
-
 
             if (!isValid(buf, off, len))
                 return -1;

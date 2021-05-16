@@ -456,8 +456,8 @@ public class Packetizer extends AbstractPacketizer
 		/*
 		 * Return null if the specified output Format is incompatible with this Packetizer.
 		 */
-		if (!(format instanceof VideoFormat) || (null == AbstractCodec2.matches(format,
-				getMatchingOutputFormats(inputFormat))))
+		if (!(format instanceof VideoFormat)
+                || (null == AbstractCodec2.matches(format, getMatchingOutputFormats(inputFormat))))
 			return null;
 
 		VideoFormat videoFormat = (VideoFormat) format;
@@ -477,7 +477,7 @@ public class Packetizer extends AbstractPacketizer
 		if (format instanceof ParameterizedVideoFormat)
 			fmtps = ((ParameterizedVideoFormat) format).getFormatParameters();
 		if (fmtps == null)
-			fmtps = new HashMap<String, String>();
+			fmtps = new HashMap<>();
 		if (fmtps.get(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP) == null) {
 			fmtps.put(VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP,
 					getPacketizationMode(inputFormat));

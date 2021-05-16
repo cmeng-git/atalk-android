@@ -165,7 +165,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         // 1. what the remote party originally told us (from our perspective)
         JingleContent content = remoteContentMap.get(stream.getName());
-        MediaDirection postHoldDir = JingleUtils.getDirection(content, !peer.isInitiator());
+        MediaDirection postHoldDir = JingleUtils.getDirection(content, !mPeer.isInitiator());
 
         // 2. the user preference
         MediaDevice device = stream.getDevice();
@@ -218,10 +218,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         /*
          * Check if we need to announce sending on behalf of other peers
          */
-        CallJabberImpl call = peer.getCall();
+        CallJabberImpl call = mPeer.getCall();
         if (call.isConferenceFocus()) {
             for (CallPeerJabberImpl anotherPeer : call.getCallPeerList()) {
-                if ((anotherPeer != peer) && anotherPeer.getDirection(mediaType).allowsReceiving()) {
+                if ((anotherPeer != mPeer) && anotherPeer.getDirection(mediaType).allowsReceiving()) {
                     direction = direction.or(MediaDirection.SENDONLY);
                     break;
                 }
@@ -297,9 +297,9 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         JingleContent content = JingleUtils.createDescription(
                 JingleContent.Creator.initiator,
                 supportedFormats.get(0).getMediaType().toString(),
-                JingleUtils.getSenders(direction, !peer.isInitiator()),
+                JingleUtils.getSenders(direction, !mPeer.isInitiator()),
                 supportedFormats, supportedExtensions, getDynamicPayloadTypes(),
-                getRtpExtensionsRegistry(), getTransportManager().isRtcpmux(), isImageattr(peer));
+                getRtpExtensionsRegistry(), getTransportManager().isRtcpmux(), isImageattr(mPeer));
 
         this.localContentMap.put(content.getName(), content);
         return content;
@@ -320,7 +320,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         // Describe the media.
         List<JingleContent> mediaDescs = new ArrayList<>();
-        boolean isJvb = peer.getCall().getConference().isJitsiVideobridge();
+        boolean isJvb = mPeer.getCall().getConference().isJitsiVideobridge();
 
         for (MediaType mediaType : MediaType.values()) {
             MediaDevice dev = getDefaultDevice(mediaType);
@@ -474,7 +474,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             MediaStreamTarget target = transportManager.getStreamTarget(type);
 
             // stream direction
-            MediaDirection direction = JingleUtils.getDirection(ourContent, !peer.isInitiator());
+            MediaDirection direction = JingleUtils.getDirection(ourContent, !mPeer.isInitiator());
 
             // if we answer with video, tell remotePeer that video direction is sendrecv, and
             // whether video device can capture/send
@@ -643,7 +643,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
          * getRemoteSSRC(MediaType) cannot be trusted because there is a single VideoMediaStream
          * with multiple ReceiveStreams.
          */
-        return peer.isJitsiVideobridge() ? SSRC_UNKNOWN : super.getRemoteSSRC(mediaType);
+        return mPeer.isJitsiVideobridge() ? SSRC_UNKNOWN : super.getRemoteSSRC(mediaType);
     }
 
     /**
@@ -690,7 +690,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     protected synchronized TransportManagerJabberImpl getTransportManager()
     {
         if (transportManager == null) {
-            if (peer.isInitiator()) {
+            if (mPeer.isInitiator()) {
                 synchronized (transportManagerSyncRoot) {
                     try {
                         transportManagerSyncRoot.wait(5000);
@@ -704,9 +704,9 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     return transportManager;
             }
             else {
-                ProtocolProviderServiceJabberImpl protocolProvider = peer.getProtocolProvider();
+                ProtocolProviderServiceJabberImpl protocolProvider = mPeer.getProtocolProvider();
                 ScServiceDiscoveryManager discoveryManager = protocolProvider.getDiscoveryManager();
-                DiscoverInfo peerDiscoverInfo = peer.getDiscoveryInfo();
+                DiscoverInfo peerDiscoverInfo = mPeer.getDiscoveryInfo();
 
                 /*
                  * If this.supportedTransports has been explicitly set, we use it to select the
@@ -717,11 +717,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     if (supportedTransports != null && supportedTransports.length > 0) {
                         for (String supportedTransport : supportedTransports) {
                             if (ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1.equals(supportedTransport)) {
-                                transportManager = new IceUdpTransportManager(peer);
+                                transportManager = new IceUdpTransportManager(mPeer);
                                 break;
                             }
                             else if (ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0.equals(supportedTransport)) {
-                                transportManager = new RawUdpTransportManager(peer);
+                                transportManager = new RawUdpTransportManager(mPeer);
                                 break;
                             }
                         }
@@ -742,11 +742,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     /*
                      * If Jitsi Videobridge is to be employed, pick up a Jingle transport supported by it.
                      */
-                    if (peer.isJitsiVideobridge()) {
-                        CallJabberImpl call = peer.getCall();
+                    if (mPeer.isJitsiVideobridge()) {
+                        CallJabberImpl call = mPeer.getCall();
 
                         if (call != null) {
-                            Jid jitsiVideobridge = peer.getCall().getJitsiVideobridge();
+                            Jid jitsiVideobridge = mPeer.getCall().getJitsiVideobridge();
 
                             /*
                              * Jitsi Videobridge supports the Jingle Raw UDP transport from its
@@ -773,17 +773,17 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                             continue;
                         if (isFeatureSupported(discoveryManager, peerDiscoverInfo, transport)) {
                             if (ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1.equals(transport)) {
-                                transportManager = new IceUdpTransportManager(peer);
+                                transportManager = new IceUdpTransportManager(mPeer);
                             }
                             else if (ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0.equals(transport)) {
-                                transportManager = new RawUdpTransportManager(peer);
+                                transportManager = new RawUdpTransportManager(mPeer);
                             }
                             if (transportManager != null)
                                 break;
                         }
                     }
                     if (transportManager == null) {
-                        aTalkApp.showToastMessage("No known Jingle transport supported by Jabber call peer " + peer);
+                        aTalkApp.showToastMessage("No known Jingle transport supported by Jabber call peer " + mPeer);
                     }
                 }
             }
@@ -821,7 +821,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         CallJabberImpl call;
         MediaAwareCallConference conference;
 
-        if (((call = peer.getCall()) != null)
+        if (((call = mPeer.getCall()) != null)
                 && ((conference = call.getConference()) != null)
                 && conference.isJitsiVideobridge()) {
             MediaStream stream = getStream(MediaType.VIDEO);
@@ -886,7 +886,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         }
 
         // Setup TransportManger for (rtcp-mux) per callPeer capability support
-        transportManager.setRtcpmux(isRtpcMux(peer));
+        transportManager.setRtcpmux(isRtpcMux(mPeer));
         transportManager.startCandidateHarvest(remote, local, transportInfoSender);
 
         long stopCandidateHarvestTime = System.currentTimeMillis();
@@ -965,7 +965,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         String propertyName = ev.getPropertyName();
 
         if ((AUDIO_REMOTE_SSRC.equals(propertyName) || VIDEO_REMOTE_SSRC.equals(propertyName))
-                && peer.isJitsiVideobridge())
+                && mPeer.isJitsiVideobridge())
             return;
         super.mediaHandlerPropertyChange(ev);
     }
@@ -1150,7 +1150,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
          * Neither SDES nor ZRTP is supported in telephony conferences utilizing the server-side
          * technology Jitsi Videobridge yet.
          */
-        CallJabberImpl call = peer.getCall();
+        CallJabberImpl call = mPeer.getCall();
         CallConference conference = (call == null) ? null : call.getConference();
         if ((conference == null) || !conference.isJitsiVideobridge()) {
             addZrtpAdvertisedEncryptions(true, description, mediaType);
@@ -1162,7 +1162,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
          * Determine the direction that we need to announce.
          * If we are the focus of a conference, we need to take into account the other participants.
          */
-        MediaDirection remoteDirection = JingleUtils.getDirection(content, peer.isInitiator());
+        MediaDirection remoteDirection = JingleUtils.getDirection(content, mPeer.isInitiator());
         if ((conference != null) && conference.isConferenceFocus()) {
             for (CallPeerJabberImpl peer : call.getCallPeerList()) {
                 Senders senders = peer.getSenders(mediaType);
@@ -1244,7 +1244,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             devDirection = devDirection.and(getDirectionUserPreference(mediaType));
 
             // determine the direction that we need to announce.
-            MediaDirection remoteDirection = JingleUtils.getDirection(content, peer.isInitiator());
+            MediaDirection remoteDirection = JingleUtils.getDirection(content, mPeer.isInitiator());
             MediaDirection direction = devDirection.getDirectionForAnswer(remoteDirection);
 
             // intersect the MediaFormats of our device with remote ones
@@ -1289,7 +1289,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 rtcpmux = true;
             }
             // getTransportManager().setRtcpmux(rtcpmux);
-            rtcpMuxes.put(peer.getPeerJid(), rtcpmux);
+            rtcpMuxes.put(mPeer.getPeerJid(), rtcpmux);
 
             if (mutuallySupportedFormats.isEmpty() || (devDirection == MediaDirection.INACTIVE)
                     || (targetDataPort == 0)) {
@@ -1301,11 +1301,11 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 continue;
             }
 
-            JingleContent.Senders senders = JingleUtils.getSenders(direction, !peer.isInitiator());
+            JingleContent.Senders senders = JingleUtils.getSenders(direction, !mPeer.isInitiator());
             // create the answer description
             JingleContent ourContent = JingleUtils.createDescription(content.getCreator(),
                     content.getName(), senders, mutuallySupportedFormats, rtpExtensions,
-                    getDynamicPayloadTypes(), getRtpExtensionsRegistry(), rtcpmux, isImageattr(peer));
+                    getDynamicPayloadTypes(), getRtpExtensionsRegistry(), rtcpmux, isImageattr(mPeer));
 
             /*
              * Sets ZRTP, SDES or DTLS-SRTP depending on the preferences for this media call.
@@ -1335,7 +1335,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         harvestCandidates(offer, answer, contents -> {
             try {
-                peer.sendTransportInfo(contents);
+                mPeer.sendTransportInfo(contents);
             } catch (SmackException.NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not send transport info");
             }
@@ -1502,7 +1502,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             if (stream == null)
                 continue;
 
-            if (peer.isJitsiVideobridge()) {
+            if (mPeer.isJitsiVideobridge()) {
                 /*
                  * If we are the focus of a Videobridge conference, we need to ask the Videobridge
                  * to change the stream direction on our behalf.
@@ -1517,7 +1517,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     // TODO Does SENDRECV always make sense?
                     direction = MediaDirection.SENDRECV;
                 }
-                peer.getCall().setChannelDirection(channel.getID(), mediaType, direction);
+                mPeer.getCall().setChannelDirection(channel.getID(), mediaType, direction);
             }
             else { // no Videobridge
                 if (remotelyOnHold) {
@@ -1525,7 +1525,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                      * In conferences we use INACTIVE to prevent, for example, on-hold music from
                      * being played to all the participants.
                      */
-                    MediaDirection newDirection = peer.getCall().isConferenceFocus()
+                    MediaDirection newDirection = mPeer.getCall().isConferenceFocus()
                             ? MediaDirection.INACTIVE
                             : stream.getDirection().and(MediaDirection.RECVONLY);
                     stream.setDirection(newDirection);
@@ -1564,7 +1564,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             return;
         }
 
-        if (!peer.getProtocolProvider().getDiscoveryManager().includesFeature(xmlns)) {
+        if (!mPeer.getProtocolProvider().getDiscoveryManager().includesFeature(xmlns)) {
             throw new IllegalArgumentException("Unsupported Jingle transport " + xmlns);
         }
 
@@ -1574,10 +1574,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         switch (xmlns) {
             case ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_ICE_UDP_1:
-                transportManager = new IceUdpTransportManager(peer);
+                transportManager = new IceUdpTransportManager(mPeer);
                 break;
             case ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_RAW_UDP_0:
-                transportManager = new RawUdpTransportManager(peer);
+                transportManager = new RawUdpTransportManager(mPeer);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported Jingle transport " + xmlns);
@@ -1659,7 +1659,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         ColibriConferenceIQ.Channel channel = null;
 
-        if (peer.isJitsiVideobridge()) {
+        if (mPeer.isJitsiVideobridge()) {
             TransportManagerJabberImpl transportManager = this.transportManager;
             if (transportManager != null) {
                 channel = transportManager.getColibriChannel(mediaType, false /* remote */);
@@ -1692,17 +1692,17 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     public void setLocallyOnHold(boolean locallyOnHold)
             throws OperationFailedException
     {
-        if (peer.isJitsiVideobridge()) {
+        if (mPeer.isJitsiVideobridge()) {
             this.locallyOnHold = locallyOnHold;
 
-            if (locallyOnHold || !CallPeerState.ON_HOLD_MUTUALLY.equals(peer.getState())) {
+            if (locallyOnHold || !CallPeerState.ON_HOLD_MUTUALLY.equals(mPeer.getState())) {
                 for (MediaType mediaType : MediaType.values()) {
                     ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType);
 
                     if (channel != null) {
                         MediaDirection direction = locallyOnHold ? MediaDirection.INACTIVE : MediaDirection.SENDRECV;
                         try {
-                            peer.getCall().setChannelDirection(channel.getID(), mediaType, direction);
+                            mPeer.getCall().setChannelDirection(channel.getID(), mediaType, direction);
                         } catch (SmackException.NotConnectedException | InterruptedException e) {
                             throw new OperationFailedException("Could not send the channel direction",
                                     OperationFailedException.GENERAL_ERROR, e);
@@ -1728,7 +1728,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     private boolean addDtlsAdvertisedEncryptions(boolean isInitiator,
             JingleContent content, MediaType mediaType, boolean rtcpmux)
     {
-        if (peer.isJitsiVideobridge()) {
+        if (mPeer.isJitsiVideobridge()) {
             // TODO Auto-generated method stub
             return false;
         }
@@ -1756,7 +1756,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     = remoteTransport.getChildExtensionsOfType(DtlsFingerprintExtension.class);
 
             if (!remoteFingerprintPEs.isEmpty()) {
-                AccountID accountID = peer.getProtocolProvider().getAccountID();
+                AccountID accountID = mPeer.getProtocolProvider().getAccountID();
 
                 if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                         && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)) {
@@ -1820,7 +1820,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             JingleContent localContent, JingleContent remoteContent, boolean rtcpmux)
     {
         List<SrtpControlType> preferredEncryptionProtocols
-                = peer.getProtocolProvider().getAccountID().getSortedEnabledEncryptionProtocolList();
+                = mPeer.getProtocolProvider().getAccountID().getSortedEnabledEncryptionProtocolList();
 
         for (SrtpControlType srtpControlType : preferredEncryptionProtocols) {
             // DTLS-SRTP
@@ -1858,12 +1858,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     private boolean setDtlsEncryptionOnContent(MediaType mediaType, JingleContent localContent, JingleContent remoteContent)
     {
         boolean b = false;
-        if (peer.isJitsiVideobridge()) {
+        if (mPeer.isJitsiVideobridge()) {
             b = setDtlsEncryptionOnTransport(mediaType, localContent, remoteContent);
             return b;
         }
 
-        ProtocolProviderServiceJabberImpl protocolProvider = peer.getProtocolProvider();
+        ProtocolProviderServiceJabberImpl protocolProvider = mPeer.getProtocolProvider();
         AccountID accountID = protocolProvider.getAccountID();
         SrtpControls srtpControls = getSrtpControls();
 
@@ -1873,7 +1873,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
             // initiator
             if (remoteContent == null) {
-                addFingerprintToLocalTransport = protocolProvider.isFeatureSupported(peer.getPeerJid(),
+                addFingerprintToLocalTransport = protocolProvider.isFeatureSupported(mPeer.getPeerJid(),
                         ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP);
             }
             // responder
@@ -1920,8 +1920,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (localTransport == null)
             return b;
 
-        if (peer.isJitsiVideobridge()) {
-            ProtocolProviderServiceJabberImpl protocolProvider = peer.getProtocolProvider();
+        if (mPeer.isJitsiVideobridge()) {
+            ProtocolProviderServiceJabberImpl protocolProvider = mPeer.getProtocolProvider();
             AccountID accountID = protocolProvider.getAccountID();
 
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION,
@@ -1941,7 +1941,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                  */
                 if ((localFingerprints != null) && !localFingerprints.isEmpty()) {
                     if (remoteContent == null) { // initiator
-                        if (!protocolProvider.isFeatureSupported(peer.getPeerJid(),
+                        if (!protocolProvider.isFeatureSupported(mPeer.getPeerJid(),
                                 ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP)) {
                             localFingerprints = null;
                         }
@@ -2088,7 +2088,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         // ZRTP is not supported in telephony conferences utilizing the
         // server-side technology Jitsi Videobridge yet.
-        Call call = peer.getCall();
+        Call call = mPeer.getCall();
         if (call.getConference().isJitsiVideobridge())
             return;
 
@@ -2097,7 +2097,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 = description.getFirstChildOfType(EncryptionExtension.class);
 
         if (encryptionPacketExtension != null) {
-            AccountID accountID = peer.getProtocolProvider().getAccountID();
+            AccountID accountID = mPeer.getProtocolProvider().getAccountID();
 
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP) && call.isSipZrtpAttribute()) {
@@ -2131,7 +2131,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         // SDES is not supported in telephony conferences utilizing the
         // server-side technology Jitsi Videobridge yet.
-        if (peer.getCall().getConference().isJitsiVideobridge())
+        if (mPeer.getCall().getConference().isJitsiVideobridge())
             return;
 
         // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
@@ -2139,7 +2139,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 = description.getFirstChildOfType(EncryptionExtension.class);
 
         if (encryptionPacketExtension != null) {
-            AccountID accountID = peer.getProtocolProvider().getAccountID();
+            AccountID accountID = mPeer.getProtocolProvider().getAccountID();
 
             // SDES
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
@@ -2220,7 +2220,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             RtpDescriptionExtension remoteDescription)
     {
         // ZRTP is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
-        Call call = peer.getCall();
+        Call call = mPeer.getCall();
         if (call.getConference().isJitsiVideobridge())
             return false;
 
@@ -2236,12 +2236,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         boolean zrtpHashSet = false; // Will become true if at least one is set.
         if (isRemoteZrtpCapable) {
-            AccountID accountID = peer.getProtocolProvider().getAccountID();
+            AccountID accountID = mPeer.getProtocolProvider().getAccountID();
 
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP)
                     && call.isSipZrtpAttribute()) {
-                final byte[] myZid = generateMyZid(accountID, peer.getPeerJid().asBareJid());
+                final byte[] myZid = generateMyZid(accountID, mPeer.getPeerJid().asBareJid());
 
                 ZrtpControl zrtpControl = (ZrtpControl) getSrtpControls().getOrCreate(mediaType, SrtpControlType.ZRTP, myZid);
                 int numberSupportedVersions = zrtpControl.getNumberSupportedVersions();
@@ -2300,10 +2300,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         /*
          * SDES is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
          */
-        if (peer.getCall().getConference().isJitsiVideobridge())
+        if (mPeer.getCall().getConference().isJitsiVideobridge())
             return false;
 
-        AccountID accountID = peer.getProtocolProvider().getAccountID();
+        AccountID accountID = mPeer.getProtocolProvider().getAccountID();
 
         // check if SDES and encryption is enabled at all
         if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
@@ -2393,7 +2393,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
          * Neither SDES nor ZRTP is supported in telephony conferences utilizing
          * the server-side technology Jitsi Videobridge yet.
          */
-        if (peer.isJitsiVideobridge())
+        if (mPeer.isJitsiVideobridge())
             return false;
 
         // SDES

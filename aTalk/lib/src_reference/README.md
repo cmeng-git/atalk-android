@@ -1,5 +1,5 @@
 The info herein is only kept for reference. All the libraries mentioned here have officially released to maven.
-Therefore they are not further for aTalk built.
+Therefore they are not further used for aTalk built.
 
 ## lib/bundles directory (has been removed)
 contain Jitsi jar libraries that are used in aTalk project built. These jar libraries are <br/>

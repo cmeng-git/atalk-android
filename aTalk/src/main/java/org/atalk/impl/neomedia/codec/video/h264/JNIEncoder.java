@@ -10,6 +10,7 @@ import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.configuration.ConfigurationService;
@@ -84,8 +85,8 @@ public class JNIEncoder extends AbstractCodec2
 
     /**
      * The name of the boolean <tt>ConfigurationService</tt> property which specifies whether Periodic
-     * Intra Refresh is to be used by default. The default value is <tt>true</tt>. The value may be overridden by
-     * {@link #setAdditionalCodecSettings(Map)}.
+     * Intra Refresh is to be used by default. The default value is <tt>true</tt>.
+     * The value may be overridden by {@link #setAdditionalCodecSettings(Map)}.
      */
     public static final String DEFAULT_INTRA_REFRESH_PNAME = "neomedia.codec.video.h264.defaultIntraRefresh";
 
@@ -208,7 +209,7 @@ public class JNIEncoder extends AbstractCodec2
     private long lastKeyFrameRequestTime = System.currentTimeMillis();
 
     /**
-     * The packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>
+     * The packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>,
      * and the associated packetizer. RFC 3984 "RTP Payload Format for H.264 Video" says that
      * "when the value of packetization-mode is equal to 0 or packetization-mode is not present,
      * the single NAL mode, as defined in section 6.2 of RFC 3984, MUST be used."
@@ -235,6 +236,11 @@ public class JNIEncoder extends AbstractCodec2
      */
     private boolean secondKeyFrame = true;
 
+    @SuppressWarnings("SuspiciousNameCombination")
+    private int mWidth = DeviceConfiguration.DEFAULT_VIDEO_HEIGHT;
+    @SuppressWarnings("SuspiciousNameCombination")
+    private int mHeight = DeviceConfiguration.DEFAULT_VIDEO_WIDTH;
+
     /**
      * Initializes a new <tt>JNIEncoder</tt> instance.
      */
@@ -254,8 +260,6 @@ public class JNIEncoder extends AbstractCodec2
                 Format.NOT_SPECIFIED, /* offsetU */
                 Format.NOT_SPECIFIED) /* offsetV */
         };
-        inputFormat = null;
-        outputFormat = null;
     }
 
     /**
@@ -292,39 +296,41 @@ public class JNIEncoder extends AbstractCodec2
     @Override
     protected void doOpen() throws ResourceUnavailableException
     {
-        VideoFormat inputVideoFormat = (VideoFormat) inputFormat;
-        VideoFormat outputVideoFormat = (VideoFormat) outputFormat;
-
         /*
-         * An Encoder translates raw media data in (en)coded media data. Consequently, the size of
-         * the output is equal to the size of the input.
+         * An Encoder translates raw media data in (en)coded media data.
+         * Consequently, the size of the output is equal to the size of the input.
          */
-        Dimension size = null;
-        if (inputVideoFormat != null)
-            size = inputVideoFormat.getSize();
-        if ((size == null) && (outputVideoFormat != null))
-            size = outputVideoFormat.getSize();
-        if (size == null) {
-            throw new ResourceUnavailableException("The input video frame width and height are not set.");
-        }
+        VideoFormat ipFormat = (VideoFormat) inputFormat;
+        VideoFormat opFormat = (VideoFormat) outputFormat;
 
-        int width = size.width, height = size.height;
+        Dimension size = null;
+        if (ipFormat != null)
+            size = ipFormat.getSize();
+        if ((size == null) && (opFormat != null))
+            size = opFormat.getSize();
+
+        // Use the default if format size is null
+        if (size != null) {
+            Timber.d("H264 encode video size: %s", size);
+            mWidth = size.width;
+            mHeight = size.height;
+        }
 
         /*
          * XXX We do not currently negotiate the profile so, regardless of the many AVCodecContext
          * properties we have set above, force the default profile configuration.
          */
-        ConfigurationService cfg = LibJitsi.getConfigurationService();
+        ConfigurationService config = LibJitsi.getConfigurationService();
         boolean intraRefresh = DEFAULT_DEFAULT_INTRA_REFRESH;
         int keyint = DEFAULT_KEYINT;
         String preset = DEFAULT_PRESET;
         String profile = DEFAULT_DEFAULT_PROFILE;
 
-        if (cfg != null) {
-            intraRefresh = cfg.getBoolean(DEFAULT_INTRA_REFRESH_PNAME, intraRefresh);
-            keyint = cfg.getInt(KEYINT_PNAME, keyint);
-            preset = cfg.getString(PRESET_PNAME, preset);
-            profile = cfg.getString(DEFAULT_PROFILE_PNAME, profile);
+        if (config != null) {
+            intraRefresh = config.getBoolean(DEFAULT_INTRA_REFRESH_PNAME, intraRefresh);
+            keyint = config.getInt(KEYINT_PNAME, keyint);
+            preset = config.getString(PRESET_PNAME, preset);
+            profile = config.getString(DEFAULT_PROFILE_PNAME, profile);
         }
 
         if (additionalCodecSettings != null) {
@@ -352,18 +358,18 @@ public class JNIEncoder extends AbstractCodec2
 
         avctx = FFmpeg.avcodec_alloc_context3(avcodec);
         FFmpeg.avcodeccontext_set_pix_fmt(avctx, FFmpeg.PIX_FMT_YUV420P);
-        FFmpeg.avcodeccontext_set_size(avctx, width, height);
+        FFmpeg.avcodeccontext_set_size(avctx, mWidth, mHeight);
         FFmpeg.avcodeccontext_set_qcompress(avctx, 0.6f);
 
         int bitRate = 1000 * NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoBitrate();
         int frameRate = Format.NOT_SPECIFIED;
 
         // Allow the outputFormat to request a certain frameRate.
-        if (outputVideoFormat != null)
-            frameRate = (int) outputVideoFormat.getFrameRate();
+        if (opFormat != null)
+            frameRate = (int) opFormat.getFrameRate();
         // Otherwise, output in the frameRate of the inputFormat.
-        if ((frameRate == Format.NOT_SPECIFIED) && (inputVideoFormat != null))
-            frameRate = (int) inputVideoFormat.getFrameRate();
+        if ((frameRate == Format.NOT_SPECIFIED) && (ipFormat != null))
+            frameRate = (int) ipFormat.getFrameRate();
         if (frameRate == Format.NOT_SPECIFIED)
             frameRate = DEFAULT_FRAME_RATE;
 
@@ -381,16 +387,9 @@ public class JNIEncoder extends AbstractCodec2
         FFmpeg.avcodeccontext_set_quantizer(avctx, 30, 31, 4);
 
         // avctx.chromaoffset = -2;
-
         FFmpeg.avcodeccontext_set_mb_decision(avctx, FFmpeg.FF_MB_DECISION_SIMPLE);
         FFmpeg.avcodeccontext_add_flags(avctx, FFmpeg.CODEC_FLAG_LOOP_FILTER);
-        if (intraRefresh) {
-            /*
-             * The flag is ignored in newer FFmpeg versions and we set the x264 "intra-refresh"
-             * option for them. Anyway, the flag is set for the older FFmpeg versions.
-             */
-            FFmpeg.avcodeccontext_add_flags2(avctx, FFmpeg.CODEC_FLAG2_INTRA_REFRESH);
-        }
+
         FFmpeg.avcodeccontext_set_me_subpel_quality(avctx, 2);
         FFmpeg.avcodeccontext_set_me_range(avctx, 16);
         FFmpeg.avcodeccontext_set_me_cmp(avctx, FFmpeg.FF_CMP_CHROMA);
@@ -428,20 +427,22 @@ public class JNIEncoder extends AbstractCodec2
                 "preset", preset,
                 "thread_type", "slice",
                 "tune", "zerolatency") < 0) {
-            throw new ResourceUnavailableException("Could not open H.264 encoder. (size= " + width + "x" + height + ")");
+            throw new ResourceUnavailableException("Could not open H.264 encoder. (size= " + mWidth + "x" + mHeight + ")");
         }
 
-        rawFrameLen = (width * height * 3) / 2;
+        rawFrameLen = (mWidth * mHeight * 3) / 2;
         rawFrameBuffer = FFmpeg.av_malloc(rawFrameLen);
+
         avFrame = FFmpeg.avcodec_alloc_frame();
+        // Required to be set for ffmpeg v4.4
+        FFmpeg.avframe_set_properties(avFrame, FFmpeg.PIX_FMT_YUV420P, mWidth, mHeight);
 
-        int sizeInBytes = width * height;
-
+        int sizeInBytes = mWidth * mHeight;
         FFmpeg.avframe_set_data(avFrame, rawFrameBuffer, sizeInBytes, sizeInBytes / 4);
-        FFmpeg.avframe_set_linesize(avFrame, width, width / 2, width / 2);
+        FFmpeg.avframe_set_linesize(avFrame, mWidth, mWidth / 2, mWidth / 2);
 
         /*
-         * In order to be sure that keyint will be respected, we will implement it ourselves
+         * In order to be sure keyint will be respected, we will implement it ourselves
          * (regardless of the fact that we have told FFmpeg and x264 about it). Otherwise, we may
          * end up not generating keyframes at all (apart from the two generated after open).
          */
@@ -453,13 +454,7 @@ public class JNIEncoder extends AbstractCodec2
          * Implement the ability to have the remote peer request key frames from this local peer.
          */
         if (keyFrameRequestee == null) {
-            keyFrameRequestee = new KeyFrameControl.KeyFrameRequestee()
-            {
-                public boolean keyFrameRequest()
-                {
-                    return JNIEncoder.this.keyFrameRequest();
-                }
-            };
+            keyFrameRequestee = JNIEncoder.this::keyFrameRequest;
         }
         if (keyFrameControl != null)
             keyFrameControl.addKeyFrameRequestee(-1, keyFrameRequestee);
@@ -475,9 +470,21 @@ public class JNIEncoder extends AbstractCodec2
     @Override
     protected int doProcess(Buffer inBuffer, Buffer outBuffer)
     {
-        Format inFormat = inBuffer.getFormat();
-        if ((inFormat != inputFormat) && !inFormat.equals(inputFormat)) {
-            setInputFormat(inFormat);
+        YUVFormat format = (YUVFormat) inBuffer.getFormat();
+        Dimension formatSize = format.getSize();
+        int width = formatSize.width;
+        int height = formatSize.height;
+
+        if (width > 0 && height > 0
+                && (width != mWidth || height != mHeight)) {
+            Timber.d("H264 encode video size changed: [width=%s, height=%s]=>%s",  mWidth, mHeight, formatSize);
+
+            doClose();
+            try {
+                doOpen();
+            } catch (ResourceUnavailableException e) {
+                Timber.e("Could not find H.264 encoder.");
+            }
         }
 
         if (inBuffer.getLength() < 10) {
@@ -504,10 +511,6 @@ public class JNIEncoder extends AbstractCodec2
         // Encode avFrame into the data of outBuffer.
         byte[] out = AbstractCodec2.validateByteArraySize(outBuffer, rawFrameLen, false);
         int outLength = FFmpeg.avcodec_encode_video(avctx, out, out.length, avFrame);
-
-        //        if (lastKeyFrame < 3) {
-        //            Timber.w("H264 encoded packet length: %s", outLength);
-        //        }
 
         outBuffer.setLength(outLength);
         outBuffer.setOffset(0);
@@ -664,7 +667,7 @@ public class JNIEncoder extends AbstractCodec2
     @Override
     public Format setOutputFormat(Format format)
     {
-        // mismatch output format
+        //  Return null if mismatch output format
         if (!(format instanceof VideoFormat)
                 || (null == AbstractCodec2.matches(format, getMatchingOutputFormats(inputFormat))))
             return null;

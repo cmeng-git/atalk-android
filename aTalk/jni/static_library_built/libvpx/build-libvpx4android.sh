@@ -20,9 +20,10 @@ set -u
 # aTalk v1.8.1 and below uses libvpx-master i.e. 1.6.1+ (10/13/2017)
 # aTalk v1.8.2 uses libvpx-1.8.0
 # aTalk v2.3.2 uses libvpx-1.8.2
+# aTalk v2.6.1 uses libvpx-1.10.0
 
 LIB_VPX="libvpx"
-LIB_GIT=v1.8.2
+LIB_GIT=v1.10.0
 
 ## Both problems #1 & #2 below have been fixed by patches from: https://android.googlesource.com/platform/external/libvpx/+/ca30a60d2d6fbab4ac07c63bfbf7bbbd1fe6a583
 ## However the compiled libjnvpx.so has problem when exec on x86_64 android platform:
@@ -42,7 +43,8 @@ LIB_GIT=v1.8.2
 [[ -d ${LIB_VPX} ]] || ./init_libvpx.sh ${LIB_GIT}
 
 # Applying required patches to libvpx-1.8.x, libvpx-1.7.0 or libvpx-1.6.1+
-./libvpx_patch.sh ${LIB_VPX}
+# No patch is needed for v1.10.0
+# ./libvpx_patch.sh ${LIB_VPX}
 
 if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
   version=`"${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}"`
@@ -50,12 +52,12 @@ fi
 
 # Unarchive library, then configure and make for specified architectures
 configure_make() {
-  pushd "${LIB_VPX}"
+  pushd "${LIB_VPX}" || exit
   ABI=$1;
   echo -e "\n** BUILD STARTED: ${LIB_VPX} (${version}) for ${ABI} **"
 
   make clean
-  configure $*
+  configure "$@"
   case ${ABI} in
     # libvpx does not provide armv5 build option
     armeabi)
@@ -119,6 +121,15 @@ configure_make() {
   # Cannot define option add_ldflags "-Wl,--fix-cortex-a8"
   # Standalone: arm-linux-androideabi-ld: -Wl,--fix-cortex-a8: unknown option
 
+  # Fixed by: https://android.googlesource.com/platform/external/libvpx/+/ca30a60d2d6fbab4ac07c63bfbf7bbbd1fe6a583
+  # libvpx has the following errors for x86 and x86_64 when build in aTalk app;
+  # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(deblock_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vpx_rv cannot be used when making a shared object
+  # ./i686-linux-android/4.9.x/../../../../i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_mmx.asm.o): relocation R_386_GOTOFF against preemptible symbol # vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+  # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_mmx.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+  # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+  # ./i686-linux-android/bin/ld: error: vpx/android/x86/lib/libvpx.a(subpixel_sse2.asm.o): relocation R_386_GOTOFF against preemptible symbol vp8_bilinear_filters_x86_8 cannot be used when making a shared object
+  # ./x86_64-linux-android/bin/ld: error: vpx/android/x86_64/lib/libvpx.a(deblock_sse2.asm.o): requires dynamic R_X86_64_PC32 reloc against 'vpx_rv' which may overflow at runtime; recompile with -fPIC
+
   # Need --disable-avx2 to fix x86_64 problem OR enable --enable-runtime-cpu-detect option
   # org.atalk.android A/libc: Fatal signal 4 (SIGILL), code 2 (ILL_ILLOPN), fault addr 0x77b2ac1757e6 in tid 20780 (Loop thread: ne), pid 20363 (g.atalk.android)
   # see https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1
@@ -130,8 +141,9 @@ if [[ $1 =~ x86.* ]]; then
 fi
 
 # When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
-# For libvpx v1.8: in order to use standalone toolchanis, must not specified --sdk-path (option removed)
+# For libvpx v1.8.2: in order to use standalone toolchanis, must not specified --sdk-path (option removed)
 #    --sdk-path=${NDK}
+# --enable-vp9-highbitdepth
 
   ./configure \
     --extra-cflags="-isystem ${NDK_SYSROOT}/usr/include/${NDK_ABIARCH} -isystem ${NDK_SYSROOT}/usr/include" \
@@ -150,11 +162,12 @@ fi
     --disable-unit-tests \
     --enable-realtime-only \
     --enable-vp8 --enable-vp9 \
-    --enable-vp9-postproc --enable-vp9-highbitdepth \
+    --enable-vp9-postproc \
+    --enable-vp9-highbitdepth \
     --disable-webm-io || exit 1
 
   make -j${HOST_NUM_CORES} install
-  popd
+  popd || exit
 }
 
 for ((i=0; i < ${#ABIS[@]}; i++))
