@@ -15,7 +15,7 @@ fi
 [[ -d ffmpeg ]] && [[ -d x264 ]] || ./init_update_libs.sh
 
 # Applying required patches
-. ffmpeg-atalk_patch.sh "${MODULES[@]}"
+. ffmpeg-android_patch.sh "${MODULES[@]}"
 
 for ((i=0; i < ${#ABIS[@]}; i++))
   do

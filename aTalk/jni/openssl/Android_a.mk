@@ -3,7 +3,7 @@ LOCAL_PATH := $(call my-dir)
 ############### crypto_static ########################
 # target static library
 include $(CLEAR_VARS)
-LOCAL_MODULE := crypto_static
+LOCAL_MODULE := libcrypto
 LOCAL_SRC_FILES := android/$(TARGET_ARCH_ABI)/lib/libcrypto.a
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_STATIC_LIBRARY)
@@ -11,7 +11,7 @@ include $(PREBUILT_STATIC_LIBRARY)
 ############### ssl_static ########################
 # target static library
 include $(CLEAR_VARS)
-LOCAL_MODULE := ssl_static
+LOCAL_MODULE := libssl
 LOCAL_SRC_FILES := android/$(TARGET_ARCH_ABI)/lib/libssl.a
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_STATIC_LIBRARY)
@@ -20,7 +20,7 @@ include $(PREBUILT_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE := jnopenssl
 LOCAL_LDLIBS := -llog -lz
-LOCAL_STATIC_LIBRARIES := crypto_static ssl_static
+LOCAL_STATIC_LIBRARIES := libcrypto libssl
 LOCAL_SRC_FILES := \
  Hmac.c \
  OpenSslWrapperLoader.c \

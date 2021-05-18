@@ -16,7 +16,7 @@
 
 # Uncomment the line below to see all script echo to terminal
 # set -x
-if [[ $ANDROID_NDK = "" ]]; then
+if [[ -z $ANDROID_NDK ]]; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
 	echo "Use: export ANDROID_NDK=/your_path_to_android_ndk"
 	echo "e.g. export ANDROID_NDK=/opt/android/android-ndk-r18b"
