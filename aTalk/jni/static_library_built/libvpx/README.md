@@ -26,7 +26,7 @@
   
 The ./build-libvpx4android.sh script build the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>
 i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
-All the built libvpx.a and *.h are installed in the ./output/android/\<ABI>/lib and ./output/android/\<ABI>/include respectively
+All the built libvpx.a and *.h are installed in the ./jni/vpx/android/&lt;ABI>/lib and include respectively
 
 **Android libvpx build instructions:**
 ```

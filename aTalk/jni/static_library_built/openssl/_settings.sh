@@ -63,7 +63,7 @@ configure() {
   esac
 
   # Define the install directory of the libs and include files etc
-  # PREFIX=${BASEDIR}/output/android/${ABI}
+  # PREFIX=${BASEDIR}/android/${ABI}
   PREFIX=${BASEDIR}/../../openssl/android/$1
 
   # Add the prebuilt toolchain and clang to the search path. (See NOTES.ANDROID)
