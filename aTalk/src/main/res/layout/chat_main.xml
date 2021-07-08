@@ -23,5 +23,11 @@
         android:scaleType="fitCenter"
         android:visibility="gone" />
 
+    <FrameLayout
+        android:id="@+id/player_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
     <include layout="@layout/chat_typing_area" />
 </LinearLayout>

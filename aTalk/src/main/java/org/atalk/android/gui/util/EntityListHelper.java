@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.widget.CheckBox;
 
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
@@ -246,7 +247,7 @@ public class EntityListHelper
         {
             Object desc = mDescriptor[0];
             if ((desc instanceof MetaContact) || (desc instanceof ChatRoomWrapper)) {
-                MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+                MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
                 if (isPurgeMediaFile) {
                     // null => delete all local saved files; then construct locally
                     if (msgFiles == null) {
@@ -346,7 +347,7 @@ public class EntityListHelper
         @Override
         protected Integer doInBackground(Void... none)
         {
-            MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+            MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
             if (isPurgeMediaFile) {
                 // purge all the files of the deleted messages
                 List<String> msgFiles = mhs.getLocallyStoredFilePath();

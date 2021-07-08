@@ -45,7 +45,7 @@ public class VPX
      *
      * Corresponds to <tt>VPX_ERROR_RESILIENT_DEFAULT</tt> from <tt>vpx/vpx_encoder.h</tt>
      */
-    public static final int ERROR_RESILIENT_DEFAULT = 0x1;
+    public static final int ERROR_RESILIENT_DEFAULT = 0x01;
 
     /**
      * The frame partitions are independently decodable by the bool decoder, meaning that
@@ -57,7 +57,7 @@ public class VPX
      *
      * Corresponds to <tt>VPX_ERROR_RESILIENT_PARTITIONS</tt> from <tt>vpx/vpx_encoder.h</tt>
      */
-    public static final int ERROR_RESILIENT_PARTITIONS = 0x2;
+    public static final int ERROR_RESILIENT_PARTITIONS = 0x02;
 
     /**
      * I420 format constant
@@ -122,6 +122,20 @@ public class VPX
      * Corresponds to <tt>VPX_CODEC_CX_FRAME_PKT</tt> from <tt>vpx/vpx_encoder.h</tt>
      */
     public static final int CODEC_CX_FRAME_PKT = 0;
+
+    /**
+     * brief Codec control function to set encoder internal speed settings.
+     *
+     * Changes in this value influences, among others, the encoder's selection
+     * of motion estimation methods. Values greater than 0 will increase encoder
+     * speed at the expense of quality.
+     *
+     * \note Valid range for VP8: -16..16
+     * \note Valid range for VP9: -9..9
+     *
+     * Supported in codecs: VP8, VP9
+     */
+    public static final int VP8E_SET_CPUUSED = 13;
 
     public static final int  VP9E_SET_LOSSLESS = 32;
 
@@ -260,8 +274,9 @@ public class VPX
     public static native int codec_encode(long context, long img, byte[] buf, int offset0,
             int offset1, int offset2, long pts, long duration, long flags, long deadline);
 
-    public static native long codec_encode_frame(long context, long img, byte[] buf, int offset0,
-            int offset1, int offset2, long pts, long duration, long flags, long deadline, long[] iter);
+    // public static native long codec_encode_frame(long context, long img, byte[] buf, int offset0,
+    //       int offset1, int offset2, long pts, long duration, long flags, long deadline, long[] iter);
+
     /**
      * Encoded data iterator.
      * Iterates over a list of data packets to be passed from the encoder to the application. The
@@ -578,6 +593,16 @@ public class VPX
      * @param value The value to set.
      */
     public static native void codec_enc_cfg_set_error_resilient(long cfg, int value);
+
+    /**
+     * Sets the <tt>g_lag_in_frames</tt> field of a <tt>vpx_codec_enc_cfg_t</tt>.
+     * https://chromium.googlesource.com/webm/libvpx/+/refs/tags/v1.10.0/vpx/vpx_encoder.h#362
+     * Set to allow lagged encoding
+     *
+     * @param cfg Pointer to a <tt>vpx_codec_enc_cfg_t</tt>.
+     * @param value The value to set.
+     */
+    public static native void codec_enc_cfg_set_lag_in_frames(long cfg, int value);
 
     /**
      * Sets the <tt>rc_target_bitrate</tt> field of a <tt>vpx_codec_enc_cfg_t</tt>.

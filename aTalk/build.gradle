@@ -5,7 +5,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
         classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
     }
 }
@@ -76,8 +75,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 206010
-        versionName "2.6.1"
+        versionCode 206020
+        versionName "2.6.2"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -221,21 +220,24 @@ ext {
 }
 
 dependencies {
+    implementation project(':android-youtube-player:core')
+
     // Java compilation dependency: ndkBuild & jarRepackage (avoid class conflict)
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.activity:activity:1.3.0-alpha07"
-    implementation "androidx.fragment:fragment:1.3.3"
+    implementation "androidx.activity:activity:1.3.0-rc01"
+    implementation "androidx.fragment:fragment:1.3.5"
 
+    // implementation "com.android.support:support-v4:28.0.0"
     implementation "androidx.legacy:legacy-support-v4:${rootProject.supportLibraryVersion}"
     implementation "androidx.legacy:legacy-support-v13:${rootProject.supportLibraryVersion}"
-    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation "androidx.appcompat:appcompat:1.3.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.preference:preference:1.1.1"
 
-    implementation "com.google.android.material:material:1.3.0"
+    implementation "com.google.android.material:material:1.4.0"
 
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
@@ -250,11 +252,12 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.github.seancfoley:ipaddress:5.3.3'
+    implementation 'com.github.evgenyneu:js-evaluator-for-android:v5.0.0'
 
     // Need latest release to fix incorrect youtube link extraction
-    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:69f7045'
-    implementation 'com.github.yalantis:ucrop:2.2.6'
-    implementation 'com.google.android.exoplayer:exoplayer:2.13.3'
+    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:46579d1'
+    implementation 'com.github.yalantis:ucrop:2.2.7'
+    implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.10.5'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
@@ -320,7 +323,7 @@ dependencies {
     implementation 'org.jxmpp:jxmpp-jid:1.0.1'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
 
-    implementation 'org.jetbrains:annotations-java5:15.0'
+    // implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'org.osgi:osgi.core:7.0.0'
 
     playstoreImplementation "com.google.android.gms:play-services-location:18.0.0"
@@ -336,7 +339,7 @@ dependencies {
      */
     implementation jarjar.repackage {
         from('org.jitsi:fmj:1.0.1-jitsi')
-        destinationDir new File("${projectDir}/libs")
+        // destinationDir new File("${projectDir}/libs")
         destinationName "fmj-1.0.1-jitsi.jar"
 
         classRename 'java.awt.**', 'org.atalk.android.util.java.awt.@1'
@@ -365,7 +368,7 @@ dependencies {
         from('com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac') {
             transitive = false
         }
-        destinationDir new File("${projectDir}/libs")
+        // destinationDir new File("${projectDir}/libs")
         destinationName "ice4j-2.0.0-SNAPSHOT.jar"
 
         // Consumer was introduced in API-24
@@ -391,7 +394,7 @@ dependencies {
         from('ch.imvs:sdes4j:1.1.4') {
             transitive = false
         }
-        destinationDir new File("${projectDir}/libs")
+        // destinationDir new File("${projectDir}/libs")
         destinationName "sde4j-1.1.4.jar"
 
         // v1.1.5 uses java.util.Base64 was only added in API level 26
@@ -400,6 +403,25 @@ dependencies {
         // v1.1.4 uses binary.Base64
         classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
     }
+}
+
+/*
+ * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this need to be
+ * executed at least once to generate all the static libraries before the aTalk apk build process.
+ */
+task initJniLibs(type: Exec) {
+    workingDir "${projectDir}/jni/static_library_built"
+    executable './build-jnilibs4atalk.sh'
+
+    // No working; execute only the last statement to build ffmpeg
+    // workingDir "${projectDir}/jni/static_library_built/libvpx"
+    // executable './build-vpx4android.sh'
+
+    // workingDir "${projectDir}/jni/static_library_built/openssl"
+    // executable './openssl/build-openssl4android.sh'
+
+    // workingDir "${projectDir}/jni/static_library_built/ffmpeg-x264"
+    // executable './build-ffmpeg4android.sh'
 }
 
 task updateVersionFile(type: Copy) {
@@ -426,8 +448,8 @@ task updateVersionFile(type: Copy) {
 
 tasks.withType(JavaCompile) {
     // Uncomment below two lines if you want to show all deprecated warnings
-//    options.compilerArgs << '-Xlint:unchecked'
-//    options.deprecation = true
+    // options.compilerArgs << '-Xlint:unchecked'
+    // options.deprecation = true
 }
 
 build.dependsOn 'updateVersionFile'

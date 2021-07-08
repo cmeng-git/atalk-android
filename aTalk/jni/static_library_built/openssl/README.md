@@ -9,9 +9,9 @@
 
 ### Build For Android
 - Follow the instructions below to build libopenssl for android
-- aTalk v2.6.1 release is compatible with libopenssl-1.1.1k<br/>
-- When you first exec build-libopenssl4android.sh, it applies the required patches to libopenssl<br/>
-  Note: the patches defined in libopenssl_patch.sh is for libopenssl-1.0.2<br/>
+- aTalk v2.6.1 or later release is compatible with libopenssl-1.1.1k<br/>
+- When you first exec build-libopenssl4android.sh, it applies the required patches if any to libopenssl<br/>
+  Note: the patches defined in libopenssl_patch.sh are for libopenssl-1.0.2<br/>
   
 The ./build-openssl4android.sh script builds both the static libcrypto.a and libssl.a for the various architectures<br/>
 as defined in ./_settings.sh i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
@@ -21,12 +21,10 @@ All the built libxxx.a and *.h are installed in the ./jni/openssl/android/&lt;AB
 - Use prebuilt Android NDK: i.e. <br/>
   export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/20.0.5594570
 - setup the required libopenssl; default "libopenssl-1.1.1k" or<br/>
-  change LIB_OPENSSL_GIT value in ./init_libopenssl.sh file if required; then run<br/>
-  ./init_libopenssl.sh<br/>
-  Note: you must run this script if the current source version is not the same as the one you have specified.
+  change LIB_OPENSSL_GIT value in ./init_libopenssl.sh file if required.<br/>
 
 ### use one of the following to build libopenssl i.e.
-- If the './openssl' source directory is mssing, the next command will fetch the source using ./init_libopenssl.sh
+- If the './openssl' source directory is mssing or with incorrect version, the next command will fetch the source using ./init_libopenssl.sh
 - a. for all the ABI's defined in _settings.sh<br/>
   ./build-libopenssl4android.sh
 - b. for a specific \<ABI><br/>
@@ -71,7 +69,6 @@ LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprec
 include $(BUILD_SHARED_LIBRARY)<br/>
 	
 ```
-
 License
 -------
 
@@ -90,7 +87,3 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-

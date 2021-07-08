@@ -21,19 +21,20 @@ import org.atalk.service.neomedia.event.VolumeChangeListener;
 import org.atalk.service.osgi.OSGiFragment;
 
 /**
- * Fragment used to control call volume. Key events for volume up and down have to be captured by parent
+ * Fragment used to control call volume. Key events for volume up and down have to be captured by the parent
  * <tt>Activity</tt> and passed here, before they get to system audio service. The volume is increased using
- * <tt>AudioManager</tt> until it reaches maximum level, then we increase Libjitsi volume gain. The opposite happens
- * when volume is being decreased.
+ * <tt>AudioManager</tt> until it reaches maximum level, then we increase the Libjitsi volume gain.
+ * The opposite happens when volume is being decreased.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChangeListener
 {
     /**
      * Current volume gain "position" in range from 0 to 10.
      */
-    int position;
+    private int position;
 
     /**
      * Output volume control.
@@ -51,10 +52,10 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     private Toast toast;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
-        super.onActivityCreated(savedInstanceState);
-        audioManager = (AudioManager) aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+        super.onCreate(savedInstanceState);
+        audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
         MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
         if (mediaService != null)
             volumeControl = mediaService.getOutputVolumeControl();
@@ -102,7 +103,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     }
 
     /**
-     * Method should be called by parent <tt>Activity</tt> when volume up key is pressed.
+     * Method should be called by the parent <tt>Activity</tt> when volume up key is pressed.
      */
     public void onKeyVolUp()
     {
@@ -124,12 +125,11 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     }
 
     /**
-     * Method should be called by parent <tt>Activity</tt> when volume down key is pressed.
+     * Method should be called by the parent <tt>Activity</tt> when volume down key is pressed.
      */
     public void onKeyVolDown()
     {
         int controlMode = AudioManager.ADJUST_LOWER;
-
         if (position > 5) {
             // We adjust the same just to show the gui
             controlMode = AudioManager.ADJUST_SAME;
@@ -162,7 +162,6 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     public void volumeChange(VolumeChangeEvent volumeChangeEvent)
     {
         position = calcPosition(volumeChangeEvent.getLevel() / getVolumeCtrlRange());
-
         runOnUiThread(() -> {
             Activity parent = getActivity();
             if (parent == null)

@@ -18,21 +18,12 @@
 set -u
 . _settings.sh
 
-# support openssl-1.1.1k
 LIB_OPENSSL="openssl"
 LIB_OPENSSL_GIT="openssl-1.1.1k"
 
 # Auto fetch and unarchive libopenssl from online repository with the given version i.e. LIB_OPENSSL_GIT
-[[ -d ${LIB_OPENSSL} ]] || ./init_libopenssl.sh ${LIB_OPENSSL_GIT}
-
-# Makefile is only available after first build
-version="${LIB_OPENSSL_GIT}"
-if [[ -f "${LIB_OPENSSL}/Makefile" ]]; then
-  version="$(grep '^VERSION=' < ${LIB_OPENSSL}/Makefile | sed 's/^.*=\([1-9]\.[0-9]\.[0-9][a-z]\).*$/v\1/')"
-elif [[ -f "${LIB_OPENSSL_GIT}" ]]; then
-  # extract the version from LIB_OPENSSL_GIT e.g. 'v1.1.1k'
-  version="$(${LIB_OPENSSL_GIT} | sed 's/^.*-\([1-9]\.[0-9]\.[0-9][a-z]\).*$/v\1/')"
-fi
+./init_libopenssl.sh ${LIB_OPENSSL_GIT}
+version="$(grep '^# define OPENSSL_VERSION_TEXT' < ${LIB_OPENSSL}/include/openssl/opensslv.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9][a-z]\).*$/\1/')"
 
 # configure and make for specified architectures
 configure_make() {
@@ -40,7 +31,6 @@ configure_make() {
   echo -e "\n** BUILD STARTED: ${LIB_OPENSSL} (${version}) for ${ABI} **"
 
   pushd "${LIB_OPENSSL}" || exit
-  make clean
   configure "$1"
 
   #supported by openssl-1.1.1
@@ -59,6 +49,7 @@ configure_make() {
     ;;
   esac
 
+  make clean
   ./Configure \
       $TARGET \
       -D__ANDROID_API__=${ANDROID_API} \

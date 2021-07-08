@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.*;
 import android.text.TextUtils;
 
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
 import net.java.sip.communicator.service.systray.SystrayService;
@@ -366,7 +367,7 @@ public class SettingsActivity extends OSGiActivity
         private void initMessagesPreferences()
         {
             // mhs may be null if user access settings before the mhs service is properly setup
-            MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+            MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
             boolean isHistoryLoggingEnabled = (mhs != null) && mhs.isHistoryLoggingEnabled();
             PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_LOG_CHAT_HISTORY, isHistoryLoggingEnabled);
 
@@ -669,7 +670,7 @@ public class SettingsActivity extends OSGiActivity
         public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
         {
             if (key.equals(P_KEY_LOG_CHAT_HISTORY)) {
-                MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+                MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
                 mhs.setHistoryLoggingEnabled(shPreferences.getBoolean(P_KEY_LOG_CHAT_HISTORY,
                         mhs.isHistoryLoggingEnabled()));
             }

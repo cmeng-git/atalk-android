@@ -129,7 +129,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
 
             // Streaming video always send in dimension according to the phone orientation
             mFormat.setVideoSize(mPreviewSize);
-            Timber.d("Camera data stream format: %s", mFormat);
+            Timber.d("Camera data stream format: %s=>%s", videoSize, mFormat); // params.get("preview-size-values"));
 
             params.setRotation(mRotation);
             // Always set camera capture in its native dimension - otherwise may not be supported.

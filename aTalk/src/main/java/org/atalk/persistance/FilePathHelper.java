@@ -85,10 +85,9 @@ public class FilePathHelper
      */
     private static String getFilePathWithCreate(Context ctx, Uri uri)
     {
-        String path = new File(uri.getPath()).toString();
         String fileName = null;
 
-        if (!TextUtils.isEmpty(path)) {
+        if (!TextUtils.isEmpty(uri.getPath())) {
             Cursor cursor = ctx.getContentResolver().query(uri, null, null, null, null);
             if (cursor == null)
                 fileName = uri.getPath();

@@ -162,6 +162,7 @@
     <string name="gui_playback_error">Не удается найти мультимедийный контент для воспроизведения</string>
     <string name="gui_playback_buffering">Буферизация&#8230;</string>
     <string name="gui_playback_completed">Конец воспроизведения мультимедиа</string>
+    <string name="gui_playback_rate">Скорость воспроизведения: %1$s</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Автосоединение</string>

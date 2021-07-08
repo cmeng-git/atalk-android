@@ -166,6 +166,7 @@
     <string name="gui_playback_error">No se puede encontrar ningún contenido multimedia para reproducir</string>
     <string name="gui_playback_buffering">Buffering&#8230;</string>
     <string name="gui_playback_completed">Fin de reproducción multimedia</string>
+    <string name="gui_playback_rate">Tasa de reproducción: %1$s</string>
 
     <!-- Conference Chat -->
 	<string name="service_gui_AUTOJOIN">Unirse automáticamente</string>

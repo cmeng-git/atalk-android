@@ -15,19 +15,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.Surface;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -37,35 +30,25 @@ import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.ChatRoom;
-import net.java.sip.communicator.service.protocol.ChatRoomMember;
-import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.IMessage;
-import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.sf.fmj.utility.IOUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.BuildConfig;
-import org.atalk.android.MyGlideApp;
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
+import org.atalk.android.*;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
-import org.atalk.android.gui.chatroomslist.ChatRoomConfiguration;
-import org.atalk.android.gui.chatroomslist.ChatRoomDestroyDialog;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
-import org.atalk.android.gui.chatroomslist.ChatRoomInfoDialog;
+import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
+import org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment;
+import org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment;
 import org.atalk.android.gui.share.Attachment;
 import org.atalk.android.gui.share.MediaPreviewAdapter;
 import org.atalk.android.gui.util.AndroidUtils;
@@ -73,7 +56,6 @@ import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
-import org.atalk.android.plugin.video.MediaExoPlayer;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
@@ -100,6 +82,8 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.ATTR_MEDIA_URL;
+import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.URL_YOUTUBE;
 import static org.atalk.persistance.FileBackend.getMimeType;
 
 /**
@@ -146,6 +130,10 @@ public class ChatActivity extends OSGiActivity
      * Caches last index to prevent from propagating too many events.
      */
     private int lastSelectedIdx = -1;
+
+    private FrameLayout mPlayerContainer;
+    private MediaExoPlayerFragment mExoPlayer;
+    private YoutubePlayerFragment mYoutubePlayer;
 
     /**
      * ChatActivity menu & menuItem
@@ -232,6 +220,9 @@ public class ChatActivity extends OSGiActivity
         RecyclerView mediaPreview = findViewById(R.id.media_preview);
         mediaPreviewAdapter = new MediaPreviewAdapter(this, imagePreview);
         mediaPreview.setAdapter(mediaPreviewAdapter);
+
+        mPlayerContainer = findViewById(R.id.player_container);
+        mPlayerContainer.setVisibility(View.GONE);
 
         // Must do this in onCreate cycle else IllegalStateException if do it in onNewIntent->handleIntent:
         // attempting to register while current state is STARTED. LifecycleOwners must call register before they are STARTED.
@@ -409,6 +400,10 @@ public class ChatActivity extends OSGiActivity
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (chatRoomConfig != null) {
                 chatRoomConfig.onBackPressed();
+            }
+            else if (mPlayerContainer.getVisibility() == View.VISIBLE) {
+                mPlayerContainer.setVisibility(View.GONE);
+                releasePlayer();
             }
             else {
                 finish();
@@ -1118,36 +1113,80 @@ public class ChatActivity extends OSGiActivity
     /**
      * Start playback if it is a video file or youtube link; else start android ACTION_VIEW activity
      *
-     * @param uri the video url link
+     * @param videoUrl the video url link
      */
-    public void playMediaOrActionView(Uri uri)
+    public void playMediaOrActionView(Uri videoUrl)
     {
-        String mediaUrl = uri.toString();
-        String mimeType = FileBackend.getMimeType(this, uri);
+        String mediaUrl = videoUrl.toString();
+        String mimeType = FileBackend.getMimeType(this, videoUrl);
         if ((!TextUtils.isEmpty(mimeType) && (mimeType.contains("video") || mimeType.contains("audio")))
-                || mediaUrl.matches("http[s]*://[w.]*youtu[.]*be.*")) {
-            Bundle bundle = new Bundle();
-            bundle.putString(MediaExoPlayer.ATTR_MEDIA_URL, mediaUrl);
-
-            Intent intent = new Intent(this, MediaExoPlayer.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
+                || mediaUrl.matches(URL_YOUTUBE)) {
+            playEmbeddedExo(mediaUrl);
         }
         else {
             Intent openIntent = new Intent(Intent.ACTION_VIEW);
-            openIntent.setDataAndType(uri, mimeType);
+            openIntent.setDataAndType(videoUrl, mimeType);
             openIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             PackageManager manager = getPackageManager();
             List<ResolveInfo> info = manager.queryIntentActivities(openIntent, 0);
             if (info.size() == 0) {
-                openIntent.setDataAndType(uri, "*/*");
+                openIntent.setDataAndType(videoUrl, "*/*");
             }
             try {
                 startActivity(openIntent);
             } catch (ActivityNotFoundException e) {
-                showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
+                aTalkApp.showToastMessage(R.string.service_gui_FILE_OPEN_NO_APPLICATION);
             }
+        }
+    }
+
+    /**
+     * /**
+     * Playback video in embedded fragment for lyrics coexistence
+     *
+     * @param videoUrl url for playback
+     */
+    private void playEmbeddedExo(String videoUrl)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString(ATTR_MEDIA_URL, videoUrl);
+        mPlayerContainer.setVisibility(View.VISIBLE);
+
+        if (videoUrl.matches(URL_YOUTUBE)) {
+            mYoutubePlayer = YoutubePlayerFragment.getInstance(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.player_container, mYoutubePlayer)
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else {
+            mExoPlayer = MediaExoPlayerFragment.getInstance(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.player_container, mExoPlayer)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    /**
+     * Release the exoPlayer resource on end
+     */
+    public void releasePlayer()
+    {
+        // remove the existing player view
+        Fragment playerView = getSupportFragmentManager().findFragmentById(R.id.player_container);
+        if (playerView != null)
+            getSupportFragmentManager().beginTransaction().remove(playerView).commit();
+
+        if (mExoPlayer != null) {
+            mExoPlayer.releasePlayer();
+            mExoPlayer = null;
+        }
+
+        if (mYoutubePlayer != null) {
+            mYoutubePlayer.release();
+            mYoutubePlayer = null;
         }
     }
 
@@ -1257,4 +1296,23 @@ public class ChatActivity extends OSGiActivity
     {
         Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
     }
+
+    /*
+     * This method handles the display of Youtube Player when screen orientation is rotated
+     * Set to fullscreen mode when in landscape, else otherwise
+     * Not working weell - disabled
+     */
+//    @Override
+//    public void onConfigurationChanged(@NotNull Configuration newConfig)
+//    {
+//        super.onConfigurationChanged(newConfig);
+//        if ((mPlayerContainer.getVisibility() == View.VISIBLE) && (mYoutubePlayer != null)) {
+//            if (aTalkApp.isPortrait) {
+//                mYoutubePlayer.getFullScreenHelper().exitFullScreen();
+//            }
+//            else {
+//                mYoutubePlayer.getFullScreenHelper().enterFullScreen();
+//            }
+//        }
+//    }
 }

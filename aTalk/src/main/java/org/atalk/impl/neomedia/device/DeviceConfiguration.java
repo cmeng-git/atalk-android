@@ -102,12 +102,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * The default video width.
      */
-    public static final int DEFAULT_VIDEO_WIDTH = 720;
+    public static final int DEFAULT_VIDEO_WIDTH = 1280;
 
     /**
      * The default video height.
      */
-    public static final int DEFAULT_VIDEO_HEIGHT = 480;
+    public static final int DEFAULT_VIDEO_HEIGHT = 720;
 
     /**
      * The default value for video maximum bandwidth.
@@ -171,6 +171,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             // new Dimension(352, 288), // CIF
             new Dimension(640, 480), // VGA
             new Dimension(720, 480), // DV NTSC
+            // new Dimension(800, 450), // < QHD - not support by camera preview
             new Dimension(960, 720), // Panasonic DVCPRO100
             new Dimension(1280, 720), // HDTV
             new Dimension(1440, 1080), // HDV 1080

@@ -12,7 +12,7 @@
 - aTalk v2.6.1 release is compatible with libvpx-1.10.0 (use android-ndk-r18b) <br/>
 - aTalk v1.8.2 release is compatible with libvpx-1.8.0 (must use android-ndk-r17c or lower) <br/>
 - aTalk v2.3.2 release uses libvpx-1.8.2 (work with android-ndk-r17c or android-ndk-r18b)<br/>
-- Following problem has been fixed with inclusion of configure option --disable-avx2<br/>
+  Following problem has been fixed with inclusion of configure option --disable-avx2<br/>
   see <https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1><br/>
   i.e.: The compiled libjnvpx.so for aTalk has a problem when exec on x86_64 android platform (libvpx asm source errors):<br/>
   org.atalk.android A/libc: Fatal signal 31 (SIGSYS), code 1 in tid 5833 (Loop thread: ne), pid 4781 (g.atalk.android)
@@ -24,33 +24,30 @@
 - When you first exec build-libvpx4android.sh, it applies the required patches to libvpx<br/>
   Note: the patches defined in libvpx_patch.sh is for libvpx-1.8.0+, libvpx-1.7.0 and libvpx-1.6.1+<br/>
   
-The ./build-libvpx4android.sh script build the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>
+The ./build-libvpx4android.sh script builds the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>
 i.e. ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")<br/>
 All the built libvpx.a and *.h are installed in the ./jni/vpx/android/&lt;ABI>/lib and include respectively
 
+
 **Android libvpx build instructions:**
 ```
-## git clone vpx-android directory into your linux working directory.
-git clone https://github.com/cmeng-git/vpx-android.git ./vpx-android
-cd vpx-android
-
 ## Use Android NDK: android-ndk-r18b (libvpx v1.8.2)
 export ANDROID_NDK=/opt/android/android-ndk-r18b
 
 ## setup the required libvpx; default "libvpx-1.10.0" or change LIB_GIT in ./init_libvpx.sh
-./init_libvpx.sh (Optional as next command will load the source if not found)
-
+Optional as next command will load the source if not found or incorrect version, and applied the patches if any
+./init_libvpx.sh
+ 
 ## use one of the following to build libvpx i.e.
-#a. for all the ABI's defined in _settings.sh
+a. for all the ABI's defined in _settings.sh
 ./build-libvpx4android.sh
 
-#b. for a specific <ABI>
-./build-libvpx4android.sh <ABI> 
+b. for a specific <ABI>
+./build-libvpx4android.sh <ABI>
+
+The build installs the static libs and includes into the android project jni directory
+ i.e. aTalk/jni/vpx/android/\<ABI>
 ```
-
-Copy the static libs and includes in `./output/android/<ABI>` directories to the android project
-jni directory i.e. aTalk/jni/vpx/android/\<ABI>
-
 ```
 Note:
 ## Standalone toolchains work for ABIS=("arm64-v8a" "x86" "x86_64")

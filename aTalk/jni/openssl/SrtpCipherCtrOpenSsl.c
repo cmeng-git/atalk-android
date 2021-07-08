@@ -58,7 +58,7 @@ Java_org_atalk_impl_neomedia_transform_srtp_crypto_SrtpCipherCtrOpenSsl_AES128CT
   (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray key)
 {
     unsigned char key_[16];
-    (*env)->GetByteArrayRegion(env, key, 0, 16, key_);
+    (*env)->GetByteArrayRegion(env, key, 0, 16, (signed char*) key_);
     return EVP_CipherInit_ex((EVP_CIPHER_CTX *) (intptr_t) ctx, EVP_aes_128_ctr(), NULL, key_, NULL, 1);
 }
 
@@ -73,7 +73,7 @@ Java_org_atalk_impl_neomedia_transform_srtp_crypto_SrtpCipherCtrOpenSsl_AES128CT
 {
     int ok = 0;
     unsigned char iv_[16];
-    (*env)->GetByteArrayRegion(env, iv, 0, 16, iv_);
+    (*env)->GetByteArrayRegion(env, iv, 0, 16, (signed char*) iv_);
     jbyte *inOut_;
     inOut_ = (*env)->GetPrimitiveArrayCritical(env, inOut, NULL);
     if (!inOut)
@@ -112,7 +112,7 @@ Java_org_atalk_impl_neomedia_transform_srtp_crypto_SrtpCipherCtrOpenSsl_AES192CT
   (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray key)
 {
     unsigned char key_[24];
-    (*env)->GetByteArrayRegion(env, key, 0, 24, key_);
+    (*env)->GetByteArrayRegion(env, key, 0, 24, (signed char*) key_);
     return EVP_CipherInit_ex((EVP_CIPHER_CTX *) (intptr_t) ctx, EVP_aes_192_ctr(), NULL, key_, NULL, 1);
 }
 
@@ -127,7 +127,7 @@ Java_org_atalk_impl_neomedia_transform_srtp_crypto_SrtpCipherCtrOpenSsl_AES192CT
 {
     int ok = 0;
     unsigned char iv_[16];
-    (*env)->GetByteArrayRegion(env, iv, 0, 16, iv_);
+    (*env)->GetByteArrayRegion(env, iv, 0, 16, (signed char*) iv_);
     jbyte *inOut_;
     inOut_ = (*env)->GetPrimitiveArrayCritical(env, inOut, NULL);
     if (!inOut)
@@ -166,7 +166,7 @@ Java_org_atalk_impl_neomedia_transform_srtp_crypto_SrtpCipherCtrOpenSsl_AES256CT
   (JNIEnv *env, jclass clazz, jlong ctx, jbyteArray key)
 {
     unsigned char key_[32];
-    (*env)->GetByteArrayRegion(env, key, 0, 32, key_);
+    (*env)->GetByteArrayRegion(env, key, 0, 32, (signed char*) key_);
     return EVP_CipherInit_ex((EVP_CIPHER_CTX *) (intptr_t) ctx, EVP_aes_256_ctr(), NULL, key_, NULL, 1);
 }
 
@@ -181,7 +181,7 @@ Java_org_atalk_impl_neomedia_transform_srtp_crypto_SrtpCipherCtrOpenSsl_AES256CT
 {
     int ok = 0;
     unsigned char iv_[16];
-    (*env)->GetByteArrayRegion(env, iv, 0, 16, iv_);
+    (*env)->GetByteArrayRegion(env, iv, 0, 16, (signed char*) iv_);
     jbyte *inOut_;
     inOut_ = (*env)->GetPrimitiveArrayCritical(env, inOut, NULL);
     if (!inOut)

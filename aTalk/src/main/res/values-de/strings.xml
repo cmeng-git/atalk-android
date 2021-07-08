@@ -160,6 +160,7 @@
     <string name="gui_playback_error">Es können keine Medieninhalte für die Wiedergabe gefunden werden</string>
     <string name="gui_playback_buffering">Pufferung&#8230;</string>
     <string name="gui_playback_completed">Ende der Medienwiedergabe</string>
+    <string name="gui_playback_rate">GrößeWiedergaberate: %1$s</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Automatische Teilnahme</string>

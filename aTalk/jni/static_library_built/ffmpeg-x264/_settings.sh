@@ -16,19 +16,21 @@
 
 # Uncomment the line below to see all script echo to terminal
 # set -x
-if [[ -z $ANDROID_NDK ]]; then
+
+export ANDROID_NDK=/opt/android/android-ndk-r18b
+if [[ -z $ANDROID_NDK ]] || [[ ! -d $ANDROID_NDK ]] ; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
-	echo "Use: export ANDROID_NDK=/your_path_to_android_ndk"
-	echo "e.g. export ANDROID_NDK=/opt/android/android-ndk-r18b"
+	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk-rxx"
+	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r18b"
 	exit 1
 fi
+
 set -u
 
 # Never mix two api level to build static library for use on the same apk.
 # Set to API:21 for aTalk 64-bit architecture support
 # Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
 ANDROID_API=21
-NDK_ABI_VERSION=4.9
 
 # set STANDALONE_TOOLCHAINS to 0: SDK toolchains OR 1: standalone toolchains
 STANDALONE_TOOLCHAINS=1;
@@ -150,7 +152,7 @@ if [[ ${STANDALONE_TOOLCHAINS} == 1 ]]; then
       --install-dir=${TOOLCHAIN_PREFIX}
   fi
 else
-  TOOLCHAIN_PREFIX=${ANDROID_NDK}/toolchains/${NDK_ABIARCH}-${NDK_ABI_VERSION}/prebuilt/linux-x86_64
+  TOOLCHAIN_PREFIX=${ANDROID_NDK}/toolchains/${NDK_ABIARCH}-49/prebuilt/linux-x86_64
   NDK_SYSROOT=${ANDROID_NDK}/platforms/android-${ANDROID_API}/arch-${NDK_ARCH}
   CC_=gcc
   CXX_=g++

@@ -134,6 +134,8 @@ Libraries used in this project:
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
 * [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
+* [android-youtubeExtractor](https://github.com/HaarigerHarald/android-youtubeExtractor)
+* [android-youtube-player](https://github.com/PierfrancescoSoffritti/android-youtube-player)
 * [annotations-java5](https://mvnrepository.com/artifact/org.jetbrains/annotations)
 * [apache-mime4j-core](https://github.com/apache/james-mime4j)
 * [bouncycastle](https://github.com/bcgit/bc-java)
@@ -151,6 +153,7 @@ Libraries used in this project:
 * [jitsi](https://github.com/jitsi/jitsi)
 * [jitsi-android](https://github.com/jitsi/jitsi-android)
 * [jmdns](https://github.com/jmdns/jmdns)
+* [js-evaluator-for-android](https://github.com/evgenyneu/js-evaluator-for-android)
 * [jxmpp-jid](https://github.com/igniterealtime/jxmpp)
 * [libjitsi](https://github.com/jitsi/libjitsi)
 * [libphonenumber](https://github.com/googlei18n/libphonenumber)
@@ -178,6 +181,18 @@ Other contributors:
 * [aTalk site](https://cmeng-git.github.io/atalk)
 * [FAQ](https://cmeng-git.github.io/atalk/faq.html)
 * [Release Notes](https://github.com/cmeng-git/atalk-android/blob/master/aTalk/ReleaseNotes.txt)
+
+## aTalk apk build for android
+* Following development environment setups are used to build aTalk.apk<br/>
+  a. Android Studio 4.2.1<br/>
+  b. Gradle version as specified in ./gradle/gradle-wrapper.properties<br/>
+  c. Ubuntu 20.04 with proper environment setup for development<br>
+  Note: all shell scripts in aTalk are written to run on linux OS only e.g. Ubuntu
+* aTalk uses native jni libraries, required to be built manually.<br/>
+  The jni libraries must be built prior to android studio apk build process.
+* You may launch the gradle task 'initJniLibs' to build all the jni libraries used in aTalk.<br/>
+  See aTalk/jni/static_library_build directory readme files for more information<br/>
+  on linux environment setup, and the execution of jni libraries build scripts.
 
 ## Feedback and Contributions
 Cannot found an UI language and would like to help; translate the content in [strings.xml](https://github.com/cmeng-git/atalk-android/blob/master/art/values-xlate/strings.xml). Create a pull request or forward the file to the developer.

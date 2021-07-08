@@ -27,7 +27,7 @@ import timber.log.Timber;
 
 /**
  * Packetizes VP9 encoded frames in accord with
- * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-12"}
+ * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp9-15"}
  *
  * Uses the simplest possible scheme, only splitting large packets. Extended
  * bits are never added, and PartID is always set to 0. The only bit that changes
@@ -84,24 +84,23 @@ public class Packetizer extends AbstractCodec2
         int inLen;
 
         if (inputBuffer.isDiscard() || ((inLen = inputBuffer.getLength()) == 0)) {
+            // Timber.d("VP9 Packetizer: %s %s", inputBuffer.isDiscard(), inputBuffer.getLength());
             outputBuffer.setDiscard(true);
             return BUFFER_PROCESSED_OK;
         }
-
-        byte[] output;
-        int offset;
-        int pdMaxLen = DePacketizer.VP9PayloadDescriptor.MAX_LENGTH;
 
         // The input will fit in a single packet
         int inOff = inputBuffer.getOffset();
         int len = Math.min(inLen, MAX_SIZE);
 
-        offset = pdMaxLen;
+        byte[] output;
+        int offset = DePacketizer.VP9PayloadDescriptor.MAX_LENGTH;
+
         output = validateByteArraySize(outputBuffer, offset + len, true);
-        System.arraycopy(inputBuffer.getData(), inOff, output, offset, len);
+        System.arraycopy((byte[]) inputBuffer.getData(), inOff, output, offset, len);
 
         // get the payload descriptor and copy it to the output
-        byte[] pd = DePacketizer.VP9PayloadDescriptor.create(firstPacket);
+        byte[] pd = DePacketizer.VP9PayloadDescriptor.create(firstPacket, ((VideoFormat) inputBuffer.getFormat()).getSize());
         System.arraycopy(pd, 0, output, offset - pd.length, pd.length);
         offset -= pd.length;
 
@@ -110,7 +109,8 @@ public class Packetizer extends AbstractCodec2
         outputBuffer.setOffset(offset);
         outputBuffer.setLength(len + pd.length);
 
-        Timber.d("VP9 Paketizer: %s %s", pdMaxLen, offset);
+        // Timber.d("VP9 Packetizer: inLen: %s; pdMaxLen: %s; offset: %s;\ndata: %s",
+        //        inLen, pdMaxLen, offset, bytesToHex(output, 32));
         if (inLen <= MAX_SIZE) {
             firstPacket = true;
             outputBuffer.setFlags(outputBuffer.getFlags() | Buffer.FLAG_RTP_MARKER);

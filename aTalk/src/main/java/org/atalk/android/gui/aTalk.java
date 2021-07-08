@@ -60,7 +60,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     /**
      * A map reference to find the FragmentPagerAdapter's fragmentTag (String) by a given position (Integer)
      */
-    private static Map<Integer, String> mFragmentTags = new HashMap<>();
+    private static final Map<Integer, String> mFragmentTags = new HashMap<>();
 
     private static FragmentManager mFragmentManager;
 

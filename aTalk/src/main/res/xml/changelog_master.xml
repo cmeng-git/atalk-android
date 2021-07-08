@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.6.2 (07/08/2021)" versioncode="206020">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Implement youtube player using IFrame Player API to avoid video link extraction error, and support playlist playback</change>
+        <change>Use fragments for both exoPlayer and youtubePlayer playback, allowing chat view and video playback coexistence</change>
+        <change>Implement and support VP9 codec for media call data streaming</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.6.1 (05/16/2021)" versioncode="206010">
         <change>Enhance h264 codec to support android device rotation during media call</change>
         <change>Support ExoPlayer playback with smooth transition on android device rotation, and upgrade ExoPlayer to v2.13.3</change>
@@ -36,7 +44,6 @@
     </release>
 
     <release version="2.5.0 (01/30/2021)" versioncode="1150">
-        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html'&gt;aTalk online help&lt;/a&gt; before using aTalk.</change>
         <change>Add embedded ExoPlayer for video media files or youtube media links play back</change>
         <change>Image content display can either use embedded glide image viewer or external image view application</change>
         <change>Improve process handlers for "Regenerate OMEMO identities", "Purge unused identities" and "Purge Corrupted OmemoKey"</change>
@@ -89,7 +96,6 @@
     </release>
 
     <release version="2.4.2 (09/30/2020)" versioncode="1142">
-        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled</change>
         <change>Update aTalk media player UI to distinguish between pause and stop states</change>
         <change>Upgrade smack to version 4.4.0-beta2</change>

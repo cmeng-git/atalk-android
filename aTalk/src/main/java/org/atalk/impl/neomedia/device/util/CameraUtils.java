@@ -279,7 +279,7 @@ public class CameraUtils
     /**
      * Get the optimized size supported by the camera resolution capability
      * closely match to the preview size requested.
-     * Note: Camera native natural oritation is always in landscape mode
+     * Note: Camera native natural orientation is always in landscape mode
      *
      * @param previewSize requested preview size
      * @param sizes List of camera supported sizes

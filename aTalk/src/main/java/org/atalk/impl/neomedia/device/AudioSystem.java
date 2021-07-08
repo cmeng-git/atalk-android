@@ -249,7 +249,7 @@ public abstract class AudioSystem extends DeviceSystem
                         constructor = clazz.getConstructor(boolean.class);
                     } catch (NoSuchMethodException nsme) {
                         /*
-                         * Such a constructor is optional so the failure to get it will be swallowed
+                         * Such a constructor is optional; so the failure to get it will be allowed,
                          * and the super's createRenderer() will be invoked.
                          */
                     } catch (SecurityException se) {
@@ -287,7 +287,7 @@ public abstract class AudioSystem extends DeviceSystem
                     else {
                         /*
                          * The super's createRenderer() will be invoked because either there is no
-                         * non-default constructor or it is not meant to be invoked by the public.
+                         * non-default constructor, or it is not meant to be invoked by the public.
                          */
                         superCreateRenderer = true;
                         renderer = null;
@@ -296,7 +296,7 @@ public abstract class AudioSystem extends DeviceSystem
                 else {
                     /*
                      * The super's createRenderer() will be invoked because either this AudioSystem
-                     * does not distinguish between playback and notify data flows or the Renderer
+                     * does not distinguish between playback and notify data flows, or the Renderer
                      * implementation class in not familiar.
                      */
                     superCreateRenderer = true;

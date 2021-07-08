@@ -13,6 +13,8 @@ plugins {
     id 'base'
 }
 
+apply plugin: 'org.anarres.jarjar'
+
 repositories {
     google()
     mavenCentral()
@@ -21,13 +23,11 @@ repositories {
     }
 }
 
-apply plugin: 'org.anarres.jarjar'
-
 def smackVersion = '4.4.2'
 
 def jarJarDeps = task("jarJarDeps") {
     doFirst {
-        println "Fixed dependencies"
+        println "Fixed smack dependencies"
     }
 }
 
@@ -63,4 +63,5 @@ jarJarDeps.dependsOn(
             classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
         }
 )
+
 tasks.getByName("build").dependsOn(jarJarDeps)

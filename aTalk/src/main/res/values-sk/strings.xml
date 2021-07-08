@@ -161,6 +161,7 @@
     <string name="gui_playback_error">Nie je možné nájsť žiadny mediálny obsah na prehrávanie</string>
     <string name="gui_playback_buffering">Ukladanie do vyrovnávacej pamäte&#8230;</string>
     <string name="gui_playback_completed">Koniec prehrávania médií</string>
+    <string name="gui_playback_rate">Rýchlosť prehrávania: %1$s</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Automatické pripojenie</string>
