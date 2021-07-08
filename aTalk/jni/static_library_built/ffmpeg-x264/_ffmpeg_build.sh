@@ -26,13 +26,12 @@
 
 . _settings.sh "$@"
 
-pushd ffmpeg || return
-if [[ -f "./ffbuild/version.sh" ]]; then
-  VERSION=$(./ffbuild/version.sh .)
-else
-  VERSION=$(./version.sh .)
-fi
-echo -e "\n\n** BUILD STARTED: ffmpeg-v${VERSION} for ${1} **"
+LIB_FFMPEG=ffmpeg
+
+pushd ${LIB_FFMPEG} || return
+VERSION=$(cat RELEASE)
+
+echo -e "\n\n** BUILD STARTED: ${LIB_FFMPEG}-v${VERSION} for ${1} **"
 
 # Must include option --disable-asm; otherwise ffmpeg-3.4.6 has problem and crash system:
 # armeabi-v7a: org.atalk.android A/libc: Fatal signal 7 (SIGBUS), code 1, fault addr 0x9335c00c in tid 20032 (Loop thread: ne)
@@ -41,7 +40,7 @@ echo -e "\n\n** BUILD STARTED: ffmpeg-v${VERSION} for ${1} **"
 # libavcodec/x86/cabac.h:193:9: error: inline assembly requires more registers than available
 # TA_OPTIONS="--disable-ffserver --disable-asm"
 
-# Note: Use the folloowing option for ffmpeg 4.0+ build
+# Note: Use the following option for ffmpeg 4.0+ build
 # Not valid for ffmpeg 4.0+: Removed the ffserver program
 #  --disable-ffserver \
 # Must include option --disable-asm for v4.1.6+ for x86 and x86_64 build;
@@ -74,28 +73,25 @@ MODULES=""
 
 for m in "$@"
   do
-    # PREFIX_=${BASEDIR}/jni/$m/android/$1
-    # PREFIX_=../android/$1
-    PREFIX_=${PREFIX}
     [[ -d ${PREFIX}/lib/pkgconfig ]] || mkdir -p ${PREFIX}/lib/pkgconfig
 
     case $m in
       x264)
-        INCLUDES="${INCLUDES} -I${PREFIX_}/include/$m"
-        LIBS="${LIBS} -L${PREFIX_}/lib"
-        # cp -r ${PREFIX_}/lib/pkgconfig ${PREFIX}/lib
+        INCLUDES="${INCLUDES} -I${PREFIX}/include/$m"
+        LIBS="${LIBS} -L${PREFIX}/lib"
+        # cp -r ${PREFIX}/lib/pkgconfig ${PREFIX}/lib
         MODULES="${MODULES} --enable-libx264 --enable-version3"
       ;;
       h264)
-        INCLUDES="${INCLUDES} -I${PREFIX_}/include"
-        LIBS="${LIBS} -L${PREFIX_}/lib"
-        # cp -r ${PREFIX_}/lib/pkgconfig ${PREFIX}/lib
+        INCLUDES="${INCLUDES} -I${PREFIX}/include"
+        LIBS="${LIBS} -L${PREFIX}/lib"
+        # cp -r ${PREFIX}/lib/pkgconfig ${PREFIX}/lib
         MODULES="${MODULES} --enable-libopenh264"
       ;;
       lame)
-        INCLUDES="${INCLUDES} -I${PREFIX_}/include"
-        LIBS="${LIBS} -L${PREFIX_}/lib"
-        # cp -r ${PREFIX_}/lib/pkgconfig ${PREFIX}/lib/pkgconfig
+        INCLUDES="${INCLUDES} -I${PREFIX}/include"
+        LIBS="${LIBS} -L${PREFIX}/lib"
+        # cp -r ${PREFIX}/lib/pkgconfig ${PREFIX}/lib/pkgconfig
         MODULES="${MODULES} --enable-libmp3lame"
       ;;
     esac
@@ -105,6 +101,12 @@ for m in "$@"
 # --enable-gpl required for libpostproc build
 # --disable-postproc: https://trac.ffmpeg.org/wiki/Postprocessing
 # Anyway, most of the time it won't help to postprocess h.264, HEVC, VP8, or VP9 video.
+
+# FFmpeg must be compiled with the --enable-libvpx option for VP9 to work (but seems not helping in aTalk vp9 encode/decode)
+# see https://developers.google.com/media/vp9/get-started
+# see ffmpeg/doc/general.texi etc for more info
+
+# -lstdc++ requires by openh264
 
 # do no set ld option and use as=gcc for clang
 TC_OPTIONS="--nm=${NM} --ar=${AR} --as=${AS} --strip=${STRIP} --cc=${CC} --cxx=${CXX}"
@@ -141,6 +143,7 @@ make clean
   --disable-v4l2_m2m \
   --enable-decoder=h264 \
   --enable-encoder=libx264 \
+  --enable-libvpx \
   --enable-decoder=mjpeg \
   --enable-parser=mjpeg \
   --enable-filter=format \
@@ -156,10 +159,7 @@ make clean
   --extra-libs="-lgcc -lstdc++" \
   --pkg-config=${FFMPEG_PKG_CONFIG} || exit 1
 
-# -lstdc++ requires by openh264
-
-# make -j${HOST_NUM_CORES} && make install || exit 1
 make -j${HOST_NUM_CORES} install || exit 1
 popd || exit
 
-echo -e "** BUILD COMPLETED: ffmpeg-v${VERSION} for ${1} **\n"
+echo -e "** BUILD COMPLETED: ${LIB_FFMPEG}-v${VERSION} for ${1} **\n"

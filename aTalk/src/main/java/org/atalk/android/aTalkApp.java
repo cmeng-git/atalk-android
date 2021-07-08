@@ -8,6 +8,7 @@ package org.atalk.android;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -94,6 +95,7 @@ public class aTalkApp extends Application implements LifecycleObserver
      */
     private static final Object currentActivityMonitor = new Object();
 
+    public static boolean isPortrait = true;
     public static int screenWidth;
     public static int screenHeight;
 
@@ -148,6 +150,21 @@ public class aTalkApp extends Application implements LifecycleObserver
             Rect mBounds = ((WindowManager) getSystemService(WINDOW_SERVICE)).getCurrentWindowMetrics().getBounds();
             screenWidth = Math.abs(mBounds.width());
             screenHeight = Math.abs(mBounds.height());
+        }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+
+        int orientation = newConfig.orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            isPortrait = true;
+        }
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            isPortrait = false;
         }
     }
 

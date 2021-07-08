@@ -1007,7 +1007,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         // Active devices
         values.put(SQLiteOmemoStore.ACTIVE, 1);
         Set<Integer> activeDevices = deviceList.getActiveDevices();
-        Timber.d("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
+        // Timber.d("Identities table - updating for activeDevice: %s:%s", contact, activeDevices);
         for (int deviceId : activeDevices) {
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 
@@ -1035,7 +1035,7 @@ public class DatabaseBackend extends SQLiteOpenHelper
         values.clear();
         values.put(SQLiteOmemoStore.ACTIVE, 0);
         Set<Integer> inActiveDevices = deviceList.getInactiveDevices();
-        Timber.i("Identities table updated for inactiveDevice: %s:%s", contact, inActiveDevices);
+        // Timber.i("Identities table updated for inactiveDevice: %s:%s", contact, inActiveDevices);
         for (int deviceId : inActiveDevices) {
             String[] selectionArgs = {contact.toString(), Integer.toString(deviceId)};
 

@@ -56,7 +56,7 @@ public class VP9Encoder extends AbstractCodec2
     /**
      * Pointer to the libvpx codec context to be used
      */
-    private long context = 0;
+    private long vpctx = 0;
 
     /**
      * Flags passed when (re-)initializing the encoder context
@@ -104,18 +104,17 @@ public class VP9Encoder extends AbstractCodec2
     public VP9Encoder()
     {
         super("VP9 Encoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
-        inputFormats = new VideoFormat[]{
-                new YUVFormat(
-                        null, /* size */
-                        Format.NOT_SPECIFIED, /* maxDataLength */
-                        Format.byteArray,
-                        Format.NOT_SPECIFIED, /* frameRate */
-                        YUVFormat.YUV_420,
-                        Format.NOT_SPECIFIED, /* strideY */
-                        Format.NOT_SPECIFIED, /* strideUV */
-                        Format.NOT_SPECIFIED, /* offsetY */
-                        Format.NOT_SPECIFIED, /* offsetU */
-                        Format.NOT_SPECIFIED) /* offsetV */
+        inputFormats = new VideoFormat[]{new YUVFormat(
+                null, /* size */
+                Format.NOT_SPECIFIED, /* maxDataLength */
+                Format.byteArray,
+                Format.NOT_SPECIFIED, /* frameRate */
+                YUVFormat.YUV_420,
+                Format.NOT_SPECIFIED, /* strideY */
+                Format.NOT_SPECIFIED, /* strideUV */
+                Format.NOT_SPECIFIED, /* offsetY */
+                Format.NOT_SPECIFIED, /* offsetU */
+                Format.NOT_SPECIFIED) /* offsetV */
         };
     }
 
@@ -126,10 +125,10 @@ public class VP9Encoder extends AbstractCodec2
     protected void doClose()
     {
         Timber.d("Closing encoder");
-        if (context != 0) {
-            VPX.codec_destroy(context);
-            VPX.free(context);
-            context = 0;
+        if (vpctx != 0) {
+            VPX.codec_destroy(vpctx);
+            VPX.free(vpctx);
+            vpctx = 0;
         }
         if (img != 0) {
             VPX.free(img);
@@ -140,6 +139,8 @@ public class VP9Encoder extends AbstractCodec2
             cfg = 0;
         }
     }
+
+    // FileOutputStream fos;
 
     /**
      * {@inheritDoc}
@@ -181,7 +182,7 @@ public class VP9Encoder extends AbstractCodec2
         }
         VPX.codec_enc_config_default(INTERFACE, cfg, 0);
 
-        //set some settings
+        // setup the decoder required parameter settings
         int bitRate = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoBitrate();
         VPX.codec_enc_cfg_set_w(cfg, mWidth);
         VPX.codec_enc_cfg_set_h(cfg, mHeight);
@@ -193,19 +194,25 @@ public class VP9Encoder extends AbstractCodec2
         VPX.codec_enc_cfg_set_rc_resize_allowed(cfg, 1);
         VPX.codec_enc_cfg_set_rc_end_usage(cfg, VPX.RC_MODE_CBR);
         VPX.codec_enc_cfg_set_kf_mode(cfg, VPX.KF_MODE_AUTO);
+
+        // cfg.g_lag_in_frames should be set to 0 for realtime
+        VPX.codec_enc_cfg_set_lag_in_frames(cfg, 0);
+
+        // Must be enabled together with VP8E_SET_CPUUSED for realtime encode
+        VPX.codec_enc_cfg_set_threads(cfg, 1);
         VPX.codec_enc_cfg_set_error_resilient(cfg, VPX.ERROR_RESILIENT_DEFAULT | VPX.ERROR_RESILIENT_PARTITIONS);
 
-        context = VPX.codec_ctx_malloc();
-        int ret = VPX.codec_enc_init(context, INTERFACE, cfg, flags);
-
+        vpctx = VPX.codec_ctx_malloc();
+        int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
         if (ret != VPX.CODEC_OK)
             throw new RuntimeException("Failed to initialize encoder, libvpx error:\n"
                     + VPX.codec_err_to_string(ret));
 
-        ret = VPX.codec_control(context, VPX.VP9E_SET_LOSSLESS, 1);
-        if (ret != VPX.CODEC_OK)
-            throw new RuntimeException("Failed to use lossless mode:\n"
-                    + VPX.codec_err_to_string(ret));
+        // Must be defined together with g_threads for realtime encode
+        VPX.codec_control(vpctx, VPX.VP8E_SET_CPUUSED, 7);
+
+        // ji… via monorail: For realtime video application you should not use a lossless mode.
+        // VPX.codec_control(context, VPX.VP9E_SET_LOSSLESS, 1);
 
         if (inputFormat == null)
             throw new ResourceUnavailableException("No input format selected");
@@ -213,6 +220,17 @@ public class VP9Encoder extends AbstractCodec2
             throw new ResourceUnavailableException("No output format selected");
 
         Timber.d("VP9 encoder opened successfully");
+/* ****
+        String fileName = "yuv420_480x720.jpg";
+        String downloadPath = FileBackend.TMP + File.separator;
+        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
+        File outFile = new File(downloadDir, fileName);
+        try {
+            fos = new FileOutputStream(outFile);
+        } catch (FileNotFoundException e) {
+            Timber.e("Output stream file creation exception: %s", e.getMessage());
+        }
+**** */
     }
 
     /**
@@ -238,22 +256,20 @@ public class VP9Encoder extends AbstractCodec2
 
             if (width > 0 && height > 0
                     && (width != mWidth || height != mHeight)) {
-                Timber.d("VP9 encode video size changed: [width=%s, height=%s]=>%s",  mWidth, mHeight, formatSize);
-                updateSize(width, height);
-            }
+                Timber.d("VP9 encode video size changed: [width=%s, height=%s]=>%s", mWidth, mHeight, formatSize);
 
-            // setup img => already setup in VPX.img_alloc() in doOpen and updateSize()
-//            int strideY = format.getStrideY();
-//            if (strideY == Format.NOT_SPECIFIED)
-//                //noinspection SuspiciousNameCombination
-//                strideY = width;
-//            int strideUV = format.getStrideUV();
-//            if (strideUV == Format.NOT_SPECIFIED)
-//                strideUV = width / 2;
-//            VPX.img_set_stride0(img, strideY);
-//            VPX.img_set_stride1(img, strideUV);
-//            VPX.img_set_stride2(img, strideUV);
-//            VPX.img_set_stride3(img, 0);
+                doClose();
+                try {
+                    doOpen();
+                } catch (ResourceUnavailableException e) {
+                    Timber.e("Could not find H.264 encoder.");
+                }
+
+                // vpx_jni: [0705/123845.503533:ERROR:scoped_ptrace_attach.cc(27)] ptrace: Operation not permitted (1)
+                // org.atalk.android A/libc: Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x2 in tid 5868 (Loop thread: ne), pid 2084 (g.atalk.android)
+                // org.atalk.android A/libc: crash_dump helper failed to exec
+                // updateSize(width, height);
+            }
 
             int offsetY = format.getOffsetY();
             if (offsetY == Format.NOT_SPECIFIED)
@@ -265,19 +281,33 @@ public class VP9Encoder extends AbstractCodec2
             if (offsetV == Format.NOT_SPECIFIED)
                 offsetV = offsetU + (width * height) / 4;
 
-            // prevent exception to test decoder i.e. A/libc: vp9/encoder/vp9_bitstream.c:399: assertion "*tok < tok_end" failed
-            if (frameCount > 10)
-                return BUFFER_PROCESSED_OK;
+            // routine to save raw input data into a file.
+            // if (frameCount < 25) {
+            //     if (fos != null) {
+            //         try {
+            //             fos.write((byte[]) inputBuffer.getData());
+            //             // Timber.e("File fos write frame #: %s:", frameCount);
+            //             Timber.d("VP9: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
+            //             if (frameCount == 24) {
+            //                 fos.close();
+            //                 Timber.d("File fos write completed:");
+            //             }
+            //         } catch (IOException e) {
+            //             Timber.e("fos write exception: %s", e.getMessage());
+            //         }
+            //     }
+            // }
 
-           int result = VPX.codec_encode(
-                    context,
-                    img,
-                    (byte[]) inputBuffer.getData(),
+            // prevent exception to test decoder i.e. A/libc: vp9/encoder/vp9_bitstream.c:399: assertion "*tok < tok_end" failed
+            // true only if VPX.codec_enc_cfg_set_g_lag_in_frames(cfg, 1);
+            // if (frameCount > 25)
+            //     return BUFFER_PROCESSED_OK;
+            // Timber.d("VP9: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
+
+            int result = VPX.codec_encode(vpctx, img, (byte[]) inputBuffer.getData(),
                     offsetY, offsetU, offsetV,
-                    frameCount++,
-                    1,
-                    0,
-                    VPX.DL_REALTIME);
+                    frameCount++, 1, 0, VPX.DL_REALTIME);
+
             if (result != VPX.CODEC_OK) {
                 if ((frameCount % 50) == 1)
                     Timber.w("Failed to encode a frame: %s %s %s %s %s %s", VPX.codec_err_to_string(result), inputBuffer.getLength(),
@@ -288,10 +318,10 @@ public class VP9Encoder extends AbstractCodec2
 
             // if ((frameCount % 50) == 1)
             //    Timber.w("Encode a VP9 frame: %s %s %s %s %s %s", VPX.codec_err_to_string(result),
-            //            inputBuffer.getLength(), format.getSize(), offsetY, offsetU, offsetV);
+            // inputBuffer.getLength(), format.getSize(), offsetY, offsetU, offsetV);
 
             iter[0] = 0;
-            pkt = VPX.codec_get_cx_data(context, iter);
+            pkt = VPX.codec_get_cx_data(vpctx, iter);
         }
 
         if (pkt != 0
@@ -307,17 +337,19 @@ public class VP9Encoder extends AbstractCodec2
         else {
             // Also failed vp9/encoder/vp9_bitstream.c:399: assertion "*tok < tok_end" failed
             // not a compressed frame, skip this packet
-            Timber.w("Discard non-compressed frame packet: %s: %s", pkt, frameCount);
+            Timber.w("Skip incomplete compressed frame packet: %s: %s", pkt, frameCount);
             ret |= OUTPUT_BUFFER_NOT_FILLED;
         }
 
         // Check for more encoded frame
-        pkt = VPX.codec_get_cx_data(context, iter);
+        pkt = VPX.codec_get_cx_data(vpctx, iter);
         leftoverPackets = (pkt != 0);
         if (leftoverPackets)
             return ret | INPUT_BUFFER_NOT_CONSUMED;
-        else
+        else {
+            // Timber.w("Received compressed frame packet: %s", frameCount);
             return ret;
+        }
     }
 
     /**
@@ -360,54 +392,15 @@ public class VP9Encoder extends AbstractCodec2
             VPX.codec_enc_cfg_set_h(cfg, h);
         }
 
-        if (context != 0) {
-            VPX.codec_destroy(context);
+        if (vpctx != 0) {
+            VPX.codec_destroy(vpctx);
 
-            int ret = VPX.codec_enc_init(context, INTERFACE, cfg, flags);
+            int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
             if (ret != VPX.CODEC_OK)
-                throw new RuntimeException("Failed to re-initialize VP8 encoder, libvpx error:\n"
+                throw new RuntimeException("Failed to re-initialize VP9 encoder, libvpx error:\n"
                         + VPX.codec_err_to_string(ret));
         }
     }
-
-//    /**
-//     * Updates the input width and height the encoder should expect.
-//     *
-//     * @param w new width
-//     * @param h new height
-//     */
-//    private void updateSize2(int w, int h)
-//    {
-//        Timber.i("Setting VPX encoder new video size: %dx%d", w, h);
-//
-//        mWidth = w;
-//        mHeight = h;
-//        if (img != 0) {
-//            VPX.img_set_w(img, w);
-//            VPX.img_set_d_w(img, w);
-//            VPX.img_set_h(img, h);
-//            VPX.img_set_d_h(img, h);
-//        }
-//        if (cfg != 0) {
-//            VPX.codec_enc_cfg_set_w(cfg, w);
-//            VPX.codec_enc_cfg_set_h(cfg, h);
-//            reinit();
-//        }
-//    }
-
-//    /**
-//     * Re-initialize the encoder context. Needed when the input size changes.
-//     */
-//    private void reinit()
-//    {
-//        if (context != 0)
-//            VPX.codec_destroy(context);
-//
-//        int ret = VPX.codec_enc_init(context, INTERFACE, cfg, flags);
-//        if (ret != VPX.CODEC_OK)
-//            throw new RuntimeException("Failed to re-initialize VP9 encoder, libvpx error:\n"
-//                    + VPX.codec_err_to_string(ret));
-//    }
 
     /**
      * Sets the input format.

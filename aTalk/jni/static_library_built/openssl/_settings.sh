@@ -18,11 +18,12 @@
 # set -x
 
 export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/20.0.5594570
-if [[ -z ${ANDROID_NDK_HOME} ]]; then
+if [[ -z $ANDROID_NDK_HOME ]] || [[ ! -d $ANDROID_NDK_HOME ]] ; then
 	echo "You need to set ANDROID_NDK_HOME environment variable, exiting"
 	echo "e.g.: export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/20.0.5594570"
 	exit 1
 fi
+
 set -u
 
 # Never mix two api level to build static library for use on the same apk.
@@ -69,8 +70,9 @@ configure() {
   # Add the prebuilt toolchain and clang to the search path. (See NOTES.ANDROID)
 	# PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:\
 	# $ANDROID_NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:$PATH
-  NDK_PREFIX=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64
-  export PATH=${NDK_PREFIX}/bin:${ANDROID_NDK_HOME}/toolchains/${NDK_ARCH}/prebuilt/linux-x86_64/bin:$PATH
+  NDK_LIBC=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin
+  NDK_TOOLCHAIN=${ANDROID_NDK_HOME}/toolchains/${NDK_ARCH}/prebuilt/linux-x86_64/bin
+  export PATH=${NDK_LIBC}:${NDK_TOOLCHAIN}:$PATH
 
   echo "**********************************************"
   echo "### Use NDK=${ANDROID_NDK_HOME}"

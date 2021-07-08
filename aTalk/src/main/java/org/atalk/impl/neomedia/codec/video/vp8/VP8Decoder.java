@@ -48,7 +48,7 @@ public class VP8Decoder extends AbstractCodec2
     /**
      * Pointer to the libvpx codec context to be used
      */
-    private long context = 0;
+    private long vpctx = 0;
 
     /**
      * Pointer to a native vpx_image structure, containing a decoded frame.
@@ -93,9 +93,9 @@ public class VP8Decoder extends AbstractCodec2
     protected void doClose()
     {
         Timber.d("Closing decoder");
-        if (context != 0) {
-            VPX.codec_destroy(context);
-            VPX.free(context);
+        if (vpctx != 0) {
+            VPX.codec_destroy(vpctx);
+            VPX.free(vpctx);
         }
         if (cfg != 0)
             VPX.free(cfg);
@@ -110,13 +110,13 @@ public class VP8Decoder extends AbstractCodec2
     protected void doOpen()
             throws ResourceUnavailableException
     {
-        context = VPX.codec_ctx_malloc();
+        vpctx = VPX.codec_ctx_malloc();
         //cfg = VPX.codec_dec_cfg_malloc();
         long flags = 0; //VPX.CODEC_USE_XMA;
 
         // The cfg NULL pointer is passed to vpx_codec_dec_init(). This is to allow the algorithm
         // to determine the stream configuration (width/height) and allocate memory automatically.
-        int ret = VPX.codec_dec_init(context, INTERFACE, 0, flags);
+        int ret = VPX.codec_dec_init(vpctx, INTERFACE, 0, flags);
         if (ret != VPX.CODEC_OK)
             throw new RuntimeException("Failed to initialize decoder, libvpx error:\n"
                     + VPX.codec_err_to_string(ret));
@@ -147,7 +147,7 @@ public class VP8Decoder extends AbstractCodec2
             int buf_offset = inputBuffer.getOffset();
             int buf_size = inputBuffer.getLength();
 
-            int ret = VPX.codec_decode(context,
+            int ret = VPX.codec_decode(vpctx,
                     buf_data, buf_offset, buf_size,
                     0, VPX.DL_BEST_QUALITY);
 
@@ -164,7 +164,7 @@ public class VP8Decoder extends AbstractCodec2
 
             //decode has just been called, reset iterator
             iter[0] = 0;
-            img = VPX.codec_get_frame(context, iter);
+            img = VPX.codec_get_frame(vpctx, iter);
         }
 
         if (img == 0) {
@@ -189,7 +189,7 @@ public class VP8Decoder extends AbstractCodec2
         /*
          * outputBuffer is all setup now. Check the decoder context for more decoded frames.
          */
-        img = VPX.codec_get_frame(context, iter);
+        img = VPX.codec_get_frame(vpctx, iter);
         if (img == 0) //no more frames
         {
             leftoverFrames = false;

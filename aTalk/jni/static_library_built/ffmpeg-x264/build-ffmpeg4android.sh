@@ -12,7 +12,10 @@ if [[ $# -eq 2 ]]; then
 fi
 
 # Auto fetch and unarchive both ffmpeg and x264 from online repository
-[[ -d ffmpeg ]] && [[ -d x264 ]] || ./init_update_libs.sh
+VERSION_FFMPEG=4.4
+VERSION_X264=161
+
+./init_update_libs.sh $VERSION_FFMPEG $VERSION_X264
 
 # Applying required patches
 . ffmpeg-android_patch.sh "${MODULES[@]}"
@@ -21,7 +24,7 @@ for ((i=0; i < ${#ABIS[@]}; i++))
   do
     if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then
       # Do not build 64-bit ABI if ANDROID_API is less than 21 - minimum supported API level for 64 bit.
-      [[ ${ANDROID_API} < 21 ]] && ( echo "${ABIS[i]}" | grep 64 > /dev/null ) && continue;
+      [[ ${ANDROID_API} -lt 21 ]] && ( echo "${ABIS[i]}" | grep 64 > /dev/null ) && continue;
 
       # $1 = architecture
       # $2 = required for proceed to start setup default compiler environment variables

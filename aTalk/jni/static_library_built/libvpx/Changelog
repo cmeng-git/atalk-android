@@ -2,6 +2,12 @@
 # releases are sorted from youngest to oldest.
 
 #=============================================================
+version 1.1.7 (2021/05/21):
+- Update scripts for v1.10.0
+- Update init_libvpx.sh to have smart libvpx fetching
+- Update build-vpx4android.sh to only make clean on condition to speed delta build 
+
+#=============================================================
 version 1.1.6 (2021/04/23):
 - Build using libvpx v1.10.0
 - All other settings remain as with v1.8.2 without any changes

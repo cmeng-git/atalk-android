@@ -87,6 +87,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      */
     private Ringtone ringtone;
 
+    // private int currentVolume;
+
     protected AbstractSCAudioClip(String uri, AudioNotifierService audioNotifier)
     {
         this.uri = uri;
@@ -166,6 +168,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      */
     public void play(int loopInterval, final Callable<Boolean> loopCondition)
     {
+        // Timber.w(new Exception("Ring tone playing start"));
         if ((loopInterval >= 0) && (loopCondition == null))
             loopInterval = -1;
 
@@ -205,11 +208,14 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                                 if (!equals(command))
                                     return;
                             }
-                            // use runInPlayRingtoneThread if it is for android RingTone playing
-                            if (uri.startsWith(AndroidResourceServiceImpl.PROTOCOL))
+                            if (uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
+                                // setNotificationVolume();
                                 runInPlayThread(loopCondition);
-                            else
+                            }
+                            // use runInPlayRingtoneThread if it is for android RingTone playing
+                            else {
                                 runInPlayRingtoneThread(loopCondition);
+                            }
                         } finally {
                             synchronized (sync) {
                                 if (equals(command)) {
@@ -296,7 +302,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                     try {
                         /*
                          * XXX The value 0 means that this instance should loop playing without
-                         * waiting but it means infinity to Object.wait(long).
+                         * waiting, but it means infinity to Object.wait(long).
                          */
                         int loopInterval = getLoopInterval();
                         if (loopInterval > 0)
@@ -353,6 +359,20 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
             exitRunInPlayThread();
         }
     }
+
+    // The notification volume for aTalk - no good to implement as it affect all notifications
+//    private void setNotificationVolume() {
+//        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+//        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+//        Timber.d("Current volume: %s", currentVolume);
+//        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), 0);
+//    }
+//
+//    private void restoreNotificationVolume() {
+//        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+//        Timber.d("Current volume restore: %s", currentVolume);
+//        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, currentVolume, 0);
+//    }
 
     /**
      * Runs in a background/separate thread dedicated to the actual playback of the android ringtone
@@ -472,7 +492,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                 ringtone = null;
             } catch (IllegalStateException ex) {
                 // just ignore any ringtone stop exception
-                Timber.w("Ringtone stopping exception %s", ex.getMessage());
+                Timber.w("End existing ringtone error: %s", ex.getMessage());
             }
         }
 
@@ -509,7 +529,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     {
         if (!uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
             if (ringtone != null) {
-                // Timber.d("RingTone stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
+                // Timber.d("Ring tone playback stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
                 try {
                     ringtone.stop();
                     ringtone = null;
@@ -518,6 +538,9 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                 }
             }
         }
+//        else {
+//            restoreNotificationVolume();
+//        }
     }
 
     /**

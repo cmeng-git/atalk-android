@@ -1,6 +1,31 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
+Upload Date:	07/08/2021
+Version:		2.6.2 (206020)
+- Implement android youtube player using IFrame Player API to avoid video link extraction error
+- Support youtube playlist playback i.e. Fallback to use as playlist if youtube url load failed.
+- Use fragment for exoPlayer and youtubePlayer playback, allowing user page sliding or text entry
+- Add support for VP9 codec support in media call
+  * VP9 decoder; problem due to incorrect calculation of the VP9 Payload Descriptor data size
+  * VP9 encoder:
+    cfg.g_lag_in_frames = 0 to avoid lag in frames (25 buffer frames) delay
+    cfg.g_threads = 1; codec control VP8E_SET_CPUUSED >= 7 for realtime video application; other encoder is not working
+    should not use lossless mode for realtime video application
+    create VP9PayloadDescriptor uncompressed header for start of frame etc
+  * need to apply patches for v1.10.0 i.e. vpx_encode.h for vp9 encode to work
+- AbstractCodec2#Process() must update inputFormat when there is a change in inputBuffer data; for vp9Encoder to handle device rotation
+- Base on MessageHistoryActivator to getMessageHistoryService() instead of AndroidGUIActivator to avoid null reference;
+- Not supported by camera preview, so omit: Add (800x450)camera resolution option for user selection;
+  instead set (1280720) as default resolution
+- Rewrite vpx_jni file, using marco and remove .h file for future ease of maintenance.
+- Update jni/static_library_build script so all jni libraries are updated only if not found or version incorrect
+- gradle task defined for building the jni static libraries for ffmpeg-x264, vpx and openssl
+- FFmpeg must be compiled with the --enable-libvpx option for VP9 to work (but does not help in aTalk vp9 encode/decode)
+  see https://developers.google.com/media/vp9/get-started
+
+=========================================================================
+Author:         cmeng
 Upload Date:	05/16/2021
 Version:		2.6.1 (206010)
 - AndroidCodec: Change implementation to remove all deprecated MediaCodec methods

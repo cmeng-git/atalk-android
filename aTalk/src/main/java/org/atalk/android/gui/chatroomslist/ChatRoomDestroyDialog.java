@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.*;

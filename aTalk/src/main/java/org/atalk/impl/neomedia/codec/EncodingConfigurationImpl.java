@@ -47,9 +47,9 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     private void initializeFormatPreferences()
     {
         // first init default preferences for video codecs
+        setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1300);
         setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1200);
         setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1100);
-        setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,0);
         setEncodingPreference("JPEG", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,950);
         setEncodingPreference("H261", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,800);
 

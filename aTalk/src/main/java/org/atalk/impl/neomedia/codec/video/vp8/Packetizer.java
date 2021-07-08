@@ -25,6 +25,7 @@ import timber.log.Timber;
  * encoding a frame.
  *
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class Packetizer extends AbstractCodec2
 {
@@ -80,17 +81,15 @@ public class Packetizer extends AbstractCodec2
             return BUFFER_PROCESSED_OK;
         }
 
-        byte[] output;
-        int offset;
-        int pdMaxLen = DePacketizer.VP8PayloadDescriptor.MAX_LENGTH;
-
         //The input will fit in a single packet
         int inOff = inputBuffer.getOffset();
         int len = Math.min(inLen, MAX_SIZE);
 
-        offset = pdMaxLen;
+        byte[] output;
+        int offset = DePacketizer.VP8PayloadDescriptor.MAX_LENGTH;
+
         output = validateByteArraySize(outputBuffer, offset + len, true);
-        System.arraycopy(inputBuffer.getData(), inOff, output, offset, len);
+        System.arraycopy((byte[]) inputBuffer.getData(), inOff, output, offset, len);
 
         //get the payload descriptor and copy it to the output
         byte[] pd = DePacketizer.VP8PayloadDescriptor.create(firstPacket);

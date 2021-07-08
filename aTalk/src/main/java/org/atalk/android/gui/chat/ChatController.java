@@ -369,7 +369,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         }
 
         if (mChatTransport instanceof MetaContactChatTransport) {
-            editText(adapter, chatMessage, position);
+            if (!chatMessage.getMessage().matches(ChatMessage.HTML_MARKUP))
+                editText(adapter, chatMessage, position);
         }
         // Just put the last message in edit box for Omemo send error
         else {

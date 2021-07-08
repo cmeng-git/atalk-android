@@ -330,7 +330,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                 Dimension dim = VideoMediaStreamImpl.selectVideoSize(captureDevice, videoSize.width, videoSize.height);
                 frameRate = deviceConfig.getFrameRate();
                 if (dim != null)
-                    Timber.i("video send resolution: %dx%d", dim.width, dim.height);
+                    Timber.i("video send resolution: [%dx%d]", dim.width, dim.height);
             }
 
             FrameRateControl frameRateControl = (FrameRateControl) captureDevice.getControl(FrameRateControl.class.getName());

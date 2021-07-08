@@ -11,6 +11,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.certificate.CertificateServiceImpl;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
@@ -1733,7 +1734,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         /* XEP-0184: Message Delivery Receipts - global option */
         DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(mConnection);
         // Always enable the ReceiptReceivedListener and receipt request (indepedent of contact capability)
-        MessageHistoryService mhs = AndroidGUIActivator.getMessageHistoryService();
+        MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
         deliveryReceiptManager.addReceiptReceivedListener((MessageHistoryServiceImpl) mhs);
         deliveryReceiptManager.autoAddDeliveryReceiptRequests();
 

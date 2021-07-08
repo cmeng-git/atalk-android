@@ -385,8 +385,13 @@ public abstract class AbstractCodec2 extends AbstractCodec
             return BUFFER_PROCESSED_OK;
         }
 
-        int process;
+        // Must update the inputFormat when there is a change in inBuf format
+        Format inFormat = inBuf.getFormat();
+        if ((inFormat != inputFormat) && !inFormat.matches(inputFormat))
+            setInputFormat(inFormat);
+
         int inLenProcessed = inBuf.getLength();
+        int process;
 
         // Buffer.FLAG_SILENCE is set only when the intention is to drop the
         // specified input Buffer but to note that it has not been lost. The

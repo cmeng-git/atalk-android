@@ -47,7 +47,7 @@ public class VP8Encoder extends AbstractCodec2
     /**
      * Pointer to the libvpx codec context to be used
      */
-    private long context = 0;
+    private long vpctx = 0;
 
     /**
      * Flags passed when (re-)initializing the encoder context
@@ -95,18 +95,17 @@ public class VP8Encoder extends AbstractCodec2
     public VP8Encoder()
     {
         super("VP8 Encoder", VideoFormat.class, SUPPORTED_OUTPUT_FORMATS);
-        inputFormats = new VideoFormat[]{
-                new YUVFormat(
-                        null, /* size */
-                        Format.NOT_SPECIFIED, /* maxDataLength */
-                        Format.byteArray,
-                        Format.NOT_SPECIFIED, /* frameRate */
-                        YUVFormat.YUV_420,
-                        Format.NOT_SPECIFIED, /* strideY */
-                        Format.NOT_SPECIFIED, /* strideUV */
-                        Format.NOT_SPECIFIED, /* offsetY */
-                        Format.NOT_SPECIFIED, /* offsetU */
-                        Format.NOT_SPECIFIED) /* offsetV */
+        inputFormats = new VideoFormat[]{new YUVFormat(
+                null, /* size */
+                Format.NOT_SPECIFIED, /* maxDataLength */
+                Format.byteArray,
+                Format.NOT_SPECIFIED, /* frameRate */
+                YUVFormat.YUV_420,
+                Format.NOT_SPECIFIED, /* strideY */
+                Format.NOT_SPECIFIED, /* strideUV */
+                Format.NOT_SPECIFIED, /* offsetY */
+                Format.NOT_SPECIFIED, /* offsetU */
+                Format.NOT_SPECIFIED) /* offsetV */
         };
     }
 
@@ -117,10 +116,10 @@ public class VP8Encoder extends AbstractCodec2
     protected void doClose()
     {
         Timber.d("Closing encoder");
-        if (context != 0) {
-            VPX.codec_destroy(context);
-            VPX.free(context);
-            context = 0;
+        if (vpctx != 0) {
+            VPX.codec_destroy(vpctx);
+            VPX.free(vpctx);
+            vpctx = 0;
         }
         if (img != 0) {
             VPX.free(img);
@@ -182,8 +181,8 @@ public class VP8Encoder extends AbstractCodec2
         VPX.codec_enc_cfg_set_kf_mode(cfg, VPX.KF_MODE_AUTO);
         VPX.codec_enc_cfg_set_error_resilient(cfg, VPX.ERROR_RESILIENT_DEFAULT | VPX.ERROR_RESILIENT_PARTITIONS);
 
-        context = VPX.codec_ctx_malloc();
-        int ret = VPX.codec_enc_init(context, INTERFACE, cfg, flags);
+        vpctx = VPX.codec_ctx_malloc();
+        int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
 
         if (ret != VPX.CODEC_OK)
             throw new RuntimeException("Failed to initialize encoder, libvpx error:\n"
@@ -220,22 +219,9 @@ public class VP8Encoder extends AbstractCodec2
 
             if (width > 0 && height > 0
                     && (width != mWidth || height != mHeight)) {
-                Timber.d("VP8 encode video size changed: [width=%s, height=%s]=>%s",  mWidth, mHeight, formatSize);
+                Timber.d("VP8 encode video size changed: [width=%s, height=%s]=>%s", mWidth, mHeight, formatSize);
                 updateSize(width, height);
             }
-
-            // setup img => already setup in VPX.img_alloc() in doOpen and updateSize()
-//            int strideY = format.getStrideY();
-//            if (strideY == Format.NOT_SPECIFIED)
-//                //noinspection SuspiciousNameCombination
-//                strideY = width;
-//            int strideUV = format.getStrideUV();
-//            if (strideUV == Format.NOT_SPECIFIED)
-//                strideUV = width / 2;
-//            VPX.img_set_stride0(img, strideY);
-//            VPX.img_set_stride1(img, strideUV);
-//            VPX.img_set_stride2(img, strideUV);
-//            VPX.img_set_stride3(img, 0);
 
             int offsetY = format.getOffsetY();
             if (offsetY == Format.NOT_SPECIFIED)
@@ -247,8 +233,11 @@ public class VP8Encoder extends AbstractCodec2
             if (offsetV == Format.NOT_SPECIFIED)
                 offsetV = offsetU + (width * height) / 4;
 
-           int result = VPX.codec_encode(
-                    context,
+            // if (frameCount < 5)
+            //  Timber.d("VP8: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
+
+            int result = VPX.codec_encode(
+                    vpctx,
                     img,
                     (byte[]) inputBuffer.getData(),
                     offsetY, offsetU, offsetV,
@@ -267,7 +256,7 @@ public class VP8Encoder extends AbstractCodec2
             //            inputBuffer.getLength(), format.getSize(), offsetY, offsetU, offsetV);
 
             iter[0] = 0;
-            pkt = VPX.codec_get_cx_data(context, iter);
+            pkt = VPX.codec_get_cx_data(vpctx, iter);
         }
 
         if (pkt != 0
@@ -287,7 +276,7 @@ public class VP8Encoder extends AbstractCodec2
         }
 
         // Check for more encoded frame
-        pkt = VPX.codec_get_cx_data(context, iter);
+        pkt = VPX.codec_get_cx_data(vpctx, iter);
         leftoverPackets = (pkt != 0);
         if (leftoverPackets)
             return ret | INPUT_BUFFER_NOT_CONSUMED;
@@ -335,54 +324,15 @@ public class VP8Encoder extends AbstractCodec2
             VPX.codec_enc_cfg_set_h(cfg, h);
         }
 
-        if (context != 0) {
-            VPX.codec_destroy(context);
+        if (vpctx != 0) {
+            VPX.codec_destroy(vpctx);
 
-            int ret = VPX.codec_enc_init(context, INTERFACE, cfg, flags);
+            int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
             if (ret != VPX.CODEC_OK)
                 throw new RuntimeException("Failed to re-initialize VP8 encoder, libvpx error:\n"
                         + VPX.codec_err_to_string(ret));
         }
     }
-
-//    /**
-//     * Updates the input width and height the encoder should expect.
-//     *
-//     * @param w new width
-//     * @param h new height
-//     */
-//    private void updateSize2(int w, int h)
-//    {
-//        Timber.i("Setting VPX encoder new video size: %dx%d", w, h);
-//
-//        mWidth = w;
-//        mHeight = h;
-//        if (img != 0) {
-//            VPX.img_set_w(img, w);
-//            VPX.img_set_d_w(img, w);
-//            VPX.img_set_h(img, h);
-//            VPX.img_set_d_h(img, h);
-//        }
-//        if (cfg != 0) {
-//            VPX.codec_enc_cfg_set_w(cfg, w);
-//            VPX.codec_enc_cfg_set_h(cfg, h);
-//            reinit();
-//        }
-//    }
-
-//    /**
-//     * Re-initialize the encoder context. Needed when the input size changes.
-//     */
-//    private void reinit()
-//    {
-//        if (context != 0)
-//            VPX.codec_destroy(context);
-//
-//        int ret = VPX.codec_enc_init(context, INTERFACE, cfg, flags);
-//        if (ret != VPX.CODEC_OK)
-//            throw new RuntimeException("Failed to re-initialize VP8 encoder, libvpx error:\n"
-//                    + VPX.codec_err_to_string(ret));
-//    }
 
     /**
      * Sets the input format.

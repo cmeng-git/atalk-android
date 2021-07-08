@@ -1251,8 +1251,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
         // Register outgoing call notifications.
         notificationService.registerDefaultNotificationForEvent(OUTGOING_CALL,
-                new SoundNotificationAction(SoundProperties.OUTGOING_CALL, 3000, false, true,
-                        false));
+                new SoundNotificationAction(SoundProperties.OUTGOING_CALL, 3000, false, true, false));
 
         // Register busy call notifications.
         notificationService.registerDefaultNotificationForEvent(BUSY_CALL,

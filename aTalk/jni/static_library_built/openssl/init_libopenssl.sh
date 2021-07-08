@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -x
+
 if [[ $# -eq 1 ]]; then
   LIB_OPENSSL_GIT=$1
 else
@@ -21,9 +23,16 @@ else
 fi
 
 LIB_OPENSSL="openssl"
+if [[ -d ${LIB_OPENSSL} ]]; then
+  version="$(grep '^# define OPENSSL_VERSION_TEXT' < ${LIB_OPENSSL}/include/openssl/opensslv.h | sed 's/^.*\([1-9]\.[0-9]\.[0-9][a-z]\).*$/\1/')"
+  if [[ "${LIB_OPENSSL_GIT}" =~ .*"${version}".* ]]; then
+    echo -e "\n========== Current openssl source is: ${LIB_OPENSSL} (${version}) =========="
+    exit 0
+  fi
+fi
 
-echo -e "\n================ Fetching library source for: ${LIB_OPENSSL} (${LIB_OPENSSL})============================"
 rm -rf ${LIB_OPENSSL}
+echo -e "\n================ Fetching library source for: ${LIB_OPENSSL} (${LIB_OPENSSL})============================"
 wget -O- https://www.openssl.org/source/${LIB_OPENSSL_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_OPENSSL}
 echo -e "======== Completed openssl library source update ============================"
 

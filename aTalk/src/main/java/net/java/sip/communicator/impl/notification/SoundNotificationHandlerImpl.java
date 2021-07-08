@@ -149,7 +149,6 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
 
         boolean playOnlyOnPlayback = true;
         AudioNotifierService audioNotifService = NotificationActivator.getAudioNotifier();
-
         if (audioNotifService != null) {
             playOnlyOnPlayback = audioNotifService.audioOutAndNotificationsShareSameDevice();
         }

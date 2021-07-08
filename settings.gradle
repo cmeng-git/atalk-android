@@ -1,1 +1,2 @@
 include ':aTalk'
+include ':android-youtube-player:core'

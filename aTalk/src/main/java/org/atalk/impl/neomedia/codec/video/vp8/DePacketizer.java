@@ -21,10 +21,15 @@ import javax.media.format.VideoFormat;
 
 import timber.log.Timber;
 
+import static org.atalk.util.RTPUtils.GT;
+
 /**
- * A depacketizer from VP8.
+ * A depacketizer from VP8 codec.
  * See {@link "https://tools.ietf.org/html/rfc7741"}
  * See {@link "https://tools.ietf.org/html/draft-ietf-payload-vp8-17"}
+ *
+ * Stores the RTP payloads (VP8 payload descriptor stripped) from RTP packets belonging to a
+ * single VP8 compressed frame. Maps an RTP sequence number to a buffer which contains the payload.
  *
  * @author Boris Grozev
  * @author George Politis
@@ -32,16 +37,12 @@ import timber.log.Timber;
  */
 public class DePacketizer extends AbstractCodec2
 {
-    /**
-     * Stores the RTP payloads (VP8 payload descriptor stripped) from RTP packets belonging to a
-     * single VP8 compressed frame. Maps an RTP sequence number to a buffer which contains the payload.
-     */
-    private SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
+    private final SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
 
     /**
      * Stores unused <tt>Container</tt>'s.
      */
-    private Queue<Container> free = new ArrayBlockingQueue<>(100);
+    private final Queue<Container> free = new ArrayBlockingQueue<>(100);
 
     /**
      * Stores the first (earliest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
@@ -94,12 +95,17 @@ public class DePacketizer extends AbstractCodec2
     private int lastSentSeq = -1;
 
     /**
-     * Initializes a new <tt>JNIEncoder</tt> instance.
+     * Initializes a new <tt>AbstractCodec2</tt> instance with a specific <tt>PlugIn</tt> name, a
+     * specific <tt>Class</tt> of input and output <tt>Format</tt>s, and a specific list of
+     * <tt>Format</tt>s supported as output.
+     *
+     * name: the <tt>PlugIn</tt> name of the new instance
+     * VideoFormat.class: the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
+     * VideoFormat: the list of <tt>Format</tt>s supported by the new instance as output @Super parameters
      */
     public DePacketizer()
     {
-        super("VP8 RTP DePacketizer",
-                VideoFormat.class,
+        super("VP8 RTP DePacketizer", VideoFormat.class,
                 new VideoFormat[]{new VideoFormat(Constants.VP8)});
         inputFormats = new VideoFormat[]{new VideoFormat(Constants.VP8_RTP)};
     }
@@ -184,7 +190,7 @@ public class DePacketizer extends AbstractCodec2
         int inLength = inBuffer.getLength();
 
         if (!VP8PayloadDescriptor.isValid(inData, inOffset, inLength)) {
-            Timber.w("Invalid RTP/VP8 packet discarded.");
+            Timber.w("Invalid VP8/RTP packet discarded.");
             outBuffer.setDiscard(true);
             return BUFFER_PROCESSED_FAILED; //XXX: FAILED or OK?
         }
@@ -199,7 +205,7 @@ public class DePacketizer extends AbstractCodec2
         int inPayloadLength = inLength - inPdSize;
 
         if (empty && lastSentSeq != -1
-                && RTPUtils.sequenceNumberComparator.compare(inSeq, lastSentSeq) != 1) {
+                && RTPUtils.sequenceNumberComparator.compare(inSeq, lastSentSeq) != GT) {
             Timber.d("Discarding old packet (while empty) %s", inSeq);
             outBuffer.setDiscard(true);
             return BUFFER_PROCESSED_OK;
@@ -213,17 +219,15 @@ public class DePacketizer extends AbstractCodec2
                     | (timestamp != -1 && inRtpTimestamp != -1
                     && inRtpTimestamp != timestamp)) {
                 //inSeq <= firstSeq
-                if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) != 1) {
+                if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) != GT) {
                     // the packet belongs to a previous frame. discard it
                     Timber.i("Discarding old packet %s", inSeq);
                     outBuffer.setDiscard(true);
                     return BUFFER_PROCESSED_OK;
                 }
-                else //inSeq > firstSeq (and also presumably isSeq > lastSeq)
-                {
-                    // the packet belongs to a subsequent frame (to the one
-                    // currently being held). Drop the current frame.
-
+                //inSeq > firstSeq (and also presumably isSeq > lastSeq)
+                else {
+                    // the packet belongs to a subsequent frame (to the one currently being held). Drop the current frame.
                     Timber.i("Discarding saved packets on arrival of a packet for a subsequent frame: %s", inSeq);
 
                     // TODO: this would be the place to complain about the
@@ -236,12 +240,7 @@ public class DePacketizer extends AbstractCodec2
         // a whole frame in a single packet. avoid the extra copy to this.data and output it immediately.
         if (empty && inMarker && inIsStartOfFrame) {
             byte[] outData = validateByteArraySize(outBuffer, inPayloadLength, false);
-            System.arraycopy(
-                    inData,
-                    inOffset + inPdSize,
-                    outData,
-                    0,
-                    inPayloadLength);
+            System.arraycopy(inData, inOffset + inPdSize, outData, 0, inPayloadLength);
             outBuffer.setOffset(0);
             outBuffer.setLength(inPayloadLength);
             outBuffer.setRtpTimeStamp(inBuffer.getRtpTimeStamp());
@@ -264,22 +263,17 @@ public class DePacketizer extends AbstractCodec2
             return BUFFER_PROCESSED_OK;
         }
 
-        System.arraycopy(
-                inData,
-                inOffset + inPdSize,
-                container.buf,
-                0,
-                inPayloadLength);
+        System.arraycopy(inData, inOffset + inPdSize, container.buf, 0, inPayloadLength);
         container.len = inPayloadLength;
         data.put(inSeq, container);
 
         // update fields
         frameLength += inPayloadLength;
         if (firstSeq == -1
-                || (RTPUtils.sequenceNumberComparator.compare(firstSeq, inSeq) == 1))
+                || (RTPUtils.sequenceNumberComparator.compare(firstSeq, inSeq) == GT))
             firstSeq = inSeq;
         if (lastSeq == -1
-                || (RTPUtils.sequenceNumberComparator.compare(inSeq, lastSeq) == 1))
+                || (RTPUtils.sequenceNumberComparator.compare(inSeq, lastSeq) == GT))
             lastSeq = inSeq;
 
         if (empty) {
@@ -382,10 +376,6 @@ public class DePacketizer extends AbstractCodec2
         private static final byte M_BIT = (byte) 0x80;
 
         /**
-         * Maximum length of a VP8 Payload Descriptor.
-         */
-        public static final int MAX_LENGTH = 6;
-        /**
          * S bit from the first byte of the Payload Descriptor.
          */
         private static final byte S_BIT = (byte) 0x10;
@@ -418,6 +408,11 @@ public class DePacketizer extends AbstractCodec2
          * The bitmask for the temporal key frame index
          */
         private static final byte KEYIDX_MASK = (byte) 0x1F;
+
+        /**
+         * Maximum length of a VP8 Payload Descriptor.
+         */
+        public static final int MAX_LENGTH = 6;
 
         /**
          * Gets the TID/Y/KEYIDX extension byte if available
@@ -717,7 +712,7 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Gets a boolean that indicates whether or not the non-reference bit is set.
+         * Gets a boolean indicating if the non-reference bit is set.
          *
          * @param buf the byte buffer that holds the VP8 payload descriptor.
          * @param off the offset in the byte buffer where the payload descriptor starts.
@@ -785,8 +780,7 @@ public class DePacketizer extends AbstractCodec2
          * VP8 Payload Header at offset <tt>offset</tt> in <tt>input</tt> is 0.
          *
          * @return true if the <tt>P</tt> (inverse key frame flag) field of the
-         * VP8 Payload Header at offset <tt>offset</tt> in <tt>input</tt> is 0,
-         * false otherwise.
+         * VP8 Payload Header at offset <tt>offset</tt> in <tt>input</tt> is 0, false otherwise.
          */
         public static boolean isKeyFrame(byte[] input, int offset)
         {

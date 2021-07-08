@@ -1,0 +1,17 @@
+--- libvpx-1.10.0/vpx/vpx_encoder.h	2021-03-19 03:59:46.000000000
++++ atalk-android/aTalk/jni/static_library_built/libvpx/libvpx/vpx/vpx_encoder.h	2021-07-03 09:46:07.000000000
+@@ -55,13 +55,13 @@
+  * If this file is altered in any way that changes the ABI, this value
+  * must be bumped.  Examples include, but are not limited to, changing
+  * types, removing or reassigning enums, adding/removing/rearranging
+  * fields to structures
+  */
+ #define VPX_ENCODER_ABI_VERSION \
+-  (14 + VPX_CODEC_ABI_VERSION + \
++  (15 + VPX_CODEC_ABI_VERSION + \
+    VPX_EXT_RATECTRL_ABI_VERSION) /**<\hideinitializer*/
+ 
+ /*! \brief Encoder capabilities bitfield
+  *
+  *  Each encoder advertises the capabilities it supports as part of its
+  *  ::vpx_codec_iface_t interface structure. Capabilities are extra

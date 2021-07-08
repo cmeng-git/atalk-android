@@ -17,27 +17,23 @@
 # Uncomment the line below to see all script echo to terminal
 # set -x
 
-# When use --sdk-path option for libvpx v1.8.0; must use android-ndk-r17c or lower
-# May use android-ndk-r18b" - libvpx v1.10.0 and libvpx v1.8.2 are working with r18b without error
-
-if [[ -z $ANDROID_NDK ]]; then
+export ANDROID_NDK=/opt/android/android-ndk-r18b
+if [[ -z $ANDROID_NDK ]] || [[ ! -d $ANDROID_NDK ]] ; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
-	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk"
+	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk-rxx"
 	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r18b"
 	exit 1
 fi
+
 set -u
 
 # Never mix two api level to build static library for use on the same apk.
 # Set to API:21 for aTalk 64-bit architecture support
 # Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
 ANDROID_API=21
-NDK_ABI_VERSION=4.9
 
 # Do not change naming convention of the ABIS; see:
 # https://developer.android.com/ndk/guides/abis.html#Native code in app packages
-# ABIS=("armeabi" "armeabi-v7a" "arm64-v8a" "x86" "x86_64" "mips" "mips64")
-
 # Android recommended architecture support; others are deprecated
 ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
 
@@ -67,14 +63,6 @@ configure() {
   ABI=$1;
 
   case $ABI in
-    # Deprecated in r16. Will be removed in r17
-    armeabi)
-      NDK_ARCH="arm"
-      NDK_ABIARCH="arm-linux-androideabi"
-      CFLAGS="-march=armv5 -marm -finline-limit=64"
-      LDFLAGS=""
-      ASFLAGS=""
-    ;;
     # Standalone toolchains error.
     # /home/cmeng/workspace/ndk/vpx-android/armeabi-v7a-android-toolchain/bin/arm-linux-androideabi-ld: -Wl,--fix-cortex-a8: unknown option
     armeabi-v7a)
@@ -123,40 +111,13 @@ configure() {
       LDFLAGS=""
       ASFLAGS="-D__ANDROID__"
     ;;
-
-    # MIPS is deprecated in NDK r16 and will be removed in r17.
-    # https://gcc.gnu.org/onlinedocs/gcc/MIPS-Options.html#MIPS-Options
-    # https://en.wikipedia.org/wiki/List_of_MIPS_architecture_processors
-    mips)
-      NDK_ARCH="mips"
-      NDK_ABIARCH="mipsel-linux-android"
-      CFLAGS="${CFLAGS_} -EL -march=p5600 -mhard-float"
-      LDFLAGS=""
-      ASFLAGS=""
-    ;;
-    mips64)
-      NDK_ARCH="mips64"
-      NDK_ABIARCH="mips64el-linux-android"
-      CFLAGS="${CFLAGS_} -EL -mfp64 -mhard-float"
-      LDFLAGS=""
-      ASFLAGS=""
-    ;;
   esac
 
   TOOLCHAIN_PREFIX=${BASEDIR}/android-toolchain
   NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
 
-  # bin/python-config.sh
-  # prefix_build="/usr/local/google/buildbot/src/android/ndk-r15-release/out/build/buildhost/linux-x86_64/install/host-tools"
-  # prefix_build="/usr/local/google/buildbot/src/android/ndk-release-r15/out/build/buildhost/linux-x86_64/install/host-tools"
   if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
       rm -rf ${TOOLCHAIN_PREFIX}
-  #else
-  #  TC_RELEASE="$(grep 'prefix_build=' < ${TOOLCHAIN_PREFIX}/bin/python-config.sh | sed 's/^.*\/android\/ndk[-release]*\-\(r[0-9][0-9]\).*$/ndk-\1/')"
-  #  if [[ ! ${ANDROID_NDK} =~ ${TC_RELEASE} ]]; then
-  #    rm -rf ${TOOLCHAIN_PREFIX}
-  #    echo "Rebuild standalone toolchains for ${NDK_ABIARCH}"
-  #  fi
   fi
 
   # cmeng: must ensure AS JNI uses the same STL library or "system"

@@ -23,7 +23,7 @@ import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
 
 /**
- * Video decoder based on <tt>MediaCodec</tt>.
+ * The video decoder based on <tt>MediaCodec</tt>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -205,7 +205,6 @@ public class AndroidDecoder extends AndroidCodec
     /**
      * {@inheritDoc}
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void configureMediaCodec(MediaCodec codec, String codecType)
     {

@@ -193,7 +193,8 @@
         <activity
             android:name=".gui.chat.ChatActivity"
             android:label="@string/APPLICATION_NAME"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <!-- OMEMO activities -->
         <activity
@@ -413,10 +414,6 @@
         <activity
             android:name=".plugin.textspeech.TTSActivity"
             android:label="@string/APPLICATION_NAME" />
-
-        <activity
-			android:name=".plugin.video.MediaExoPlayer"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

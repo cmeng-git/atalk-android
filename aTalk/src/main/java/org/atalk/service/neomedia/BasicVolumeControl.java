@@ -188,8 +188,8 @@ public class BasicVolumeControl implements VolumeControl, GainControl
      * Creates volume control instance and initializes initial level value if stored in the
      * configuration service.
      *
-     * @param volumeLevelConfigurationPropertyName the name of the configuration property which specifies the value of the volume level
-     * of the new instance
+     * @param volumeLevelConfigurationPropertyName the name of the configuration property
+     * which specifies the value of the volume level of the new instance
      */
     public BasicVolumeControl(String volumeLevelConfigurationPropertyName)
     {

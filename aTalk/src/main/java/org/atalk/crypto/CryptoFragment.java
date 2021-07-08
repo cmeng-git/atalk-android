@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.view.*;
 
 import net.java.otr4j.OtrPolicy;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -144,7 +145,7 @@ public class CryptoFragment extends OSGiFragment
     public CryptoFragment()
     {
         setHasOptionsMenu(true);
-        mMHS = AndroidGUIActivator.getMessageHistoryService();
+        mMHS = MessageHistoryActivator.getMessageHistoryService();
     }
 
     /**

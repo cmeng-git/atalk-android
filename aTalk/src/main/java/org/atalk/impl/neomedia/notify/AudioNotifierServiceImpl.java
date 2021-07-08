@@ -106,7 +106,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
 
             /*
              * While we want to reuse the SCAudioClip instances, they may be used by a single user
-             * at a time. That's why we'll forget about them while they are in use and we'll
+             * at a time. That's why we'll forget about them while they are in use, and we'll
              * reclaim them when they are no longer in use.
              */
             audio = (audios == null) ? null : audios.remove(key);
@@ -135,7 +135,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
             }
 
             /*
-             * Make sure that the SCAudioClip will be reclaimed for reuse when it is no longer in use.
+             * Make sure the SCAudioClip will be reclaimed for reuse when it is no longer in use.
              */
             if (audio != null) {
                 if (audios == null)

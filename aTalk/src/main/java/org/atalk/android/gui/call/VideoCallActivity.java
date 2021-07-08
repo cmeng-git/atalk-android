@@ -17,10 +17,9 @@ import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.*;
 
 import net.java.sip.communicator.service.gui.call.CallPeerRenderer;
 import net.java.sip.communicator.service.gui.call.CallRenderer;
@@ -66,7 +65,7 @@ import timber.log.Timber;
 public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer, CallRenderer,
         CallChangeListener, PropertyChangeListener, ZrtpInfoDialog.SasVerificationListener,
         AutoHideController.AutoHideListener, View.OnClickListener, View.OnLongClickListener,
-        VideoHandlerFragment.OnRemoteVideoChangeListener
+        VideoHandlerFragment.OnRemoteVideoChangeListener, FragmentOnAttachListener
 {
     /**
      * Tag name for the fragment that handles proximity sensor in order to turn the screen on and off.
@@ -231,13 +230,16 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         View toastView = findViewById(R.id.clickable_toast);
         sasToastController = new ClickableToastController(toastView, this, R.id.clickable_toast);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.addFragmentOnAttachListener(this);
+
         if (savedInstanceState == null) {
             videoFragment = new VideoHandlerFragment();
             volControl = new CallVolumeCtrlFragment();
             /*
              * Adds a fragment that turns on and off the screen when proximity sensor detects FAR/NEAR distance.
              */
-            getSupportFragmentManager().beginTransaction()
+            fragmentManager.beginTransaction()
                     .add(volControl, VOLUME_CTRL_TAG)
                     .add(new ProximitySensorFragment(), PROXIMITY_FRAGMENT_TAG)
                     /* Adds the fragment that handles video display logic */
@@ -247,21 +249,16 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                     .commit();
         }
         else {
-            FragmentManager fragmentManager = getSupportFragmentManager();
             // Retrieve restored auto hide fragment
             autoHide = (AutoHideController) fragmentManager.findFragmentByTag(AUTO_HIDE_TAG);
             volControl = (CallVolumeCtrlFragment) fragmentManager.findFragmentByTag(VOLUME_CTRL_TAG);
         }
-
-        //        if (aTalkApp.isPortrait)
-        //            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        //        else
-        //            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override
-    public void onAttachFragment(Fragment fragment)
+    public void onAttachFragment(@NonNull @NotNull FragmentManager fragmentManager, @NonNull @NotNull Fragment fragment)
     {
+        // Timber.w("onAttachFragment Tag: %s", fragment);
         if (fragment instanceof VideoHandlerFragment) {
             ((VideoHandlerFragment) fragment).setRemoteVideoChangeListener(this);
         }
@@ -560,7 +557,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         /*
          * The call to: setVolumeControlStream(AudioManager.STREAM_VOICE_CALL) doesn't work when
          * notification was being played during this Activity creation, so the buttons must be
-         * captured and the voice call level will be manipulated programmatically.
+         * captured, and the voice call level will be manipulated programmatically.
          */
         int action = event.getAction();
         int keyCode = event.getKeyCode();
@@ -1237,7 +1234,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      * b. Perform camera rotation for swap & flip, for properly video data transformation before sending
      * c. Update camera setDisplayOrientation(rotation)
      *
-     * Note: If setRequestedOrientation() in onCreate; this method will never get call even
+     * Note: If setRequestedOrientation() in the onCreate() cycle; this method will never get call even
      * it is defined in manifest android:configChanges="orientation|screenSize|screenLayout"
      */
     @Override

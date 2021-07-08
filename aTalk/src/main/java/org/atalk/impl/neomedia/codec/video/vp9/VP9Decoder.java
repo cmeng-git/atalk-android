@@ -16,8 +16,6 @@
  */
 package org.atalk.impl.neomedia.codec.video.vp9;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
@@ -59,7 +57,7 @@ public class VP9Decoder extends AbstractCodec2
     /**
      * Pointer to the libvpx codec context to be used
      */
-    private long context = 0;
+    private long vpctx = 0;
 
     /**
      * Pointer to a native vpx_image structure, containing a decoded frame.
@@ -104,9 +102,9 @@ public class VP9Decoder extends AbstractCodec2
     protected void doClose()
     {
         Timber.d("Closing decoder");
-        if (context != 0) {
-            VPX.codec_destroy(context);
-            VPX.free(context);
+        if (vpctx != 0) {
+            VPX.codec_destroy(vpctx);
+            VPX.free(vpctx);
         }
         if (cfg != 0)
             VPX.free(cfg);
@@ -121,13 +119,13 @@ public class VP9Decoder extends AbstractCodec2
     protected void doOpen()
             throws ResourceUnavailableException
     {
-        context = VPX.codec_ctx_malloc();
+        vpctx = VPX.codec_ctx_malloc();
         //cfg = VPX.codec_dec_cfg_malloc();
         long flags = 0; //VPX.CODEC_USE_XMA;
 
         // The cfg NULL pointer is passed to vpx_codec_dec_init(). This is to allow the algorithm
         // to determine the stream configuration (width/height) and allocate memory automatically.
-        int ret = VPX.codec_dec_init(context, INTERFACE, 0, flags);
+        int ret = VPX.codec_dec_init(vpctx, INTERFACE, 0, flags);
         if (ret != VPX.CODEC_OK)
             throw new RuntimeException("Failed to initialize decoder, libvpx error:\n"
                     + VPX.codec_err_to_string(ret));
@@ -158,38 +156,38 @@ public class VP9Decoder extends AbstractCodec2
             int buf_offset = inputBuffer.getOffset();
             int buf_size = inputBuffer.getLength();
 
-            int ret = VPX.codec_decode(context,
+            // if (frameErrors++ < 2)
+            //    Timber.d("VP9: Decoding a frame #%s: %s %s %s", frameErrors, bytesToHex(buf_data, 32), buf_offset, buf_size);
+
+            int ret = VPX.codec_decode(vpctx,
                     buf_data, buf_offset, buf_size,
                     0, VPX.DL_BEST_QUALITY);
 
-            // if ((frameErrors++ % 50) == 0 || frameErrors < 10)
-            //     Timber.d("VP9: Decode a frame: %s %s %s", bytesToHex(buf_data, 32), buf_offset, buf_size);
-
             if (ret != VPX.CODEC_OK) {
-                if ((frameErrors++ % 100) == 0)
-                    Timber.w("VP9: Discarding frame with decode error: %s %s %s %s", VPX.codec_err_to_string(ret),
-                            buf_data, buf_offset, buf_size);
-                if (frameErrors == 1)
-                    aTalkApp.showToastMessage(R.string.service_gui_CALL_NO_MATCHING_FORMAT_H, VPX.codec_err_to_string(ret));
+                // if ((frameErrors < 10))
+                //     Timber.w("VP9: Discarding frame with decode error %s: %s %s %s %s", frameErrors, VPX.codec_err_to_string(ret),
+                //             buf_data, buf_offset, buf_size);
+                // if (frameErrors < 4) {
+                //     Timber.d(new Exception());
+                //     aTalkApp.showToastMessage(R.string.service_gui_CALL_NO_MATCHING_FORMAT_H, VPX.codec_err_to_string(ret));
+                // }
                 outputBuffer.setDiscard(true);
                 return BUFFER_PROCESSED_OK;
             }
 
             //decode has just been called, reset iterator
             iter[0] = 0;
-            img = VPX.codec_get_frame(context, iter);
+            img = VPX.codec_get_frame(vpctx, iter);
         }
 
-        // Timber.d("VP9: Decoded image frame: %s %s", leftoverFrames, img);
+        // Timber.d("VP9: Decoded image frame; leftoverframe: %s %s", leftoverFrames, img);
         if (img == 0) {
             outputBuffer.setDiscard(true);
             return BUFFER_PROCESSED_OK;
         }
 
          // Fill outputBuffer with the newly decoded or leftover frame data.
-        updateOutputFormat(
-                VPX.img_get_d_w(img),
-                VPX.img_get_d_h(img),
+        updateOutputFormat(VPX.img_get_d_w(img), VPX.img_get_d_h(img),
                 ((VideoFormat) inputBuffer.getFormat()).getFrameRate());
         outputBuffer.setFormat(outputFormat);
 
@@ -203,7 +201,7 @@ public class VP9Decoder extends AbstractCodec2
         /*
          * outputBuffer is all setup now. Check the decoder context for more decoded frames.
          */
-        img = VPX.codec_get_frame(context, iter);
+        img = VPX.codec_get_frame(vpctx, iter);
         if (img == 0) //no more frames
         {
             leftoverFrames = false;

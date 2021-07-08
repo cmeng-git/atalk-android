@@ -162,6 +162,7 @@
     <string name="gui_playback_error">Cannot find any media content for playback</string>
     <string name="gui_playback_buffering">Buffering&#8230;</string>
     <string name="gui_playback_completed">Media playback end</string>
+    <string name="gui_playback_rate">Playback rate: %1$s</string>
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">Autojoin</string>
