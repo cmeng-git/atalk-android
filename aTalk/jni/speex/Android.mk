@@ -17,54 +17,61 @@ ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
     LOCAL_LDFLAGS := -Wl,--fix-cortex-a8
 endif
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_C_INCLUDES := \
+$(LOCAL_PATH)/include \
+$(LOCAL_PATH)/include/speex \
+$(LOCAL_PATH)/libspeex/include \
+$(LOCAL_PATH)/libogg/include
+
 LOCAL_LDLIBS := -llog
 
+# source files include both speex-1.2beta3 and speex-1.2.0
 LOCAL_SRC_FILES :=  \
-./libspeex/bits.c \
-./libspeex/buffer.c \
-./libspeex/cb_search.c \
-./libspeex/exc_10_16_table.c \
-./libspeex/exc_10_32_table.c \
-./libspeex/exc_20_32_table.c \
-./libspeex/exc_5_256_table.c \
-./libspeex/exc_5_64_table.c \
-./libspeex/exc_8_128_table.c \
-./libspeex/fftwrap.c \
-./libspeex/filterbank.c \
-./libspeex/filters.c \
-./libspeex/gain_table.c \
-./libspeex/gain_table_lbr.c \
-./libspeex/hexc_10_32_table.c \
-./libspeex/hexc_table.c \
-./libspeex/high_lsp_tables.c \
-./libspeex/jitter.c \
-./libspeex/kiss_fft.c \
-./libspeex/kiss_fftr.c \
-./libspeex/lpc.c \
-./libspeex/lsp.c \
-./libspeex/lsp_tables_nb.c \
-./libspeex/ltp.c \
-./libspeex/mdf.c \
-./libspeex/modes.c \
-./libspeex/modes_wb.c \
-./libspeex/nb_celp.c \
-./libspeex/preprocess.c \
-./libspeex/quant_lsp.c \
-./libspeex/resample.c \
-./libspeex/sb_celp.c \
-./libspeex/scal.c \
-./libspeex/smallft.c \
-./libspeex/speex.c \
-./libspeex/speex_callbacks.c \
-./libspeex/speex_header.c \
-./libspeex/stereo.c \
-./libspeex/vbr.c \
-./libspeex/vq.c \
-./libspeex/window.c \
-./libogg/bitwise.c \
-./libogg/framing.c \
-./org_atalk_impl_neomedia_codec_audio_speex_Speex.c
+libspeex/bits.c \
+libspeex/buffer.c \
+libspeex/cb_search.c \
+libspeex/exc_10_16_table.c \
+libspeex/exc_10_32_table.c \
+libspeex/exc_20_32_table.c \
+libspeex/exc_5_256_table.c \
+libspeex/exc_5_64_table.c \
+libspeex/exc_8_128_table.c \
+libspeex/fftwrap.c \
+libspeex/filterbank.c \
+libspeex/filters.c \
+libspeex/gain_table.c \
+libspeex/gain_table_lbr.c \
+libspeex/hexc_10_32_table.c \
+libspeex/hexc_table.c \
+libspeex/high_lsp_tables.c \
+libspeex/jitter.c \
+libspeex/kiss_fft.c \
+libspeex/kiss_fftr.c \
+libspeex/lpc.c \
+libspeex/lsp.c \
+libspeex/lsp_tables_nb.c \
+libspeex/ltp.c \
+libspeex/mdf.c \
+libspeex/modes.c \
+libspeex/modes_wb.c \
+libspeex/nb_celp.c \
+libspeex/preprocess.c \
+libspeex/quant_lsp.c \
+libspeex/resample.c \
+libspeex/sb_celp.c \
+libspeex/scal.c \
+libspeex/smallft.c \
+libspeex/speex.c \
+libspeex/speex_callbacks.c \
+libspeex/speex_header.c \
+libspeex/stereo.c \
+libspeex/vbr.c \
+libspeex/vorbis_psy.c \
+libspeex/vq.c \
+libspeex/window.c \
+libogg/src/bitwise.c \
+libogg/src/framing.c \
+speex_Speex.c
 
 include $(BUILD_SHARED_LIBRARY)
 

@@ -23,7 +23,7 @@ repositories {
     }
 }
 
-def smackVersion = '4.4.2'
+def smackVersion = '4.4.3'
 
 def jarJarDeps = task("jarJarDeps") {
     doFirst {

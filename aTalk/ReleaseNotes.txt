@@ -2,6 +2,23 @@ Project aTalk-Android Release Notes
 =========================================================================
 Author:         cmeng
 Upload Date:	07/08/2021
+Version:		2.6.3 (206020)
+
+- Upgrade smack libraries to version 4.4.3 release
+- Upgrade opus to version 1.3.1, and add init_libopus.sh to fetch online source instead of svn check-in;
+  clean up opus/Android.mk script; need to run init_libopus.h as source is not checked in
+- Upgrade speex to version 1.2.0, and ogg to v1.3.5; speex 1.2.0 removed the resampler etc supports
+  hence need to add missing files, needed by aTalk from speex-1.2beta3 (rc1);
+  add init_libSpeexOgg.sh to fetch online sources for both speex-1.2beta3  and instead of svn check-in;
+- Run gradle task 'getJniLibs' to fetch these jni libraries prior to android ndk build process.
+  These libraries sources include: opus, speex and ogg
+- Future release consideration: opus codec is preferred over speex.
+  remove speex codec support and use net.sf.fmj.media.codec.audio.RateConverter instead
+- Fix NPE from field due to (mediaServiceImpl == null) in SettingActivity; return with disableMediaOptions();
+
+=========================================================================
+Author:         cmeng
+Upload Date:	07/08/2021
 Version:		2.6.2 (206020)
 - Implement android youtube player using IFrame Player API to avoid video link extraction error
 - Support youtube playlist playback i.e. Fallback to use as playlist if youtube url load failed.

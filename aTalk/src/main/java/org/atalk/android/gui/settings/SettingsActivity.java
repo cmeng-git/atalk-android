@@ -150,9 +150,8 @@ public class SettingsActivity extends OSGiActivity
         /**
          * The device configuration
          */
-        private DeviceConfiguration deviceConfig;
-
-        private AudioSystem audioSystem;
+        private DeviceConfiguration mDeviceConfig;
+        private AudioSystem mAudioSystem;
 
         private static ConfigurationService mConfigService;
         private PreferenceScreen preferenceScreen;
@@ -187,6 +186,9 @@ public class SettingsActivity extends OSGiActivity
             preferenceScreen = getPreferenceScreen();
             shPrefs = getPreferenceManager().getSharedPreferences();
 
+            shPrefs.registerOnSharedPreferenceChangeListener(this);
+            shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
+
             // init display locale and theme (not implemented)
             initLocale();
             initTheme();
@@ -199,6 +201,17 @@ public class SettingsActivity extends OSGiActivity
             initNotificationPreferences();
 
             if (!aTalk.disableMediaServiceOnFault) {
+                MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
+                if (mediaServiceImpl != null) {
+                    mDeviceConfig = mediaServiceImpl.getDeviceConfiguration();
+                    mAudioSystem = mDeviceConfig.getAudioSystem();
+                }
+                else {
+                    // Do not proceed if mediaServiceImpl == null; else system crashes on NPE
+                    disableMediaOptions();
+                    return;
+                }
+
                 // Call section
                 initCallPreferences();
 
@@ -211,9 +224,6 @@ public class SettingsActivity extends OSGiActivity
             else {
                 disableMediaOptions();
             }
-
-            shPrefs.registerOnSharedPreferenceChangeListener(this);
-            shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
         }
 
         /**
@@ -332,33 +342,6 @@ public class SettingsActivity extends OSGiActivity
                 }
                 return true;
             });
-        }
-
-        // Disable all media options when MediaServiceImpl is not initialized due to text-relocation in ffmpeg
-        private void disableMediaOptions()
-        {
-            PreferenceCategory myPrefCat = (PreferenceCategory) findPreference(PC_KEY_MEDIA_CALL);
-            if (myPrefCat != null)
-                preferenceScreen.removePreference(myPrefCat);
-
-            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_CALL);
-            if (myPrefCat != null)
-                preferenceScreen.removePreference(myPrefCat);
-
-            // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
-            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_ADVANCED);
-            if (myPrefCat != null)
-                preferenceScreen.removePreference(myPrefCat);
-
-            // myPrefCat = (PreferenceCategory) findPreference(PC_KEY_VIDEO);
-            // if (myPrefCat != null) {
-            //     preferenceScreen.removePreference(myPrefCat);
-            // }
-
-            // myPrefCat = (PreferenceCategory) findPreference(PC_KEY_AUDIO);
-            // if (myPrefCat != null) {
-            //     preferenceScreen.removePreference(myPrefCat);
-            // }
         }
 
         /**
@@ -483,6 +466,34 @@ public class SettingsActivity extends OSGiActivity
                     ConfigurationUtils.isHeadsUpEnable());
         }
 
+        // Disable all media options when MediaServiceImpl is not initialized due to
+        // (mediaServiceImpl == null) or text-relocation in ffmpeg (already fixed)
+        private void disableMediaOptions()
+        {
+            PreferenceCategory myPrefCat = (PreferenceCategory) findPreference(PC_KEY_MEDIA_CALL);
+            if (myPrefCat != null)
+                preferenceScreen.removePreference(myPrefCat);
+
+            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_CALL);
+            if (myPrefCat != null)
+                preferenceScreen.removePreference(myPrefCat);
+
+            // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
+            myPrefCat = (PreferenceCategory) findPreference(PC_KEY_ADVANCED);
+            if (myPrefCat != null)
+                preferenceScreen.removePreference(myPrefCat);
+
+            // myPrefCat = (PreferenceCategory) findPreference(PC_KEY_VIDEO);
+            // if (myPrefCat != null) {
+            //     preferenceScreen.removePreference(myPrefCat);
+            // }
+
+            // myPrefCat = (PreferenceCategory) findPreference(PC_KEY_AUDIO);
+            // if (myPrefCat != null) {
+            //     preferenceScreen.removePreference(myPrefCat);
+            // }
+        }
+
         /**
          * Initializes call section
          */
@@ -492,12 +503,32 @@ public class SettingsActivity extends OSGiActivity
                     ConfigurationUtils.isNormalizePhoneNumber());
             PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_ACCEPT_ALPHA_PNUMBERS,
                     ConfigurationUtils.acceptPhoneNumberWithAlphaChars());
+        }
 
-            MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
-            if (mediaServiceImpl != null) {
-                this.deviceConfig = mediaServiceImpl.getDeviceConfiguration();
-                this.audioSystem = deviceConfig.getAudioSystem();
-            }
+        /**
+         * Initializes audio settings.
+         */
+        private void initAudioPreferences()
+        {
+            int audioSystemFeatures = mAudioSystem.getFeatures();
+
+            // Echo cancellation
+            CheckBoxPreference echoCancelPRef = (CheckBoxPreference) findPreference(P_KEY_AUDIO_ECHO_CANCEL);
+            boolean hasEchoFeature = (AudioSystem.FEATURE_ECHO_CANCELLATION & audioSystemFeatures) != 0;
+            echoCancelPRef.setEnabled(hasEchoFeature);
+            echoCancelPRef.setChecked(hasEchoFeature && mAudioSystem.isEchoCancel());
+
+            // Automatic gain control
+            CheckBoxPreference agcPRef = (CheckBoxPreference) findPreference(P_KEY_AUDIO_AGC);
+            boolean hasAgcFeature = (AudioSystem.FEATURE_AGC & audioSystemFeatures) != 0;
+            agcPRef.setEnabled(hasAgcFeature);
+            agcPRef.setChecked(hasAgcFeature && mAudioSystem.isAutomaticGainControl());
+
+            // Denoise
+            CheckBoxPreference denoisePref = (CheckBoxPreference) findPreference(P_KEY_AUDIO_DENOISE);
+            boolean hasDenoiseFeature = (AudioSystem.FEATURE_DENOISE & audioSystemFeatures) != 0;
+            denoisePref.setEnabled(hasDenoiseFeature);
+            denoisePref.setChecked(hasDenoiseFeature && mAudioSystem.isDenoise());
         }
 
         /**
@@ -536,12 +567,12 @@ public class SettingsActivity extends OSGiActivity
             resList.setEntryValues(resolutionValues);
 
             // Init current resolution
-            resList.setValue(resToStr(deviceConfig.getVideoSize()));
+            resList.setValue(resToStr(mDeviceConfig.getVideoSize()));
 
             // Frame rate
             String defaultFpsStr = "20";
             CheckBoxPreference limitFpsPref = (CheckBoxPreference) findPreference(P_KEY_VIDEO_LIMIT_FPS);
-            int targetFps = deviceConfig.getFrameRate();
+            int targetFps = mDeviceConfig.getFrameRate();
             limitFpsPref.setChecked(targetFps != -1);
 
             EditTextPreference targetFpsPref = (EditTextPreference) findPreference(P_KEY_VIDEO_TARGET_FPS);
@@ -549,16 +580,16 @@ public class SettingsActivity extends OSGiActivity
                     ? Integer.toString(targetFps) : defaultFpsStr);
 
             // Max bandwidth
-            int videoMaxBandwith = deviceConfig.getVideoRTPPacingThreshold();
+            int videoMaxBandwidth = mDeviceConfig.getVideoRTPPacingThreshold();
             // Accord the current value with the maximum allowed value. Fixes existing
             // configurations that have been set to a number larger than the advised maximum value.
-            videoMaxBandwith = (Math.min(videoMaxBandwith, 999));
+            videoMaxBandwidth = (Math.min(videoMaxBandwidth, 999));
 
             EditTextPreference maxBWPref = (EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH);
-            maxBWPref.setText(Integer.toString(videoMaxBandwith));
+            maxBWPref.setText(Integer.toString(videoMaxBandwidth));
 
             // Video bitrate
-            int bitrate = deviceConfig.getVideoBitrate();
+            int bitrate = mDeviceConfig.getVideoBitrate();
             EditTextPreference bitratePref = (EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE);
             bitratePref.setText(Integer.toString(bitrate));
 
@@ -597,33 +628,6 @@ public class SettingsActivity extends OSGiActivity
             }
             // "Auto" string won't match the defined resolution strings so will return default for auto
             return new Dimension(DeviceConfiguration.DEFAULT_VIDEO_WIDTH, DeviceConfiguration.DEFAULT_VIDEO_HEIGHT);
-        }
-
-        /**
-         * Initializes audio settings.
-         */
-        private void initAudioPreferences()
-        {
-            AudioSystem audioSystem = deviceConfig.getAudioSystem();
-            int audioSystemFeatures = audioSystem.getFeatures();
-
-            // Echo cancellation
-            CheckBoxPreference echoCancelPRef = (CheckBoxPreference) findPreference(P_KEY_AUDIO_ECHO_CANCEL);
-            boolean hasEchoFeature = (AudioSystem.FEATURE_ECHO_CANCELLATION & audioSystemFeatures) != 0;
-            echoCancelPRef.setEnabled(hasEchoFeature);
-            echoCancelPRef.setChecked(hasEchoFeature && audioSystem.isEchoCancel());
-
-            // Automatic gain control
-            CheckBoxPreference agcPRef = (CheckBoxPreference) findPreference(P_KEY_AUDIO_AGC);
-            boolean hasAgcFeature = (AudioSystem.FEATURE_AGC & audioSystemFeatures) != 0;
-            agcPRef.setEnabled(hasAgcFeature);
-            agcPRef.setChecked(hasAgcFeature && audioSystem.isAutomaticGainControl());
-
-            // Denoise
-            CheckBoxPreference denoisePref = (CheckBoxPreference) findPreference(P_KEY_AUDIO_DENOISE);
-            boolean hasDenoiseFeature = (AudioSystem.FEATURE_DENOISE & audioSystemFeatures) != 0;
-            denoisePref.setEnabled(hasDenoiseFeature);
-            denoisePref.setChecked(hasDenoiseFeature && audioSystem.isDenoise());
         }
 
         /**
@@ -774,15 +778,15 @@ public class SettingsActivity extends OSGiActivity
             }
             // Echo cancellation
             else if (key.equals(P_KEY_AUDIO_ECHO_CANCEL)) {
-                audioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
+                mAudioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));
             }
             // Auto gain control
             else if (key.equals(P_KEY_AUDIO_AGC)) {
-                audioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
+                mAudioSystem.setAutomaticGainControl(shPreferences.getBoolean(P_KEY_AUDIO_AGC, true));
             }
             // Noise reduction
             else if (key.equals(P_KEY_AUDIO_DENOISE)) {
-                audioSystem.setDenoise(shPreferences.getBoolean(P_KEY_AUDIO_DENOISE, true));
+                mAudioSystem.setDenoise(shPreferences.getBoolean(P_KEY_AUDIO_DENOISE, true));
             }
             // Camera
             else if (key.equals(P_KEY_VIDEO_CAMERA)) {
@@ -793,7 +797,7 @@ public class SettingsActivity extends OSGiActivity
             else if (key.equals(P_KEY_VIDEO_RES)) {
                 String resStr = shPreferences.getString(P_KEY_VIDEO_RES, null);
                 Dimension videoRes = resolutionForStr(resStr);
-                deviceConfig.setVideoSize(videoRes);
+                mDeviceConfig.setVideoSize(videoRes);
             }
             // Frame rate
             else if (key.equals(P_KEY_VIDEO_LIMIT_FPS) || key.equals(P_KEY_VIDEO_TARGET_FPS)) {
@@ -809,12 +813,12 @@ public class SettingsActivity extends OSGiActivity
                         else if (fps < 5) {
                             fps = 5;
                         }
-                        deviceConfig.setFrameRate(fps);
+                        mDeviceConfig.setFrameRate(fps);
                         fpsPref.setText(Integer.toString(fps));
                     }
                 }
                 else {
-                    deviceConfig.setFrameRate(DeviceConfiguration.DEFAULT_VIDEO_FRAMERATE);
+                    mDeviceConfig.setFrameRate(DeviceConfiguration.DEFAULT_VIDEO_FRAMERATE);
                 }
             }
             // Max bandwidth
@@ -828,13 +832,13 @@ public class SettingsActivity extends OSGiActivity
                     else if (maxBw < 1) {
                         maxBw = 1;
                     }
-                    deviceConfig.setVideoRTPPacingThreshold(maxBw);
+                    mDeviceConfig.setVideoRTPPacingThreshold(maxBw);
                 }
                 else {
-                    deviceConfig.setVideoRTPPacingThreshold(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD);
+                    mDeviceConfig.setVideoRTPPacingThreshold(DeviceConfiguration.DEFAULT_VIDEO_RTP_PACING_THRESHOLD);
                 }
                 ((EditTextPreference) findPreference(P_KEY_VIDEO_MAX_BANDWIDTH))
-                        .setText(Integer.toString(deviceConfig.getVideoRTPPacingThreshold()));
+                        .setText(Integer.toString(mDeviceConfig.getVideoRTPPacingThreshold()));
             }
             // Video bit rate
             else if (key.equals(P_KEY_VIDEO_BITRATE)) {
@@ -847,7 +851,7 @@ public class SettingsActivity extends OSGiActivity
                 if (bitrate < 1) {
                     bitrate = 1;
                 }
-                deviceConfig.setVideoBitrate(bitrate);
+                mDeviceConfig.setVideoBitrate(bitrate);
                 ((EditTextPreference) findPreference(P_KEY_VIDEO_BITRATE)).setText(Integer.toString(bitrate));
             }
         }

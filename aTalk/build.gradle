@@ -209,7 +209,7 @@ android {
 ext {
     // for official maven release
     // smackVersion = '4.4.0-beta2'
-    smackVersion = '4.4.2'
+    smackVersion = '4.4.3'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
@@ -403,6 +403,15 @@ dependencies {
         // v1.1.4 uses binary.Base64
         classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
     }
+}
+
+/*
+ * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this need to be
+ * executed at least once to generate all the static libraries before the aTalk apk build process.
+ */
+task getJniLibs(type: org.gradle.api.tasks.Exec) {
+    workingDir "${projectDir}/jni/"
+    executable './fetch-jnilibs4atalk.sh'
 }
 
 /*

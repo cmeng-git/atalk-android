@@ -17,3 +17,8 @@ pushd ffmpeg-x264 || exit
  ./build-ffmpeg4android.sh
 popd
 
+# fetch the libraries source for android NDK build
+pushd ../ || exit
+  echo "### Building ffmpeg-x264 jni library ###"
+ ./fetch-jnilibs4atalk.sh
+popd

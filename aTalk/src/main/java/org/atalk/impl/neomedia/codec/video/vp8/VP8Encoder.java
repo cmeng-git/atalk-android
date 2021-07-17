@@ -50,9 +50,9 @@ public class VP8Encoder extends AbstractCodec2
     private long vpctx = 0;
 
     /**
-     * Flags passed when (re-)initializing the encoder context
+     * Flags passed when (re-)initializing the encoder context on first and when orientation change
      */
-    private final long flags = 0;
+    private long flags = 0;
 
     /**
      * Number of encoder frames so far. Used as pst (presentation time stamp)
@@ -171,7 +171,7 @@ public class VP8Encoder extends AbstractCodec2
         }
         VPX.codec_enc_config_default(INTERFACE, cfg, 0);
 
-        //set some settings
+        // setup the decoder required parameter settings
         int bitRate = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration().getVideoBitrate();
         VPX.codec_enc_cfg_set_w(cfg, mWidth);
         VPX.codec_enc_cfg_set_h(cfg, mHeight);
@@ -179,11 +179,15 @@ public class VP8Encoder extends AbstractCodec2
         VPX.codec_enc_cfg_set_rc_resize_allowed(cfg, 1);
         VPX.codec_enc_cfg_set_rc_end_usage(cfg, VPX.RC_MODE_CBR);
         VPX.codec_enc_cfg_set_kf_mode(cfg, VPX.KF_MODE_AUTO);
+
+        // cfg.g_lag_in_frames should be set to 0 for realtime and allow dynamic size change after init
+        VPX.codec_enc_cfg_set_lag_in_frames(cfg, 0);
+
         VPX.codec_enc_cfg_set_error_resilient(cfg, VPX.ERROR_RESILIENT_DEFAULT | VPX.ERROR_RESILIENT_PARTITIONS);
 
         vpctx = VPX.codec_ctx_malloc();
+        flags = 0;
         int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
-
         if (ret != VPX.CODEC_OK)
             throw new RuntimeException("Failed to initialize encoder, libvpx error:\n"
                     + VPX.codec_err_to_string(ret));
@@ -201,7 +205,7 @@ public class VP8Encoder extends AbstractCodec2
      *
      * Encode the frame in <tt>inputBuffer</tt> (in <tt>YUVFormat</tt>) into a VP8 frame (in <tt>outputBuffer</tt>)
      *
-     * @param inputBuffer input <tt>Buffer</tt>
+     * @param inputBuffer  input <tt>Buffer</tt>
      * @param outputBuffer output <tt>Buffer</tt>
      * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuffer</tt> has been successfully processed
      */
@@ -217,6 +221,7 @@ public class VP8Encoder extends AbstractCodec2
             int width = formatSize.width;
             int height = formatSize.height;
 
+            flags = 0;
             if (width > 0 && height > 0
                     && (width != mWidth || height != mHeight)) {
                 Timber.d("VP8 encode video size changed: [width=%s, height=%s]=>%s", mWidth, mHeight, formatSize);
@@ -236,25 +241,15 @@ public class VP8Encoder extends AbstractCodec2
             // if (frameCount < 5)
             //  Timber.d("VP8: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
 
-            int result = VPX.codec_encode(
-                    vpctx,
-                    img,
-                    (byte[]) inputBuffer.getData(),
+            int result = VPX.codec_encode(vpctx, img, (byte[]) inputBuffer.getData(),
                     offsetY, offsetU, offsetV,
-                    frameCount++,
-                    1,
-                    0,
-                    VPX.DL_REALTIME);
+                    frameCount++, 1, flags, VPX.DL_REALTIME);
+
             if (result != VPX.CODEC_OK) {
                 Timber.w("Failed to encode a frame: %s", VPX.codec_err_to_string(result));
                 outputBuffer.setDiscard(true);
                 return BUFFER_PROCESSED_OK;
             }
-
-            // if ((frameCount % 50) == 1)
-            //    Timber.w("Encode a VP8 frame: %s %s %s %s %s %s", VPX.codec_err_to_string(result),
-            //            inputBuffer.getLength(), format.getSize(), offsetY, offsetU, offsetV);
-
             iter[0] = 0;
             pkt = VPX.codec_get_cx_data(vpctx, iter);
         }
@@ -271,7 +266,7 @@ public class VP8Encoder extends AbstractCodec2
         }
         else {
             // not a compressed frame, skip this packet
-            Timber.w("Discard non-compressed frame packet: %s: %s", pkt, frameCount);
+            Timber.w("Skip partial compressed frame packet: %s: %s", pkt, frameCount);
             ret |= OUTPUT_BUFFER_NOT_FILLED;
         }
 
@@ -280,8 +275,9 @@ public class VP8Encoder extends AbstractCodec2
         leftoverPackets = (pkt != 0);
         if (leftoverPackets)
             return ret | INPUT_BUFFER_NOT_CONSUMED;
-        else
+        else {
             return ret;
+        }
     }
 
     /**
@@ -306,7 +302,7 @@ public class VP8Encoder extends AbstractCodec2
 
     /**
      * Updates the input width and height the encoder should expect.
-     * Re-initialize the encoder context. Needed when the input size changes.
+     * Force keyframe generation; needed when the input size changes.
      *
      * @param w new width
      * @param h new height
@@ -324,14 +320,19 @@ public class VP8Encoder extends AbstractCodec2
             VPX.codec_enc_cfg_set_h(cfg, h);
         }
 
-        if (vpctx != 0) {
-            VPX.codec_destroy(vpctx);
+        // Dynamic video resolution change is not implemented in vp8 encoder
+        // vp8_cx_iface.vp8e_set_config throws ERROR("Cannot increase width or height larger than their initial values");
+        // VPX.codec_enc_config_set(vpctx, cfg);
+        flags |= VPX.EFLAG_FORCE_KF;
 
-            int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
-            if (ret != VPX.CODEC_OK)
-                throw new RuntimeException("Failed to re-initialize VP8 encoder, libvpx error:\n"
-                        + VPX.codec_err_to_string(ret));
-        }
+         if (vpctx != 0) {
+             // VPX.codec_destroy(vpctx);
+
+             int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
+             if (ret != VPX.CODEC_OK)
+                 throw new RuntimeException("Failed to re-initialize VP8 encoder, libvpx error:\n"
+                         + VPX.codec_err_to_string(ret));
+         }
     }
 
     /**
