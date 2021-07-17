@@ -59,9 +59,9 @@ public class VP9Encoder extends AbstractCodec2
     private long vpctx = 0;
 
     /**
-     * Flags passed when (re-)initializing the encoder context
+     * Flags passed when (re-)initializing the encoder context on first and when orientation change
      */
-    private final long flags = 0;
+    private long flags = 0;
 
     /**
      * Number of encoder frames so far. Used as pst (presentation time stamp)
@@ -140,8 +140,6 @@ public class VP9Encoder extends AbstractCodec2
         }
     }
 
-    // FileOutputStream fos;
-
     /**
      * {@inheritDoc}
      *
@@ -203,6 +201,7 @@ public class VP9Encoder extends AbstractCodec2
         VPX.codec_enc_cfg_set_error_resilient(cfg, VPX.ERROR_RESILIENT_DEFAULT | VPX.ERROR_RESILIENT_PARTITIONS);
 
         vpctx = VPX.codec_ctx_malloc();
+        flags = 0;
         int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
         if (ret != VPX.CODEC_OK)
             throw new RuntimeException("Failed to initialize encoder, libvpx error:\n"
@@ -220,25 +219,13 @@ public class VP9Encoder extends AbstractCodec2
             throw new ResourceUnavailableException("No output format selected");
 
         Timber.d("VP9 encoder opened successfully");
-/* ****
-        String fileName = "yuv420_480x720.jpg";
-        String downloadPath = FileBackend.TMP + File.separator;
-        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
-        File outFile = new File(downloadDir, fileName);
-        try {
-            fos = new FileOutputStream(outFile);
-        } catch (FileNotFoundException e) {
-            Timber.e("Output stream file creation exception: %s", e.getMessage());
-        }
-**** */
     }
 
     /**
      * {@inheritDoc}
-     *
      * Encode the frame in <tt>inputBuffer</tt> (in <tt>YUVFormat</tt>) into a VP9 frame (in <tt>outputBuffer</tt>)
      *
-     * @param inputBuffer input <tt>Buffer</tt>
+     * @param inputBuffer  input <tt>Buffer</tt>
      * @param outputBuffer output <tt>Buffer</tt>
      * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuffer</tt> has been successfully processed
      */
@@ -254,21 +241,11 @@ public class VP9Encoder extends AbstractCodec2
             int width = formatSize.width;
             int height = formatSize.height;
 
+            flags = 0;
             if (width > 0 && height > 0
                     && (width != mWidth || height != mHeight)) {
                 Timber.d("VP9 encode video size changed: [width=%s, height=%s]=>%s", mWidth, mHeight, formatSize);
-
-                doClose();
-                try {
-                    doOpen();
-                } catch (ResourceUnavailableException e) {
-                    Timber.e("Could not find H.264 encoder.");
-                }
-
-                // vpx_jni: [0705/123845.503533:ERROR:scoped_ptrace_attach.cc(27)] ptrace: Operation not permitted (1)
-                // org.atalk.android A/libc: Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x2 in tid 5868 (Loop thread: ne), pid 2084 (g.atalk.android)
-                // org.atalk.android A/libc: crash_dump helper failed to exec
-                // updateSize(width, height);
+                updateSize(width, height);
             }
 
             int offsetY = format.getOffsetY();
@@ -281,32 +258,12 @@ public class VP9Encoder extends AbstractCodec2
             if (offsetV == Format.NOT_SPECIFIED)
                 offsetV = offsetU + (width * height) / 4;
 
-            // routine to save raw input data into a file.
-            // if (frameCount < 25) {
-            //     if (fos != null) {
-            //         try {
-            //             fos.write((byte[]) inputBuffer.getData());
-            //             // Timber.e("File fos write frame #: %s:", frameCount);
-            //             Timber.d("VP9: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
-            //             if (frameCount == 24) {
-            //                 fos.close();
-            //                 Timber.d("File fos write completed:");
-            //             }
-            //         } catch (IOException e) {
-            //             Timber.e("fos write exception: %s", e.getMessage());
-            //         }
-            //     }
-            // }
-
-            // prevent exception to test decoder i.e. A/libc: vp9/encoder/vp9_bitstream.c:399: assertion "*tok < tok_end" failed
-            // true only if VPX.codec_enc_cfg_set_g_lag_in_frames(cfg, 1);
-            // if (frameCount > 25)
-            //     return BUFFER_PROCESSED_OK;
+            // if (frameCount < 5)
             // Timber.d("VP9: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
 
             int result = VPX.codec_encode(vpctx, img, (byte[]) inputBuffer.getData(),
                     offsetY, offsetU, offsetV,
-                    frameCount++, 1, 0, VPX.DL_REALTIME);
+                    frameCount++, 1, flags, VPX.DL_REALTIME);
 
             if (result != VPX.CODEC_OK) {
                 if ((frameCount % 50) == 1)
@@ -315,11 +272,6 @@ public class VP9Encoder extends AbstractCodec2
                 outputBuffer.setDiscard(true);
                 return BUFFER_PROCESSED_OK;
             }
-
-            // if ((frameCount % 50) == 1)
-            //    Timber.w("Encode a VP9 frame: %s %s %s %s %s %s", VPX.codec_err_to_string(result),
-            // inputBuffer.getLength(), format.getSize(), offsetY, offsetU, offsetV);
-
             iter[0] = 0;
             pkt = VPX.codec_get_cx_data(vpctx, iter);
         }
@@ -335,9 +287,8 @@ public class VP9Encoder extends AbstractCodec2
             outputBuffer.setTimeStamp(inputBuffer.getTimeStamp());
         }
         else {
-            // Also failed vp9/encoder/vp9_bitstream.c:399: assertion "*tok < tok_end" failed
             // not a compressed frame, skip this packet
-            Timber.w("Skip incomplete compressed frame packet: %s: %s", pkt, frameCount);
+            Timber.w("Skip partial compressed frame packet: %s: %s", pkt, frameCount);
             ret |= OUTPUT_BUFFER_NOT_FILLED;
         }
 
@@ -347,7 +298,6 @@ public class VP9Encoder extends AbstractCodec2
         if (leftoverPackets)
             return ret | INPUT_BUFFER_NOT_CONSUMED;
         else {
-            // Timber.w("Received compressed frame packet: %s", frameCount);
             return ret;
         }
     }
@@ -374,7 +324,7 @@ public class VP9Encoder extends AbstractCodec2
 
     /**
      * Updates the input width and height the encoder should expect.
-     * Re-initialize the encoder context. Needed when the input size changes.
+     * Force keyframe generation; needed when the input size changes.
      *
      * @param w new width
      * @param h new height
@@ -385,21 +335,26 @@ public class VP9Encoder extends AbstractCodec2
         mHeight = h;
         img = VPX.img_alloc(img, VPX.IMG_FMT_I420, mWidth, mHeight, 1);
         if (img == 0)
-            throw new RuntimeException("Failed to re-initialize VP8 encoder");
+            throw new RuntimeException("Failed to re-initialize VP9 encoder");
 
         if (cfg != 0) {
             VPX.codec_enc_cfg_set_w(cfg, w);
             VPX.codec_enc_cfg_set_h(cfg, h);
         }
+        VPX.codec_enc_config_set(vpctx, cfg);
+        flags |= VPX.EFLAG_FORCE_KF;
 
-        if (vpctx != 0) {
-            VPX.codec_destroy(vpctx);
-
-            int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
-            if (ret != VPX.CODEC_OK)
-                throw new RuntimeException("Failed to re-initialize VP9 encoder, libvpx error:\n"
-                        + VPX.codec_err_to_string(ret));
-        }
+        // vpx_jni: [0705/123845.503533:ERROR:scoped_ptrace_attach.cc(27)] ptrace: Operation not permitted (1)
+        // org.atalk.android A/libc: Fatal signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0x2 in tid 5868 (Loop thread: ne), pid 2084 (g.atalk.android)
+        // org.atalk.android A/libc: crash_dump helper failed to exec
+        // if (vpctx != 0) {
+        //     VPX.codec_destroy(vpctx);
+        //
+        //     int ret = VPX.codec_enc_init(vpctx, INTERFACE, cfg, flags);
+        //     if (ret != VPX.CODEC_OK)
+        //         throw new RuntimeException("Failed to re-initialize VP9 encoder, libvpx error:\n"
+        //                 + VPX.codec_err_to_string(ret));
+        // }
     }
 
     /**

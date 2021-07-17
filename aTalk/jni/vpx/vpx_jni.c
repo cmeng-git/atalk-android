@@ -32,40 +32,6 @@
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,TAG ,__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,TAG ,__VA_ARGS__)
 
-/*
- * Both openjdk-1.7's jni_md.h and vpx/vpx_codec.h define the 'UNUSED' macro.
- * Include this here, after the vpx includes, because it brings in jni_md.h, and
- * using this order at least allows for successful compilation.
- */
-
-/* unused defines
-#undef org_atalk_impl_neomedia_codec_video_VPX_CODEC_OK
-#define org_atalk_impl_neomedia_codec_video_VPX_CODEC_OK 0L
-#undef org_atalk_impl_neomedia_codec_video_VPX_CODEC_LIST_END
-#define org_atalk_impl_neomedia_codec_video_VPX_CODEC_LIST_END 9L
-#undef org_atalk_impl_neomedia_codec_video_VPX_CODEC_USE_XMA
-#define org_atalk_impl_neomedia_codec_video_VPX_CODEC_USE_XMA 1L
-#undef org_atalk_impl_neomedia_codec_video_VPX_CODEC_USE_OUTPUT_PARTITION
-#define org_atalk_impl_neomedia_codec_video_VPX_CODEC_USE_OUTPUT_PARTITION 131072L
-#undef org_atalk_impl_neomedia_codec_video_VPX_IMG_FMT_I420
-#define org_atalk_impl_neomedia_codec_video_VPX_IMG_FMT_I420 258L
-#undef org_atalk_impl_neomedia_codec_video_VPX_RC_MODE_VBR
-#define org_atalk_impl_neomedia_codec_video_VPX_RC_MODE_VBR 0L
-#undef org_atalk_impl_neomedia_codec_video_VPX_RC_MODE_CBR
-#define org_atalk_impl_neomedia_codec_video_VPX_RC_MODE_CBR 1L
-#undef org_atalk_impl_neomedia_codec_video_VPX_RC_MODE_CQ
-#define org_atalk_impl_neomedia_codec_video_VPX_RC_MODE_CQ 2L
-#undef org_atalk_impl_neomedia_codec_video_VPX_KF_MODE_AUTO
-#define org_atalk_impl_neomedia_codec_video_VPX_KF_MODE_AUTO 1Lfv
-#undef org_atalk_impl_neomedia_codec_video_VPX_KF_MODE_DISABLED
-#define org_atalk_impl_neomedia_codec_video_VPX_KF_MODE_DISABLED 1L
-#undef org_atalk_impl_neomedia_codec_video_VPX_DL_REALTIME
-#define org_atalk_impl_neomedia_codec_video_VPX_DL_REALTIME 1L
-#undef org_atalk_impl_neomedia_codec_video_VPX_CODEC_CX_FRAME_PKT
-#define org_atalk_impl_neomedia_codec_video_VPX_CODEC_CX_FRAME_PKT 0L
-#define VPX_CODEC_DISABLE_COMPAT 1
-*/
-
 #undef org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_DEC
 #define org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_DEC 0L
 #undef org_atalk_impl_neomedia_codec_video_VPX_INTERFACE_VP8_ENC
@@ -259,42 +225,6 @@ VPX_FUNC(jint, codec_1control, jlong context, jint ctrl_id, jint arg)
 }
 
 /*
- * Method:    codec_encode_frame => return the first encoded packet
- */
-//VPX_FUNC(jlong, codec_1encode_1frame, jlong context, jlong jimg, jbyteArray bufArray, jint offsetY,
-//         jint offsetU, jint offsetV, jlong pts, jlong duration, jlong flags, jlong deadline, jlongArray iterArray)
-//{
-//    vpx_codec_ctx_t *codec = (vpx_codec_ctx_t *) (intptr_t) context;
-//
-//    unsigned char *buf = (unsigned char *) (*env)->GetByteArrayElements(env, bufArray, NULL);
-//    vpx_image_t *img = (vpx_image_t *) (intptr_t) jimg;
-//    img->planes[VPX_PLANE_Y] = (buf + offsetY);
-//    img->planes[VPX_PLANE_U] = (buf + offsetU);
-//    img->planes[VPX_PLANE_V] = (buf + offsetV);
-//    img->planes[VPX_PLANE_ALPHA] = 0;
-//
-//    const vpx_codec_err_t res = vpx_codec_encode(codec, img,
-//                                                 (vpx_codec_pts_t) pts,
-//                                                 (unsigned long) duration,
-//                                                 (vpx_enc_frame_flags_t) flags,
-//                                                 (unsigned long) deadline);
-//
-//    (*env)->ReleaseByteArrayElements(env, bufArray, (jbyte *)buf, JNI_ABORT);
-//
-//    const vpx_codec_cx_pkt_t *pkt = NULL;
-//    if (res != VPX_CODEC_OK) {
-//        return (jlong) (intptr_t) pkt;
-//    }
-//
-//    jlong *iter_ptr = (*env)->GetLongArrayElements(env, iterArray, NULL);
-//    pkt = vpx_codec_get_cx_data(codec, (vpx_codec_iter_t *) (intptr_t) iter_ptr);
-//    // LOGD("VPX encoded packet: 0x%0X %u\n", *pkt, pkt->kind);
-//
-//    (*env)->ReleaseLongArrayElements(env, iterArray, iter_ptr, 0);
-//    return (jlong) (intptr_t) pkt;
-//}
-
-/*
  * Method:    codec_encode
  */
 VPX_FUNC(jint, codec_1encode, jlong context, jlong jimg, jbyteArray bufArray, jint offsetY,
@@ -306,7 +236,6 @@ VPX_FUNC(jint, codec_1encode, jlong context, jlong jimg, jbyteArray bufArray, ji
     img->planes[VPX_PLANE_U] = (buf + offsetU);
     img->planes[VPX_PLANE_V] = (buf + offsetV);
     img->planes[VPX_PLANE_ALPHA] = 0;
-
 
     jint ret = (jint) vpx_codec_encode(
                     (vpx_codec_ctx_t *) (intptr_t) context,

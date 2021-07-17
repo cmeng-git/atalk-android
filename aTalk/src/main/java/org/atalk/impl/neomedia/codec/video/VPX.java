@@ -109,6 +109,12 @@ public class VPX
     public static final int KF_MODE_DISABLED = 1;
 
     /**
+     * Force this frame to be a keyframe
+     * Corresponds to <tt>VPX_EFLAG_FORCE_KF</tt> from <tt>vpx/vpx_encoder.h</tt>
+     */
+    public static final int EFLAG_FORCE_KF = (1 << 0);
+
+    /**
      * Process and return as soon as possible ('realtime' deadline)
      * Corresponds to <tt>VPX_DL_REALTIME</tt> from <tt>vpx/vpx_encoder.h</tt>
      */

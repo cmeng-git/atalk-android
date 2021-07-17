@@ -1,6 +1,6 @@
 #Backing up previous LOCAL_PATH so it does not screw with the root Android.mk file
 LOCAL_PATH_OLD := $(LOCAL_PATH)
-LOCAL_PATH := $(call my-dir)
+LOCAL_PATH := $(call my-dir)/opus
 
 include $(CLEAR_VARS)
 
@@ -18,8 +18,7 @@ SILK_SOURCES += $(SILK_SOURCES_FIXED)
 CELT_SOURCES += $(CELT_SOURCES_ARM)
 SILK_SOURCES += $(SILK_SOURCES_ARM)
 
-LOCAL_SRC_FILES := $(CELT_SOURCES) $(SILK_SOURCES) $(OPUS_SOURCES) \
- org_atalk_impl_neomedia_codec_audio_opus_Opus.c
+LOCAL_SRC_FILES := $(CELT_SOURCES) $(SILK_SOURCES) $(OPUS_SOURCES) ../opus_Opus.c
 
 LOCAL_LDLIBS        := -lm -llog
 

@@ -68,7 +68,7 @@ include $(OPUS_DIR)/Android.mk
 # include $(BUILD_SHARED_LIBRARY)
 
 # ================================= Speex =============================================
-### Speex shared library build - using source (speex: v1.2.0rc1 and libogg: v1.3.2)
+### Speex shared library build - using source (speex: v1.2.0rc1 (last to support resampler.c)  and libogg: v1.3.5)
 LOCAL_PATH := $(ROOT)
 SPEEX_DIR  := speex
 include ./speex/Android.mk
@@ -85,7 +85,7 @@ include ./speex/Android.mk
 
 # ================================= OpenSSL ===========================================
 ### OpenSSL shared library build (source in jni/openssl)
-# Contains both static libraries-1.0.2r pre-built on Ubuntu 18.04 and
+# Contains both static libraries-1.0.2r pre-built on Ubuntu 20.04 and
 # Reference only: sources-1.0.1j from site (Android_src.mk - build has error using AS ndk on Windows 7)
 
 LOCAL_PATH  := $(ROOT)
@@ -95,7 +95,7 @@ include $(CLEAR_VARS)
 # Local AS NDK built from source (OPENSSL_VERSION=1.0.1j) - problem but build ok on Ubuntu Android Studio
 # include openssl/Android.mk
 
-## Built static library from source (version 1.0.2u) on ubuntu 18.04
+## Built static library from source (version 1.0.2u) on ubuntu 20.04
 # Built from static library (unable to build from source in jni - #TODO)
 include ./openssl/Android_a.mk
 

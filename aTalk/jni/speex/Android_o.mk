@@ -14,7 +14,7 @@ LOCAL_MODULE := jnspeex
 LOCAL_LDLIBS += -llog -lz
 LOCAL_SHARED_LIBRARIES :=  libspeex
 LOCAL_C_INCLUDES := ./include
-LOCAL_SRC_FILES := ./org_atalk_impl_neomedia_codec_audio_speex_Speex.c
+LOCAL_SRC_FILES := ./speex_Speex.c
 LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
 
 include $(BUILD_SHARED_LIBRARY)
