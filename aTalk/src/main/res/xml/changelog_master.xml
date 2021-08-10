@@ -6,8 +6,19 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.6.2 (07/08/2021)" versioncode="206020">
+    <release version="2.6.3 (07/17/2021)" versioncode="206030">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Support VP9Encoder dynamic resolution change on device rotation, without destroy/re-init codec</change>
+        <change>Upgrade smack libraries to version 4.4.3 release</change>
+        <change>Upgrade library opus to version 1.3.1</change>
+        <change>Upgrade libraries speex to version 1.2.0, and ogg to v1.3.5; add resampler support from speex-1.2beta3 (rc1)</change>
+        <change>Cleanup Spanish language syntax translation - contribution from community</change>
+        <change>Add scripts to fetch libraries for opus, speex and ogg sources online</change>
+        <change>Fix NPE from field due to (mediaServiceImpl == null) in SettingActivity</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.6.2 (07/08/2021)" versioncode="206020">
         <change>Implement youtube player using IFrame Player API to avoid video link extraction error, and support playlist playback</change>
         <change>Use fragments for both exoPlayer and youtubePlayer playback, allowing chat view and video playback coexistence</change>
         <change>Implement and support VP9 codec for media call data streaming</change>
