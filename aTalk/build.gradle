@@ -73,10 +73,15 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 206020
-        versionName "2.6.2"
+        versionCode 206030
+        versionName "2.6.3"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -115,11 +120,6 @@ android {
 
         // for view binding:
         // viewBinding true
-    }
-
-    compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
     }
 
     flavorDimensions("distribution")
