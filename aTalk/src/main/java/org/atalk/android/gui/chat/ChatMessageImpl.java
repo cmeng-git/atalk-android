@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
@@ -18,6 +19,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 
+import java.io.File;
 import java.util.Date;
 
 import timber.log.Timber;
@@ -32,6 +34,8 @@ import timber.log.Timber;
  */
 public class ChatMessageImpl implements ChatMessage
 {
+
+    public static String HTTP_FT_MSG = "(?s)^aesgcm:.*|^http[s].*";
     /**
      * The string Id of the message sender. The value is used in quoted messages.
      * Actual value pending message type i.e.:
@@ -43,17 +47,17 @@ public class ChatMessageImpl implements ChatMessage
      * Exception as recipient:
      * contactId: ChatMessage.MESSAGE_FILE_TRANSFER_SEND & ChatMessage.MESSAGE_STICKER_SEND:
      */
-    private String mSender;
+    private final String mSender;
 
     /**
      * The display name of the message sender. It may be the same as sender
      */
-    private String mSenderName;
+    private final String mSenderName;
 
     /**
      * The date and time of the message.
      */
-    private Date date;
+    private final Date date;
 
     /**
      * The type of the message.
@@ -63,12 +67,17 @@ public class ChatMessageImpl implements ChatMessage
     /**
      * The mime type of the message content.
      */
-    private int mimeType;
+    private final int mimeType;
 
     /**
      * The content of the message.
      */
-    private String message;
+    private final String message;
+
+    /**
+     * The direction of the message.
+     */
+    private String mDirection = ChatMessage.DIR_OUT;
 
     /**
      * The HTTP file download file transfer status
@@ -83,28 +92,28 @@ public class ChatMessageImpl implements ChatMessage
     /**
      * The encryption type of the message content.
      */
-    private int encryptionType;
+    private final int encryptionType;
 
     /**
      * A unique identifier for this message.
      */
-    private String messageUID;
+    private final String messageUID;
 
     /**
      * The unique identifier of the last message that this message should replace,
      * or <tt>null</tt> if this is a new message.
      */
-    private String correctedMessageUID;
+    private final String correctedMessageUID;
 
     /**
      * The sent message stanza Id.
      */
-    private String mServerMsgId;
+    private final String mServerMsgId;
 
     /**
      * The received message stanza Id.
      */
-    private String mRemoteMsgId;
+    private final String mRemoteMsgId;
 
     /**
      * Field used to cache processed message body after replacements and corrections. This text is
@@ -115,12 +124,12 @@ public class ChatMessageImpl implements ChatMessage
     /**
      * The file transfer OperationSet (event).
      */
-    private OperationSetFileTransfer opSet;
+    private final OperationSetFileTransfer opSet;
 
     /**
      * The Incoming file transfer request (event).
      */
-    private IncomingFileTransferRequest request;
+    private final IncomingFileTransferRequest request;
 
     private HttpFileDownloadJabberImpl httpFileTransfer;
 
@@ -129,24 +138,29 @@ public class ChatMessageImpl implements ChatMessage
      */
     private FileRecord fileRecord;
 
-    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType,
-            String content, String messageUID)
+    /*
+     * ChatMessageImpl with enclosed IMessage as content
+     */
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg, String correctedMessageUID, String direction)
     {
-        this(sender, senderName, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null,
+        this(sender, senderName, date, messageType, msg.getMimeType(), msg.getContent(),
+                msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUID, direction,
+                msg.getXferStatus(), msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(), null, null, null);
+    }
+
+    /*
+     * Default direction ot DIR_OUT, not actually being use in message except in file transfer
+     */
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType, String content, String messageUID, String direction)
+    {
+        this(sender, senderName, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null, direction,
                 FileRecord.STATUS_UNKNOWN, ChatMessage.MESSAGE_DELIVERY_NONE, "", "", null, null, null);
     }
 
-    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg, String correctedMessageUID)
+    public ChatMessageImpl(String sender, Date date, int messageType, int mimeType, String content, String messageUID,
+                           String direction, OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
-        this(sender, senderName, date, messageType, msg.getMimeType(), msg.getContent(),
-                msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUID, msg.getXferStatus(),
-                msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(), null, null, null);
-    }
-
-    public ChatMessageImpl(String sender, Date date, int messageType, int mimeType, String content,
-            String messageUID, OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
-    {
-        this(sender, sender, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null,
+        this(sender, sender, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null, direction,
                 FileRecord.STATUS_UNKNOWN, ChatMessage.MESSAGE_DELIVERY_NONE, null, null, opSet, request, fileRecord);
     }
 
@@ -171,9 +185,9 @@ public class ChatMessageImpl implements ChatMessage
      * @param fileRecord The history file record.
      */
     public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType,
-            String content, int encryptionType, String messageUID, String correctedMessageUID,
-            int xferStatus, int receiptStatus, String serverMsgId, String remoteMsgId,
-            OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
+                           String content, int encryptionType, String messageUID, String correctedMessageUID,
+                           String direction, int xferStatus, int receiptStatus, String serverMsgId, String remoteMsgId,
+                           OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
     {
         this.mSender = sender;
         this.mSenderName = senderName;
@@ -184,6 +198,7 @@ public class ChatMessageImpl implements ChatMessage
         this.encryptionType = encryptionType;
         this.messageUID = messageUID;
         this.correctedMessageUID = correctedMessageUID;
+        this.mDirection = direction;
 
         this.mXferStatus = xferStatus;
         this.receiptStatus = receiptStatus;
@@ -367,6 +382,35 @@ public class ChatMessageImpl implements ChatMessage
         return new MergedMessage(this).mergeMessage(consecutiveMessage);
     }
 
+    public boolean updateFTStatus(Object descriptor, String msgUuid, int status, String fileName, int encType, int recordType, String dir)
+    {
+        if (messageUID.equals(msgUuid)) {
+            mXferStatus = status;
+            messageType = recordType;
+
+            // Require to create new if (fileName != null) to update both filePath and mXferStatus
+            if (!TextUtils.isEmpty(fileName)) {
+                Object entityJid;
+                if (descriptor instanceof ChatRoomWrapper)
+                    entityJid = ((ChatRoomWrapper) descriptor).getChatRoom();
+                else
+                    entityJid = ((MetaContact) descriptor).getDefaultContact();
+
+                fileRecord = new FileRecord(msgUuid, entityJid, dir, date, new File(fileName), encType, mXferStatus);
+            }
+            Timber.d("Updated ChatMessage Uid: %s (%s); status: %s => FR: %s", msgUuid, dir, status, fileRecord);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateChatMessage(String msgUuid, String content)
+    {
+        if (messageUID.equals(msgUuid)) {
+        }
+        return false;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -454,6 +498,16 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
+     * Returns the message direction i.e. in/put.
+     *
+     * @return the direction of this message.
+     */
+    public String getMessageDir()
+    {
+        return mDirection;
+    }
+
+    /**
      * Returns the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
      *
      * @return the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
@@ -480,12 +534,13 @@ public class ChatMessageImpl implements ChatMessage
         // Same UID specified i.e. corrected message
         boolean isCorrectionMessage = ((messageUID != null) && messageUID.equals(nextMsg.getCorrectedMessageUID()));
 
-        // FTRequest message always treated as non-consecutiveMessage
+        // FTRequest and FTHistory messages are always treated as non-consecutiveMessage
         boolean isFTMsg = (messageType == MESSAGE_FILE_TRANSFER_RECEIVE)
                 || (messageType == MESSAGE_FILE_TRANSFER_SEND)
-                || (messageType == MESSAGE_STICKER_SEND);
+                || (messageType == MESSAGE_STICKER_SEND)
+                || (messageType == MESSAGE_FILE_TRANSFER_HISTORY);
 
-        boolean isHttpFTMsg = isNonEmpty && message.matches("(?s)^aesgcm:.*|^http[s].*");
+        boolean isHttpFTMsg = isNonEmpty && message.matches(HTTP_FT_MSG);
 
         boolean isMarkUpText = isNonEmpty && message.matches(ChatMessage.HTML_MARKUP);
 
@@ -507,7 +562,7 @@ public class ChatMessageImpl implements ChatMessage
         boolean inElapseTime = ((nextMsg.getDate().getTime() - getDate().getTime()) < 60000);
 
         return isCorrectionMessage
-                || (!(isNonMerge(nextMsg) || isFTMsg || isHttpFTMsg || isMarkUpText || isLatLng || isSystemMsg)
+                || (!(isFTMsg || isHttpFTMsg || isMarkUpText || isLatLng || isSystemMsg || isNonMerge(nextMsg))
                 && (isEncTypeSame && isJidSame && inElapseTime));
     }
 
@@ -523,11 +578,13 @@ public class ChatMessageImpl implements ChatMessage
         String bodyText = chatMessage.getMessage();
         boolean isNonEmpty = !TextUtils.isEmpty(bodyText);
 
-        // FT  messages always treated as non-consecutiveMessage
+        // FTRequest and FTHistory messages are always treated as non-consecutiveMessage
         boolean isFTMsg = ((msgType == MESSAGE_FILE_TRANSFER_RECEIVE)
-                || (msgType == MESSAGE_FILE_TRANSFER_SEND) || (msgType == MESSAGE_STICKER_SEND));
+                || (msgType == MESSAGE_FILE_TRANSFER_SEND)
+                || (msgType == MESSAGE_STICKER_SEND)
+                || (msgType == MESSAGE_FILE_TRANSFER_HISTORY));
 
-        boolean isHttpFTMsg = isNonEmpty && bodyText.matches("(?s)^aesgcm:.*|^http[s].*");
+        boolean isHttpFTMsg = isNonEmpty && bodyText.matches(HTTP_FT_MSG);
 
         // XHTML markup message always treated as non-consecutiveMessage
         boolean isMarkUpText = isNonEmpty && bodyText.matches(ChatMessage.HTML_MARKUP);
@@ -544,47 +601,46 @@ public class ChatMessageImpl implements ChatMessage
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)
     {
         final String sender = evt.getDestinationContact().getProtocolProvider().getAccountID().getAccountJid();
-        final IMessage message = evt.getSourceMessage();
+        final IMessage imessage = evt.getSourceMessage();
 
         return new ChatMessageImpl(sender, sender, evt.getTimestamp(),
-                ChatMessage.MESSAGE_OUT, message, evt.getCorrectedMessageUID());
+                ChatMessage.MESSAGE_OUT, imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_OUT);
     }
 
     static public ChatMessageImpl getMsgForEvent(final MessageReceivedEvent evt)
     {
-        final IMessage message = evt.getSourceMessage();
+        final IMessage imessage = evt.getSourceMessage();
         final Contact contact = evt.getSourceContact();
-        final MetaContact metaContact
-                = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
+        final MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
 
         return new ChatMessageImpl(contact.getAddress(), metaContact.getDisplayName(),
-                evt.getTimestamp(), evt.getEventType(), message, evt.getCorrectedMessageUID());
+                evt.getTimestamp(), evt.getEventType(), imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_IN);
     }
 
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageDeliveredEvent evt)
     {
-        final IMessage message = evt.getMessage();
+        final IMessage imessage = evt.getMessage();
         String chatRoom = evt.getSourceChatRoom().getName();
 
         return new ChatMessageImpl(chatRoom, chatRoom, evt.getTimestamp(),
-                ChatMessage.MESSAGE_MUC_OUT, message, null);
+                ChatMessage.MESSAGE_MUC_OUT, imessage, null, ChatMessage.DIR_OUT);
     }
 
     static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageReceivedEvent evt)
     {
-        final IMessage message = evt.getMessage();
+        final IMessage imessage = evt.getMessage();
         String nickName = evt.getSourceChatRoomMember().getNickName();
         // Extract the contact with the resource part
         String contact = evt.getSourceChatRoomMember().getContactAddress(); //.split("/")[0];
 
-        return new ChatMessageImpl(nickName, nickName, evt.getTimestamp(), evt.getEventType(), message, null);
+        return new ChatMessageImpl(nickName, nickName, evt.getTimestamp(), evt.getEventType(), imessage, null, ChatMessage.DIR_IN);
     }
 
     static public ChatMessageImpl getMsgForEvent(final FileRecord fileRecord)
     {
         return new ChatMessageImpl(fileRecord.getJidAddress(), fileRecord.getDate(),
                 ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, IMessage.ENCODE_PLAIN, null,
-                fileRecord.getID(), null, null, fileRecord);
+                fileRecord.getID(), fileRecord.getDirection(), null, null, fileRecord);
     }
 
     /**

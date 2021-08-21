@@ -42,6 +42,7 @@ import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.*;
 import timber.log.Timber;
 
@@ -119,7 +120,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         mContext = context;

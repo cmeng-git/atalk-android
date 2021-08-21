@@ -51,6 +51,7 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
@@ -128,7 +129,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         mContext = context;
@@ -398,6 +399,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                     return true;
 
                 case R.id.erase_all_chatroom_history:
+                    // This opton is currently being disabled - not offer to user
                     EntityListHelper.eraseAllEntityHistory(mContext);
                     return true;
 

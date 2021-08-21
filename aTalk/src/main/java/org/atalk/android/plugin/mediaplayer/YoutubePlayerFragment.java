@@ -43,6 +43,9 @@ import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.PREF_P
 
 public class YoutubePlayerFragment extends Fragment
 {
+    // regression to check for valid youtube link
+    public static final String URL_YOUTUBE = "http[s]*://[w.]*youtu[.]*be.*";
+
     private YouTubePlayerView youTubePlayerView;
     private FullScreenHelper fullScreenHelper;
 

@@ -41,6 +41,11 @@ public class MergedMessage implements ChatMessage
     private String mergedMessage;
 
     /**
+     * The direction of the message.
+     */
+    private String mDirection = ChatMessage.DIR_OUT;
+
+    /**
      * Variable used to cache merged message Ids.
      */
     private String serverMsgIds;
@@ -176,6 +181,15 @@ public class MergedMessage implements ChatMessage
     public String getMessageUID()
     {
         return rootMessage.getMessageUID();
+    }
+
+    /**
+     * Returns the message direction i.e. in/put.
+     *
+     * @return the direction of this message.
+     */
+    public String getMessageDir() {
+        return mDirection;
     }
 
     /**

@@ -61,11 +61,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * The chat fragment used by this instance.
      */
-    private ChatFragment chatFragment;
+    private final ChatFragment chatFragment;
     /**
      * Parent activity.
      */
-    private Activity parent;
+    private final Activity parent;
     /**
      * Indicates that this controller is attached to the views.
      */
@@ -129,7 +129,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * Audio recording variables
      */
-    private boolean isAudioAllowed;
+    private final boolean isAudioAllowed;
     private boolean isRecording;
 
     private View msgRecordView;
@@ -447,7 +447,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                                 for (Attachment attachment : mediaPreviews) {
                                     String filePath = FilePathHelper.getFilePath(parent, attachment);
                                     if (StringUtils.isNotEmpty(filePath))
-                                        chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
+                                        chatPanel.addFTSendRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                                 }
                                 mpAdapter.clearPreviews();
                             }
@@ -606,14 +606,13 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public boolean onKeyUp(int keyCode, KeyEvent event)
     {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_ENTER:
-                if (event.isCtrlPressed()) {
-                    if (chatFragment != null) {
-                        sendBtn.performClick();
-                    }
-                    return true;
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            if (event.isCtrlPressed()) {
+                if (chatFragment != null) {
+                    sendBtn.performClick();
                 }
+                return true;
+            }
         }
         return false;
     }
@@ -649,7 +648,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         parent.startService(intent);
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver()
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
     {
         @Override
         public void onReceive(Context context, Intent intent)
@@ -669,7 +668,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 LocalBroadcastManager.getInstance(parent).unregisterReceiver(mReceiver);
                 String filePath = intent.getStringExtra(AudioBgService.URI);
                 if (StringUtils.isNotEmpty(filePath)) {
-                    chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
+                    chatPanel.addFTSendRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
                 }
                 parent.stopService(new Intent(parent, AudioBgService.class));
             }
@@ -941,7 +940,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     {
         UIService uiService = AndroidGUIActivator.getUIService();
         if (uiService != null) {
-            chatPanel.addFTRequest(filePath, ChatMessage.MESSAGE_STICKER_SEND);
+            chatPanel.addFTSendRequest(filePath, ChatMessage.MESSAGE_STICKER_SEND);
         }
     }
 

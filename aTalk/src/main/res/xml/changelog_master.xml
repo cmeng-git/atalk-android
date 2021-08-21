@@ -6,8 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.6.3 (07/17/2021)" versioncode="206030">
+    <release version="2.6.4 (08/21/2021)" versioncode="206040">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix problem when "Chat history logging" option is disabled, any file transfer session will purge all the logged messages.</change>
+        <change>Fix chat messages view is not updated properly when more history messages are being fetched with user scrolling up.</change>
+        <change>Ensure file transfer status is consistently being reported even after resume from chat session closed.</change>
+        <change>Two consecutive File Transfer History messages should not be merged, else the second media file will not be shown.</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.6.3 (07/17/2021)" versioncode="206030">
         <change>Support VP9Encoder dynamic resolution change on device rotation, without destroy/re-init codec</change>
         <change>Upgrade smack libraries to version 4.4.3 release</change>
         <change>Upgrade library opus to version 1.3.1</change>

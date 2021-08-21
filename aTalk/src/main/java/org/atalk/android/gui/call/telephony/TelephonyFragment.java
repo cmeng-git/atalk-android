@@ -39,6 +39,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -78,7 +79,7 @@ public class TelephonyFragment extends OSGiFragment
     }
 
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         mContext = context;

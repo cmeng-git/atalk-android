@@ -128,16 +128,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         ServiceReference refConfig = bundleContext.getServiceReference(ConfigurationService.class.getName());
         configService = (ConfigurationService) bundleContext.getService(refConfig);
 
-        // Check if the message history is enabled in the configuration
-        // service, and if not do not register the service.
+        // Check if the message history is enabled in the configuration service;
+        // if not, then do not register the service.
         boolean isMessageHistoryEnabled = configService.getBoolean(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED,
                 Boolean.parseBoolean(MessageHistoryActivator.getResources().getSettingsString(
                         MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED)));
-
-        // We're adding a property change listener in order to
-        // listen for modifications of the isMessageHistoryEnabled property.
-        msgHistoryPropListener = new MessageHistoryPropertyChangeListener();
 
         // Load the "IS_MESSAGE_HISTORY_ENABLED" property.
         isHistoryLoggingEnabled = configService.getBoolean(
@@ -145,6 +141,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 Boolean.parseBoolean(UtilActivator.getResources().getSettingsString(
                         MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED)));
 
+        // We are adding a property change listener in order to
+        // listen for modifications of the isMessageHistoryEnabled property.
+        msgHistoryPropListener = new MessageHistoryPropertyChangeListener();
         configService.addPropertyChangeListener(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED, msgHistoryPropListener);
 
@@ -575,8 +574,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * bit-7 of ChatSession.STATUS if set, then remove the record from UI; i.e. just return null
      *
      * @param cursor HistoryRecord in cursor
-     * @param contact Contact
-     * @return Object
+     * @return Object ChatSessionRecord
      */
     private ChatSessionRecord convertToSessionRecord(Cursor cursor)
     {
@@ -1224,6 +1222,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
     // //////////////////////////////////////////////////////////////////////////
     // ChatMessageListener implementation methods for chatMessage
+    // cmeng (20210816): Actually when historyLog is disabled, MessageListener is not registered with
+    // OperationSetBasicInstantMessaging; hence HttpFileDownload messages are not saved in DB.
+    // @see start#isMessageHistoryEnabled
 
     public void messageReceived(MessageReceivedEvent evt)
     {

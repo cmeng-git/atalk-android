@@ -72,11 +72,9 @@ public class FileHistoryConversation extends FileTransferConversation
         File filePath = fileRecord.getFile();
         int status = fileRecord.getStatus();
         boolean bgAlert = (FileRecord.STATUS_COMPLETED != status);
-        if (!filePath.exists()) {
-            if (FileRecord.STATUS_ACTIVE != status) {
-                bgAlert = true;
-                status = FileRecord.FILE_NOT_FOUND;
-            }
+        if (!bgAlert && !filePath.exists()) {
+            bgAlert = true;
+            status = FileRecord.FILE_NOT_FOUND;
         }
 
         updateFileViewInfo(filePath, true);
@@ -107,7 +105,7 @@ public class FileHistoryConversation extends FileTransferConversation
         String statusMsg = "";
         String statusText = FileRecord.statusMap.get(status);
 
-        if (dir.equals(FileRecord.IN)) {
+        if (FileRecord.IN.equals(dir)) {
             switch (status) {
                 case FileRecord.STATUS_COMPLETED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, entityJid);

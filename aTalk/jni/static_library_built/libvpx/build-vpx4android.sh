@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# (20210521) aTalk v2.6.1 uses libvpx-1.10.0, and the scripts are updated for this version only
+# (20210521) aTalk v2.6.1 uses libvpx-1.10.0, and the scripts are verified for this version only
 #set -x
 set -u
 . _settings.sh
@@ -88,6 +88,7 @@ configure_make() {
   make -j${HOST_NUM_CORES} install
   popd || true
 }
+
 for ((i=0; i < ${#ABIS[@]}; i++))
 do
   if [[ $# -eq 0 ]] || [[ "$1" == "${ABIS[i]}" ]]; then

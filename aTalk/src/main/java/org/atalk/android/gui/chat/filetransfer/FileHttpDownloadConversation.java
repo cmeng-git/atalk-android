@@ -175,8 +175,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 mChatFragment.addActiveFileTransfer(httpFileTransferJabber.getID(), httpFileTransferJabber, msgViewId);
                 startProgressChecker();
 
-                mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_IN_PROGRESS, null, mEncryption,
-                        ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+                updateFTStatus(FileRecord.STATUS_IN_PROGRESS, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
@@ -186,12 +185,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
                 // Update the DB record status
-                mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_COMPLETED, mXferFile.toString(),
-                        mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
-
-                // Get chatFragment to refresh only when file transfer has Completed.
-                // Otherwise cache msg will re-trigger the transfer request
-                mChatFragment.getChatPanel().setCacheRefresh(true);
+                updateFTStatus(FileRecord.STATUS_COMPLETED, mXferFile.toString(), ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
@@ -199,16 +193,13 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
-                mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_FAILED, null, mEncryption,
-                        ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+                updateFTStatus(FileRecord.STATUS_FAILED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
 
             // local cancel the file download process
             case FileTransferStatusChangeEvent.CANCELED:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
-
-                mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_CANCELED, null, mEncryption,
-                        ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+                updateFTStatus(FileRecord.STATUS_CANCELED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
 
             // user reject the incoming http download
@@ -216,8 +207,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED);
                 // need to update status here as chatFragment statusListener is enabled for
                 // fileTransfer and only after accept
-                mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_REFUSED, null, mEncryption,
-                        ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+                updateFTStatus(FileRecord.STATUS_REFUSED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
         }
         updateXferFileViewState(status, statusText);
@@ -243,6 +233,20 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             }
             // Timber.d("Download Manager for JobId: %s; File: %s (status: %s)", jobId, dnLink, status);
         }
+    }
+
+    /**
+     * Update the file transfer status into the DB, and also the msgCache to ensure the file send request will not
+     * get trigger again. The msgCache record will be used for DisplayMessage on chat session resume.
+     *
+     * @param status File transfer status
+     * @param fileName the downloaded fileName
+     * @param recordType File record type see ChatMessage MESSAGE_FILE_
+     */
+    private void updateFTStatus(int status, String fileName, int recordType)
+    {
+        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, recordType);
+        mChatFragment.getChatPanel().updateCacheFTRecord(msgUuid, status, fileName, mEncryption, recordType);
     }
 
     /**
@@ -510,7 +514,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     {
         for (Map.Entry<Long, String> entry : previousDownloads.entrySet()) {
             if (entry.getValue().equals(dnLink)) {
-                return (long) entry.getKey();
+                return entry.getKey();
             }
         }
         return -1;
@@ -605,7 +609,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     /**
      * Checks download progress and updates status, then re-schedules itself.
      */
-    private Runnable progressChecker = new Runnable()
+    private final Runnable progressChecker = new Runnable()
     {
         @Override
         public void run()

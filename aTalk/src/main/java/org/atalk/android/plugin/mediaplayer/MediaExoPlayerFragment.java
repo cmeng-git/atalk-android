@@ -16,16 +16,16 @@
  */
 package org.atalk.android.plugin.mediaplayer;
 
+import static org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment.rateMax;
+import static org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment.rateMin;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,22 +40,14 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.apache.http.util.TextUtils;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.persistance.FileBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import at.huber.youtubeExtractor.VideoMeta;
-import at.huber.youtubeExtractor.YouTubeExtractor;
-import at.huber.youtubeExtractor.YtFile;
-import timber.log.Timber;
-
-import static org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment.rateMax;
-import static org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment.rateMin;
 
 /**
  * The class handles the actual content source address decoding for the user selected hymn
@@ -73,9 +65,6 @@ public class MediaExoPlayerFragment extends Fragment
     public static final String ATTR_MEDIA_URLS = "mediaUrls";
     public static final String PREF_PLAYBACK_SPEED = "playBack_speed";
 
-    // regression to check for valid youtube link
-    public static final String URL_YOUTUBE = "http[s]*://[w.]*youtu[.]*be.*";
-
     private static final String sampleUrl = "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4";
 
     // Default playback video url
@@ -91,8 +80,6 @@ public class MediaExoPlayerFragment extends Fragment
     private SimpleExoPlayer mSimpleExoPlayer = null;
     private StyledPlayerView mPlayerView;
     private PlaybackStateListener playbackStateListener;
-
-    private YoutubePlayerFragment mYoutubePlayer;
 
     /**
      * Create a new instance of MediaExoPlayerFragment, providing "bundle" as an argument.
@@ -119,6 +106,7 @@ public class MediaExoPlayerFragment extends Fragment
 
         Bundle args = getArguments();
         if (args != null) {
+            // mediaUrl = "https://youtu.be/vCKCkc8llaM";  for testing only
             mediaUrl = args.getString(ATTR_MEDIA_URL);
             mediaUrls = args.getStringArrayList(ATTR_MEDIA_URLS);
         }
@@ -200,9 +188,6 @@ public class MediaExoPlayerFragment extends Fragment
             mSimpleExoPlayer.release();
             mSimpleExoPlayer = null;
         }
-        else if (mYoutubePlayer != null) {
-            mYoutubePlayer.release();
-        }
     }
 
     /**
@@ -243,6 +228,21 @@ public class MediaExoPlayerFragment extends Fragment
     }
 
     /**
+     * Play the specified videoUrl using android Intent.ACTION_VIEW
+     *
+     * @param videoUrl videoUrl not playable by ExoPlayer
+     */
+    private void playVideoUrlExt(String videoUrl)
+    {
+        // remove the exoPlayer fragment
+        mContext.getSupportFragmentManager().beginTransaction().remove(this).commit();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    /**
      * set SimpleExoPlayer playback speed
      *
      * @param speed playback speed: default 1.0f
@@ -264,15 +264,12 @@ public class MediaExoPlayerFragment extends Fragment
      */
     private MediaItem buildMediaItem(String mediaUrl)
     {
-        MediaItem mediaItem = null;
+        MediaItem mediaItem;
 
         Uri uri = Uri.parse(mediaUrl);
         String mimeType = FileBackend.getMimeType(mContext, uri);
         if (!TextUtils.isEmpty(mimeType) && (mimeType.contains("video") || mimeType.contains("audio"))) {
             mediaItem = MediaItem.fromUri(mediaUrl);
-        }
-        else if (mediaUrl.matches(URL_YOUTUBE)) {
-            playYoutubeUrl(mediaUrl);
         }
         else {
             mediaItem = new MediaItem.Builder()
@@ -284,76 +281,9 @@ public class MediaExoPlayerFragment extends Fragment
     }
 
     /**
-     * see https://github.com/HaarigerHarald/android-youtubeExtractor
-     * see https://github.com/flagbug/YoutubeExtractor
-     *
-     * @param youtubeLink the given youtube playback link
-     */
-    @SuppressLint("StaticFieldLeak")
-    private void playYoutubeUrl(String youtubeLink)
-    {
-        //        try {
-        //            Field field = YouTubeExtractor.class.getDeclaredField("LOGGING");
-        //            field.setAccessible(true);
-        //            field.set(field, true);
-        //        } catch (NoSuchFieldException | IllegalAccessException e) {
-        //            Timber.w("Exception: %s", e.getMessage());
-        //        }
-
-        try {
-            new YouTubeExtractor(mContext)
-            {
-                @Override
-                public void onExtractionComplete(SparseArray<YtFile> ytFiles, VideoMeta vMeta)
-                {
-                    if (ytFiles != null) {
-                        int itag = ytFiles.keyAt(0); //22; get the first available itag
-                        String downloadUrl = ytFiles.get(itag).getUrl();
-                        MediaItem mediaItem = MediaItem.fromUri(downloadUrl);
-                        playMedia(mediaItem);
-                    }
-                    else {
-                        // Use android ext app to play
-                        aTalkApp.showToastMessage(R.string.gui_playback_error);
-                        playVideoUrlExt(youtubeLink);
-                        // playUrlYt();
-                    }
-                }
-            }.extract(youtubeLink, true, true);
-        } catch (Exception e) {
-            Timber.e("YouTubeExtractor Exception: %s", e.getMessage());
-        }
-    }
-
-    /**
-     * Play the specified videoUrl using android Intent.ACTION_VIEW
-     *
-     * @param videoUrl videoUrl not playable by ExoPlayer
-     */
-    private void playVideoUrlExt(String videoUrl)
-    {
-        // remove the exoPlayer fragment
-        mContext.getSupportFragmentManager().beginTransaction().remove(this).commit();
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrl));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    private void playUrlYt()
-    {
-        Bundle bundle = getArguments();
-        mYoutubePlayer = YoutubePlayerFragment.getInstance(bundle);
-        mContext.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.player_container, mYoutubePlayer)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    /**
      * ExoPlayer playback state listener
      */
-    private static class PlaybackStateListener implements Player.Listener
+    private class PlaybackStateListener implements Player.Listener
     {
         @Override
         public void onPlaybackStateChanged(int playbackState)
@@ -361,6 +291,8 @@ public class MediaExoPlayerFragment extends Fragment
             switch (playbackState) {
                 case ExoPlayer.STATE_IDLE:
                     aTalkApp.showToastMessage(R.string.gui_playback_error);
+                    // Attempt to use android player if exoplaer failed to play
+                    playVideoUrlExt(mediaUrl);
                     break;
 
                 case ExoPlayer.STATE_ENDED:

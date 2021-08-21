@@ -13,7 +13,7 @@ fi
 
 # Auto fetch and unarchive both ffmpeg and x264 from online repository
 VERSION_FFMPEG=4.4
-VERSION_X264=161
+VERSION_X264=163
 
 ./init_update_libs.sh $VERSION_FFMPEG $VERSION_X264
 

@@ -33,6 +33,8 @@ import net.java.sip.communicator.util.ServiceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.jxmpp.util.XmppStringUtils;
@@ -46,13 +48,12 @@ import timber.log.Timber;
 /**
  * File History Service stores info for file transfers from various protocols.
  * It handles both the outgoing and incoming file transfer events.
- * FileTransferStatusListener = in/out file transfer status
- * ScFileTransferListener = Incoming file transfer request
+ * ScFileTransferListener = To handle Incoming fileTransfer request callbacks;
+ * except fileTransferCreated which take care of both incoming and outgoing file creation.
  *
  * @author Eng Chong Meng
  */
-public class FileHistoryServiceImpl implements FileHistoryService, ServiceListener,
-        FileTransferStatusListener, ScFileTransferListener
+public class FileHistoryServiceImpl implements FileHistoryService, ServiceListener, ScFileTransferListener
 {
     /**
      * The BundleContext that we got from the OSGI bus.
@@ -64,7 +65,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      */
     private HistoryService historyService = null;
 
-    private ContentValues contentValues = new ContentValues();
+    private final ContentValues contentValues = new ContentValues();
     private SQLiteDatabase mDB;
     private MessageHistoryService mhs;
 
@@ -199,6 +200,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         return mhs;
     }
 
+    /* ============= File Transfer Handlers - ScFileTransferListener callbacks implementations ============= */
     /**
      * Receive fileTransfer requests.
      *
@@ -212,23 +214,23 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /**
-     * New file transfer was created.
+     * New file transfer was created; callback from both IncomingFileTransfer, OutgoingFileTransfer and
+     * @see FileSendConversation#createHttpFileUploadRecord()
      *
-     * @param event fileTransfer
+     * @param event FileTransferCreatedEvent for all FileTransfers
      */
     public void fileTransferCreated(FileTransferCreatedEvent event)
     {
         FileTransfer fileTransfer = event.getFileTransfer();
-        fileTransfer.addStatusListener(this);
 
         try {
             String fileName = fileTransfer.getLocalFile().getCanonicalPath();
+            Timber.d("File Transfer created: %s: %s", fileTransfer.getDirection(), fileName);
 
             if (fileTransfer.getDirection() == FileTransfer.IN) {
                 String[] args = {fileTransfer.getID()};
                 contentValues.clear();
                 contentValues.put(ChatMessage.FILE_PATH, fileName);
-
                 mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
             }
             else if (fileTransfer.getDirection() == FileTransfer.OUT) {
@@ -237,6 +239,28 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         } catch (IOException e) {
             Timber.e(e, "Could not add file transfer log to history");
         }
+    }
+
+    /**
+     * Called when a new <tt>IncomingFileTransferRequest</tt> has been rejected.
+     *
+     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     * @see FileReceiveConversation#fileTransferRequestRejected(FileTransferRequestEvent)
+     */
+    public void fileTransferRequestRejected(FileTransferRequestEvent event)
+    {
+        // Event is being handled by FileReceiveConversation; need to update both the DB and msgCache
+    }
+
+    /**
+     * Called when a new <tt>IncomingFileTransferRequest</tt> has been cancel by the sender.
+     *
+     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     * @see FileReceiveConversation#fileTransferRequestCanceled(FileTransferRequestEvent)
+     */
+    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
+    {
+        // Event is being handled by FileReceiveConversation; need to update both the DB and msgCache
     }
 
     /**
@@ -307,44 +331,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
     }
 
-    /**
-     * Listens for changes in file transfers and update the DB record status if known.
-     * Translate FileTransfer status to FileRecord status before saving
-     *
-     * @param event FileTransferStatusChangeEvent
-     */
-    public void statusChanged(FileTransferStatusChangeEvent event)
-    {
-        FileTransfer ft = event.getFileTransfer();
-        int status = getStatus(ft.getStatus());
-
-        // ignore events if status is unknown
-        if (status != FileRecord.STATUS_UNKNOWN)
-            updateFTStatusToDB(ft.getID(), status, null, IMessage.ENCRYPTION_NONE);
-    }
-
-    /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been rejected.
-     *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
-     */
-    public void fileTransferRequestRejected(FileTransferRequestEvent event)
-    {
-        IncomingFileTransferRequest req = event.getRequest();
-        updateFTStatusToDB(req.getID(), FileRecord.STATUS_REFUSED, null, IMessage.ENCRYPTION_NONE);
-    }
-
-    /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been cancel by the sender.
-     *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
-     */
-    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
-    {
-        IncomingFileTransferRequest req = event.getRequest();
-        updateFTStatusToDB(req.getID(), FileRecord.STATUS_CANCELED, null, IMessage.ENCRYPTION_NONE);
-    }
-
+    /* ============= File Transfer Handlers - Update file transfer status =============
     /**
      * Update new status and fileName and convert to FileTransfer History Record in dataBase
      *
@@ -367,8 +354,10 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
      * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
      * @param recordType File Transfer record type
+     *
+     * @return the number of records being updated; zero means there is no record to update historyLog disabled
      */
-    public void updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int recordType)
+    public int updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int recordType)
     {
         // Timber.w(new Exception("### File in/out transfer status changes to: " + status));
         String[] args = {msgUuid};
@@ -380,33 +369,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         }
         contentValues.put(ChatMessage.ENC_TYPE, encType);
         contentValues.put(ChatMessage.MSG_TYPE, recordType);
-        mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
-    }
-
-    /**
-     * Maps only valid FileTransferStatusChangeEvent status, otherwise returns STATUS_UNKNOWN.
-     *
-     * @param status the status as receive from FileTransfer
-     * @return the corresponding status of FileRecord.
-     */
-    private static int getStatus(int status)
-    {
-        switch (status) {
-            case FileTransferStatusChangeEvent.COMPLETED:
-                return FileRecord.STATUS_COMPLETED;
-            case FileTransferStatusChangeEvent.REFUSED:
-                return FileRecord.STATUS_REFUSED;
-            case FileTransferStatusChangeEvent.CANCELED:
-                return FileRecord.STATUS_CANCELED;
-            case FileTransferStatusChangeEvent.FAILED:
-                return FileRecord.STATUS_FAILED;
-            case FileTransferStatusChangeEvent.PREPARING:
-                return FileRecord.STATUS_PREPARING;
-            case FileTransferStatusChangeEvent.IN_PROGRESS:
-                return FileRecord.STATUS_IN_PROGRESS;
-            default:
-                return FileRecord.STATUS_UNKNOWN;
-        }
+        return mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
     }
 
     /**

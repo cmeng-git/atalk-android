@@ -54,6 +54,7 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
@@ -129,7 +130,7 @@ public class ChatSessionFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         mContext = context;
@@ -507,7 +508,7 @@ public class ChatSessionFragment extends OSGiFragment
     }
 
     @Override
-    public void onTaskComplete(Integer result)
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
     {
         if (result > 0) {
             sessionRecords.clear();

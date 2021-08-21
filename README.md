@@ -134,7 +134,6 @@ Libraries used in this project:
 * [Android Support Library](https://developer.android.com/topic/libraries/support-library/index.html)
 * [android-betterpickers](https://github.com/code-troopers/android-betterpickers)
 * [Android-EasyLocation](https://github.com/akhgupta/Android-EasyLocation)
-* [android-youtubeExtractor](https://github.com/HaarigerHarald/android-youtubeExtractor)
 * [android-youtube-player](https://github.com/PierfrancescoSoffritti/android-youtube-player)
 * [annotations-java5](https://mvnrepository.com/artifact/org.jetbrains/annotations)
 * [apache-mime4j-core](https://github.com/apache/james-mime4j)

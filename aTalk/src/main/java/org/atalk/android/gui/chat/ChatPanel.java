@@ -88,7 +88,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     // Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
     // private List<ChatMessage> msgCache = new LinkedList<>();
-    private List<ChatMessage> msgCache = new CopyOnWriteArrayList<>();
+    private final List<ChatMessage> msgCache = new CopyOnWriteArrayList<>();
 
     /**
      * Synchronization root for messages cache.
@@ -106,12 +106,6 @@ public class ChatPanel implements Chat, MessageListener
      * and next messages are cached through the listeners mechanism).
      */
     private boolean historyLoaded = false;
-
-    /**
-     * Flag indicates if there was a send File activity status changed, then the whole cache must be invalid and reload.
-     * Otherwise, the cache still contains the send file request and will trigger and file send action
-     */
-    private boolean cacheRefresh = false;
 
     /**
      * Blocked caching of the next new message if it is sent via sendMessage().
@@ -148,7 +142,7 @@ public class ChatPanel implements Chat, MessageListener
     private static String chatSubject = "";
 
     /**
-     * Creates a chat session with the given <tt>MetaContact</tt>.
+     * Creates a chat session with the given MetaContact or ChatRoomWrapper.
      *
      * @param descriptor the transport object we're chatting with
      */
@@ -366,6 +360,9 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void addContactStatusListener(ContactPresenceStatusListener l)
     {
+        if (mMetaContact == null)
+            return;
+
         Iterator<Contact> protoContacts = mMetaContact.getContacts();
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
@@ -385,6 +382,9 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void removeContactStatusListener(ContactPresenceStatusListener l)
     {
+        if (mMetaContact == null)
+            return;
+
         Iterator<Contact> protoContacts = mMetaContact.getContacts();
         while (protoContacts.hasNext()) {
             Contact protoContact = protoContacts.next();
@@ -398,26 +398,15 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Set the cache refresh flag from send file status change event.
-     *
-     * @param cacheRefresh if <tt>true</tt>, msgCache is cleared and reload.
-     */
-    public void setCacheRefresh(boolean cacheRefresh)
-    {
-        this.cacheRefresh = cacheRefresh;
-    }
-
-    /**
      * Returns a collection of newly fetched last messages from store, merged with msgCache.
      *
      * @return a collection of last messages.
      */
     public List<ChatMessage> getHistory(boolean init)
     {
-        // If chatFragment is initializing (initActive) AND we have cached messages that include
-        // history (historyLoaded == true) and no request for cacheRefresh form file transfer activity
-        // then just return the message cache.
-        if (init && historyLoaded && !cacheRefresh) {
+        // If chatFragment is initializing (or onResume) AND we have already cached the messages
+        // i.e. (historyLoaded == true), then just return the current msgCache content.
+        if (init && historyLoaded) {
             return msgCache;
         }
 
@@ -428,51 +417,50 @@ public class ChatPanel implements Chat, MessageListener
             return msgCache;
 
         // descriptor can either be metaContact or chatRoomWrapper=>ChatRoom, from whom the history to be loaded
-        Object descriptor = mChatSession.getDescriptor();
+        Object descriptor = mDescriptor;
         if (descriptor instanceof ChatRoomWrapper)
             descriptor = ((ChatRoomWrapper) descriptor).getChatRoom();
 
-        // Refresh msgCache if set via file transfer sending status change request
-        if (cacheRefresh) {
-            msgCache.clear();
-            cacheRefresh = false;
-        }
-
-        // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
         Collection<Object> history;
-        if (msgCache.size() == 0) {
+        // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
+        if (msgCache.isEmpty()) {
             history = metaHistory.findLast(chatHistoryFilter, descriptor, HISTORY_CHUNK_SIZE);
+            historyLoaded = true;
         }
+        // read in HISTORY_CHUNK_SIZE records earlier than the 'last fetch date'-top of the msgCache
         else {
-            // read in earlier than the 'last fetch date' - top of the msgCache,  of HISTORY_CHUNK_SIZE messages
             Date lastOldestMessageDate;
             synchronized (cacheLock) {
                 lastOldestMessageDate = msgCache.get(0).getDate();
             }
             history = metaHistory.findLastMessagesBefore(chatHistoryFilter, descriptor,
                     lastOldestMessageDate, HISTORY_CHUNK_SIZE);
-        }
 
+            // retrieve the history records from DB again; need to take care when
+            // a. any history record is deleted
+            // b. Message delivery receipt status
+            // All currently are handle in updateCacheMessage(); do this just in case implementation not complete
+            history.addAll(metaHistory.findByStartDate(chatHistoryFilter, descriptor, lastOldestMessageDate));
+        }
         // Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
-        // ArrayList<ChatMessage> historyMsgs = new ArrayList<>();
-        List<ChatMessage> historyMsgs = new CopyOnWriteArrayList<>();
+        List<ChatMessage> msgHistory = new CopyOnWriteArrayList<>();
 
         // Convert events into messages for display
         for (Object o : history) {
             if (o instanceof MessageDeliveredEvent) {
-                historyMsgs.add(ChatMessageImpl.getMsgForEvent((MessageDeliveredEvent) o));
+                msgHistory.add(ChatMessageImpl.getMsgForEvent((MessageDeliveredEvent) o));
             }
             else if (o instanceof MessageReceivedEvent) {
-                historyMsgs.add(ChatMessageImpl.getMsgForEvent((MessageReceivedEvent) o));
+                msgHistory.add(ChatMessageImpl.getMsgForEvent((MessageReceivedEvent) o));
             }
             else if (o instanceof ChatRoomMessageDeliveredEvent) {
-                historyMsgs.add(ChatMessageImpl.getMsgForEvent((ChatRoomMessageDeliveredEvent) o));
+                msgHistory.add(ChatMessageImpl.getMsgForEvent((ChatRoomMessageDeliveredEvent) o));
             }
             else if (o instanceof ChatRoomMessageReceivedEvent) {
-                historyMsgs.add(ChatMessageImpl.getMsgForEvent((ChatRoomMessageReceivedEvent) o));
+                msgHistory.add(ChatMessageImpl.getMsgForEvent((ChatRoomMessageReceivedEvent) o));
             }
             else if (o instanceof FileRecord) {
-                historyMsgs.add(ChatMessageImpl.getMsgForEvent((FileRecord) o));
+                msgHistory.add(ChatMessageImpl.getMsgForEvent((FileRecord) o));
             }
             else {
                 Timber.e("Unexpected event in history: %s", o);
@@ -480,65 +468,153 @@ public class ChatPanel implements Chat, MessageListener
         }
 
         synchronized (cacheLock) {
-            if (!historyLoaded) {
-                // We have something cached and we want to merge it with the history.
-                // Do it only when we haven't merged it yet (ever).
-                msgCache = mergeMsgLists(historyMsgs, msgCache, -1);
-                historyLoaded = true;
+            // We have something cached and we need to merge it with the history.
+            if (!msgCache.isEmpty()) {
+                int msgAdded = mergeCachedMessage(msgHistory, msgCache);
+                msgCache.clear();
+                Timber.d("Number of new cached messages added: %s", msgAdded);
             }
-            else {
-                // Otherwise just add in the newly fetched history
-                msgCache.addAll(0, historyMsgs);
-            }
-            if (init)
-                return msgCache;
-            else
-                return historyMsgs;
+
+            // The final message records are always in msgHistory
+            msgCache.addAll(msgHistory);
+            return msgCache;
         }
     }
 
     /**
      * Merges given lists of messages. Output list is ordered by received date.
      *
-     * @param list1 first list to merge.
-     * @param list2 the second list to merge.
+     * @param history first list to merge.
+     * @param cache the second list to merge.
      * @param msgLimit output list size limit.
      * @return merged list of messages contained in given lists ordered by the date.
      * Output list size is limited to given <tt>msgLimit</tt>.
      */
-    private List<ChatMessage> mergeMsgLists(List<ChatMessage> list1, List<ChatMessage> list2, int msgLimit)
+    private List<ChatMessage> mergeMsgLists(List<ChatMessage> history, List<ChatMessage> cache, int msgLimit)
     {
         if (msgLimit == -1)
             msgLimit = Integer.MAX_VALUE;
 
         List<ChatMessage> output = new LinkedList<>();
-        int list1Idx = list1.size() - 1;
-        int list2Idx = list2.size() - 1;
+        int historyIdx = history.size() - 1;
+        int cacheIdx = cache.size() - 1;
 
-        while (list1Idx >= 0 && list2Idx >= 0 && output.size() < msgLimit) {
-            ChatMessage list1Msg = list1.get(list1Idx);
-            ChatMessage list2Msg = list2.get(list2Idx);
+        while (historyIdx >= 0 && cacheIdx >= 0 && output.size() < msgLimit) {
+            ChatMessage historyMsg = history.get(historyIdx);
+            ChatMessage cacheMsg = cache.get(cacheIdx);
 
-            if (list1Msg.getDate().after(list2Msg.getDate())) {
-                output.add(0, list1Msg);
-                list1Idx--;
+            if (historyMsg.getDate().after(cacheMsg.getDate())) {
+                output.add(0, historyMsg);
+                historyIdx--;
             }
             else {
-                output.add(0, list2Msg);
-                list2Idx--;
+                output.add(0, cacheMsg);
+                cacheIdx--;
             }
         }
 
         // Input remaining list 1 messages
-        while (list1Idx >= 0 && output.size() < msgLimit) {
-            output.add(0, list1.get(list1Idx--));
+        while (historyIdx >= 0 && output.size() < msgLimit) {
+            output.add(0, history.get(historyIdx--));
         }
 
         // Input remaining list 2 messages
-        while (list2Idx >= 0 && output.size() < msgLimit) {
-            output.add(0, list2.get(list2Idx--));
+        while (cacheIdx >= 0 && output.size() < msgLimit) {
+            output.add(0, cache.get(cacheIdx--));
         }
         return output;
+    }
+
+    /**
+     * Merged any new messages found in the cache to the history list;
+     * When historyLog is disabled, all the incoming/outgoing messages are only added to the msgCache/
+     * These include the http upload and download messages but exclude file transfer messages
+     * These must be retrieved and merged with the newly retrieve history record from DB.
+     *
+     * @param history contains the history messages
+     * @param cache contains the previous cached messages
+     * @return Number of new messages found in cache
+     */
+    private int mergeCachedMessage(List<ChatMessage> history, List<ChatMessage> cache)
+    {
+        int count = 0;
+
+        int cacheIdx = cache.size() - 1;
+        int insertIdx = history.size();
+        Date mergeDate = history.get(insertIdx - 1).getDate();
+
+        while (cacheIdx >= 0) {
+            ChatMessage cacheMsg = cache.get(cacheIdx);
+            if (cacheMsg.getDate().after(mergeDate)) {
+                history.add(insertIdx, cacheMsg);
+                cacheIdx--;
+                count++;
+            }
+            else {
+                // Skip the current cache record if found in history
+                if (cacheMsg.getDate().equals(mergeDate)) {
+                    cacheIdx--;
+                }
+
+                // update new insertIdx and merged date for next comparison
+                if (insertIdx > 0) {
+                    insertIdx--;
+                    mergeDate = history.get(insertIdx - 1).getDate();
+                }
+                // Just merge all the remaining cache merges if already at top of history
+                else {
+                    while (cacheIdx >= 0) {
+                        history.add(0, cacheMsg);
+                        cacheMsg = cache.get(--cacheIdx);
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Update the file transfer status in msgCache due to historyLog is disabled/
+     *
+     * @param msgUuid ChatMessage uuid
+     * @param status File transfer status
+     * @param fileName the downloaded fileName
+     * @param recordType File record type see ChatMessage MESSAGE_FILE_
+     */
+    public void updateCacheFTRecord(String msgUuid, int status, String fileName, int encType, int recordType)
+    {
+        int cacheIdx = msgCache.size() - 1;
+        while (cacheIdx >= 0) {
+            ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
+            if (cacheMsg.getMessageUID().equals(msgUuid)) {
+                cacheMsg.updateFTStatus(mDescriptor, msgUuid, status, fileName, encType, recordType, cacheMsg.getMessageDir());
+                break;
+            }
+            cacheIdx--;
+        }
+    }
+
+    /**
+     * Method to remove cached message, or to update the cached message receiptStatus
+     * of the given msgUuid
+     *
+     * @param msgUuid ChatMessage uuid
+     * @param receiptStatus message receipt status to update; null is to delete message
+     */
+    public void updateCacheMessage(String msgUuid, Integer receiptStatus)
+    {
+        int cacheIdx = msgCache.size() - 1;
+        while (cacheIdx >= 0) {
+            ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
+            if (cacheMsg.getMessageUID().equals(msgUuid)) {
+                if (receiptStatus == null)
+                    msgCache.remove(cacheIdx);
+                else
+                    cacheMsg.setReceiptStatus(receiptStatus);
+                break;
+            }
+            cacheIdx--;
+        }
     }
 
     /**
@@ -618,7 +694,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Add a message to this <tt>Chat</tt>. Mainly use for File Transfer and System messages
+     * Add a message to this <tt>Chat</tt>. Mainly use for System messages for internal generated messages
      *
      * @param contactName the name of the contact sending the message
      * @param date the time at which the message is sent or received
@@ -629,7 +705,7 @@ public class ChatPanel implements Chat, MessageListener
     @Override
     public void addMessage(String contactName, Date date, int messageType, int encType, String content)
     {
-        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content, null));
+        addMessage(new ChatMessageImpl(contactName, contactName, date, messageType, encType, content, null, ChatMessage.DIR_IN));
     }
 
     /**
@@ -644,7 +720,7 @@ public class ChatPanel implements Chat, MessageListener
     public void addMessage(String contactName, String displayName, Date date, int chatMsgType,
             IMessage message, String correctedMessageUID)
     {
-        addMessage(new ChatMessageImpl(contactName, displayName, date, chatMsgType, message, correctedMessageUID));
+        addMessage(new ChatMessageImpl(contactName, displayName, date, chatMsgType, message, correctedMessageUID, ChatMessage.DIR_IN));
     }
 
     /**
@@ -658,12 +734,27 @@ public class ChatPanel implements Chat, MessageListener
             // Must always cache the chatMsg as chatFragment has not registered to handle incoming
             // message on first onAttach or when it is not in focus.
             cacheNextMsg(chatMessage);
-            messageSpeak(chatMessage, 2*ttsDelay);  // for chatRoom
+            messageSpeak(chatMessage, 2 * ttsDelay);  // for chatRoom
 
             for (ChatSessionListener l : msgListeners) {
                 l.messageAdded(chatMessage);
             }
         }
+    }
+
+    /**
+     * Caches next message when chat is not in focus and it is not being blocked via sendMessage().
+     * Otherwise duplicated messages when share link
+     *
+     * @param newMsg the next message to cache.
+     */
+    private void cacheNextMsg(ChatMessageImpl newMsg)
+    {
+        // Timber.d("Cache blocked is %s for: %s", cacheBlocked, newMsg.getMessage());
+        if (!cacheBlocked) {
+            msgCache.add(newMsg);
+        }
+        cacheBlocked = false;
     }
 
     public boolean isChatTtsEnable()
@@ -725,10 +816,10 @@ public class ChatPanel implements Chat, MessageListener
      * Send an outgoing file message to chatFragment for it to start the file send process
      * The recipient can be contact or chatRoom
      *
-     * @param filePath of the file to be sent
+     * @param filePath as message content of the file to be sent
      * @param messageType indicate which File transfer message is for
      */
-    public void addFTRequest(String filePath, int messageType)
+    public void addFTSendRequest(String filePath, int messageType)
     {
         String sendTo;
         Date date = Calendar.getInstance().getTime();
@@ -743,7 +834,7 @@ public class ChatPanel implements Chat, MessageListener
         else {
             sendTo = ((ChatRoom) sender).getName();
         }
-        addMessage(new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid));
+        addMessage(new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid, ChatMessage.DIR_OUT));
     }
 
     /*
@@ -756,21 +847,19 @@ public class ChatPanel implements Chat, MessageListener
      * @param request the request to display in the conversation panel
      * @param date the date on which the request has been received
      */
-    public void addFTRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date)
+    public void addFTReceiveRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date)
     {
         Contact sender = request.getSender();
         String senderName = sender.getAddress();
-        String msgContent = aTalkApp.getResString(
-                R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
+        String msgContent = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
         int encType = IMessage.ENCODE_PLAIN;
         ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, encType,
-                msgContent, request.getID(), opSet, request, null);
+                msgContent, request.getID(), ChatMessage.DIR_IN, opSet, request, null);
 
+        // Do not use addMessage to avoid TTS activation for incoming file message
         synchronized (cacheLock) {
-            // Must cache chatMsg as chatFragment has not registered to handle incoming message on
-            // first onAttach or when it is not in focus
             cacheNextMsg(chatMsg);
 
             for (ChatSessionListener l : msgListeners) {
@@ -814,35 +903,6 @@ public class ChatPanel implements Chat, MessageListener
                 }
             }
         }
-    }
-
-    /**
-     * Caches next message when chat is not in focus and it is not being blocked via sendMessage().
-     * Otherwise duplicated messages when share link
-     *
-     * @param newMsg the next message to cache.
-     */
-    private void cacheNextMsg(ChatMessageImpl newMsg)
-    {
-        // Timber.d("Cache blocked is %s for: %s", cacheBlocked, newMsg.getMessage());
-        if (!cacheBlocked) {
-            msgCache.add(newMsg);
-        }
-        cacheBlocked = false;
-    }
-
-    /**
-     * When user closes the chat session, this action must be performed if any updates had been done to the
-     * chatFragment MessageViewHolder contents. Otherwise the MessageViewHolder will be replaced with old
-     * content in this msgCache when user open the chat session again. Clearing the msgCache will force
-     * getHistory() to reload the updated content from DB.
-     *
-     * This the  current shortfall in the implementation - may be to remove msgCache as DB fetch is fast (page slider)?
-     */
-    public void clearMsgCache()
-    {
-        msgCache.clear();
-        this.historyLoaded = false;
     }
 
     @Override
@@ -924,6 +984,7 @@ public class ChatPanel implements Chat, MessageListener
     interface ChatSessionListener extends MessageListener
     {
         void messageAdded(ChatMessage msg);
+
     }
 
     /**

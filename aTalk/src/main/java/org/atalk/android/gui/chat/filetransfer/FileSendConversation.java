@@ -30,6 +30,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatMessage;
 
 import java.io.File;
 import java.util.Date;
@@ -119,16 +120,13 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 if (mUpdateDB) {
                     setEncState(mEncryption);
                     createHttpFileUploadRecord();
-                    // Must get chatFragment to refresh once a new file transfer has started.
-                    // Otherwise cache msg will re-trigger the transfer
-                    mChatFragment.getChatPanel().setCacheRefresh(true);
                 }
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, mSendTo);
                 if (mUpdateDB) {
-                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_COMPLETED, mXferFile.toString(), mEncryption);
+                    updateFTStatus(msgUuid, FileRecord.STATUS_COMPLETED, mXferFile.toString());
                 }
                 break;
 
@@ -136,13 +134,13 @@ public class FileSendConversation extends FileTransferConversation implements Fi
             case FileTransferStatusChangeEvent.FAILED:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, mSendTo);
                 if (mUpdateDB)
-                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_FAILED, mXferFile.toString(), mEncryption);
+                    updateFTStatus(msgUuid, FileRecord.STATUS_FAILED, mXferFile.toString());
                 break;
 
             case FileTransferStatusChangeEvent.CANCELED:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                 if (mUpdateDB)
-                    mFHS.updateFTStatusToDB(msgUuid, FileRecord.STATUS_CANCELED, mXferFile.toString(), mEncryption);
+                    updateFTStatus(msgUuid, FileRecord.STATUS_CANCELED, mXferFile.toString());
 
                 // Inform remote user; sender cancel not in standard file xfer protocol
                 mChatFragment.getChatPanel().sendMessage(statusText,
@@ -157,15 +155,41 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
+     * Update the file transfer status into the DB, and also the msgCache to ensure the file send request will not
+     * get trigger again. The msgCache record will be used for view display on chat session resume.
+     *
+     * @param msgUuid The message UUID
+     * @param status File transfer status
+     * @param fileName the downloaded fileName
+     */
+    private void updateFTStatus(String msgUuid, int status, String fileName)
+    {
+        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+        mChatFragment.getChatPanel().updateCacheFTRecord(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+    }
+
+    /**
      * Handles file transfer status changes. Updates the interface to reflect the changes.
+     * Listens for changes in file transfers and update the DB record status if known.
+     * Translate FileTransfer status to FileRecord status before updateFTStatus()
+     *
+     * @param event FileTransferStatusChangeEvent
      */
     public void statusChanged(final FileTransferStatusChangeEvent event)
     {
         final FileTransfer fileTransfer = event.getFileTransfer();
-        final int status = event.getNewStatus();
+        if (fileTransfer == null)
+            return;
 
+        int fStatus = getStatus(fileTransfer.getStatus());
         // Presently statusChanged event is only trigger by non-encrypted file transfer protocol
         mEncryption = IMessage.ENCRYPTION_NONE;
+
+        // ignore events if status is unknown
+        if (fStatus != FileRecord.STATUS_UNKNOWN)
+            updateFTStatus(fileTransfer.getID(), fStatus, mXferFile.toString());
+
+        final int status = event.getNewStatus();
 
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
@@ -174,10 +198,9 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                     || status == FileTransferStatusChangeEvent.CANCELED
                     || status == FileTransferStatusChangeEvent.FAILED
                     || status == FileTransferStatusChangeEvent.REFUSED) {
-                // must do this in UI, otherwise the status is not being updated to FileRecord
-                if (fileTransfer != null)
-                    fileTransfer.removeStatusListener(FileSendConversation.this);
                 // removeProgressListener();
+                // must do this in UI, otherwise the status is not being updated to FileRecord
+                fileTransfer.removeStatusListener(FileSendConversation.this);
             }
         });
     }

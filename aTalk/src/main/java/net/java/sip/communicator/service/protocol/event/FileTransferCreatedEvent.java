@@ -37,7 +37,6 @@ public class FileTransferCreatedEvent extends EventObject
 	public FileTransferCreatedEvent(FileTransfer fileTransfer, Date timestamp)
 	{
 		super(fileTransfer);
-
 		this.timestamp = timestamp;
 	}
 

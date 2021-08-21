@@ -279,6 +279,13 @@ public interface ChatMessage
     String getMessageUID();
 
     /**
+     * Returns the message direction i.e. in/put.
+     *
+     * @return the direction of this message.
+     */
+    String getMessageDir();
+
+    /**
      * Returns the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
      *
      * @return the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
