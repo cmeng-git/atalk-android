@@ -58,6 +58,7 @@ import java.net.URI;
 import java.security.PublicKey;
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
@@ -131,7 +132,7 @@ public class CryptoFragment extends OSGiFragment
      * Otr Contact for currently active chatSession.
      */
     private OtrContact currentOtrContact = null;
-    private MessageHistoryService mMHS;
+    private final MessageHistoryService mMHS;
 
     /**
      * isOmemoMode flag prevents otr from changing status when transition from otr to omemo when
@@ -164,7 +165,7 @@ public class CryptoFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
 
@@ -447,24 +448,23 @@ public class CryptoFragment extends OSGiFragment
 
         for (EntityFullJid e : multiUserChat.getOccupants()) {
             recipient = multiUserChat.getOccupant(e).getJid().asBareJid();
-            OmemoCachedDeviceList theirDevices = null;
             try {
-                theirDevices = mOmemoStore.loadCachedDeviceList(mOmemoManager.getOwnDevice(), recipient);
+                OmemoCachedDeviceList theirDevices = mOmemoStore.loadCachedDeviceList(mOmemoManager.getOwnDevice(), recipient);
+                for (int id : theirDevices.getActiveDevices()) {
+                    OmemoDevice recipientDevice = new OmemoDevice(recipient, id);
+                    try {
+                        fingerPrint = mOmemoManager.getFingerprint(recipientDevice);
+                        allTrusted = mOmemoManager.isTrustedOmemoIdentity(recipientDevice, fingerPrint)
+                                && allTrusted;
+                    } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e1) {
+                        Timber.w("AllTrusted check exception: %s", e1.getMessage());
+                    } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
+                            | SmackException.NoResponseException | InterruptedException | IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             } catch (IOException ex) {
                 Timber.w("IOException: %s", ex.getMessage());
-            }
-            for (int id : theirDevices.getActiveDevices()) {
-                OmemoDevice recipientDevice = new OmemoDevice(recipient, id);
-                try {
-                    fingerPrint = mOmemoManager.getFingerprint(recipientDevice);
-                    allTrusted = mOmemoManager.isTrustedOmemoIdentity(recipientDevice, fingerPrint)
-                            && allTrusted;
-                } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException e1) {
-                    Timber.w("AllTrusted check exception: %s", e1.getMessage());
-                } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException
-                        | SmackException.NoResponseException | InterruptedException | IOException e1) {
-                    e1.printStackTrace();
-                }
             }
         }
         return allTrusted;

@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiFragment;
 
@@ -52,7 +54,7 @@ public class ActionBarToggleFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         this.model = (ActionBarToggleModel) context;

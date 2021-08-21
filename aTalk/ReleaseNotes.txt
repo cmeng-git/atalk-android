@@ -1,8 +1,31 @@
 Project aTalk-Android Release Notes
+
+=========================================================================
+Author:         cmeng
+Upload Date:	08/21/2021
+Version:		2.6.4 (206040)
+- Ensure proper handling of all file transfer types when the chat history logging is disabled
+  * Need major changes to all the fileTransfer classes and FileHistoryServiceImpl.
+  * ChatPanel#msgCache must be updated when file transfer status changes, else resume will use old FT status
+  * Improve the way the history record are being retrieved and merged with msgCache
+  * Cannot just clear msgCache under all circumstances; else will loss all history logged messages
+- Fix new chat session messages get clear on resume, when:
+    a. a file transfer activity has occurred.
+    b. a message records are deleted
+    c. on delivery receipt return
+- Fix chat messages view is not properly updated when history chat messages are being fetched on user scrolling up.
+  Must update msgView text when no html tag is being processed, revert msgView.setText(msgBody) as it was accidentally removed in v2.5.0
+- Ensure file transfer status is consistently being reported even after resume from chat session closed.
+- Two consecutive FT History messages should not be merged into one display message; else the second media file will not be shown
+- Remove unused youtubeExtractor implementation
+- Upgrade AS build to be compatible with JavaVersion.VERSION_11 => give problem so aborted
+- upgrade 'org.osgi:osgi.core:8.0.0' - need new implementation for abstract method adapt(Class type)
+  Not compatible with android api-21; so aborted the upgrade
+
 =========================================================================
 Author:         cmeng
 Upload Date:	07/17/2021
-Version:		2.6.3 (206020)
+Version:		2.6.3 (206030)
 - Upgrade smack libraries to version 4.4.3 release
 - Upgrade opus to version 1.3.1, and add init_libopus.sh to fetch online source instead of svn check-in;
   clean up opus/Android.mk script; need to run init_libopus.h as source is not checked in
@@ -80,7 +103,7 @@ Upload Date:	04/05/2021
 Version:		2.6.0 (206000)
 - Check for user valid ipAddress entry in STUN/TURN setting configuration
 - Cancel vibrator immediately upon call accepted by user i.e. JingleMessageHelper.sendJingleAccept()
-  and showToaste message "Connecting caller" on received JingleProceed message
+  and showToast message "Connecting caller" on received JingleProceed message
 - Remove ProgressDialogFragment.showProgressDialog() in AndroidCallUtil#createCall(). Does not have chance to display and
   often have error in DialogActivity.waitForDialogOpened(dialogId), leaving an un-closeable (by user) dialog fragment
 - Android throws the following error when camera resolution is set to 720x480 in portrait mode;

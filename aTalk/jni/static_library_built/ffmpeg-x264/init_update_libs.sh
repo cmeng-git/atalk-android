@@ -10,7 +10,7 @@ if [[ $# -eq 2 ]]; then
   VERSION_X264=$2
 else
   VERSION_FFMPEG=4.4
-  VERSION_X264=161
+  VERSION_X264=163
 fi
 
 LIB_FFMPEG=ffmpeg

@@ -17,7 +17,7 @@
 if [[ $# -eq 1 ]]; then
   LIB_GIT=$1
 else
-	LIB_GIT=v1.10.0
+  LIB_GIT=v1.10.0
 fi
 
 LIB_VPX="libvpx"

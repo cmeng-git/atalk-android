@@ -1013,4 +1013,30 @@ public abstract class FileTransferConversation extends OSGiFragment
             listener.onUploadProgress(uploadedBytes, totalBytes);
         }
     }
+
+    /**
+     * Maps only valid FileTransferStatusChangeEvent status, otherwise returns STATUS_UNKNOWN.
+     *
+     * @param status the status as receive from FileTransfer
+     * @return the corresponding status of FileRecord.
+     */
+    public static int getStatus(int status)
+    {
+        switch (status) {
+            case FileTransferStatusChangeEvent.COMPLETED:
+                return FileRecord.STATUS_COMPLETED;
+            case FileTransferStatusChangeEvent.REFUSED:
+                return FileRecord.STATUS_REFUSED;
+            case FileTransferStatusChangeEvent.CANCELED:
+                return FileRecord.STATUS_CANCELED;
+            case FileTransferStatusChangeEvent.FAILED:
+                return FileRecord.STATUS_FAILED;
+            case FileTransferStatusChangeEvent.PREPARING:
+                return FileRecord.STATUS_PREPARING;
+            case FileTransferStatusChangeEvent.IN_PROGRESS:
+                return FileRecord.STATUS_IN_PROGRESS;
+            default:
+                return FileRecord.STATUS_UNKNOWN;
+        }
+    }
 }

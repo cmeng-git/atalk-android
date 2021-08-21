@@ -41,7 +41,7 @@ public class MetaHistoryServiceImpl implements MetaHistoryService, ServiceListen
     /**
      * Caching of the used services
      */
-    private Hashtable<String, Object> services = new Hashtable<>();
+    private final Hashtable<String, Object> services = new Hashtable<>();
 
     private final List<HistorySearchProgressListener> progressListeners = new ArrayList<>();
 

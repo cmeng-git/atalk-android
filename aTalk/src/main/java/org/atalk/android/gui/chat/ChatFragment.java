@@ -17,47 +17,22 @@
 package org.atalk.android.gui.chat;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextUtils;
+import android.os.*;
+import android.text.*;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.SparseBooleanArray;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.*;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -68,41 +43,19 @@ import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPres
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.FileTransfer;
-import net.java.sip.communicator.service.protocol.IMessage;
-import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
-import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
-import net.java.sip.communicator.service.protocol.PresenceStatus;
-import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
-import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
-import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
-import net.java.sip.communicator.util.ByteFormat;
-import net.java.sip.communicator.util.GuiUtils;
-import net.java.sip.communicator.util.StatusUtil;
+import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.util.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
-import org.atalk.android.gui.chat.filetransfer.FileHistoryConversation;
-import org.atalk.android.gui.chat.filetransfer.FileHttpDownloadConversation;
-import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
-import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
+import org.atalk.android.gui.chat.filetransfer.*;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.share.ShareUtil;
-import org.atalk.android.gui.util.EntityListHelper;
-import org.atalk.android.gui.util.HtmlImageGetter;
-import org.atalk.android.gui.util.XhtmlImageParser;
+import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
@@ -119,12 +72,7 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;
@@ -236,7 +184,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     private int mChatType = MSGTYPE_UNKNOWN;
 
     private View mCFView;
-    private boolean clearMsgCache = false;
 
     /**
      * flag indicates fragment is in multi-selection ActionMode; use to temporary disable last msg correction access
@@ -283,7 +230,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         mChatController = new ChatController(getActivity(), this);
@@ -320,7 +267,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         chatPanel = ChatSessionManager.getActiveChat(chatId);
         if (chatPanel == null) {
-            Timber.e("Chat for given id: %s not exists", chatId);
+            Timber.e("Chat for given id: %s does not exist", chatId);
             return null;
         }
 
@@ -445,17 +392,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     }
 
     /**
-     * Need to clear msgCache onPause if set, forcing chatPanel to reload messages from DB on Resume i.e.
-     * a. Use FileRecord
-     * b. Message delivery receipt status
-     * Any MessageDisplay status update during chatSession is only reflected in DisplayMessage messages (for scrolling)
-     *
-     * @see ChatPanel#clearMsgCache()
+     * Stop all chat listeners onPause, can only upadte on UI thread
      */
     @Override
     public void onPause()
     {
-        // Remove the listener valid only of metaContactChatSession
+        // Remove the listener valid only for metaContactChatSession
         if (chatPanel.getChatSession() instanceof MetaContactChatSession) {
             chatPanel.removeContactStatusListener(chatListAdapter);
         }
@@ -470,10 +412,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
          * <tt>Activities don't have to call it in onPause().
          */
         initChatController(false);
-
-        if (clearMsgCache) {
-            chatPanel.clearMsgCache();
-        }
         super.onPause();
     }
 
@@ -515,11 +453,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         // Timber.d("Primary page selected: %s %s", hashCode(), isSelected);
         primarySelected = isSelected;
         initChatController(isSelected);
-    }
-
-    public ChatController getChatController()
-    {
-        return mChatController;
     }
 
     /**
@@ -583,6 +516,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
     }
 
+    public ChatController getChatController()
+    {
+        return mChatController;
+    }
+
     /**
      * Tasks that need to be performed for the current chatFragment when chat history are deleted.
      * - Cancel any file transfer in progress
@@ -591,19 +529,16 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      * - Force to reload history by clearing historyLoad = false;
      * - Refresh the display
      */
-    public void onClearCurrentEntityChatHistory()
+    public void onClearCurrentEntityChatHistory(List<String> deletedUUIDs)
     {
         cancelActiveFileTransfers();
 
         // check to ensure chatListAdapter has not been destroyed before proceed (NPE from field)
-        if (chatListAdapter != null)
-            chatListAdapter.clearMessage();
+        if (chatListAdapter != null) {
+                chatListAdapter.clearMessage(deletedUUIDs);
+        }
 
-        chatPanel.clearMsgCache();
-        historyLoaded = false;
-        initChatController(true);
-
-        // scroll to the top of last deleted message group; post delay 300ms after android auto onScroll()
+        // scroll to the top of last deleted message group; post delayed 300ms after android auto onScroll()
         if (lastDeletedMessageDate != null) {
             new Handler().postDelayed(() -> {
                 int deletedTop = chatListAdapter.getMessagePosFromDate(lastDeletedMessageDate);
@@ -618,7 +553,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     /**
      * ActionMode with multi-selection implementation for chatListView
      */
-    private AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener()
+    private final AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener()
     {
         int cPos;
         int headerCount;
@@ -792,13 +727,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         mode.finish();
                         // close current chat and show contact/chatRoom list view for content forward
                         mChatActivity.onBackPressed();
-                        return true;
                     }
                     else {
                         ShareUtil.share(mChatActivity, sBuilder.toString(), imageUris);
                         mode.finish();
-                        return true;
                     }
+                    return true;
 
                 case R.id.chat_message_del:
                     List<String> msgUidDel = new ArrayList<>();
@@ -916,7 +850,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     /**
      * Refresh avatar and globals status display on change.
      */
-    private EventListener<PresenceStatus> globalStatusListener = new EventListener<PresenceStatus>()
+    private final EventListener<PresenceStatus> globalStatusListener = new EventListener<PresenceStatus>()
     {
         @Override
         public void onChangeEvent(PresenceStatus eventObject)
@@ -979,7 +913,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
          */
         private final List<MessageDisplay> messages = new ArrayList<>();
 
+        // A mop reference of DisplayMessage position (index) to the viewHolder
         private final Hashtable<Integer, MessageViewHolder> viewHolders = new Hashtable<>();
+
+        // A map reference of msgUuid to the DisplayMessage pos
+        private final Hashtable<String, Integer> mdIdx2msgUid = new Hashtable<>();
 
         /**
          * The type of the incoming message view.
@@ -1024,7 +962,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         /**
          * Counter used to generate row ids.
          */
-        private long idGenerator = 0;
+        private int idGenerator = 0;
 
         /**
          * HTML image getter.
@@ -1112,7 +1050,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     previous.update(previous.msg.mergeMessage(next));
                 }
             }
-            messages.addAll(0, newMessageList);
+            messages.clear();
+            messages.addAll(newMessageList);
         }
 
         /**
@@ -1148,9 +1087,27 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             return messages.size();
         }
 
-        private void clearMessage()
+        private void clearMessage(List<String> deletedUUIDs)
         {
-            messages.clear();
+            if (deletedUUIDs == null) {
+                messages.clear();
+                mdIdx2msgUid.clear();
+            }
+            else {
+                for (int idx = deletedUUIDs.size(); idx-- > 0; ) {
+                    String msgUuid = deletedUUIDs.get(idx);
+                    // Remove deleted message from ChatPanel#msgCache
+                    chatPanel.updateCacheMessage(msgUuid, null);
+
+                    // Remove deleted message from display messages; merged messages may return null
+                    Integer row = mdIdx2msgUid.get(msgUuid);
+                    if (row != null) {
+                        messages.remove(getMessageDisplay(row));
+                        mdIdx2msgUid.remove(msgUuid);
+                    }
+                }
+            }
+            runOnUiThread(this::notifyDataSetChanged);
         }
 
         /**
@@ -1207,6 +1164,14 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             return pos;
         }
 
+        /**
+         * Must update both the DisplayMessage and ChatPanel#cacheMessage delivery status;
+         * to ensure onResume the cacheMessages have the latest delivery status
+         *
+         * @param msgId the associated chat message
+         * @param receiptStatus Delivery status to be updated
+         * @return the viewHolder of which the content being affected (not use currently).
+         */
         public MessageViewHolder updateMessageDeliveryStatusForId(String msgId, int receiptStatus)
         {
             if (TextUtils.isEmpty(msgId))
@@ -1216,18 +1181,18 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 MessageDisplay message = messages.get(index);
                 String msgIds = message.getServerMsgId();
                 if ((msgIds != null) && msgIds.contains(msgId)) {
-                    // must reload cached messages from DB on resume i.e. after session exit
-                    clearMsgCache = true;
-
                     // Update MessageDisplay to take care when view is refresh e.g. new message arrived or scroll
-                    MessageViewHolder viewHolder = viewHolders.get(index);
                     ChatMessage chatMessage = message.updateDeliveryStatus(msgId, receiptStatus);
+
+                    // Update ChatMessage in msgCache as well
+                    chatPanel.updateCacheMessage(message.getChatMessage().getMessageUID(), receiptStatus);
+
+                    MessageViewHolder viewHolder = viewHolders.get(index);
                     if (viewHolder != null) {
                         // Need to update merged messages new receipt statuses
                         if (chatMessage instanceof MergedMessage) {
                             message.getBody(viewHolder.messageView);
                         }
-
                         setMessageReceiptStatus(viewHolder.msgReceiptView, receiptStatus);
                     }
                     return viewHolder;
@@ -1417,7 +1382,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 int msgType = chatMessage.getMessageType();
                 switch (msgType) {
                     case ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE:
-                        clearMsgCache = true;
                         opSet = chatMessage.getOpSet();
                         request = chatMessage.getFTRequest();
                         sendFrom = chatMessage.getSender();
@@ -1429,13 +1393,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                     opSet, request, date);
                             setFileXfer(position, filexferR);
                         }
-                        viewTemp = filexferR.ReceiveFileConversionForm(inflater,
-                                messageViewHolder, parent, position, init);
+                        viewTemp = filexferR.ReceiveFileConversionForm(inflater, messageViewHolder, parent, position, init);
                         break;
 
                     case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
                     case ChatMessage.MESSAGE_STICKER_SEND:
-                        clearMsgCache = true;
                         fileName = chatMessage.getMessage();
                         sendTo = chatMessage.getSender();
 
@@ -1450,16 +1412,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                     case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
                         fileRecord = msgDisplay.getFileRecord();
-                        clearMsgCache = (FileRecord.STATUS_ACTIVE == fileRecord.getStatus());
                         FileHistoryConversation filexferH = FileHistoryConversation.newInstance(currentChatFragment,
                                 fileRecord, chatMessage);
-                        // init = init || FileRecord.OUT.equals(fileRecord.getDirection());
                         viewTemp = filexferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
                         break;
 
                     case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:
-                        // Must reload msgCache from DB on chat window refresh
-                        clearMsgCache = true;
                         sendFrom = chatMessage.getSender();
                         date = chatMessage.getDate();
                         HttpFileDownloadJabberImpl httpFileTransfer = chatMessage.getHttpFileTransfer();
@@ -1493,8 +1451,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         convertView.setTag(messageViewHolder);
                 }
                 messageViewHolder.viewType = viewType;
-                viewHolders.put(position, messageViewHolder);
-                return convertView;
             }
 
             // Normal Chat Message convertView Creation
@@ -1567,9 +1523,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                 // Set clicks adapter for re-edit last outgoing message OR HTTP link download support
                 messageViewHolder.messageView.setOnClickListener(msgClickAdapter);
-                viewHolders.put(position, messageViewHolder);
-                return convertView;
             }
+            viewHolders.put(position, messageViewHolder);
+            return convertView;
         }
 
         private View inflateViewForType(int viewType, MessageViewHolder messageViewHolder, ViewGroup parent)
@@ -1762,7 +1718,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             /**
              * Row identifier.
              */
-            private final long id;
+            private final int id;
 
             /**
              * File Transfer Status.
@@ -1777,7 +1733,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             /**
              * Message Encryption Type.
              */
-            private int encryption;
+            private final int encryption;
 
             private String serverMsgId;
 
@@ -1829,11 +1785,15 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             {
                 this.id = idGenerator++;
                 this.msg = msg;
+                this.msgBody = null;
                 this.status = -1;
                 this.fileXfer = null;
                 this.receiptStatus = msg.getReceiptStatus();
                 this.encryption = msg.getEncryptionType();
                 this.serverMsgId = msg.getServerMsgId();
+                // All system messages do not have UUID i.e. null
+                if (msg.getMessageUID() != null)
+                    mdIdx2msgUid.put(msg.getMessageUID(), id);
                 checkLatLng();
             }
 
@@ -2013,6 +1973,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     }
                     if (msgView != null)
                         msgView.setText(strBuilder);
+                }
+                // Must update body if there is no process done for html tags i.e. (msgBody != null)
+                else {
+                    if (msgView != null)
+                        msgView.setText(msgBody);
                 }
                 return msgBody;
             }
@@ -2475,11 +2440,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 }
             }
 
-            // Must request to refresh the msgCache once the send file activity has started. Otherwise the
-            // send file request will get activated a second time.
-            if (newStatus != FileTransferStatusChangeEvent.PREPARING) {
-                chatPanel.setCacheRefresh(true);
-            }
             if (newStatus == FileTransferStatusChangeEvent.COMPLETED
                     || newStatus == FileTransferStatusChangeEvent.CANCELED
                     || newStatus == FileTransferStatusChangeEvent.FAILED
@@ -2504,7 +2464,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         private final File mFile;
         private final int msgViewId;
         private final Object entityJid;
-        private boolean mStickerMode;
+        private final boolean mStickerMode;
         private boolean chkMaxSize = true;
         private int mEncryption = IMessage.ENCRYPTION_NONE;
 

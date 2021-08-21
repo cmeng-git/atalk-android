@@ -141,7 +141,7 @@ if [[ ${STANDALONE_TOOLCHAINS} == 1 ]]; then
   if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
     rm -rf ${TOOLCHAIN_PREFIX}
 
-    # Create standalone toolchains for the specified architecture - use .py instead of the old .sh
+  # Create standalone toolchains for the specified architecture - use .py instead of the old .sh
   # However for ndk--r19b => Instead use:
   #    $ ${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang++ src.cpp
   # cmeng: must ensure AS JNI uses the same STL library or "system" if specified

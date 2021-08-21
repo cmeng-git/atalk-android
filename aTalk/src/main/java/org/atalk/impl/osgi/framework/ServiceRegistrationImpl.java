@@ -161,5 +161,12 @@ public class ServiceRegistrationImpl implements ServiceRegistration
         {
             return null;
         }
+
+        // for osgi 8.0.0
+//        @Override
+//        public Object adapt(Class type)
+//        {
+//            return null;
+//        }
     }
 }

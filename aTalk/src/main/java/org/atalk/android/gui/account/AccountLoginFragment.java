@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
@@ -106,7 +108,7 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         mContext = context;

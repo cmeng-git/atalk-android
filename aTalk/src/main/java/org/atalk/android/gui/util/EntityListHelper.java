@@ -171,11 +171,10 @@ public class EntityListHelper
     }
 
     // ----------------- Erase History for metaContact or ChatRoom----------------------- //
-
     /**
      * Erase chat history for either MetaContact or ChatRoomWrapper
      *
-     * @param caller the context
+     * @param caller the context to callback with result
      * @param desc descriptor either MetaContact or ChatRoomWrapper
      * @param msgUUIDs list of message UID to be deleted. null to delete all for the specified desc
      */
@@ -217,7 +216,7 @@ public class EntityListHelper
     }
 
     /**
-     * Perform history message delete in background.
+     * Perform history message deletion in background.
      * Purge all history messages for the descriptor if messageUUIDs is null
      *
      * Note: if the sender deletes the media content immediately after sending, only the tmp copy is deleted
@@ -283,8 +282,8 @@ public class EntityListHelper
         @Override
         protected void onPostExecute(Integer result)
         {
-            // Return result to caller
-            mCallback.onTaskComplete(result);
+            // Return result and deleted msgUuUIDs to caller
+            mCallback.onTaskComplete(result, msgUUIDs);
         }
 
         @Override
@@ -293,8 +292,7 @@ public class EntityListHelper
         }
     }
 
-    // ----------- Erase all the local stored chat history for all the entities (not called) ------------- //
-
+    // ----------- Erase all the local stored chat history for all the entities (currently this is disabled) ------------- //
     /**
      * Erase all the local stored chat history for all the entities i.e. MetaContacts or ChatRoomWrappers.
      *
@@ -366,7 +364,7 @@ public class EntityListHelper
         protected void onPostExecute(Integer result)
         {
             // Return result to caller
-            mCallback.onTaskComplete(result);
+            mCallback.onTaskComplete(result, null);
         }
 
         @Override
@@ -376,7 +374,6 @@ public class EntityListHelper
     }
 
     // ----------------- Erase Call History ----------------------- //
-
     /**
      * Erase local store call history
      *
@@ -411,12 +408,12 @@ public class EntityListHelper
      */
     private static class doEraseEntityCallHistory extends AsyncTask<Void, Void, Integer>
     {
-        private final EntityListHelper.TaskCompleted mCallback;
+        private final TaskCompleted mCallback;
         private final List<String> callUUIDs;
 
         private doEraseEntityCallHistory(CallHistoryFragment caller, List<String> callUUIDs)
         {
-            this.mCallback = (EntityListHelper.TaskCompleted) caller;
+            this.mCallback = (TaskCompleted) caller;
             this.callUUIDs = callUUIDs;
         }
 
@@ -439,7 +436,7 @@ public class EntityListHelper
         {
             // Return result to caller
             if (mCallback != null)
-                mCallback.onTaskComplete(result);
+                mCallback.onTaskComplete(result, callUUIDs);
         }
 
         @Override
@@ -451,6 +448,6 @@ public class EntityListHelper
     public interface TaskCompleted
     {
         // Define data you like to return from AsyncTask
-        void onTaskComplete(Integer result);
+        void onTaskComplete(Integer result, List<String> deletedUUIDs);
     }
 }

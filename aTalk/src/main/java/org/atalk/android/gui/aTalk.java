@@ -252,20 +252,18 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     /**
-     * Handler for chatListFragment on completed execution of
+     * Handler for contactListFragment chatSessions on completed execution of
      *
      * @see EntityListHelper#eraseEntityChatHistory(Context, Object, List, List)
      * @see EntityListHelper#eraseAllEntityHistory(Context)
      */
     @Override
-    public void onTaskComplete(Integer result)
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
     {
         if (result == EntityListHelper.CURRENT_ENTITY) {
             MetaContact clickedContact = contactListFragment.getClickedContact();
             ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
             if (clickedChat != null) {
-                // force chatPanel to reload from DB
-                clickedChat.clearMsgCache();
                 contactListFragment.onCloseChat(clickedChat);
             }
         }

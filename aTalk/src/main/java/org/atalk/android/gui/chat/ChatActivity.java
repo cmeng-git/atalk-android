@@ -5,6 +5,10 @@
  */
 package org.atalk.android.gui.chat;
 
+import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.ATTR_MEDIA_URL;
+import static org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment.URL_YOUTUBE;
+import static org.atalk.persistance.FileBackend.getMimeType;
+
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,8 +51,6 @@ import org.atalk.android.gui.chatroomslist.*;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
-import org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment;
-import org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment;
 import org.atalk.android.gui.share.Attachment;
 import org.atalk.android.gui.share.MediaPreviewAdapter;
 import org.atalk.android.gui.util.AndroidUtils;
@@ -56,13 +58,13 @@ import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocation;
+import org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment;
+import org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.json.JSONException;
@@ -70,21 +72,13 @@ import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import timber.log.Timber;
-
-import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.ATTR_MEDIA_URL;
-import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.URL_YOUTUBE;
-import static org.atalk.persistance.FileBackend.getMimeType;
 
 /**
  * The <tt>ChatActivity</tt> is a singleTask activity containing chat related interface.
@@ -735,10 +729,10 @@ public class ChatActivity extends OSGiActivity
     }
 
     @Override
-    public void onTaskComplete(Integer result)
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
     {
         if (result == EntityListHelper.CURRENT_ENTITY) {
-            chatPagerAdapter.getCurrentChatFragment().onClearCurrentEntityChatHistory();
+            chatPagerAdapter.getCurrentChatFragment().onClearCurrentEntityChatHistory(deletedUUIDs);
         }
         else if (result == EntityListHelper.ALL_ENTITIES) {
             onOptionsItemSelected(this.mMenu.findItem(R.id.close_all_chatrooms));

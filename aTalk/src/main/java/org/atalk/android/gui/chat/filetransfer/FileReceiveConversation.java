@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.*;
 
+import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -28,7 +29,9 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatMessage;
 
 import java.io.File;
 import java.util.Date;
@@ -46,6 +49,7 @@ public class FileReceiveConversation extends FileTransferConversation
 {
     private IncomingFileTransferRequest fileTransferRequest;
     private OperationSetFileTransfer fileTransferOpSet;
+    private FileHistoryServiceImpl mFHS;
     private String mSendTo;
 
     private FileReceiveConversation(ChatFragment cPanel, String dir)
@@ -69,10 +73,12 @@ public class FileReceiveConversation extends FileTransferConversation
         fragmentRFC.mSendTo = sendTo;
         fragmentRFC.fileTransferOpSet = opSet;
         fragmentRFC.fileTransferRequest = request;
+        fragmentRFC.msgUuid = request.getID();
         fragmentRFC.mDate = GuiUtils.formatDateTime(date);
+        fragmentRFC.mFHS = (FileHistoryServiceImpl) AndroidGUIActivator.getFileHistoryService();
 
-        // need to enable ScFileTransferListener for ReceiveFileConversion reject/cancellation.
-        fragmentRFC.fileTransferOpSet.addFileTransferListener(fragmentRFC);
+        // need to enable ScFileTransferListener for FileReceiveConversation reject/cancellation.
+        opSet.addFileTransferListener(fragmentRFC);
         return fragmentRFC;
     }
 
@@ -136,6 +142,8 @@ public class FileReceiveConversation extends FileTransferConversation
 
     /**
      * Handles file transfer status changes. Updates the interface to reflect the changes.
+     * Presently the file receive statusChanged event is only trigger by non-encrypted file transfer protocol
+     * i.e. mEncryption = IMessage.ENCRYPTION_NONE
      */
     private void updateView(final int status, final String reason)
     {
@@ -156,7 +164,6 @@ public class FileReceiveConversation extends FileTransferConversation
 //                    // setFileTransfer(fileTransfer, fileTransferRequest.getFileSize());
 //                }
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSendTo);
-                mChatFragment.getChatPanel().setCacheRefresh(true);
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
@@ -187,30 +194,6 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Handles status changes in file transfer.
-     */
-    public void statusChanged(FileTransferStatusChangeEvent event)
-    {
-        final FileTransfer fileTransfer = event.getFileTransfer();
-        final int status = event.getNewStatus();
-        final String reason = event.getReason();
-        setXferStatus(status);
-
-        // Event thread - Must execute in UiThread to Update UI information
-        runOnUiThread(() -> {
-            updateView(status, reason);
-            if (status == FileTransferStatusChangeEvent.COMPLETED
-                    || status == FileTransferStatusChangeEvent.CANCELED
-                    || status == FileTransferStatusChangeEvent.FAILED
-                    || status == FileTransferStatusChangeEvent.REFUSED) {
-                // must do this in UI, otherwise the status is not being updated to FileRecord
-                fileTransfer.removeStatusListener(FileReceiveConversation.this);
-                // removeProgressListener();
-            }
-        });
-    }
-
-    /**
      * Creates the local file to download.
      *
      * @return the local created file to download.
@@ -221,6 +204,7 @@ public class FileReceiveConversation extends FileTransferConversation
         String mimeType = fileTransferRequest.getMimeType();
         setTransferFilePath(fileName, mimeType);
 
+        // Timber.d("Create Output File: %s (%s)", mXferFile, fileName);
         // Change the file name to the name we would use on the local file system.
         if (!mXferFile.getName().equals(fileName)) {
             String label = getFileLabel(mXferFile.getName(), fileTransferRequest.getFileSize());
@@ -269,43 +253,77 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Called when a <tt>FileTransferCreatedEvent</tt> has been received from sendFile.
+     * Update the file transfer status into the DB, and also the msgCache to ensure the file send request will not
+     * get trigger again. The msgCache record will be used for view display on chat session resume.
      *
-     * @param event the <tt>FileTransferCreatedEvent</tt> containing the newly received file transfer and
-     * other details.
+     * @param msgUuid The message UUID
+     * @param status File transfer status
      */
-    public void fileTransferCreated(FileTransferCreatedEvent event)
+    private void updateFTStatus(String msgUuid, int status)
     {
+        String fileName = (mXferFile == null) ? "" : mXferFile.toString();
+        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+        mChatFragment.getChatPanel().updateCacheFTRecord(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
     }
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who send it.
-     * Note: This is not a standard XMPP FileTransfer protocol - aTalk not implemented yet
+     * Handles file transfer status changes. Updates the interface to reflect the changes.
+     * Listens for changes in file transfers and update the DB record status if known.
+     * Translate FileTransfer status to FileRecord status before updateFTStatus()
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
+     * @param event FileTransferStatusChangeEvent
      */
-    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
+    public void statusChanged(FileTransferStatusChangeEvent event)
     {
-        final IncomingFileTransferRequest request = event.getRequest();
-        // Event triggered - Must execute in UiThread to Update UI information
+        final FileTransfer fileTransfer = event.getFileTransfer();
+        final int status = event.getNewStatus();
+        final String reason = event.getReason();
+
+        setXferStatus(status);
+
+        int fStatus = getStatus(status);
+        if (fStatus != FileRecord.STATUS_UNKNOWN)
+            updateFTStatus(fileTransfer.getID(), fStatus);
+        Timber.d("Status Changed: %s: %s", fStatus, mXferFile);
+
+        // Event thread - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
-            if (request.equals(fileTransferRequest)) {
-                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
-                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED));
-                fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
+            updateView(status, reason);
+            if (status == FileTransferStatusChangeEvent.COMPLETED
+                    || status == FileTransferStatusChangeEvent.CANCELED
+                    || status == FileTransferStatusChangeEvent.FAILED
+                    || status == FileTransferStatusChangeEvent.REFUSED) {
+                // must do this in UI, otherwise the status is not being updated to FileRecord
+                fileTransfer.removeStatusListener(FileReceiveConversation.this);
             }
         });
     }
 
+    /* ========== ScFileTransferListener class method implementation ========== */
     /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been received.
+     * Called when a new <tt>IncomingFileTransferRequest</tt> has been received. Too late to handle here.
      *
      * @param event the <tt>FileTransferRequestEvent</tt> containing the newly received request and other details.
      * @see FileTransferActivator#fileTransferRequestReceived(FileTransferRequestEvent)
+     * @see FileHistoryServiceImpl#fileTransferRequestReceived(FileTransferRequestEvent)
      */
     public void fileTransferRequestReceived(FileTransferRequestEvent event)
     {
-        // Event handled by FileTransferActivator - nothing to do here
+        // Event is being handled by FileTransferActivator and FileHistoryServiceImpl
+        // ScFileTransferListener is only being added after this event - nothing can do here.
+    }
+
+    /**
+     * Called when a <tt>FileTransferCreatedEvent</tt> has been received from sendFile.
+     *
+     * @param event the <tt>FileTransferCreatedEvent</tt> containing the newly received
+     * file transfer and other details.
+     * @see FileHistoryServiceImpl#fileTransferCreated(FileTransferCreatedEvent)
+     */
+    public void fileTransferCreated(FileTransferCreatedEvent event)
+    {
+        // Event is being handled by FileHistoryServiceImpl for both incoming, outgoing and
+        // used by FileSendConversion#createHttpFileUploadRecord - so not doing anything here
     }
 
     /**
@@ -316,6 +334,8 @@ public class FileReceiveConversation extends FileTransferConversation
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
         final IncomingFileTransferRequest request = event.getRequest();
+        updateFTStatus(request.getID(), FileRecord.STATUS_REFUSED);
+
         // Event triggered - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
             if (request.equals(fileTransferRequest)) {
@@ -323,6 +343,27 @@ public class FileReceiveConversation extends FileTransferConversation
                         aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED));
                 fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
                 hideProgressRelatedComponents();
+            }
+        });
+    }
+
+    /**
+     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who send it.
+     * Note: This is not a standard XMPP FileTransfer protocol - aTalk yet to implemented this
+     *
+     * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
+     */
+    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
+    {
+        final IncomingFileTransferRequest request = event.getRequest();
+        updateFTStatus(request.getID(), FileRecord.STATUS_CANCELED);
+
+        // Event triggered - Must execute in UiThread to Update UI information
+        runOnUiThread(() -> {
+            if (request.equals(fileTransferRequest)) {
+                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
+                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED));
+                fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
             }
         });
     }

@@ -47,6 +47,7 @@ import org.jxmpp.jid.Jid;
 
 import java.util.*;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
@@ -94,7 +95,7 @@ public class CallHistoryFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         mContext = context;
@@ -383,7 +384,7 @@ public class CallHistoryFragment extends OSGiFragment
     }
 
     @Override
-    public void onTaskComplete(Integer result)
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
     {
         if (result > 0) {
             callRecords.clear();
