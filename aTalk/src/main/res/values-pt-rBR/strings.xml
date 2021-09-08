@@ -114,7 +114,7 @@
     <string name="service_gui_AUTHENTICATION_REJECTED">O contato recusou seu pedido de autorização.</string>
     <string name="service_gui_AUTHENTICATION_WINDOW_TITLE">%1$s autorização</string>
     <string name="service_gui_AUTHORIZATION_REQUESTED">Solicitação de autorização</string>
-    <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">O %1$s contato solicita sua autorização.</string>
+    <string name="service_gui_AUTHORIZATION_REQUESTED_INFO">O contato %1$s solicita sua autorização.</string>
     <string name="service_gui_AUTHORIZATION_REQUEST">Solicitação de autorização</string>
     <string name="service_gui_AVATAR_HINT">Ícone recomendado: 64*64 (96*96 px quadrado máx.)</string>
     <string name="service_gui_AWAY_STATUS">Indisponível</string>
@@ -137,9 +137,9 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Não foi possível encontrar nenhum serviço ativo de áudio/vídeo, por causa disso não foi possível criar uma ligação.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Nenhum serviço de áudio configurado.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Nenhum codec de áudio ativado.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">O dispositivo ou codec de %1$s não está completamente configurado em \'Configurações…\', verifique a configuração.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Aparelho ou codec de %1$s não está completamente configurado em \'Configurações…\', verifique a configuração.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Gostaria de continuar a ligação?</string>
-    <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Não foram encontrados formatos de mídia compatíveis com a %1$s para receber as ligações. Por favor, verifique a configuração do dispositivo e do codec em \'Configurações…\'.</string>
+    <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Não foram encontrados formatos de mídia compatíveis com a %1$s para receber ligações. Por favor, verifique a configuração do aparelho e do codec em \'Configurações…\'.</string>
     <string name="service_gui_CALL_OUTGOING">Ligação de saída</string>
     <string name="service_gui_CALL_OUTGOING_MSG">Ligação com %1$s…</string>
     <string name="service_gui_CALL_VIA">Ligação via: %1$s</string>
@@ -165,12 +165,12 @@
     <string name="gui_playback_rate">Taxa de reprodução: %1$s</string>
 
     <!-- Conference Chat -->
-    <string name="service_gui_AUTOJOIN">Participação automática.</string>
+    <string name="service_gui_AUTOJOIN">Participação automática</string>
     <string name="service_gui_CHANGE_NICK">Alterar o apelido</string>
     <string name="service_gui_CHANGE_NICKNAME">Alterar o apelido&#8230;</string>
     <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">O apelido já existe</string>
     <string name="service_gui_CHANGE_NICKNAME_ERROR">Falha ao alterar o apelido de %1$s: %2$s</string>
-    <string name="service_gui_CHANGE_NICKNAME_LABEL">No campo abaixo, você pode digitar o novo apelido.</string>
+    <string name="service_gui_CHANGE_NICKNAME_LABEL">No campo abaixo, você pode digitar um novo apelido.</string>
     <string name="service_gui_CHANGE_NICKNAME_NULL">O conteúdo do campo Apelido não pode estar em branco</string>
     <string name="service_gui_CHANGE_ROOM_INFO">Alterar info sobre a sala de bate-papo</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">No campo abaixo, você pode digitar o novo assunto desta sala.</string>
@@ -186,7 +186,7 @@
     <string name="service_gui_CHATROOM_CONFIGURATION_MEMBERS_EDIT_TITLE">Editar Lista de Membros</string>
     <string name="service_gui_CHATROOM_CONFIGURATION_SUBMIT_FAILED">Ocorreu um erro ao tentar enviar o registro de configuração para a sala de bate-papo %1$s.</string>
     <string name="service_gui_CHATROOM_REMOVE_BUTTON_TOOLTIP">Exclua a sala selecionada da lista de salas salvas</string>
-    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Salva a sala de bate-papo para uso futuro</string>
+    <string name="service_gui_CHATROOM_SAVE_BUTTON_TOOLTIP">Salva a sala de bate-papo para futuras interações</string>
     <string name="service_gui_CHATROOM_SEND_MSG_FORBIDDEN">O envio de mensagens é proibido (participação revogada)</string>
     <string name="service_gui_CHATROOM_USER_JOINED">entrou %1$s</string>
     <string name="service_gui_CHATROOM_USER_KICKED">foi expulso de %1$s</string>
@@ -194,12 +194,12 @@
     <string name="service_gui_CHATROOM_USER_QUIT">desistiu %1$s</string>
     <string name="service_gui_CHATROOM_NAME">Nome da sala de bate-papo</string>
     <string name="service_gui_CHATROOM_NAME_INFO">No campo abaixo digite o nome da sala de bate-papo que você gostaria de criar.</string>
-    <string name="service_gui_CHATROOM_NOT_EXIST">A %1$s sala de bate-papo não foi encontrada no  servidor de %2$s. Por favor, verifique se o nome digitado está correcto.</string>
-    <string name="service_gui_CHATROOM_NOT_CONNECTED">Você precisa estar online para entrar na %1$s sala de bate-papo.</string>
+    <string name="service_gui_CHATROOM_NOT_EXIST">A sala de bate-papo %1$s não foi encontrada no servidor %2$s. Por favor, verifique se o nome digitado está correcto.</string>
+    <string name="service_gui_CHATROOM_NOT_CONNECTED">Você precisa estar online para entrar na sala de bate-papo %1$s.</string>
     <string name="service_gui_CHATROOM_LEAVE_NOT_CONNECTED">Você precisa estar online para poder sair de uma sala de bate-papo.</string>
-    <string name="service_gui_CHATROOM_NOT_JOINED">Você precisa entrar na sala de bate-papo para fazer mais operações nela.</string>
+    <string name="service_gui_CHATROOM_NOT_JOINED">Você precisa entrar na sala de bate-papo para fazer operações nela.</string>
     <string name="service_gui_CHATROOM_OPTIONS">Opções em salas de bate-papo</string>
-    <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">A %1$s sala de bate-papo solicitou uma senha.</string>
+    <string name="service_gui_CHATROOM_REQUIRES_PASSWORD">A sala de bate-papo %1$s solicitou uma senha.</string>
     <string name="service_gui_CHATROOM_STATUS_OFF">Desativar Status de Bato-Papo</string>
     <string name="service_gui_CHATROOM_STATUS_ON">Ativar Status de Bato-Papo</string>
     <string name="service_gui_CHATROOM_SUBJECT_CHANGED">Alteração de assunto: \'%1$s\' =>\'%2$s\'</string>
@@ -215,10 +215,10 @@
     <string name="service_gui_CONNECTION_FAILED_MSG">Falha ao fazer login na conta: Nome de usuário: %1$s\n
         Nome do servidor: %2$s\nPor favor, verifique a sua conexão de Internet OU contacte administrador da sua rede para mais informações.</string>
     <string name="service_gui_CONNECTING_STATUS">Conectando</string>
-    <string name="service_gui_CONTACT_ACTIVE">** %1$s está activo na sessão de chat</string>
+    <string name="service_gui_CONTACT_ACTIVE">** %1$s está activo na sessão de bate-papo</string>
     <string name="service_gui_CONTACT_COMPOSING">** %1$s está digitando uma mensagem</string>
     <string name="service_gui_CONTACT_INACTIVE">** %1$s está temporariamente indisponível</string>
-    <string name="service_gui_CONTACT_GONE">** %1$s saiu da sessão de chat</string>
+    <string name="service_gui_CONTACT_GONE">** %1$s saiu da sessão de bate-papo</string>
     <string name="service_gui_CONTACT_INFO">Info do contato</string>
     <string name="service_gui_CONTACT_NAME">JID do contato ou Número</string>
     <string name="service_gui_CONTACT_NAME_EMPTY">O nome de contato não deve estar em branco.</string>
@@ -273,7 +273,7 @@
     <string name="service_gui_GEO_SEND">Enviar Localização do GPS</string>
     <string name="service_gui_GEO_SHOW">Vistas da rua &amp; Mapa</string>
     <string name="service_gui_GPS_TRACK">Vistas de rua contínuas &amp; Atualização da Mapa</string>
-    <string name="apply_new_interval_setting">Clique no \"Enviar Atualizações Contin. de Localização\" para aplicar a nova configuração de intervalo</string>
+    <string name="apply_new_interval_setting">Clique no \"Enviar atualizações continuas de localização\" para aplicar a nova configuração de intervalo</string>
     <string name="send_cont_location_updates">Atualizações Contin. de Localização (%1$dm) @%2$dsec</string>
     <string name="send_single_location_fix">Atualização única de correção de localização</string>
     <string name="show_google_map">Vistas da rua &amp; Mapa</string>
@@ -282,9 +282,9 @@
     <!-- Google Map -->
     <string name="gmap_name">Mapas do Google</string>
     <string name="legal_info">Informações legais</string>
-    <string name="play_services_not_installed">Serviços de Google Play não está instalad neste aparelho.</string>
-    <string name="split_street_view_panorama_and_map_description">Demonstra como exibir vista da rua panorâmica e mapa.</string>
-    <string name="split_street_view_panorama_and_map_label">Vista da rua panorâmica e Mapa</string>
+    <string name="play_services_not_installed">Serviços de Google Play não estão instalados neste aparelho.</string>
+    <string name="split_street_view_panorama_and_map_description">Demonstra como exibir vista panorâmica da rua e mapa.</string>
+    <string name="split_street_view_panorama_and_map_label">Vista panorâmica da rua e Mapa</string>
     <string name="title_activity_maps">Mapa</string>
 
     <!-- Location Permissions -->
@@ -293,9 +293,9 @@
     <string name="permission_required_toast">É necessária permissão de localização para esta demonstração.</string>
 
     <!-- Persistent Store -->
-    <string name="service_gui_EXPORT_SQL_DB">Exportar base de dados de aTalk SQL</string>
+    <string name="service_gui_EXPORT_SQL_DB">Exportar base de dados SQL de aTalk </string>
     <string name="service_gui_PURGE_DEBUG_LOG">Remover o arquivo de registro de aTalk</string>
-    <string name="service_gui_PURGE_SQL_DB">Remover a base de dados de aTalk SQL - Perigo!</string>
+    <string name="service_gui_PURGE_SQL_DB">Aviso! Remover a base de dados SQL de aTalk</string>
     <string name="service_gui_REFRESH_APPLY">Aplicar</string>
     <string name="service_gui_REFRESH_STORES">Atualizar memória persistente&#8230;</string>
     <string name="service_gui_REFRESH_STORES_AVATAR">XEP-0084/XEP-0153: Avatar</string>
@@ -306,8 +306,8 @@
     <string name="service_gui_REFRESH_STORES_OMEMO">XEP-0384: Criptografia OMEMO</string>
 
     <string name="service_gui_UNREGISTERED_MESSAGE">Falha ao fazer login na conta:\nNome de Usuário: %1$s\nNome do Servidor: %2$s\nA conta está offline.</string>
-    <string name="service_gui_CREATE_VIDEO_BRIDGE">Criar uma conexão de Ponte de vídeo&#8230;</string>
-    <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Criar uma conexão de Ponte de vídeo</string>
+    <string name="service_gui_CREATE_VIDEO_BRIDGE">Criar uma conexão vídeo de Ponte&#8230;</string>
+    <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Criar uma conexão vídeo de Ponte</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Criar / Participe numa videoconferência</string>
     <string name="service_gui_CREATE_VIDEO_CONFERENCE">Criar uma nova videoconferência para esta sala de bate-papo</string>
     <string name="service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED">Falha ao definir a pré-visualização de câmera do aparelho para: %1$s; Excepção: %2$s.</string>
@@ -323,7 +323,7 @@
     <string name="service_gui_EDITED">editado</string>
     <string name="service_gui_ENTER_NAME_OR_NUMBER">Digite nome ou número</string>
     <string name="service_gui_ERROR">Erro</string>
-    <string name="service_gui_ERROR_WAS">Era o Erro: %1$s</string>
+    <string name="service_gui_ERROR_WAS">Erro foi: %1$s</string>
     <string name="service_gui_EXIT">Sair</string>
     <string name="service_gui_EXTENDED_AWAY_STATUS">Indisponível por um tempo</string>
     <string name="service_gui_FFC_STATUS">Disponível para bate-papo</string>
@@ -349,7 +349,7 @@
     <string name="service_gui_FILE_DELIVERY_ERROR">Falha ao enviar o arquivo selecionado. %1$s</string>
     <string name="service_gui_FILE_DOES_NOT_EXIST">O arquivo especificado não foi encontrado. Foi excluído ou movido</string>
     <string name="service_gui_FILE_OPEN_FAILED">Falha ao abrir o arquivo. Ele pode ser excluído ou movido</string>
-    <string name="service_gui_FILE_OPEN_NO_APPLICATION">Não foi encontrado o app associado a este tipo de arquivo</string>
+    <string name="service_gui_FILE_OPEN_NO_APPLICATION">Não foi encontrado um app adequado para este tipo de arquivo</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Você não tem permissão para abrir este arquivo. Por favor, verifique suas permissões de leitura e tente novamente</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Não é possível arbir o arquivo, ação não é suportada pela plataforma do aparelho</string>
     <string name="service_gui_FILE_SEND_FAILED">Falha ao enviar arquivo: %1$s</string>
@@ -369,7 +369,7 @@
     <string name="service_gui_HISTORY">Histórico</string>
     <string name="service_gui_HISTORY_CONTACT">Histórico - %1$s</string>
     <string name="service_gui_HISTORY_TOGGLE_PER_CONTACT">Desative o histórico para este contato</string>
-    <string name="service_gui_HISTORY_TOGGLE_ALL">Desative o histórico de todos os bate-papo e contatos</string>
+    <string name="service_gui_HISTORY_TOGGLE_ALL">Desative o histórico de todos os bate-papos e contatos</string>
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Excluir este histórico de contatos</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Excluir histórico de todos os contatos em bate-papos</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Tem certeza de que quer excluir todas as mensagens para %1$s?</string>
@@ -414,7 +414,7 @@
     <string name="service_gui_CHATROOM_DESTROY_ERROR">Falha ao remover a sala de bate-papo do servidor:\n\'%1$s\'\n%2$s\n\nProceder à remoção da sala de bate-papo local.</string>
     <string name="service_gui_CHATROOM_DESTROY_MESSAGE">Este bate-papo de grupo foi destruído!\nMotivo: %1$s</string>
     <string name="service_gui_CHATROOM_DESTROY_NOTE">Para informar os outros participantes, por favor, digite um motivo e um lugar alternativo para participar.</string>
-    <string name="service_gui_CHATROOM_DESTROY_PROMPT">Admin da conta: %1$s.\nTem certeza de que quer destruir\n\'%2$s\'\ne todo seu histórico de bate-papo?</string>na hora de
+    <string name="service_gui_CHATROOM_DESTROY_PROMPT">Admin da conta: %1$s.\nTem certeza de que quer destruir\n\'%2$s\'\ne todo seu histórico de bate-papo?</string>
     <string name="service_gui_CHATROOM_DESTROY_REASON">bate-papo do grupo inativo</string>
     <string name="service_gui_CHATROOM_DESTROY_SUCCESSFUL">\'%1$s\' foi excluído com sucesso!</string>
     <string name="service_gui_CHATROOM_DESTROY_TITLE">Destruir a sala de bate-papo</string>
@@ -441,7 +441,7 @@
     <string name="service_gui_INVITE_CONTACT_MSG">Selecione os nomes de contato que você gostaria de adicionar a este bate-papo e depois clique em Convidar.</string>
     <string name="service_gui_INVITE_CONTACT_TO_CALL">Convidar contatos para ligar</string>
     <string name="service_gui_INVITE_CONTACT_TO_CHAT">Convidar contatos para bate-papo</string>
-    <string name="service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE">Convidar contatos (uma conexão de Ponte de vídeo)</string>
+    <string name="service_gui_INVITE_CONTACT_TO_VIDEO_BRIDGE">Convidar contatos (uma conexão vídeo de Ponte)</string>
     <string name="service_gui_INVITE_REASON">Convite para bate-papo em grupo</string>
     <string name="service_gui_INVITE_REASON_INVITE">Motivo de Convite:</string>
     <string name="service_gui_INVITE_REASON_REJECT">Motivo (de recusar):</string>
@@ -508,7 +508,7 @@
     <string name="service_gui_MSG_RECEIVED">%1$s escreveu</string>
     <string name="service_gui_MSG_SEND_CONNECTION_PROBLEM">Você deve fazer o login primeiro para enviar a mensagem.</string>
 
-    <string name="service_gui_MULTIPLE_LOGIN">Múltiplos instantes de login não são permitidos. A seguinte conta: Nome do usuário: %1$s, Nome do servidor: %2$s foi desconectado.</string>
+    <string name="service_gui_MULTIPLE_LOGIN">Não são permitidos múltiplos instantes de login. A seguinte conta: Nome do usuário: %1$s, Nome do servidor: %2$s foi desconectado.</string>
     <string name="service_gui_MUTUALLY_ON_HOLD_STATUS">Mutualmente em espera</string>
     <string name="service_gui_NAME">Nome</string>
     <string name="service_gui_NEW_ACCOUNT">Adicionar nova conta</string>
@@ -518,11 +518,11 @@
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">Pelo menos uma conta online é necessária para fazer ligação. Faça o login numa das suas contas de telefonia e tente novamente.</string>
     <string name="service_gui_NOT_AUTHORIZED">Não autorizado</string>
     <string name="service_gui_NOT_AUTHORIZED_HINT">Você não está autorizado a acessar o servidor. Verifique as configurações da conta, senha ou ative o Registro IB e tente novamente:\n%s"</string>
-    <string name="service_gui_OFF">Desligado</string>
+    <string name="service_gui_OFF">Desativado</string>
     <string name="service_gui_OFFLINE">Offline</string>
     <string name="service_gui_OK">OK</string>
     <string name="service_gui_ON">Ativado</string>
-    <string name="service_gui_ONLINE">Ligado</string>
+    <string name="service_gui_ONLINE">Online</string>
     <string name="service_gui_OPEN">Abrir</string>
     <string name="service_gui_OPEN_FILE_FROM_IMAGE">Clique para abrir o arquivo.</string>
     <string name="service_gui_OPEN_FOLDER">Pasta</string>
@@ -592,7 +592,7 @@
 
     <string name="service_gui_SEND_MESSAGE">Enviar mensagem</string>
     <string name="service_gui_SEND_MESSAGE_FAIL">Falha ao enviar a mensagem: %1$s</string>
-    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">A entrada que você selecionou não suporta mensagens de chat instantâneas: %1$s</string>
+    <string name="service_gui_SEND_MESSAGE_NOT_SUPPORTED">A entrada que você selecionou não suporta mensagens de bate-papo instantâneos: %1$s</string>
     <string name="service_gui_SEND_AS_SMS">Enviar via SMS</string>
     <string name="service_gui_SEND_PRIVATE_MESSAGE">Enviar mensagem privada</string>
     <string name="service_gui_SEND_VIA">Enviar via</string>
@@ -751,13 +751,13 @@
     <string name="service_gui_CONTINUE">Continuar</string>
     <string name="service_gui_SHOW_CERT">Mostrar certificado</string>
     <string name="service_gui_HIDE_CERT">Ocultar certificado</string>
-    <string name="service_gui_UNSAVED_CHANGES">Você fez alterações e não salvo. Salvar ou Cancelar e sair.</string>
+    <string name="service_gui_UNSAVED_CHANGES">Você fez alterações e não salvou. Salvar ou Cancelar e sair.</string>
     <string name="service_gui_UNSAVED_CHANGES_TITLE">Alterações não salvas</string>
     <string name="service_gui_WAITING">Aguarde&#8230;</string>
     <string name="service_gui_SERVER_INFO_FETCH">Buscando recursos/informações anunciadas no servidor&#8230;</string>
 
     <!-- Security info -->
-    <string name="service_gui_security_AUDIO_NOT_SECURED">Áudio insegura</string>
+    <string name="service_gui_security_AUDIO_NOT_SECURED">Áudio inseguro</string>
     <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Ligação insegura.</string>
     <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Clique aqui para comparar a chave secreta de segurança com outro participante.</string>
     <string name="service_gui_security_CALL_SECURED_TOOLTIP">Ligação segura. Para mais informações, clique aqui.</string>
@@ -886,7 +886,7 @@
     <string name="plugin_notificationconfig_event_SecurityMessage">Mensagem de segurança</string>
     <string name="plugin_notificationconfig_event_SecurityMessage_description">Descrição sobre  mensagem de segurança</string>
     <string name="plugin_notificationconfig_notification_sound">Som de notificação no aparelho</string>
-    <string name="plugin_notificationconfig_playback_sound">Som ao reproduzir no aparelho</string>
+    <string name="plugin_notificationconfig_playback_sound">Som reproduzido no aparelho</string>
     <string name="plugin_notificationconfig_popup_notification">Notificação popup</string>
     <string name="plugin_notificationconfig_vibration">Vibração</string>
     <string name="plugin_notificationconfig_sound_file">Arquivo de som:</string>
@@ -946,7 +946,7 @@
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Impressão digital remota para %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">Autenticar amigo</string>
     <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verificar amigo</string>
-    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">Verificou que esta é, de facto, a impressão digital correcta para %1$s.</string>
+    <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">Verifiquei que esta é, de facto, a impressão digital correcta para %1$s.</string>
     <string name="plugin_otr_configform_CB_AUTO">Iniciar automaticamente o envio de mensagens privadas</string>
     <string name="plugin_otr_configform_CB_ENABLE">Permitir o envio de mensagens privadas</string>
     <string name="plugin_otr_configform_CB_REQUIRE">Exigir mensagens privadas</string>
@@ -977,7 +977,7 @@
     <string name="plugin_otr_activator_smperror">Ocorreu um erro no processo de autenticação de OTR.</string>
     <string name="plugin_otr_activator_unencryptedmsgreceived">A mensagem recebida não é criptografada.</string>
     <string name="plugin_otr_activator_unreadablemsgreceived">%1$s enviou a você uma mensagem criptografada ilegível.</string>
-    <string name="plugin_otr_activator_unreadablemsgreply">Você enviou %1$s uma mensagem criptografada ilegível. Por favor, finalize ou atualize seu bate-papo particular com %2$s.</string>
+    <string name="plugin_otr_activator_unreadablemsgreply">Você enviou a %1$s uma mensagem criptografada ilegível. Por favor, finalize ou atualize seu bate-papo particular com %2$s.</string>
     <string name="plugin_otr_activator_unverifiedsessionstared">&lt;b>Não verificada&lt;/b>começou o bate-papo privado com %1$s.</string>
     <string name="plugin_otr_activator_unverifiedsessionwarning">%1$s ainda não foi autenticada. Você deve &lt;a href=\"atalk://%2$s/%3$s?%4$s\">&lt;b>autenticar&lt;/b>&lt;/a>este amigo.</string>
 
@@ -1049,8 +1049,8 @@
     <string name="plugin_dnsconfig_dnssec_lblNameserversHint">&lt;html>Vários servidores podem ser delimitados com uma vírgula, p.ex. 149.20.64.20, 149.20.64.21 (Open DNSSEC resolvedor de validação de OARC)&lt;/html></string>
 
     <string name="util_dns_INSECURE_ANSWER_TITLE">Falha de DNSSEC</string>
-    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">Resposta de DNS para %1$s é inseguro.</string>
-    <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">Resposta de DNS para %1$s é inseguro.\nMotivo: %2$s</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_NO_REASON">Resposta de DNS para %1$s é insegura.</string>
+    <string name="util_dns_INSECURE_ANSWER_MESSAGE_REASON">Resposta de DNS para %1$s é insegura.\nMotivo: %2$s</string>
     <string name="util_dns_DNSSEC_ADVANCED_OPTIONS">Mostrar opções avançadas</string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_BOGUS">&lt;html>DNSSEC zona assinada %1$s devolveu dados inválidos.&lt;br/>%2$s&lt;/html></string>
     <string name="util_dns_DNSSEC_ADVANCED_REASON_UNSIGNED">%1$s consulta para %2$s não é assinada.</string>
@@ -1087,7 +1087,7 @@
 
     <!-- Encoding settings -->
     <string name="service_gui_ENC_AUDIO_TITLE">Codificação de áudio</string>
-    <string name="service_gui_ENC_OVERRIDE_GLOBAL">Acionamento global</string>
+    <string name="service_gui_ENC_OVERRIDE_GLOBAL">Aplicação global</string>
     <string name="service_gui_ENC_VIDEO_TITLE">Codificação de vídeo</string>
 
     <!-- Security protocols dialog -->
@@ -1245,7 +1245,7 @@
     <string name="service_gui_NOT_IN_ROSTER">O Domínio Telefônico especificado \'%1$s\' não é um membro da lista de contatos</string>
     <string name="service_gui_NOT_IN_CALLGROUP">%1$s não pertence ao grupo de ligação definido</string>
     <string name="service_gui_NO_JINGLE_SUPPORT">%1$s\nnão suporta o protocolo Jingle</string>
-    <string name="recipient_error_parse_failed">Error parsing address!</string>
+    <string name="recipient_error_parse_failed">Erro ao analisar o endereço!</string>
     <string name="unknown_recipient"><![CDATA[<Recipiente desconhecido>]]></string>
 
     <!-- General settings -->
@@ -1268,7 +1268,7 @@
     <!-- Log chat history -->
     <string name="service_gui_settings_HISTORY_LOG_OFF">Histórico do bate-papo desativado</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Registrar o histórico de bate-papo</string>
-    <string name="service_gui_settings_HISTORY_LOGGING">Chat history logging</string>
+    <string name="service_gui_settings_HISTORY_LOGGING">Registro de histórico de bate-papo</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Quantas mensagens recentes deveriam ser exibidas?</string>
