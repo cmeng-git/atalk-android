@@ -17,6 +17,8 @@ import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.BundleContext;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.*;
 
 /**
@@ -138,14 +140,13 @@ public class ServerListActivity extends OSGiActivity
     static public class ServerListFragment extends ListFragment
     {
         @Override
-        public void onActivityCreated(Bundle savedInstanceState)
-        {
-            super.onActivityCreated(savedInstanceState);
-            setEmptyText(getResources().getString(R.string.service_gui_SERVERS_LIST_EMPTY));
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)        {
+            super.onViewCreated(view, savedInstanceState);
+            setEmptyText(getString(R.string.service_gui_SERVERS_LIST_EMPTY));
         }
 
         @Override
-        public void onListItemClick(ListView l, View v, int position, long id)
+        public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id)
         {
             super.onListItemClick(l, v, position, id);
             ((ServerListActivity) getActivity()).showServerEditDialog(position);

@@ -7,8 +7,8 @@ package org.atalk.android.gui.settings.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.ListPreference;
-import android.preference.PreferenceManager;
+import androidx.preference.ListPreference;
+import androidx.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import org.atalk.android.R;
@@ -20,6 +20,7 @@ import org.atalk.service.configuration.ConfigurationService;
  * "disable dependents value" attribute.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ConfigListPreference extends ListPreference
 {
@@ -76,13 +77,12 @@ public class ConfigListPreference extends ListPreference
 
     /**
      * {@inheritDoc}
+     // Update summary every time the value is read
      */
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+    protected void onSetInitialValue(Object defaultValue)
     {
-        super.onSetInitialValue(restoreValue, defaultValue);
-
-        // Update summary every time the value is read
+        super.onSetInitialValue(defaultValue);
         updateSummary(getValue());
     }
 

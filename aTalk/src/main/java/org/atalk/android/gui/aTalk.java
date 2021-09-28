@@ -23,6 +23,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.*;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
 import org.atalk.android.R;
@@ -44,9 +48,6 @@ import org.osgi.framework.BundleContext;
 
 import java.util.*;
 
-import androidx.fragment.app.*;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import de.cketti.library.changelog.ChangeLog;
 import timber.log.Timber;
 

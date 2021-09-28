@@ -6,8 +6,8 @@
 package org.atalk.android.gui.settings.util;
 
 import android.content.SharedPreferences;
-import android.preference.ListPreference;
-import android.preference.Preference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     /**
-     * The key to {@link android.preference.Preference} mapping
+     * The key to {@link androidx.preference.Preference} mapping
      */
     private Map<String, Preference> mappedPreferences = new HashMap<>();
 

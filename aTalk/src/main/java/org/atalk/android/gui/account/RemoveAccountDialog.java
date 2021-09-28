@@ -5,9 +5,12 @@
  */
 package org.atalk.android.gui.account;
 
-import android.app.AlertDialog;
+import static net.java.sip.communicator.plugin.otr.OtrActivator.configService;
+
 import android.content.Context;
 import android.content.DialogInterface;
+
+import androidx.appcompat.app.AlertDialog;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
@@ -16,8 +19,6 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.atalk.android.R;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.jivesoftware.smackx.omemo.OmemoService;
-
-import static net.java.sip.communicator.plugin.otr.OtrActivator.configService;
 
 /**
  * Helper class that produces "remove account dialog". It asks the user for account removal
@@ -34,8 +35,10 @@ public class RemoveAccountDialog
         AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
         return alert.setTitle(R.string.service_gui_REMOVE_ACCOUNT)
                 .setMessage(ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE, account.getAccountID()))
-                .setPositiveButton(R.string.service_gui_YES, (dialog, which) -> onRemoveClicked(dialog, account, listener))
-                .setNegativeButton(R.string.service_gui_NO, (dialog, which) -> dialog.dismiss()).create();
+                .setPositiveButton(R.string.service_gui_YES, (dialog, which)
+                        -> onRemoveClicked(dialog, account, listener))
+                .setNegativeButton(R.string.service_gui_NO, (dialog, which)
+                        -> dialog.dismiss()).create();
     }
 
     private static void onRemoveClicked(DialogInterface dialog, final Account account, OnAccountRemovedListener l)

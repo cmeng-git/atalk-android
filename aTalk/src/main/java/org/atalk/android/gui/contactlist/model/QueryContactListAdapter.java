@@ -33,12 +33,12 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     /**
      * Handler used to execute stuff on UI thread.
      */
-    private Handler uiHandler = OSGiActivity.uiHandler;
+    private final Handler uiHandler = OSGiActivity.uiHandler;
 
     /**
      * The meta contact list used as a base contact source. It is capable of filtering contacts itself without queries.
      */
-    private MetaContactListAdapter metaContactList;
+    private final MetaContactListAdapter metaContactList;
 
     /**
      * List of contact sources of type {@link ContactSourceService#SEARCH_TYPE}.
@@ -53,7 +53,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     /**
      * List of queries currently handled.
      */
-    private List<ContactQuery> queries = new ArrayList<>();
+    private final List<ContactQuery> queries = new ArrayList<>();
 
     /**
      * Creates new instance of <tt>QueryContactListAdapter</tt>.
@@ -115,7 +115,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     public Object getGroup(int position)
     {
         int metaGroupCount = metaContactList.getGroupCount();
-        if ((position >= 0) &&  (position < metaGroupCount)) {
+        if ((position >= 0) && (position < metaGroupCount)) {
             return metaContactList.getGroup(position);
         }
         else {
@@ -238,7 +238,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
         Timber.e("CONTACT CHANGED NOT IMPLEMENTED");
     }
 
-    private class ResultGroup
+    private static class ResultGroup
     {
         private final List<SourceContact> contacts;
         private final ContactSourceService source;

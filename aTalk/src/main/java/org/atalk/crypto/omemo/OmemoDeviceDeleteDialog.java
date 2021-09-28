@@ -16,9 +16,10 @@
  */
 package org.atalk.crypto.omemo;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;

@@ -19,8 +19,6 @@ package org.atalk.android.plugin.permissions;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -31,9 +29,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.*;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -46,7 +46,7 @@ import com.karumi.dexter.listener.single.*;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.Splash;
-import org.atalk.service.EventReceiver;
+import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 
 import java.util.LinkedList;
@@ -134,7 +134,7 @@ public class PermissionsActivity extends OSGiActivity
         Class<?> activityClass = aTalkApp.getHomeScreenActivityClass();
         Intent i = new Intent(this, activityClass);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        i.putExtra(EventReceiver.AUTO_START_ONBOOT, false);
+        i.putExtra(SystemEventReceiver.AUTO_START_ONBOOT, false);
         startActivity(i);
         finish();
     }
@@ -554,7 +554,7 @@ public class PermissionsActivity extends OSGiActivity
         @Override
         public Boolean parseResult(int resultCode, @Nullable Intent result)
         {
-            return (resultCode == Activity.RESULT_OK);
+            return (resultCode == AppCompatActivity.RESULT_OK);
         }
     }
 

@@ -5,13 +5,17 @@
  */
 package org.atalk.service.osgi;
 
-import android.app.*;
 import android.content.*;
 import android.net.Uri;
 import android.os.*;
 import android.provider.Settings;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import androidx.appcompat.app.*;
+import androidx.core.app.NavUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -27,8 +31,6 @@ import org.osgi.framework.BundleContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.core.app.NavUtils;
-import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**
@@ -38,7 +40,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class OSGiActivity extends FragmentActivity
+public class OSGiActivity extends AppCompatActivity
 {
     private BundleActivator bundleActivator;
 
@@ -56,12 +58,12 @@ public class OSGiActivity extends FragmentActivity
     /**
      * EXIT action listener that triggers closes the <tt>Activity</tt>
      */
-    private ExitActionListener exitListener = new ExitActionListener();
+    private final ExitActionListener exitListener = new ExitActionListener();
 
     /**
      * List of attached {@link OSGiUiPart}.
      */
-    private List<OSGiUiPart> osgiFragments = new ArrayList<>();
+    private final List<OSGiUiPart> osgiFragments = new ArrayList<>();
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -79,19 +81,9 @@ public class OSGiActivity extends FragmentActivity
 
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();
-
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            // Disable up arrow on home activity
-            Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
-            if (this.getClass().equals(homeActivity)) {
-                actionBar.setDisplayHomeAsUpEnabled(false);
-                actionBar.setHomeButtonEnabled(false);
-            }
-            ActionBarUtil.setTitle(this, getTitle());
-        }
-
+        configureToolBar();
         super.onCreate(savedInstanceState);
+
         ServiceConnection serviceConnection = new ServiceConnection()
         {
             public void onServiceConnected(ComponentName name, IBinder service)
@@ -167,6 +159,35 @@ public class OSGiActivity extends FragmentActivity
                 unbindService(serviceConnection);
         }
         super.onDestroy();
+    }
+
+    public void configureToolBar()
+    {
+        // Find the toolbar view inside the activity layout - aTalk cannot use ToolBar; has layout problems
+        // Toolbar toolbar = findViewById(R.id.my_toolbar);
+        // if (toolbar != null)
+        //   setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // mActionBar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO | ActionBar.DISPLAY_SHOW_CUSTOM );
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setCustomView(R.layout.action_bar);
+
+            // Disable up arrow on home activity
+            Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
+            if (this.getClass().equals(homeActivity)) {
+                actionBar.setDisplayHomeAsUpEnabled(false);
+                actionBar.setHomeButtonEnabled(false);
+
+                TextView tv = findViewById(R.id.actionBarStatus);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+            }
+            ActionBarUtil.setTitle(this, getTitle());
+            ActionBarUtil.setAvatar(this, R.drawable.ic_icon);
+        }
     }
 
     /**
@@ -461,7 +482,7 @@ public class OSGiActivity extends FragmentActivity
 
     private void clearReferences()
     {
-        Activity currentActivity = aTalkApp.getCurrentActivity();
+        AppCompatActivity currentActivity = aTalkApp.getCurrentActivity();
         if (currentActivity != null && currentActivity.equals(this))
             aTalkApp.setCurrentActivity(null);
     }

@@ -7,9 +7,9 @@ package org.atalk.android.gui.settings.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +46,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
     /**
      * <tt>ConfigWidgetUtil</tt> used by this instance
      */
-    private ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this, true);
+    private final ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this, true);
 
     /**
      * Flag indicates if this edit text field is editable.
@@ -123,13 +123,12 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
 
     /**
      * {@inheritDoc}
+     // Set summary on init
      */
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+    protected void onSetInitialValue(Object defaultValue)
     {
-        super.onSetInitialValue(restoreValue, defaultValue);
-
-        // Set summary on init
+        super.onSetInitialValue(defaultValue);
         configUtil.updateSummary(getText());
     }
 

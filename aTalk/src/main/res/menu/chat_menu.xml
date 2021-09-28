@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/send_file"
         android:icon="@drawable/ic_attach_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_FILE_ATTACHMENT" />
+        android:title="@string/service_gui_FILE_ATTACHMENT"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/muc_invite"
         android:icon="@drawable/ic_add_to_chat_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_INVITE" />
+        android:title="@string/service_gui_INVITE"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/send_location"
         android:icon="@drawable/ic_location_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_GEO_SEND" />
+        android:title="@string/service_gui_GEO_SEND"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/chat_tts_enable"
         android:title="@string/service_gui_TTS_ENABLE">
@@ -55,5 +56,5 @@
     <item
         android:id="@+id/otr_session"
         android:icon="@drawable/crypto_otr_dark"
-        android:title="OTR Sessions" />
+        android:title="@string/otr_session" />
 </menu>

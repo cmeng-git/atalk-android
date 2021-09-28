@@ -16,4 +16,7 @@
         android:icon="@drawable/ic_account_edit_dark"
         android:title="@string/plugin_accountinfo_TITLE" />
 
+    <item
+        android:id="@+id/account_cancel"
+        android:title="@string/service_gui_CANCEL" />
 </menu>

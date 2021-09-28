@@ -1,16 +1,21 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.settings.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
+
+import androidx.annotation.NonNull;
+import androidx.preference.EditTextPreference;
+import androidx.preference.EditTextPreference.OnBindEditTextListener;
+import androidx.preference.Preference;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -21,7 +26,7 @@ import org.atalk.service.configuration.ConfigurationService;
  *
  * @author Pawel Domas
  */
-class ConfigWidgetUtil
+class ConfigWidgetUtil implements OnBindEditTextListener
 {
     /**
      * The parent <tt>Preference</tt> handled by this instance.
@@ -38,6 +43,7 @@ class ConfigWidgetUtil
      * Flag indicates whether value should be mapped to the summary.
      */
     private boolean mapSummary;
+    private int mInputType = EditorInfo.TYPE_NULL;
 
     /**
      * Creates new instance of <tt>ConfigWidgetUtil</tt> for given <tt>parent</tt> <tt>Preference</tt>.
@@ -84,14 +90,19 @@ class ConfigWidgetUtil
         if (mapSummary) {
             String text = (value != null) ? value.toString() : "";
             if (parent instanceof EditTextPreference) {
-                int inputType = ((EditTextPreference) parent).getEditText().getInputType();
-
-                if ((inputType & InputType.TYPE_MASK_VARIATION) == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
+                if ((mInputType != EditorInfo.TYPE_NULL)
+                        && ((mInputType & InputType.TYPE_MASK_VARIATION) == InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
                     text = text.replaceAll("(?s).", "*");
                 }
             }
             parent.setSummary(text);
         }
+    }
+
+    @Override
+    public void onBindEditText(@NonNull EditText editText)
+    {
+        mInputType = editText.getInputType();
     }
 
     /**
@@ -118,4 +129,5 @@ class ConfigWidgetUtil
         else
             store.run();
     }
+
 }

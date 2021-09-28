@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:key="@string/pref_key_calling_disabled"
+        android:summary="@string/service_gui_JBR_DISABLE_JINGLE_SUMMARY"
+        android:title="@string/service_gui_JBR_DISABLE_JINGLE" />
+
+    <EditTextPreference
+        android:key="@string/pref_key_override_phone_suffix"
+        android:title="@string/service_gui_JBR_TELE_DOMAIN" />
+
+    <EditTextPreference
+        android:key="@string/pref_key_tele_bypass_gtalk_caps"
+        android:title="@string/service_gui_JBR_GTALK_DOMAIN" />
+</PreferenceScreen>

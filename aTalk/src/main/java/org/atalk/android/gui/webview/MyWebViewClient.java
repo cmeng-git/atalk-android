@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.webview;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,6 +24,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.*;
 import android.widget.*;
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;

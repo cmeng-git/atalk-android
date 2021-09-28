@@ -18,6 +18,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jetbrains.annotations.NotNull;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import inet.ipaddr.HostName;
@@ -74,12 +75,12 @@ public class StunTurnDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        // Get the layout inflater
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View contentView = inflater.inflate(R.layout.stun_turn_dialog, null);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder = builder.setTitle(R.string.service_gui_STUN_TURN_SERVER);
-
-        // Get the layout inflater
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View contentView = inflater.inflate(R.layout.stun_turn_dialog, null);
 
         builder = builder.setView(contentView)
                 .setPositiveButton(R.string.service_gui_SAVE, null)
@@ -101,9 +102,8 @@ public class StunTurnDialogFragment extends DialogFragment
 
         View turnSetting = contentView.findViewById(R.id.turnSetting);
         CheckBox useTurnCbox = contentView.findViewById(R.id.useTurnCheckbox);
-        useTurnCbox.setOnCheckedChangeListener((cButton, b) -> {
-            turnSetting.setVisibility(b ? View.VISIBLE : View.GONE);
-        });
+        useTurnCbox.setOnCheckedChangeListener((cButton, b)
+                -> turnSetting.setVisibility(b ? View.VISIBLE : View.GONE));
 
         CheckBox showPassword = contentView.findViewById(R.id.show_password);
         showPassword.setOnCheckedChangeListener((buttonView, isChecked)

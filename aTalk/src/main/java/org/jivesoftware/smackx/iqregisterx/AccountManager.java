@@ -391,9 +391,6 @@ public final class AccountManager extends Manager {
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     *
-     * @throws XMPPException if an error occurs.
-     * @throws SmackException if there was no response from the server.
      */
     private synchronized void _getRegistrationInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();

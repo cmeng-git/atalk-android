@@ -39,8 +39,7 @@ import timber.log.Timber;
  * <p>
  * <p>
  * The {@link #mContact} is retrieved from the {@link Intent} by direct access to
- * {@link ContactListFragment#getClickedContact()} via instance obtained from
- * {@link aTalkApp#getContactListFragment()}.
+ * @link ContactListFragment#getClickedContact()
  *
  * @author Eng Chong Meng
  */

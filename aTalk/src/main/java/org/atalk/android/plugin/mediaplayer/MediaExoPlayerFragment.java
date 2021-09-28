@@ -177,8 +177,7 @@ public class MediaExoPlayerFragment extends Fragment
         if (mSimpleExoPlayer != null) {
             mSpeed = mSimpleExoPlayer.getPlaybackParameters().speed;
 
-            // Audio media player speed is (0.5 > mSpeed < 1.5)
-            // Audio media player speed is (0.5 > mSpeed < 1.5)
+            // Audio media player speed is (0.25 >= mSpeed <= 2.0)
             if (mSpeed >= rateMin && mSpeed <= rateMax) {
                 configService.setProperty(PREF_PLAYBACK_SPEED, mSpeed);
             }
@@ -264,12 +263,17 @@ public class MediaExoPlayerFragment extends Fragment
      */
     private MediaItem buildMediaItem(String mediaUrl)
     {
-        MediaItem mediaItem;
+        if (TextUtils.isEmpty(mediaUrl))
+            return null;
 
+        MediaItem mediaItem;
         Uri uri = Uri.parse(mediaUrl);
         String mimeType = FileBackend.getMimeType(mContext, uri);
         if (!TextUtils.isEmpty(mimeType) && (mimeType.contains("video") || mimeType.contains("audio"))) {
-            mediaItem = MediaItem.fromUri(mediaUrl);
+            mediaItem = new MediaItem.Builder()
+                    .setUri(mediaUrl)
+                    .setMimeType(mimeType)
+                    .build();
         }
         else {
             mediaItem = new MediaItem.Builder()

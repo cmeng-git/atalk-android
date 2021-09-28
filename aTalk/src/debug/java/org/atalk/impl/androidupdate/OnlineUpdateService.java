@@ -1,5 +1,6 @@
 package org.atalk.impl.androidupdate;
 
+import android.annotation.SuppressLint;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +10,7 @@ import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.settings.SettingsActivity;
+import org.atalk.android.gui.settings.SettingsFragment;
 import org.atalk.impl.androidnotification.AndroidNotifications;
 import org.atalk.service.configuration.ConfigurationService;
 
@@ -79,7 +80,7 @@ public class OnlineUpdateService extends IntentService
         boolean isAutoUpdateCheckEnable = true;
         ConfigurationService cfg = AndroidGUIActivator.getConfigurationService();
         if (cfg != null)
-            isAutoUpdateCheckEnable = cfg.getBoolean(SettingsActivity.AUTO_UPDATE_CHECK_ENABLE, true);
+            isAutoUpdateCheckEnable = cfg.getBoolean(SettingsFragment.AUTO_UPDATE_CHECK_ENABLE, true);
 
         UpdateService updateService = ServiceUtils.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
         if (updateService != null) {
@@ -100,6 +101,7 @@ public class OnlineUpdateService extends IntentService
 
                 Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
                 intent.setAction(ACTION_UPDATE_AVAILABLE);
+                @SuppressLint("UnspecifiedImmutableFlag")
                 PendingIntent pending = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 nBuilder.setContentIntent(pending);
                 mNotificationMgr.notify(UPDATE_AVAIL_TAG, UPDATE_AVAIL_NOTIFY_ID, nBuilder.build());
@@ -115,6 +117,7 @@ public class OnlineUpdateService extends IntentService
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
+        @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
@@ -128,6 +131,7 @@ public class OnlineUpdateService extends IntentService
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
+        @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
     }

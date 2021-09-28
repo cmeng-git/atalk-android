@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.*;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
@@ -78,7 +79,7 @@ public class aTalkApp extends Application implements LifecycleObserver
     /**
      * The currently shown activity.
      */
-    private static Activity currentActivity = null;
+    private static AppCompatActivity currentActivity = null;
 
     /**
      * Bitmap cache instance.
@@ -455,7 +456,7 @@ public class aTalkApp extends Application implements LifecycleObserver
      *
      * @param a the current activity to set
      */
-    public static void setCurrentActivity(Activity a)
+    public static void setCurrentActivity(AppCompatActivity a)
     {
         synchronized (currentActivityMonitor) {
             // Timber.i("Current activity set to %s", a);
@@ -487,7 +488,7 @@ public class aTalkApp extends Application implements LifecycleObserver
      *
      * @return the current activity
      */
-    public static Activity getCurrentActivity()
+    public static AppCompatActivity getCurrentActivity()
     {
         return currentActivity;
     }

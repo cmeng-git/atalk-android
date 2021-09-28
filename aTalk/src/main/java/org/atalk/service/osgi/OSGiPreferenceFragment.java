@@ -7,31 +7,26 @@ package org.atalk.service.osgi;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceFragmentCompat;
 
 import org.osgi.framework.BundleContext;
 
 /**
- * Class can be used to build {@link android.preference.PreferenceFragment}s that require OSGI services access.
+ * Class can be used to build {@link androidx.preference.PreferenceFragmentCompat}s that require OSGI services access.
  *
  * @author Pawel Domas
  */
-public class OSGiPreferenceFragment extends PreferenceFragment implements OSGiUiPart
+public class OSGiPreferenceFragment extends PreferenceFragmentCompat implements OSGiUiPart
 {
-
     protected BundleContext osgiContext;
-
     private boolean viewCreated = false;
-
     private boolean osgiNotified = false;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
     {
-        super.onActivityCreated(savedInstanceState);
         viewCreated = true;
         if (!osgiNotified && osgiContext != null) {
             onOSGiConnected();
@@ -53,7 +48,7 @@ public class OSGiPreferenceFragment extends PreferenceFragment implements OSGiUi
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(Context context)
+    public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
         OSGiActivity osGiActivity = (OSGiActivity) getActivity();

@@ -5,14 +5,16 @@
  */
 package org.atalk.android.gui.actionbar;
 
-import android.app.ActionBar;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.globaldisplaydetails.event.*;
@@ -25,16 +27,14 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.menu.GlobalStatusMenu;
-import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.gui.widgets.ActionMenuItem;
 import org.atalk.service.osgi.OSGiFragment;
 
 import java.util.Collection;
-
-import androidx.fragment.app.FragmentActivity;
 
 /**
  * Fragment when added to Activity will display global display details like avatar, display name
@@ -83,32 +83,31 @@ public class ActionBarStatusFragment extends OSGiFragment
      * The global status menu.
      */
     private GlobalStatusMenu globalStatusMenu;
-    private ActionBar mActionBar;
-    private FragmentActivity fragmentActivity;
+    private AppCompatActivity mContext;
 
     private static GlobalDisplayDetailsService displayDetailsService;
     private static AndroidLoginRenderer loginRenderer;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onAttach(@NonNull Context context)
+    {
+        super.onAttach(context);
+        mContext = (AppCompatActivity) context;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        fragmentActivity = getActivity();
 
-        // Create custom ActionBar View
-        mActionBar = fragmentActivity.getActionBar();
-        if (mActionBar != null) {
-            mActionBar.setCustomView(R.layout.action_bar);
-            mActionBar.setDisplayUseLogoEnabled(true);
-        }
         loginRenderer = AndroidGUIActivator.getLoginRenderer();
         displayDetailsService = AndroidGUIActivator.getGlobalDisplayDetailsService();
-
         globalStatusMenu = createGlobalStatusMenu();
-        TextView tv = fragmentActivity.findViewById(R.id.actionBarStatus);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 
-        final RelativeLayout actionBarView = fragmentActivity.findViewById(R.id.actionBarView);
+        View actionBarView = mContext.findViewById(R.id.actionBarView);
         actionBarView.setOnClickListener(v -> {
             globalStatusMenu.show(actionBarView);
             globalStatusMenu.setAnimStyle(GlobalStatusMenu.ANIM_REFLECT);
@@ -145,24 +144,24 @@ public class ActionBarStatusFragment extends OSGiFragment
         Resources res = getResources();
         ActionMenuItem ffcItem = new ActionMenuItem(FFC,
                 res.getString(R.string.service_gui_FFC_STATUS),
-                res.getDrawable(R.drawable.global_ffc));
+                ResourcesCompat.getDrawable(res, R.drawable.global_ffc, null));
         ActionMenuItem onlineItem = new ActionMenuItem(ONLINE,
                 res.getString(R.string.service_gui_ONLINE),
-                res.getDrawable(R.drawable.global_online));
+                ResourcesCompat.getDrawable(res, R.drawable.global_online, null));
         ActionMenuItem offlineItem = new ActionMenuItem(OFFLINE,
                 res.getString(R.string.service_gui_OFFLINE),
-                res.getDrawable(R.drawable.global_offline));
+                ResourcesCompat.getDrawable(res, R.drawable.global_offline, null));
         ActionMenuItem awayItem = new ActionMenuItem(AWAY,
                 res.getString(R.string.service_gui_AWAY_STATUS),
-                res.getDrawable(R.drawable.global_away));
+                ResourcesCompat.getDrawable(res, R.drawable.global_away, null));
         ActionMenuItem extendedAwayItem = new ActionMenuItem(EXTENDED_AWAY,
                 res.getString(R.string.service_gui_EXTENDED_AWAY_STATUS),
-                res.getDrawable(R.drawable.global_extended_away));
+                ResourcesCompat.getDrawable(res, R.drawable.global_extended_away, null));
         ActionMenuItem dndItem = new ActionMenuItem(DND,
                 res.getString(R.string.service_gui_DND_STATUS),
-                res.getDrawable(R.drawable.global_dnd));
+                ResourcesCompat.getDrawable(res, R.drawable.global_dnd, null));
 
-        final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(fragmentActivity);
+        final GlobalStatusMenu globalStatusMenu = new GlobalStatusMenu(mContext);
         globalStatusMenu.addActionItem(ffcItem);
         globalStatusMenu.addActionItem(onlineItem);
         globalStatusMenu.addActionItem(offlineItem);
@@ -175,7 +174,7 @@ public class ActionBarStatusFragment extends OSGiFragment
         for (ProtocolProviderService pps : registeredProviders) {
             AccountID accountId = pps.getAccountID();
             String userJid = accountId.getAccountJid();
-            Drawable icon = res.getDrawable(R.drawable.jabber_status_online);
+            Drawable icon = ResourcesCompat.getDrawable(res, R.drawable.jabber_status_online, null);
 
             ActionMenuItem actionItem = new ActionMenuItem(ACTION_ID++, userJid, icon);
             globalStatusMenu.addActionItem(actionItem, pps);
@@ -230,15 +229,15 @@ public class ActionBarStatusFragment extends OSGiFragment
     @Override
     public void onChangeEvent(final PresenceStatus presenceStatus)
     {
-        if ((presenceStatus == null) || (fragmentActivity == null))
+        if ((presenceStatus == null) || (mContext == null))
             return;
 
         runOnUiThread(() -> {
             String mStatus = presenceStatus.getStatusName();
-            ActionBarUtil.setSubtitle(fragmentActivity, mStatus);
-            ActionBarUtil.setStatus(fragmentActivity, StatusUtil.getStatusIcon(presenceStatus));
+            ActionBarUtil.setSubtitle(mContext, mStatus);
+            ActionBarUtil.setStatus(mContext, StatusUtil.getStatusIcon(presenceStatus));
 
-            MenuItem mOnOffLine = ((MainMenuActivity) fragmentActivity).getMenuItemOnOffLine();
+            MenuItem mOnOffLine = ((aTalk) mContext).getMenuItemOnOffLine();
             // Proceed only if mOnOffLine has been initialized
             if (mOnOffLine != null) {
                 boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
@@ -276,10 +275,10 @@ public class ActionBarStatusFragment extends OSGiFragment
     private void setGlobalAvatar(final byte[] avatar)
     {
         if (avatar != null && avatar.length > 0) {
-            ActionBarUtil.setAvatar(fragmentActivity, avatar);
+            ActionBarUtil.setAvatar(mContext, avatar);
         }
         else {
-            mActionBar.setLogo(R.drawable.ic_icon);
+            ActionBarUtil.setAvatar(mContext, R.drawable.ic_icon);
         }
     }
 
@@ -298,6 +297,6 @@ public class ActionBarStatusFragment extends OSGiFragment
         }
         if (pProviders.size() > 1)
             displayName = getString(R.string.service_gui_ACCOUNT_ME);
-        ActionBarUtil.setTitle(fragmentActivity, displayName);
+        ActionBarUtil.setTitle(mContext, displayName);
     }
 }

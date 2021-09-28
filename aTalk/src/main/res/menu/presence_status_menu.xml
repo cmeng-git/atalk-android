@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/remove"
         android:icon="@drawable/ic_account_delete_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_REMOVE_ACCOUNT"/>
+        android:title="@string/service_gui_REMOVE_ACCOUNT"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/account_settings"
         android:icon="@drawable/ic_account_edit_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_ACCOUNT_SETTINGS"/>
+        android:title="@string/service_gui_ACCOUNT_SETTINGS"
+        app:showAsAction="ifRoom" />
 </menu>

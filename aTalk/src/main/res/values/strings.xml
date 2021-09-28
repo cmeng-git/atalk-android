@@ -1096,7 +1096,7 @@
     <string name="service_gui_LIST_NONE">None</string>
     <string name="service_gui_SEC_ENABLE_ENCRYPTION">Encryption</string>
     <string name="service_gui_SEC_PROTOCOLS_TITLE">Security protocols</string>
-    <string name="service_gui_SEC_PROTOCOLS_MSG">Please select desired protocols in order</string>
+    <string name="service_gui_SEC_PROTOCOLS_MSG">Please select desired protocols order</string>
     <string name="service_gui_SEC_PROTOCOLS_OK">Save</string>
     <string name="service_gui_SEC_PROTOCOLS_CANCEL">Discard</string>
     <string name="service_gui_SEC_ZRTP_SIGNALING_ON">ZRTP will be advertised over signaling protocol</string>

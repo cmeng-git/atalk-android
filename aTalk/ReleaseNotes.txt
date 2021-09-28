@@ -1,9 +1,31 @@
 Project aTalk-Android Release Notes
+=========================================================================
+Version:        2.7.0 (207000)
+Release Date:   09/28/2021
+Author:         cmeng
+- Add proxy support in smack HTTPFileUploadManager
+- The selected action menu items is now highlighted on user click
+- Prompt user for action if the SASL-External authentication failed due to invalid client certificate
+- Disable auto start aTalk option on Boot for android-10 (API-29) and above; android disallows background activity launch
+- Migrate aTalk Theme implementation to use android recommended Theme.AppCompat
+- Extend aTalk activities with AppCompatActivity to support new Theme.AppCompat and ActionBar
+  * androidx.appcompat.widget.Toolbar does not respect the layout parameters of either LinearLayout or RelativeLayout
+  * see https://issuetracker.google.com/issues/199494941
+- Migrate deprecated PreferenceFragment implementation to use androidx PreferenceFragmentCompat
+  * Declaring nested hierarchies within the same XML resource using a nested <PreferenceScreen> is no longer supported.
+  * https://developer.android.com/guide/topics/ui/settings/organize-your-settings
+- Migrate to recommended androidx ActivityResultContracts.StartActivityForResult implementation
+- Migrate alertDialog to use androidx.appcompat.app.AlertDialog
+- Change quiet time dialog preference implementation to work with androidx DialogFragment
+- Need android:directBootAware="true" for android-10 BOOT_COMPLETED Broadcast
+- Clean up Search option for recent session and call history (yet to implement actual support)
+- TODO: Clean up DialogFragment implementation i.e. extends OSGIDialogFragment
+  https://developer.android.com/guide/topics/ui/dialogs
 
 =========================================================================
+Version:        2.6.4 (206040)
+Release Date:	08/21/2021
 Author:         cmeng
-Upload Date:	08/21/2021
-Version:		2.6.4 (206040)
 - Ensure proper handling of all file transfer types when the chat history logging is disabled
   * Need major changes to all the fileTransfer classes and FileHistoryServiceImpl.
   * ChatPanel#msgCache must be updated when file transfer status changes, else resume will use old FT status
@@ -23,9 +45,9 @@ Version:		2.6.4 (206040)
   Not compatible with android api-21; so aborted the upgrade
 
 =========================================================================
+Version:        2.6.3 (206030)
+Release Date:	07/17/2021
 Author:         cmeng
-Upload Date:	07/17/2021
-Version:		2.6.3 (206030)
 - Upgrade smack libraries to version 4.4.3 release
 - Upgrade opus to version 1.3.1, and add init_libopus.sh to fetch online source instead of svn check-in;
   clean up opus/Android.mk script; need to run init_libopus.h as source is not checked in
@@ -41,9 +63,9 @@ Version:		2.6.3 (206030)
   remove speex codec support and use net.sf.fmj.media.codec.audio.RateConverter instead
 
 =========================================================================
+Version:        2.6.2 (206020)
+Release Date:	07/08/2021
 Author:         cmeng
-Upload Date:	07/08/2021
-Version:		2.6.2 (206020)
 - Implement android youtube player using IFrame Player API to avoid video link extraction error
 - Support youtube playlist playback i.e. Fallback to use as playlist if youtube url load failed.
 - Use fragment for exoPlayer and youtubePlayer playback, allowing user page sliding or text entry
@@ -66,9 +88,9 @@ Version:		2.6.2 (206020)
   see https://developers.google.com/media/vp9/get-started
 
 =========================================================================
+Version:        2.6.1 (206010)
+Release Date:	05/16/2021
 Author:         cmeng
-Upload Date:	05/16/2021
-Version:		2.6.1 (206010)
 - AndroidCodec: Change implementation to remove all deprecated MediaCodec methods
   codecInputs = codec.getInputBuffers();
   codecOutputs = codec.getOutputBuffers();
@@ -98,9 +120,9 @@ Version:		2.6.1 (206010)
   Replace jCenter with mavenCentral amd omit jCenter from gradle
 
 =========================================================================
+Version:        2.6.0 (206000)
+Release Date:	04/05/2021
 Author:         cmeng
-Upload Date:	04/05/2021
-Version:		2.6.0 (206000)
 - Check for user valid ipAddress entry in STUN/TURN setting configuration
 - Cancel vibrator immediately upon call accepted by user i.e. JingleMessageHelper.sendJingleAccept()
   and showToast message "Connecting caller" on received JingleProceed message
@@ -152,9 +174,9 @@ Three approaches: #3 is selected for final implementation to give the best resul
   aTalk dependency on jCenter: jarjar, exoplayer, kotlin
 
 =========================================================================
+Version:        2.5.1 (1151)
+Release Date:	02/08/2021
 Author:         cmeng
-Upload Date:	02/08/2021
-Version:		2.5.1 (1151)
 - Enable ExoPlayer advance features/options for playback repeat and speed etc; use StyledPlayerView.
 - Check and allow ExoPlayer for media audio url link playback
 - MediaExoPlayer: onSaveInstanceState() may be called after or prior to onStop pending on OS version
@@ -169,9 +191,9 @@ Version:		2.5.1 (1151)
   String HTML_MARKUP = "(?s).*?<[A-Za-z]+.*?>.*?</[A-Za-z]+>.*?";
 
 =========================================================================
+Version:        2.5.0 (1150)
+Release Date:	01/30/2021
 Author:         cmeng
-Upload Date:	01/30/2021
-Version:		2.5.0 (1150)
 - Add embedded ExoPlayer for video media files or youtube media links play back
 - Image content display can either use embedded glide image viewer or external image view application
 - Improve process handlers for "Regenerate OMEMO identities", "Purge unused identities" and "Purge Corrupted OmemoKey"
@@ -199,9 +221,9 @@ Version:		2.5.0 (1150)
       + SQLiteOmemoStore.DEVICE_ID + "=? AND " + SQLiteOmemoStore.FINGERPRINT + "=?", selectionArgs);
 
 =========================================================================
+Version:        2.4.7 (1147)
+Release Date:	01/12/2021
 Author:         cmeng
-Upload Date:	01/12/2021
-Version:		2.4.7 (1147)
 - ChatActivity: must only register ActivityResultContracts in onCreate cycle and not in onNewIntent->handleIntent; else
   java.lang.RuntimeException: Unable to resume activity {org.atalk.android/org.atalk.android.gui.chat.ChatActivity}:
   java.lang.IllegalStateException: LifecycleOwner org.atalk.android.gui.chat.ChatActivity@b4a2159 is attempting
@@ -212,9 +234,9 @@ Version:		2.4.7 (1147)
 - Update smack AbstractProvider class as per smack v4.4.1 TBR
 
 =========================================================================
+Version:        2.4.6 (1146)
+Release Date:	01/05/2021
 Author:         cmeng
-Upload Date:	01/05/2021
-Version:		2.4.6 (1146)
 - Fix file sharing failed when sending thumbnail on request; smack throws NPE without max-age attribute in BoBData
   Include the recommended max-age attribute in new BoBData(), else smack throws NPE in BoBIQ#getIQChildElementBuilder
   when aTalk send BoBIQ#BoBData without one.
@@ -230,9 +252,9 @@ Version:		2.4.6 (1146)
 - Remove openFileChooser() support in WebViewFragment
 
 =========================================================================
+Version:        2.4.5 (1145)
+Release Date:	12/18/2020
 Author:         cmeng
-Upload Date:	12/18/2020
-Version:		2.4.5 (1145)
 - Fix UPnP for android-8.0(O) API-26 and above: Cleartext HTTP traffic not permitted in UPnP gateway.getDescription()
   * update network_security_configuration i.e. <base-config cleartextTrafficPermitted="true">
 - Clean up and optimize ice4j#UPNPHarvester.java call to weupnp library
@@ -264,9 +286,9 @@ Version:		2.4.5 (1145)
   (build.gradle, CMakeLists.txt or Android.mk etc.) and sync the project. AGP bug - need android team to fix
 
 =========================================================================
+Version:        2.4.4 (1144)
+Release Date:	12/08/2020
 Author:         cmeng
-Upload Date:	12/08/2020
-Version:		2.4.4 (1144)
 - getFilePathWithCreate((): Obtain the actual filename and extension for android
   content:// scheme uri to create the tmp file before sending.
   android getMimeType() for content:// uri link returns audio/mpeg for mp3 file (with no ext);
@@ -290,9 +312,9 @@ Version:		2.4.4 (1144)
   ndkDir = "/opt/android/android-sdk/ndk/20.0.5594570"
 
 =========================================================================
+Version:        2.4.3 (1143)
+Release Date:	11/07/2020
 Author:         cmeng
-Upload Date:	11/07/2020
-Version:		2.4.3 (1143)
 - Change ConnectionInfo#loadDetails() to use ISAddress.getHostString() instead of ISAddress.getHostName();
   Later may lead to a network access for reverse IP lookup and cause NetworkOnMainThreadException.
 - Execute OMEMO Regeneration in background thread to avoid ANR.
@@ -306,26 +328,26 @@ Version:		2.4.3 (1143)
 - Minor clean up in translation errors parameters {0} and {1}.
 
 =========================================================================
+Version:        2.4.2 (1142)
+Release Date:	09/30/2020
 Author:         cmeng
-Upload Date:	09/30/2020
-Version:		2.4.2 (1142)
 - Relocate aTalk files save directory to /Download/aTalk (android-Q), to avoid user data being purged by OS when aTalk is uninstalled
 - Update aTalk media player UI to distinguish between pause and stop states
 - Upgrade Smack to version 4.4.0-beta2
 - Upgrade aTalk to support android-11(R) API-30
 
 =========================================================================
+Version:        2.4.1 (1141)
+Release Date:	08/31/2020
 Author:         cmeng
-Upload Date:	08/31/2020
-Version:		2.4.1 (1141)
 - Fix 'Unsupported path': android-Q enforces deprecated getExternalStorageDirectory() method, making it inaccessible to aTalk.
   https://developer.android.com/reference/android/os/Environment#getExternalStorageDirectory()
   https://github.com/cmeng-git/atalk-android/issues/164
 
 =========================================================================
+Version:        2.4.0 (1140)
+Release Date:	08/25/2020
 Author:         cmeng
-Upload Date:	08/25/2020
-Version:		2.4.0 (1140)
 - Removed and merged 'Remove certificate' option into SSL Certificate (Manage...) in Settings... menu.
   Delete file CertificateDeleteDialog.java
 - Upgrade ZRTP library to zrtp4j:4.1.2:
@@ -385,9 +407,9 @@ Version:		2.4.0 (1140)
   @see https://issuetracker.google.com/issues/162527853#comment21
 
 =========================================================================
+Version:        2.3.4 (1134)
+Release Date:	08/05/2020
 Author:         cmeng
-Upload Date:	08/05/2020
-Version:		2.3.4 (1134)
 - Fix Vibrator not stop after an incoming call is rejected or answered via JingleMessage.
 - 'Fatal signal 6 (SIGABRT)' throws by mm-qcamera-daemon (libc in Android 10; ONEPLUS A3003); fixed by camera permission denied.
    Otherwise aTalk locks in splash screen (continuously restart by android OS in loops)
@@ -414,10 +436,9 @@ Version:		2.3.4 (1134)
   Added in v2.1.6: remove obsolete/incorrect properties; to be removed in future release
 
 =========================================================================
+Version:        2.3.3 (1133)
+Release Date:	07/28/2020
 Author:         cmeng
-Upload Date:	07/28/2020
-Version:		2.3.3 (1133)
-
 - Table metaContactGroup must be initialized to contain the RootMetaContactGroup on new database creation
   Was accidentally removed when MigrateDir.aTalkDirMigrate() was removed.
 - Include 'Online help' and 'About' in newly installed account creation UI pull down menu.
@@ -430,10 +451,9 @@ Version:		2.3.3 (1133)
 - Update RecipientSelectView to conform to "com.splitwise:tokenautocomplete:3.0.2"
 
 =========================================================================
+Version:        2.3.2 (1132)
+Release Date:	07/24/2020
 Author:         cmeng
-Upload Date:	07/24/2020
-Version:		2.3.2 (1132)
-
 - Login failed when server override option is enabled; must include config.setCustomX509TrustManager(sslTrustManager) for smack-4.4.0-alpha5;
 - CallHisotry isShowVideoCallBtn() must check for valid MetaContact
 - Fix android device without the TextToSpeech engine implementation, catch ActivityNotFoundException
@@ -453,10 +473,9 @@ Version:		2.3.2 (1132)
 - Remove migrate support for original jitsi database and xml file records into SQL Lite databases
 
 =========================================================================
+Version:        2.3.1 (1131)
+Release Date:	07/14/2020
 Author:         cmeng
-Upload Date:	07/14/2020
-Version:		2.3.1 (1131)
-
 - Add chatRoom option to enable/disable info display for member presence status and subject change notification.
 - Error in sending two session-accept when call received via Jingle Message Initiation
   * AndroidCallListener#onCallEvent: CALL_RECEIVED should handle both incoming call via Jingle Message Initiation or Jingle session-initiate
@@ -520,10 +539,9 @@ Update source per latest jitsi releases (20200630)
     https://github.com/jitsi/libjitsi/pull/433
 
 =========================================================================
+Version:        2.3.0 (1130)
+Release Date:	06/15/2020
 Author:         cmeng
-Upload Date:	06/15/2020
-Version:		2.3.0 (1130)
-
 - Remove 'Miss Call Notification' option from android notification channel; miss call is controlled via 'Call Notification'
 - Add popup notification option for NotificationManager.CALL_SECURITY_ERROR event independent of SECURITY_MESSAGE
   * AndroidPopup: subCategorized mSmallIcon for WARNING_MESSAGE_TYPE, MISSED_CALL_MESSAGE_TYPE and Others e.g. SECURITY_MESSAGE
@@ -674,10 +692,9 @@ Version:		2.3.0 (1130)
 - Port to smack library new MessageBuilder() replacing the deprecated new Message()
 
 =========================================================================
+Version:        2.2.5 (1125)
+Release Date:	05/13/2020
 Author:         cmeng
-Upload Date:	05/13/2020
-Version:		2.2.5 (1125)
-
 - Fix STUN/TURN editor crashes when saved UserName or Password is null => NPE
   * StunTurnDialogFragment => StunServerDescriptor must check for null in setName and setPassword
 - ChatActivity#sendAttachment need to catch SecurityException in case user has denied some resources access
@@ -705,9 +722,9 @@ Version:		2.2.5 (1125)
 - 20200501 fix or take action for all v2.2.4 / v2.2.3 FFR from the fields
 
 =========================================================================
-Version:		2.2.4 (1124)
+Version:        2.2.4 (1124)
+Release Date:	04/30/2020
 Author:         cmeng / MilanKral
-Upload Date:	04/30/2020
 - Display contacts sorted according to contacts' presence status in main contact list window.
   When contact list is displayed for user multiple selection e.g. group chat invite dialog,
   do not sort, as items selected by user is tracked by their list positions
@@ -744,9 +761,9 @@ Upload Date:	04/30/2020
 - HttpFileUploadManager#upload(): inputStream.close() throws IllegalStateException on Note-5. Must include in catch
 
 =========================================================================
-Version:		2.2.3 (1123)
+Version:        2.2.3 (1123)
+Release Date:	04/16/2020
 Author:         cmeng
-Upload Date:	04/16/2020
 - Implement Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
 - Cleanup and enhance ComboBox UI to allow user edited text and selector popup for selection:
   popup dropdown together with the user edited text in selector and hide softKeyboard
@@ -772,9 +789,9 @@ Upload Date:	04/16/2020
 - aTalk minimum android OS support is API-21 (android 5.0 Lollipop)
 
 =========================================================================
-Version:		2.2.2 (1122)
+Version:        2.2.2 (1122)
+Release Date:	03/30/2020
 Author:         cmeng / MilanKral
-Upload Date:	03/30/2020
 - Enhance create/join chat room UI: refresh all fields content and allow user password entry for the selected chatRoom
 - Allow saving and retrieving of the chat room protected password for later room auto-join or rejoin
 - Support joining room on cross domain server, and default new room creation with OMEMO chat support
@@ -800,9 +817,9 @@ Upload Date:	03/30/2020
   state not being broadcast.
 
 =========================================================================
-Version:		2.2.1 (1121)
+Version:        2.2.1 (1121)
+Release Date:	03/17/2020
 Author:         cmeng / MilanKral
-Upload Date:	03/17/2020
 - Add user selectable Themes support
 - Implement user selectable option for heads-up notification.
   Must ensure android Notification category 'show as pop-up' is also enabled for android-N.
@@ -834,9 +851,9 @@ Upload Date:	03/17/2020
 - Fixed aTalk v2.2.0 FFR
 
 =========================================================================
-Version:		2.2.0 (1120)
+Version:        2.2.0 (1120)
+Release Date:	02/28/2020
 Author:         cmeng / MilanKral
-Upload Date:	02/28/2020
 - Implement XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates
 - Fix incorrect implementation in MessageSourceService#saveRecentMessageToHistory()
 - Contact list view item may not tagged with correct metaContact, causing incorrect chat session being launched
@@ -888,9 +905,9 @@ Upload Date:	02/28/2020
 - Fix Field Failure Report (FFR) on ANR and Crash from v2.1.7
 
 =========================================================================
-Version:		2.1.7 (1117)
+Version:        2.1.7 (1117)
+Release Date:	02/02/2020
 Author:         cmeng
-Upload Date:	02/02/2020
 - Redesign ChatRoomListFragment to ensure all listeners are retained when a group chat session is opened
 - ChatRoomListAdapter.dispose() should only be executed onDestroy(). Otherwise all chatRoom listeners are removed
 - Enhance chatRoom destroy to support reason and alternate room entry to continue discussion
@@ -922,9 +939,9 @@ Upload Date:	02/02/2020
 - upgrade to jbosh:0.9.2
 
 =========================================================================
-Version:		2.1.6 (1116)
+Version:        2.1.6 (1116)
+Release Date:	01/21/2020
 Author:         cmeng
-Upload Date:	01/21/2020
 - Implement embedded audio media player in chat view with functions: Play, Pause, Resume, Stop(long press) and Seek
 - Standardize dateTime format and layout in chat message and file transfer views
 - Toggle front/back camera: Must include Camera.getCameraInfo(cameraId, cameraInfo) to fetch camera facing for each camera in AndroidCameraSystem and MediaRecordSystem
@@ -950,9 +967,9 @@ Upload Date:	01/21/2020
   FFR: NPE at ChatSessionManager.removeActiveChat (ChatSessionManager.java:105)
 
 =========================================================================
-Version:		2.1.5 (1115)
+Version:        2.1.5 (1115)
+Release Date:	12/28/2019
 Author:         cmeng
-Upload Date:	12/28/2019
 - Rename share intent to aTalk and setCustomView() for ShareActivity actionBar; android uses activity label name for share intend.
 - Improve join chatRoom captcha challenge request handling and allow user retry on incorrect entry
 - Improve AEC effectiveness: see AudioTrackRenderer and DataSource#configureEffects()
@@ -971,9 +988,9 @@ Upload Date:	12/28/2019
   - reverseTransformPacket - skip packet decryption to save resources when it is not needed
 
 =========================================================================
-Version:		2.1.4 (1114)
+Version:        2.1.4 (1114)
+Release Date:	12/18/2019
 Author:         cmeng
-Upload Date:	12/18/2019
 - Add support for Share, Quote and Forward for both message and media contents
 - Preview media contents of attachments for user confirmation before sending
 - Extend check for proper file extension on media file sharing; rename media file with best guess extension if possible
@@ -989,9 +1006,9 @@ Upload Date:	12/18/2019
   : Do not proceed to process omemo message (i.e. body is empty) if decryptedMessage.isKeyTransportMessage() is true
 
 =========================================================================
-Version:		2.1.3 (1113)
+Version:        2.1.3 (1113)
+Release Date:	11/28/2019
 Author:         cmeng
-Upload Date:	11/28/2019
 - Support send and receive of instant messages that contain lightweight text markup (XEP-0071: XHTML-IM)
 - Send OMEMO lightweight text markup in message body instead of XHTML extension (work only with aTalk)
 - Enhance UI - add unread message badges for contacts and chatRooms list views
@@ -1022,9 +1039,9 @@ Upload Date:	11/28/2019
 - Change build.gradle to have smack libraries as individual jar for easy reference, instead of merged jarjar
 
 =========================================================================
-Version:		2.1.2 (1112)
+Version:        2.1.2 (1112)
+Release Date:	11/07/2019
 Author:         cmeng
-Upload Date:	11/07/2019
 - Modify MediaRecorderSystem and AndroidCameraSystem to save camera parameters to persistent store and limit camera.open to one time only.
 - Number front and back camera for identification, as android may have multiple cameras.
 - Do not create volatile contact for muc user - Block OperationSetChatStateNotificationsJabberImpl#stateChanged to createVolatileContact when getType == Type.group
@@ -1033,9 +1050,9 @@ Upload Date:	11/07/2019
 - update library for cz.msebera.android:httpclient:4.4.1.2 => 4.5.8
 
 =========================================================================
-Version:		2.1.1 (1111)
+Version:        2.1.1 (1111)
+Release Date:	11/01/2019
 Author:         cmeng
-Upload Date:	11/01/2019
 - Implement XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) & XEP-0206: XMPP Over BOSH standard; Certificates issue by android trusted CAs only
 - Note-5 API-21 does not support self signed certificate for BOSHConnection - failed in android OS - Alert (Level: Fatal, Description: Certificate Unknown)
 - Fix all problems in smack#XMPPBOSHConnection class for BOSH Connection support
@@ -1053,9 +1070,9 @@ Upload Date:	11/01/2019
 - UpdateServiceImpl.checkForUpdate must validate the downloaded apk is valid before install
 
 =========================================================================
-Version:		2.1.0 (1110)
+Version:        2.1.0 (1110)
+Release Date:	10/08/2019
 Author:         cmeng
-Upload Date:	10/08/2019
 - Enhance Event UI: allow user to pick android ringtone for playback and sort Events in ascending order for easy user reference
 - Add support for user defined ringTone. Modify AbstractSCAudioClip class for ringtone playback using android RingTone class;
   AudioSystemClipImpl support only WAV format; android ringtone's are in ogg format etc
@@ -1072,9 +1089,9 @@ Upload Date:	10/08/2019
 - Remove unused FileUtils.java - change to use FileBackend.isMediaFile() with support to guess ContentType From FileInputStream
 
 =========================================================================
-Version:		2.0.6 (1106)
+Version:        2.0.6 (1106)
+Release Date:	09/27/2019
 Author:         cmeng
-Upload Date:	09/27/2019
 - Auto send last omemo message once all undecided omemoDevices are authenticated by user, else display error message.
   supported by callback AuthenticateListener in OmemoAuthenticateDialog
 - Improve account UI allowing user to change userName during login and in Account Settings...; warn user if results in old messages being purged
@@ -1096,9 +1113,9 @@ Upload Date:	09/27/2019
  needed for UpdateServiceImpl
 
 =========================================================================
-Version:		2.0.5 (1105)
+Version:        2.0.5 (1105)
+Release Date:	09/14/2019
 Author:         cmeng
-Upload Date:	09/14/2019
 - Implement user options to cancel, Retry and display status progressBar during HTTP file downloading.
 - Modify FileRecord saved info in DB to support Http Download retry.
 - Implement 60sec idleTime in Http File Download to end and clean up all DownloadManager setup parameters
@@ -1120,9 +1137,9 @@ Upload Date:	09/14/2019
 - Iterate all system properties and outputs their names and values for debug log purposes.
 
 =========================================================================
-Version:		2.0.4 (1104)
+Version:        2.0.4 (1104)
+Release Date:	08/31/2019
 Author:         cmeng
-Upload Date:	08/31/2019
 - Improve preference settings UI according to user experience and add advance section
 - Improve UI for BOSH-Proxy - feature suspended until smack has fully implemented the BOSH login.
 - Fix error in Regenerate OMEMO identities - must only perform initialization on the current active omemoManager.
@@ -1144,9 +1161,9 @@ Upload Date:	08/31/2019
 - Update README.md file
 
 =========================================================================
-Version:		2.0.3 (1103)
+Version:        2.0.3 (1103)
+Release Date:	08/14/2019
 Author:         cmeng
-Upload Date:	08/14/2019
 - Implement XEP-0184: Message Delivery Receipts support with user enable/disable option
 - Implement XEP-0012: Last Activity support to show the time of the last activity associated with a contact
 - AvatarManager#isAvatarNew must also check for Jid2Hash link is intact as one of the condition
@@ -1161,9 +1178,9 @@ Upload Date:	08/14/2019
     c. Purge unused identities
 
 =========================================================================
-Version:		2.0.2 (1102)
+Version:        2.0.2 (1102)
+Release Date:	07/30/2019
 Author:         cmeng
-Upload Date:	07/30/2019
 - Upgrade smack libraries to v4.4.0-alpha2
 - Migrate xmpp extension to use smack 4.4.0-alpha2 smack.xml.XmlPullParser/Event and XmlPullParserException
   from  org.xmlpull.v1.XmlPullParser and XmlPullParserException;
@@ -1171,9 +1188,9 @@ Upload Date:	07/30/2019
 - Remove local smack patched sources and use smack library for OMEMO, xhtml, PubSub
 
 =========================================================================
-Version:		2.0.1 (1101)
+Version:        2.0.1 (1101)
+Release Date:	07/24/2019
 Author:         cmeng
-Upload Date:	07/24/2019
 - Fix crypto chat session background color inconsistency - re-enable OMEMO will change to blue
   solution: do not allow doHandleOtrPressed handle UI update - leave it to otr events.
 - Fix OTR padlock changes to unencrypted when press again
@@ -1183,9 +1200,9 @@ Upload Date:	07/24/2019
 - Clean up and update source to xmpp extensions, jitsi and libjitsi dated 20190720
 
 =========================================================================
-Version:		2.0.0 (1100)
+Version:        2.0.0 (1100)
+Release Date:	07/16/2019
 Author:         cmeng
-Upload Date:	07/16/2019
 - Harmonize aTalk UI presentation
 - Enhance user/contact presence status with additional icon/status indicators
 - ChatActivity#onOptionsItemSelected must include Invite item while already in conference
@@ -1217,9 +1234,9 @@ Upload Date:	07/16/2019
 - aTalk minimum installed android device OS version is 4.4 (KitKat) i.e. API-19
 
 =========================================================================
-Version:		1.8.8 (1088)
+Version:        1.8.8 (1088)
+Release Date:	06/26/2019
 Author:         cmeng
-Upload Date:	06/26/2019
 - Implement XEP-0070: Verifying HTTP Requests via XMPP - add smack library httauthorizationrequest
 - Develop XEP-0070 smack libraries for above feature support
 - aTalk WebViewFragment must not loadUrl() on resume - android OS resumes on closing dialog, destroy any new url loading request from site
@@ -1229,15 +1246,15 @@ Upload Date:	06/26/2019
 - User entry web site must not contain leading or trailing spaces. Trim before store
 
 =========================================================================
-Version:		1.8.7 (1087)
+Version:        1.8.7 (1087)
+Release Date:	06/19/2019
 Author:         cmeng
-Upload Date:	06/19/2019
 - Incorrect casting of keySet() to string[] in ChatRoomBookmarksDialog#mAccountBookmarkConferencesList
 
 =========================================================================
-Version:		1.8.6 (1086)
+Version:        1.8.6 (1086)
+Release Date:	06/19/2019
 Author:         cmeng
-Upload Date:	06/19/2019
 - Implement XEP-0048: Bookmarks support with autoJoin on first login
 - Default to save bookmark and enable autoJoin on newly created conference room
 - Add global ChatRoom Bookmark option on main menu (local and server rooms included for user selection)
@@ -1255,16 +1272,16 @@ Upload Date:	06/19/2019
 - Add callback to launch user install dialog on apk download completion
 
 =========================================================================
-Version:		1.8.5 (1085)
+Version:        1.8.5 (1085)
+Release Date:	06/06/2019
 Author:         cmeng
-Upload Date:	06/06/2019
 - Add web access to main page slider for company RSS feed or news sharing - default access to movim
 - Add user option to specify default web access page in settings
 
 =========================================================================
-Version:		1.8.4 (1084)
+Version:        1.8.4 (1084)
+Release Date:	06/05/2019
 Author:         cmeng
-Upload Date:	06/05/2019
 - Fix smack ping function not working - aTalk stops receiving calls and messages on standby
 - Provide persistent storage for user selected chatType across sessions and re-launch of aTalk.
   OTR chatType selected is not stored as its validity is session dependent and buddy being online.
@@ -1273,9 +1290,9 @@ Upload Date:	06/05/2019
 - Redefined ChatSession.STATUS to store ChatFragment#chatType for persistent chatType retrieval
 
 =========================================================================
-Version:		1.8.3 (1083)
+Version:        1.8.3 (1083)
+Release Date:	05/23/2019
 Author:         cmeng
-Upload Date:	05/23/2019
 - Implement 'OMEMO Media Sharing' to support end-to-end encrypted files and stickers sharing
 - Include http file upload service in fault-tolerance file transfer implementation;
   to handle clients that do not support legacy SOCK5 and IBB protocols e.g. conversations
@@ -1299,9 +1316,9 @@ Upload Date:	05/23/2019
 - Simplify and use single script command for each jni library built
 
 =========================================================================
-Version:		1.8.2 (1082)
+Version:        1.8.2 (1082)
+Release Date:	04/24/2019
 Author:         cmeng
-Upload Date:	04/24/2019
 - Fix Omemo chat session setup failure due to 'Cryptography Changes in Android-P'
   i.e. https://android-developers.googleblog.com/2018/03/cryptography-changes-in-android-p.html
   For fix see: https://github.com/Flowdalic/Smack/commit/7d7fbe68286d77f60c8f390034ee39f849f42dfa
@@ -1314,9 +1331,9 @@ Upload Date:	04/24/2019
 - upgrade AS to 3.4.0 release
 
 =========================================================================
-Version:		1.8.1 (1081)
+Version:        1.8.1 (1081)
+Release Date:	04/13/2019
 Author:         cmeng
-Upload Date:	04/13/2019
 - Init MediaRecorderSystem and AndroidCameraSystem only when aTalk is in foreground;
   otherwise android generates system notification: aTalk has been detected using camera
 - Implement BackgroundManager class to allow re-init camera when the app returns to foreground
@@ -1336,9 +1353,9 @@ Upload Date:	04/13/2019
 - libjnvpx.so is not compatible to android x86/x86_64 platforms, use x264 video codec instead
 
 =========================================================================
-Version:		1.8.0 (1080)
+Version:        1.8.0 (1080)
+Release Date:	03/27/2019
 Author:         cmeng
-Upload Date:	03/27/2019
 - Add jni native libraries support for all ABIS i.e. armeabi-v7a arm64-v8a x86 x86_64
 - Cleanup ffmpeg-x264 build scripts and patches for 64bit ABI and fixed text relocation etc problems
 - Cleanup vpx build scripts and patches x264-configure for correct arm68-v8a build
@@ -1359,9 +1376,9 @@ net.sf.fmj.media.Log.error()     Unable to transcode format: YUV Video Format: S
 net.sf.fmj.media.Log.error()       to: H264/RTP, fmtps={packetization-mode=1}
 
 =========================================================================
-Version:		1.7.3 (1073)
+Version:        1.7.3 (1073)
+Release Date:	03/14/2019
 Author:         cmeng
-Upload Date:	03/14/2019
 - Add Extension provider for eleName: ParameterExtensionElement and nameSpace:RTPHdrExtExtensionElement in
   JingleIQProvider - missing reference in parse method.
 - IceUdpTransportManager-> agent.getHarvestCount() always return zero, use agent.getHarvesters().size() instead
@@ -1379,17 +1396,17 @@ Upload Date:	03/14/2019
 - Fix impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer.stop() IllegalStateException
 
 =========================================================================
-Version:		1.7.2 (1072)
+Version:        1.7.2 (1072)
+Release Date:	03/04/2019
 Author:         cmeng
-Upload Date:	03/04/2019
 - Fix audio and video codec settings blank display causing system crash
   incorrect using the proposed import by AS i.e. org.atalk.android.R instead of android.R;
 - Fix certificate display problem due to unknown issuer label in certificate content
 
 =========================================================================
-Version:		1.7.1 (1071)
+Version:        1.7.1 (1071)
+Release Date:	03/02/2019
 Author:         cmeng
-Upload Date:	03/02/2019
 - Add user option to access Application Notification Settings
 - Clean up unused notification channels
 - Fix send message no shown in local chat window
@@ -1397,9 +1414,9 @@ Upload Date:	03/02/2019
 - Revert smack update to compile with official Smack 4.4-alpha2 release on 20190225
 
 =========================================================================
-Version:		1.7.0 (1070)
+Version:        1.7.0 (1070)
+Release Date:	02/24/2019
 Author:         cmeng
-Upload Date:	02/24/2019
 - Disable info Retrieval for contact avatar fetching on first login even when local cache is empty
   ejabberd will auto send VCardTempXUpdate in <presence/> stanza when buddy come online
 - Replace LOGGER with Timber for improve debug messages logging
@@ -1418,9 +1435,9 @@ Upload Date:	02/24/2019
 - Provide full instruction on how to build lib/*.jar from source in lib/src_reference/README.md
 
 =========================================================================
-Version:		1.6.6 (1066)
+Version:        1.6.6 (1066)
+Release Date:	01/31/2019
 Author:         cmeng
-Upload Date:	01/31/2019
 - Improve IB Registration process with optional Captcha challenge etc
 - Enhance purge messages with option to delete received media files on local device
 - Add support for file sharing with offline contact and chat members in conference room
@@ -1434,9 +1451,9 @@ Upload Date:	01/31/2019
   before use and mChatTransport must check against MetaContactChatTransport
 
 =========================================================================
-Version:		1.6.5 (1065)
+Version:        1.6.5 (1065)
+Release Date:	01/18/2019
 Author:         cmeng
-Upload Date:	01/18/2019
 - Launch permission request prior to start aTalk activity to fix no camera and video call problem
 - Do not override chat room subject with default unless specified by user
 - Add user option to change chat room nick and subject
@@ -1447,9 +1464,9 @@ Upload Date:	01/18/2019
   is destroyed when developer don't keep activities is enabled. This cause dialog to remain open.
 
 =========================================================================
-Version:		1.6.4 (1064)
+Version:        1.6.4 (1064)
+Release Date:	12/28/2018
 Author:         cmeng
-Upload Date:	12/28/2018
 - Add user option for aTalk auto start on device reboot
 - Implement full screen playback for remote video during media call
   i.e. put display to full screen for remote video playback in VideoCallActivity/VideoHandlerFragment
@@ -1463,9 +1480,9 @@ Upload Date:	12/28/2018
 - Update to use smack 4.4.0-alpha2 release 20181228
 
 =========================================================================
-Version:		1.6.3 (1063)
+Version:        1.6.3 (1063)
+Release Date:	12/17/2018
 Author:         cmeng
-Upload Date:	12/17/2018
 - Implement Fault-tolerant negotiation for file transfer using Socks5ByteStream with IbbByteStream fallback
 - Allow account connection by either its fully qualified domain name (FQDN) or its IP
 - Change account setting to direct access and move account info access to context menu
@@ -1480,9 +1497,9 @@ Upload Date:	12/17/2018
 - Use aTalkApp.getGlobalContext()-Never use clf to startActivity; exception when it is not attached to FragmentManager in MUCServiceImpl
 
 =========================================================================
-Version:		1.6.2 (1062)
+Version:        1.6.2 (1062)
+Release Date:	12/04/2018
 Author:         cmeng
-Upload Date:	12/04/2018
 - Replace incompatible jitsi ErrorDialog with android showAlertDialog
 - Set Type=chat for Omemo message before sending
 - Use google stunServers as default if none is specified {stun1.l.google.com:19302}
@@ -1490,9 +1507,9 @@ Upload Date:	12/04/2018
 - Update libjitsi to release 20181122 (Omit Function and Predicate that require API-24)
 
 =========================================================================
-Version:		1.6.1 (1061)
+Version:        1.6.1 (1061)
+Release Date:	11/03/2018
 Author:         cmeng
-Upload Date:	11/03/2018
 - Omemo to ignore read-only devices to avoid weakening of forward secrecy implementation
 - Migrate DB to version 4 to add Omemo MESSAGE_COUNTER to identities table
 - Synchronized ChatFragment.prependMessages to avoid java.util.ConcurrentModificationException
@@ -1503,9 +1520,9 @@ Upload Date:	11/03/2018
 - Add static library sources into ./lib/srcRef for reference and libraries build if necessary
 
 =========================================================================
-Version:		1.6.0 (1060)
+Version:        1.6.0 (1060)
+Release Date:	10/26/2018
 Author:         cmeng
-Upload Date:	10/26/2018
 - Built target for Android 9.0 (Pie) or API-28
 - Apps targeting API Build.VERSION_CODES.P or later must request the permission Manifest.permission.FOREGROUND_SERVICE
 - Remove aTalk dependency on plugins:ews-android-api and its library source
@@ -1519,17 +1536,17 @@ Upload Date:	10/26/2018
 - Restructure whole source directory to support productFlavors build for playStore and F-Droid
 
 =========================================================================
-Version:		1.5.6 (1056)
+Version:        1.5.6 (1056)
+Release Date:	10/16/2018
 Author:         cmeng
-Upload Date:	10/16/2018
 - Implement Ping Interval auto-tune optimization to prevent mobile network closed by ISP on non-activity timer timeout
 - Upgrade UCrop to v2.2.2 - to fix image file pick error
 - Implement OnClickListener and OnLongClickListener in class to avoid OnClickListener become inactive whe resume
 
 =========================================================================
-Version:		1.5.5 (1055)
+Version:        1.5.5 (1055)
+Release Date:	10/09/2018
 Author:         cmeng
-Upload Date:	10/09/2018
 - Fix media call problem with no voice on receiving end - sender mic data lost
 - Fix CallPeerMediaHandler#sendHolePunchPacket-sending the defined HOLE_PUNCH_PACKET causes problem in transmit mic data being muted
 - Show permission request prompt if < 3 permissions are granted. Some android devices permanently deny all on first launch
@@ -1546,9 +1563,9 @@ Upload Date:	10/09/2018
 - Android NDK: android-15 is unsupported. Using minimum supported version android-16.
 
 =========================================================================
-Version:		1.5.4 (1054)
+Version:        1.5.4 (1054)
+Release Date:	09/28/2018
 Author:         cmeng
-Upload Date:	09/28/2018
 - Update call notification broadcast receiver to be compliant with android-O new implementation
 - Add support to reflect the correct notification speaker phone state and enhance call state icon display
 - Add call peer avatar to call notification
@@ -1562,9 +1579,9 @@ Upload Date:	09/28/2018
 - Move to use AS 3.2.0 and buildtools 28.0.2
 
 =========================================================================
-Version:		1.5.3 (1053)
+Version:        1.5.3 (1053)
+Release Date:	09/18/2018
 Author:         cmeng
-Upload Date:	09/18/2018
 - Avoid delivered attachment gets reactivated when user reenter the chat session
 - Ensure file transfer view refresh reflects the actual state on user scrolling
   i.e. Must update file transfer status on any user actions for proper view refresh on user scrolling
@@ -1572,9 +1589,9 @@ Upload Date:	09/18/2018
 - Fixed logcat -c not allow in android-N with missing atalk-current-logcat.txt
 
 =========================================================================
-Version:		1.5.2 (1052)
+Version:        1.5.2 (1052)
+Release Date:	09/15/2018
 Author:         cmeng
-Upload Date:	09/15/2018
 - Implement downloadable Stickers, Bitmoji and Emoji rich content sharing
 - Implement auto accept received file transfer request with max file size option
 - Add user support for multiple files selection for sending
@@ -1590,17 +1607,17 @@ Upload Date:	09/15/2018
 - Add TranscriptionRequestExtension
 
 =========================================================================
-Version:		1.5.1 (1051)
+Version:        1.5.1 (1051)
+Release Date:	09/01/2018
 Author:         cmeng
-Upload Date:	09/01/2018
 - Fix image file transfer error when thumbnail preview is enabled - IQThumbnailRequest needs to use IqRequestHandler (smack v4.3.0)
 - Implement check for muc participant jid as it may be null
 - Port to use smack 4.4.0 for latest jingle update
 
 =========================================================================
-Version:		1.5.0 (1050)
+Version:        1.5.0 (1050)
+Release Date:	08/29/2018
 Author:         cmeng
-Upload Date:	08/29/2018
 - Add user option to remove manually approved certificates
 - Fix Omemo locked up when no key found - SQliteOmemoStore#loadRawSession() must return null if no record found-for OmemoService to rebuild
 - Fix coding error in CertificateServiceImpl#addCertificateToTrust()
@@ -1613,16 +1630,16 @@ Upload Date:	08/29/2018
 - Delete all inactive devices with null Identity key when user select delete inactive identity - must monitor to ensure no problem
 
 =========================================================================
-Version:		1.4.7a (1046)
+Version:        1.4.7a (1046)
+Release Date:	08/14/2018
 Author:         cmeng
-Upload Date:	08/14/2018
 - Inject error chat message when there is a problem with a missing session record - no key found
 - Add method to delete and cleanup inactive identities
 
 =========================================================================
-Version:		1.4.6 (1046)
+Version:        1.4.6 (1046)
+Release Date:	08/14/2018
 Author:         cmeng
-Upload Date:	08/14/2018
 - Fix ANR in account removal with all database handling in thread and a 3S timeout wait for network connection
 - Fix IndexOutOfBoundsException and ConcurrentModificationException in MetaContactListAdapter#childContactsReordered - large number of contact update
 - Return default user role as GUEST prior to user joining the chatRoom
@@ -1634,18 +1651,18 @@ Upload Date:	08/14/2018
 - Fix selected dnssecMode not properly saved if server override is not selected.
 
 =========================================================================
-Version:		1.4.5 (1045)
+Version:        1.4.5 (1045)
+Release Date:	08/08/2018
 Author:         cmeng
-Upload Date:	08/08/2018
 - Must initialize Notification channel as earlier as possible before any process using it
 - Patch x264.so.147 to allow linking with versioned shared library in Android NDK
 - Built ffmpeg-x264 using shared libraries - clean up directory
 - clean up static_library_built build scripts
 
 =========================================================================
-Version:		1.4.4 (1044)
+Version:        1.4.4 (1044)
+Release Date:	07/31/2018
 Author:         cmeng
-Upload Date:	07/31/2018
 - Implement new android Notification Channels support
 - Prevent user from cancel dialog accidentally while clicking outside the window region - setFinishOnTouchOutside(false)
 - Full implementation for [Telephony | Disable media calls (Jingle)] option in Account Settings
@@ -1657,9 +1674,9 @@ Upload Date:	07/31/2018
 - Improve chatroom join captcha challenge and allow retry on entry error.
 
 =========================================================================
-Version:		1.4.3 (1043)
+Version:        1.4.3 (1043)
+Release Date:	07/21/2018
 Author:         cmeng
-Upload Date:	07/21/2018
 - Block domainJid from joining chatRoom as the entity does not support IM
 - Implement exception handler for server that does not support chat room creation
 - Implement handler for captcha challenge from server when joining chat room with captcha protection against SPAM
@@ -1669,9 +1686,9 @@ Upload Date:	07/21/2018
 - Add captcha extension and captcha provider classes
 
 =========================================================================
-Version:		1.4.2 (1042)
+Version:        1.4.2 (1042)
+Release Date:	07/11/2018
 Author:         cmeng
-Upload Date:	07/11/2018
 - Enhance user presence status main UI to support per user presence indication and status changes
 - Improve Join Chat Room menu UI and include associated server chatRooms for user selection
 - Fix account password lost when account is being enabled while it was offline and disabled in previous app exit
@@ -1687,9 +1704,9 @@ Upload Date:	07/11/2018
 - Upgrade to use osgi-core: 7.0.0
 
 =========================================================================
-Version:		1.4.1 (1041)
+Version:        1.4.1 (1041)
+Release Date:	06/25/2018
 Author:         cmeng
-Upload Date:	06/25/2018
 - Improve account login handling when persistent password saving option is not enabled
 - Fix inconsistency in STUN and JINGLE properties saving when modify or create new account
 - Fix intermittent call failure when transport-info and session-accept are received at the same time; due to binding of
@@ -1698,9 +1715,9 @@ Upload Date:	06/25/2018
 - Update all xmpp extension files and Cleanup protocol.jabber.impl classes files per jitsi-smack dated 20180616
 
 =========================================================================
-Version:		1.4.0 (1040)
+Version:        1.4.0 (1040)
+Release Date:	06/16/2018
 Author:         cmeng
-Upload Date:	06/16/2018
 - Implement Jabber VoIP-PBX gateway Telephony option in main menu, allowing PBX phone call via service gateway installed on server - experimented
 - IBR registration server error - update default given value, and clear IBR flag on user cancel to avoid loop in IBR.
 - Fix password persistent saving process problem not as per option selected by user
@@ -1714,9 +1731,9 @@ Upload Date:	06/16/2018
 - Remove layout-v14 provision for android API-14
 
 =========================================================================
-Version:		1.3.2 (1032)
+Version:        1.3.2 (1032)
+Release Date:	06/06/2018
 Author:         cmeng
-Upload Date:	06/06/2018
 - Add new UI languages support for Bahasa Indonesia, German and Russian
 - Add user option to Send file thumbnail preview in Setting...
 - Add option items for Audio and Video call in chat window menu
@@ -1731,9 +1748,9 @@ Upload Date:	06/06/2018
 - Use ParsingExceptionCallback to handle Un-parsable Stanza error return by Smack to avoid connection abort
 
 =========================================================================
-Version:		1.3.1 (1031)
+Version:        1.3.1 (1031)
+Release Date:	05/30/2018
 Author:         cmeng
-Upload Date:	05/30/2018
 - Add user option in Account Settings to support TLS Certificate / DNSSEC / DANE security mode
 - Enhance support in overridden server address to allow either hostName or IP entry
 - Fix ANR while exit from Account Settings when user account does not have vcard info stored on server
@@ -1748,9 +1765,9 @@ Upload Date:	05/30/2018
 - Remove main menu [Settings... | DNS] option
 
 =========================================================================
-Version:		1.3.0 (1030)
+Version:        1.3.0 (1030)
+Release Date:	05/22/2018
 Author:         cmeng
-Upload Date:	05/22/2018
 - Change login using smack connectUsingConfiguration->populateHostAddresses mechanism and enhance overall login performance
 - Optimize initializeConnectAndLogin(SecurityAuthority authority, int reasonCode, String loginReason, Boolean isShowAlways)
 - Optimize connectAndLogin(InetSocketAddress address, DomainBareJid serviceName, String userName, JabberLoginStrategy loginStrategy)
@@ -1766,9 +1783,9 @@ Upload Date:	05/22/2018
 - Update Jibri source from jitsi-smack-4.2 (May, 2018)
 
 =========================================================================
-Version:		1.2.6 (1026)
+Version:        1.2.6 (1026)
 Author:         cmeng
-Upload Date:	05/07/2018
+Release Date:	05/07/2018
 - Implement isOmemoSupport check in new thread to avoid ANR black screen when open new chat session
 - Purge user unused omemo devices now clean data on both the server and local database
 - Prompt user action for android battery usage optimization on aTalk to avoid message lost during doze
@@ -1781,9 +1798,8 @@ Upload Date:	05/07/2018
 - Upgrade and use org.jitsi:dnssecjava:1.1.3 from maven
 
 =========================================================================
-Version:		1.2.5 (1025)
-Author:         cmeng
-Upload Date:	05/01/2018
+Version:        1.2.5 (1025)
+Release Date:	05/01/2018
 - Implement multi-language UI support
 - Add Spanish (Español) language UI support
 - Implementation for android N and above to take care FileUriExposed Exceptions, fix openFile, camera media attachments and send log etc
@@ -1791,9 +1807,9 @@ Upload Date:	05/01/2018
 - ShowToast when selected file path cannot be found or open
 
 =========================================================================
-Version:		1.2.4 (1024)
+Version:        1.2.4 (1024)
+Release Date:	04/29/2018
 Author:         cmeng
-Upload Date:	04/29/2018
 - Use android resource tool getString() in place of getI18NString()
 - clean up source and string.xml files
 - Add user option to leave chatRoom in muc chat session menu
@@ -1801,17 +1817,17 @@ Upload Date:	04/29/2018
 - Implement toast message when user failed to send message
 
 =========================================================================
-Version:		1.2.3 (1023)
+Version:        1.2.3 (1023)
+Release Date:	04/23/2018
 Author:         cmeng
-Upload Date:	04/23/2018
 - Auto enable Omemo option on receive Omemo message while chat view is in focus
 - Add StreetViews and Map option on main menu (without sending location message)
 - Improve GPS Location UI and options handling
 - Remove GPSTracker and GPSTrackingActivity class - not use
 =========================================================================
-Version:		1.2.2 (1022)
+Version:        1.2.2 (1022)
+Release Date:	04/22/2018
 Author:         cmeng
-Upload Date:	04/22/2018
 - AudiobBgService can only check for permissions, and not request permissions (removed)
 - Hide audio sending option if permission.RECORD_AUDIO is not granted
 - Change local message creation to include both encryption and mime types information
@@ -1819,9 +1835,9 @@ Upload Date:	04/22/2018
 - Apply current selected encryption to location messages sending
 
 =========================================================================
-Version:		1.2.1 (1021)
+Version:        1.2.1 (1021)
+Release Date:	04/15/2018
 Author:         cmeng
-Upload Date:	04/15/2018
 - Use XMPP service name when creating the TLS socket
 - Upgrade lib to smack-4.2.4-SNAPSHOTS
 - JabberAccountID uses only BareJid
@@ -1829,9 +1845,9 @@ Upload Date:	04/15/2018
 - Fix error when checking for server system messages in CryptoFragment#setCurrentContact
 
 =========================================================================
-Version:		1.2.0 (1020)
+Version:        1.2.0 (1020)
 Author:         cmeng
-Upload Date:	04/05/2018
+Release Date:	04/05/2018
 - Redesign and optimize the "add contact" handlers and UI
 - Add user option for presence subscription mode for auto accept-all or manual approval
 - Roster.getInstanceFor() should only be carried out upon user authenticated
@@ -1848,39 +1864,39 @@ Upload Date:	04/05/2018
 - Remove all dirty code which were added in earlier omemo implementation
 
 =========================================================================
-Version:		1.1.4 (1014)
+Version:        1.1.4 (1014)
+Release Date:	03/23/2018
 Author:         cmeng
-Upload Date:	03/23/2018
 - Fix InfoRetriever uncaughtException and slow server response timeout with 10s elapsed time
 - Provide proper handler for start of IBR registration failure on server
 - Update to use smack 4.2.3 release
 
 =========================================================================
-Version:		1.1.3 (1013)
+Version:        1.1.3 (1013)
+Release Date:	03/13/2018
 Author:         cmeng
-Upload Date:	03/13/2018
 - Upate libjitsi to add openh264 support in neomedia and setEncodingPreference to H264
 - Fixes send-side bandwidth estimations and enables log mining
 - Cleanup jni directory and update ffmpeg-x264 wrapper and build scripts
 - Fixed system crash when accessing Messaging Security settings while user is not registered on network
 
 =========================================================================
-Version:		1.1.2 (1012)
+Version:        1.1.2 (1012)
+Release Date:	02/12/2018
 Author:         cmeng
-Upload Date:	02/12/2018
 - Fix black screen display when opening welcome message after IBR registration
 - Revert to user login screen when server throws user already exists exception while doing IBR registration
 
 =========================================================================
-Version:		1.1.1 (1011)
+Version:        1.1.1 (1011)
+Release Date:	02/10/2018
 Author:         cmeng
-Upload Date:	02/10/2018
 - Enhance IBR UI and improve registration process handling for all events return by server
 
 =========================================================================
-Version:		1.1.0 (1010)
+Version:        1.1.0 (1010)
+Release Date:	02/04/2018
 Author:         cmeng
-Upload Date:	02/04/2018
 - Port to use latest smack omemo library now supports message carbons and offline omemo messages
 - Port to use smack CarbonExtension and remove old CarbonPacketExtension
 - Implement last message correction for omemo messaging
@@ -1907,15 +1923,15 @@ Could not decrypt incoming message: CryptoFailedException: Transported key could
 org.jitsi E/libOpenSLES: class Engine interface 0 required but unavailable MPH=9
 
 =========================================================================
-Version:		1.0.3 (1003)
+Version:        1.0.3 (1003)
+Release Date:	01/15/2018
 Author:         cmeng
-Upload Date:	01/15/2018
 - update to use smack 4.2.3-SNAPSHOTS
 - consolidate all info for about dialog into About.java class
 - Add atalk site/help link in About dialog box
 
 -------------------------
-Upload Date:	1/14/2018
+Release Date:	1/14/2018
 - remove unused libraries jar and JNI targets and .so
 - add guava-15.0.jar - use by PacketLoggingServiceImpl.java
 - update libjitsi to v1031 (12/03/2018)
@@ -1923,9 +1939,9 @@ Upload Date:	1/14/2018
 - bump failed to use ice4j-2.0.0-20170720.150550-1.jar - cannot find candidate and call cannot connect. So abort
 
 =========================================================================
-Version:		1.0.2 (1002)
+Version:        1.0.2 (1002)
+Release Date:	01/12/2018
 Author:         cmeng
-Upload Date:	01/12/2018
 - Compile aTalk for android 8.0(Oreo) compatibility
 - In getCachedRecentMessages()->convertHistoryRecordToMessageEvent for chatRoom, ChatRoom#getUserRole() must not have null ResourcePart
 - Do not attempt to retrieve contact or chatRoom for virtual server in getContactOrRoomByID()
@@ -1940,15 +1956,15 @@ TODO: actually cacheAvatar() is not necessary as it is already handled and store
 Update 2020031: Removed AvatarCacheUtils and fall back to use AvatarManager
 
 =========================================================================
-Version:		1.0.1 (1001)
+Version:        1.0.1 (1001)
+Release Date:	01/06/2018
 Author:         cmeng
-Upload Date:	01/06/2018
 - Update apk manifest file to include implicit hardware requirements and set the required state to false for device compatibility
 
 =========================================================================
-Version:		1.0.0 (1000)
+Version:        1.0.0 (1000)
+Release Date:	01/03/2018
 Author:         cmeng
-Upload Date:	01/03/2018
 - Enhance application ui theme and harmonize button layout for better user experience
 - Add support for user runtime resource access permissions request on android-M and later
 - Add About menu provides access to application information on history log, compliance XMPP standards and third parties libraries used etc
@@ -1969,9 +1985,9 @@ Upload Date:	01/03/2018
 - update to use libjitsi-1030 dated 2017/12/15
 
 =========================================================================
-Version:		0.9.1 (910)
+Version:        0.9.1 (910)
+Release Date:	12/19/2017
 Author:         cmeng
-Upload Date:	12/19/2017
 - Ensure account password is updated in credential when user changes in Account Settings... or re-login prompt
 - Fix stream video distortion at receiving end during conference when phone/camera is rotated to angles other than 0 degree
 - Enhance video resolution support: 320x240, 640x480, 720x480, 960x720 and 1280x720; auto optimise to ensure it is within device capability during call
@@ -1992,9 +2008,9 @@ Upload Date:	12/19/2017
 - Remove ICE option - Use Jitsi STURN Server (fallback) but keep source default to true and active
 
 =========================================================================
-Version:		0.9.0 (900)
+Version:        0.9.0 (900)
+Release Date:	11/11/2017
 Author:         cmeng
-Upload Date:	11/11/2017
 - Add native libraries support with armeabi, armeabi-v7a and x86 architecture platforms for min android API-15
 - Implement OpenSSL (version 1.0.2l) native library to improve zrtp encryption speed
 - Implement ffmpeg-x264 shared library built from source (ffmpeg v1.0.10 and latest x264: git clone http://git.videolan.org/git/x264.git)
@@ -2009,9 +2025,9 @@ Upload Date:	11/11/2017
 - Update build.gradle files to confirm to gradle 4.1 and cleanup NDK mk build scripts for all native libraries
 
 =========================================================================
-Version:		0.8.8 (880)
+Version:        0.8.8 (880)
+Release Date:	10/16/2017
 Author:         cmeng
-Upload Date:	10/16/2017
 - Avoid multiple invitationListeners registration with MultiUserChatManager
 - Ignore further invitation if already joined the chatRoom
 - Add user menu option to show chat room occupants
@@ -2076,9 +2092,9 @@ Upload Date:	10/16/2017
 - Check in jni sources for ffmpeg, jawtrenderer, speex, vpx etc
 
 =========================================================================
-Version:		0.8.7.c (873)
+Version:        0.8.7.c (873)
+Release Date:	08/27/2017
 Author:         cmeng
-Upload Date:	08/27/2017
 - Reinstate FragmentPageAdapter and ChatRoom list on main UI
   sony Tablet S 4.0.3(release5a) API15 work but not Samsung SII
 - Do not add to groups that are having zero child - fixed metaContactList IndexOutOfBound Exception
@@ -2086,21 +2102,21 @@ Upload Date:	08/27/2017
   InvitationReceivedDialog must pass in activity and not context - otherwise system crashes
 
 =========================================================================
-Version:		0.8.7.b (872)
+Version:        0.8.7.b (872)
+Release Date:	08/24/2017
 Author:         cmeng
-Upload Date:	08/24/2017
 - Avoid system crashes when ContactList access has IndexOutOfBound Exception
 
 =========================================================================
-Version:		0.8.7.a (871)
+Version:        0.8.7.a (871)
+Release Date:	08/24/2017
 Author:         cmeng
-Upload Date:	08/24/2017
 - Remove FragmentPageAdapter and ChatRoom list on main UI - not stable
 
 =========================================================================
-Version:		0.8.7 (870)
+Version:        0.8.7 (870)
+Release Date:	08/23/2017
 Author:         cmeng
-Upload Date:	08/23/2017
 - Support avatar photo edit functions with gesture capability: region select, zoom, rotate and crop
 - Ensure avatar attached to outgoing messages in chat window display is correct for the current sender
 - Revert to full implementation for XEP-0153 VCardAvatar to properly support old xmpp client
@@ -2116,9 +2132,9 @@ Upload Date:	08/23/2017
 - Remove set/getGlobalDisplayAvatar() and set/getGlobalDisplayName in GlobalDisplayDetailsService
 
 =========================================================================
-Version:		0.8.6
+Version:        0.8.6
+Release Date:	08/05/2017
 Author:         cmeng
-Upload Date:	08/05/2017
 - Fix implementation error in denying OTR session setup request from buddy while OMEMO session is in progress
 - Implement XEP-0084 User Avatar publishing with reflection patch for Smack PepManager.publish to support old server
 - Harmonize operations between XEP-0084 User Avatar and XEP-0153 VCardAvatar for co-existence
@@ -2129,9 +2145,9 @@ Upload Date:	08/05/2017
 - Remove large screen landscape contactList and chatFragment side-by-side support
 
 =========================================================================
-Version:		0.8.5
+Version:        0.8.5
+Release Date:	07/25/2017
 Author:         cmeng
-Upload Date:	07/25/2017
 - Change omemo buddy authentication dialog to support multiple undecided fingerprints verification
 - ReSync chatFragment crypto status icon and background color based on user action in authentication dialog
 - Synchronise the cryptoChoice selected button with the chatType changes from events
@@ -2145,9 +2161,9 @@ Upload Date:	07/25/2017
 - Check for contact omemo capable using contactSupportsOmemo(), replacing the deleted resourceSupportsOmemo() method
 
 =========================================================================
-Version:		0.8.4
+Version:        0.8.4
+Release Date:	07/18/2017
 Author:         cmeng
-Upload Date:	07/18/2017
 - Implement XEP-0084: User Avatar
 - Fix crypto privateKey menu access exception on null fingerprint object.
 - Omemo client advertised entityCapabilities need to include PEP_NODE_DEVICE_LIST_NOTIFY
@@ -2160,9 +2176,9 @@ omemoDecrypted text in the chat window.
 - Add PEPListener to fetch new buddy omemoDevice and save it to omemo identities table
 
 =========================================================================
-Version:		0.8.3
+Version:        0.8.3
+Release Date:	07/12/2017
 Author:         cmeng
-Upload Date:	07/12/2017
 - Add option for OMEMO private key regeneration
 - Add option to allow changing trust state for Omemo device fingerprints - stop untrusted buddies from receiving OMEMO messages
 - Add option to copy crypto privateKeys or fingerprints to clipboard to assist remote verification
@@ -2172,9 +2188,9 @@ Upload Date:	07/12/2017
 - fix no activities error due to classes relocation for OtrFingerPrints and OtrPrivateKeys (class later removed)
 
 =========================================================================
-Version:		0.8.2
+Version:        0.8.2
+Release Date:	07/09/2017
 Author:         cmeng
-Upload Date:	07/09/2017
 - Implement OMEMO chat support using SQLite database for backend persistent storage
 - Add user option to blind trust contact omemo key before verification on first use
 - Add user option to regenerate omemo devices
@@ -2190,16 +2206,16 @@ Upload Date:	07/09/2017
 - Remove OmemoManager.addOmemoMucMessageListener(this) in ChatRoomJabberImpl as OMEMO message is being handled in SmackMessageListener#processMessage
 
 =========================================================================
-Version:		0.8.1
+Version:        0.8.1
+Release Date:	07/01/2017
 Author:         cmeng
-Upload Date:	07/01/2017
 - Implement OMEMO chat support using file-based persistent storage
 - Fix corrected message received handler for proper edited message display
 
 =========================================================================
-Version:		0.8.0
+Version:        0.8.0
+Release Date:	06/12/2017
 Author:         cmeng
-Upload Date:	06/12/2017
 - Remove lib org.whispersystems:axolotl-android:1.4.3
 - Remove crypto/axolotl sources
 - Remove all SQLiteAxolotlStore table in backend database
@@ -2207,9 +2223,9 @@ Upload Date:	06/12/2017
 
 version code 0794 check in on 2017/06/12
 =========================================================================
-Version:		0.7.9
+Version:        0.7.9
+Release Date:	06/12/2017
 Author:         cmeng
-Upload Date:	06/12/2017
 - Fixed Authorization Request prompt to show correct requester ID.
   Use contact.getAddress() for Authorization Request Dialog prompt - getDisplayName is null
 - Use Smack 4.2.1-SNAPSHOT library for OMEMO support (June 2017)
@@ -2231,9 +2247,9 @@ Upload Date:	06/12/2017
 
 version code 0793 check in on 2017/05/18
 =========================================================================
-Version:		0.7.9
+Version:        0.7.9
+Release Date:	05/18/2017
 Author:         cmeng
-Upload Date:	05/18/2017
 - Fixed ServerStoredContactListJabberImpl - must not remove the root group in metaContactGroup
 - Fixed timeStamp etc errors for muc history messages received from server
   * ChatRoomJabberImpl DelayInformation extraction error
@@ -2249,9 +2265,9 @@ Upload Date:	05/18/2017
 
 version code 0792 check in on 2017/04/15
 =========================================================================
-Version:		0.7.9
+Version:        0.7.9
+Release Date:	03/21/2017
 Author:         cmeng
-Upload Date:	03/21/2017
 - Remove unused files and clean up old soundRecording Activity
 - initial database creation and migration (major)
  * 1. Properties to accountID and accountProperties and Properties tables (+OTR keys); Remove obsoleted and ghost accounts properties.
@@ -2266,9 +2282,9 @@ Upload Date:	03/21/2017
 - Upgrade Opus jni source to latest 1.1.4 release (https://www.opus-codec.org/downloads/)
 
 =========================================================================
-Version:		0.7.8
+Version:        0.7.8
+Release Date:	02/22/2017
 Author:         cmeng
-Upload Date:	02/22/2017
 - Add support for multiLine chat messages sending and display
 - Add support for emojis sending and display (use device emojis resources)
 - Implement audio record and playback as background service
@@ -2282,9 +2298,9 @@ Upload Date:	02/22/2017
 - Remove imeOptions="actionSend|flagNoExtractUi" and ChatController#OnEditorAction to show keyboard Enter button for multiline text entry
 
 =========================================================================
-Version:		0.7.7
+Version:        0.7.7
+Release Date:	02/06/2017
 Author:         cmeng
-Upload Date:	02/06/2017
 - Add device rotation tracking to both the Street Panorama and Map View in chat for 'Single Location fix'
 - Add location and rotation tracking to both the Street Panorama and Map View in chat for 'Continuous Location updates'
 - Long press 'Continuous Location updates' button for location demo
@@ -2298,9 +2314,9 @@ Upload Date:	02/06/2017
 - Fixed system crash when edit account preferences on Audio/Video encoding
 
 =========================================================================
-Version:		0.7.6
+Version:        0.7.6
+Release Date:	01/24/2017
 Author:         cmeng
-Upload Date:	01/24/2017
 - Add support to show Street Panorama and Map view in chat window when Send Single Location fix
 - Add user selectable button to display Street Panorama and Map view in chat window upon received a location fix
 - Fix Send Cont. Location updates early termination on screen rotation
@@ -2308,9 +2324,9 @@ Upload Date:	01/24/2017
 - Port SmackInvitationListener#InvitationListener to conform to Smack v4.2.0-rc3
 
 =========================================================================
-Version:		0.7.5
+Version:        0.7.5
+Release Date:	01/20/2017
 Author:         cmeng
-Upload Date:	01/20/2017
 - Fix file sending UI problem - chat window must get refreshed after returning from file pick operation
 - Add option to Send Present Geo-Location to recipient during chat session for direction guide
 - Latest version check uses versionCode only and will not failed if versionName has alphabet exception
@@ -2319,9 +2335,9 @@ Upload Date:	01/20/2017
 - Add Plugin EasyLocation source to support Geo Location
 
 =========================================================================
-Version:		0.7.4
+Version:        0.7.4
+Release Date:	01/16/2017
 Author:         cmeng
-Upload Date:	01/16/2017
 - Add option to purge Debug Log File in Refresh persistent stores in case it gets too large to handle
 - Enable Send logs option in main menu for user selection
 - Support account reconnection-resume when device recovers from network disconnection on error
@@ -2332,9 +2348,9 @@ Upload Date:	01/16/2017
 - Fixed cannot have version containing alphabet otherwise unable to update. Need to manual download and install
 
 =========================================================================
-Version:		0.7.3
+Version:        0.7.3
+Release Date:	01/14/2017
 Author:         cmeng
-Upload Date:	01/14/2017
 - Change ProtocolProviderServiceJabberImpl#getSSLSocket to use reflection to get SSLSocket in XMPPTCPConnection
 - Remove unused ProtocolProviderServiceJabberImpl#showErrorMessage method
 - Skip ProtocolProviderServiceJabberImpl#getJitsiVideobridge() if last check returns with NoResponseException.
@@ -2347,9 +2363,9 @@ Upload Date:	01/14/2017
 - Accounts gone offline due to network lost are automatically reconnected when network recovered
 
 =========================================================================
-Version:		0.7.2
+Version:        0.7.2
+Release Date:	01/11/2017
 Author:         cmeng
-Upload Date:	01/11/2017
 - Implement XEP-0077:In-Band Registration and XEP-0158:CAPTCHA Forms to handle captcha protection registration
 - Add custom smack iregisterx library classes to support login via fields or DataForm
 - Implement BoB extension and provider to support embedded BoB in iqRegister information
@@ -2378,9 +2394,9 @@ Upload Date:	01/11/2017
 - Move to use gradle version 3.3 from previous version 3.1
 
 =========================================================================
-Version:		0.7.1.a
+Version:        0.7.1.a
+Release Date:	01/03/2017
 Author:         cmeng
-Upload Date:	01/03/2017
 - Remove unnecessary SmackConfiguration.addSaslMech(SASLMechanism.PLAIN) initialization in LoginByPasswordStrategy#Login
 - Remove unused custom SASL-MD5 class SASLDigestMD5Mechanism
 - Major Cleanup for ProtocolProviderServiceJabberImpl login and associate classes
@@ -2394,23 +2410,23 @@ Upload Date:	01/03/2017
 - Partially implemented captcha interface
 
 =========================================================================
-Version:		0.7.1
+Version:        0.7.1
+Release Date:	12/25/2016
 Author:         cmeng
-Upload Date:	12/25/2016
 - Fix connectUsingSRVRecords - require to strip off the end dot in hostName returns by SRVRecord#getTarget()
 before use in config.setHost(hostName)
 - Update plugins.dnsjava source files
 
 =========================================================================
-Version:		0.7.0
+Version:        0.7.0
+Release Date:	12/18/2016
 Author:         cmeng
-Upload Date:	12/18/2016
 - Official release for version 0.7.0 to include 0.6.0.a and 0.6.0.b
 
 =========================================================================
-Version:		0.6.0.b
+Version:        0.6.0.b
+Release Date:	12/18/2016
 Author:         cmeng
-Upload Date:	12/18/2016
 - Update and sent EntityCaps node#version when ChatState Notifications is enabled or disabled
 - Support for EntityCaps update sending (Gajim is able to response to changes and change ChatStat according)
 - Add SupportedFeatures just prior to registerServiceDiscoveryManager. Otherwise found race condition with some optional features not added
@@ -2427,9 +2443,9 @@ net\java\sip\communicator\impl\muc\ChatRoomListImpl.java
 AccountManager accountManager = MUCActivator.getAccountManager();
 
 =========================================================================
-Version:		0.6.0.a
+Version:        0.6.0.a
+Release Date:	12/15/2016
 Author:         cmeng
-Upload Date:	12/15/2016
 - aTalk ported to use Smack v4.2.0
 - Remove custom socks.Socks5BytestreamRequest.java as fixes implemented Smack v4.2.0
 - Remove all Smack 4.1.8 library jars
@@ -2442,9 +2458,9 @@ Upload Date:	12/15/2016
 - Some userAvatar class with error are left untouched for further modifications.
 
 =========================================================================
-Version:		0.6.0
+Version:        0.6.0
+Release Date:	11/30/2016
 Author:         cmeng
-Upload Date:	11/30/2016
 - Full implementation for XEP-0092: Software Version using Smack.VersionManager in place of jitsi#VersionManager
   adding iq:version support for aTalk <iq><query xmlns='jabber:iq:version'>
   <name>aTalk (Smack 4.1.8 (4.1.7-7-ga87007f 2016-07-30))</name>
@@ -2469,9 +2485,9 @@ Upload Date:	11/30/2016
   which are being called asap by JabberActivator#ProtocolProviderFactoryJabberImpl();
 
 =========================================================================
-Version:		0.5.8
+Version:        0.5.8
+Release Date:	11/14/2016
 Author:         cmeng
-Upload Date:	11/14/2016
 Improvements:
 - Implement persistent RosterStore to support XEP-0237:Roster Versioning for performance and reduce bandwidth requirement.
 - Implement persistent CapsStore to support XEP-0115:Entity Capabilities for performance and reduce bandwidth requirement.
@@ -2491,9 +2507,9 @@ Improvements:
   **  when included libaxolotl-android. Otherwise opus/speedx cannot be found during system loading
 
 =========================================================================
-Version:		0.5.7
+Version:        0.5.7
+Release Date:	11/03/2016
 Author:         cmeng
-Upload Date:	11/03/2016
 Improvements:
 - Improve account status/info handling when updating changes
 - Add FileTransferActivator class to handle incoming file received request
@@ -2514,9 +2530,9 @@ Improvements:
 - import latest ice4j-1.1-20161025.170538-21 (new methods required by libjitsi)
 
 =========================================================================
-Version:		0.5.6
+Version:        0.5.6
+Release Date:	10/21/2016
 Author:         cmeng
-Upload Date:	10/21/2016
 Improvements:
 - Add chatRoom invitation received dialog to Accept, Reject or Ignore sender chat request
 - Add Account Setting option allowing user to upload all vCard-temp info supported by the server
@@ -2532,9 +2548,9 @@ Improvements:
 - Upgrade to use Gradle 3.1 & build:gradle:2.2.2
 
 =========================================================================
-Version:		0.5.5
+Version:        0.5.5
+Release Date:	10/08/2016
 Author:         cmeng
-Upload Date:	10/08/2016
 Improvements:
 - System crashes on menu item "Add Contact" selection with multiple accounts - index out of bound
 - Group names in contactList default to use server or user defined font case
@@ -2542,9 +2558,9 @@ Improvements:
   ## add XMPPTCPConnection.getSocket() and plugin ews-android-api to support view certificate
 
 =========================================================================
-Version:		0.5.4
+Version:        0.5.4
+Release Date:	10/03/2016
 Author:         cmeng
-Upload Date:	10/03/2016
 Improvements:
 - Fix registered accounts in popup selection menu when making calls
   ## filtering at wrong method causes global status action not functioning
@@ -2557,9 +2573,9 @@ Improvements:
 - Major clean up in resource string.xml file
 
 =========================================================================
-Version:		0.5.3
+Version:        0.5.3
+Release Date:	09/29/2016
 Author:         cmeng
-Upload Date:	09/29/2016
 Improvements:
 - Display proper account name in contactList actionBar for multiple-accounts setup
 - Show only registered accounts in popup selection menu when making calls
@@ -2573,9 +2589,9 @@ Improvements:
 
 =========================================================================
 
-Version:		0.5.2.b
+Version:        0.5.2.b
+Release Date:	09/23/2016
 Author:         cmeng
-Upload Date:	09/23/2016
 Improvements:
 - Add presence status icon display to actionBar for contactListView and chatPanel
 - Update contact presence status text in actionBar for chatPanel
@@ -2589,9 +2605,9 @@ Improvements:
 - ConferenceInvite Dialog contactListView get filtered with isShownOffline option when Contact presence status change
 
 =========================================================================
-Version:		0.5.2.a
+Version:        0.5.2.a
+Release Date:	09/21/2016
 Author:         cmeng
-Upload Date:	09/21/2016
 Improvements:
 - Reinstate video call views on screen rotation
 - Relocate ZRTP Display window to avoid overlay with remote video window in landscape mode
@@ -2603,9 +2619,9 @@ Improvements:
 - Set shrinkResources=false to compile with Android Studio 2.2 (missing resources-release-stripped.ap_)
 
 =========================================================================
-Version:		0.5.2
+Version:        0.5.2
+Release Date:	09/17/2016
 Author:         cmeng
-Upload Date:	09/17/2016
 Improvements:
 - Add both voice/video call option in contact list view
 - Show only the call option that is relevant to the contact
@@ -2628,9 +2644,9 @@ Improvements:
     When SRTP error occurs, terminate both video streaming and restart to resolve problem
 
 =========================================================================
-Version:		0.5.1
+Version:        0.5.1
+Release Date:	09/04/2016
 Author:         cmeng
-Upload Date:	09/04/2016
 Improvements:
 - Add option to show password
 - Allow connect server override on new account creation
@@ -2641,9 +2657,9 @@ Improvements:
 - Add support for changelog info display
 
 =========================================================================
-Version:		0.5.0
+Version:        0.5.0
+Release Date:	08/28/2016
 Author:	    	cmeng
-Upload Date:	08/28/2016
 Improvements:
 - Fork/port org.jitsi to org.atalk.android
 - Keep FFmpeg.java in org.jitsi to work with pre-build libjnffmpeg.so (need source compile to migrate)
@@ -2656,9 +2672,9 @@ Improvements:
 - All projects reference to use rootProject.supportLibraryVersion .compileSdkVersion .buildToolsVersion
 
 =========================================================================
-Version:		0.4.6
+Version:        0.4.6
+Release Date:	08/25/2016
 Author:	    	cmeng
-Upload Date:	08/25/2016
 Improvements:
 - Import sources and remove local sysactivitynotifications.jar as it is not compiled for Android.
 - Import sources (plugins:dnsjava) and remove repository/local dnsjava-2.1.7.jar as it is not compiled for Android.
@@ -2675,12 +2691,10 @@ dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/org.jitsi-2/base.
 nativeLibraryDirectories=[/data/app/org.jitsi-2/lib/arm,
 /vendor/lib, /system/lib]]] couldn't find "libjnopenssl.so"
 
-
-
 =========================================================================
-Version:		0.4.5
+Version:        0.4.5
+Release Date:	08/21/2016
 Author:	    	cmeng
-Upload Date:	08/21/2016
 Improvements:
 - ReleaseNotes project title changes from Jitsi-Android to aTalk-Android
 - Use latest gradle-2.14.1-all.zip with Android Studio 2.1.3 (com.android.application)
@@ -2710,9 +2724,9 @@ comments/notes:
 - unless the jni code is compiled using default ndk method
 
 =========================================================================
-Version:		0.4.4
-Author:			cmeng
-Upload Date:	08/15/2016
+Version:        0.4.4
+Release Date:	08/15/2016
+Author:         cmeng
 Improvements:
 - Ported to use Android Studio development environment
 - Move to use libraries from jcenter() repository
@@ -2726,9 +2740,9 @@ Improvements:
 - Implement proper objects passing between fragments
 
 =========================================================================
-Version:		0.4.3
+Version:        0.4.3
+Release Date:	04/10/2016
 Author:         cmeng
-Upload Date:	04/10/2016
 Improvements:
 - Cleanup build.gradle and add support for NDK jni build script
 - restructure original lib to reflect actual usage & include missing jars
@@ -2744,9 +2758,9 @@ Improvements:
 - update build.xml for ant setup-libs for android support
 
 =========================================================================
-Version:		0.4.2
-Author:			cmeng
-Upload Date:	03/07/2016
+Version:        0.4.2
+Release Date:	03/07/2016
+Author:         cmeng
 Improvements:
 - Import netaddr source (removed old jitsi-android netaddr.jar)
 - Import some fmj source (ZRTP Encryption tested working)
@@ -2765,9 +2779,9 @@ Improvements:
 - Trim() user entered JID name and password - avoid creating incorrect AccountID in database
 
 =========================================================================
-Version:		0.4.1
-Author:			cmeng
-Upload Date:	03/03/2016
+Version:        0.4.1
+Release Date:	03/03/2016
+Author:         cmeng
 Improvements:
 - Improve update error handler for deleted download file
 - Initialize parameter 'currentVersion' even when update link is not accessible
@@ -2777,25 +2791,25 @@ Improvements:
 - Fixed error in OperationSetTelephonyConferencingJabberImpl.getLocalEntity() (from == null)
 
 =========================================================================
-Version:		0.4.0
-Author:			cmeng
-Upload Date:	01/25/2016
+Version:        0.4.0
+Release Date:	01/25/2016
+Author:         cmeng
 Improvements:
 - Fixed coin(conference-info) IQ stanza handler by implementing IQRequestHandler
 
 =========================================================================
-Version:		0.3.13
-Author:			cmeng
-Upload Date:	12/25/2015
+Version:        0.3.13
+Release Date:	12/25/2015
+Author:         cmeng
 Improvements:
 - Removed g722 codec support; as libjng722.so has incomplete implementation
 - Fixed handler problem when multiple jingle transport-info are received as stand-alone stanza;
   all except one are lost in sessionInitiateSyncRoot.wait() during video call - Empathy caller
 
 =========================================================================
-Version:		0.3.12
-Author:			cmeng
-Upload Date:	12/05/2015
+Version:        0.3.12
+Release Date:	12/05/2015
+Author:         cmeng
 Improvements:
  - Fixed to limit rotated previewSize not to exceed physical device supported dimensions
  - Fixed to ensure local stream media player scaled dimension meets OpenGL requirements 
@@ -2805,16 +2819,16 @@ Improvements:
  - Added support for direct VideoCall in chat window
 
 =========================================================================
-Version:		0.3.11
-Author:			cmeng
-Upload Date:	11/23/2015
+Version:        0.3.11
+Release Date:	11/23/2015
+Author:         cmeng
 Improvements:
  - Fixed OpenGL Invalid Operation when incorrect video dimension given
 
 =========================================================================
-Version:		0.3.10
-Author:			cmeng
-Upload Date:	11/20/2015
+Version:        0.3.10
+Release Date:	11/20/2015
+Author:         cmeng
 Improvements:
  - Fixed audio graph creation errors (raw type handlers)
  - Fixed local preview display incorrect proportional ratio in portrait mode
@@ -2824,18 +2838,18 @@ Improvements:
  - Updated Opus jni source to latest 1.1.1rc release
 
 =========================================================================
-Version:		0.3.9
-Author:			cmeng
-Upload Date:	10/14/2015
+Version:        0.3.9
+Release Date:	10/14/2015
+Author:         cmeng
 Improvements:
  - Fixed avatar icon update problem
  - Added participant join information
  - Close chatPanel and leave chatRoom when chatRoom closed
 
 =========================================================================
-Version:		0.3.8
-Author:			cmeng
-Upload Date:	10/13/2015
+Version:        0.3.8
+Release Date:	10/13/2015
+Author:         cmeng
 Improvements:
  - Added sender avatar in message view holder
  - Added Status for conference participants etc
@@ -2859,17 +2873,17 @@ Tag 0.3.5
  - multi-sessions support
 
 =========================================================================
-Version:		0.3.3
-Author:			cmeng
-Upload Date:	09/18/2015
+Version:        0.3.3
+Release Date:	09/18/2015
+Author:         cmeng
 Improvements:
  - Fixed ByteStream file transfer with multiple <streamhost/>
  - Fixed asmack Sock5ByteStream File Transfer Exception (smack routine)
 
 =========================================================================
-Version:		0.3.2
-Author:			cmeng
-Upload Date:	09/09/2015
+Version:        0.3.2
+Release Date:	09/09/2015
+Author:         cmeng
 Improvements:
  - Upgraded to Gradle 2.6
  - Fixed all fmj initialization error (remove android incompatible codec) 
@@ -2878,9 +2892,9 @@ Improvements:
  - Fixed contactList exception on screen rotation
 
 =========================================================================
-Version:		0.3.0
-Author:			cmeng
-Upload Date:	09/07/2015
+Version:        0.3.0
+Release Date:	09/07/2015
+Author:         cmeng
 Improvements:
  - Ported to use Smack 4.1.3 library (first release - major changes)
  - Add Stream Management support v2/v3
@@ -2901,9 +2915,9 @@ Tag 0.2.2
  - fix call function
 
 =========================================================================
-Version:		0.2.0
-Author:			cmeng
-Upload Date:	08/11/2015
+Version:        0.2.0
+Release Date:	08/11/2015
+Author:         cmeng
 Improvements:
  - File transfer with IBB and Si fully implemented
  - File / Folder open function working
@@ -2919,26 +2933,26 @@ Tag 0.1.7 release
  - Fixed all attachment options
 
 =========================================================================
-Version:		0.1.5
-Author:			cmeng
-Upload Date:	07/24/2015
+Version:        0.1.5
+Release Date:	07/24/2015
+Author:         cmeng
 Improvements:
  - Added file size check and thumbnail sending support - asmack si support need to change to support thumbnail rx
  - Fixed camera photo / video attachment sending (need more work on file history implementation - incomplete jitsi implementation)
  - Clean up UI
 
 =========================================================================
-Version:		0.1.3
-Author:			cmeng
-Upload Date:	07/22/2015
+Version:        0.1.3
+Release Date:	07/22/2015
+Author:         cmeng
 Improvements:
  - Added full implementation for file transfer support including notifications
  - Added contact's history erase function
 
 =========================================================================
-Version:		0.1.2
-Author:			cmeng
-Upload Date:	06/08/2015
+Version:        0.1.2
+Release Date:	06/08/2015
+Author:         cmeng
 Improvements:
  - Added chatFragment background color based on encryption type and verification states
  - Synchronize text entry with the actual remote JID (with multiple chatFragment on Adapter) 
@@ -2957,17 +2971,17 @@ Improvements:
  - Ported to use asmack 4.0 library - modified source to work with it.
  
 =========================================================================
-Version:		0.1.1
-Author:			cmeng
-Upload Date:	05/25/2015
+Version:        0.1.1
+Release Date:	05/25/2015
+Author:         cmeng
 Improvements:
  - Implemented multi-dex support to overcome android 64K limit
  - Implemented encryption OTR V3
  - Fixed Known Finger Settings option
 
 =========================================================================
-Version:	0.0.1
-Author:		cmeng
-Date:       Feb 2014
+Version:        0.0.1
+Release Date:   Feb 2014
+Author:         cmeng
 - Start of project development based on jitsi-android
 

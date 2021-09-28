@@ -7,7 +7,8 @@ package org.atalk.android.gui.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceScreen;
+
+import androidx.preference.PreferenceScreen;
 
 import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
@@ -53,7 +54,7 @@ public class ChatSecuritySettings extends OSGiActivity
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
-            getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
         }
     }
 
@@ -67,9 +68,9 @@ public class ChatSecuritySettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public void onCreate(Bundle savedInstanceState)
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
         {
-            super.onCreate(savedInstanceState);
+            super.onCreatePreferences(savedInstanceState, rootKey);
             addPreferencesFromResource(R.xml.security_preferences);
         }
 

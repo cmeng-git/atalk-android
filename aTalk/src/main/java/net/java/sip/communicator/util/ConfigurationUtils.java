@@ -22,7 +22,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
-import org.atalk.android.gui.settings.SettingsActivity;
+import org.atalk.android.gui.settings.SettingsFragment;
 import org.atalk.android.gui.settings.TimePreference;
 import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.gui.util.ThemeHelper;
@@ -288,7 +288,7 @@ public class ConfigurationUtils
     /**
      * The configuration service.
      */
-    private static ConfigurationService configService = UtilActivator.getConfigurationService();
+    private static ConfigurationService mConfigService;
 
     /**
      * The parent of the last contact.
@@ -497,27 +497,29 @@ public class ConfigurationUtils
     public static void loadGuiConfigurations()
     {
         // Do it here one more time, sometime see accessing preference crash with configService == null
-        configService = UtilActivator.getConfigurationService();
-        if (configService == null)
+        mConfigService = UtilActivator.getConfigurationService();
+        if (mConfigService == null) {
+            Timber.e("UtilActivator.getConfigurationService() returns null");
             return;
+        }
 
-        configService.addPropertyChangeListener(new ConfigurationChangeListener());
+        mConfigService.addPropertyChangeListener(new ConfigurationChangeListener());
         mDB = DatabaseBackend.getWritableDB();
 
         // Init the aTalk app Theme before any activity use
         initAppTheme();
 
         // Load the UI language last selected by user or default to system language i.e. ""
-        String language = configService.getString(aTalkApp.getResString(R.string.pref_key_locale), "");
+        String language = mConfigService.getString(aTalkApp.getResString(R.string.pref_key_locale), "");
         LocaleHelper.setLanguage(language);
 
         // Load the "webPage" property.
-        mWebPage = configService.getString(pWebPage);
+        mWebPage = mConfigService.getString(pWebPage);
         if (StringUtils.isEmpty(mWebPage))
             mWebPage = aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY);
 
         // Load the "auPopupNewMessage" property.
-        String autoPopup = configService.getString(pAutoPopupNewMessage);
+        String autoPopup = mConfigService.getString(pAutoPopupNewMessage);
         if (StringUtils.isEmpty(autoPopup))
             autoPopup = UtilActivator.getResources().getSettingsString(pAutoPopupNewMessage);
 
@@ -525,7 +527,7 @@ public class ConfigurationUtils
             autoPopupNewMessage = true;
 
         // Load the "sendMessageCommand" property.
-        String messageCommand = configService.getString(pMsgCommand);
+        String messageCommand = mConfigService.getString(pMsgCommand);
         if (StringUtils.isEmpty(messageCommand))
             messageCommand = UtilActivator.getResources().getSettingsString(pMsgCommand);
 
@@ -533,29 +535,29 @@ public class ConfigurationUtils
             sendMessageCommand = messageCommand;
 
         // Load the showCallPanel property.
-        isCallPanelShown = configService.getBoolean("gui.showCallPanel", isCallPanelShown);
+        isCallPanelShown = mConfigService.getBoolean("gui.showCallPanel", isCallPanelShown);
 
         // Load the "isAutoStartOnBoot" property.
-        isAutoStartOnBoot = configService.getBoolean(pAutoStart, isAutoStartOnBoot);
+        isAutoStartOnBoot = mConfigService.getBoolean(pAutoStart, isAutoStartOnBoot);
 
         // Load the "isTtsEnable" and delay property.
-        isTtsEnable = configService.getBoolean(pTTSEnable, isTtsEnable());
-        ttsDelay = configService.getInt(pTTSDelay, ttsDelay);
+        isTtsEnable = mConfigService.getBoolean(pTTSEnable, isTtsEnable());
+        ttsDelay = mConfigService.getInt(pTTSDelay, ttsDelay);
 
         // Load the "showOffline" property.
-        isShowOffline = configService.getBoolean("gui.showOffline", isShowOffline);
+        isShowOffline = mConfigService.getBoolean("gui.showOffline", isShowOffline);
 
         // Load the "showApplication" property.
-        isApplicationVisible = configService.getBoolean("systray.showApplication", isApplicationVisible);
+        isApplicationVisible = mConfigService.getBoolean("systray.showApplication", isApplicationVisible);
 
         // Load the "showAppQuitWarning" property.
-        isQuitWarningShown = configService.getBoolean("gui.quitWarningShown", isQuitWarningShown);
+        isQuitWarningShown = mConfigService.getBoolean("gui.quitWarningShown", isQuitWarningShown);
 
         // Load the "isSendMessageDeliveryReceipt" property.
-        isSendMessageDeliveryReceipt = configService.getBoolean(pMessageDeliveryReceipt, isSendMessageDeliveryReceipt);
+        isSendMessageDeliveryReceipt = mConfigService.getBoolean(pMessageDeliveryReceipt, isSendMessageDeliveryReceipt);
 
         // Load the "sendTypingNotifications" property.
-        String isSendTypingNotification = configService.getString(pTypingNotification);
+        String isSendTypingNotification = mConfigService.getString(pTypingNotification);
         if (StringUtils.isEmpty(isSendTypingNotification))
             isSendTypingNotification = UtilActivator.getResources().getSettingsString(pTypingNotification);
 
@@ -563,25 +565,25 @@ public class ConfigurationUtils
             isSendChatStateNotifications = Boolean.parseBoolean(isSendTypingNotification);
 
         // Load the "sendThumbnail" property.
-        String sendThumbNail = configService.getString(pSendThumbnail);
+        String sendThumbNail = mConfigService.getString(pSendThumbnail);
         if (StringUtils.isNotEmpty(sendThumbNail)) {
             isSendThumbnail = Boolean.parseBoolean(sendThumbNail);
             FileTransferConversation.FT_THUMBNAIL_ENABLE = isSendThumbnail;
         }
 
         // Load the "isPresenceSubscribeMode" property.
-        isPresenceSubscribeAuto = configService.getBoolean(pPresenceSubscribeAuto, isPresenceSubscribeAuto);
+        isPresenceSubscribeAuto = mConfigService.getBoolean(pPresenceSubscribeAuto, isPresenceSubscribeAuto);
 
         // Load the "isMoveContactConfirmationRequested" property.
         String isMoveContactConfirmationRequestedString
-                = configService.getString("gui.isMoveContactConfirmationRequested");
+                = mConfigService.getString("gui.isMoveContactConfirmationRequested");
 
         if (StringUtils.isNotEmpty(isMoveContactConfirmationRequestedString)) {
             isMoveContactConfirmationRequested = Boolean.parseBoolean(isMoveContactConfirmationRequestedString);
         }
 
         // Load the "isMultiChatWindowEnabled" property.
-        String isMultiChatWindowEnabledString = configService.getString(pMultiChatWindowEnabled);
+        String isMultiChatWindowEnabledString = mConfigService.getString(pMultiChatWindowEnabled);
 
         if (StringUtils.isEmpty(isMultiChatWindowEnabledString))
             isMultiChatWindowEnabledString = UtilActivator.getResources().getSettingsString(pMultiChatWindowEnabled);
@@ -591,10 +593,10 @@ public class ConfigurationUtils
         }
 
         isPrivateMessagingInChatRoomDisabled
-                = configService.getBoolean("gui.IS_PRIVATE_CHAT_IN_CHATROOM_DISABLED", false);
+                = mConfigService.getBoolean("gui.IS_PRIVATE_CHAT_IN_CHATROOM_DISABLED", false);
 
         // Load the "isLeaveChatroomOnWindowCloseEnabled" property.
-        String isLeaveChatRoomOnWindowCloseEnabledString = configService.getString(pLeaveChatRoomOnWindowClose);
+        String isLeaveChatRoomOnWindowCloseEnabledString = mConfigService.getString(pLeaveChatRoomOnWindowClose);
         if (StringUtils.isEmpty(isLeaveChatRoomOnWindowCloseEnabledString)) {
             isLeaveChatRoomOnWindowCloseEnabledString
                     = UtilActivator.getResources().getSettingsString(pLeaveChatRoomOnWindowClose);
@@ -605,7 +607,7 @@ public class ConfigurationUtils
         }
 
         // Load the "isHistoryShown" property.
-        String isHistoryShownString = configService.getString(pMessageHistoryShown);
+        String isHistoryShownString = mConfigService.getString(pMessageHistoryShown);
         if (StringUtils.isEmpty(isHistoryShownString))
             isHistoryShownString = UtilActivator.getResources().getSettingsString(pMessageHistoryShown);
 
@@ -618,11 +620,11 @@ public class ConfigurationUtils
         // .PNAME_IS_RECENT_MESSAGES_DISABLED, !isRecentMessagesShown);
 
         // Load the "acceptFileSize" property.
-        String fileSize = configService.getString(pAcceptFileSize, aTalkApp.getResString(R.string.auto_accept_filesize));
+        String fileSize = mConfigService.getString(pAcceptFileSize, aTalkApp.getResString(R.string.auto_accept_filesize));
         acceptFileSize = Integer.parseInt(fileSize);
 
         // Load the "chatHistorySize" property.
-        String chatHistorySizeString = configService.getString(pChatHistorySize);
+        String chatHistorySizeString = mConfigService.getString(pChatHistorySize);
         if (StringUtils.isEmpty(chatHistorySizeString))
             chatHistorySizeString = UtilActivator.getResources().getSettingsString(pChatHistorySize);
 
@@ -631,7 +633,7 @@ public class ConfigurationUtils
         }
 
         // Load the "CHAT_WRITE_AREA_SIZE" property.
-        String chatWriteAreaSizeString = configService.getString(pChatWriteAreaSize);
+        String chatWriteAreaSizeString = mConfigService.getString(pChatWriteAreaSize);
         if (StringUtils.isEmpty(chatWriteAreaSizeString))
             chatWriteAreaSizeString = UtilActivator.getResources().getSettingsString(pChatWriteAreaSize);
 
@@ -640,7 +642,7 @@ public class ConfigurationUtils
         }
 
         // Load the "isTransparentWindowEnabled" property.
-        String isTransparentWindowEnabledString = configService.getString(pTransparentWindowEnabled);
+        String isTransparentWindowEnabledString = mConfigService.getString(pTransparentWindowEnabled);
         if (StringUtils.isEmpty(isTransparentWindowEnabledString))
             isTransparentWindowEnabledString = UtilActivator.getResources().getSettingsString(pTransparentWindowEnabled);
 
@@ -649,7 +651,7 @@ public class ConfigurationUtils
         }
 
         // Load the "windowTransparency" property.
-        String windowTransparencyString = configService.getString(pWindowTransparency);
+        String windowTransparencyString = mConfigService.getString(pWindowTransparency);
         if (StringUtils.isEmpty(windowTransparencyString))
             windowTransparencyString = UtilActivator.getResources().getSettingsString(pWindowTransparency);
 
@@ -658,7 +660,7 @@ public class ConfigurationUtils
         }
 
         // Load the "isWindowDecorated" property.
-        String isWindowDecoratedString = configService.getString(pIsWindowDecorated);
+        String isWindowDecoratedString = mConfigService.getString(pIsWindowDecorated);
 
         if (StringUtils.isEmpty(isWindowDecoratedString))
             isWindowDecoratedString = UtilActivator.getResources().getSettingsString(pIsWindowDecorated);
@@ -668,51 +670,51 @@ public class ConfigurationUtils
         }
 
         // Load the "isChatToolbarVisible" property
-        isChatToolbarVisible = configService.getBoolean("gui.chat.ChatWindow.showToolbar", true);
+        isChatToolbarVisible = mConfigService.getBoolean("gui.chat.ChatWindow.showToolbar", true);
         // Load the "isChatToolbarVisible" property
-        isChatStyleBarVisible = configService.getBoolean("gui.chat.ChatWindow.showStylebar", true);
+        isChatStyleBarVisible = mConfigService.getBoolean("gui.chat.ChatWindow.showStylebar", true);
 
         // Load the "isChatSimpleThemeEnabled" property.
-        isChatSimpleThemeEnabled = configService.getBoolean(CHAT_SIMPLE_THEME_ENABLED_PROP, true);
+        isChatSimpleThemeEnabled = mConfigService.getBoolean(CHAT_SIMPLE_THEME_ENABLED_PROP, true);
 
         // Load the "lastContactParent" property.
-        lastContactParent = configService.getString("gui.addcontact.lastContactParent");
+        lastContactParent = mConfigService.getString("gui.addcontact.lastContactParent");
 
         // Load the "sendFileLastDir" property.
-        sendFileLastDir = configService.getString("gui.chat.filetransfer.SEND_FILE_LAST_DIR");
+        sendFileLastDir = mConfigService.getString("gui.chat.filetransfer.SEND_FILE_LAST_DIR");
 
         // Load the "ADD_CONTACT_DISABLED" property.
-        isAddContactDisabled = configService.getBoolean("gui.contactlist.CONTACT_ADD_DISABLED", false);
+        isAddContactDisabled = mConfigService.getBoolean("gui.contactlist.CONTACT_ADD_DISABLED", false);
 
         // Load the "MERGE_CONTACT_DISABLED" property.
-        isMergeContactDisabled = configService.getBoolean("gui.contactlist.CONTACT_MERGE_DISABLED", false);
+        isMergeContactDisabled = mConfigService.getBoolean("gui.contactlist.CONTACT_MERGE_DISABLED", false);
 
         // Load the "CREATE_GROUP_DISABLED" property.
-        isCreateGroupDisabled = configService.getBoolean("gui.contactlist.CREATE_GROUP_DISABLED", false);
+        isCreateGroupDisabled = mConfigService.getBoolean("gui.contactlist.CREATE_GROUP_DISABLED", false);
 
         // Load the "FLATTEN_GROUP_ENABLED" property.
-        isFlattenGroupEnabled = configService.getBoolean("gui.contactlist.FLATTEN_GROUP_ENABLED", false);
+        isFlattenGroupEnabled = mConfigService.getBoolean("gui.contactlist.FLATTEN_GROUP_ENABLED", false);
 
         // Load the "GO_TO_CHATROOM_DISABLED" property.
-        isGoToChatRoomDisabled = configService.getBoolean("gui.chatroomslist.GO_TO_CHATROOM_DISABLED", false);
+        isGoToChatRoomDisabled = mConfigService.getBoolean("gui.chatroomslist.GO_TO_CHATROOM_DISABLED", false);
 
         // Load the "REMOVE_CONTACT_DISABLED" property.
-        isRemoveContactDisabled = configService.getBoolean("gui.contactlist.CONTACT_REMOVE_DISABLED", false);
+        isRemoveContactDisabled = mConfigService.getBoolean("gui.contactlist.CONTACT_REMOVE_DISABLED", false);
 
         // Load the "CONTACT_MOVE_DISABLED" property.
-        isContactMoveDisabled = configService.getBoolean("gui.contactlist.CONTACT_MOVE_DISABLED", false);
+        isContactMoveDisabled = mConfigService.getBoolean("gui.contactlist.CONTACT_MOVE_DISABLED", false);
 
         // Load the "CONTACT_RENAME_DISABLED" property.
-        isContactRenameDisabled = configService.getBoolean("gui.contactlist.CONTACT_RENAME_DISABLED", false);
+        isContactRenameDisabled = mConfigService.getBoolean("gui.contactlist.CONTACT_RENAME_DISABLED", false);
 
         // Load the "GROUP_REMOVE_DISABLED" property.
-        isGroupRemoveDisabled = configService.getBoolean("gui.contactlist.GROUP_REMOVE_DISABLED", false);
+        isGroupRemoveDisabled = mConfigService.getBoolean("gui.contactlist.GROUP_REMOVE_DISABLED", false);
 
         // Load the "GROUP_RENAME_DISABLED" property.
-        isGroupRenameDisabled = configService.getBoolean("gui.contactlist.GROUP_RENAME_DISABLED", false);
+        isGroupRenameDisabled = mConfigService.getBoolean("gui.contactlist.GROUP_RENAME_DISABLED", false);
 
         // Load the "PRESET_STATUS_MESSAGES" property.
-        isPresetStatusMessagesEnabled = configService.getBoolean("gui.presence.PRESET_STATUS_MESSAGES", true);
+        isPresetStatusMessagesEnabled = mConfigService.getBoolean("gui.presence.PRESET_STATUS_MESSAGES", true);
 
         // Load the gui.main.account.ADVANCED_CONFIG_DISABLED" property.
         String advancedConfigDisabledDefaultProp
@@ -724,7 +726,7 @@ public class ConfigurationUtils
 
         // Load the advanced account configuration disabled.
         isAdvancedAccountConfigDisabled
-                = configService.getBoolean("gui.account.ADVANCED_CONFIG_DISABLED", isAdvancedConfigDisabled);
+                = mConfigService.getBoolean("gui.account.ADVANCED_CONFIG_DISABLED", isAdvancedConfigDisabled);
 
         // Single interface enabled property.
         String singleInterfaceEnabledProp = UtilActivator.getResources().getSettingsString(SINGLE_WINDOW_INTERFACE_ENABLED);
@@ -736,26 +738,26 @@ public class ConfigurationUtils
             isEnabled = Boolean.parseBoolean(UtilActivator.getResources().getSettingsString("gui.SINGLE_WINDOW_INTERFACE"));
 
         // Load the advanced account configuration disabled.
-        isSingleWindowInterfaceEnabled = configService.getBoolean(SINGLE_WINDOW_INTERFACE_ENABLED, isEnabled);
+        isSingleWindowInterfaceEnabled = mConfigService.getBoolean(SINGLE_WINDOW_INTERFACE_ENABLED, isEnabled);
 
         if (isFontSupportEnabled()) {
             // Load default font family string.
-            defaultFontFamily = configService.getString("gui.chat.DEFAULT_FONT_FAMILY");
+            defaultFontFamily = mConfigService.getString("gui.chat.DEFAULT_FONT_FAMILY");
 
             // Load default font size.
-            defaultFontSize = configService.getString("gui.chat.DEFAULT_FONT_SIZE");
+            defaultFontSize = mConfigService.getString("gui.chat.DEFAULT_FONT_SIZE");
 
             // Load isBold chat property.
-            isDefaultFontBold = configService.getBoolean("gui.chat.DEFAULT_FONT_BOLD", isDefaultFontBold);
+            isDefaultFontBold = mConfigService.getBoolean("gui.chat.DEFAULT_FONT_BOLD", isDefaultFontBold);
 
             // Load isItalic chat property.
-            isDefaultFontItalic = configService.getBoolean("gui.chat.DEFAULT_FONT_ITALIC", isDefaultFontItalic);
+            isDefaultFontItalic = mConfigService.getBoolean("gui.chat.DEFAULT_FONT_ITALIC", isDefaultFontItalic);
 
             // Load isUnderline chat property.
-            isDefaultFontUnderline = configService.getBoolean("gui.chat.DEFAULT_FONT_UNDERLINE", isDefaultFontUnderline);
+            isDefaultFontUnderline = mConfigService.getBoolean("gui.chat.DEFAULT_FONT_UNDERLINE", isDefaultFontUnderline);
 
             // Load default font color property.
-            int colorSetting = configService.getInt("gui.chat.DEFAULT_FONT_COLOR", -1);
+            int colorSetting = mConfigService.getInt("gui.chat.DEFAULT_FONT_COLOR", -1);
 
             if (colorSetting != -1)
                 defaultFontColor = colorSetting;
@@ -767,7 +769,7 @@ public class ConfigurationUtils
         if (StringUtils.isNotEmpty(showStatusChangedInChatDefault))
             showStatusChangedInChat = Boolean.parseBoolean(showStatusChangedInChatDefault);
 
-        showStatusChangedInChat = configService.getBoolean(pShowStatusChangedInChat, showStatusChangedInChat);
+        showStatusChangedInChat = mConfigService.getBoolean(pShowStatusChangedInChat, showStatusChangedInChat);
 
         String routeVideoAndDesktopUsingPhoneNumberDefault
                 = UtilActivator.getResources().getSettingsString(pRouteVideoAndDesktopUsingPhoneNumber);
@@ -776,14 +778,14 @@ public class ConfigurationUtils
             routeVideoAndDesktopUsingPhoneNumber = Boolean.parseBoolean(routeVideoAndDesktopUsingPhoneNumberDefault);
 
         routeVideoAndDesktopUsingPhoneNumber
-                = configService.getBoolean(pRouteVideoAndDesktopUsingPhoneNumber, routeVideoAndDesktopUsingPhoneNumber);
+                = mConfigService.getBoolean(pRouteVideoAndDesktopUsingPhoneNumber, routeVideoAndDesktopUsingPhoneNumber);
 
         String hideAccountMenuDefaultValue = UtilActivator.getResources().getSettingsString(pHideAccountMenu);
 
         if (StringUtils.isNotEmpty(hideAccountMenuDefaultValue))
             hideAccountSelectionWhenPossible = Boolean.parseBoolean(hideAccountMenuDefaultValue);
 
-        hideAccountSelectionWhenPossible = configService.getBoolean(pHideAccountMenu, hideAccountSelectionWhenPossible);
+        hideAccountSelectionWhenPossible = mConfigService.getBoolean(pHideAccountMenu, hideAccountSelectionWhenPossible);
 
         String hideAccountsStatusDefaultValue
                 = UtilActivator.getResources().getSettingsString(pHideAccountStatusSelectors);
@@ -791,7 +793,7 @@ public class ConfigurationUtils
         if (StringUtils.isNotEmpty(hideAccountsStatusDefaultValue))
             hideAccountStatusSelectors = Boolean.parseBoolean(hideAccountsStatusDefaultValue);
 
-        hideAccountStatusSelectors = configService.getBoolean(pHideAccountStatusSelectors,
+        hideAccountStatusSelectors = mConfigService.getBoolean(pHideAccountStatusSelectors,
                 hideAccountStatusSelectors);
 
         String autoAnswerDisableSubmenuDefaultValue
@@ -800,21 +802,21 @@ public class ConfigurationUtils
         if (StringUtils.isNotEmpty(autoAnswerDisableSubmenuDefaultValue))
             autoAnswerDisableSubmenu = Boolean.parseBoolean(autoAnswerDisableSubmenuDefaultValue);
 
-        autoAnswerDisableSubmenu = configService.getBoolean(pAutoAnswerDisableSubmenu, autoAnswerDisableSubmenu);
+        autoAnswerDisableSubmenu = mConfigService.getBoolean(pAutoAnswerDisableSubmenu, autoAnswerDisableSubmenu);
 
-        isChatRoomConfigDisabled = configService.getBoolean(CHAT_ROOM_CONFIG_DISABLED_PROP, isChatRoomConfigDisabled);
+        isChatRoomConfigDisabled = mConfigService.getBoolean(CHAT_ROOM_CONFIG_DISABLED_PROP, isChatRoomConfigDisabled);
 
-        isNormalizePhoneNumber = configService.getBoolean("gui.NORMALIZE_PHONE_NUMBER", true);
+        isNormalizePhoneNumber = mConfigService.getBoolean("gui.NORMALIZE_PHONE_NUMBER", true);
 
-        alerterEnabled = configService.getBoolean(ALERTER_ENABLED_PROP, true);
+        alerterEnabled = mConfigService.getBoolean(ALERTER_ENABLED_PROP, true);
 
         // Load the "ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS" property.
-        acceptPhoneNumberWithAlphaChars = configService.getBoolean("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS", true);
+        acceptPhoneNumberWithAlphaChars = mConfigService.getBoolean("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS", true);
 
-        isHideAddressInCallHistoryTooltipEnabled = configService.getBoolean(HIDE_ADDR_IN_CALL_HISTORY_TOOLTIP_PROPERTY,
+        isHideAddressInCallHistoryTooltipEnabled = mConfigService.getBoolean(HIDE_ADDR_IN_CALL_HISTORY_TOOLTIP_PROPERTY,
                 isHideAddressInCallHistoryTooltipEnabled);
 
-        isHideDomainInReceivedCallDialogEnabled = configService.getBoolean(HIDE_DOMAIN_IN_RECEIVE_CALL_DIALOG_PROPERTY,
+        isHideDomainInReceivedCallDialogEnabled = mConfigService.getBoolean(HIDE_DOMAIN_IN_RECEIVE_CALL_DIALOG_PROPERTY,
                 isHideDomainInReceivedCallDialogEnabled);
 
         String hideExtendedAwayStatusDefaultValue = UtilActivator.getResources().getSettingsString(pHideExtendedAwayStatus);
@@ -822,17 +824,17 @@ public class ConfigurationUtils
         if (StringUtils.isNotEmpty(hideExtendedAwayStatusDefaultValue))
             hideExtendedAwayStatus = Boolean.parseBoolean(hideExtendedAwayStatusDefaultValue);
 
-        hideExtendedAwayStatus = configService.getBoolean(pHideExtendedAwayStatus, hideExtendedAwayStatus);
+        hideExtendedAwayStatus = mConfigService.getBoolean(pHideExtendedAwayStatus, hideExtendedAwayStatus);
 
-        isSmsNotifyTextDisabled = configService.getBoolean(SMS_MSG_NOTIFY_TEXT_DISABLED_PROP, isSmsNotifyTextDisabled);
-        showMasterPasswordWarning = configService.getBoolean(MASTER_PASS_WARNING_PROP, true);
+        isSmsNotifyTextDisabled = mConfigService.getBoolean(SMS_MSG_NOTIFY_TEXT_DISABLED_PROP, isSmsNotifyTextDisabled);
+        showMasterPasswordWarning = mConfigService.getBoolean(MASTER_PASS_WARNING_PROP, true);
 
         // Quite Time settings
-        isQuiteHoursEnable = configService.getBoolean(pQuiteHoursEnable, true);
-        quiteHoursStart = configService.getLong(pQuiteHoursStart, TimePreference.DEFAULT_VALUE);
-        quiteHoursEnd = configService.getLong(pQuiteHoursEnd, TimePreference.DEFAULT_VALUE);
+        isQuiteHoursEnable = mConfigService.getBoolean(pQuiteHoursEnable, true);
+        quiteHoursStart = mConfigService.getLong(pQuiteHoursStart, TimePreference.DEFAULT_VALUE);
+        quiteHoursEnd = mConfigService.getLong(pQuiteHoursEnd, TimePreference.DEFAULT_VALUE);
 
-        isHeadsUpEnable = configService.getBoolean(pHeadsUpEnable, true);
+        isHeadsUpEnable = mConfigService.getBoolean(pHeadsUpEnable, true);
     }
 
     /**
@@ -850,7 +852,7 @@ public class ConfigurationUtils
         if (StringUtils.isNotEmpty(defaultSettingStr))
             defaultValue = Boolean.parseBoolean(defaultSettingStr);
 
-        return configService.getBoolean(fontDisabledProp, defaultValue);
+        return mConfigService.getBoolean(fontDisabledProp, defaultValue);
     }
 
     /**
@@ -874,9 +876,9 @@ public class ConfigurationUtils
         autoPopupNewMessage = autoPopup;
 
         if (autoPopupNewMessage)
-            configService.setProperty(pAutoPopupNewMessage, "yes");
+            mConfigService.setProperty(pAutoPopupNewMessage, "yes");
         else
-            configService.setProperty(pAutoPopupNewMessage, "no");
+            mConfigService.setProperty(pAutoPopupNewMessage, "no");
     }
 
     /**
@@ -943,7 +945,7 @@ public class ConfigurationUtils
     public static void setAutoStart(boolean autoStart)
     {
         isAutoStartOnBoot = autoStart;
-        configService.setProperty(pAutoStart, Boolean.toString(autoStart));
+        mConfigService.setProperty(pAutoStart, Boolean.toString(autoStart));
     }
 
 
@@ -966,7 +968,7 @@ public class ConfigurationUtils
     public static void setTtsEnable(boolean ttsEnable)
     {
         isTtsEnable = ttsEnable;
-        configService.setProperty(pTTSEnable, Boolean.toString(ttsEnable));
+        mConfigService.setProperty(pTTSEnable, Boolean.toString(ttsEnable));
     }
 
     public static int getTtsDelay()
@@ -982,7 +984,7 @@ public class ConfigurationUtils
     public static void setTtsDelay(int delay)
     {
         ttsDelay = delay;
-        configService.setProperty(pTTSDelay, delay);
+        mConfigService.setProperty(pTTSDelay, delay);
     }
 
     /**
@@ -1005,7 +1007,7 @@ public class ConfigurationUtils
     public static void setSendMessageDeliveryReceipt(boolean isDeliveryReceipt)
     {
         isSendMessageDeliveryReceipt = isDeliveryReceipt;
-        configService.setProperty(pMessageDeliveryReceipt, Boolean.toString(isDeliveryReceipt));
+        mConfigService.setProperty(pMessageDeliveryReceipt, Boolean.toString(isDeliveryReceipt));
         updateDeliveryReceiptFeature(isDeliveryReceipt);
     }
 
@@ -1029,7 +1031,7 @@ public class ConfigurationUtils
     public static void setSendChatStateNotifications(boolean isChatStateNotification)
     {
         isSendChatStateNotifications = isChatStateNotification;
-        configService.setProperty(pTypingNotification, Boolean.toString(isChatStateNotification));
+        mConfigService.setProperty(pTypingNotification, Boolean.toString(isChatStateNotification));
         updateChatStateCapsFeature(isChatStateNotification);
     }
 
@@ -1053,7 +1055,7 @@ public class ConfigurationUtils
     public static void setSendThumbnail(boolean sendThumbnail)
     {
         isSendThumbnail = sendThumbnail;
-        configService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
+        mConfigService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
         FileTransferConversation.FT_THUMBNAIL_ENABLE = sendThumbnail;
     }
 
@@ -1089,7 +1091,7 @@ public class ConfigurationUtils
     public static void setAutoAcceptFileSizeSize(int fileSize)
     {
         acceptFileSize = fileSize;
-        configService.setProperty(pAcceptFileSize, Integer.toString(acceptFileSize));
+        mConfigService.setProperty(pAcceptFileSize, Integer.toString(acceptFileSize));
     }
 
     /**
@@ -1112,7 +1114,7 @@ public class ConfigurationUtils
     public static void setPresenceSubscribeAuto(boolean presenceSubscribeAuto)
     {
         isPresenceSubscribeAuto = presenceSubscribeAuto;
-        configService.setProperty(pPresenceSubscribeAuto, Boolean.toString(presenceSubscribeAuto));
+        mConfigService.setProperty(pPresenceSubscribeAuto, Boolean.toString(presenceSubscribeAuto));
         if (presenceSubscribeAuto)
             Roster.setDefaultSubscriptionMode(Roster.SubscriptionMode.accept_all);
         else
@@ -1164,7 +1166,7 @@ public class ConfigurationUtils
     public static void setMultiChatWindowEnabled(boolean isEnabled)
     {
         isMultiChatWindowEnabled = isEnabled;
-        configService.setProperty(pMultiChatWindowEnabled, Boolean.toString(isMultiChatWindowEnabled));
+        mConfigService.setProperty(pMultiChatWindowEnabled, Boolean.toString(isMultiChatWindowEnabled));
     }
 
     /**
@@ -1188,7 +1190,7 @@ public class ConfigurationUtils
     public static void setLeaveChatRoomOnWindowClose(boolean isLeave)
     {
         isLeaveChatRoomOnWindowCloseEnabled = isLeave;
-        configService.setProperty(pLeaveChatRoomOnWindowClose, Boolean.toString(isLeaveChatRoomOnWindowCloseEnabled));
+        mConfigService.setProperty(pLeaveChatRoomOnWindowClose, Boolean.toString(isLeaveChatRoomOnWindowCloseEnabled));
     }
 
     /**
@@ -1222,7 +1224,7 @@ public class ConfigurationUtils
     public static void setHistoryShown(boolean isShown)
     {
         isHistoryShown = isShown;
-        configService.setProperty(pMessageHistoryShown, Boolean.toString(isHistoryShown));
+        mConfigService.setProperty(pMessageHistoryShown, Boolean.toString(isHistoryShown));
     }
 
     /**
@@ -1480,7 +1482,7 @@ public class ConfigurationUtils
     public static void setAdvancedAccountConfigDisabled(boolean disabled)
     {
         isAdvancedAccountConfigDisabled = disabled;
-        configService.setProperty("gui.account.ADVANCED_CONFIG_DISABLED",
+        mConfigService.setProperty("gui.account.ADVANCED_CONFIG_DISABLED",
                 Boolean.toString(isAdvancedAccountConfigDisabled));
     }
 
@@ -1504,7 +1506,7 @@ public class ConfigurationUtils
     public static void setSendMessageCommand(String newMessageCommand)
     {
         sendMessageCommand = newMessageCommand;
-        configService.setProperty(pMsgCommand, newMessageCommand);
+        mConfigService.setProperty(pMsgCommand, newMessageCommand);
     }
 
     /**
@@ -1529,7 +1531,7 @@ public class ConfigurationUtils
             return lastCallConferenceProvider;
 
         // Obtain the "lastCallConferenceAccount" property from the configuration service
-        return findProviderFromAccountId(configService.getString("gui.call.lastCallConferenceProvider"));
+        return findProviderFromAccountId(mConfigService.getString("gui.call.lastCallConferenceProvider"));
     }
 
     /**
@@ -1578,7 +1580,7 @@ public class ConfigurationUtils
     public static void setWebPage(String webPage)
     {
         mWebPage = StringUtils.isEmpty(webPage) ? webPage : webPage.trim();
-        configService.setProperty(pWebPage, webPage);
+        mConfigService.setProperty(pWebPage, webPage);
     }
 
     /**
@@ -1599,7 +1601,7 @@ public class ConfigurationUtils
     public static void setChatHistorySize(int historySize)
     {
         chatHistorySize = historySize;
-        configService.setProperty(pChatHistorySize, Integer.toString(chatHistorySize));
+        mConfigService.setProperty(pChatHistorySize, Integer.toString(chatHistorySize));
     }
 
     /**
@@ -1660,7 +1662,7 @@ public class ConfigurationUtils
     public static void setNormalizePhoneNumber(boolean isNormalize)
     {
         isNormalizePhoneNumber = isNormalize;
-        configService.setProperty("gui.NORMALIZE_PHONE_NUMBER", Boolean.toString(isNormalize));
+        mConfigService.setProperty("gui.NORMALIZE_PHONE_NUMBER", Boolean.toString(isNormalize));
     }
 
     /**
@@ -1681,7 +1683,7 @@ public class ConfigurationUtils
     public static void setAlerterEnabled(boolean isEnabled)
     {
         alerterEnabled = isEnabled;
-        configService.setProperty(ALERTER_ENABLED_PROP, Boolean.toString(isEnabled));
+        mConfigService.setProperty(ALERTER_ENABLED_PROP, Boolean.toString(isEnabled));
     }
 
     public static void setQuiteHour(String property, Object value)
@@ -1715,7 +1717,7 @@ public class ConfigurationUtils
     public static void setQuiteHoursEnable(boolean isEnabled)
     {
         isQuiteHoursEnable = isEnabled;
-        configService.setProperty(pQuiteHoursEnable, Boolean.toString(isEnabled));
+        mConfigService.setProperty(pQuiteHoursEnable, Boolean.toString(isEnabled));
     }
 
     /**
@@ -1736,7 +1738,7 @@ public class ConfigurationUtils
     public static void setQuiteHoursStart(long time)
     {
         quiteHoursStart = time;
-        configService.setProperty(pQuiteHoursStart, time);
+        mConfigService.setProperty(pQuiteHoursStart, time);
     }
 
     /**
@@ -1757,7 +1759,7 @@ public class ConfigurationUtils
     public static void setQuiteHoursEnd(long time)
     {
         quiteHoursEnd = time;
-        configService.setProperty(pQuiteHoursEnd, time);
+        mConfigService.setProperty(pQuiteHoursEnd, time);
     }
 
     /**
@@ -1780,7 +1782,7 @@ public class ConfigurationUtils
     public static void setHeadsUp(boolean headsUp)
     {
         isHeadsUpEnable = headsUp;
-        configService.setProperty(pHeadsUpEnable, Boolean.toString(isHeadsUpEnable));
+        mConfigService.setProperty(pHeadsUpEnable, Boolean.toString(isHeadsUpEnable));
     }
 
     /**
@@ -1804,7 +1806,7 @@ public class ConfigurationUtils
     public static void setAcceptPhoneNumberWithAlphaChars(boolean accept)
     {
         acceptPhoneNumberWithAlphaChars = accept;
-        configService.setProperty("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS",
+        mConfigService.setProperty("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS",
                 Boolean.toString(acceptPhoneNumberWithAlphaChars));
     }
 
@@ -1926,7 +1928,7 @@ public class ConfigurationUtils
     public static void setShowMasterPasswordWarning(boolean value)
     {
         showMasterPasswordWarning = value;
-        configService.setProperty(MASTER_PASS_WARNING_PROP, value);
+        mConfigService.setProperty(MASTER_PASS_WARNING_PROP, value);
     }
 
     /**
@@ -1937,7 +1939,7 @@ public class ConfigurationUtils
     public static void setSingleWindowInterfaceEnabled(boolean isEnabled)
     {
         isSingleWindowInterfaceEnabled = isEnabled;
-        configService.setProperty(SINGLE_WINDOW_INTERFACE_ENABLED, isEnabled);
+        mConfigService.setProperty(SINGLE_WINDOW_INTERFACE_ENABLED, isEnabled);
     }
 
     /**
@@ -1958,7 +1960,7 @@ public class ConfigurationUtils
     public static void setShowOffline(boolean isShowOffline)
     {
         ConfigurationUtils.isShowOffline = isShowOffline;
-        configService.setProperty("gui.showOffline", Boolean.toString(isShowOffline));
+        mConfigService.setProperty("gui.showOffline", Boolean.toString(isShowOffline));
     }
 
     /**
@@ -1969,7 +1971,7 @@ public class ConfigurationUtils
     public static void setShowCallPanel(boolean isCallPanelShown)
     {
         ConfigurationUtils.isCallPanelShown = isCallPanelShown;
-        configService.setProperty("gui.showCallPanel", Boolean.toString(isCallPanelShown));
+        mConfigService.setProperty("gui.showCallPanel", Boolean.toString(isCallPanelShown));
     }
 
     /**
@@ -1984,7 +1986,7 @@ public class ConfigurationUtils
             return;
 
         isApplicationVisible = isVisible;
-        configService.setProperty("systray.showApplication", Boolean.toString(isVisible));
+        mConfigService.setProperty("systray.showApplication", Boolean.toString(isVisible));
     }
 
     /**
@@ -1996,7 +1998,7 @@ public class ConfigurationUtils
     public static void setQuitWarningShown(boolean isWarningShown)
     {
         isQuitWarningShown = isWarningShown;
-        configService.setProperty("gui.quitWarningShown", Boolean.toString(isQuitWarningShown));
+        mConfigService.setProperty("gui.quitWarningShown", Boolean.toString(isQuitWarningShown));
     }
 
     /**
@@ -2006,7 +2008,7 @@ public class ConfigurationUtils
      */
     public static void setPopupHandlerConfig(String handler)
     {
-        configService.setProperty("systray.POPUP_HANDLER", handler);
+        mConfigService.setProperty("systray.POPUP_HANDLER", handler);
     }
 
     /**
@@ -2017,7 +2019,7 @@ public class ConfigurationUtils
     public static void setLastContactParent(String groupName)
     {
         lastContactParent = groupName;
-        configService.setProperty("gui.addcontact.lastContactParent", groupName);
+        mConfigService.setProperty("gui.addcontact.lastContactParent", groupName);
     }
 
     /**
@@ -2028,7 +2030,7 @@ public class ConfigurationUtils
     public static void setMoveContactConfirmationRequested(boolean isRequested)
     {
         isMoveContactConfirmationRequested = isRequested;
-        configService.setProperty("gui.isMoveContactConfirmationRequested",
+        mConfigService.setProperty("gui.isMoveContactConfirmationRequested",
                 Boolean.toString(isMoveContactConfirmationRequested));
     }
 
@@ -2040,7 +2042,7 @@ public class ConfigurationUtils
     public static void setTransparentWindowEnabled(boolean isTransparent)
     {
         isTransparentWindowEnabled = isTransparent;
-        configService.setProperty(pTransparentWindowEnabled, Boolean.toString(isTransparentWindowEnabled));
+        mConfigService.setProperty(pTransparentWindowEnabled, Boolean.toString(isTransparentWindowEnabled));
     }
 
     /**
@@ -2051,7 +2053,7 @@ public class ConfigurationUtils
     public static void setChatToolbarVisible(boolean isVisible)
     {
         isChatToolbarVisible = isVisible;
-        configService.setProperty("gui.chat.ChatWindow.showToolbar", Boolean.toString(isChatToolbarVisible));
+        mConfigService.setProperty("gui.chat.ChatWindow.showToolbar", Boolean.toString(isChatToolbarVisible));
     }
 
     /**
@@ -2062,7 +2064,7 @@ public class ConfigurationUtils
     public static void setChatSimpleThemeEnabled(boolean isEnabled)
     {
         isChatSimpleThemeEnabled = isEnabled;
-        configService.setProperty(CHAT_SIMPLE_THEME_ENABLED_PROP, Boolean.toString(isChatSimpleThemeEnabled));
+        mConfigService.setProperty(CHAT_SIMPLE_THEME_ENABLED_PROP, Boolean.toString(isChatSimpleThemeEnabled));
     }
 
     /**
@@ -2073,7 +2075,7 @@ public class ConfigurationUtils
     public static void setChatStyleBarVisible(boolean isVisible)
     {
         isChatStyleBarVisible = isVisible;
-        configService.setProperty("gui.chat.ChatWindow.showStylebar", Boolean.toString(isChatStyleBarVisible));
+        mConfigService.setProperty("gui.chat.ChatWindow.showStylebar", Boolean.toString(isChatStyleBarVisible));
     }
 
     /**
@@ -2084,7 +2086,7 @@ public class ConfigurationUtils
     public static void setChatWriteAreaSize(int size)
     {
         chatWriteAreaSize = size;
-        configService.setProperty(pChatWriteAreaSize, Integer.toString(chatWriteAreaSize));
+        mConfigService.setProperty(pChatWriteAreaSize, Integer.toString(chatWriteAreaSize));
     }
 
     /**
@@ -2095,7 +2097,7 @@ public class ConfigurationUtils
     public static void setSendFileLastDir(String lastDir)
     {
         sendFileLastDir = lastDir;
-        configService.setProperty("gui.chat.filetransfer.SEND_FILE_LAST_DIR", lastDir);
+        mConfigService.setProperty("gui.chat.filetransfer.SEND_FILE_LAST_DIR", lastDir);
     }
 
     /**
@@ -2106,7 +2108,7 @@ public class ConfigurationUtils
     public static void setLastCallConferenceProvider(ProtocolProviderService protocolProvider)
     {
         lastCallConferenceProvider = protocolProvider;
-        configService.setProperty("gui.call.lastCallConferenceProvider",
+        mConfigService.setProperty("gui.call.lastCallConferenceProvider",
                 protocolProvider.getAccountID().getAccountUniqueID());
     }
 
@@ -2118,7 +2120,7 @@ public class ConfigurationUtils
     public static void setChatDefaultFontFamily(String fontFamily)
     {
         defaultFontFamily = fontFamily;
-        configService.setProperty("gui.chat.DEFAULT_FONT_FAMILY", fontFamily);
+        mConfigService.setProperty("gui.chat.DEFAULT_FONT_FAMILY", fontFamily);
     }
 
     /**
@@ -2129,7 +2131,7 @@ public class ConfigurationUtils
     public static void setChatDefaultFontSize(int fontSize)
     {
         defaultFontSize = String.valueOf(fontSize);
-        configService.setProperty("gui.chat.DEFAULT_FONT_SIZE", fontSize);
+        mConfigService.setProperty("gui.chat.DEFAULT_FONT_SIZE", fontSize);
     }
 
     /**
@@ -2140,7 +2142,7 @@ public class ConfigurationUtils
     public static void setChatFontIsBold(boolean isBold)
     {
         isDefaultFontBold = isBold;
-        configService.setProperty("gui.chat.DEFAULT_FONT_BOLD", isBold);
+        mConfigService.setProperty("gui.chat.DEFAULT_FONT_BOLD", isBold);
     }
 
     /**
@@ -2151,7 +2153,7 @@ public class ConfigurationUtils
     public static void setChatFontIsItalic(boolean isItalic)
     {
         isDefaultFontItalic = isItalic;
-        configService.setProperty("gui.chat.DEFAULT_FONT_ITALIC", isItalic);
+        mConfigService.setProperty("gui.chat.DEFAULT_FONT_ITALIC", isItalic);
     }
 
     /**
@@ -2162,7 +2164,7 @@ public class ConfigurationUtils
     public static void setChatFontIsUnderline(boolean isUnderline)
     {
         isDefaultFontUnderline = isUnderline;
-        configService.setProperty("gui.chat.DEFAULT_FONT_UNDERLINE", isUnderline);
+        mConfigService.setProperty("gui.chat.DEFAULT_FONT_UNDERLINE", isUnderline);
     }
 
     /**
@@ -2173,7 +2175,7 @@ public class ConfigurationUtils
     public static void setChatDefaultFontColor(Color fontColor)
     {
         defaultFontColor = fontColor.getRGB();
-        configService.setProperty("gui.chat.DEFAULT_FONT_COLOR", defaultFontColor);
+        mConfigService.setProperty("gui.chat.DEFAULT_FONT_COLOR", defaultFontColor);
     }
 
     /**
@@ -2182,7 +2184,7 @@ public class ConfigurationUtils
     public static void initAppTheme()
     {
         Theme theme;
-        int themeValue = configService.getInt(SettingsActivity.P_KEY_THEME, Theme.DARK.ordinal());
+        int themeValue = mConfigService.getInt(SettingsFragment.P_KEY_THEME, Theme.DARK.ordinal());
         if (themeValue == Theme.DARK.ordinal() || themeValue == android.R.style.Theme) {
             theme = Theme.DARK;
         }
@@ -2471,14 +2473,14 @@ public class ConfigurationUtils
     public static void setContactListGroupCollapsed(String groupID, boolean isCollapsed)
     {
         String prefix = "gui.contactlist.groups";
-        List<String> groups = configService.getPropertyNamesByPrefix(prefix, true);
+        List<String> groups = mConfigService.getPropertyNamesByPrefix(prefix, true);
 
         boolean isExistingGroup = false;
         for (String groupRootPropName : groups) {
-            String storedID = configService.getString(groupRootPropName);
+            String storedID = mConfigService.getString(groupRootPropName);
 
             if (storedID.equals(groupID)) {
-                configService.setProperty(groupRootPropName + ".isClosed", Boolean.toString(isCollapsed));
+                mConfigService.setProperty(groupRootPropName + ".isClosed", Boolean.toString(isCollapsed));
                 isExistingGroup = true;
                 break;
             }
@@ -2487,8 +2489,8 @@ public class ConfigurationUtils
             String groupNodeName = "group" + System.currentTimeMillis();
             String groupPackage = prefix + "." + groupNodeName;
 
-            configService.setProperty(groupPackage, groupID);
-            configService.setProperty(groupPackage + ".isClosed", Boolean.toString(isCollapsed));
+            mConfigService.setProperty(groupPackage, groupID);
+            mConfigService.setProperty(groupPackage + ".isClosed", Boolean.toString(isCollapsed));
         }
     }
 
@@ -2502,12 +2504,12 @@ public class ConfigurationUtils
     {
         String prefix = "gui.contactlist.groups";
 
-        List<String> groups = configService.getPropertyNamesByPrefix(prefix, true);
+        List<String> groups = mConfigService.getPropertyNamesByPrefix(prefix, true);
         for (String groupRootPropName : groups) {
-            String storedID = configService.getString(groupRootPropName);
+            String storedID = mConfigService.getString(groupRootPropName);
 
             if (storedID.equals(groupID)) {
-                String status = (String) configService.getProperty(groupRootPropName + ".isClosed");
+                String status = (String) mConfigService.getProperty(groupRootPropName + ".isClosed");
                 return Boolean.parseBoolean(status);
             }
         }
@@ -2524,7 +2526,7 @@ public class ConfigurationUtils
         final String SHOW_ACCOUNT_CONFIG_PROP = "gui.configforms.SHOW_ACCOUNT_CONFIG";
         boolean defaultValue = !Boolean.parseBoolean(UtilActivator.getResources()
                 .getSettingsString("gui.account.ACCOUNT_CONFIG_DISABLED"));
-        return configService.getBoolean(SHOW_ACCOUNT_CONFIG_PROP, defaultValue);
+        return mConfigService.getBoolean(SHOW_ACCOUNT_CONFIG_PROP, defaultValue);
     }
 
     /**
@@ -2635,7 +2637,7 @@ public class ConfigurationUtils
      */
     public static int getClientPort()
     {
-        return configService.getInt(ProtocolProviderFactory.PREFERRED_CLEAR_PORT_PROPERTY_NAME, 5060);
+        return mConfigService.getInt(ProtocolProviderFactory.PREFERRED_CLEAR_PORT_PROPERTY_NAME, 5060);
     }
 
     /**
@@ -2645,7 +2647,7 @@ public class ConfigurationUtils
      */
     public static void setClientPort(int port)
     {
-        configService.setProperty(ProtocolProviderFactory.PREFERRED_CLEAR_PORT_PROPERTY_NAME, port);
+        mConfigService.setProperty(ProtocolProviderFactory.PREFERRED_CLEAR_PORT_PROPERTY_NAME, port);
     }
 
     /**
@@ -2655,7 +2657,7 @@ public class ConfigurationUtils
      */
     public static int getClientSecurePort()
     {
-        return configService.getInt(ProtocolProviderFactory.PREFERRED_SECURE_PORT_PROPERTY_NAME, 5061);
+        return mConfigService.getInt(ProtocolProviderFactory.PREFERRED_SECURE_PORT_PROPERTY_NAME, 5061);
     }
 
     /**
@@ -2665,7 +2667,7 @@ public class ConfigurationUtils
      */
     public static void setClientSecurePort(int port)
     {
-        configService.setProperty(ProtocolProviderFactory.PREFERRED_SECURE_PORT_PROPERTY_NAME, port);
+        mConfigService.setProperty(ProtocolProviderFactory.PREFERRED_SECURE_PORT_PROPERTY_NAME, port);
     }
 
     /**
@@ -2675,7 +2677,7 @@ public class ConfigurationUtils
      */
     public static String[] getEnabledSslProtocols()
     {
-        String enabledSslProtocols = configService.getString("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
+        String enabledSslProtocols = mConfigService.getString("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
         if (StringUtils.isBlank(enabledSslProtocols)) {
             SSLSocket temp;
             try {
@@ -2714,10 +2716,10 @@ public class ConfigurationUtils
     public static void setEnabledSslProtocols(String[] enabledProtocols)
     {
         if (enabledProtocols == null || enabledProtocols.length == 0)
-            configService.removeProperty("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
+            mConfigService.removeProperty("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
         else {
             String protocols = Arrays.toString(enabledProtocols);
-            configService.setProperty("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS",
+            mConfigService.setProperty("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS",
                     protocols.substring(1, protocols.length() - 1));
         }
     }

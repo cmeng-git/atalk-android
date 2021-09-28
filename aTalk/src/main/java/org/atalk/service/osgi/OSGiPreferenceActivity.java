@@ -5,19 +5,13 @@
  */
 package org.atalk.service.osgi;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
+import android.content.*;
 import android.os.IBinder;
-import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.core.app.NavUtils;
 
 import org.atalk.android.aTalkApp;
@@ -38,7 +32,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class OSGiPreferenceActivity extends PreferenceActivity
+public class OSGiPreferenceActivity extends OSGiActivity
 {
     private BundleActivator bundleActivator;
 
@@ -111,7 +105,7 @@ public class OSGiPreferenceActivity extends PreferenceActivity
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Disable up arrow on home activity
             Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();

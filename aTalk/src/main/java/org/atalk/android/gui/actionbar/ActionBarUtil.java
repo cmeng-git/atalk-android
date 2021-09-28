@@ -5,33 +5,31 @@
  */
 package org.atalk.android.gui.actionbar;
 
-import android.app.ActionBar;
-import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.*;
 import android.text.method.ScrollingMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.util.AndroidImageUtil;
 
-import androidx.annotation.DrawableRes;
 import timber.log.Timber;
 
 /**
- * The <tt>ActionBarUtil</tt> provides utility methods for setting action bar avatar and display
- * name.
+ * The <tt>ActionBarUtil</tt> provides utility methods for setting action bar avatar and display name.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
 public class ActionBarUtil
 {
-    /**
-     * The avatar drawable for display on ActionBar
-     */
-    private static LayerDrawable avatarDrawable;
 
     /**
      * Sets the action bar title for the given activity.
@@ -39,13 +37,18 @@ public class ActionBarUtil
      * @param activity the <tt>Activity</tt>, for which we set the action bar title
      * @param title the title string to set
      */
-    public static void setTitle(Activity activity, CharSequence title)
+    public static void setTitle(AppCompatActivity activity, CharSequence title)
     {
-        ActionBar actionBar = activity.getActionBar();
+        ActionBar actionBar = activity.getSupportActionBar();
         // Some activities don't have ActionBar
         if (actionBar != null) {
-            TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarTitle);
-            actionBarText.setText(title);
+            if (actionBar.getCustomView() != null) {
+                TextView actionBarText = activity.findViewById(R.id.actionBarTitle);
+                if (actionBarText != null)
+                    actionBarText.setText(title);
+            }
+            else
+                actionBar.setTitle(title);
         }
     }
 
@@ -55,13 +58,16 @@ public class ActionBarUtil
      * @param activity the <tt>Activity</tt>, for which we set the action bar subtitle
      * @param subtitle the subtitle string to set
      */
-    public static void setSubtitle(Activity activity, String subtitle)
+    public static void setSubtitle(AppCompatActivity activity, String subtitle)
     {
-        ActionBar actionBar = activity.getActionBar();
+        ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
-            TextView statusText = actionBar.getCustomView().findViewById(R.id.actionBarStatus);
-            statusText.setText(subtitle);
-            statusText.setMovementMethod(new ScrollingMovementMethod());
+            TextView statusText = activity.findViewById(R.id.actionBarStatus);
+            // statusText is null while search option is selected
+            if (statusText != null) {
+                statusText.setText(subtitle);
+                statusText.setMovementMethod(new ScrollingMovementMethod());
+            }
         }
     }
 
@@ -71,14 +77,16 @@ public class ActionBarUtil
      * @param activity the <tt>Activity</tt>, for which we get the action bar title
      * @param statusIcon display Icon per the user status
      */
-    public static void setStatus(Activity activity, byte[] statusIcon)
+    public static void setStatus(AppCompatActivity activity, byte[] statusIcon)
     {
-        ActionBar actionBar = activity.getActionBar();
+        ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
             Bitmap avatarStatusBmp = AndroidImageUtil.bitmapFromBytes(statusIcon);
             if (avatarStatusBmp != null) {
-                ImageView actionBarStatus = actionBar.getCustomView().findViewById(R.id.globalStatusIcon);
-                actionBarStatus.setImageBitmap(avatarStatusBmp);
+                ImageView actionBarStatus = activity.findViewById(R.id.globalStatusIcon);
+                // actionBarStatus is null while search option is selected
+                if (actionBarStatus != null)
+                    actionBarStatus.setImageBitmap(avatarStatusBmp);
             }
         }
     }
@@ -89,20 +97,19 @@ public class ActionBarUtil
      * @param activity the <tt>Activity</tt>, for which we get the action bar title
      * @return the title string
      */
-    public static String getStatus(Activity activity)
+    public static String getStatus(AppCompatActivity activity)
     {
         if (activity != null) {
-            ActionBar actionBar = activity.getActionBar();
+            ActionBar actionBar = activity.getSupportActionBar();
             // Some activities don't have ActionBar
             if (actionBar == null)
                 return null;
 
-            TextView actionBarText = actionBar.getCustomView().findViewById(R.id.actionBarStatus);
+            TextView actionBarText = activity.findViewById(R.id.actionBarStatus);
             return (actionBarText.getText().toString());
         }
         return null;
     }
-
 
     /**
      * Sets the avatar icon of the action bar.
@@ -110,12 +117,13 @@ public class ActionBarUtil
      * @param activity the current activity where the status should be displayed
      * @param avatar the avatar to display
      */
-    public static void setAvatar(Activity activity, byte[] avatar)
+    public static void setAvatar(AppCompatActivity activity, byte[] avatar)
     {
+        // The default avatar drawable for display on ActionBar
+        LayerDrawable avatarDrawable = getDefaultAvatarDrawable(activity);
+
         // cmeng: always clear old avatar picture when pager scroll to different chat fragment
         // and invalidate Drawable for scrolled page to update Logo properly
-        avatarDrawable = getDefaultAvatarDrawable(activity);
-
         // cmeng: 20200312: seems no necessary anymore? so disable it seems ok now
         // avatarDrawable.invalidateDrawable(avatarDrawable);
 
@@ -134,18 +142,30 @@ public class ActionBarUtil
                 Timber.e("Failed to get avatar drawable from bytes");
             }
         }
-        // set Logo not supported prior API 14
-        ActionBar actionBar = activity.getActionBar();
+        // set Logo is only available when there is no customView attached or during search
+        ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setLogo(avatarDrawable);
+            if (actionBar.getCustomView() == null)
+                actionBar.setLogo(avatarDrawable);
+            else {
+                ImageView logo = activity.findViewById(R.id.logo);
+                if (logo != null)
+                    logo.setImageDrawable(avatarDrawable);
+            }
         }
     }
 
-    public static void setAvatar(Activity activity, @DrawableRes int resId)
+    public static void setAvatar(AppCompatActivity activity, @DrawableRes int resId)
     {
-        ActionBar actionBar = activity.getActionBar();
+        ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setLogo(resId);
+            if (actionBar.getCustomView() == null)
+                actionBar.setLogo(resId);
+            else {
+                ImageView logo = activity.findViewById(R.id.logo);
+                if (logo != null)
+                    logo.setImageResource(resId);
+            }
         }
     }
 
@@ -154,8 +174,9 @@ public class ActionBarUtil
      *
      * @return the default avatar {@link Drawable}
      */
-    private static LayerDrawable getDefaultAvatarDrawable(Activity activity)
+    private static LayerDrawable getDefaultAvatarDrawable(AppCompatActivity activity)
     {
-        return (LayerDrawable) activity.getResources().getDrawable(R.drawable.avatar_layer_drawable);
+        Resources res = activity.getResources();
+        return (LayerDrawable) ResourcesCompat.getDrawable(res, R.drawable.avatar_layer_drawable, null);
     }
 }

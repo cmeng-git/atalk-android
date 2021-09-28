@@ -156,12 +156,12 @@ public class YoutubePlayerFragment extends Fragment
                     mVideoId = getVideoId(mediaUrl);
                     if (mVideoId.toUpperCase().startsWith(PLAYLIST)) {
                         startPlaylist(youTubePlayer, mVideoId);
-                    } else {
+                    }
+                    else {
                         onErrorOnce = true;
                         YouTubePlayerUtils.loadOrCueVideo(youTubePlayer, getLifecycle(), mVideoId, 0f);
                     }
                 }
-
                 addActionsToPlayer(youTubePlayer);
                 initPlaybackSpeed(youTubePlayer);
                 addFullScreenListenerToPlayer();
@@ -177,7 +177,8 @@ public class YoutubePlayerFragment extends Fragment
                 if (onErrorOnce && error.equals(PlayerConstants.PlayerError.VIDEO_CONTENT_RESTRICTION_OR_UNAVAILABLE)) {
                     onErrorOnce = false;
                     startPlaylist(youTubePlayer, mVideoId);
-                } else {
+                }
+                else {
                     // Use external player if playlist playback failed
                     playVideoUrlExt(mediaUrl);
                 }
@@ -217,7 +218,8 @@ public class YoutubePlayerFragment extends Fragment
 
         if (videoId.contains(SEPARATOR)) {
             youTubePlayer.loadPlaylist_videoIds(videoId);
-        } else {
+        }
+        else {
             youTubePlayer.loadPlaylist(videoId, 0);
         }
     }
@@ -320,14 +322,6 @@ public class YoutubePlayerFragment extends Fragment
     public void initPlaybackSpeed(YouTubePlayer youTubePlayer)
     {
         mSpeed = (float) configService.getDouble(PREF_PLAYBACK_SPEED, 1.0);
-
-        //        for (int i = 0; i < mpSpeedValues.length; i++) {
-        //            if (mpSpeedValues[i].equals(speed)) {
-        //                 HymnsApp.showToastMessage("Set playback rate to: " + speed);
-        //                 playbackSpeed.setSelection(i);
-        //                break;
-        //            }
-        //        }
         youTubePlayer.setPlaybackRate(mSpeed);
     }
 

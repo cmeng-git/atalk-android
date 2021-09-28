@@ -15,7 +15,6 @@ import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
@@ -25,7 +24,6 @@ import net.java.sip.communicator.util.NetworkUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.*;
-import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.android.gui.call.JingleMessageHelper;
@@ -53,6 +51,7 @@ import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.rosterstore.DirectoryRosterStore;
 import org.jivesoftware.smack.roster.rosterstore.RosterStore;
+import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.SslContextFactory;
@@ -263,10 +262,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     // to be verified using DANE.
     private static final String DNSSEC_AND_DANE = "needsDnssecAndDane";
 
-    /**
+    /*
      * The name of the property under which the user may specify if the desktop streaming or sharing should be disabled.
      */
-    private static final String IS_DESKTOP_STREAMING_DISABLED = "protocol.jabber.DESKTOP_STREAMING_DISABLED";
+    // private static final String IS_DESKTOP_STREAMING_DISABLED = "protocol.jabber.DESKTOP_STREAMING_DISABLED";
 
     /**
      * The name of the property under which the user may specify if audio/video calls should be disabled.
@@ -1220,6 +1219,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     }
                 }
                 else {
+                    if (el instanceof SASLErrorException) {
+                        errMsg += ": " + ((SASLErrorException) el).getSASLFailure().getDescriptiveText();
+                    }
                     errMsg = aTalkApp.getResString(R.string.service_gui_NOT_AUTHORIZED_HINT, errMsg);
                     StanzaError stanzaError = StanzaError.from(Condition.not_authorized, errMsg).build();
                     throw new XMPPErrorException(null, stanzaError);
@@ -1498,7 +1500,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // kept lowest limit at 120S ping interval
         if (pingInterval >= 120) {
             mAccountID.storeAccountProperty(ProtocolProviderFactory.PING_INTERVAL, pingInterval);
-            Timber.w("Auto tunning ping interval to: %s", pingInterval);
+            Timber.w("Auto tuning ping interval to: %s", pingInterval);
         }
         else {
             Timber.e("Connection closed on error with ping interval of 120 second!!!");
@@ -1565,10 +1567,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         }
 
         mRoster = null;
-        if (mConnection.isConnected()) {
+        // account must have authenticated to close stream;
+        // else stream:error <not-authorized xmlns='urn:ietf:params:xml:ns:xmpp-streams'/>
+        if (mConnection.isAuthenticated()) {
             try {
-                PresenceBuilder presenceBuilder = mConnection.getStanzaFactory().buildPresenceStanza()
-                        .ofType(Presence.Type.unavailable);
+                PresenceBuilder presenceBuilder
+                        = mConnection.getStanzaFactory().buildPresenceStanza().ofType(Presence.Type.unavailable);
                 if ((OpSetPP != null) && StringUtils.isNotEmpty(OpSetPP.getCurrentStatusMessage())) {
                     presenceBuilder.setStatus(OpSetPP.getCurrentStatusMessage());
                 }
@@ -1577,6 +1581,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 Timber.w("Exception while disconnect and clean connection!!!");
             }
         }
+        // set it null as it also holds a reference to the old connection; it will be created again on new connection setup
+        mConnection = null;
 
         if (httpAuthorizationRequestManager != null) {
             httpAuthorizationRequestManager.removeIncomingListener(this);
@@ -1595,9 +1601,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 discoveryManager = null;
             }
         }
-
-        // set it null as it also holds a reference to the old connection; it will be created again on new connection setup
-        mConnection = null;
     }
 
     /**
@@ -1733,9 +1736,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         /* XEP-0184: Message Delivery Receipts - global option */
         DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(mConnection);
-        // Always enable the ReceiptReceivedListener and receipt request (indepedent of contact capability)
-        MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
-        deliveryReceiptManager.addReceiptReceivedListener((MessageHistoryServiceImpl) mhs);
+        // Always enable the ReceiptReceivedListener and receipt request (independent of contact capability)
+        MessageHistoryServiceImpl mhs = MessageHistoryActivator.getMessageHistoryService();
+        deliveryReceiptManager.addReceiptReceivedListener(mhs);
         deliveryReceiptManager.autoAddDeliveryReceiptRequests();
 
         if (ConfigurationUtils.isSendMessageDeliveryReceipt()) {
@@ -2115,7 +2118,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     ConferenceDescriptionExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE,
                     new ConferenceDescriptionExtensionProvider());
 
-            ProviderManager.addExtensionProvider(Nick.ELEMENT_NAME, Nick.NAMESPACE, new NickProvider());
+            ProviderManager.addExtensionProvider(Nick.QNAME.getLocalPart(), Nick.NAMESPACE, new NickProvider());
 
             ProviderManager.addExtensionProvider(AvatarUrl.ELEMENT, AvatarUrl.NAMESPACE, new AvatarUrl.Provider());
 
@@ -2470,7 +2473,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          * determine the reason according to the received exception messages that are relevant
          * and found in smack 4.2.0
          */
-        if (exMsg.contains("sasl") && (exMsg.contains("invalid")
+        if (exMsg.contains("saslerror") && exMsg.contains("external")) {
+            failureMode = SecurityAuthority.SASL_ERROR_EXTERNAL;
+        }
+        else if (exMsg.contains("saslerror") && (exMsg.contains("invalid")
                 || exMsg.contains("error") || exMsg.contains("failed"))) {
             failureMode = SecurityAuthority.INVALID_AUTHORIZATION;
         }
@@ -2523,7 +2529,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         int failMode = checkLoginFailMode(ex);
         if (failMode == SecurityAuthority.INVALID_AUTHORIZATION) {
-            // JabberActivator.getProtocolProviderFactory().storePassword(mAccountID, null);
             regState = RegistrationState.AUTHENTICATION_FAILED;
             reasonCode = RegistrationStateChangeEvent.REASON_AUTHENTICATION_FAILED;
         }
@@ -2560,6 +2565,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // Show error and abort further attempt for unknown or specified exceptions; others proceed to retry
         if ((failMode == SecurityAuthority.REASON_UNKNOWN)
+                || (failMode == SecurityAuthority.SASL_ERROR_EXTERNAL)
                 || (failMode == SecurityAuthority.SECURITY_EXCEPTION)
                 || (failMode == SecurityAuthority.POLICY_VIOLATION)) {
             if (TextUtils.isEmpty(reason) && (ex.getCause() != null))
@@ -3102,7 +3108,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Retrieve the XMPP connection socket used by the protocolProvider (by reflection)
      *
      * @return the socket which is used for this connection.
-     * @see XMPPTCPConnection#socket.
+     * @see XMPPTCPConnection# socket.
      */
     public Socket getSocket()
     {

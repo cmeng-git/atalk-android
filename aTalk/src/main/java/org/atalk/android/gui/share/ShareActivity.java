@@ -17,7 +17,6 @@
 
 package org.atalk.android.gui.share;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -26,19 +25,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.*;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.menu.ExitMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
+import org.atalk.service.osgi.OSGiActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Set;
-
-import androidx.fragment.app.*;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 /**
  * ShareActivity is defined as SingleTask, to avoid multiple instances being created if user does not exit
@@ -50,7 +50,7 @@ import androidx.viewpager.widget.ViewPager;
  *
  * @author Eng Chong Meng
  */
-public class ShareActivity extends ExitMenuActivity
+public class ShareActivity extends OSGiActivity
 {
     /**
      * The number of pages (wizard steps) to show.
@@ -95,10 +95,10 @@ public class ShareActivity extends ExitMenuActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sharewith_view);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setCustomView(R.layout.action_bar);
+        // configureToolBar();
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
             TextView tv = findViewById(R.id.actionBarTitle);
             tv.setText(R.string.APPLICATION_NAME);
 

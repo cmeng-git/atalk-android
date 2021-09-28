@@ -6,8 +6,8 @@
 package org.atalk.android.gui.account.settings;
 
 import android.content.SharedPreferences;
-import android.preference.ListPreference;
-import android.preference.PreferenceManager;
+import androidx.preference.ListPreference;
+import androidx.preference.PreferenceManager;
 
 import net.java.sip.communicator.plugin.sipaccregwizz.AccountRegistrationImpl;
 import net.java.sip.communicator.plugin.sipaccregwizz.SIPAccountRegistrationActivator;
@@ -202,8 +202,6 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
      */
     protected void onPreferencesCreated()
     {
-        super.onPreferencesCreated();
-
         // Enable/disable contact list items on init
         updateContactListViews();
 
@@ -254,7 +252,7 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         summaryMapper.includePreference(findPreference(PREF_KEY_AUTH_NAME), emptyStr);
         summaryMapper.includePreference(findPreference(PREF_KEY_TLS_CERT_ID), emptyStr);
         summaryMapper.includePreference(findPreference(PREF_KEY_DTMF_METHOD), emptyStr, input -> {
-            ListPreference lp = (ListPreference) findPreference(PREF_KEY_DTMF_METHOD);
+            ListPreference lp = findPreference(PREF_KEY_DTMF_METHOD);
             return lp.getEntry().toString();
         });
 
@@ -362,7 +360,7 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
         else if (key.equals(PREF_KEY_CONTACT_LIST_TYPE)) {
             updateContactListViews();
 
-            ListPreference lp = (ListPreference) findPreference(PREF_KEY_CONTACT_LIST_TYPE);
+            ListPreference lp = findPreference(PREF_KEY_CONTACT_LIST_TYPE);
             int cListTypeIdx = lp.findIndexOfValue(lp.getValue());
             getSipWizard().getRegistration().setXCapEnable(cListTypeIdx == 1);
             getSipWizard().getRegistration().setXiVOEnable(cListTypeIdx == 2);
@@ -386,7 +384,7 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
      */
     private void updateContactListViews()
     {
-        ListPreference clistTypePref = (ListPreference) findPreference(PREF_KEY_CONTACT_LIST_TYPE);
+        ListPreference clistTypePref = findPreference(PREF_KEY_CONTACT_LIST_TYPE);
 
         boolean enable = clistTypePref.findIndexOfValue(clistTypePref.getValue()) != 0;
 

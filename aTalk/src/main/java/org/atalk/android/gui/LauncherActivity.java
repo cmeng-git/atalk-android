@@ -14,8 +14,7 @@ import android.widget.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.impl.androidnotification.NotificationHelper;
-import org.atalk.service.EventReceiver;
+import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
@@ -56,9 +55,9 @@ public class LauncherActivity extends OSGiActivity
         setupStrictMode();
         super.onCreate(savedInstanceState);
 
-        // Do not show actionBar in splash screen - need this even it is specified in Manifest file
-        if (getActionBar() != null)
-            getActionBar().hide();
+        // Do not show actionBar in splash screen - OSGIActivity#setTitle();
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
 
         if (OSGiService.isShuttingDown()) {
             switchActivity(ShutdownActivity.class);
@@ -69,7 +68,7 @@ public class LauncherActivity extends OSGiActivity
         Intent intent = getIntent();
         if (intent != null) {
             this.restoreIntent = intent.getParcelableExtra(ARG_RESTORE_INTENT);
-            startOnReboot = intent.getBooleanExtra(EventReceiver.AUTO_START_ONBOOT, false);
+            startOnReboot = intent.getBooleanExtra(SystemEventReceiver.AUTO_START_ONBOOT, false);
         }
 
         setContentView(R.layout.splash);

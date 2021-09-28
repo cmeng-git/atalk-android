@@ -5,10 +5,17 @@
  */
 package org.atalk.android.gui.account.settings;
 
+import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.EXTRA_ACCOUNT_ID;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolNames;
@@ -18,6 +25,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
+import java.util.List;
+
 /**
  * The activity runs preference fragments for different protocols.
  *
@@ -25,6 +34,7 @@ import org.atalk.service.osgi.OSGiActivity;
  * @author Eng Chong Meng
  */
 public class AccountPreferenceActivity extends OSGiActivity
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
 {
     /**
      * Extra key used to pass the unique user ID using {@link android.content.Intent}
@@ -36,10 +46,21 @@ public class AccountPreferenceActivity extends OSGiActivity
      */
     private AccountPreferenceFragment preferencesFragment;
 
+    private String userUniqueID;
+
     /**
-     * The {@link Thread} which runs the commit operation in background
+     * Creates new <tt>Intent</tt> for starting account preferences activity.
+     *
+     * @param ctx the context.
+     * @param accountID <tt>AccountID</tt> for which preferences will be opened.
+     * @return <tt>Intent</tt> for starting account preferences activity parametrized with given <tt>AccountID</tt>.
      */
-    private Thread commitThread;
+    public static Intent getIntent(Context ctx, AccountID accountID)
+    {
+        Intent intent = new Intent(ctx, AccountPreferenceActivity.class);
+        intent.putExtra(EXTRA_USER_ID, accountID.getAccountUniqueID());
+        return intent;
+    }
 
     /**
      * {@inheritDoc}
@@ -53,7 +74,7 @@ public class AccountPreferenceActivity extends OSGiActivity
         if (AndroidCallUtil.checkCallInProgress(this))
             return;
 
-        String userUniqueID = getIntent().getStringExtra(EXTRA_USER_ID);
+        userUniqueID = getIntent().getStringExtra(EXTRA_USER_ID);
         AccountID account = AccountUtils.getAccountIDForUID(userUniqueID);
 
         // account is null before a new user is properly and successfully registered with the server
@@ -65,13 +86,13 @@ public class AccountPreferenceActivity extends OSGiActivity
                 preferencesFragment = createPreferencesFragment(userUniqueID, protocolName);
 
                 // Display the fragment as the main content.
-                getFragmentManager().beginTransaction()
+                getSupportFragmentManager().beginTransaction()
                         .replace(android.R.id.content, preferencesFragment)
                         .commit();
             }
             else {
                 preferencesFragment
-                        = (AccountPreferenceFragment) getFragmentManager().findFragmentById(android.R.id.content);
+                        = (AccountPreferenceFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
             }
         }
         else {
@@ -102,7 +123,7 @@ public class AccountPreferenceActivity extends OSGiActivity
         }
 
         Bundle args = new Bundle();
-        args.putString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID, userUniqueID);
+        args.putString(EXTRA_ACCOUNT_ID, userUniqueID);
         preferencesFragment.setArguments(args);
         return preferencesFragment;
     }
@@ -116,30 +137,44 @@ public class AccountPreferenceActivity extends OSGiActivity
     {
         // Catch the back key code and perform commit operation
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (commitThread != null)
-                return true;
-
-            this.commitThread = new Thread(() -> {
-                preferencesFragment.commitChanges();
-                finish();
-            });
-            commitThread.start();
-            return true;
+            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+            if (!fragments.isEmpty()) {
+                Fragment fragment = fragments.get(fragments.size() - 1);
+                if ((fragment instanceof JabberPreferenceFragment) || (fragment instanceof SipPreferenceFragment)) {
+                    preferencesFragment.commitChanges();
+                    return true;
+                }
+            }
         }
         return super.onKeyUp(keyCode, event);
     }
 
     /**
-     * Creates new <tt>Intent</tt> for starting account preferences activity.
+     *  Called when a preference in the tree rooted at the parent Preference has been clicked.
      *
-     * @param ctx the context.
-     * @param accountID <tt>AccountID</tt> for which preferences will be opened.
-     * @return <tt>Intent</tt> for starting account preferences activity parametrized with given <tt>AccountID</tt>.
+     * @param caller The caller reference
+     * @param pref The click preference to launch
+     *
+     * @return true always
      */
-    public static Intent getIntent(Context ctx, AccountID accountID)
+    @Override
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref)
     {
-        Intent intent = new Intent(ctx, AccountPreferenceActivity.class);
-        intent.putExtra(AccountPreferenceActivity.EXTRA_USER_ID, accountID.getAccountUniqueID());
-        return intent;
+        // Instantiate the new Fragment
+        final Bundle args = pref.getExtras();
+        args.putString(EXTRA_ACCOUNT_ID, userUniqueID);
+        FragmentManager fm = getSupportFragmentManager();
+        final Fragment fragment = fm.getFragmentFactory().instantiate(
+                getClassLoader(),
+                pref.getFragment());
+        fragment.setArguments(args);
+        fragment.setTargetFragment(caller, 0);
+
+        // Replace the existing Fragment with the new Fragment
+        fm.beginTransaction()
+                .replace(android.R.id.content, fragment)
+                .addToBackStack(null)
+                .commit();
+        return true;
     }
 }

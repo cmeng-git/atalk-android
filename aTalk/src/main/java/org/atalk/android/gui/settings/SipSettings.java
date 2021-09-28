@@ -1,21 +1,23 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.settings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import android.os.Bundle;
+
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 
-import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.PreferenceCategory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * SIP protocol settings screen.
@@ -25,51 +27,64 @@ import android.preference.PreferenceCategory;
  */
 public class SipSettings extends BasicSettingsActivity
 {
-	@Override
-	protected int getPreferencesXmlId()
-	{
-		return R.xml.sip_preferences;
-	}
+    @Override
+    public int getPreferencesXmlId()
+    {
+        return R.xml.sip_preferences;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
+    {
+        super.onCreate(savedInstanceState);
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+    }
 
-		// Create supported protocols checkboxes
-		PreferenceCategory protocols = (PreferenceCategory) findPreference(getString(R.string.pref_cat_sip_ssl_protocols));
+    public class MyPreferenceFragment extends PreferenceFragmentCompat
+    {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
+        {
+            super.onCreate(savedInstanceState);
 
-		String configuredProtocols = Arrays.toString(ConfigurationUtils.getEnabledSslProtocols());
+            // Create supported protocols checkboxes
+            PreferenceCategory protocols = findPreference(getString(R.string.pref_cat_sip_ssl_protocols));
 
-		for (String protocol : ConfigurationUtils.getAvailableSslProtocols()) {
-			CheckBoxPreference cbPRef = new CheckBoxPreference(this);
-			cbPRef.setTitle(protocol);
-			cbPRef.setChecked(configuredProtocols.contains(protocol));
-			protocols.addPreference(cbPRef);
-		}
-	}
+            String configuredProtocols = Arrays.toString(ConfigurationUtils.getEnabledSslProtocols());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-    protected void onDestroy()
-	{
-		super.onDestroy();
+            for (String protocol : ConfigurationUtils.getAvailableSslProtocols()) {
+                CheckBoxPreference cbPRef = new CheckBoxPreference(getContext());
+                cbPRef.setTitle(protocol);
+                cbPRef.setChecked(configuredProtocols.contains(protocol));
+                protocols.addPreference(cbPRef);
+            }
+        }
 
-		// Find ssl protocol checkboxes and commit changes
-		PreferenceCategory protocols = (PreferenceCategory) findPreference(getString(R.string.pref_cat_sip_ssl_protocols));
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void onDestroy()
+        {
+            super.onDestroy();
 
-		int count = protocols.getPreferenceCount();
-		List<String> enabledSslProtocols = new ArrayList<String>(count);
-		for (int i = 0; i < count; i++) {
-			CheckBoxPreference protoPref = (CheckBoxPreference) protocols.getPreference(i);
-			if (protoPref.isChecked())
-				enabledSslProtocols.add(protoPref.getTitle().toString());
-		}
-		ConfigurationUtils.setEnabledSslProtocols(enabledSslProtocols.toArray(new String[] {}));
-	}
+            // Find ssl protocol checkboxes and commit changes
+            PreferenceCategory protocols = findPreference(getString(R.string.pref_cat_sip_ssl_protocols));
+
+            int count = protocols.getPreferenceCount();
+            List<String> enabledSslProtocols = new ArrayList<>(count);
+            for (int i = 0; i < count; i++) {
+                CheckBoxPreference protoPref = (CheckBoxPreference) protocols.getPreference(i);
+                if (protoPref.isChecked())
+                    enabledSslProtocols.add(protoPref.getTitle().toString());
+            }
+            ConfigurationUtils.setEnabledSslProtocols(enabledSslProtocols.toArray(new String[]{}));
+        }
+    }
 }

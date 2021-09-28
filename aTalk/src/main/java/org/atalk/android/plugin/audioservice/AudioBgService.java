@@ -53,6 +53,8 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     public static final String PLAYBACK_POSITION = "playback_position";
     public static final String PLAYBACK_URI = "playback_uri";
 
+    private final Map<Uri, MediaPlayer> uriPlayers = new ConcurrentHashMap<>();
+
     // Handler for media player playback status broadcast
     private Handler mHandlerPlayback;
 
@@ -82,8 +84,6 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     private File audioFile = null;
 
     private MediaRecorder mRecorder = null;
-
-    private final Map<Uri, MediaPlayer> uriPlayers = new ConcurrentHashMap<>();
 
     private long startTime = 0L;
 

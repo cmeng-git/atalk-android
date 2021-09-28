@@ -5,9 +5,10 @@
  */
 package org.atalk.android.gui.chat;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
@@ -27,6 +28,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.chat.conference.*;
+import org.atalk.android.gui.chat.filetransfer.FileTransferActivator;
 import org.atalk.android.plugin.textspeech.TTSService;
 import org.atalk.persistance.FileBackend;
 import org.jxmpp.jid.impl.JidCreate;
@@ -62,6 +64,7 @@ public class ChatPanel implements Chat, MessageListener
      */
     private final MetaContact mMetaContact;
 
+    // An object reference containing either a MetaContact or ChatRoomWrapper
     private final Object mDescriptor;
 
     /**
@@ -85,9 +88,10 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Messages cache used by this session; to cache msg arrived when the chatFragment
      * is not in view e.g. standby, while in contactList view or when scroll out of view.
+     *
+     * Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
+     * private List<ChatMessage> msgCache = new LinkedList<>();
      */
-    // Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
-    // private List<ChatMessage> msgCache = new LinkedList<>();
     private final List<ChatMessage> msgCache = new CopyOnWriteArrayList<>();
 
     /**
@@ -102,8 +106,8 @@ public class ChatPanel implements Chat, MessageListener
     private ChatSession mChatSession;
 
     /**
-     * Flag indicates if the history has been loaded (it must be done only once
-     * and next messages are cached through the listeners mechanism).
+     * Flag indicates if the history has been loaded (it must be done only once;
+     * and all the next messages are cached through the listeners mechanism).
      */
     private boolean historyLoaded = false;
 
@@ -216,7 +220,6 @@ public class ChatPanel implements Chat, MessageListener
      **/
     public void setChatType(int chatType)
     {
-        // new Exception("ChatType: " + mChatType + "=>" + chatType).printStackTrace();
         mChatType = chatType;
     }
 
@@ -398,7 +401,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Returns a collection of newly fetched last messages from store, merged with msgCache.
+     * Returns a collection of newly fetched last messages from store; merged with msgCache.
      *
      * @return a collection of last messages.
      */
@@ -427,7 +430,7 @@ public class ChatPanel implements Chat, MessageListener
             history = metaHistory.findLast(chatHistoryFilter, descriptor, HISTORY_CHUNK_SIZE);
             historyLoaded = true;
         }
-        // read in HISTORY_CHUNK_SIZE records earlier than the 'last fetch date'-top of the msgCache
+        // read in HISTORY_CHUNK_SIZE records earlier than the 'last fetch date' i.e. top of the msgCache
         else {
             Date lastOldestMessageDate;
             synchronized (cacheLock) {
@@ -482,50 +485,6 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Merges given lists of messages. Output list is ordered by received date.
-     *
-     * @param history first list to merge.
-     * @param cache the second list to merge.
-     * @param msgLimit output list size limit.
-     * @return merged list of messages contained in given lists ordered by the date.
-     * Output list size is limited to given <tt>msgLimit</tt>.
-     */
-    private List<ChatMessage> mergeMsgLists(List<ChatMessage> history, List<ChatMessage> cache, int msgLimit)
-    {
-        if (msgLimit == -1)
-            msgLimit = Integer.MAX_VALUE;
-
-        List<ChatMessage> output = new LinkedList<>();
-        int historyIdx = history.size() - 1;
-        int cacheIdx = cache.size() - 1;
-
-        while (historyIdx >= 0 && cacheIdx >= 0 && output.size() < msgLimit) {
-            ChatMessage historyMsg = history.get(historyIdx);
-            ChatMessage cacheMsg = cache.get(cacheIdx);
-
-            if (historyMsg.getDate().after(cacheMsg.getDate())) {
-                output.add(0, historyMsg);
-                historyIdx--;
-            }
-            else {
-                output.add(0, cacheMsg);
-                cacheIdx--;
-            }
-        }
-
-        // Input remaining list 1 messages
-        while (historyIdx >= 0 && output.size() < msgLimit) {
-            output.add(0, history.get(historyIdx--));
-        }
-
-        // Input remaining list 2 messages
-        while (cacheIdx >= 0 && output.size() < msgLimit) {
-            output.add(0, cache.get(cacheIdx--));
-        }
-        return output;
-    }
-
-    /**
      * Merged any new messages found in the cache to the history list;
      * When historyLog is disabled, all the incoming/outgoing messages are only added to the msgCache/
      * These include the http upload and download messages but exclude file transfer messages
@@ -574,7 +533,8 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Update the file transfer status in msgCache due to historyLog is disabled/
+     * Update the file transfer status in the msgCache; must do this else file transfer will be reactivate
+     * on resume chat. Also important if historyLog is disabled.
      *
      * @param msgUuid ChatMessage uuid
      * @param status File transfer status
@@ -595,8 +555,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Method to remove cached message, or to update the cached message receiptStatus
-     * of the given msgUuid
+     * Method to remove cached message, or to update the cached message receiptStatus of the given msgUuid
      *
      * @param msgUuid ChatMessage uuid
      * @param receiptStatus message receipt status to update; null is to delete message
@@ -664,10 +623,6 @@ public class ChatPanel implements Chat, MessageListener
         throw new RuntimeException("Not supported yet");
         //??? chatController.msgEdit.setText(message);
     }
-
-//    public static void sendMessage(Object descriptor, String message, int encType)
-//    {
-//    }
 
     /**
      * Sends the message and blocked message caching for this message; otherwise the single send message
@@ -837,13 +792,14 @@ public class ChatPanel implements Chat, MessageListener
         addMessage(new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid, ChatMessage.DIR_OUT));
     }
 
-    /*
+    /**
      * ChatMessage for IncomingFileTransferRequest
      *
      * Adds the given <tt>IncomingFileTransferRequest</tt> to the conversation panel in order to
      * notify the user of an incoming file transfer request.
+     * @see FileTransferActivator#fileTransferRequestReceived(FileTransferRequestEvent)
      *
-     * @param fileTransferOpSet the file transfer operation set
+     * @param opSet the file transfer operation set
      * @param request the request to display in the conversation panel
      * @param date the date on which the request has been received
      */
@@ -996,7 +952,7 @@ public class ChatPanel implements Chat, MessageListener
     public void updateChatTransportStatus(final ChatTransport chatTransport)
     {
         if (isChatFocused()) {
-            final Activity activity = aTalkApp.getCurrentActivity();
+            final AppCompatActivity activity = aTalkApp.getCurrentActivity();
             if (activity != null) {
                 activity.runOnUiThread(() -> {
                     PresenceStatus presenceStatus = chatTransport.getStatus();
@@ -1026,7 +982,7 @@ public class ChatPanel implements Chat, MessageListener
     public void setContactName(ChatContact<?> chatContact, final String name)
     {
         if (isChatFocused()) {
-            final Activity activity = aTalkApp.getCurrentActivity();
+            final AppCompatActivity activity = aTalkApp.getCurrentActivity();
             activity.runOnUiThread(() -> {
                 if (mChatSession instanceof MetaContactChatSession) {
                     ActionBarUtil.setTitle(activity, name);
@@ -1046,7 +1002,7 @@ public class ChatPanel implements Chat, MessageListener
             chatSubject = subject;
 
             if (isChatFocused()) {
-                final Activity activity = aTalkApp.getCurrentActivity();
+                final AppCompatActivity activity = aTalkApp.getCurrentActivity();
                 if (activity != null) {
                     activity.runOnUiThread(() -> {
                         // cmeng: check instanceof just in case user change chat session
@@ -1141,7 +1097,7 @@ public class ChatPanel implements Chat, MessageListener
                 aTalkApp.getGlobalContext().startActivity(chatIntent);
             }
             // if (conferenceChatSession != null) {
-            // this.setChatSession(conferenceChatSession);
+            //   this.setChatSession(conferenceChatSession);
             // }
         }
         // We're already in a conference chat.

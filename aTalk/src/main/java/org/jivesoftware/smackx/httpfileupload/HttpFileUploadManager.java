@@ -42,15 +42,10 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPConnectionRegistry;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
+import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
@@ -507,8 +502,8 @@ public final class HttpFileUploadManager extends Manager {
 
     private void upload(InputStream iStream, long fileSize, Slot slot, UploadProgressListener listener) throws IOException {
         final URL putUrl = slot.getPutUrl();
-
-        final HttpURLConnection urlConnection = (HttpURLConnection) putUrl.openConnection();
+        final XMPPConnection connection = connection();
+        final HttpURLConnection urlConnection = createURLConnection(connection, putUrl);
 
         urlConnection.setRequestMethod("PUT");
         urlConnection.setUseCaches(false);
@@ -580,6 +575,30 @@ public final class HttpFileUploadManager extends Manager {
         finally {
             urlConnection.disconnect();
         }
+    }
+
+    private static HttpURLConnection createURLConnection(XMPPConnection connection, URL putUrl) throws IOException {
+        Objects.requireNonNull(connection);
+        Objects.requireNonNull(putUrl);
+        ProxyInfo proxyInfo = fetchProxyInfo(connection);
+        if (proxyInfo != null) {
+            return createProxiedURLConnection(proxyInfo, putUrl);
+        }
+        return (HttpURLConnection) putUrl.openConnection();
+    }
+
+    private static HttpURLConnection createProxiedURLConnection(ProxyInfo proxyInfo, URL putUrl) throws IOException {
+        Objects.requireNonNull(proxyInfo);
+        Objects.requireNonNull(putUrl);
+        return (HttpURLConnection) putUrl.openConnection(proxyInfo.toJavaProxy());
+    }
+
+    private static ProxyInfo fetchProxyInfo(XMPPConnection connection) {
+        if (!(connection instanceof AbstractXMPPConnection)) {
+            return null;
+        }
+        AbstractXMPPConnection xmppConnection = (AbstractXMPPConnection) connection;
+        return xmppConnection.getConfiguration().getProxyInfo();
     }
 
     public static UploadService.Version namespaceToVersion(String namespace) {

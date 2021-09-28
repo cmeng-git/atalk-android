@@ -5,11 +5,17 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import android.app.*;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 
@@ -47,7 +53,8 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     /**
      * The listener that will be notified when this dialog is closed
      */
-    private DialogClosedListener listener;
+    private DialogClosedListener mListener;
+    private AppCompatActivity mActivity;
 
     /**
      * Flag indicating if there have been any changes made
@@ -55,12 +62,14 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     private boolean hasChanges = false;
 
     @Override
-    public void onAttach(Activity activity)
+    public void onAttach(@NonNull Context context)
     {
-        super.onAttach(activity);
-        listener = (DialogClosedListener) activity;
+        super.onAttach(context);
+        mActivity = (AppCompatActivity) context;
+        mListener = (DialogClosedListener) context;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -72,14 +81,13 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
             this.protocolsAdapter = new ProtocolsAdapter(savedInstanceState.getStringArray(STATE_ENCRYPTIONS),
                     (Map<String, Boolean>) savedInstanceState.get(STATE_STATUS_MAP));
         }
+        // Get the layout inflater
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View contentView = inflater.inflate(R.layout.sec_protocols_dialog, null);
 
         // Builds the dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder = builder.setTitle(R.string.service_gui_SEC_PROTOCOLS_TITLE);
-
-        // Get the layout inflater
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View contentView = inflater.inflate(R.layout.sec_protocols_dialog, null);
         builder.setView(contentView).setPositiveButton(R.string.service_gui_SEC_PROTOCOLS_OK, (dialog, i) -> {
             hasChanges = true;
             dismiss();
@@ -96,11 +104,11 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
+    public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(STATE_ENCRYPTIONS, protocolsAdapter.encryptions);
+        outState.putSerializable(STATE_ENCRYPTIONS, protocolsAdapter.mEncryptions);
         outState.putSerializable(STATE_STATUS_MAP, (Serializable) protocolsAdapter.statusMap);
     }
 
@@ -112,8 +120,8 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     public void commit(SecurityAccountRegistration securityReg)
     {
         Map<String, Integer> protocols = new HashMap<>();
-        for (int i = 0; i < protocolsAdapter.encryptions.length; i++) {
-            protocols.put(protocolsAdapter.encryptions[i], i);
+        for (int i = 0; i < protocolsAdapter.mEncryptions.length; i++) {
+            protocols.put(protocolsAdapter.mEncryptions[i], i);
         }
         securityReg.setEncryptionProtocols(protocols);
         securityReg.setEncryptionProtocolStatus(protocolsAdapter.statusMap);
@@ -128,11 +136,11 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog)
+    public void onDismiss(@NonNull DialogInterface dialog)
     {
         super.onDismiss(dialog);
-        if (listener != null) {
-            listener.onDialogClosed(this);
+        if (mListener != null) {
+            mListener.onDialogClosed(this);
         }
     }
 
@@ -154,7 +162,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         /**
          * The array of encryption protocol names
          */
-        protected String[] encryptions;
+        protected String[] mEncryptions;
         /**
          * Maps the on/off status to every protocol
          */
@@ -163,13 +171,12 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         /**
          * Creates a new instance of {@link ProtocolsAdapter}
          *
-         * @param encryptions
-         * @param statusMap
+         * @param encryptions reference copy
+         * @param statusMap reference copy
          */
         ProtocolsAdapter(final Map<String, Integer> encryptions, final Map<String, Boolean> statusMap)
         {
-            String[] encInOrder = (String[]) SecurityAccountRegistration.loadEncryptionProtocols(encryptions, statusMap)[0];
-            this.encryptions = encInOrder;
+            mEncryptions = (String[]) SecurityAccountRegistration.loadEncryptionProtocols(encryptions, statusMap)[0];
             // Fills missing entries
             for (String enc : encryptions.keySet()) {
                 if (!statusMap.containsKey(enc))
@@ -181,23 +188,23 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         /**
          * Creates new instance of {@link ProtocolsAdapter}
          *
-         * @param encryptions
-         * @param statusMap
+         * @param encryptions reference copy
+         * @param statusMap reference copy
          */
         ProtocolsAdapter(String[] encryptions, Map<String, Boolean> statusMap)
         {
-            this.encryptions = encryptions;
+            this.mEncryptions = encryptions;
             this.statusMap = statusMap;
         }
 
         public int getCount()
         {
-            return encryptions.length;
+            return mEncryptions.length;
         }
 
         public Object getItem(int i)
         {
-            return encryptions[i];
+            return mEncryptions[i];
         }
 
         public long getItemId(int i)
@@ -209,7 +216,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         {
             final String encryption = (String) getItem(i);
 
-            LayoutInflater li = getActivity().getLayoutInflater();
+            LayoutInflater li = requireActivity().getLayoutInflater();
             View v = li.inflate(R.layout.encoding_item, viewGroup, false);
 
             TextView tv = v.findViewById(android.R.id.text1);
@@ -221,7 +228,6 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
                 statusMap.put(encryption, state);
                 hasChanges = true;
             });
-
             return v;
         }
 
@@ -234,11 +240,11 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         public void drop(int from, int to)
         {
             hasChanges = true;
-            String swap = encryptions[to];
-            encryptions[to] = encryptions[from];
-            encryptions[from] = swap;
+            String swap = mEncryptions[to];
+            mEncryptions[to] = mEncryptions[from];
+            mEncryptions[from] = swap;
 
-            getActivity().runOnUiThread(this::notifyDataSetChanged);
+            mActivity.runOnUiThread(this::notifyDataSetChanged);
         }
     }
 }

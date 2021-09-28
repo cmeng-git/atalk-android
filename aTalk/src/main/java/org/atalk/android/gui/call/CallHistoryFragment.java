@@ -23,13 +23,15 @@ import android.util.SparseBooleanArray;
 import android.view.*;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
 import net.java.sip.communicator.service.callhistory.*;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
@@ -47,8 +49,6 @@ import org.jxmpp.jid.Jid;
 
 import java.util.*;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**
@@ -62,12 +62,12 @@ public class CallHistoryFragment extends OSGiFragment
     /**
      * A map of <contact, MetaContact>
      */
-    private Map<String, MetaContact> mMetaContacts = new LinkedHashMap<>();
+    private final Map<String, MetaContact> mMetaContacts = new LinkedHashMap<>();
 
     /**
      * The list of call records
      */
-    private List<CallRecord> callRecords = new ArrayList<>();
+    private final List<CallRecord> callRecords = new ArrayList<>();
 
     /**
      * The Call record list view adapter for user selection
@@ -126,7 +126,7 @@ public class CallHistoryFragment extends OSGiFragment
      */
     private class CallHistoryAdapter extends BaseAdapter
     {
-        private LayoutInflater mInflater;
+        private final LayoutInflater mInflater;
         public int CALL_RECORD = 1;
 
         private CallHistoryAdapter(LayoutInflater inflater)
