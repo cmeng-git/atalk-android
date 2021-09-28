@@ -1,6 +1,5 @@
 package com.akhgupta.easylocation;
 
-
 import com.google.android.gms.location.LocationRequest;
 
 public class EasyLocationRequest {
@@ -36,10 +35,8 @@ public class EasyLocationRequest {
         this.locationSettingsDialogNegativeButtonText = locationSettingsDialogNegativeButtonText;
         this.locationPermissionDialogTitle = locationPermissionDialogTitle;
         this.locationPermissionDialogMessage = locationPermissionDialogMessage;
-        this.locationPermissionDialogPositiveButtonText
-                = locationPermissionDialogPositiveButtonText;
-        this.locationPermissionDialogNegativeButtonText
-                = locationPermissionDialogNegativeButtonText;
+        this.locationPermissionDialogPositiveButtonText = locationPermissionDialogPositiveButtonText;
+        this.locationPermissionDialogNegativeButtonText = locationPermissionDialogNegativeButtonText;
         this.fallBackToLastLocationTime = fallBackToLastLocationTime;
     }
 }

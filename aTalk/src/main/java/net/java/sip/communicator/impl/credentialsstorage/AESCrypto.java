@@ -132,6 +132,7 @@ public class AESCrypto implements Crypto
 
         // Password-Based Key Derivation Function found in PKCS5 v2.0.
         // This is only available with java 6.
+        // SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithSHA256And256BitAES-CBC-BC");
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         // Make a key from the master password
         KeySpec spec = new PBEKeySpec(masterPassword.toCharArray(), SALT, ITERATION_COUNT, keyLength);

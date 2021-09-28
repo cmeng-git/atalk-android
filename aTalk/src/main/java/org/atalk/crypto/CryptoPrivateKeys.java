@@ -16,11 +16,12 @@
  */
 package org.atalk.crypto;
 
-import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
+
+import androidx.appcompat.app.AlertDialog;
 
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
@@ -47,8 +48,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Settings screen displays local private keys. Allows user to generate new or regenerate
- * if one exists.
+ * Settings screen displays local private keys. Allows user to generate new or regenerate if one exists.
  *
  * @author Eng Chong Meng
  */
@@ -141,8 +141,7 @@ public class CryptoPrivateKeys extends OSGiActivity
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.crypto_key_ctx_menu, menu);
+        getMenuInflater().inflate(R.menu.crypto_key_ctx_menu, menu);
 
         ListView.AdapterContextMenuInfo ctxInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
         int pos = ctxInfo.position;

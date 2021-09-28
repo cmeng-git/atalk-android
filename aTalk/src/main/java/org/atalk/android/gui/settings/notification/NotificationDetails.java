@@ -139,7 +139,7 @@ public class NotificationDetails extends OSGiActivity
         initSoundNotification();
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(ActionBarToggleFragment.create(""),
+            getSupportFragmentManager().beginTransaction().add(ActionBarToggleFragment.newInstance(""),
                     "action_bar_toggle").commit();
         }
     }

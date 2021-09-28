@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.util;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -24,6 +23,8 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.atalk.android.R;
 

@@ -5,14 +5,19 @@
  */
 package org.atalk.android.gui.contactlist;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.*;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.PopupMenu.OnMenuItemClickListener;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.PopupMenu.OnMenuItemClickListener;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.*;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -42,8 +47,6 @@ import org.jxmpp.jid.Jid;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.*;
 import timber.log.Timber;
 
 /**
@@ -159,10 +162,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         // Restore search state based on entered text
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
-            int id = searchView.getContext().getResources()
-                    .getIdentifier("android:id/search_src_text", null, null);
-
-            String filter = ViewUtil.toString(searchView.findViewById(id));
+            String filter = ViewUtil.toString(searchView.findViewById(R.id.search_src_text));
             filterContactList(filter);
             bindSearchListener();
         }
@@ -234,9 +234,10 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     {
         super.onCreateOptionsMenu(menu, menuInflater);
 
-        // Get the SearchView and set the search configuration
-        SearchManager searchManager = (SearchManager) aTalkApp.getGlobalContext().getSystemService(Context.SEARCH_SERVICE);
+        // Get the SearchView MenuItem
         mSearchItem = menu.findItem(R.id.search);
+        if (mSearchItem == null)
+            return;
 
         mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
         {
@@ -252,15 +253,6 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                 return true; // Return true to expand action view
             }
         });
-
-        SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(((FragmentActivity) mContext).getComponentName()));
-
-        int id = searchView.getContext().getResources()
-                .getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = searchView.findViewById(id);
-        textView.setTextColor(getResources().getColor(R.color.white));
-        textView.setHintTextColor(getResources().getColor(R.color.white));
         bindSearchListener();
     }
 
@@ -684,9 +676,9 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     class SearchViewListener implements SearchView.OnQueryTextListener, SearchView.OnCloseListener
     {
         @Override
-        public boolean onClose()
+        public boolean onQueryTextSubmit(String query)
         {
-            filterContactList("");
+            filterContactList(query);
             return true;
         }
 
@@ -698,9 +690,9 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         }
 
         @Override
-        public boolean onQueryTextSubmit(String query)
+        public boolean onClose()
         {
-            filterContactList(query);
+            filterContactList("");
             return true;
         }
     }

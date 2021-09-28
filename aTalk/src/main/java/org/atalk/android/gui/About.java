@@ -27,13 +27,14 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.service.osgi.OSGiActivity;
 
 import de.cketti.library.changelog.ChangeLog;
 
@@ -42,7 +43,7 @@ import de.cketti.library.changelog.ChangeLog;
  *
  * @author Eng Chong Meng
  */
-public class About extends OSGiActivity implements View.OnClickListener
+public class About extends FragmentActivity implements View.OnClickListener
 {
     private static final String[][] USED_LIBRARIES = new String[][]{
             new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},

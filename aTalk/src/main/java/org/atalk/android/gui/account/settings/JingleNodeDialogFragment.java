@@ -5,7 +5,6 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,6 +22,7 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -68,14 +68,13 @@ public class JingleNodeDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        // Builds the dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder = builder.setTitle(R.string.service_gui_SEC_PROTOCOLS_TITLE);
-
         // Get the layout inflater
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
         View contentView = inflater.inflate(R.layout.jingle_node_dialog, null);
 
+        // Builds the dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder = builder.setTitle(R.string.service_gui_JBR_JINGLE_NODES);
         builder = builder.setView(contentView)
                 .setPositiveButton(R.string.service_gui_SAVE, null)
                 .setNeutralButton(R.string.service_gui_SERVERS_LIST_CANCEL, null);

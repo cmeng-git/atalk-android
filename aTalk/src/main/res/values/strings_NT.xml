@@ -24,12 +24,16 @@
 #
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
+
     <string name="APPLICATION_NAME">aTalk</string>
+    <string name="applicationId">org.atalk.android</string>
     <string name="account_server_port">5222</string>
     <string name="chatroom_hint">chatroom@example.com</string>
     <string name="encryption_choice_omemo">OMEMO</string>
     <string name="encryption_choice_otr">OTR</string>
+    <string name="otr_session">OTR Sessions</string>
     <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="ACCOUNT_TYPE">org.atalk.android.account</string>
     <string name="service_gui_URL_MEDIA_SHARE">&lt;html>&lt;a href=\'%3$s\'>&lt;img src=\'%1$s\' alt=\'url image\'/>&lt;/a>&lt;br/>%2$s&lt;br/>&lt;a href=\'%3$s\'>%3$s&lt;/a>&lt;/html></string>
@@ -372,7 +376,6 @@
 
     <!-- Android Permissions -->
     <string name="app_name2">Dexter</string>
-
 
     <!-- Android Notification Channels -->
     <string name="noti_channel_MESSAGE_GROUP">Chat Message Notification</string>

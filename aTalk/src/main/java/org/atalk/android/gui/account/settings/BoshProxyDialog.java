@@ -101,32 +101,32 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
         setTitle(R.string.service_gui_settings_BOSH_PROXY);
         this.setContentView(R.layout.bosh_proxy_dialog);
 
-        spinnerType = this.findViewById(R.id.boshProxyType);
+        spinnerType = findViewById(R.id.boshProxyType);
 
-        boshUrlSetting = this.findViewById(R.id.boshURL_setting);
-        boshURL = this.findViewById(R.id.boshURL);
+        boshUrlSetting = findViewById(R.id.boshURL_setting);
+        boshURL = findViewById(R.id.boshURL);
         boshURL.addTextChangedListener(this);
 
-        cbHttpProxy = this.findViewById(R.id.cbHttpProxy);
+        cbHttpProxy = findViewById(R.id.cbHttpProxy);
         cbHttpProxy.setOnCheckedChangeListener((buttonView, isChecked) -> hasChanges = true);
 
-        proxyHost = this.findViewById(R.id.proxyHost);
+        proxyHost = findViewById(R.id.proxyHost);
         proxyHost.addTextChangedListener(this);
-        proxyPort = this.findViewById(R.id.proxyPort);
+        proxyPort = findViewById(R.id.proxyPort);
         proxyPort.addTextChangedListener(this);
 
-        proxyUserName = this.findViewById(R.id.proxyUsername);
+        proxyUserName = findViewById(R.id.proxyUsername);
         proxyUserName.addTextChangedListener(this);
-        proxyPassword = this.findViewById(R.id.proxyPassword);
+        proxyPassword = findViewById(R.id.proxyPassword);
         proxyPassword.addTextChangedListener(this);
 
         initBoshProxyDialog();
 
-        CheckBox showPassword = this.findViewById(R.id.show_password);
+        CheckBox showPassword = findViewById(R.id.show_password);
         showPassword.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ViewUtil.showPassword(proxyPassword, isChecked));
 
-        mApplyButton = this.findViewById(R.id.button_Apply);
+        mApplyButton = findViewById(R.id.button_Apply);
         mApplyButton.setOnClickListener(v -> {
             if (hasChanges) {
                 if (saveBoshProxySettings())
@@ -134,7 +134,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
             }
         });
 
-        Button cancelButton = this.findViewById(R.id.button_Cancel);
+        Button cancelButton = findViewById(R.id.button_Cancel);
         cancelButton.setOnClickListener(v -> checkUnsavedChanges());
         setCanceledOnTouchOutside(false);
         hasChanges = false;

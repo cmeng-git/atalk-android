@@ -1,49 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="AppTheme.Dark">
-        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
-    </style>
-
-    <!-- will crash aTalk when accessing to action bar etc -->
-    <!-- style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"-->
-
-    <style name="AppTheme.Dark" parent="android:Theme.Holo">
-        <!-- ActionBar - must include to have actionBar -->
-        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
-        <item name="android:actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
-
-        <!-- Preference Dialog attributes normal dialog / ListPreference dialog-->
-        <item name="android:dialogTheme">@style/DialogDark</item>
-        <item name="android:alertDialogTheme">@style/Theme_Holo_Dialog_Alert</item>
-        <!-- Actual ListPreference Dialog layout attr - private unable to override -->
-        <!--item name="alertDialogStyle">@style/AlertDialog_Holo</item-->
-
-        <!-- Preference popup windows attributes-->
-        <!--item name="android:popupMenuStyle">@style/PopupMenu</item-->
-
+    <style name="AppTheme.Dark" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
 
-        <item name="android:windowBackground">@color/background_dark</item>
+        <!-- Action menu background -->
         <item name="android:colorBackground">@color/background_dark</item>
+        <item name="android:windowBackground">@color/background_dark</item>
 
-        <!-- Menu item attributes -->
-        <item name="android:itemBackground">@color/background_dark</item>
+        <!-- Enable this get the alertDialog to have the correct background theme;
+             but also affects all display items background -->
+        <!--  <item name="android:background">@color/background_dark</item> -->
 
-        <!-- all ref attributes -->
+        <!-- app ref attributes -->
         <item name="colorBackground">@color/background_dark</item>
         <item name="colorForeground">@color/foreground_dark</item>
 
         <item name="colorBackgroundPrimary">@color/grey800</item>
         <item name="colorBackgroundSecondary">@color/grey900</item>
 
-        <item name="android:itemTextAppearance">@style/MenuItemTextAppearance</item>
         <item name="textColorPrimary">@color/textColorWhite</item>
         <item name="textColorSecondary">@color/textColorWhite</item>
 
-        <item name="android:editTextStyle">@style/edit_text_dark</item>
+        <!-- Menu item attributes; enable will lead to action menu item not highlighted when selected -->
+        <!-- <item name="android:itemBackground">@color/background_dark</item>-->
+        <!-- <item name="android:itemTextAppearance">@style/MenuItemTextAppearance</item>-->
+
+        <!-- ActionBar - must include to have actionBar (not required in Theme.AppCompat -->
+        <!-- <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
+        <item name="actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
+
+        <!-- Theme for inflating Preference objects -->
+        <!-- <item name="preferenceTheme">@style/PreferenceThemeOverlay</item> -->
+
+        <!-- Preference Dialog attributes normal dialog / ListPreference dialog extensions e.g. BoshProxyDialog-->
+        <item name="android:dialogTheme">@style/Dialog_Dark</item>
+        <item name="alertDialogTheme">@style/AlertDialog_Dark</item>
+
+        <!-- Actual ListPreference Dialog layout attr - private unable to override -->
+        <!--item name="alertDialogStyle">@style/AlertDialog_Holo</item-->
 
         <!-- icon attributes -->
         <item name="iconCertificate">@drawable/ic_certificate_dark</item>
@@ -79,22 +76,13 @@
         <item name="MainWindow_NewMsg_Stealth_Color">#FF57007F</item-->
     </style>
 
-    <style name="AppTheme.Light" parent="android:Theme.Holo.Light">
-        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>
-        <item name="android:actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
-
-        <item name="android:actionModeStyle">@style/ActionMode</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_cab_done_holo_dark</item>
-
-        <!--item name="android:listSeparatorTextViewStyle">@style/PreferenceListHeader</item-->
-
+    <style name="AppTheme.Light" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent</item>
 
-        <item name="android:windowBackground">@color/background_light</item>
         <item name="android:colorBackground">@color/background_light</item>
-        <item name="android:itemBackground">@color/background_light</item>
+        <item name="android:windowBackground">@color/background_light</item>
 
         <item name="colorBackground">@color/background_light</item>
         <item name="colorForeground">@color/foreground_light</item>
@@ -102,13 +90,24 @@
         <item name="colorBackgroundPrimary">@color/grey50</item>
         <item name="colorBackgroundSecondary">@color/grey200</item>
 
-        <item name="android:itemTextAppearance">@style/MenuItemTextAppearance</item>
         <item name="textColorPrimary">@color/textColorBlack</item>
         <item name="textColorSecondary">@color/textColorBlack</item>
 
-        <!-- Dialog attributes -->
-        <item name="android:dialogTheme">@style/DialogLight</item>
-        <!--item name="android:alertDialogTheme">@style/AppTheme.Dialog.Alert.Light</item-->
+        <!-- Menu item attributes -->
+        <!-- <item name="android:itemBackground">@color/background_light</item>-->
+        <!-- <item name="android:itemTextAppearance">@style/MenuItemTextAppearance</item>-->
+
+        <!-- <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
+        <item name="actionOverflowButtonStyle">@style/actionOverflowButtonStyle</item>
+
+        <item name="actionModeStyle">@style/ActionMode</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_cab_done_holo_dark</item>
+
+        <!--item name="android:listSeparatorTextViewStyle">@style/PreferenceListHeader</item-->
+
+        <!-- override the default theme for DialogFragments -->
+        <item name="android:dialogTheme">@style/Dialog_Light</item>
+        <item name="alertDialogTheme">@style/AlertDialog_Light</item>
 
         <!-- icon attributes -->
         <item name="iconCertificate">@drawable/ic_certificate_light</item>
@@ -143,14 +142,26 @@
         <item name="MainWindow_NewMsg_Stealth_Color">#FFA880FF</item-->
     </style>
 
-    <!--style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/color_primary</item>
-        <item name="colorPrimaryDark">@color/color_primary_dark</item>
-        <item name="colorAccent">@color/color_accent</item>
-    </style-->
+    <style name="AppTheme" parent="AppTheme.Dark">
+<!--        <item name="android:actionBarStyle">@style/AppTheme.ActionBar</item>-->
+    </style>
+
+    <style name="AppTheme_NoActionBar" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/color_primary</item>
+    </style>
+
+    <style name="AppTheme_ActionBarLight" parent="android:Widget.Holo.Light">
+        <!-- <item name="android:background">#3000</item>
+        <item name="background">#3000</item> -->
+        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
+    </style>
+
+    <style name="AppTheme_ActionBarDark" parent="android:Widget.Holo">
+        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
+    </style>
 
     <!-- App ActionBar Themes : unable to remove alertDialog window wrapper with background value set -->
-    <style name="AppTheme.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+    <style name="AppTheme_ActionBar" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">@drawable/actionbar_bg</item>
         <item name="android:popupBackground">@color/background_dark</item>
         <item name="android:displayOptions">useLogo|showHome|homeAsUp|showCustom</item>
@@ -159,23 +170,9 @@
         <item name="android:customNavigationLayout">@layout/action_bar</item>
     </style>
 
-    <!-- OverflowButtonStyle force to white always-->
+    <!-- OverflowButtonStyle force to white always -->
     <style name="actionOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_menu_moreoverflow_dark</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar" parent="@android:style/Theme.Holo.NoActionBar">
-        <item name="android:windowBackground">@color/color_primary</item>
-    </style>
-
-    <style name="AppTheme.ActionBarLight" parent="android:Widget.Holo.Light">
-        <!-- <item name="android:background">#3000</item>
-        <item name="background">#3000</item> -->
-        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
-    </style>
-
-    <style name="AppTheme.ActionBarDark" parent="android:Widget.Holo">
-        <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
+        <item name="android:src">@drawable/ic_menu_overflow_dark</item>
     </style>
 
     <style name="IndeterminateProgress" parent="android:Widget.ProgressBar.Horizontal">
@@ -185,63 +182,48 @@
         <item name="android:maxHeight">32dip</item>
     </style>
 
-    <!-- Still not working; still has a black bar at the bottom. Use android:dialogMessage="\n" in xml -->
-    <style name="edit_text_dark" parent="@android:style/Widget.EditText">
-        <item name="android:background">@color/background_dark</item>
-    </style>
-
     <!-- ActionMode menu background color -->
     <style name="ActionMode" parent="@android:style/Widget.Holo.ActionMode">
         <item name="android:background">@color/background_dark</item>
         <item name="android:titleTextStyle">@style/TextAppearance_ActionMode_Title</item>
     </style>
 
-    <!-- Main menu text color and size-->
+    <!-- Main menu text color and size -->
     <style name="MenuItemTextAppearance">
         <item name="android:textColor">?attr/textColorPrimary</item>
     </style>
 
-    <!-- ActionMode menu Title text color and size-->
+    <!-- ActionMode menu Title text color and size -->
     <style name="TextAppearance_ActionMode_Title" parent="android:TextAppearance.Medium">
         <item name="android:textColor">@color/textColorWhite</item>
     </style>
 
-    <style name="PopupMenu" parent="android:Widget.Holo.ListPopupWindow">
-        <item name="android:popupBackground">@color/background_dark</item>
-    </style>
-
-    <!-- App Dialog Themes -->
-    <style name="DialogDark" parent="@android:style/Theme.Holo.Dialog">
+    <!-- App Dialog Themes; android:windowNoTitle false to have Title -->
+    <style name="Dialog_Dark" parent="@style/Theme.AppCompat.Dialog.MinWidth">
+        <item name="android:colorBackground">@color/background_dark</item>
         <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
+        <item name="android:windowNoTitle">false</item>
     </style>
 
-    <style name="DialogLight" parent="@android:style/Theme.Holo.Light.Dialog">
+    <style name="Dialog_Light" parent="Theme.AppCompat.Light.Dialog.MinWidth" >
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
+        <item name="android:windowNoTitle">false</item>
     </style>
 
-    <!--ListPreference Dialog Theme-->
-    <style name="Theme_Holo_Dialog_Alert" parent="@android:style/Theme.Holo.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowTitleStyle">@style/DialogWindowTitle_Holo</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
-        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
-
-        <!-- Preference alert dialog background include dialog window wrapper outer overlay -->
+    <!-- ListPreference Dialog Theme Theme.AppCompat.Dialog.Alert; android:windowNoTitle will add extra Title space -->
+    <style name="AlertDialog_Dark" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:colorBackground">@color/background_dark</item>
         <item name="android:background">@color/background_dark</item>
-
-        <!-- Preference popoup i.e. option Item menu background in accountList -->
-        <item name="android:itemBackground">@color/background_dark</item>
-
-        <!-- Preference alert dialog button background -->
-        <item name="android:buttonBarStyle">@style/DialogAlertDarkButtonBarStyle</item>
-        <item name="borderlessButtonStyle">@style/DialogAlertDarkButtonBarStyle</item>
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
     </style>
 
-    <style name="DialogWindowTitle_Holo" parent="android:Widget.TextView">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:textSize">22sp</item>
+    <style name="AlertDialog_Light" parent="Theme.AppCompat.Light.Dialog.MinWidth">
+        <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
+    </style>
+
+    <style name="DialogWindowTitle" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">@color/color_accent</item>
-        <item name="android:maxLines">1</item>
     </style>
 
     <style name="DialogAlertDarkButtonBarStyle">
@@ -250,32 +232,6 @@
         <item name="dividerPadding">0dp</item>
     </style>
 
-    <style name="AppTheme.Dialog.Translucent.Dark" parent="@android:style/Theme.Holo.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
-
-        <item name="tintColorBulletPointPositive">#77aa22</item>
-        <item name="tintColorBulletPointNegative">#dd2222</item>
-        <item name="tintColorBulletPointNeutral">#bbb</item>
-    </style>
-
-    <style name="AppTheme.Dialog.Translucent.Light" parent="@android:style/Theme.Holo.Light.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
-
-        <item name="tintColorBulletPointPositive">#77aa22</item>
-        <item name="tintColorBulletPointNegative">#dd2222</item>
-        <item name="tintColorBulletPointNeutral">#bbb</item>
-    </style>
-
-    <style name="AppTheme.Transparent" parent="@android:style/Theme.NoDisplay" />
+    <style name="AppTheme_Transparent" parent="@android:style/Theme.NoDisplay" />
 
 </resources>

@@ -84,8 +84,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 206040
-        versionName "2.6.4"
+        versionCode 207000
+        versionName "2.7.0"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -261,14 +261,13 @@ dependencies {
     // Need latest release to fix incorrect youtube link extraction
     // implementation 'com.github.HaarigerHarald:android-youtubeExtractor:46579d1'
     implementation 'com.github.yalantis:ucrop:2.2.7'
-    implementation 'com.google.android.exoplayer:exoplayer:2.15.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.15.1'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 
-    // Incorrect reported by AS for new version 20041127.091804 which is old
     implementation 'commons-codec:commons-codec:1.15'
     implementation 'org.apache.commons:commons-text:1.9'
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.1'
@@ -280,9 +279,12 @@ dependencies {
     // Can also use jdk15to18: bcprov-jdk15to18-167.jar - not working on aTalk as conflict with others e.g. zrtp4j, smack-openpgp
     // Duplicate class org.bouncycastle.x509.util.StreamParsingException found in modules jetified-bcprov-jdk15on-1.65
     // (org.bouncycastle:bcprov-jdk15on:1.65) and jetified-bcprov-jdk15to18-1.68 (org.bouncycastle:bcprov-jdk15to18:1.68)
+
+    //noinspection GradleDependency
     implementation 'org.bouncycastle:bcpg-jdk15on:1.65'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation 'org.bouncycastle:bctls-jdk15on:1.65'
+    //noinspection GradleDependency
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
 
     // Required for debug and tracing for bouncycastle - do not removed

@@ -7,8 +7,7 @@ package org.atalk.android.gui.actionbar;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.*;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -40,7 +39,7 @@ public class ActionBarToggleFragment extends OSGiFragment
     /**
      * Menu instance used to update the button
      */
-    private Menu menu;
+    private CompoundButton mToggleCB;
 
     /**
      * Creates new instance of <tt>ActionBarToggleFragment</tt>
@@ -48,6 +47,23 @@ public class ActionBarToggleFragment extends OSGiFragment
     public ActionBarToggleFragment()
     {
         setHasOptionsMenu(true);
+    }
+
+    /**
+     * Creates new instance of <tt>ActionBarToggleFragment</tt> with given description(can be
+     * empty but not <tt>null</tt>).
+     *
+     * @param labelText toggle button's description(can be empty, but not <tt>null</tt>).
+     * @return new instance of <tt>ActionBarToggleFragment</tt> parametrized with description argument.
+     */
+    static public ActionBarToggleFragment newInstance(String labelText)
+    {
+        ActionBarToggleFragment fragment = new ActionBarToggleFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_LABEL_TEXT, labelText);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     /**
@@ -67,18 +83,15 @@ public class ActionBarToggleFragment extends OSGiFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
         inflater.inflate(R.menu.actionbar_toggle_menu, menu);
 
         // Binds the button
-        CompoundButton cBox = menu.findItem(R.id.toggleView).getActionView().findViewById(android.R.id.toggle);
-        cBox.setOnCheckedChangeListener((cb, checked) -> model.setChecked(checked));
-
+        mToggleCB = menu.findItem(R.id.toggleView).getActionView().findViewById(android.R.id.toggle);
+        mToggleCB.setOnCheckedChangeListener((cb, checked) -> model.setChecked(checked));
         // Set label text
         ((TextView) menu.findItem(R.id.toggleView).getActionView().findViewById(android.R.id.text1))
                 .setText(getArguments().getString(ARG_LABEL_TEXT));
 
-        this.menu = menu;
         updateChecked();
     }
 
@@ -97,29 +110,9 @@ public class ActionBarToggleFragment extends OSGiFragment
      */
     private void updateChecked()
     {
-        if (menu == null)
-            return;
-
-        ((CompoundButton) menu.findItem(R.id.toggleView).getActionView()
-                .findViewById(android.R.id.toggle)).setChecked(model.isChecked());
-    }
-
-    /**
-     * Creates new instance of <tt>ActionBarToggleFragment</tt> with given description(can be
-     * empty but not <tt>null</tt>).
-     *
-     * @param labelText toggle button's description(can be empty, but not <tt>null</tt>).
-     * @return new instance of <tt>ActionBarToggleFragment</tt> parametrized with description argument.
-     */
-    static public ActionBarToggleFragment create(String labelText)
-    {
-        ActionBarToggleFragment fragment = new ActionBarToggleFragment();
-
-        Bundle args = new Bundle();
-        args.putString(ARG_LABEL_TEXT, labelText);
-        fragment.setArguments(args);
-
-        return fragment;
+        if (mToggleCB != null) {
+            mToggleCB.setChecked(model.isChecked());
+        }
     }
 
     /**

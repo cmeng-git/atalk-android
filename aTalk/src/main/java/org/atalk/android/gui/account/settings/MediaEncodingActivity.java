@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.account.settings;
@@ -8,17 +8,19 @@ package org.atalk.android.gui.account.settings;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.Menu;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.actionbar.ActionBarToggleFragment;
 import org.atalk.impl.neomedia.*;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -109,9 +111,11 @@ public class MediaEncodingActivity extends OSGiActivity
         loadEncodings(savedInstanceState);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(ActionBarToggleFragment.create(
-                    getString(R.string.service_gui_ENC_OVERRIDE_GLOBAL)),
-                    "action_bar_toggle").commit();
+            ActionBarToggleFragment toggleFragment
+                    = ActionBarToggleFragment.newInstance(getString(R.string.service_gui_ENC_OVERRIDE_GLOBAL));
+            getSupportFragmentManager().beginTransaction()
+                    .add(toggleFragment, "action_bar_toggle")
+                    .commit();
         }
     }
 

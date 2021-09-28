@@ -5,16 +5,18 @@
     <org.atalk.android.gui.settings.widget.ConfigCheckBox
         android:key="@string/pref_key_silk_fec"
         android:title="@string/service_gui_settings_SILK_FEC" />
+
     <org.atalk.android.gui.settings.widget.ConfigCheckBox
         android:key="@string/pref_key_silk_assume_pl"
         android:title="@string/service_gui_settings_SILK_ASSUME_PL" />
+
     <org.atalk.android.gui.settings.widget.ConfigEditText
-        android:dialogMessage="\n"
         android:inputType="numberDecimal"
         android:key="@string/pref_key_silk_fec_sat"
         android:title="@string/service_gui_settings_SILK_FEC_SAT"
         custom:floatMax="1"
         custom:floatMin="0" />
+
     <org.atalk.android.gui.settings.widget.ConfigCheckBox
         android:key="@string/pref_key_silk_advertise_FEC"
         android:title="@string/service_gui_settings_SILK_ADVERTISE_FEC" />

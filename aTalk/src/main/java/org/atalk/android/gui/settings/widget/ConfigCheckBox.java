@@ -1,14 +1,16 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.settings.widget;
 
 import android.content.Context;
-import android.preference.CheckBoxPreference;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.PreferenceManager;
 
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
@@ -17,13 +19,14 @@ import org.atalk.service.configuration.ConfigurationService;
  * Checkbox preference that persists the value through <tt>ConfigurationService</tt>.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class ConfigCheckBox extends CheckBoxPreference
 {
     /**
      * <tt>ConfigWidgetUtil</tt> used by this instance.
      */
-    private ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this);
+    private final ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this);
 
     public ConfigCheckBox(Context context, AttributeSet attrs, int defStyle)
     {
@@ -46,9 +49,9 @@ public class ConfigCheckBox extends CheckBoxPreference
      * {@inheritDoc}
      */
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+    protected void onSetInitialValue(@Nullable Object defaultValue)
     {
-        super.onSetInitialValue(restoreValue, defaultValue);
+        super.onSetInitialValue(defaultValue);
         configUtil.updateSummary(isChecked());
     }
 

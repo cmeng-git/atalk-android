@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/accountInfo_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    tools:ignore="Autofill,TextFields,TooManyViews"
     android:padding="5dp">
 
     <RelativeLayout
         android:id="@+id/avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -27,27 +28,28 @@
             android:id="@+id/ai_ImageUrl"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            tools:ignore="LabelFor" />
 
         <ImageView
             android:id="@+id/accountAvatar"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/avatar_Hint"
+            android:layout_alignParentStart="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
             android:background="@color/background_light"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/person_photo" />
+            android:src="@drawable/person_photo"
+            tools:ignore="ContentDescription" />
 
         <Spinner
             android:id="@+id/presenceStatusSpinner"
             style="@style/SpinnerItem.DropDownItem"
-            android:layout_height="32dp"
-            android:layout_alignEnd="@+id/statusMessage"
+            android:layout_height="28dp"
             android:layout_alignTop="@+id/accountAvatar"
             android:layout_toEndOf="@+id/accountAvatar" />
 
@@ -57,18 +59,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/accountAvatar"
-            android:layout_below="@+id/presenceStatusSpinner"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="10dp"
             android:layout_toEndOf="@+id/accountAvatar"
             android:focusable="true"
             android:hint="@string/service_gui_EDIT_STATUS_MSG_TIP"
-            android:inputType="textCapSentences|textMultiLine" />
+            android:inputType="textCapSentences|textMultiLine"
+            android:paddingTop="10dp" />
     </RelativeLayout>
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
@@ -82,10 +81,9 @@
                 android:id="@+id/ai_DisplayName_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_DisplayName"
@@ -97,7 +95,7 @@
                 <EditText
                     android:id="@+id/ai_DisplayNameField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -106,7 +104,6 @@
                 android:id="@+id/ai_FirstName_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -120,7 +117,7 @@
                 <EditText
                     android:id="@+id/ai_FirstNameField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -129,7 +126,6 @@
                 android:id="@+id/ai_MiddleName_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -143,7 +139,7 @@
                 <EditText
                     android:id="@+id/ai_MiddleNameField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -152,7 +148,6 @@
                 android:id="@+id/ai_LastName_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -166,7 +161,7 @@
                 <EditText
                     android:id="@+id/ai_LastNameField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -175,10 +170,9 @@
                 android:id="@+id/ai_NickName_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_NickName"
@@ -190,7 +184,7 @@
                 <EditText
                     android:id="@+id/ai_NickNameField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -199,10 +193,9 @@
                 android:id="@+id/ai_URL_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_URL"
@@ -214,7 +207,7 @@
                 <EditText
                     android:id="@+id/ai_URLField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/service_gui_URL_HINT"
                     android:inputType="textUri"
@@ -225,10 +218,9 @@
                 android:id="@+id/ai_Gender_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_Gender"
@@ -240,7 +232,7 @@
                 <EditText
                     android:id="@+id/ai_GenderField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -249,7 +241,6 @@
                 android:id="@+id/ai_BirthDate_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -274,18 +265,17 @@
                     android:id="@+id/datePicker"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@drawable/ic_calender" />
+                    android:src="@drawable/ic_calender"
+                    tools:ignore="ContentDescription" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ai_Age_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -299,7 +289,7 @@
                 <EditText
                     android:id="@+id/ai_AgeField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -308,10 +298,9 @@
                 android:id="@+id/ai_StreetAddress_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_StreetAddress"
@@ -323,7 +312,7 @@
                 <EditText
                     android:id="@+id/ai_StreetAddressField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -332,10 +321,9 @@
                 android:id="@+id/ai_City_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_City"
@@ -347,7 +335,7 @@
                 <EditText
                     android:id="@+id/ai_CityField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -356,10 +344,9 @@
                 android:id="@+id/ai_Region_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_Region"
@@ -371,7 +358,7 @@
                 <EditText
                     android:id="@+id/ai_RegionField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -380,10 +367,9 @@
                 android:id="@+id/ai_PostalCode_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_PostalCode"
@@ -395,7 +381,7 @@
                 <EditText
                     android:id="@+id/ai_PostalCodeField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -404,10 +390,9 @@
                 android:id="@+id/ai_Country_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_Country"
@@ -419,7 +404,7 @@
                 <EditText
                     android:id="@+id/ai_CountryField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -428,7 +413,6 @@
                 android:id="@+id/ai_EMail_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -442,7 +426,7 @@
                 <EditText
                     android:id="@+id/ai_EMailField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -451,10 +435,9 @@
                 android:id="@+id/ai_WorkEmail_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_WorkEmail"
@@ -466,7 +449,7 @@
                 <EditText
                     android:id="@+id/ai_WorkEmailField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -475,7 +458,6 @@
                 android:id="@+id/ai_Phone_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -489,7 +471,7 @@
                 <EditText
                     android:id="@+id/ai_PhoneField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -498,10 +480,9 @@
                 android:id="@+id/ai_WorkPhone_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_WorkPhone"
@@ -513,7 +494,7 @@
                 <EditText
                     android:id="@+id/ai_WorkPhoneField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -522,10 +503,9 @@
                 android:id="@+id/ai_MobilePhone_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_MobilePhone"
@@ -537,7 +517,7 @@
                 <EditText
                     android:id="@+id/ai_MobilePhoneField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -546,10 +526,9 @@
                 android:id="@+id/ai_OrganizationName_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_OrganizationName"
@@ -561,7 +540,7 @@
                 <EditText
                     android:id="@+id/ai_OrganizationNameField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -570,10 +549,9 @@
                 android:id="@+id/ai_JobTitle_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_JobTitle"
@@ -585,7 +563,7 @@
                 <EditText
                     android:id="@+id/ai_JobTitleField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="1" />
             </LinearLayout>
@@ -594,10 +572,9 @@
                 android:id="@+id/ai_AboutMe_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:baselineAligned="false"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/ai_AboutMe"
@@ -610,7 +587,7 @@
                 <EditText
                     android:id="@+id/ai_AboutMeField"
                     style="@style/MediumFont"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:hint="@string/plugin_accountinfo_ABOUT_ME_HINT" />
@@ -620,7 +597,7 @@
 
     <LinearLayout
         android:id="@+id/button_Container"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:orientation="horizontal">
@@ -644,6 +621,6 @@
             style="@style/ButtonTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_gui_APPLY" />
+            android:text="@string/service_gui_APPLY"/>
     </LinearLayout>
 </LinearLayout>

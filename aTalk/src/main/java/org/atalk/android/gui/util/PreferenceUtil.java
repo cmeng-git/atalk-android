@@ -5,7 +5,7 @@
  */
 package org.atalk.android.gui.util;
 
-import android.preference.*;
+import androidx.preference.*;
 
 /**
  * Utility class exposing methods to operate on <tt>Preference</tt> subclasses.
@@ -24,7 +24,7 @@ public class PreferenceUtil
      */
     static public void setCheckboxVal(PreferenceScreen screen, String prefKey, boolean isChecked)
     {
-        CheckBoxPreference cbPref = (CheckBoxPreference) screen.findPreference(prefKey);
+        CheckBoxPreference cbPref = screen.findPreference(prefKey);
         cbPref.setChecked(isChecked);
     }
 
@@ -37,7 +37,7 @@ public class PreferenceUtil
      */
     public static void setEditTextVal(PreferenceScreen screen, String prefKey, String txtValue)
     {
-        EditTextPreference cbPref = (EditTextPreference) screen.findPreference(prefKey);
+        EditTextPreference cbPref = screen.findPreference(prefKey);
         cbPref.setText(txtValue);
     }
 
@@ -50,7 +50,7 @@ public class PreferenceUtil
      */
     public static void setListVal(PreferenceScreen screen, String prefKey, String value)
     {
-        ListPreference lstPref = (ListPreference) screen.findPreference(prefKey);
+        ListPreference lstPref = screen.findPreference(prefKey);
         lstPref.setValue(value);
     }
 }

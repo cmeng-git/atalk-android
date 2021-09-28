@@ -21,76 +21,81 @@ public interface SecurityAuthority
     /**
      * Indicates that reason is unknown for authentication failure.
      */
-    public static final int REASON_UNKNOWN = -1;
+    int REASON_UNKNOWN = -1;
 
     /**
      * Indicates that the reason for obtaining credentials is that an authentication is required.
      */
-    public static final int AUTHENTICATION_REQUIRED = 0;
+    int AUTHENTICATION_REQUIRED = 0;
 
     /**
      * Indicates that the reason for obtaining credentials is that the last time a wrong password
      * has been provided.
      */
-    public static final int WRONG_PASSWORD = 1;
+    int WRONG_PASSWORD = 1;
 
     /**
      * Indicates that the reason for obtaining credentials is that the last time a wrong user name
      * has been provided.
      */
-    public static final int WRONG_USERNAME = 2;
+    int WRONG_USERNAME = 2;
 
     /**
      * Indicates that the reason for obtaining credentials is that the last login has an invalid authorization
      */
-    public static final int INVALID_AUTHORIZATION = 3;
+    int INVALID_AUTHORIZATION = 3;
 
     /**
      * Indicates that the reason for obtaining credentials is that the last connection has failed
      */
-    public static final int CONNECTION_FAILED = 4;
+    int CONNECTION_FAILED = 4;
 
     /**
      * Indicates that the reason for obtaining credentials is that the last server name provided
      * cannot be resolved to any server ip
      */
-    public static final int NO_SERVER_FOUND = 5;
+    int NO_SERVER_FOUND = 5;
 
     /**
      * Indicates that the requested service is not available: sasl, incompatible authentication mechanism etc
      */
-    public static final int AUTHENTICATION_FAILED = 6;
+    int AUTHENTICATION_FAILED = 6;
 
     /**
      * Indicates that the reason for obtaining credentials is that the last login has failed server account registration
      */
-    public static final int AUTHENTICATION_FORBIDDEN = 7;
+    int AUTHENTICATION_FORBIDDEN = 7;
 
     /**
      * Indicates that the reason for obtaining credentials is that the last login is not authorized
      * - IBR registration required.
      */
-    public static final int NOT_AUTHORIZED = 8;
+    int NOT_AUTHORIZED = 8;
+
+    /**
+     * SASLError using EXTERNAL: not-authorized: Failed to get peer certificate
+     */
+    int SASL_ERROR_EXTERNAL = 9;
 
     /**
      * Indicates that reason for login failure is due to a policy violation.
      */
-    public static final int POLICY_VIOLATION = 10;
+    int POLICY_VIOLATION = 10;
 
     /**
      * Indicates that reason for login failure is due to a policy violation.
      */
-    public static final int DNSSEC_NOT_ALLOWED = 11;
+    int DNSSEC_NOT_ALLOWED = 11;
 
     /**
      * Indicates that reason for login failure is due to conflict e.g. multiple login instances
      */
-    public static final int CONFLICT = 12;
+    int CONFLICT = 12;
 
     /**
      * Indicates that reason for login failure is due to security exception: ssl connection failed
      */
-    public static final int SECURITY_EXCEPTION = 13;
+    int SECURITY_EXCEPTION = 13;
 
     /**
      * Returns a UserCredentials object associated with the specified realm, by specifying the

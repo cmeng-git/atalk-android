@@ -6,9 +6,12 @@
 package org.atalk.android.gui.account;
 
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.*;
 import android.view.*;
 import android.widget.*;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentTransaction;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.protocol.*;
@@ -22,7 +25,6 @@ import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.dialogs.ProgressDialogFragment;
-import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.certconfig.TLS_Configuration;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
@@ -35,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**
@@ -125,7 +126,8 @@ public class AccountsListActivity extends OSGiActivity
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.add_account:
-                startActivity(AccountLoginActivity.class);
+                Intent intent = new Intent(this, AccountLoginActivity.class);
+                startActivity(intent);
                 return true;
 
             case R.id.add_group:
@@ -187,20 +189,25 @@ public class AccountsListActivity extends OSGiActivity
     @Override
     public boolean onContextItemSelected(MenuItem item)
     {
-        int id = item.getItemId();
-        if (id == R.id.remove) {
-            RemoveAccountDialog.create(this, clickedAccount, account -> listAdapter.remove(account)).show();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.remove:
+                RemoveAccountDialog.create(this, clickedAccount, account -> listAdapter.remove(account)).show();
+                return true;
+
+            case R.id.account_settings:
+                startPreferenceActivity(clickedAccount);
+                return true;
+
+            case R.id.account_info:
+                startPresenceActivity(clickedAccount);
+                return true;
+
+            case R.id.account_cancel:
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
         }
-        else if (id == R.id.account_settings) {
-            startPreferenceActivity(clickedAccount);
-            return true;
-        }
-        else if (id == R.id.account_info) {
-            startPresenceActivity(clickedAccount);
-            return true;
-        }
-        return super.onContextItemSelected(item);
     }
 
     /**
@@ -210,7 +217,7 @@ public class AccountsListActivity extends OSGiActivity
      */
     private void startPreferenceActivity(Account account)
     {
-        Intent preferences = AccountPreferenceActivity.getIntent(getBaseContext(), account.getAccountID());
+        Intent preferences = AccountPreferenceActivity.getIntent(this, account.getAccountID());
         startActivity(preferences);
     }
 
@@ -221,7 +228,7 @@ public class AccountsListActivity extends OSGiActivity
      */
     private void startPresenceActivity(Account account)
     {
-        Intent statusIntent = new Intent(getBaseContext(), AccountInfoPresenceActivity.class);
+        Intent statusIntent = new Intent(this, AccountInfoPresenceActivity.class);
         statusIntent.putExtra(AccountInfoPresenceActivity.INTENT_ACCOUNT_ID,
                 account.getAccountID().getAccountUniqueID());
         startActivity(statusIntent);
@@ -380,9 +387,14 @@ public class AccountsListActivity extends OSGiActivity
                     accountManager.unloadAccount(account);
                 }
             } catch (OperationFailedException e) {
-                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), getString(R.string.service_gui_ERROR),
-                        "Failed to " + (enable ? "load" : "unload") + " " + account);
-                Timber.e(e, "%s", e.getMessage());
+                String message = "Failed to " + (enable ? "load" : "unload") + " " + account;
+                new Handler(Looper.getMainLooper()).post(() ->
+                        new AlertDialog.Builder(AccountsListActivity.this)
+                                .setTitle(R.string.service_gui_ERROR)
+                                .setMessage(message)
+                                .setPositiveButton(R.string.service_gui_OK, null)
+                                .show());
+                Timber.e("Account de/activate Exception: %s", e.getMessage());
             } finally {
                 if (DialogActivity.waitForDialogOpened(progressDialog)) {
                     DialogActivity.closeDialog(progressDialog);

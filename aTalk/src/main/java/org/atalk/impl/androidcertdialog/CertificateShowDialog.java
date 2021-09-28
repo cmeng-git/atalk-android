@@ -22,6 +22,9 @@ import android.view.*;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.CompoundButton;
+
+import androidx.appcompat.app.AlertDialog;
+
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiDialogFragment;
 

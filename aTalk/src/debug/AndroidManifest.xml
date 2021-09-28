@@ -4,21 +4,13 @@
     android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
-    <application
-        android:name="org.atalk.android.aTalkApp"
-        android:allowBackup="true"
-        android:icon="@drawable/ic_logo"
-        android:label="@string/APPLICATION_NAME"
-        android:logo="@drawable/ic_notification"
-        android:networkSecurityConfig="@xml/network_security_config" >
+    <application >
 
         <activity
-            android:name="org.atalk.android.gui.LauncherDebugActivity"
+            android:name=".gui.LauncherDebugActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/APPLICATION_NAME"
-            android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:launchMode="singleTask" />
 
         <service
             android:name="org.atalk.impl.androidupdate.OnlineUpdateService"

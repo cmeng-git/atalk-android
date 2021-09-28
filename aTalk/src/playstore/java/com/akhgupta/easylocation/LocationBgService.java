@@ -5,24 +5,22 @@ import android.content.Intent;
 import android.location.*;
 import android.os.*;
 import android.text.TextUtils;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.*;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import org.atalk.android.aTalkApp;
 
 import java.io.IOException;
 import java.util.*;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import timber.log.Timber;
 
 public class LocationBgService extends Service
 {
-    private final String TAG = LocationBgService.class.getSimpleName();
     private static final long NO_FALLBACK = 0;
     private boolean mAddressRequest;
 
@@ -68,7 +66,7 @@ public class LocationBgService extends Service
         mLocationCallback = new LocationCallback()
         {
             @Override
-            public void onLocationResult(LocationResult locationResult)
+            public void onLocationResult(@NonNull LocationResult locationResult)
             {
                 super.onLocationResult(locationResult);
                 onNewLocation(locationResult.getLastLocation());
@@ -82,14 +80,14 @@ public class LocationBgService extends Service
     {
         super.onStartCommand(intent, flags, startId);
 
-        String actionIintent = intent.getAction();
+        String actionIntent = intent.getAction();
         // action not defined on gps service first startup
-        if (actionIintent == null) {
+        if (actionIntent == null) {
             return START_NOT_STICKY;
         }
 
-        Log.d(TAG, "mFusedLocationClient start command " + actionIintent);
-        if (actionIintent.equals(AppConstants.ACTION_LOCATION_FETCH_START)) {
+        Timber.d("FusedLocationClient start command %s", actionIntent);
+        if (actionIntent.equals(AppConstants.ACTION_LOCATION_FETCH_START)) {
             mLocationMode = intent.getIntExtra(IntentKey.LOCATION_FETCH_MODE, AppConstants.SINGLE_FIX);
             mLocationRequest = intent.getParcelableExtra(IntentKey.LOCATION_REQUEST);
             mAddressRequest = intent.getBooleanExtra(IntentKey.ADDRESS_REQUEST, false);
@@ -98,7 +96,7 @@ public class LocationBgService extends Service
                 throw new IllegalStateException("Location request can't be null");
             requestLocationUpdates();
         }
-        else if (actionIintent.equals(AppConstants.ACTION_LOCATION_FETCH_STOP)) {
+        else if (actionIntent.equals(AppConstants.ACTION_LOCATION_FETCH_STOP)) {
             stopLocationService();
         }
 
@@ -109,16 +107,15 @@ public class LocationBgService extends Service
     @SuppressWarnings("MissingPermission")
     private void requestLocationUpdates()
     {
-        Log.i(TAG, "Requesting location updates");
+        Timber.i("Requesting location updates");
         if (mLocationRequest != null) {
             startFallbackToLastLocationTimer();
 
             startService(new Intent(getApplicationContext(), LocationBgService.class));
             try {
-                mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                        mLocationCallback, Looper.myLooper());
+                mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             } catch (SecurityException unlikely) {
-                Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
+                Timber.e(unlikely, "Lost location permission. Could not request updates");
             }
         }
     }
@@ -128,43 +125,31 @@ public class LocationBgService extends Service
     {
         if (fallBackToLastLocationTime != NO_FALLBACK) {
             mServiceHandler.removeCallbacksAndMessages(null);
-            mServiceHandler.postDelayed(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    getLastLocation();
-                }
-            }, fallBackToLastLocationTime);
+            mServiceHandler.postDelayed(this::getLastLocation, fallBackToLastLocationTime);
         }
     }
 
     private void getLastLocation()
     {
         try {
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>()
-            {
-                @Override
-                public void onComplete(@NonNull Task<Location> task)
-                {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        mLocation = task.getResult();
-                    }
-                    else {
-                        aTalkApp.showToastMessage("Failed to get GPS location information!");
-                        Log.w(TAG, "Failed to get location.");
-                    }
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    mLocation = task.getResult();
+                }
+                else {
+                    aTalkApp.showToastMessage("Failed to get GPS location information!");
+                    Timber.w("Failed to get GPS location information!");
                 }
             });
         } catch (SecurityException unlikely) {
-            Log.e(TAG, "Lost location permission." + unlikely);
+            Timber.e(unlikely, "Lost location permission.");
         }
     }
 
 //	@Override
 //	public void onConnectionSuspended(int i)
 //	{
-//		Log.d(TAG, "googleApiClient connection suspended");
+//		Timber.d("googleApiClient connection suspended");
 //		stopLocationService();
 //	}
 
@@ -177,20 +162,20 @@ public class LocationBgService extends Service
         if (mServiceHandler != null)
             mServiceHandler.removeCallbacksAndMessages(null);
 
-        Log.d(TAG, "mFusedLocationClient removing location updates");
+        Timber.d("FusedLocationClient removing location updates");
         try {
             if (mFusedLocationClient != null)
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-            Log.d(TAG, "mFusedLocationClient stop service");
+            Timber.d("FusedLocationClient stop service");
         } catch (SecurityException unlikely) {
-            Log.e(TAG, "Lost location permission. Could not remove updates. " + unlikely);
+            Timber.e(unlikely, "Lost location permission. Could not remove updates.");
         }
         stopSelf();
     }
 
     private void onNewLocation(Location location)
     {
-        Log.i(TAG, "New location received: " + location);
+        Timber.i("New location received: %s", location);
         mLocation = location;
         if (location != null) {
             PreferenceUtil.getInstance(this).saveLastKnownLocation(location);
@@ -238,7 +223,7 @@ public class LocationBgService extends Service
                 locAddress = TextUtils.join(" \n", addressFragments);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Timber.e("Get location address: %s", e.getMessage());
         }
         return locAddress;
     }

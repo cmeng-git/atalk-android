@@ -1,26 +1,30 @@
 package com.akhgupta.easylocation;
 
+import static com.akhgupta.easylocation.AppConstants.CONTINUOUS_LOCATION_UPDATES;
+import static com.akhgupta.easylocation.AppConstants.SINGLE_FIX;
+
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.provider.Settings;
+import android.text.TextUtils;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import android.text.TextUtils;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationRequest;
+
 import org.atalk.android.R;
 
-import static com.akhgupta.easylocation.AppConstants.CONTINUOUS_LOCATION_UPDATES;
-import static com.akhgupta.easylocation.AppConstants.SINGLE_FIX;
-
-class EasyLocationDelegate {
+class EasyLocationDelegate
+{
     private static final int PERMISSIONS_REQUEST = 100;
     private static final int ENABLE_LOCATION_SERVICES_REQUEST = 101;
     private static final int GOOGLE_PLAY_SERVICES_ERROR_DIALOG = 102;
@@ -34,37 +38,44 @@ class EasyLocationDelegate {
     private GoogleApiAvailability googleApiAvailability;
     private EasyLocationRequest easyLocationRequest;
 
-    EasyLocationDelegate(Activity activity, EasyLocationListener easyLocationListener) {
+    EasyLocationDelegate(Activity activity, EasyLocationListener easyLocationListener)
+    {
         this.activity = activity;
         this.easyLocationListener = easyLocationListener;
         locationReceiver = new LocationBroadcastReceiver(easyLocationListener);
     }
 
-    private boolean isLocationEnabled() {
+    private boolean isLocationEnabled()
+    {
         return isGPSLocationEnabled()
                 || isNetworkLocationEnabled();
     }
 
-    private boolean isGPSLocationEnabled() {
+    private boolean isGPSLocationEnabled()
+    {
         return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
-    private boolean isNetworkLocationEnabled() {
+    private boolean isNetworkLocationEnabled()
+    {
         return mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-    private void openLocationSettings() {
+    private void openLocationSettings()
+    {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         activity.startActivityForResult(intent, ENABLE_LOCATION_SERVICES_REQUEST);
     }
 
-    void stopLocationUpdates() {
+    void stopLocationUpdates()
+    {
         Intent intent = new Intent(activity, LocationBgService.class);
         intent.setAction(AppConstants.ACTION_LOCATION_FETCH_STOP);
         activity.startService(intent);
     }
 
-    private void isProperRequest(EasyLocationRequest easyLocationRequest) {
+    private void isProperRequest(EasyLocationRequest easyLocationRequest)
+    {
         if (easyLocationRequest == null)
             throw new IllegalStateException("easyLocationRequest can't be null");
 
@@ -74,8 +85,8 @@ class EasyLocationDelegate {
     }
 
     private void startLocationBGService(LocationRequest locationRequest,
-                                        boolean isAddressRequested,
-                                        long fallBackToLastLocationTime) {
+            boolean isAddressRequested, long fallBackToLastLocationTime)
+    {
         if (!isLocationEnabled())
             showLocationServicesRequireDialog();
         else {
@@ -89,12 +100,14 @@ class EasyLocationDelegate {
         }
     }
 
-    private boolean hasLocationPermission() {
+    private boolean hasLocationPermission()
+    {
         return ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void showPermissionRequireDialog() {
+    private void showPermissionRequireDialog()
+    {
         String title = TextUtils.isEmpty(easyLocationRequest.locationPermissionDialogTitle)
                 ? activity.getString(R.string.location_permission_dialog_title)
                 : easyLocationRequest.locationPermissionDialogTitle;
@@ -113,21 +126,15 @@ class EasyLocationDelegate {
                 .setCancelable(true)
                 .setTitle(title)
                 .setMessage(message)
-                .setNegativeButton(negativeButtonTitle, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        easyLocationListener.onLocationPermissionDenied();
-                    }
-                })
-                .setPositiveButton(positiveButtonTitle, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        requestPermission();
-                    }
-                }).create().show();
+                .setNegativeButton(negativeButtonTitle, (dialogInterface, i)
+                        -> easyLocationListener.onLocationPermissionDenied())
+                .setPositiveButton(positiveButtonTitle, (dialogInterface, i)
+                        -> requestPermission())
+                .create().show();
     }
 
-    private void showLocationServicesRequireDialog() {
+    private void showLocationServicesRequireDialog()
+    {
         String title = TextUtils.isEmpty(easyLocationRequest.locationSettingsDialogTitle)
                 ? activity.getString(
                 R.string.location_services_off) : easyLocationRequest.locationSettingsDialogTitle;
@@ -149,53 +156,52 @@ class EasyLocationDelegate {
                 .setCancelable(true)
                 .setTitle(title)
                 .setMessage(message)
-                .setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        easyLocationListener.onLocationProviderDisabled();
-                    }
-                })
-                .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        openLocationSettings();
-                    }
-                })
+                .setNegativeButton(negativeButtonText, (dialogInterface, i)
+                        -> easyLocationListener.onLocationProviderDisabled())
+                .setPositiveButton(positiveButtonText, (dialogInterface, i)
+                        -> openLocationSettings())
                 .create().show();
     }
 
-    private void requestPermission() {
+    private void requestPermission()
+    {
         ActivityCompat.requestPermissions(activity,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST);
     }
 
-    private void requestLocation(LocationRequest locationRequest, int locationMode) {
+    private void requestLocation(LocationRequest locationRequest, int locationMode)
+    {
         if (isGoogleServiceAvailable()) {
             mLocationFetchMode = locationMode;
             mLocationRequest = locationRequest;
             checkForPermissionAndRequestLocation(locationRequest);
-        } else
+        }
+        else
             showGooglePlayServicesErrorDialog();
     }
 
-    private void checkForPermissionAndRequestLocation(LocationRequest locationRequest) {
+    private void checkForPermissionAndRequestLocation(LocationRequest locationRequest)
+    {
         if (!hasLocationPermission()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                     android.Manifest.permission.ACCESS_FINE_LOCATION))
                 showPermissionRequireDialog();
             else
                 requestPermission();
-        } else
+        }
+        else
             startLocationBGService(locationRequest,
                     easyLocationRequest.addressRequest,
                     easyLocationRequest.fallBackToLastLocationTime);
     }
 
-    private void unregisterLocationBroadcastReceiver() {
+    private void unregisterLocationBroadcastReceiver()
+    {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(locationReceiver);
     }
 
-    private void registerLocationBroadcastReceiver() {
+    private void registerLocationBroadcastReceiver()
+    {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(AppConstants.INTENT_LOCATION_RECEIVED);
         intentFilter.addAction(AppConstants.INTENT_NO_LOCATION_RECEIVED);
@@ -204,64 +210,71 @@ class EasyLocationDelegate {
                 intentFilter);
     }
 
-    private boolean isGoogleServiceAvailable() {
+    private boolean isGoogleServiceAvailable()
+    {
         return googleApiAvailability.isGooglePlayServicesAvailable(activity)
                 == ConnectionResult.SUCCESS;
     }
 
-    private void showGooglePlayServicesErrorDialog() {
+    private void showGooglePlayServicesErrorDialog()
+    {
         int errorCode = googleApiAvailability.isGooglePlayServicesAvailable(activity);
         if (googleApiAvailability.isUserResolvableError(errorCode))
             googleApiAvailability.getErrorDialog(activity, errorCode,
                     GOOGLE_PLAY_SERVICES_ERROR_DIALOG).show();
     }
 
-    void onCreate() {
+    void onCreate()
+    {
         mLocationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         googleApiAvailability = GoogleApiAvailability.getInstance();
         registerLocationBroadcastReceiver();
     }
 
-    void onActivityResult(int requestCode) {
-        switch (requestCode) {
-            case ENABLE_LOCATION_SERVICES_REQUEST:
-                if (isLocationEnabled()) {
-                    requestLocation(mLocationRequest, mLocationFetchMode);
-                    easyLocationListener.onLocationProviderEnabled();
-                } else
-                    easyLocationListener.onLocationProviderDisabled();
-                break;
+    void onActivityResult(int requestCode)
+    {
+        if (requestCode == ENABLE_LOCATION_SERVICES_REQUEST) {
+            if (isLocationEnabled()) {
+                requestLocation(mLocationRequest, mLocationFetchMode);
+                easyLocationListener.onLocationProviderEnabled();
+            }
+            else
+                easyLocationListener.onLocationProviderDisabled();
         }
     }
 
-    void onRequestPermissionsResult(int requestCode, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST:
-                if (grantResults.length > 0 && grantResults[0]
-                        == PackageManager.PERMISSION_GRANTED) {
-                    requestLocation(mLocationRequest, mLocationFetchMode);
-                    easyLocationListener.onLocationPermissionGranted();
-                } else
-                    easyLocationListener.onLocationPermissionDenied();
-                break;
+    void onRequestPermissionsResult(int requestCode, int[] grantResults)
+    {
+        if (requestCode == PERMISSIONS_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0]
+                    == PackageManager.PERMISSION_GRANTED) {
+                requestLocation(mLocationRequest, mLocationFetchMode);
+                easyLocationListener.onLocationPermissionGranted();
+            }
+            else
+                easyLocationListener.onLocationPermissionDenied();
         }
     }
 
-    void onDestroy() {
+    void onDestroy()
+    {
         unregisterLocationBroadcastReceiver();
         stopLocationUpdates();
     }
 
-    Location getLastKnownLocation() {
+    Location getLastKnownLocation()
+    {
         return PreferenceUtil.getInstance(activity).getLastKnownLocation();
     }
 
-    void requestLocationUpdates(EasyLocationRequest easyLocationRequest) {
+    void requestLocationUpdates(EasyLocationRequest easyLocationRequest)
+    {
         isProperRequest(easyLocationRequest);
         requestLocation(easyLocationRequest.locationRequest, CONTINUOUS_LOCATION_UPDATES);
     }
 
-    void requestSingleLocationFix(EasyLocationRequest easyLocationRequest) {
+    void requestSingleLocationFix(EasyLocationRequest easyLocationRequest)
+    {
         isProperRequest(easyLocationRequest);
         requestLocation(easyLocationRequest.locationRequest, SINGLE_FIX);
     }

@@ -1,20 +1,41 @@
+/*
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.atalk.android.gui.settings;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
-import android.preference.Preference;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TimePicker;
+
+import androidx.preference.DialogPreference;
+import androidx.preference.Preference;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimePreference extends DialogPreference implements Preference.OnPreferenceChangeListener
+/**
+ * This class is used in our preference where user can pick a quiet time for notifications not to appear.
+ * Specifically, this class is responsible for saving/retrieving preference data.
+ *
+ * @author Eng Chong Meng
+ */
+public class TimePreference extends DialogPreference
+        implements Preference.OnPreferenceChangeListener
 {
-    private TimePicker picker = null;
     public final static long DEFAULT_VALUE = 0L;
 
     public TimePreference(final Context context, final AttributeSet attrs)
@@ -38,35 +59,6 @@ public class TimePreference extends DialogPreference implements Preference.OnPre
         setSummary(dateFormat.format(date.getTime()));
     }
 
-    @Override
-    protected View onCreateDialogView()
-    {
-        picker = new TimePicker(getContext());
-        picker.setIs24HourView(android.text.format.DateFormat.is24HourFormat(getContext()));
-        return picker;
-    }
-
-    @SuppressWarnings("NullableProblems")
-    @Override
-    protected void onBindDialogView(final View v)
-    {
-        super.onBindDialogView(v);
-        long time = getPersistedLong(DEFAULT_VALUE);
-
-        picker.setCurrentHour((int) ((time % (24 * 60)) / 60));
-        picker.setCurrentMinute((int) ((time % (24 * 60)) % 60));
-    }
-
-    @Override
-    protected void onDialogClosed(final boolean positiveResult)
-    {
-        super.onDialogClosed(positiveResult);
-
-        if (positiveResult) {
-            setTime(picker.getCurrentHour() * 60 + picker.getCurrentMinute());
-        }
-    }
-
     private static Calendar minutesToCalender(long time)
     {
         final Calendar c = Calendar.getInstance();
@@ -87,17 +79,18 @@ public class TimePreference extends DialogPreference implements Preference.OnPre
     }
 
     @Override
-    protected void onSetInitialValue(final boolean restorePersistedValue, final Object defaultValue)
+    protected void onSetInitialValue(final Object defaultValue)
     {
-        long time;
-        if (defaultValue instanceof Long) {
-            time = restorePersistedValue ? getPersistedLong((Long) defaultValue) : (Long) defaultValue;
-        }
-        else {
-            time = restorePersistedValue ? getPersistedLong(DEFAULT_VALUE) : DEFAULT_VALUE;
-        }
+        long time = (defaultValue instanceof Long) ? (Long) defaultValue : DEFAULT_VALUE;
         setTime(time);
-        updateSummary(time);
+    }
+
+    /**
+     * get the TimePreference persistent value the timePicker value update
+     */
+    public Long getPersistedValue()
+    {
+        return (long) getPersistedLong(DEFAULT_VALUE);
     }
 
     @Override

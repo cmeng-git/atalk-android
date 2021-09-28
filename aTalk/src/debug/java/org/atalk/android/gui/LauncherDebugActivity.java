@@ -16,7 +16,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.impl.androidupdate.OnlineUpdateService;
-import org.atalk.service.EventReceiver;
+import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
@@ -70,7 +70,7 @@ public class LauncherDebugActivity extends OSGiActivity
         Intent intent = getIntent();
         if (intent != null) {
             this.restoreIntent = intent.getParcelableExtra(ARG_RESTORE_INTENT);
-            startOnReboot = intent.getBooleanExtra(EventReceiver.AUTO_START_ONBOOT, false);
+            startOnReboot = intent.getBooleanExtra(SystemEventReceiver.AUTO_START_ONBOOT, false);
         }
 
         setContentView(R.layout.splash);

@@ -2,6 +2,10 @@ package com.akhgupta.easylocation;
 
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+
+import java.util.Objects;
+
 class EasyLocation {
     private final Location location;
 
@@ -14,7 +18,7 @@ class EasyLocation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EasyLocation that = (EasyLocation) o;
-        return location != null ? location.equals(that.location) : that.location == null;
+        return Objects.equals(location, that.location);
 
     }
 
@@ -23,6 +27,7 @@ class EasyLocation {
         return location != null ? location.hashCode() : 0;
     }
 
+    @NonNull
     @Override
     public String toString() {
          return  location.getLatitude() +","+location.getLongitude();

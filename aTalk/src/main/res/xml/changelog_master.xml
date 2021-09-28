@@ -6,6 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.7.0 (09/28/2021)" versioncode="207000">
+        <change>Add proxy support in smack HTTP File Upload Manager</change>
+        <change>The selected action menu items is now highlighted on user click</change>
+        <change>Prompt user for action if the SASL-External authentication failed due to invalid client certificate</change>
+        <change>Disable auto start aTalk option on Boot for android-10 (API-29) and above; android disallows background activity launch</change>
+        <change>Migrate aTalk Theme implementation to use android recommended Theme.AppCompat</change>
+        <change>Extend aTalk activities with AppCompatActivity to support new Theme.AppCompat and ActionBar</change>
+        <change>Migrate deprecated PreferenceFragment implementation to use androidx PreferenceFragmentCompat</change>
+        <change>Migrate to recommended androidx ActivityResultContracts.StartActivityForResult implementation</change>
+        <change>Migrate to use androidx alertDialog</change>
+        <change>Change quiet time dialog implementation to work with androidx DialogFragment</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.6.4 (08/21/2021)" versioncode="206040">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Fix problem when "Chat history logging" option is disabled, any file transfer session will purge all the logged messages.</change>

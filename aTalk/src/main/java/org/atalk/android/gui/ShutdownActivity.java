@@ -5,11 +5,12 @@
  */
 package org.atalk.android.gui;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
@@ -34,7 +35,7 @@ public class ShutdownActivity extends OSGiActivity
             return;
         }
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Disable up arrow
             actionBar.setDisplayHomeAsUpEnabled(false);

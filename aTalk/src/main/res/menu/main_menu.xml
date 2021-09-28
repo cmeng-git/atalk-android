@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/search"
-        android:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/search_dark"
-        android:showAsAction="always|collapseActionView"
-        android:title="@string/service_gui_ENTER_NAME_OR_NUMBER" />
+        android:title="@string/service_gui_ENTER_NAME_OR_NUMBER"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
     <item
         android:id="@+id/add_chat_room"
         android:icon="@drawable/ic_chat_room_add_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_CHATROOM_CREATE_JOIN" />
+        android:title="@string/service_gui_CHATROOM_CREATE_JOIN"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/show_location"
         android:icon="@drawable/ic_location_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_GEO_SHOW" />
+        android:title="@string/service_gui_GEO_SHOW"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/telephony"
         android:icon="@drawable/ic_external_phone_dark"
-        android:showAsAction="ifRoom"
-        android:title="@string/service_gui_JBR_TELEPHONY" />
+        android:title="@string/service_gui_JBR_TELEPHONY"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/create_videobridge"
         android:icon="@drawable/ic_videobridge"

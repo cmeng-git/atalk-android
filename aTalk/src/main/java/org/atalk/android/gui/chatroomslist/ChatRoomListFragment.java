@@ -16,7 +16,6 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +23,10 @@ import android.view.*;
 import android.widget.*;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.*;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.gui.Chat;
@@ -51,9 +54,6 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**
@@ -168,10 +168,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         // Restore search state based on entered text
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
-            int id = searchView.getContext().getResources()
-                    .getIdentifier("android:id/search_src_text", null, null);
-
-            String filter = ViewUtil.toString(searchView.findViewById(id));
+            String filter = ViewUtil.toString(searchView.findViewById(R.id.search_src_text));
             filterChatRoomWrapperList(filter);
             bindSearchListener();
         }
@@ -245,9 +242,10 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     {
         super.onCreateOptionsMenu(menu, menuInflater);
 
-        // Get the SearchView and set the search configuration
-        SearchManager searchManager = (SearchManager) aTalkApp.getGlobalContext().getSystemService(Context.SEARCH_SERVICE);
+        // Get the SearchView MenuItem
         mSearchItem = menu.findItem(R.id.search);
+        if (mSearchItem == null)
+            return;
 
         mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
         {
@@ -263,15 +261,6 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                 return true; // Return true to expand action view
             }
         });
-
-        SearchView searchView = (SearchView) mSearchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-
-        int id = searchView.getContext().getResources()
-                .getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = searchView.findViewById(id);
-        textView.setTextColor(getResources().getColor(R.color.white));
-        textView.setHintTextColor(getResources().getColor(R.color.white));
         bindSearchListener();
     }
 
@@ -505,7 +494,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
      */
     private void filterChatRoomWrapperList(String query)
     {
-        // FFR: 2.1.5 Samsung Galaxy J2 Prime (grandpplte), Android 6.0, NPE for chatRoomListView
+        // FFR: 2.1.5 Samsung Galaxy J2 Prime (grandpplte), Android 6.0, NPE for chatRoomListView; happen when offline?
         if (chatRoomListView == null)
             return;
 
@@ -545,9 +534,9 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     private class SearchViewListener implements SearchView.OnQueryTextListener, SearchView.OnCloseListener
     {
         @Override
-        public boolean onClose()
+        public boolean onQueryTextSubmit(String query)
         {
-            filterChatRoomWrapperList("");
+            filterChatRoomWrapperList(query);
             return true;
         }
 
@@ -559,9 +548,9 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         }
 
         @Override
-        public boolean onQueryTextSubmit(String query)
+        public boolean onClose()
         {
-            filterChatRoomWrapperList(query);
+            filterChatRoomWrapperList("");
             return true;
         }
     }

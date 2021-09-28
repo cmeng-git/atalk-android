@@ -19,10 +19,12 @@ package org.atalk.android.gui.menu;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
+import android.widget.TextView;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
@@ -53,7 +55,9 @@ import org.osgi.framework.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
@@ -67,8 +71,11 @@ import androidx.fragment.app.Fragment;
 @SuppressLint("Registered")
 public class MainMenuActivity extends ExitMenuActivity implements ServiceListener, ContactPresenceStatusListener
 {
-    private MenuItem mShowHideOffline;
-    private MenuItem mOnOffLine;
+    /**
+     * Common options menu items.
+     */
+    protected MenuItem mShowHideOffline;
+    protected MenuItem mOnOffLine;
 
     /**
      * Video bridge conference call menu. In the case of more than one account.
@@ -135,6 +142,18 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         if (BuildConfig.FLAVOR.equals("fdroid") && (menu.findItem(R.id.show_location) != null)) {
             menu.removeItem(R.id.show_location);
         }
+
+        // Get the SearchView and set the search theme
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.search);
+
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        TextView textView = searchView.findViewById(R.id.search_src_text);
+        textView.setTextColor(getResources().getColor(R.color.white));
+        textView.setHintTextColor(getResources().getColor(R.color.white));
+        textView.setHint(R.string.service_gui_ENTER_NAME_OR_NUMBER);
 
         // cmeng: 20191220 <= disable videoBridge until implementation
         // this.videoBridgeMenuItem = menu.findItem(R.id.create_videobridge);
@@ -216,8 +235,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         if (!done) {
             progressDialog = ProgressDialog.show(MainMenuActivity.this,
                     getString(R.string.service_gui_WAITING),
-                    getString(R.string.service_gui_SERVER_INFO_FETCH), true);
-            progressDialog.setCancelable(true);
+                    getString(R.string.service_gui_SERVER_INFO_FETCH), true, true);
         }
         else {
             progressDialog = null;

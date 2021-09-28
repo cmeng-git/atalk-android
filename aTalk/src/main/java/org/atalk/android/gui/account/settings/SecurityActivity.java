@@ -6,13 +6,14 @@
 package org.atalk.android.gui.account.settings;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.*;
 import android.view.KeyEvent;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.*;
 
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.UtilActivator;
@@ -22,7 +23,6 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.BundleContext;
 
 import java.io.Serializable;
 import java.util.*;
@@ -80,13 +80,6 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
      */
     private SecurityPreferenceFragment securityFragment;
 
-    @Override
-    protected void start(BundleContext bundleContext)
-            throws Exception
-    {
-        super.start(bundleContext);
-    }
-
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
@@ -102,10 +95,10 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             securityFragment = new SecurityPreferenceFragment();
 
             // Display the fragment as the main content.
-            getFragmentManager().beginTransaction().replace(android.R.id.content, securityFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, securityFragment).commit();
         }
         else {
-            securityFragment = (SecurityPreferenceFragment) getFragmentManager().findFragmentById(android.R.id.content);
+            securityFragment = (SecurityPreferenceFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
     }
 
@@ -130,7 +123,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     /**
      * Fragment handles {@link Preference}s used for manipulating security settings.
      */
-    public static class SecurityPreferenceFragment extends PreferenceFragment
+    public static class SecurityPreferenceFragment extends PreferenceFragmentCompat
             implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         private static final String STATE_SEC_REG = "security_reg";
@@ -145,9 +138,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         protected SecurityAccountRegistration securityReg;
 
         @Override
-        public void onCreate(Bundle savedInstanceState)
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
         {
-            super.onCreate(savedInstanceState);
             if (savedInstanceState == null) {
                 Intent intent = getActivity().getIntent();
                 securityReg = (SecurityAccountRegistration) intent.getSerializableExtra(EXTR_KEY_SEC_REGISTRATION);
@@ -165,19 +157,18 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                 return true;
             });
 
-            ListPreference savpPreference = (ListPreference) findPreference(PREF_KEY_SEC_SAVP_OPTION);
+            ListPreference savpPreference = findPreference(PREF_KEY_SEC_SAVP_OPTION);
             savpPreference.setValueIndex(securityReg.getSavpOption());
 
             summaryMapper.includePreference(savpPreference, "");
 
-            CheckBoxPreference encEnabled = (CheckBoxPreference) findPreference(PREF_KEY_SEC_ENABLED);
+            CheckBoxPreference encEnabled = findPreference(PREF_KEY_SEC_ENABLED);
             encEnabled.setChecked(securityReg.isDefaultEncryption());
 
-            CheckBoxPreference zrtpAttr = (CheckBoxPreference) findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
+            CheckBoxPreference zrtpAttr = findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
             zrtpAttr.setChecked(securityReg.isSipZrtpAttribute());
 
             loadCipherSuites();
-
             initResetZID();
         }
 
@@ -191,7 +182,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             if (ciphers == null)
                 ciphers = defaultCiphers;
 
-            MultiSelectListPreference cipherList = (MultiSelectListPreference) findPreference(PREF_KEY_SEC_CIPHER_SUITES);
+            MultiSelectListPreference cipherList = findPreference(PREF_KEY_SEC_CIPHER_SUITES);
 
             cipherList.setEntries(cryptoSuiteEntries);
             cipherList.setEntryValues(cryptoSuiteEntries);
@@ -240,7 +231,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             args.putSerializable(SecurityProtocolsDialogFragment.ARG_STATUS_MAP, (Serializable) statusMap);
             securityDialog.setArguments(args);
 
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentTransaction ft = getParentFragmentManager().beginTransaction();
             securityDialog.show(ft, "SecProtocolsDlgFragment");
         }
 
@@ -379,12 +370,12 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                 securityReg.setSipZrtpAttribute(shPreferences.getBoolean(key, true));
             }
             else if (key.equals(PREF_KEY_SEC_SAVP_OPTION)) {
-                ListPreference lp = (ListPreference) findPreference(key);
+                ListPreference lp = findPreference(key);
                 int idx = lp.findIndexOfValue(lp.getValue());
                 securityReg.setSavpOption(idx);
             }
             else if (key.equals(PREF_KEY_SEC_CIPHER_SUITES)) {
-                MultiSelectListPreference ml = (MultiSelectListPreference) findPreference(key);
+                MultiSelectListPreference ml = findPreference(key);
                 String summary = getCipherSuitesSummary(ml);
                 ml.setSummary(summary);
                 securityReg.setSDesCipherSuites(summary);

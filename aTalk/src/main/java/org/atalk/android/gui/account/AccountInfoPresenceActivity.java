@@ -1345,8 +1345,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     public void launchApplyProgressDialog()
     {
         progressDialog = ProgressDialog.show(this, getString(R.string.service_gui_WAITING),
-                getString(R.string.service_gui_APPLY_CHANGES), true);
-        progressDialog.setCancelable(true);
+                getString(R.string.service_gui_APPLY_CHANGES), true, true);
         new Thread(() -> {
             try {
                 commitStatusChanges();

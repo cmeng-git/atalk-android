@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="@string/pref_cat_jbr_ice_general"
+        android:title="@string/service_gui_JBR_ICE_GENERAL">
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_ice_enabled"
+            android:title="@string/service_gui_JBR_USE_ICE" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_upnp_enabled"
+            android:title="@string/service_gui_JBR_USE_UPNP" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_auto_discover_stun"
+            android:title="@string/service_gui_JBR_AUTO_STUN_DICOVERY" />
+
+        <Preference
+            android:key="@string/pref_key_stun_turn_servers"
+            android:summary="@string/service_gui_JBR_STUN_LIST_SUMMARY"
+            android:title="@string/service_gui_JBR_STUN_LIST" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/pref_cat_jbr_jnodes"
+        android:title="@string/service_gui_JBR_JINGLE_NODES">
+        <CheckBoxPreference
+            android:key="@string/pref_key_use_jingle_nodes"
+            android:title="@string/service_gui_JBR_JINGLE_SUMMARY" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_auto_relay_dicovery"
+            android:title="@string/service_gui_JBR_JINGLE_AUTO" />
+
+        <Preference
+            android:key="@string/pref_key_jingle_node_list"
+            android:summary="@string/service_gui_JBR_JINGLE_LIST_SUMMARY"
+            android:title="@string/service_gui_JBR_JINGLE_LIST" />
+    </PreferenceCategory>
+</PreferenceScreen>
