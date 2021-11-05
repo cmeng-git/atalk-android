@@ -68,7 +68,8 @@ public class ShareUtil
                     if (!imageUris.isEmpty() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)) {
                         PendingIntent pi = PendingIntent.getBroadcast(activity, REQUEST_CODE_SHARE,
                                 new Intent(activity, ShareBroadcastReceiver.class),
-                                PendingIntent.FLAG_UPDATE_CURRENT);
+                                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
                         activity.startActivity(Intent.createChooser(shareIntent,
                                 activity.getString(R.string.service_gui_SHARE_TEXT), pi.getIntentSender()));
 

@@ -62,7 +62,6 @@ public class AndroidDecoder extends AndroidCodec
      */
     public static boolean isHwDecodingEnabled()
     {
-        // boolean supported = AndroidUtils.hasAPI(16);
         return LibJitsi.getConfigurationService().getBoolean(HW_DECODING_ENABLE_PROPERTY, false);
     }
 

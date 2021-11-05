@@ -17,13 +17,16 @@
 
 package org.atalk.android.gui.share;
 
-import android.graphics.Point;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import org.atalk.android.MyGlideApp;
-import org.atalk.android.R;
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.atalk.android.*;
 import org.atalk.android.databinding.MediaPreviewBinding;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.persistance.FilePathHelper;
@@ -32,28 +35,21 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapter.MediaPreviewViewHolder>
 {
     private final ArrayList<Attachment> mediaPreviews = new ArrayList<>();
 
-    private final ChatActivity chatActivity;
+    private final ChatActivity mChatActivity;
 
     private final ImageView viewHolder;
     private final LinearLayout.LayoutParams layoutParams;
 
     public MediaPreviewAdapter(ChatActivity fragment, ImageView imgPreview)
     {
-        this.chatActivity = fragment;
+        mChatActivity = fragment;
         viewHolder = imgPreview;
-
-        Point outSize = new Point();
-        // Defined a square layout preview of screen width size
-        fragment.getWindowManager().getDefaultDisplay().getSize(outSize);
-        layoutParams = new LinearLayout.LayoutParams(outSize.x, outSize.x);
+        int width = aTalkApp.mDisplaySize.width;
+        layoutParams = new LinearLayout.LayoutParams(width, width);
     }
 
     @NonNull
@@ -69,7 +65,7 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
     public void onBindViewHolder(@NonNull MediaPreviewViewHolder holder, int position)
     {
         final Attachment attachment = mediaPreviews.get(position);
-        final File file = new File(FilePathHelper.getFilePath(chatActivity, attachment));
+        final File file = new File(FilePathHelper.getFilePath(mChatActivity, attachment));
         MyGlideApp.loadImage(holder.binding.mediaPreviewItem, file, true);
 
         holder.binding.deleteButton.setOnClickListener(v ->
@@ -80,7 +76,7 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
 
             // update send button mode
             if (mediaPreviews.isEmpty())
-                chatActivity.toggleInputMethod();
+                mChatActivity.toggleInputMethod();
         });
 
         holder.binding.mediaPreviewItem.setOnClickListener(v -> {

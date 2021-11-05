@@ -43,15 +43,9 @@ public class CameraUtils
     private static PreviewSurfaceProvider surfaceProvider;
 
     /**
-     * <tt>OpenGlCtxProvider</tt> that provides Open GL context for local preview rendering. It is
-     * used in direct surface encoding mode.
-     */
-    public static OpenGlCtxProvider localPreviewCtxProvider;
-
-    /**
      * The list of sizes from which the first supported by the respective {@link Camera} is to be
      * chosen as the size of the one and only <tt>Format</tt> supported by the associated
-     * <tt>mediarecorder</tt> <tt>CaptureDevice</tt>.
+     * <tt>MediaRecorder</tt> <tt>CaptureDevice</tt>.
      *
      * User selectable video resolution. The actual resolution use during video call is adjusted so
      * it is within device capability {@link #getOptimalPreviewSize(Dimension, List)
@@ -61,11 +55,12 @@ public class CameraUtils
     public static final Dimension[] PREFERRED_SIZES = DeviceConfiguration.SUPPORTED_RESOLUTIONS;
 
     /**
-     * Map contains all the phone available cameras, and their supported resolution sizes
+     * Map contains all the phone available cameras and their supported resolution sizes
      * This list is being update at the device start up in.
+     *
      * @see org.atalk.impl.neomedia.device.MediaRecorderSystem
      */
-    private static Map<Integer, List<Camera.Size>> cameraSupportSize = new HashMap<>();
+    private static final Map<Integer, List<Camera.Size>> cameraSupportSize = new HashMap<>();
 
     /**
      * Returns <tt>true</tt> if given <tt>size</tt> is on the list of preferred sizes.
@@ -210,23 +205,27 @@ public class CameraUtils
     }
 
     /**
-     * Calculates camera preview orientation value for the {@link android.view.Display}'s
-     * <tt>rotation</tt> in degrees.
+     * Calculates preview orientation value for the {@link android.view.Display}'s
+     * <tt>rotation</tt> in degrees for the selected cameraId.
+     *
+     * valid camera orientation: 0 or 90
+     * valid displayRotation: 0, 90, 180
      *
      * @return camera preview orientation value in degrees that can be used to adjust the preview
      * using method {@link android.hardware.Camera#setDisplayOrientation(int)}.
      */
-    public static int getCameraDisplayRotation(int cameraId)
+    public static int getPreviewOrientation(int cameraId)
     {
         // rotation current {@link android.view.Display} rotation value.
-        int rotation = surfaceProvider.getDisplayRotation();
+        int displayRotation = surfaceProvider.getDisplayRotation();
+        int previewOrientation;
 
         Camera.CameraInfo camInfo = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, camInfo);
-        int cameraRotationOffset = camInfo.orientation;
+        int cameraOrientation = camInfo.orientation;
 
         int degrees = 0;
-        switch (rotation) {
+        switch (displayRotation) {
             case Surface.ROTATION_0:
                 degrees = 0;
                 break;
@@ -241,17 +240,16 @@ public class CameraUtils
                 break;
         }
 
-        int displayRotation;
-        boolean isFrontFacingCam = (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT);
-        if (isFrontFacingCam) {
-            displayRotation = (cameraRotationOffset + degrees) % 360;
-            displayRotation = (360 - displayRotation) % 360; // compensate the mirror
+        // front-facing camera
+        if (Camera.CameraInfo.CAMERA_FACING_FRONT == camInfo.facing) {
+            previewOrientation = (cameraOrientation + degrees) % 360;
+            previewOrientation = (360 - previewOrientation) % 360; // compensate the mirror
         }
+        // back-facing camera
         else {
-            // back-facing
-            displayRotation = (cameraRotationOffset - degrees + 360) % 360;
+            previewOrientation = (cameraOrientation - degrees + 360) % 360;
         }
-        return displayRotation;
+        return previewOrientation;
     }
 
     /**
@@ -326,6 +324,7 @@ public class CameraUtils
 
     /**
      * Store the supported video resolution by camera cameraId
+     *
      * @param cameraId camera ID
      * @param supportSizes list of camera support video resolutions
      */

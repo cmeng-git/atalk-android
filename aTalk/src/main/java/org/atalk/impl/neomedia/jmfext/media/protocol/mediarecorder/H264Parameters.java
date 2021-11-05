@@ -45,12 +45,8 @@ public class H264Parameters implements Serializable
     public H264Parameters(String path)
             throws IOException
     {
-
-        RandomAccessFile sampleFile = new RandomAccessFile(path, "r");
-        try {
+        try (RandomAccessFile sampleFile = new RandomAccessFile(path, "r")) {
             parse("", sampleFile);
-        } finally {
-            sampleFile.close();
         }
     }
 
@@ -80,7 +76,6 @@ public class H264Parameters implements Serializable
         Timber.d("H264 Path: %s", path);
 
         byte[] buffer = new byte[4];
-
         while (true) {
             // Read box size
             long size = readUnsignedInt32(file);
@@ -89,8 +84,12 @@ public class H264Parameters implements Serializable
             String name = new String(buffer);
             Timber.d("Atom: %s; size: %d", name, size);
 
-            if (name.equals("moov") || name.equals("trak") || name.equals("mdia")
-                    || name.equals("minf") || name.equals("stbl") || name.equals("stsd")) {
+            if (name.equals("moov")
+                    || name.equals("trak")
+                    || name.equals("mdia")
+                    || name.equals("minf")
+                    || name.equals("stbl")
+                    || name.equals("stsd")) {
                 parse(path + "." + name, file);
                 return;
             }
@@ -134,16 +133,27 @@ public class H264Parameters implements Serializable
         /*
          * The avcC box's structure as defined in ISO-IEC 14496-15, part 5.2.4.1.1
          *
-         * aligned(8) class AVCDecoderConfigurationRecord { unsigned int(8) configurationVersion =
-         * 1; unsigned int(8) AVCProfileIndication; unsigned int(8) profile_compatibility; unsigned
-         * int(8) AVCLevelIndication; bit(6) reserved = ‘111111’b; unsigned int(2)
-         * lengthSizeMinusOne; bit(3) reserved = ‘111’b; unsigned int(5) numOfSequenceParameterSets;
-         * for (i=0; i< numOfSequenceParameterSets; i++) { unsigned int(16)
-         * sequenceParameterSetLength ; bit(8*sequenceParameterSetLength)
-         * sequenceParameterSetNALUnit; } unsigned int(8) numOfPictureParameterSets; for (i=0; i<
-         * numOfPictureParameterSets; i++) { unsigned int(16) pictureParameterSetLength;
-         * bit(8*pictureParameterSetLength) pictureParameterSetNALUnit; } }
-         */
+		 *  aligned(8) class AVCDecoderConfigurationRecord {
+		 *		unsigned int(8) configurationVersion = 1;
+		 *		unsigned int(8) AVCProfileIndication;
+		 *		unsigned int(8) profile_compatibility;
+		 *		unsigned int(8) AVCLevelIndication;
+		 *		bit(6) reserved = ‘111111’b;
+		 *		unsigned int(2) lengthSizeMinusOne;
+		 *		bit(3) reserved = ‘111’b;
+		 *		unsigned int(5) numOfSequenceParameterSets;
+		 *		for (i=0; i< numOfSequenceParameterSets; i++) {
+		 *			unsigned int(16) sequenceParameterSetLength ;
+		 *			bit(8*sequenceParameterSetLength) sequenceParameterSetNALUnit;
+		 *		}
+		 *		unsigned int(8) numOfPictureParameterSets;
+		 *		for (i=0; i< numOfPictureParameterSets; i++) {
+		 *			unsigned int(16) pictureParameterSetLength;
+		 *			bit(8*pictureParameterSetLength) pictureParameterSetNALUnit;
+		 *		}
+		 *	}
+		 *
+		 */
         // Assume numOfSequenceParameterSets = 1, numOfPictureParameterSets = 1
         // Read the SPS parameter
         discard(file, 7);
@@ -246,7 +256,7 @@ public class H264Parameters implements Serializable
     /**
      * Logs parameters stored by this instance.
      */
-    public void logParamaters()
+    public void logParameters()
     {
         String msg = "PPS: ";
         for (byte b : getPps()) {
@@ -290,12 +300,10 @@ public class H264Parameters implements Serializable
             return null;
 
         String storedValue = config.getString(STORE_ID, null);
-
         if (storedValue == null || storedValue.isEmpty())
             return null;
 
         String[] spsAndPps = storedValue.split(",");
-
         if (spsAndPps.length != 2) {
             Timber.e("Invalid store parameters string: %s", storedValue);
             return null;
@@ -314,8 +322,7 @@ public class H264Parameters implements Serializable
      */
     static void storeParameters(H264Parameters params, VideoFormat formatUsed)
     {
-        SharedPreferences config = aTalkApp.getGlobalContext().getSharedPreferences(
-                STORE_ID, Context.MODE_PRIVATE);
+        SharedPreferences config = aTalkApp.getGlobalContext().getSharedPreferences(STORE_ID, Context.MODE_PRIVATE);
 
         if (params.seq_parameter_set_rbsp == null || params.pic_parameter_set_rbsp == null) {
             return;
@@ -325,7 +332,6 @@ public class H264Parameters implements Serializable
         String ppsStr = Base64.encodeToString(params.pic_parameter_set_rbsp, Base64.DEFAULT);
         String storeString = spsStr + "," + ppsStr;
 
-        config.edit().putString(STORE_ID, storeString)
-                .putString(VIDEO_SIZE_STORE_ID, formatUsed.getSize().toString()).apply();
+        config.edit().putString(STORE_ID, storeString).putString(VIDEO_SIZE_STORE_ID, formatUsed.getSize().toString()).apply();
     }
 }

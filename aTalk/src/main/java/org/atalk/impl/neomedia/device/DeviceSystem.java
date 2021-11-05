@@ -5,6 +5,8 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import androidx.annotation.NonNull;
+
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.android.util.BackgroundManager;
 import org.atalk.impl.neomedia.MediaServiceImpl;
@@ -20,7 +22,6 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 
-import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
@@ -173,8 +174,8 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                 break;
             case VIDEO:
                 /*
-                 * Android-O blocks camera access while app is in background; Otherwise system notification to user:
-                 * "aTalk has been detected using camera".
+                 * Android-O blocks camera access while app is in background; Otherwise android alerts
+                 * notification to user: "aTalk has been detected using camera".
                  * Setup AndroidCameraSystem to handle all DeviceSystem derived class that are dependent on camera access
                  * Note: Must ensure AndroidCameraSystem is the last deviceSystem to be initialized before calling
                  * DeviceConfiguration.extractConfiguredVideoCaptureDevices();

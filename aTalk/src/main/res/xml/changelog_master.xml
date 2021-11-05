@@ -6,6 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.7.1 (11/05/2021)" versioncode="207010">
+        <change>The user selected capture device for media recorder is not retrieved properly on start up</change>
+        <change>Adapt AndroidUIServiceImpl#getSize to cater for different android API, to avoid system crash.</change>
+        <change>Upgrade build to support android-12(S) i.e. API-31</change>
+        <change>Final 2.7.x version before porting to use camera2</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.7.0 (09/28/2021)" versioncode="207000">
         <change>Add proxy support in smack HTTP File Upload Manager</change>
         <change>The selected action menu items is now highlighted on user click</change>

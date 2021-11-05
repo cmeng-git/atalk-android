@@ -31,9 +31,6 @@ repositories {
         // May need manual cleanup for new SNAPSHOT update if same name with date change only:
         // Smack official SNAPSHOT repository accepted by F-Droid
         url 'https://oss.sonatype.org/content/repositories/snapshots'
-
-        // Smack custom library for org.igniterealtime - not recognize by F-Droid
-        // url 'https://igniterealtime.org/repo/'
     }
     maven {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
@@ -84,8 +81,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 207000
-        versionName "2.7.0"
+        versionCode 207010
+        versionName "2.7.1"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -213,7 +210,7 @@ android {
 ext {
     // for official maven release
     // smackVersion = '4.4.0-beta2'
-    smackVersion = '4.4.3'
+    smackVersion = '4.4.4'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
@@ -230,14 +227,12 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.activity:activity:1.3.1"
+    implementation "androidx.activity:activity:1.4.0"
     implementation "androidx.fragment:fragment:1.3.6"
-
-    // implementation "com.android.support:support-v4:28.0.0"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.legacy:legacy-support-v13:1.0.0"
     implementation "androidx.appcompat:appcompat:1.3.1"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.preference:preference:1.1.1"
 
@@ -248,7 +243,7 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 
-    implementation('com.jakewharton.timber:timber:4.7.1') {
+    implementation('com.jakewharton.timber:timber:5.0.1') {
         transitive = false
     }
     implementation 'com.karumi:dexter:6.2.3'
@@ -258,8 +253,6 @@ dependencies {
     implementation 'com.github.seancfoley:ipaddress:5.3.3'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v5.0.0'
 
-    // Need latest release to fix incorrect youtube link extraction
-    // implementation 'com.github.HaarigerHarald:android-youtubeExtractor:46579d1'
     implementation 'com.github.yalantis:ucrop:2.2.7'
     implementation 'com.google.android.exoplayer:exoplayer:2.15.1'
 
@@ -326,7 +319,7 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
-    implementation 'org.jxmpp:jxmpp-jid:1.0.1'
+    implementation 'org.jxmpp:jxmpp-jid:1.0.2'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
     // implementation 'org.jetbrains:annotations-java5:15.0'
 
@@ -334,7 +327,8 @@ dependencies {
     implementation 'org.osgi:osgi.core:7.0.0'
 
     playstoreImplementation "com.google.android.gms:play-services-location:18.0.0"
-    playstoreImplementation "com.google.android.gms:play-services-maps:17.0.1"
+    playstoreImplementation "com.google.android.gms:play-services-maps:18.0.0"
+    // playstoreImplementation "com.google.android.gms:play-services-maps:17.0.1"
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.0.0"
 
     /*
@@ -416,7 +410,7 @@ dependencies {
  * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this need to be
  * executed at least once to generate all the static libraries before the aTalk apk build process.
  */
-task getJniLibs(type: org.gradle.api.tasks.Exec) {
+task getJniLibs(type: Exec) {
     workingDir "${projectDir}/jni/"
     executable './fetch-jnilibs4atalk.sh'
 }

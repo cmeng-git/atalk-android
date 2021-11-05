@@ -5,7 +5,6 @@ apply from: '../dependencies.gradle'
 ext.shard = 'core'
 ext.libVersion = versions.publishVersion_core
 ext.libDescription = 'YouTube Player library for Android, stable and customizable.'
-// apply from: '../bintrayconfig.gradle'
 
 android {
     compileSdkVersion versions.compileSdk

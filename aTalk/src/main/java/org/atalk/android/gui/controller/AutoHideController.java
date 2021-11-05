@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiFragment;
 
@@ -70,10 +73,9 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
      * {@inheritDoc}
      */
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
+    public void onCreate(@Nullable Bundle savedInstanceState)
     {
-        super.onActivityCreated(savedInstanceState);
-
+        super.onCreate(savedInstanceState);
         Activity activity = getActivity();
 
         if (activity instanceof AutoHideListener) {
@@ -81,12 +83,10 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
         }
 
         view = activity.findViewById(getArguments().getInt(ARG_VIEW_ID));
-
         if (view == null)
             throw new NullPointerException("The view is null");
 
         hideTimeout = getArguments().getLong(ARG_HIDE_TIMEOUT);
-
         // inAnimation = AnimationUtils.loadAnimation(getActivity(),
         // R.anim.show_from_bottom);
         // inAnimation.setAnimationListener(this);

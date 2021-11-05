@@ -19,6 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
  * The dialog allows user to manipulate input or output volume gain level. To specify which one will be manipulated by
  * current instance the {@link #ARG_DIRECTION} should be specified with one of direction values:
@@ -53,9 +56,9 @@ public class VolumeControlDialog extends OSGiDialogFragment implements VolumeCha
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState)
-	{
-		super.onActivityCreated(savedInstanceState);
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
 		MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
 
 		// Selects input or output volume control based on the arguments.

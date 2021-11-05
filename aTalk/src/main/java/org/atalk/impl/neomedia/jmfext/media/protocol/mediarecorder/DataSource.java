@@ -20,9 +20,11 @@ import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
+import org.atalk.persistance.FileBackend;
 import org.atalk.service.neomedia.codec.Constants;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import javax.media.*;
@@ -49,13 +51,13 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      */
     private static final String DUMP_FILE = null;
 
-    private static final String ENDOFSTREAM_IOEXCEPTION_MESSAGE = "END_OF_STREAM";
+    private static final String EOS_IOE_MESSAGE = "END_OF_STREAM";
 
     private static final long FREE_SPACE_BOX_TYPE = stringToBoxType("free");
 
     private static final long FILE_TYPE_BOX_TYPE = stringToBoxType("ftyp");
 
-    private static final String INTEGEROVERFLOW_IOEXCEPTION_MESSAGE = "INTEGER_OVERFLOW";
+    private static final String INTEGER_OVERFLOW_IOE_MESSAGE = "INTEGER_OVERFLOW";
 
     /**
      * The name of the <tt>LocalServerSocket</tt> created by the <tt>DataSource</tt> class to be
@@ -78,14 +80,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
     private static final int MEDIA_RECORDER_STOPPED = 2;
 
-    /**
-     * The path of the file into which {@link #mediaRecorder} is to write. If the value is not
-     * <tt>null</tt>, no bytes will be read from the <tt>mediaRecorder</tt> by the
-     * <tt>DataSource</tt> and made available through it.
-     */
-    private static final String OUTPUT_FILE = null;
-
-    private static final String STREAMCLOSED_IOEXCEPTION_MESSAGE = "STREAM_CLOSED";
+    private static final String STREAM_CLOSED_IOE_MESSAGE = "STREAM_CLOSED";
 
     /**
      * The priority to be set to the thread executing the {@link MediaRecorderStream#read(Buffer)}
@@ -95,11 +90,17 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
     private static final String UNEXPECTED_IOEXCEPTION_MESSAGE = "UNEXPECTED";
 
-    private static final String UNSUPPORTEDBOXSIZE_IOEXCEPTION_MESSAGE = "UNSUPPORTED_BOX_SIZE";
+    private static final String UNSUPPORTED_BOXSIZE_IOE_MESSAGE = "UNSUPPORTED_BOX_SIZE";
 
-    private static final Map<String, DataSource> dataSources = new HashMap<String, DataSource>();
+    private static final Map<String, DataSource> dataSources = new HashMap<>();
 
-    private static LocalServerSocket localServerSocket;
+    /**
+     * The path of the file into which {@link #mediaRecorder} is to write. If the value is not <tt>null</tt>, no
+     * bytes will be read from the <tt>mediaRecorder</tt> by the <tt>DataSource</tt> and made available through it.
+     */
+    private String mOutputFile = null;
+
+    private static LocalServerSocket mLocalServerSocket;
 
     private static int maxDataSourceKeySize;
 
@@ -110,29 +111,30 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      */
     private long accessUnitTimeStamp;
 
-    private Camera camera;
-
-    private final String dataSourceKey;
+    private final String mDataSourceKey;
 
     private long lastWrittenParameterSetTime;
 
-    private LocalSocket localSocket;
+    private LocalSocket mLocalSocket;
 
-    private String localSocketKey;
+    private String mLocalSocketKey;
 
     private int maxLocalSocketKeySize;
 
+    protected static int mCameraId;
+
+    private Camera mCamera;
+    private VideoFormat mVideoFormat = null;
+
     /**
-     * The <tt>MediaRecorder</tt> which implements the actual capturing of media data for the
-     * purposes of this <tt>DataSource</tt>.
+     * The <tt>MediaRecorder</tt> which implements the actual capturing of media data for this <tt>DataSource</tt>.
      */
     private MediaRecorder mediaRecorder;
 
     private byte[] nal;
 
     /**
-     * The <tt>Buffer</tt> flags to be applied when {@link #nal} is read out of the associated
-     * <tt>MediaRecorderStream</tt>.
+     * The <tt>Buffer</tt> flags to be applied when {@link #nal} is read out of the associated <tt>MediaRecorderStream</tt>.
      */
     private int nalFlags;
 
@@ -169,7 +171,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      */
     public DataSource()
     {
-        this.dataSourceKey = getNextDataSourceKey();
+        mDataSourceKey = getNextDataSourceKey();
     }
 
     /**
@@ -180,95 +182,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     public DataSource(MediaLocator locator)
     {
         super(locator);
-
-        this.dataSourceKey = getNextDataSourceKey();
-    }
-
-    @SuppressWarnings("unused")
-    private static String boxTypeToString(long type)
-    {
-        byte[] bytes = new byte[4];
-        int end = bytes.length - 1;
-
-        for (int i = end; i >= 0; i--)
-            bytes[end - i] = (byte) ((type >> (8 * i)) & 0xFF);
-        try {
-            return new String(bytes, "US-ASCII");
-        } catch (UnsupportedEncodingException uee) {
-            throw new IllegalArgumentException("type");
-        }
-    }
-
-    private FileDescriptor createLocalSocket(MediaRecorder mediaRecorder)
-            throws IOException
-    {
-        LocalServerSocket localServerSocket;
-
-        synchronized (DataSource.class) {
-            if (DataSource.localServerSocket == null) {
-                DataSource.localServerSocket = new LocalServerSocket(LOCAL_SERVER_SOCKET_NAME);
-                Thread localServerSocketThread = new Thread()
-                {
-                    @Override
-                    public void run()
-                    {
-                        runInLocalServerSocketThread();
-                    }
-                };
-
-                localServerSocketThread.setDaemon(true);
-                localServerSocketThread.setName(DataSource.localServerSocket
-                        .getLocalSocketAddress().getName());
-                localServerSocketThread.start();
-            }
-            localServerSocket = DataSource.localServerSocket;
-        }
-
-        if (localSocket != null) {
-            try {
-                localSocket.close();
-            } catch (IOException ioe) {
-            }
-        }
-        if (localSocketKey != null)
-            localSocketKey = null;
-        localSocket = new LocalSocket();
-        localSocketKey = getNextLocalSocketKey();
-
-        /*
-         * Since one LocalServerSocket is being used by multiple DataSource instances, make sure
-         * that the LocalServerSocket will be able to determine which DataSource is to receive the
-         * media data delivered though a given LocalSocket.
-         */
-        String dataSourceKey = this.dataSourceKey;
-        String charset = "UTF-8";
-
-        try {
-            byte[] dataSourceKeyBytes = (dataSourceKey + "\n").getBytes(charset);
-            int dataSourceKeySize = dataSourceKeyBytes.length;
-            byte[] localSocketKeyBytes = (localSocketKey + "\n").getBytes(charset);
-            int localSocketKeySize = localSocketKeyBytes.length;
-
-            synchronized (DataSource.class) {
-                dataSources.put(dataSourceKey, this);
-                if (maxDataSourceKeySize < dataSourceKeySize)
-                    maxDataSourceKeySize = dataSourceKeySize;
-            }
-            if (maxLocalSocketKeySize < localSocketKeySize)
-                maxLocalSocketKeySize = localSocketKeySize;
-            localSocket.connect(localServerSocket.getLocalSocketAddress());
-
-            OutputStream outputStream = localSocket.getOutputStream();
-
-            outputStream.write(dataSourceKeyBytes);
-            outputStream.write(localSocketKeyBytes);
-        } catch (IOException ioe) {
-            synchronized (DataSource.class) {
-                dataSources.remove(dataSourceKey);
-            }
-            throw ioe;
-        }
-        return localSocket.getFileDescriptor();
+        mDataSourceKey = getNextDataSourceKey();
     }
 
     /**
@@ -295,7 +209,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     {
         while (byteCount-- > 0)
             if (-1 == inputStream.read())
-                throw new IOException(ENDOFSTREAM_IOEXCEPTION_MESSAGE);
+                throw new IOException(EOS_IOE_MESSAGE);
     }
 
     /**
@@ -308,134 +222,125 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     protected synchronized void doStart()
             throws IOException
     {
-        if (this.mediaRecorder == null) {
-            MediaRecorder mediaRecorder = new MediaRecorder();
-            Camera camera = null;
-            Throwable exception = null;
+        if (mediaRecorder == null) {
+            mCameraId = AndroidCamera.getCameraId(getLocator());
+            mediaRecorder = new MediaRecorder();
+            mCamera = null;
 
             try {
-                camera = getCamera();
-                if (camera == null) {
+                // Gets the Camera instance which corresponds to this MediaLocator of this <tt>DataSource</tt>.
+                mCamera = CameraUtils.getCamera(getLocator());
+                if (mCamera == null) {
                     throw new RuntimeException("Unable to select camera for locator: " + getLocator());
                 }
 
                 // Adjust preview display orientation
-                int rotation = CameraUtils.getCameraDisplayRotation(AndroidCamera.getCameraId(getLocator()));
-                camera.setDisplayOrientation(rotation);
+                int rotation = CameraUtils.getPreviewOrientation(AndroidCamera.getCameraId(getLocator()));
+                mCamera.setDisplayOrientation(rotation);
 
                 Format[] streamFormats = getStreamFormats();
-                VideoFormat videoFormat = null;
                 // Selects video format
                 for (Format candidate : streamFormats) {
                     if (Constants.H264.equalsIgnoreCase(candidate.getEncoding())) {
-                        videoFormat = (VideoFormat) candidate;
+                        mVideoFormat = (VideoFormat) candidate;
                         break;
                     }
                 }
-                if (videoFormat == null) {
+                if (mVideoFormat == null) {
                     throw new RuntimeException("H264 not supported");
                 }
 
                 // Tries to read previously stored parameters
-                this.h264Params = H264Parameters.getStoredParameters(videoFormat);
-                if (this.h264Params == null) {
-                    // Pre-configure media recorder and camera for video format
-                    configure(camera, mediaRecorder, videoFormat);
-                    // Obtain h264 parameters from short sample video
-                    this.h264Params = obtainParameters(camera, mediaRecorder);
-                    // Persists the parameters
-                    H264Parameters.storeParameters(this.h264Params, videoFormat);
+                h264Params = H264Parameters.getStoredParameters(mVideoFormat);
+                if (h264Params == null) {
+                    obtainParameters();
                 }
-                // Prints the parameters
-                h264Params.logParamaters();
-
-                // Pre-configure media recorder and camera for video format
-                configure(camera, mediaRecorder, videoFormat);
-
-                if (OUTPUT_FILE == null) {
-                    mediaRecorder.setOutputFile(createLocalSocket(mediaRecorder));
-                }
-                else
-                    mediaRecorder.setOutputFile(OUTPUT_FILE);
-
-                // Reset max duration, as it could be manipulated during parameters retrieval
-                mediaRecorder.setMaxDuration(-1);
-                mediaRecorder.setMaxFileSize(-1);
-
-                // cmeng - added for correct video orientation streaming
-                mediaRecorder.setOrientationHint(rotation);
-                mediaRecorder.prepare();
-
-                this.mediaRecorder = mediaRecorder;
-                this.camera = camera;
-                mediaRecorder.start();
-            } catch (RuntimeException re) {
-                exception = re;
-            }
-            if (exception != null) {
-                Timber.e(exception, "Error configuring data source: %s", exception.getMessage());
-
-                mediaRecorder.release();
-                this.mediaRecorder = null;
-                if (camera != null) {
-                    camera.reconnect();
-                    camera.release();
-                }
-                this.camera = null;
-                this.videoFrameInterval = 0;
-
-                if (exception instanceof ThreadDeath)
-                    throw (ThreadDeath) exception;
                 else {
-                    IOException ioe = new IOException();
-
-                    ioe.initCause(exception);
-                    throw ioe;
+                    startVideoRecording();
                 }
+
+            } catch (IllegalStateException | IOException ioe) {
+                Timber.e(ioe, "IllegalStateException (media recorder) in configuring data source: : %s", ioe.getMessage());
+                closeMediaRecorder();
             }
         }
-        super.doStart();
+    }
+
+    /**
+     * Must use H264/RTP for video encoder
+     *
+     *  After API 23, android doesn't allow non seekable file descriptors i.e. mOutputFile = null
+     * org.atalk.android E/(DataSource.java:294)#startVideoRecording: IllegalStateException (media recorder) in configuring data source: : null
+     *     java.lang.IllegalStateException
+     *         at android.media.MediaRecorder._start(Native Method)
+     *         at android.media.MediaRecorder.start(MediaRecorder.java:1340)
+     *         at org.atalk.impl.neomedia.jmfext.media.protocol.mediarecorder.DataSource.startVideoRecording(DataSource.java:295)
+     */
+    private void startVideoRecording()
+    {
+        try {
+            mOutputFile = null;
+            // mOutputFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), System.currentTimeMillis() + ".mp4").getAbsolutePath();
+
+            // Configure media recorder for video recording
+            configureMediaRecorder();
+
+            if (mOutputFile == null) {
+                mediaRecorder.setOutputFile(createLocalSocket());
+            }
+            else
+                mediaRecorder.setOutputFile(mOutputFile);
+
+            mediaRecorder.prepare();
+            mediaRecorder.start(); // always cause IllegalStateException
+            super.doStart();
+
+        } catch (IllegalStateException re) {
+            Timber.e(re, "IllegalStateException (media recorder) in configuring data source: : %s", re.getMessage());
+            closeMediaRecorder();
+        } catch (ThreadDeath td) {
+            throw (ThreadDeath) td;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Configures the camera and media recorder to work with given <tt>videoFormat</tt>.
-     *
-     * @param camera the camera to be configured.
-     * @param mediaRecorder the media recorder to be configured.
-     * @param videoFormat the video format to be used.
      */
-    private void configure(Camera camera, MediaRecorder mediaRecorder, VideoFormat videoFormat)
+    private void configureMediaRecorder()
     {
+        mCamera.unlock();
+        mediaRecorder.setCamera(mCamera);
+
+        // The sources need to be specified before setting recording-parameters or encoders, e.g. before setOutputFormat().
+        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+
         /*
          * Reflect the size of the VideoFormat of this DataSource on the Camera. It should not be
          * necessary because it is the responsibility of MediaRecorder to configure the Camera it is
          * provided with. Anyway, MediaRecorder.setVideoSize(int,int) is not always supported so it may
          * (or may not) turn out that Camera.Parameters.setPictureSize(int,int) saves the day in some cases.
          */
-        Dimension videoSize = videoFormat.getSize();
-        if ((videoSize != null) && (videoSize.height > 0) && (videoSize.width > 0)) {
-            Camera.Parameters params = camera.getParameters();
-
-            if (params != null) {
-                params.setPictureSize(videoSize.width, videoSize.height);
-                camera.setParameters(params);
-            }
-        }
-
-        camera.unlock();
-        mediaRecorder.setCamera(camera);
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        Dimension videoSize = mVideoFormat.getSize();
+//        if ((videoSize != null) && (videoSize.height > 0) && (videoSize.width > 0)) {
+//            Camera.Parameters params = camera.getParameters();
+//            if (params != null) {
+//                params.setPictureSize(videoSize.width, videoSize.height);
+//                camera.setParameters(params);
+//            }
+//        }
 
         if ((videoSize != null) && (videoSize.height > 0) && (videoSize.width > 0)) {
-            Timber.w("Will attempt to capture from %s in %sx%s. May not be supported.",
+            Timber.w("Set video size for '%s' with %sx%s.",
                     getLocator(), videoSize.width, videoSize.height);
-
             mediaRecorder.setVideoSize(videoSize.width, videoSize.height);
         }
 
-        float frameRate = videoFormat.getFrameRate();
-
+        // Setup media recorder bitrate and frame rate
+        mediaRecorder.setVideoEncodingBitRate(10000000);
+        float frameRate = mVideoFormat.getFrameRate();
         if (frameRate <= 0)
             frameRate = 15;
 
@@ -445,90 +350,86 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             videoFrameInterval /= 2 /* ticks_per_frame */;
         }
 
-        /*
-         * Stack Overflow says that setVideoSize should be called before setVideoEncoder.
-         */
+        // Stack Overflow says that setVideoSize should be called before setVideoEncoder.
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-
         Surface previewSurface = CameraUtils.obtainPreviewSurface().getSurface();
         if (previewSurface == null) {
             Timber.e(new NullPointerException(), "Preview surface must not be null");
         }
         mediaRecorder.setPreviewDisplay(previewSurface);
+
+        // Adjust preview display orientation
+        int previewOrientation = CameraUtils.getPreviewOrientation(AndroidCamera.getCameraId(getLocator()));
+        // cmeng - added for correct video orientation streaming
+        mediaRecorder.setOrientationHint(previewOrientation);
+
+        // Reset to recording max duration/size, as it may have been manipulated during parameters retrieval
+        mediaRecorder.setMaxDuration(-1);
+        mediaRecorder.setMaxFileSize(-1);
     }
 
     /**
      * Tries to read sequence and picture video parameters by recording sample video and parsing
      * "avcC" part of "stsd" mp4 box.
      *
-     * @param camera the camera to be used.
-     * @param mediaRecorder the recorder to be used.
-     * @return <tt>H264Parameters</tt> class containing video parameters.
      * @throws IOException if we failed to retrieve the parameters.
      */
-    private H264Parameters obtainParameters(Camera camera, MediaRecorder mediaRecorder)
+    private void obtainParameters()
             throws IOException
     {
         final String sampleFile = aTalkApp.getGlobalContext().getCacheDir().getPath() + "/atalk-test.mpeg4";
-        Timber.i("Sample file saved at: %s", sampleFile);
+        File outFile = new File(sampleFile);
+        Timber.d("Obtaining H264Parameters from short sample video file: %s", sampleFile);
+
+        // Configure media recorder for obtainParameters
+        configureMediaRecorder();
         mediaRecorder.setOutputFile(sampleFile);
 
-        // Limit recording time to 1 sec
+        // Limit recording time to 1 sec and max file to 1MB
         mediaRecorder.setMaxDuration(1000);
-        // Limit to 1MB
         mediaRecorder.setMaxFileSize(1024 * 1024);
 
-        final Object limitMonitor = new Object();
-        // Wait until one of limits is reached
-        mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener()
-        {
-            public void onInfo(MediaRecorder mr, int what, int extra)
-            {
-                if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED
-                        || what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
-                    synchronized (limitMonitor) {
-                        Timber.d("Limit monitor notified");
-                        limitMonitor.notifyAll();
-                    }
+        // Wait until one of limits is reached; must not use limitMonitor = new Object() => limitMonitor.notifyAll();;
+        mediaRecorder.setOnInfoListener((mr, what, extra) -> {
+            if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED
+                    || what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
+                Timber.d("Limit monitor notified: %s", what);
+
+                // Disable the callback
+                mediaRecorder.setOnInfoListener(null);
+                mediaRecorder.stop();
+                mediaRecorder.reset();
+
+                try {
+                    mCamera.reconnect();
+                    mCamera.stopPreview();
+
+                    // Retrieve SPS and PPS parameters
+                    H264Parameters h264Params = new H264Parameters(sampleFile);
+                    H264Parameters.storeParameters(h264Params, mVideoFormat);
+                    h264Params.logParameters();
+                } catch (IOException e) {
+                    Timber.e("H264Parameters extraction exception: %s", e.getMessage());
                 }
+
+                // Remove sample video
+                if (!outFile.delete()) {
+                    Timber.e("Sample file could not be removed");
+                }
+
+                // Start final mediaRecord after obtainParameters()
+                startVideoRecording();
             }
         });
 
         mediaRecorder.prepare();
         mediaRecorder.start();
-
-        try {
-            synchronized (limitMonitor) {
-                limitMonitor.wait(5000);
-            }
-        } catch (InterruptedException exc) {
-            throw new RuntimeException(exc);
-        }
-
-        // Disable the callback
-        mediaRecorder.setOnInfoListener(null);
-        mediaRecorder.stop();
-        mediaRecorder.reset();
-
-        camera.reconnect();
-        camera.stopPreview();
-
-        // Retrieve SPS and PPS parameters
-        H264Parameters config = new H264Parameters(sampleFile);
-
-        // Remove sample video
-        File file = new File(sampleFile);
-        if (!file.delete()) {
-            Timber.e("Sample file could not be removed");
-        }
-        return config;
     }
 
     /**
      * Stops the transfer of media data from this <tt>DataSource</tt>.
      *
-     * @throws java.io.IOException if anything goes wrong while stopping the transfer of media data from this
-     * <tt>DataSource</tt>
+     * @throws java.io.IOException if anything goes wrong while stopping the transfer of media data from this <tt>DataSource</tt>
      * @see AbstractPushBufferCaptureDevice#doStop()
      */
     @Override
@@ -553,22 +454,21 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 }
             }
         } finally {
-            if (localSocket != null) {
+            if (mLocalSocket != null) {
                 try {
-                    localSocket.close();
+                    mLocalSocket.close();
                 } catch (IOException ioe) {
                     Timber.w(ioe, "Failed to close LocalSocket.");
                 } finally {
-                    localSocket = null;
-                    localSocketKey = null;
+                    mLocalSocket = null;
+                    mLocalSocketKey = null;
                 }
             }
 
             if (mediaRecorderStopState != null) {
                 boolean stopped = false;
                 /*
-                 * Unfortunately, MediaRecorder may never stop and/or release. So we will not wait
-                 * forever.
+                 * Unfortunately, MediaRecorder may never stop and/or release. So we will not wait forever.
                  */
                 int maxWaits = -1;
                 boolean interrupted = false;
@@ -605,37 +505,36 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 }
             }
 
-            if (camera != null) {
-                camera.reconnect();
-                final Camera camera = this.camera;
-                this.camera = null;
+            if (mCamera != null) {
+                mCamera.reconnect();
+                final Camera camera = this.mCamera;
+                this.mCamera = null;
                 CameraUtils.releaseCamera(camera);
             }
         }
     }
 
     /**
-     * Gets a <tt>Camera</tt> instance which corresponds to the <tt>MediaLocator</tt> of this <tt>DataSource</tt>.
-     *
-     * @return a <tt>Camera</tt> instance which corresponds to the <tt>MediaLocator</tt> of this <tt>DataSource</tt>
-     * @throws IOException if an I/O error occurs while getting the <tt>Camera</tt> instance
+     * Closes the current {@link Camera}.
      */
-    private Camera getCamera()
-            throws IOException
+    protected void closeMediaRecorder()
     {
-        return CameraUtils.getCamera(getLocator());
-    }
+        if (mCamera != null) {
+            try {
+                mCamera.reconnect();
+                mCamera.release();
+                mCamera = null;
+                videoFrameInterval = 0;
 
-    private static String getNextDataSourceKey()
-    {
-        synchronized (DataSource.class) {
-            return Long.toString(nextDataSourceKey++);
+                if (mediaRecorder != null) {
+                    mediaRecorder.stop();
+                    mediaRecorder.release();
+                    mediaRecorder = null;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Interrupted while trying to close camera.", e);
+            }
         }
-    }
-
-    private synchronized String getNextLocalSocketKey()
-    {
-        return Long.toString(nextLocalSocketKey++);
     }
 
     private Format[] getStreamFormats()
@@ -660,10 +559,102 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         return streamFormats;
     }
 
+    @SuppressWarnings("unused")
+    private static String boxTypeToString(long type)
+    {
+        byte[] bytes = new byte[4];
+        int end = bytes.length - 1;
+
+        for (int i = end; i >= 0; i--)
+            bytes[end - i] = (byte) ((type >> (8 * i)) & 0xFF);
+        return new String(bytes, StandardCharsets.US_ASCII);
+    }
+
+    private static String getNextDataSourceKey()
+    {
+        synchronized (DataSource.class) {
+            return Long.toString(nextDataSourceKey++);
+        }
+    }
+
+    private FileDescriptor createLocalSocket()
+            throws IOException
+    {
+        LocalServerSocket localServerSocket;
+
+        synchronized (DataSource.class) {
+            if (mLocalServerSocket == null) {
+                mLocalServerSocket = new LocalServerSocket(LOCAL_SERVER_SOCKET_NAME);
+                Thread localServerSocketThread = new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        runInLocalServerSocketThread();
+                    }
+                };
+
+                localServerSocketThread.setDaemon(true);
+                localServerSocketThread.setName(mLocalServerSocket.getLocalSocketAddress().getName());
+                localServerSocketThread.start();
+            }
+            localServerSocket = mLocalServerSocket;
+        }
+
+        if (mLocalSocket != null) {
+            try {
+                mLocalSocket.close();
+            } catch (IOException ioe) {
+                Timber.e("IO Exception: %s", ioe.getMessage());
+            }
+        }
+        if (mLocalSocketKey != null)
+            mLocalSocketKey = null;
+        mLocalSocket = new LocalSocket();
+        mLocalSocketKey = getNextLocalSocketKey();
+
+        /*
+         * Since one LocalServerSocket is being used by multiple DataSource instances, make sure
+         * that the LocalServerSocket will be able to determine which DataSource is to receive the
+         * media data delivered though a given LocalSocket.
+         */
+        String dataSourceKey = mDataSourceKey;
+        try {
+            byte[] dataSourceKeyBytes = (dataSourceKey + "\n").getBytes(StandardCharsets.UTF_8);
+            int dataSourceKeySize = dataSourceKeyBytes.length;
+            byte[] localSocketKeyBytes = (mLocalSocketKey + "\n").getBytes(StandardCharsets.UTF_8);
+            int localSocketKeySize = localSocketKeyBytes.length;
+
+            synchronized (DataSource.class) {
+                dataSources.put(dataSourceKey, this);
+                if (maxDataSourceKeySize < dataSourceKeySize)
+                    maxDataSourceKeySize = dataSourceKeySize;
+            }
+            if (maxLocalSocketKeySize < localSocketKeySize)
+                maxLocalSocketKeySize = localSocketKeySize;
+            mLocalSocket.connect(localServerSocket.getLocalSocketAddress());
+
+            OutputStream outputStream = mLocalSocket.getOutputStream();
+
+            outputStream.write(dataSourceKeyBytes);
+            outputStream.write(localSocketKeyBytes);
+        } catch (IOException ioe) {
+            synchronized (DataSource.class) {
+                dataSources.remove(dataSourceKey);
+            }
+            throw ioe;
+        }
+        return mLocalSocket.getFileDescriptor();
+    }
+
+    private synchronized String getNextLocalSocketKey()
+    {
+        return Long.toString(nextLocalSocketKey++);
+    }
+
     private void localSocketAccepted(LocalSocket localSocket, InputStream inputStream)
     {
         OutputStream dump = null;
-
         try {
             /*
              * After this DataSource closes its write LocalSocket, the read LocalSocket will
@@ -714,9 +705,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
                 if (type == FILE_TYPE_BOX_TYPE) {
                     /*
-                     * Android's MPEG4Writer writes the ftyp box by initially writing a size of
-                     * zero, then writing the other fields and finally overwriting the size with the
-                     * correct value.
+                     * Android's MPEG4Writer writes the ftyp box by initially writing a size of zero,
+                     * then writing the other fields and finally overwriting the size with the correct value.
                      */
                     size = 4 /* size */
                             + 4 /* type */
@@ -741,8 +731,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                     while (true) {
                         long nalLength = readUnsignedInt32(inputStream);
 
-                        // Some devices write ASCII ???? ???? at this point
-                        // we can retry here
+                        // Some devices write ASCII ???? ???? at this point we can retry here
                         if (nalLength == 1061109567) {
                             Timber.w("Detected ???? ???? NAL length, trying to discard...");
                             // Currently read only 4(????) need 4 more
@@ -777,16 +766,14 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                         size = readUnsignedInt64(inputStream) - 8;
                     }
                     if (size == 0) {
-                        throw new IOException(UNSUPPORTEDBOXSIZE_IOEXCEPTION_MESSAGE);
+                        throw new IOException(UNSUPPORTED_BOXSIZE_IOE_MESSAGE);
                     }
                     else
                         discard(inputStream, size - (4 /* size */ + 4 /* type */));
                 }
             }
-        } catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException | IOException iae) {
             Timber.e(iae, "Failed to read from MediaRecorder.");
-        } catch (IOException ioe) {
-            Timber.e(ioe, "Failed to read from MediaRecorder.");
         } finally {
             try {
                 localSocket.close();
@@ -862,15 +849,15 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             bytes[size] = (byte) b;
             size++;
         }
-        return new String(bytes, 0, size, "UTF-8");
+        return new String(bytes, 0, size, StandardCharsets.UTF_8);
     }
 
     private void readNAL(String localSocketKey, byte[] bytes, int nalLength)
             throws IOException
     {
         synchronized (this) {
-            if ((this.localSocketKey == null) || !this.localSocketKey.equals(localSocketKey))
-                throw new IOException(STREAMCLOSED_IOEXCEPTION_MESSAGE);
+            if ((mLocalSocketKey == null) || !mLocalSocketKey.equals(localSocketKey))
+                throw new IOException(STREAM_CLOSED_IOE_MESSAGE);
 
             synchronized (nalSyncRoot) {
                 if ((nal == null) || (nal.length < nalLength))
@@ -878,14 +865,12 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 this.nalLength = 0;
 
                 if (bytes.length < nalLength)
-                    throw new IOException(ENDOFSTREAM_IOEXCEPTION_MESSAGE);
+                    throw new IOException(EOS_IOE_MESSAGE);
                 else {
                     System.arraycopy(bytes, 0, nal, 0, nalLength);
                     this.nalLength = nalLength;
 
-                    /*
-                     * Notify this DataSource that a NAL unit has just been read from the MediaRecorder into #nal.
-                     */
+                    // Notify this DataSource that a NAL unit has just been read from the MediaRecorder into #nal.
                     nalRead();
                 }
             }
@@ -899,8 +884,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         byte[] delayed = null;
 
         synchronized (this) {
-            if ((this.localSocketKey == null) || !this.localSocketKey.equals(localSocketKey))
-                throw new IOException(STREAMCLOSED_IOEXCEPTION_MESSAGE);
+            if ((mLocalSocketKey == null) || !mLocalSocketKey.equals(localSocketKey))
+                throw new IOException(STREAM_CLOSED_IOE_MESSAGE);
 
             synchronized (nalSyncRoot) {
                 if ((nal == null) || (nal.length < nalLength))
@@ -914,7 +899,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                     int read = inputStream.read(nal, totalRead, remainingToRead);
 
                     if (-1 == read)
-                        throw new IOException(ENDOFSTREAM_IOEXCEPTION_MESSAGE);
+                        throw new IOException(EOS_IOE_MESSAGE);
                     else {
                         remainingToRead -= read;
                         totalRead += read;
@@ -940,9 +925,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 }
 
                 if (delayed == null) {
-                    /*
-                     * Notify this DataSource that a NAL unit has just been read from the MediaRecorder into #nal.
-                     */
+                    // Notify this DataSource that a NAL unit has just been read from the MediaRecorder into #nal.
                     nalRead();
                 }
             }
@@ -966,10 +949,10 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             int b = inputStream.read();
 
             if (-1 == b)
-                throw new IOException(ENDOFSTREAM_IOEXCEPTION_MESSAGE);
+                throw new IOException(EOS_IOE_MESSAGE);
             else {
                 if ((i == 7) && ((b & 0x80) != 0))
-                    throw new IOException(INTEGEROVERFLOW_IOEXCEPTION_MESSAGE);
+                    throw new IOException(INTEGER_OVERFLOW_IOE_MESSAGE);
                 value |= ((b & 0xFFL) << (8 * i));
             }
         }
@@ -994,7 +977,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             LocalServerSocket localServerSocket;
 
             synchronized (DataSource.class) {
-                localServerSocket = DataSource.localServerSocket;
+                localServerSocket = mLocalServerSocket;
             }
             if (localServerSocket == null)
                 break;
@@ -1005,9 +988,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 localSocket = localServerSocket.accept();
             } catch (IOException ioe) {
                 /*
-                 * At the time of this writing, an IOException during the execution of
-                 * LocalServerSocket#accept() will leave localSocket to be equal to null which will
-                 * in turn break the while loop.
+                 * At the time of this writing, an IOException during the execution of LocalServerSocket#accept()
+                 * will leave localSocket to be equal to null which will in turn break the while loop.
                  */
             }
             if (localSocket == null)
@@ -1020,12 +1002,11 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             }
 
             if (maxDataSourceKeySize < 1) {
-                /*
-                 * We are not currently expecting such a connection so ignore whoever has connected.
-                 */
+                // We are not currently expecting such a connection so ignore whoever has connected.
                 try {
                     localSocket.close();
                 } catch (IOException ioe) {
+                    Timber.e("IO Exception: %s", ioe.getMessage());
                 }
             }
             else {
@@ -1047,8 +1028,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         }
     }
 
-    private static void runInLocalSocketAcceptedThread(LocalSocket localSocket,
-            int maxDataSourceKeySize)
+    private static void runInLocalSocketAcceptedThread(LocalSocket localSocket, int maxDataSourceKeySize)
     {
         InputStream inputStream = null;
         String dataSourceKey = null;
@@ -1087,8 +1067,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 localSocket.close();
             } catch (IOException ioe) {
                 /*
-                 * Apart from logging, there do not seem to exist a lot of reasonable alternatives
-                 * to just ignoring it.
+                 * Apart from logging, there do not seem to exist a lot of reasonable alternatives to just ignoring it.
                  */
             }
         }
@@ -1100,10 +1079,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      * <tt>PushBufferDataSource</tt>. The <tt>PushBufferStream</tt> does not exist at the time of
      * the attempt to set its <tt>Format</tt>.
      *
-     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is
-     * to be set
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
+     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is to be set
+     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt>
      * @param newValue the <tt>Format</tt> which is to be set
      * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
      * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
@@ -1114,8 +1091,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     @Override
     protected Format setFormat(int streamIndex, Format oldValue, Format newValue)
     {
+        // This DataSource supports setFormat.
         if (newValue instanceof VideoFormat) {
-            // This DataSource supports setFormat.
             return newValue;
         }
         else
@@ -1180,12 +1157,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     private static long stringToBoxType(String str)
     {
         byte[] bytes;
-
-        try {
-            bytes = str.getBytes("US-ASCII");
-        } catch (UnsupportedEncodingException uee) {
-            throw new IllegalArgumentException("str");
-        }
+        bytes = str.getBytes(StandardCharsets.US_ASCII);
 
         final int end = bytes.length - 1;
         long value = 0;
@@ -1196,8 +1168,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Writes the (current) {@link #nal} into the <tt>MediaRecorderStream</tt> made available by
-     * this <tt>DataSource</tt>.
+     * Writes the (current) {@link #nal} into the <tt>MediaRecorderStream</tt> made available by this <tt>DataSource</tt>.
      */
     private void writeNAL()
     {
@@ -1276,7 +1247,6 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         void writeNAL()
         {
             BufferTransferHandler transferHandler = this.transferHandler;
-
             if (transferHandler != null)
                 transferHandler.transferData(this);
         }

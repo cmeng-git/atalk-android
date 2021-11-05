@@ -57,7 +57,6 @@ import java.util.List;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 /**
  * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu

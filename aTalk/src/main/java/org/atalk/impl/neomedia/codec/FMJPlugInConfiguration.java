@@ -211,7 +211,7 @@ public class FMJPlugInConfiguration
         }
 
         /*
-         * If Jitsi provides a codec which is also provided by FMJ and/or JMF, use Jitsi's version.
+         * If aTalk provides a codec which is also provided by FMJ and/or JMF, use aTalk's version.
          */
         @SuppressWarnings("unchecked")
         Vector<String> codecs = PlugInManager.getPlugInList(null, null, PlugInManager.CODEC);
@@ -263,7 +263,7 @@ public class FMJPlugInConfiguration
              */
             if (!packages.contains(customPackage)) {
                 packages.add(0, customPackage);
-                Timber.d("Adding package  : %s", customPackage);
+                Timber.d("Adding package: %s", customPackage);
             }
         }
         PackageManager.setProtocolPrefixList(packages);

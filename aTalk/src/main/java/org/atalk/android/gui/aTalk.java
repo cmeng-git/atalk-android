@@ -134,25 +134,28 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         handleIntent(getIntent(), savedInstanceState);
 
-        // Purge obsoleted aTalk avatarCache directory and contents 2.2.0 (2020/03/13): To be removed in future release.
-        MigrateDir.purgeAvatarCache();
-
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
-        runOnUiThread(() -> new Handler().postDelayed(() -> {
-            // Must re-init TTS voice on every start up? disable for now as it seems no necessary
-            // if (ConfigurationUtils.isTtsEnable()) {
-            // State ttState = TTSActivity.getState();
-            // if (ttState == State.UNKNOWN) {
-            //    Intent ttsIntent = new Intent(this, TTSActivity.class);
-            //    startActivity(ttsIntent);
-            // }
-            // }
+        ChangeLog cl = new ChangeLog(this);
+        if (cl.isFirstRun()) {
+            // Purge obsoleted aTalk avatarCache directory and contents 2.2.0 (2020/03/13): To be removed in future release.
+            MigrateDir.purgeAvatarCache();
 
-            ChangeLog cl = new ChangeLog(this);
-            if (cl.isFirstRun() && !isFinishing()) {
-                cl.getLogDialog().show();
-            }
-        }, 15000));
+            // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
+            runOnUiThread(() -> new Handler().postDelayed(() -> {
+                // Must re-init TTS voice on every start up? disable for now as it seems no necessary
+                // if (ConfigurationUtils.isTtsEnable()) {
+                // State ttState = TTSActivity.getState();
+                // if (ttState == State.UNKNOWN) {
+                //    Intent ttsIntent = new Intent(this, TTSActivity.class);
+                //    startActivity(ttsIntent);
+                // }
+                // }
+
+                if (!isFinishing()) {
+                    cl.getLogDialog().show();
+                }
+            }, 15000));
+        }
     }
 
     /**

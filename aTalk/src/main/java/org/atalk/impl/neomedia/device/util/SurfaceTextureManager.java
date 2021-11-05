@@ -40,7 +40,6 @@ public class SurfaceTextureManager implements SurfaceTexture.OnFrameAvailableLis
 
         Timber.d("textureID = %s", mTextureRender.getTextureId());
         mSurfaceTexture = new SurfaceTexture(mTextureRender.getTextureId());
-
         mSurfaceTexture.setOnFrameAvailableListener(this);
     }
 
