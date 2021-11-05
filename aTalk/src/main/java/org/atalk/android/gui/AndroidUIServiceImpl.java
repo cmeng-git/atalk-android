@@ -5,9 +5,7 @@
  */
 package org.atalk.android.gui;
 
-import android.app.Activity;
 import android.graphics.Point;
-import android.view.Display;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.*;
@@ -98,22 +96,17 @@ public class AndroidUIServiceImpl implements UIService
     @Override
     public void setLocation(int x, int y)
     {
-
     }
 
     /**
      * Returns the size of the main application window.
      *
-     * @return the size of the main application window.
+     * @return the size of the main application display window.
      */
     @Override
     public Dimension getSize()
     {
-        Activity activity = aTalkApp.getCurrentActivity();
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point outSize = new Point();
-        display.getSize(outSize);
-        return new Dimension(outSize.x, outSize.y);
+        return aTalkApp.getDisplaySize();
     }
 
     /**

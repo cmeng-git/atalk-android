@@ -11,9 +11,9 @@ import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
@@ -140,7 +140,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     private static final String PROP_VIDEO_DEVICE = "neomedia.videoDevice";
 
     /**
-     * The property we use to store the video framerate settings.
+     * The property we use to store the video frame rate settings.
      */
     private static final String PROP_VIDEO_FRAMERATE = "neomedia.video.framerate";
 
@@ -205,8 +205,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                  * Vista Basic so try to pick up a different Renderer.
                  */
                 if (renderers.contains("com.sun.media.renderer.video.GDIRenderer")) {
-                    PlugInManager.removePlugIn("com.sun.media.renderer.video.DDRenderer",
-                            PlugInManager.RENDERER);
+                    PlugInManager.removePlugIn("com.sun.media.renderer.video.DDRenderer", PlugInManager.RENDERER);
                 }
             }
             else if (OSUtils.IS_WINDOWS64) {
@@ -214,10 +213,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                  * Remove the native Renderers for 64-bit Windows because native JMF libs are not
                  * available for 64-bit machines.
                  */
-                PlugInManager.removePlugIn("com.sun.media.renderer.video.GDIRenderer",
-                        PlugInManager.RENDERER);
-                PlugInManager.removePlugIn("com.sun.media.renderer.video.DDRenderer",
-                        PlugInManager.RENDERER);
+                PlugInManager.removePlugIn("com.sun.media.renderer.video.GDIRenderer", PlugInManager.RENDERER);
+                PlugInManager.removePlugIn("com.sun.media.renderer.video.DDRenderer", PlugInManager.RENDERER);
             }
         }
         else if (!OSUtils.IS_LINUX32) {
@@ -240,7 +237,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     private int frameRate = DEFAULT_VIDEO_FRAMERATE;
 
     /**
-     * The value of the <tt>ConfigurationService</tt> property\
+     * The value of the <tt>ConfigurationService</tt> property
      * {@link MediaServiceImpl#DISABLE_SET_AUDIO_SYSTEM_PNAME} at the time of the initialization of this instance.
      */
     private final boolean setAudioSystemIsDisabled;
@@ -284,8 +281,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         }
 
         if (cfg != null) {
-            cfg.addPropertyChangeListener(PROP_VIDEO_HEIGHT, this);
             cfg.addPropertyChangeListener(PROP_VIDEO_WIDTH, this);
+            cfg.addPropertyChangeListener(PROP_VIDEO_HEIGHT, this);
             cfg.addPropertyChangeListener(PROP_VIDEO_FRAMERATE, this);
             cfg.addPropertyChangeListener(PROP_VIDEO_RTP_PACING_THRESHOLD, this);
         }
@@ -404,36 +401,41 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Returns the configured video capture device with the specified output format.
      *
-     * @param format the output format of the video format.
+     * @param formats the output format array of the video format.
      * @return CaptureDeviceInfo for the video device.
      */
-    private CaptureDeviceInfo extractConfiguredVideoCaptureDevice(Format format)
+    private CaptureDeviceInfo extractConfiguredVideoCaptureDevice(Format[] formats)
     {
-        @SuppressWarnings("unchecked")
-        List<CaptureDeviceInfo> videoCaptureDevices = CaptureDeviceManager.getDeviceList(format);
+        ConfigurationService cfg = LibJitsi.getConfigurationService();
+        String videoDevName = (cfg == null) ? null : cfg.getString(PROP_VIDEO_DEVICE);
         CaptureDeviceInfo videoCaptureDevice = null;
+        CaptureDeviceInfo tmpDevice = null;
 
-        if (videoCaptureDevices.size() > 0) {
-            ConfigurationService cfg = LibJitsi.getConfigurationService();
-            String videoDevName = (cfg == null) ? null : cfg.getString(PROP_VIDEO_DEVICE);
-
-            if (videoDevName == null)
-                videoCaptureDevice = videoCaptureDevices.get(0);
-            else {
-                for (CaptureDeviceInfo captureDeviceInfo : videoCaptureDevices) {
-                    if (videoDevName.equals(captureDeviceInfo.getName())) {
-                        videoCaptureDevice = captureDeviceInfo;
-                        break;
+        for (Format format : formats) {
+            @SuppressWarnings("unchecked")
+            List<CaptureDeviceInfo> videoCaptureDevices = CaptureDeviceManager.getDeviceList(format);
+            if (videoCaptureDevices.size() > 0) {
+                if (videoDevName == null) {
+                    tmpDevice = videoCaptureDevices.get(0);
+                    break;
+                }
+                else {
+                    for (CaptureDeviceInfo captureDeviceInfo : videoCaptureDevices) {
+                        if (videoDevName.equals(captureDeviceInfo.getName())) {
+                            videoCaptureDevice = captureDeviceInfo;
+                            Timber.i("Found video capture device: '%s'; format: '%s'", videoCaptureDevice.getName(), format);
+                            break;
+                        }
                     }
                 }
+                tmpDevice = videoCaptureDevices.get(0);
             }
-            if (videoCaptureDevice != null) {
-                Timber.i("Found %s; format: %s video capture device.", videoCaptureDevice.getName(), format);
-            } else if (cfg != null){
-                // incorrect value specified in DB, so force and save to use first videoCaptureDevice
-                videoCaptureDevice = videoCaptureDevices.get(0);
-                cfg.setProperty(PROP_VIDEO_DEVICE, videoCaptureDevice.getName());
-            }
+        }
+
+        if ((videoCaptureDevice == null) && (tmpDevice != null) && (cfg != null)) {
+            // incorrect value specified in DB, so force and save to use last found valid videoCaptureDevice
+            videoCaptureDevice = tmpDevice;
+            cfg.setProperty(PROP_VIDEO_DEVICE, videoCaptureDevice.getName());
         }
         return videoCaptureDevice;
     }
@@ -447,13 +449,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             return;
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
-        String videoCaptureDeviceString = (cfg == null) ? null : cfg.getString(PROP_VIDEO_DEVICE);
+        String videoDevName = (cfg == null) ? null : cfg.getString(PROP_VIDEO_DEVICE);
 
-        if (NoneAudioSystem.LOCATOR_PROTOCOL.equalsIgnoreCase(videoCaptureDeviceString)) {
+        if (NoneAudioSystem.LOCATOR_PROTOCOL.equalsIgnoreCase(videoDevName)) {
             videoCaptureDevice = null;
         }
         else {
-            Timber.i("Scanning for configured Video Devices.");
             Format[] formats = new Format[]{
                     new AVFrameFormat(),
                     new VideoFormat(Constants.ANDROID_SURFACE),
@@ -462,13 +463,11 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                     new VideoFormat(Constants.H264)
             };
 
-            for (Format format : formats) {
-                videoCaptureDevice = extractConfiguredVideoCaptureDevice(format);
-                if (videoCaptureDevice != null)
-                    break;
-            }
-            if (videoCaptureDevice == null)
-                Timber.i("No Video Device was found.");
+            videoCaptureDevice = extractConfiguredVideoCaptureDevice(formats);
+            if (videoCaptureDevice != null)
+                Timber.i("Found configuredvideo device: %s <= %s.", videoDevName, videoCaptureDevice.getName());
+			else 
+				Timber.w("No Video Device was found for %s.", videoDevName);
         }
     }
 
@@ -480,7 +479,6 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     public CaptureDeviceInfo2 getAudioCaptureDevice()
     {
         AudioSystem audioSystem = getAudioSystem();
-
         return (audioSystem == null) ? null : audioSystem.getSelectedDevice(AudioSystem.DataFlow.CAPTURE);
     }
 
@@ -490,7 +488,6 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     public CaptureDeviceInfo getAudioNotifyDevice()
     {
         AudioSystem audioSystem = getAudioSystem();
-
         return (audioSystem == null) ? null : audioSystem.getSelectedDevice(AudioSystem.DataFlow.NOTIFY);
     }
 
@@ -521,7 +518,6 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     public AudioSystem[] getAvailableAudioSystems()
     {
         AudioSystem[] audioSystems = AudioSystem.getAudioSystems();
-
         if ((audioSystems == null) || (audioSystems.length == 0))
             return audioSystems;
         else {
@@ -554,7 +550,6 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             }
 
             int audioSystemsWithDevicesCount = audioSystemsWithDevices.size();
-
             return (audioSystemsWithDevicesCount == audioSystems.length) ? audioSystems
                     : audioSystemsWithDevices.toArray(new AudioSystem[audioSystemsWithDevicesCount]);
         }
@@ -936,7 +931,6 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         this.videoBitrate = videoBitrate;
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
-
         if (cfg != null) {
             if (videoBitrate != DEFAULT_VIDEO_BITRATE)
                 cfg.setProperty(PROP_VIDEO_BITRATE, videoBitrate);
@@ -967,7 +961,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
             }
 
             // cmeng (20210402), new implementation to switch camera without involving jingle message sending
-            // Deos not require blocking after the latest change in MediaStreamImpl@setDevice()
+            // Does not require blocking after the latest change in MediaStreamImpl@setDevice()
             firePropertyChange(VIDEO_CAPTURE_DEVICE, oldDevice, device);
         }
     }

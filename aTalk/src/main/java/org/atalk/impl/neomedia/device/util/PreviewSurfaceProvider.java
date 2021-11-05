@@ -22,6 +22,8 @@ import org.atalk.service.osgi.OSGiActivity;
 public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
         implements SurfaceHolder.Callback
 {
+    private SurfaceView mSurfaceView;
+
     /**
      * Flag indicates whether {@link SurfaceView#setZOrderMediaOverlay(boolean)} should be called on
      * created <tt>SurfaceView</tt>.
@@ -33,8 +35,8 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      *
      * @param parent parent <tt>OSGiActivity</tt> instance.
      * @param container the <tt>ViewGroup</tt> that will hold maintained <tt>SurfaceView</tt>.
-     * @param setZMediaOverlay if set to <tt>true</tt> then the <tt>SurfaceView</tt> will be displayed on the top of
-     * other surfaces.
+     * @param setZMediaOverlay if set to <tt>true</tt> then the <tt>SurfaceView</tt> will be
+     * displayed on the top of other surfaces.
      */
     public PreviewSurfaceProvider(OSGiActivity parent, ViewGroup container, boolean setZMediaOverlay)
     {
@@ -45,12 +47,15 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
     @Override
     protected View createViewInstance()
     {
-        SurfaceView view = new SurfaceView(activity);
-        view.getHolder().addCallback(PreviewSurfaceProvider.this);
-
+        mSurfaceView = new SurfaceView(mActivity);
+        mSurfaceView.getHolder().addCallback(this);
         if (setZMediaOverlay)
-            view.setZOrderMediaOverlay(true);
-        return view;
+            mSurfaceView.setZOrderMediaOverlay(true);
+        return mSurfaceView;
+    }
+
+    public SurfaceView getSurfaceView() {
+        return mSurfaceView;
     }
 
     /**
@@ -97,9 +102,10 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      */
     public int getDisplayRotation()
     {
-        return activity.getWindowManager().getDefaultDisplay().getRotation();
+        return mActivity.getWindowManager().getDefaultDisplay().getRotation();
     }
 
+    // ============== SurfaceHolder.Callback ================== //
     /**
      * This is called immediately after the surface is first created. Implementations of this should
      * start up whatever rendering code they desire. Note that only one thread can ever draw into a

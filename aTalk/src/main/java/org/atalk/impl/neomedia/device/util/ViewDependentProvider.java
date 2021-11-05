@@ -34,15 +34,15 @@ public abstract class ViewDependentProvider<T>
     /**
      * <tt>Activity</tt> context.
      */
-    protected final Activity activity;
+    protected final Activity mActivity;
 
     /**
      * The container that will hold maintained view.
      */
-    private final ViewGroup container;
+    private final ViewGroup mContainer;
 
     /**
-     * The view maintained by this instance.
+     * The view (can either be SurfaceView or TextureView) maintained by this instance.
      */
     protected View view;
 
@@ -59,8 +59,8 @@ public abstract class ViewDependentProvider<T>
      */
     public ViewDependentProvider(Activity activity, ViewGroup container)
     {
-        this.activity = activity;
-        this.container = container;
+        mActivity = activity;
+        mContainer = container;
     }
 
     /**
@@ -70,12 +70,12 @@ public abstract class ViewDependentProvider<T>
     protected void ensureViewCreated()
     {
         if (view == null) {
-            activity.runOnUiThread(() -> {
+            mActivity.runOnUiThread(() -> {
                 view = createViewInstance();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                container.addView(view, params);
-                container.setVisibility(View.VISIBLE);
+                mContainer.addView(view, params);
+                mContainer.setVisibility(View.VISIBLE);
             });
         }
     }
@@ -96,9 +96,9 @@ public abstract class ViewDependentProvider<T>
             final View viewToRemove = view;
             view = null;
 
-            activity.runOnUiThread(() -> {
-                container.removeView(viewToRemove);
-                container.setVisibility(View.GONE);
+            mActivity.runOnUiThread(() -> {
+                mContainer.removeView(viewToRemove);
+                mContainer.setVisibility(View.GONE);
             });
         }
     }
@@ -173,10 +173,10 @@ public abstract class ViewDependentProvider<T>
      */
     synchronized protected void releaseObject()
     {
-        if (providedObject == null)
-            return;
-        this.providedObject = null;
-        this.notifyAll();
+        if (providedObject != null) {
+            providedObject = null;
+            this.notifyAll();
+        }
     }
 
     /**

@@ -46,7 +46,7 @@ public class CaptureDevices extends Devices
 		List<CaptureDeviceInfo2> devices = super.getDevices();
 
 		if (!devices.isEmpty()) {
-			List<CaptureDeviceInfo2> thisDevices = new ArrayList<CaptureDeviceInfo2>(devices.size());
+			List<CaptureDeviceInfo2> thisDevices = new ArrayList<>(devices.size());
 			Format format = new AudioFormat(AudioFormat.LINEAR, -1, 16, -1);
 
 			for (CaptureDeviceInfo2 device : devices) {

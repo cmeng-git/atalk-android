@@ -21,6 +21,10 @@ import android.content.Intent;
 import android.media.*;
 import android.net.Uri;
 import android.os.*;
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.atalk.persistance.FileBackend;
 
@@ -30,8 +34,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
 
 public class AudioBgService extends Service implements MediaPlayer.OnCompletionListener
@@ -45,6 +47,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
     // Playback without any UI update
     public static final String ACTION_PLAYBACK_PLAY = "playback_play";
+    public static final String ACTION_PLAYBACK_SPEED = "playback_speed";
 
     // Media player broadcast status parameters
     public static final String PLAYBACK_STATE = "playback_state";
@@ -61,6 +64,8 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     private MediaPlayer mPlayer = null;
     private Uri fileUri;
 
+    private float playbackSpeed = 1.0f;
+
     public enum PlaybackState
     {
         init,
@@ -69,7 +74,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         stop
     }
 
-    // Audio recording
+    // ==== Audio recording ====
     public static final String ACTION_RECORDING = "recording";
     public static final String ACTION_CANCEL = "cancel";
     public static final String ACTION_SEND = "send";
@@ -99,7 +104,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     public static double mOffsetDB = 0.0f;  //10 Offset for bar, i.e. 0 lit LEDs at 10 dB.
     public static double mDBRange = 70.0f;  //SPL display range.
 
-    private static double mEMA = 1.0; // Temporally filtered version of RMS
+    private static double mEMA = 1.0; // a temporally filtered version of RMS
     //private double mAlpha =  0.9 Coefficient of IIR smoothing filter for RMS.
     static final private double EMA_FILTER = 0.4;
 
@@ -137,6 +142,14 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
             case ACTION_PLAYBACK_PLAY:
                 fileUri = intent.getData();
                 playerPlay(fileUri);
+                break;
+
+            case ACTION_PLAYBACK_SPEED:
+                String speed = intent.getType();
+                if (!TextUtils.isEmpty(speed)) {
+                    playbackSpeed = Float.parseFloat(speed);
+                    setPlaybackSpeed();
+                }
                 break;
 
             case ACTION_RECORDING:
@@ -213,17 +226,16 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
         mPlayer = new MediaPlayer();
         uriPlayers.put(uri, mPlayer);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mPlayer.setAudioAttributes(
-                    new AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_MUSIC).build());
-        }
-        else {
-            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        }
+        mPlayer.setAudioAttributes(new AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_MUSIC).build());
 
         try {
             mPlayer.setOnCompletionListener(this);
-            mPlayer.setDataSource(this, uri);
+            if (uri.toString().startsWith("http")) {
+                mPlayer.setDataSource(uri.toString());
+            }
+            else {
+                mPlayer.setDataSource(this, uri);
+            }
             mPlayer.prepare();
         } catch (IOException e) {
             Timber.e("Media player creation error for: %s", uri.getPath());
@@ -252,7 +264,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         if (mPlayer != null) {
             if (mPlayer.isPlaying()) {
                 playbackState(PlaybackState.play, uri);
-                // Cancel and resync with only one loop running
+                // Cancel and re-sync with only one loop running
                 mHandlerPlayback.removeCallbacks(playbackStatus);
                 mHandlerPlayback.postDelayed(playbackStatus, 500);
             }
@@ -313,7 +325,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
     /**
      * Start playing back on existing player or create new if none
-     * Broadcast the player satus at regular interval
+     * Broadcast the player status at regular interval
      *
      * @param uri the media file uri
      */
@@ -324,17 +336,22 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
         mPlayer = uriPlayers.get(uri);
         if (mPlayer == null) {
-            playerCreate(uri);
+            if (!playerCreate(uri))
+                return;
         }
         else if (mPlayer.isPlaying()) {
             return;
         }
 
         try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PlaybackParams playPara = mPlayer.getPlaybackParams().setSpeed(playbackSpeed);
+                mPlayer.setPlaybackParams(playPara);
+            }
             mPlayer.start();
             playbackState(PlaybackState.play, uri);
         } catch (Exception e) {
-            Timber.e("Playback failed");
+            Timber.e("Playback failed: %s", e.getMessage());
             playerRelease(uri);
         }
         mHandlerPlayback.removeCallbacks(playbackStatus);
@@ -367,12 +384,40 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     }
 
     /**
+     * Setting of playback speed is only support in Android.M
+     */
+    private void setPlaybackSpeed()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            for (Map.Entry<Uri, MediaPlayer> entry : uriPlayers.entrySet()) {
+                MediaPlayer player = entry.getValue();
+                Uri uri = entry.getKey();
+                if (player == null)
+                    continue;
+
+                try {
+                    PlaybackParams playPara = player.getPlaybackParams().setSpeed(playbackSpeed);
+                    player.setPlaybackParams(playPara);
+
+                    // Update player state: play will start upon speed change if it was in pause state
+                    playbackState(PlaybackState.play, uri);
+                } catch (IllegalStateException e) {
+                    Timber.e("Playback setSpeed failed: %s", e.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
      * Release the player resource and remove it from uriPlayers
      *
      * @param uri the media file uri
      */
     private void playerRelease(Uri uri)
     {
+        if (uri == null)
+            return;
+
         mPlayer = uriPlayers.get(uri);
         if (mPlayer != null) {
             mPlayer.seekTo(0);
@@ -611,15 +656,16 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     {
         File voiceFile = null;
         File mediaDir = FileBackend.getaTalkStore(FileBackend.MEDIA_VOICE_SEND, true);
+
         if (!mediaDir.exists() && !mediaDir.mkdirs()) {
-            Timber.d("Fail to create Media voice directory!");
+            Timber.w("Fail to create Media voice directory!");
             return null;
         }
 
         try {
             voiceFile = File.createTempFile("voice-", ".3gp", mediaDir);
         } catch (IOException e) {
-            Timber.d("Fail to create Media voice file!");
+            Timber.w("Fail to create Media voice file!");
         }
         return voiceFile;
     }

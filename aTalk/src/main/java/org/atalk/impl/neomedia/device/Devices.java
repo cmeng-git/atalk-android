@@ -115,7 +115,7 @@ public abstract class Devices
         if (this.devices == null)
             devices = Collections.emptyList();
         else
-            devices = new ArrayList<CaptureDeviceInfo2>(this.devices);
+            devices = new ArrayList<>(this.devices);
         return devices;
     }
 
@@ -152,8 +152,7 @@ public abstract class Devices
                     // By default, select automatically the USB devices.
                     boolean isSelected = activeDevice.isSameTransportType("USB");
                     ConfigurationService cfg = LibJitsi.getConfigurationService();
-                    // Desactivate the USB device automatic selection if the
-                    // property is set to true.
+                    // Deactivate the USB device automatic selection if the property is set to true.
                     if (cfg != null
                             && cfg.getBoolean(PROP_DISABLE_USB_DEVICE_AUTO_SELECTION, false)) {
                         isSelected = false;
@@ -168,24 +167,20 @@ public abstract class Devices
                         isSelected = true;
                     }
 
-                    // Adds the device in the preference list (to the end of the
-                    // list, or on top if selected.
+                    // Adds the device in the preference list (to the end of the list, or on top if selected.
                     saveDevice(property, activeDevice, isSelected);
                 }
             }
 
-            // Search if an active device match one of the previously configured
-            // in the preferences.
+            // Search if an active device match one of the previously configured in the preferences.
             synchronized (devicePreferences) {
                 for (String devicePreference : devicePreferences) {
                     for (CaptureDeviceInfo2 activeDevice : activeDevices) {
-                        // If we have found the "preferred" device among active
-                        // device.
+                        // If we have found the "preferred" device among active device.
                         if (devicePreference.equals(activeDevice.getModelIdentifier())) {
                             return activeDevice;
                         }
-                        // If the "none" device is the "preferred" device among
-                        // "active" device.
+                        // If the "none" device is the "preferred" device among "active" device.
                         else if (devicePreference.equals(NoneAudioSystem.LOCATOR_PROTOCOL)) {
                             return null;
                         }
@@ -219,8 +214,7 @@ public abstract class Devices
                     Collections.addAll(devicePreferences, deviceIdentifiers);
                 }
                 else {
-                    // Use the old/legacy property to load the last preferred
-                    // device.
+                    // Use the old/legacy property to load the last preferred device.
                     String oldProperty = audioSystem.getPropertyName(property);
                     deviceIdentifiersString = cfg.getString(oldProperty);
                     if ((deviceIdentifiersString != null)
@@ -319,7 +313,7 @@ public abstract class Devices
      */
     public void setDevices(List<CaptureDeviceInfo2> devices)
     {
-        this.devices = (devices == null) ? null : new ArrayList<CaptureDeviceInfo2>(devices);
+        this.devices = (devices == null) ? null : new ArrayList<>(devices);
     }
 
     /**

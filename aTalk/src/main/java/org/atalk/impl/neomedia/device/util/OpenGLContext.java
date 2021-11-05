@@ -5,16 +5,13 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.annotation.TargetApi;
 import android.opengl.*;
-import android.os.Build;
 
 import timber.log.Timber;
 
 /**
  * Code for EGL context handling
  */
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class OpenGLContext
 {
     private static final int EGL_RECORDABLE_ANDROID = 0x3142;

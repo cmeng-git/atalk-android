@@ -1,5 +1,16 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.7.1 (207010)
+Release Date:   11/05/2021
+Author:         cmeng
+- The user selected capture device for media recorder is not retrieved properly on start up
+  Fix DeviceConfiguration#extractConfiguredVideoCaptureDevice() checking algorithm
+- Adapt AndroidUIServiceImpl#getSize to cater for different android API, to avoid system crash.
+- Add playback speed support to AudioBgService class
+- Upgrade smack to version 4.4.4
+- Upgrade build to support android-12(S) i.e. API-31
+
+=========================================================================
 Version:        2.7.0 (207000)
 Release Date:   09/28/2021
 Author:         cmeng

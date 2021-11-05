@@ -5,14 +5,10 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
-import android.os.Build;
 import android.view.*;
-
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
@@ -25,14 +21,15 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
         implements TextureView.SurfaceTextureListener
 {
     /**
      * The <tt>OpenGLContext</tt>.
      */
-    OpenGLContext context;
+    protected OpenGLContext context;
+
+    protected TextureView mTextureView;
 
     /**
      * Flag used to inform the <tt>SurfaceStream</tt> that the <tt>onSurfaceTextureUpdated</tt>
@@ -54,16 +51,23 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
     @Override
     protected View createViewInstance()
     {
-        TextureView textureView = new TextureView(activity);
-        textureView.setSurfaceTextureListener(this);
-        return textureView;
+        mTextureView = new TextureView(mActivity);
+        mTextureView.setSurfaceTextureListener(this);
+        Timber.d("TextView created: %s", mTextureView);
+        return mTextureView;
     }
 
+    public TextureView getTextureView() {
+        return mTextureView;
+    }
+
+    // ========= SurfaceTextureListener implementation ========= //
     @Override
     synchronized public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height)
     {
         context = new OpenGLContext(false, surface, EGL14.EGL_NO_CONTEXT);
         onObjectCreated(context);
+        // Timber.d("onSurface Texture Available");
     }
 
     @Override

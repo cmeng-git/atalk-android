@@ -408,25 +408,23 @@ public class OSGiActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
-                if (upIntent != null) {
-                    Timber.w("Process UpIntent for: %s", this.getLocalClassName());
-                    NavUtils.navigateUpTo(this, upIntent);
-                }
-                else {
-                    Timber.w("Replace Up with BackKeyPress for: %s", this.getLocalClassName());
-                    super.onBackPressed();
-                    // Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
-                    // if (!this.getClass().equals(homeActivity)) {
-                    //    switchActivity(homeActivity);
-                    // }
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            Intent upIntent = NavUtils.getParentActivityIntent(this);
+            if (upIntent != null) {
+                Timber.w("Process UpIntent for: %s", this.getLocalClassName());
+                NavUtils.navigateUpTo(this, upIntent);
+            }
+            else {
+                Timber.w("Replace Up with BackKeyPress for: %s", this.getLocalClassName());
+                super.onBackPressed();
+                // Class<?> homeActivity = aTalkApp.getHomeScreenActivityClass();
+                // if (!this.getClass().equals(homeActivity)) {
+                //    switchActivity(homeActivity);
+                // }
+            }
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

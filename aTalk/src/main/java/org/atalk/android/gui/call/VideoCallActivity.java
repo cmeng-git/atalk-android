@@ -149,7 +149,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     static CallStateHolder callState = new CallStateHolder();
 
-    private VideoHandlerFragment videoFragment;
+    private static VideoHandlerFragment videoFragment;
 
     private ImageView peerAvatar;
     private ImageView microphoneButton;
@@ -385,6 +385,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new CallEnded()).commit();
             });
         }).start();
+    }
+
+    public static VideoHandlerFragment getVideoFragment() {
+        return videoFragment;
     }
 
     @Override
@@ -774,7 +778,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
+    public boolean onCreateOptionsMenu(@NonNull Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.video_call_menu, menu);
@@ -1228,11 +1232,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /*
-     * This method requires the codec to support auto-detect remote video size change. Only VP8 codec supports this currently
+     * This method requires the encoder to support auto-detect remote video size change.
      * App handling of device rotation during video call to:
-     * a. Update local video view container dimension change
-     * b. Perform camera rotation for swap & flip, for properly video data transformation before sending
-     * c. Update camera setDisplayOrientation(rotation)
+     * a. Perform camera rotation for swap & flip, for properly video data transformation before sending
+     * b. Update camera setDisplayOrientation(rotation)
      *
      * Note: If setRequestedOrientation() in the onCreate() cycle; this method will never get call even
      * it is defined in manifest android:configChanges="orientation|screenSize|screenLayout"
@@ -1241,15 +1244,17 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     public void onConfigurationChanged(@NotNull Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-
         if (call.getCallState() != CallState.CALL_ENDED) {
+            // Must update aTalkApp isPortrait before calling; found to have race condition
+            aTalkApp.isPortrait = (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
             videoFragment.initLocalPreviewContainer();
+
             // cmeng: does not seem to help when call starts in landscape, so omit it for now
             // videoFragment.initRemoteVideoContainer(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
 
             PreviewStream instance = PreviewStream.getInstance();
             if (instance != null)
-                instance.initCameraOnRotation();
+               instance.initCameraOnRotation();
         }
     }
 }

@@ -8,6 +8,7 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 import android.graphics.SurfaceTexture;
 import android.view.Surface;
 
+import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.impl.neomedia.device.util.*;
 import org.atalk.service.osgi.OSGiActivity;
 
@@ -21,8 +22,8 @@ import timber.log.Timber;
 /**
  * Camera stream that uses <tt>Surface</tt> to capture video. First input <tt>Surface</tt> is
  * obtained from <tt>MediaCodec</tt>. Then it is passed as preview surface to the camera.
- * <tt>Surface</tt> instance is passed through buffer objects in read method - this stream won't
- * start until it's not provided. <br/>
+ * <tt>Surface</tt> instance is passed through buffer objects in read method
+ * - this stream won't start until it's not provided. <br/>
  * <br/>
  * In order to display local camera preview in the app, <tt>TextureView</tt> is created in video
  * call <tt>Activity</tt>. It is used to create Open GL context that shares video texture and can
@@ -111,7 +112,7 @@ public class SurfaceStream extends CameraStreamBase
     protected void onInitPreview()
             throws IOException
     {
-        myCtxProvider = CameraUtils.localPreviewCtxProvider;
+        myCtxProvider = VideoCallActivity.getVideoFragment().mLocalPreviewCtxProvider;
         OpenGLContext previewCtx = myCtxProvider.obtainObject();
         this.inputSurface = new CodecInputSurface(encoderSurface, previewCtx.getContext());
         // Make current
@@ -161,8 +162,7 @@ public class SurfaceStream extends CameraStreamBase
     }
 
     /**
-     * Paints the local preview on UI thread by posting paint job and waiting for the UI handler to
-     * complete it's job.
+     * Paints the local preview on UI thread by posting paint job and waiting for the UI handler to complete its job.
      */
     private void paintLocalPreview()
     {

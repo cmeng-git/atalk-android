@@ -37,6 +37,7 @@ import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
+import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
@@ -97,8 +98,7 @@ public class aTalkApp extends Application implements LifecycleObserver
     private static final Object currentActivityMonitor = new Object();
 
     public static boolean isPortrait = true;
-    public static int screenWidth;
-    public static int screenHeight;
+    public static Dimension mDisplaySize;
 
     /**
      * {@inheritDoc}
@@ -138,35 +138,36 @@ public class aTalkApp extends Application implements LifecycleObserver
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         AndroidThreeTen.init(this);
 
+        getDisplaySize();
+    }
+
+    /**
+     * Returns the size of the main application window.
+     * Must support different android API else system crashes on some devices
+     * e.g. UnsupportedOperationException: in Xiaomi Mi 11 Android 11 (SDK 30)
+     *
+     * @return the size of the main application display window.
+     */
+    public static Dimension getDisplaySize()
+    {
         // Get android device screen display size
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             Point size = new Point();
-            ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
-            screenWidth = size.x;
-            screenHeight = size.y;
+            ((WindowManager) getGlobalContext().getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
+            mDisplaySize = new Dimension(size.x, size.y);
         }
         else {
-            // UnsupportedOperationException: in Xiaomi Mi 11 Android 11 (SDK 30)
-            // mInstance.getDisplay().getSize(size);
-            Rect mBounds = ((WindowManager) getSystemService(WINDOW_SERVICE)).getCurrentWindowMetrics().getBounds();
-            screenWidth = Math.abs(mBounds.width());
-            screenHeight = Math.abs(mBounds.height());
+            Rect mBounds = ((WindowManager) getGlobalContext().getSystemService(WINDOW_SERVICE)).getCurrentWindowMetrics().getBounds();
+            mDisplaySize = new Dimension(Math.abs(mBounds.width()), Math.abs(mBounds.height()));
         }
+        return mDisplaySize;
     }
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-
-        int orientation = newConfig.orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            isPortrait = true;
-        }
-        else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            isPortrait = false;
-        }
+        isPortrait = (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     /**
@@ -337,12 +338,12 @@ public class aTalkApp extends Application implements LifecycleObserver
      * @param aString the string identifier.
      * @return Android string resource for given <tt>id</tt> and format arguments.
      */
-
     public static String getResStringByName(String aString)
     {
         String packageName = mInstance.getPackageName();
         int resId = mInstance.getResources().getIdentifier(aString, "string", packageName);
-        return mInstance.getString(resId);
+
+        return (resId != 0) ? mInstance.getString(resId) : "";
     }
 
     /**
@@ -428,7 +429,9 @@ public class aTalkApp extends Application implements LifecycleObserver
         if (intent == null) {
             intent = getHomeIntent();
         }
-        return PendingIntent.getActivity(getGlobalContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(getGlobalContext(), 0, intent,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**

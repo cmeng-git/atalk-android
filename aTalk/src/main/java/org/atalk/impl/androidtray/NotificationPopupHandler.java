@@ -13,6 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.RemoteInput;
+import androidx.fragment.app.Fragment;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
@@ -38,9 +42,6 @@ import org.jxmpp.jid.Jid;
 
 import java.util.*;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.RemoteInput;
-import androidx.fragment.app.Fragment;
 import timber.log.Timber;
 
 /**
@@ -54,18 +55,18 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
 {
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
-    private static Context mContext = aTalkApp.getGlobalContext();
+    private static final Context mContext = aTalkApp.getGlobalContext();
 
     /**
      * Map of currently displayed <tt>AndroidPopup</tt>s. Value is removed when
      * corresponding notification is clicked or discarded.
      */
-    private static Map<Integer, AndroidPopup> notificationMap = new HashMap<>();
+    private static final Map<Integer, AndroidPopup> notificationMap = new HashMap<>();
 
     /**
      * Map of call sid to notificationId, for remote removing of heads-up notification
      */
-    private static Map<String, Integer> callNotificationMap = new HashMap<>();
+    private static final Map<String, Integer> callNotificationMap = new HashMap<>();
 
 
     /**
@@ -130,7 +131,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     }
 
                     PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(aTalkApp.getGlobalContext(),
-                            0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            0, fullScreenIntent,
+                            Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                                    : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
                     mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setCategory(Notification.CATEGORY_CALL)
@@ -217,7 +220,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private PendingIntent createDeleteIntent(int id)
     {
         final Intent intent = PopupClickReceiver.createDeleteIntent(id);
-        return PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(mContext, id, intent,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -229,7 +234,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private PendingIntent createReplyIntent(int id)
     {
         final Intent intent = PopupClickReceiver.createReplyIntent(id);
-        return PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(mContext, id,
+                intent, Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -241,7 +248,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private PendingIntent createMarkAsReadIntent(int id)
     {
         final Intent intent = PopupClickReceiver.createMarkAsReadIntent(id);
-        return PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(mContext, id, intent,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -253,7 +262,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private PendingIntent createSnoozeIntent(int id)
     {
         final Intent intent = PopupClickReceiver.createSnoozeIntent(id);
-        return PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(mContext, id, intent,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -265,7 +276,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private PendingIntent createDismissIntent(int id)
     {
         final Intent intent = PopupClickReceiver.createCallDismiss(id);
-        return PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(mContext, id, intent,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -277,7 +290,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private PendingIntent createAnswerIntent(int id)
     {
         final Intent intent = PopupClickReceiver.createCallAnswer(id);
-        return PendingIntent.getBroadcast(mContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(mContext, id, intent,
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     /**
@@ -487,7 +502,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      *
      * @param callId call Id / Jingle Sid
      * @see JingleMessageHelper#onCallProposed(Jid, String)
-     * @see #getCallNotificationId(String) 
+     * @see #getCallNotificationId(String)
      */
     public static void removeCallNotification(String callId)
     {

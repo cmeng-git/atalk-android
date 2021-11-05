@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.*;
+import com.google.android.gms.location.LocationRequest;
 
 import org.atalk.android.aTalkApp;
 

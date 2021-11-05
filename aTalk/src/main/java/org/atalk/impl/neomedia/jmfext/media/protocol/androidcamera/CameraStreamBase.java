@@ -41,7 +41,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     /**
      * ID of the camera used by this instance.
      */
-    protected static int mCameraId;
+    protected static int mCameraId = -1;
 
     /**
      * Camera object.
@@ -49,19 +49,24 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
     protected Camera mCamera;
 
     /**
+     *  In use camera rotation, adjusted for camera lens facing direction  - for video streaming
+     */
+    protected int mPreviewOrientation;
+
+    /**
      * Format of this stream.
      */
     protected VideoFormat mFormat;
 
     /**
-     * Final previewSize use for streaming
+     * Best closer match for the user selected to the camera available resolution
      */
-    protected static Dimension mPreviewSize;
-
     protected Dimension optimizedSize;
 
-    // Camera rotation
-    protected int mRotation;
+    /**
+     * Final previewSize (with respect to orientation) use for streaming
+     */
+    protected static Dimension mPreviewSize;
 
     protected DataSource dataSource;
 
@@ -83,6 +88,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
         super(parent, formatControl);
         dataSource = parent;
         mCameraId = AndroidCamera.getCameraId(parent.getLocator());
+        // Timber.e(new Exception("Camera Id (debugging only): " + mCameraId));
     }
 
     /**
@@ -105,12 +111,7 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             // Reuse if already acquired add not release previously
             // if (mCamera == null) ???
             mCamera = Camera.open(mCameraId);
-            mRotation = CameraUtils.getCameraDisplayRotation(mCameraId);
-            boolean swap = (mRotation == 90) || (mRotation == 270);
             Camera.Parameters params = mCamera.getParameters();
-
-            Format[] streamFormats = getStreamFormats();
-            mFormat = (VideoFormat) streamFormats[0];
 
             // Get user selected default video resolution on start
             DeviceConfiguration deviceConfig = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
@@ -119,7 +120,10 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             // Find optimised video resolution with user selected against device support formats
             List<Size> supportedPreviewSizes = params.getSupportedPreviewSizes();
             optimizedSize = CameraUtils.getOptimalPreviewSize(videoSize, supportedPreviewSizes);
+
             // Set preview display orientation according to device rotation
+            mPreviewOrientation = CameraUtils.getPreviewOrientation(mCameraId);
+            boolean swap = (mPreviewOrientation == 90) || (mPreviewOrientation == 270);
             if (swap) {
                 mPreviewSize = new Dimension(optimizedSize.height, optimizedSize.width);
             }
@@ -128,16 +132,19 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
             }
 
             // Streaming video always send in dimension according to the phone orientation
+            Format[] streamFormats = getStreamFormats();
+            mFormat = (VideoFormat) streamFormats[0];
             mFormat.setVideoSize(mPreviewSize);
             Timber.d("Camera data stream format: %s=>%s", videoSize, mFormat); // params.get("preview-size-values"));
 
-            params.setRotation(mRotation);
+            params.setRotation(mPreviewOrientation);
             // Always set camera capture in its native dimension - otherwise may not be supported.
             params.setPreviewSize(optimizedSize.width, optimizedSize.height);
-            // Change camera preview default format NV21 to YV12.
+            // // Change camera preview format to YV12. (default = NV21)
             params.setPreviewFormat(ImageFormat.YV12);
             mCamera.setParameters(params);
-            mCamera.setDisplayOrientation(mRotation);
+			// Camera.setDisplayOrientation() does not affect the camera output, just the view display.
+            mCamera.setDisplayOrientation(mPreviewOrientation);
 
             onInitPreview();
             mCamera.startPreview();
@@ -222,11 +229,11 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
      */
     protected long calcStats()
     {
-        long current = System.currentTimeMillis();
-        long delay = (current - last);
-        last = System.currentTimeMillis();
         // Measure moving average
         if (TimberLog.isTraceEnable) {
+            long current = System.currentTimeMillis();
+            long delay = (current - last);
+            last = System.currentTimeMillis();
             avg[idx] = delay;
             if (++idx == avg.length)
                 idx = 0;
@@ -235,8 +242,9 @@ abstract class CameraStreamBase extends AbstractPushBufferStream<DataSource>
                 movAvg += anAvg;
             }
             Timber.log(TimberLog.FINER, "Avg frame rate: %d", (1000 / (movAvg / avg.length)));
+            return delay;
         }
-        return delay;
+        return 0;
     }
 
     /**

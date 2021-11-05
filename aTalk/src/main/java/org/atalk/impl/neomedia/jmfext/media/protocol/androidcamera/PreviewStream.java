@@ -36,12 +36,14 @@ import timber.log.Timber;
 public class PreviewStream extends CameraStreamBase implements Camera.PreviewCallback
 {
     /**
-     * Buffers queue
+     * Buffers queue for camera YUV12 image bytes
      */
     final private LinkedList<byte[]> bufferQueue = new LinkedList<>();
 
-    /* In use camera rotation - for video streaming */
-    private int cameraRotation;
+    /**
+     *  In use camera rotation, adjusted for camera lens facing direction  - for video streaming
+     */
+    private int mSensorOrientation;
 
     private static PreviewStream instance;
 
@@ -57,6 +59,11 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         instance = this;
     }
 
+    public static PreviewStream getInstance()
+    {
+        return instance;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -68,11 +75,6 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         startImpl();
     }
 
-    public static PreviewStream getInstance()
-    {
-        return instance;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -80,17 +82,13 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     protected void onInitPreview()
             throws IOException
     {
-        // Display Orientation, FrontCam, BackCam
-        // 0, 270, 90
-        // 90, 180, 180
-        // 270, 360, 0
         Camera.CameraInfo camInfo = new Camera.CameraInfo();
         Camera.getCameraInfo(mCameraId, camInfo);
         if (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            cameraRotation = (360 - mRotation) % 360;
+            mSensorOrientation = (360 - mPreviewOrientation) % 360;
         }
         else {
-            cameraRotation = mRotation;
+            mSensorOrientation = mPreviewOrientation;
         }
 
         // Alloc two buffers
@@ -101,40 +99,12 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         int bufferSize = calcYV12Size(previewSize, false);
 
         Timber.i("Camera captured preview = %dx%d @%d-DEG with buffer size: %d for image format: %08x",
-                previewSize.width, previewSize.height, cameraRotation, bufferSize, params.getPreviewFormat());
+                previewSize.width, previewSize.height, mSensorOrientation, bufferSize, params.getPreviewFormat());
 
         mCamera.addCallbackBuffer(new byte[bufferSize]);
         SurfaceHolder previewSurface = CameraUtils.obtainPreviewSurface();
         mCamera.setPreviewDisplay(previewSurface);
         mCamera.setPreviewCallbackWithBuffer(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void read(Buffer buffer)
-            throws IOException
-    {
-        byte[] data;
-        synchronized (bufferQueue) {
-            data = bufferQueue.removeLast();
-        }
-
-        // cmeng - Camera actual preview dimension may not necessary be same as set format when rotated
-        int w = mFormat.getSize().width;
-        int h = mFormat.getSize().height;
-        int outLen = (w * h * 12) / 8;
-
-        byte[] copy = AbstractCodec2.validateByteArraySize(buffer, outLen, false);
-        YV12toYUV420PlanarRotate(data, copy, w, h, cameraRotation);
-        buffer.setLength(outLen);
-        buffer.setFlags(Buffer.FLAG_LIVE_DATA | Buffer.FLAG_RELATIVE_TIME);
-        buffer.setTimeStamp(System.currentTimeMillis());
-
-        // Put the buffer for reuse
-        if (mCamera != null)
-            mCamera.addCallbackBuffer(data);
     }
 
     /**
@@ -158,6 +128,34 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void read(Buffer buffer)
+            throws IOException
+    {
+        byte[] data;
+        synchronized (bufferQueue) {
+            data = bufferQueue.removeLast();
+        }
+
+        // cmeng - Camera actual preview dimension may not necessary be same as set format when rotated
+        int w = mFormat.getSize().width;
+        int h = mFormat.getSize().height;
+        int outLen = (w * h * 12) / 8;
+
+        byte[] copy = AbstractCodec2.validateByteArraySize(buffer, outLen, false);
+        YV12toYUV420PlanarRotate(data, copy, w, h, mSensorOrientation);
+        buffer.setLength(outLen);
+        buffer.setFlags(Buffer.FLAG_LIVE_DATA | Buffer.FLAG_RELATIVE_TIME);
+        buffer.setTimeStamp(System.currentTimeMillis());
+
+        // Put the buffer for reuse
+        if (mCamera != null)
+            mCamera.addCallbackBuffer(data);
+    }
+
+    /**
      * http://www.wordsaretoys.com/2013/10/25/roll-that-camera-zombie-rotation-and-coversion-from-yv12-to-yuv420planar/
      * Original code has been modified and optimised for aTalk rotation without stretching the image
      *
@@ -177,8 +175,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         boolean swap = (rotation == 90 || rotation == 270);
         boolean flip = (rotation == 90 || rotation == 180);
 
-        // Init w * h parameters: Assuming input preview buffer dimension when rotate is same as
-        // output buffer without need to stretch
+        // Init w * h parameters: Assuming input preview buffer dimension is always in landscape mode
         int wi = width - 1;
         int hi = height - 1;
 
@@ -192,16 +189,16 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
 
         // Constants for UV planes transformation on input preview frame buffer
         int yStride = (int) Math.ceil(wp / 16.0) * 16;
-        int uvStride = (int) Math.ceil((yStride / 2.0) / 16.0) * 16;
         int ySize = yStride * hp;
+
+        int uvStride = (int) Math.ceil((yStride / 2.0) / 16.0) * 16;
         int uvSize = uvStride * (hp >> 1);
 
+        // I420uvSize is a 1/4 of the Y size
         int I420uvSize = (width * height >> 2);
 
         // Performance input to output buffer transformation iterate over output buffer
         for (int yo = 0; yo < height; yo++) {
-            int uv420YIndex = ySize + (width >> 1) * (yo >> 1);
-
             for (int xo = 0; xo < width; xo++) {
                 // default input index for direct 1:1 transform
                 int xi = xo, yi = yo;
@@ -219,9 +216,8 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
                     xi = wi - xi;
                     yi = hi - yi;
                 }
-
-                // Transform Y data bytes from input to output
-                output[width * yo + xo] = input[wp * yi + xi];
+                // Transform Y luminous data bytes from input to output
+                output[width * yo + xo] = input[yStride * yi + xi];
 
                 /*
                  * ## Transform UV data bytes - UV has only 1/4 of Y bytes :
@@ -233,6 +229,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
                  */
                 if ((yo % 2) + (xo % 2) == 0) // 1 vu byte for 2x2 Y data bytes
                 {
+                    int uv420YIndex = ySize + (width >> 1) * (yo >> 1);
                     int uo = uv420YIndex + (xo >> 1);
                     int vo = I420uvSize + uo;
 
@@ -327,7 +324,7 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     {
         Camera.CameraInfo camInfo = new Camera.CameraInfo();
         Camera.getCameraInfo(mCameraId, camInfo);
-        int rotation = CameraUtils.getCameraDisplayRotation(mCameraId);
+        int rotation = CameraUtils.getPreviewOrientation(mCameraId);
         boolean swap = (rotation == 90) || (rotation == 270);
 
         if (swap) {
@@ -341,10 +338,10 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
         mFormat.setVideoSize(mPreviewSize);
 
         if (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            cameraRotation = (360 - rotation) % 360;
+            mSensorOrientation = (360 - rotation) % 360;
         }
         else {
-            cameraRotation = rotation;
+            mSensorOrientation = rotation;
         }
 
         Timber.d("set camera display orientation: %s : %s", swap, rotation);
