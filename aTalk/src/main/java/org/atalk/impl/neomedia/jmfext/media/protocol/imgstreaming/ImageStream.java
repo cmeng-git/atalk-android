@@ -5,8 +5,8 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.imgstreaming;
 
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.image.BufferedImage;
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.*;
 import org.atalk.impl.neomedia.imgstreaming.*;

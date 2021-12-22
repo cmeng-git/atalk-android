@@ -5,7 +5,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.android.util.javax.sound.sampled.*;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.*;
+import javax.sound.sampled.*;
 
 import timber.log.Timber;
 
@@ -328,7 +328,7 @@ public abstract class AudioSystem extends DeviceSystem
             // Not found by the class loader? Perhaps it is a local file.
             if (url == null)
                 url = new URL(uri);
-            audioStream = org.atalk.android.util.javax.sound.sampled.AudioSystem.getAudioInputStream(url);
+            audioStream = javax.sound.sampled.AudioSystem.getAudioInputStream(url);
         } catch (MalformedURLException murle) {
             // Do nothing, the value of audioStream will remain equal to null.
         } catch (UnsupportedAudioFileException uafe) {

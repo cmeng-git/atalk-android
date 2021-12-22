@@ -6,19 +6,23 @@
 package org.atalk.android.gui.call;
 
 import android.content.Context;
+import android.media.MediaCodec;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import org.atalk.android.util.java.awt.Dimension;
+import org.atalk.android.aTalkApp;
+import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
+
+import java.awt.Dimension;
 
 import timber.log.Timber;
 
 /**
- * Layout that aligns remote video <tt>View</tt> by stretching it to screen width or height.
+ * Layout that aligns remote video <tt>View</tt> by stretching it to max screen width or height.
  * It also controls whether call control buttons group should be auto hidden or stay visible all the time.
- * This layout will work only with <tt>VideoCallActivity</tt>.<br/>
+ * This layout will work only with <tt>VideoCallActivity</tt>.
  *
  * IMPORTANT: it can't be done from <tt>Activity</tt>, because just after the views are created,
  * we don't know their sizes yet(return 0 or invalid).
@@ -29,13 +33,13 @@ import timber.log.Timber;
 public class RemoteVideoLayout extends LinearLayout
 {
     /**
-     * Preferred video size used to calculate the max screen scaling.
+     * Last saved preferred video size used to calculate the max screen scaling.
      * Must set to null for sizeChange detection on first layout init; and when the remote view is removed
      */
     protected Dimension preferredSize = null;
 
     /**
-     * Stores last preferred size.
+     * Flag indicates any size change on new request. Always forces to requestLayout state if true
      */
     private boolean preferredSizeChanged = false;
 
@@ -60,37 +64,32 @@ public class RemoteVideoLayout extends LinearLayout
     }
 
     /**
-     * cmeng: SizeChange algorithm must use preferredSize and videoSize ratio compare
-     * Otherwise, not null remoteVideoView will also return false when remote video dimension changes
-     * due to device orientation change
+     * SizeChange algorithm uses preferredSize and videoSize ratio compare algorithm for full screen video;
+     * Otherwise, non-null remoteVideoView will also return false when remote video dimension changes.
+     * Note: use ratio compare algorithm to avoid unnecessary doAlignRemoteVideo reDraw unless there is a ratio change
      *
      * @param videoSize received video stream size
-     * @return <tt>false</tt> if no change is required for remoteVideoViewContainer dimension
-     * to playback the new received video size:
+     * @param requestLayout true to force relayout request
+     * @return <tt>false</tt> if no change is required for remoteVideoViewContainer dimension update
+     * to playback the newly received video size:
+     * @see AndroidDecoder#configureMediaCodec(MediaCodec, String)
      */
-    public boolean setVideoPreferredSize(Dimension videoSize)
+    public boolean setVideoPreferredSize(Dimension videoSize, boolean requestLayout)
     {
-        double epsilon = 0.01;
-        preferredSizeChanged = (preferredSize == null) ||
-                Math.abs(preferredSize.width / preferredSize.height - videoSize.width / videoSize.height) > epsilon;
+        preferredSizeChanged = requestLayout || (preferredSize == null)
+               || Math.abs(preferredSize.width / preferredSize.height - videoSize.width / videoSize.height) > 0.01f;
 
         preferredSize = videoSize;
         requestLayout();
         return preferredSizeChanged;
     }
 
-    protected void setPreferredSizeChange(boolean state)
-    {
-        preferredSizeChanged = state;
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
         int childCount = getChildCount();
-        if (childCount == lastChildCount && !preferredSizeChanged) {
+        if ((childCount == lastChildCount) && !preferredSizeChanged) {
             return;
         }
 
@@ -105,21 +104,34 @@ public class RemoteVideoLayout extends LinearLayout
 
         VideoCallActivity videoActivity = (VideoCallActivity) ctx;
         if (childCount > 0) {
-            // Values not the full screen size is determined by previous layout
-            int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-            int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+            /*
+             * MeasureSpec.getSize() is determined by previous layout dimension, any may not in full screen size;
+             * So force to use the device default display full screen dimension.
+             * // int parentWidth = MeasureSpec.getSize(widthMeasureSpec);
+             * // int parentHeight = MeasureSpec.getSize(heightMeasureSpec);
+             */
+            int parentWidth = aTalkApp.mDisplaySize.width;
+            int parentHeight = aTalkApp.mDisplaySize.height;
+            if (!aTalkApp.isPortrait) {
+                parentWidth = aTalkApp.mDisplaySize.height;
+                parentHeight = aTalkApp.mDisplaySize.width;
+            }
 
-            // NullPointerException from the field? so give it a default
-            // Default to 720x480. Dimension(1,1) causes GLSurfaceView Invalid Operation
-            if (preferredSize == null)
-                preferredSize = new Dimension(VideoHandlerFragment.DEFAULT_WIDTH, VideoHandlerFragment.DEFAULT_HEIGHT);
-
-            double width = preferredSize.width;
-            double height = preferredSize.height;
+            double width;
+            double height;
+            if (preferredSize != null) {
+                width = preferredSize.width;
+                height = preferredSize.height;
+            }
+            else {
+                // NullPointerException from the field? so give it a default
+                width = VideoHandlerFragment.DEFAULT_WIDTH;
+                height = VideoHandlerFragment.DEFAULT_HEIGHT;
+            }
 
             // Stretch to match height
             if (parentHeight <= parentWidth) {
-                Timber.i("Stretch to device max height: %s", parentHeight);
+                // Timber.i("Stretch to device max height: %s", parentHeight);
                 double ratio = width / height;
                 height = parentHeight;
                 // width = height * ratio;
@@ -128,15 +140,14 @@ public class RemoteVideoLayout extends LinearLayout
             }
             // Stretch to match width
             else {
-                Timber.i("Stretch to device max width: %s", parentWidth);
+                // Timber.i("Stretch to device max width: %s", parentWidth);
                 double ratio = height / width;
                 width = parentWidth;
-                // height = width * ratio;
                 height = Math.ceil((width * ratio) / 16.0) * 16;
                 videoActivity.ensureAutoHideFragmentDetached();
             }
 
-            Timber.i("Remote video view dimension size: %sx%s", width, height);
+            Timber.i("Remote video view dimension: [%s x %s]", width, height);
             this.setMeasuredDimension((int) width, (int) height);
 
             ViewGroup.LayoutParams params = getLayoutParams();

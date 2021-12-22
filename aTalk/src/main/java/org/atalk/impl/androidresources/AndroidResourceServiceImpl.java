@@ -194,7 +194,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     {
         int id = resources.getIdentifier(key, typeName, packageName);
         if (id == 0)
-            Timber.e("Unresolved %s key: %s", typeName, key);
+            Timber.e("Unresolved '%s' key: %s", typeName, key);
         return id;
     }
 

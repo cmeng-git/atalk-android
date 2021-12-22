@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.gui;
 
 import net.java.sip.communicator.plugin.desktoputil.*;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 
 import java.util.*;
 

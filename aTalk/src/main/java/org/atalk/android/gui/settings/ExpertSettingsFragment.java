@@ -15,7 +15,6 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
-import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.*;
@@ -40,12 +39,12 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     private static final String P_KEY_AUDIO_AGC = aTalkApp.getResString(R.string.pref_key_audio_agc);
     private static final String P_KEY_AUDIO_DENOISE = aTalkApp.getResString(R.string.pref_key_audio_denoise);
 
-    // Hardware encoding(API16)
+    // Hardware encoding/decoding (>=API16)
     private static final String P_KEY_VIDEO_HW_ENCODE = aTalkApp.getResString(R.string.pref_key_video_hw_encode);
+    private static final String P_KEY_VIDEO_HW_DECODE = aTalkApp.getResString(R.string.pref_key_video_hw_decode);
     // Direct surface encoding(hw encoding required and API18)
     private static final String P_KEY_VIDEO_ENC_DIRECT_SURFACE = aTalkApp.getResString(R.string.pref_key_video_surface_encode);
-    // Hardware decoding(API16)
-    private static final String P_KEY_VIDEO_HW_DECODE = aTalkApp.getResString(R.string.pref_key_video_hw_decode);
+    private static final String P_KEY_VIDEO_DEC_DIRECT_SURFACE = aTalkApp.getResString(R.string.pref_key_video_surface_decode);
 
     // Video advanced settings
     private static final String P_KEY_VIDEO_LIMIT_FPS = aTalkApp.getResString(R.string.pref_key_video_limit_fps);
@@ -69,7 +68,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
     {
-        // Load the quiet time preferences from an XML resource
+        // Load the expert_preferences from an XML resource
         super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.expert_preferences, rootKey);
     }
@@ -204,19 +203,27 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Updates preferences enabled status based on selected camera device.
+     * Update the android codec preferences enabled status based on camera device selected option.
+     *
+     * Note: Current aTalk implementation requires direct surface option to be enabled in order
+     * for fmj to use the android codec if enabled. So couple both the surface and codec options
+     *
+     * @see org.atalk.android.gui.settings.widget.ConfigWidgetUtil#handlePersistValue(final Object value)
      */
     private void updateHwCodecStatus()
     {
         AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();
 
         // MediaCodecs only work with AndroidCameraSystem(at least for now)
-        boolean enableMediaCodecs = selectedCamera != null
+        boolean enableMediaCodecs = (selectedCamera != null)
                 && DeviceSystem.LOCATOR_PROTOCOL_ANDROIDCAMERA.equals(selectedCamera.getCameraProtocol());
 
         findPreference(P_KEY_VIDEO_HW_ENCODE).setEnabled(enableMediaCodecs);
-        findPreference(P_KEY_VIDEO_ENC_DIRECT_SURFACE).setEnabled(AndroidUtils.hasAPI(18));
         findPreference(P_KEY_VIDEO_HW_DECODE).setEnabled(enableMediaCodecs);
+
+        // findPreference(P_KEY_VIDEO_ENC_DIRECT_SURFACE).setEnabled(AndroidUtils.hasAPI(18));
+        findPreference(P_KEY_VIDEO_ENC_DIRECT_SURFACE).setEnabled(false);
+        findPreference(P_KEY_VIDEO_DEC_DIRECT_SURFACE).setEnabled(false);
     }
 
     /**

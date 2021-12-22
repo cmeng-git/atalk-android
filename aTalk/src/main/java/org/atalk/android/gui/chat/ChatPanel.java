@@ -485,12 +485,12 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Merged any new messages found in the cache to the history list;
-     * When historyLog is disabled, all the incoming/outgoing messages are only added to the msgCache/
+     * Merge any new messages found in the cache to the history list; merging is done in reverse order
+     * When historyLog is disabled, all the incoming/outgoing messages are only added to the msgCache;
      * These include the http upload and download messages but exclude file transfer messages
      * These must be retrieved and merged with the newly retrieve history record from DB.
      *
-     * @param history contains the history messages
+     * @param history contains the newly fetched history messages
      * @param cache contains the previous cached messages
      * @return Number of new messages found in cache
      */
@@ -500,7 +500,7 @@ public class ChatPanel implements Chat, MessageListener
 
         int cacheIdx = cache.size() - 1;
         int insertIdx = history.size();
-        Date mergeDate = history.get(insertIdx - 1).getDate();
+        Date mergeDate = (insertIdx > 0) ? history.get(insertIdx - 1).getDate() : new Date();
 
         while (cacheIdx >= 0) {
             ChatMessage cacheMsg = cache.get(cacheIdx);
@@ -518,13 +518,16 @@ public class ChatPanel implements Chat, MessageListener
                 // update new insertIdx and merged date for next comparison
                 if (insertIdx > 0) {
                     insertIdx--;
-                    mergeDate = history.get(insertIdx - 1).getDate();
+                    if (insertIdx > 0)
+                        mergeDate = history.get(insertIdx - 1).getDate();
                 }
-                // Just merge all the remaining cache merges if already at top of history
+                // Just merge all the remaining cache messages if already at top of history
                 else {
                     while (cacheIdx >= 0) {
                         history.add(0, cacheMsg);
-                        cacheMsg = cache.get(--cacheIdx);
+                        if (cacheIdx > 0)
+                            cacheMsg = cache.get(--cacheIdx);
+                        count++;
                     }
                 }
             }

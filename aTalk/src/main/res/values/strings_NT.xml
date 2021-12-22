@@ -307,7 +307,7 @@
     <string name="service_gui_settings_CAMERA_BACK">Back</string>
     <string name="service_gui_settings_CAMERA_FRONT">Front</string>
 
-    <!-- Video codecs -->
+    <!-- Video codecs: Ensure these settings match with AndroidDecoder and AndroidEncoder parameters -->
     <string name="pref_key_video_media_codec_list">pref.key.video.media_codec_list</string>
     <string name="pref_key_video_hw_decode">neomedia.android.hw_decode</string>
     <string name="pref_key_video_hw_encode">neomedia.android.hw_encode</string>

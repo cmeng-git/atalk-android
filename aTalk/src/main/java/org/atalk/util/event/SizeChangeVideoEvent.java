@@ -15,7 +15,7 @@
  */
 package org.atalk.util.event;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 
 /**
  * Represents a <tt>VideoEvent</tt> which notifies about an update to the size

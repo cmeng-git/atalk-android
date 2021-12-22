@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.quicktime;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 /**
  * Describes the media format of media samples and of media sources, such as devices and capture

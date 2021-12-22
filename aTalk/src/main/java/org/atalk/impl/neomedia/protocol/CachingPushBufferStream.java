@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.protocol;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 
 import java.io.IOException;
 import java.util.*;

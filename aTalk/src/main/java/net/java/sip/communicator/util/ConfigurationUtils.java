@@ -28,7 +28,7 @@ import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.gui.webview.WebViewFragment;
-import org.atalk.android.util.java.awt.Color;
+import java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;

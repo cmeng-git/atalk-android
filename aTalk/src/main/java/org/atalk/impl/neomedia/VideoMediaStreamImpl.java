@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.*;
+import org.atalk.impl.neomedia.codec.video.AndroidEncoder;
 import org.atalk.impl.neomedia.control.ImgStreamingControl;
 import org.atalk.impl.neomedia.device.*;
 import org.atalk.impl.neomedia.rtcp.RTCPReceiverFeedbackTermination;
@@ -26,10 +26,9 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.BandwidthEstimator;
 import org.atalk.util.OSUtils;
 import org.atalk.util.concurrent.RecurringRunnableExecutor;
-import org.atalk.util.event.VideoEvent;
-import org.atalk.util.event.VideoListener;
-import org.atalk.util.event.VideoNotifierSupport;
+import org.atalk.util.event.*;
 
+import java.awt.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +37,7 @@ import javax.media.Format;
 import javax.media.control.BufferControl;
 import javax.media.control.FormatControl;
 import javax.media.format.VideoFormat;
+import javax.media.format.YUVFormat;
 import javax.media.protocol.DataSource;
 
 import timber.log.Timber;
@@ -61,6 +61,12 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
      */
     private static final RecurringRunnableExecutor recurringRunnableExecutor
             = new RecurringRunnableExecutor(VideoMediaStreamImpl.class.getSimpleName());
+
+    /**
+     * MediaFormat handle by this method
+     */
+    private static MediaFormat mFormat;
+
 
     /**
      * Extracts and returns maximum resolution can receive from the image attribute.
@@ -156,9 +162,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Selects the <tt>VideoFormat</tt> from the list of supported formats of a specific video
-     * <tt>DataSource</tt> which has a size as close as possible to a specific size and sets it as
-     * the format of the specified video <tt>DataSource</tt>.
+     * Selects the <tt>VideoFormat</tt> from the list of supported formats of a specific video <tt>DataSource</tt>
+     * which has a size as close as possible to a specific size and sets it as the format of the specified video
+     * <tt>DataSource</tt>. Must also check if the VideoFormat is supported by the androidEncoder;
+     * VP9 encode many not be supported in all android devices.
      *
      * @param videoDS the video <tt>DataSource</tt> which is to have its supported formats examined and its
      * format changed to the <tt>VideoFormat</tt> which is as close as possible to the
@@ -205,6 +212,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                     this.format = format;
                     this.dimension = format.getSize();
                     this.difference = getDifference(this.dimension);
+                    // Timber.d("format: %s; dimension: %s, difference: %s", format, dimension, difference);
                 }
 
                 private double getDifference(Dimension size)
@@ -233,18 +241,31 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                 }
             }
 
+            // Check to see if the hardware encoder is supported
+            boolean isCodecSupported = AndroidEncoder.isCodecSupported(mFormat.getEncoding());
             FormatInfo[] infos = new FormatInfo[count];
+            int idx = -1;
             for (int i = 0; i < count; i++) {
                 FormatInfo info = infos[i] = new FormatInfo((VideoFormat) formats[i]);
-
                 if (info.difference == 0) {
-                    selectedFormat = info.format;
-                    break;
+                    if ((info.format instanceof YUVFormat) || isCodecSupported) {
+                        selectedFormat = info.format;
+                        idx = i;
+                        break;
+                    }
                 }
             }
+            Timber.d("Selected video format: Count: %s/%s; Dimension: [%s x %s] => %s",
+                    idx, count, preferredWidth, preferredHeight, selectedFormat);
+
+            // Select the closest is none has perfect matched in Dimension
             if (selectedFormat == null) {
                 Arrays.sort(infos, (info0, info1) -> Double.compare(info0.difference, info1.difference));
-                selectedFormat = infos[0].format;
+                for (int i = 0; i < count; i++) {
+                    if ((infos[i].format instanceof YUVFormat) || isCodecSupported) {
+                        selectedFormat = infos[i].format;
+                    }
+                }
             }
 
             /*
@@ -295,6 +316,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                         Format.NOT_SPECIFIED, null, Format.NOT_SPECIFIED).intersects(selectedFormat);
             }
         }
+
         Format setFormat = formatControl.setFormat(selectedFormat);
         return (setFormat instanceof VideoFormat) ? ((VideoFormat) setFormat).getSize() : null;
     }
@@ -823,6 +845,9 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     @Override
     protected void handleAttributes(MediaFormat format, Map<String, String> attrs)
     {
+        // Keep a reference copy for use in selectVideoSize()
+        mFormat = format;
+
         /*
          * Iterate over the specified attributes and handle those of them which we recognize.
          */
@@ -863,8 +888,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                     case "CIF":
                         dim = new Dimension(352, 288);
                         if ((outputSize == null)
-                                || ((outputSize.width < dim.width)
-                                && (outputSize.height < dim.height))) {
+                                || ((outputSize.width < dim.width) && (outputSize.height < dim.height))) {
                             setOutputSize(dim);
                             ((VideoMediaDeviceSession) getDeviceSession()).setOutputSize(outputSize);
                         }

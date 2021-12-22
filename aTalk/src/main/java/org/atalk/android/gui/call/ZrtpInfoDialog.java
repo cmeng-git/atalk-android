@@ -16,7 +16,7 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.MediaType;

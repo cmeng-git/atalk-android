@@ -6,8 +6,8 @@
  */
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.java.awt.event.ActionListener;
-import org.atalk.android.util.javax.swing.JCheckBox;
+import java.awt.event.ActionListener;
+import javax.swing.JCheckBox;
 import org.atalk.util.OSUtils;
 
 /**

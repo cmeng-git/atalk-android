@@ -1,6 +1,6 @@
 package javax.media.format;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 import javax.media.Format;
 
@@ -10,12 +10,6 @@ import javax.media.Format;
  */
 public class VideoFormat extends Format
 {
-    private static final long serialVersionUID = 1L;
-
-    protected Dimension size = null;
-    protected int maxDataLength = NOT_SPECIFIED;
-    protected float frameRate = NOT_SPECIFIED;
-
     // Standard video encoding strings
     /**
      * Cinepak format.
@@ -104,6 +98,12 @@ public class VideoFormat extends Format
      */
     public static final String INDEO50 = "iv50";
 
+    private static final long serialVersionUID = 1L;
+
+    protected Dimension size = null;
+    protected int maxDataLength = NOT_SPECIFIED;
+    protected float frameRate = NOT_SPECIFIED;
+
     /**
      * Constructs a <tt>VideoFormat</tt> with the specified encoding type.
      *
@@ -123,8 +123,7 @@ public class VideoFormat extends Format
      * @param dataType The type of data. For example, byte array.
      * @param frameRate The frame rate.
      */
-    public VideoFormat(String encoding, Dimension size, int maxDataLength,
-            Class<?> dataType, float frameRate)
+    public VideoFormat(String encoding, Dimension size, int maxDataLength, Class<?> dataType, float frameRate)
     {
         this(encoding);
         if (size != null)

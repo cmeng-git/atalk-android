@@ -23,7 +23,7 @@ import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.LoginManager;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 import java.util.*;
 

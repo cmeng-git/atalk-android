@@ -5,7 +5,7 @@
  */
 package org.atalk.service.resources;
 
-import org.atalk.android.util.javax.swing.ImageIcon;
+import javax.swing.ImageIcon;
 
 import java.io.File;
 import java.io.InputStream;

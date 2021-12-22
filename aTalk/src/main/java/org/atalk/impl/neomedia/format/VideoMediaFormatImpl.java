@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.format;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.format.*;
 

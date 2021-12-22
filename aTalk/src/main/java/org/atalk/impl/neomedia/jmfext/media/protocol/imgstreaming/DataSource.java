@@ -11,7 +11,7 @@ import javax.media.control.*;
 import org.atalk.impl.neomedia.control.ImgStreamingControl;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 
 /**
  * Implements <tt>CaptureDevice</tt> and <tt>DataSource</tt> for the purposes of image and desktop

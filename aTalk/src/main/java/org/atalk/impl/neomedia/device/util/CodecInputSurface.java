@@ -10,16 +10,15 @@ import android.view.Surface;
 
 /**
  * Holds state associated with a Surface used for MediaCodec encoder input.
- * <p/>
- * The constructor takes a Surface obtained from MediaCodec.createInputSurface() and uses that to
- * create an EGL window surface. Calls to eglSwapBuffers() cause a frame of data to be sent to the
- * video encoder.
- * <p/>
+ *
+ * The constructor takes a Surface obtained from MediaCodec.createInputSurface() and uses that to create
+ * an EGL window surface. Calls to eglSwapBuffers() cause a frame of data to be sent to the video encoder.
+ *
  * This object owns the Surface -- releasing this will release the Surface too.
  */
 public class CodecInputSurface extends OpenGLContext
 {
-    private Surface surface;
+    private Surface mSurface;
 
     /**
      * Creates a CodecInputSurface from a Surface.
@@ -30,7 +29,7 @@ public class CodecInputSurface extends OpenGLContext
     public CodecInputSurface(Surface surface, EGLContext sharedContext)
     {
         super(true, surface, sharedContext);
-        this.surface = surface;
+        mSurface = surface;
     }
 
     /**
@@ -40,6 +39,6 @@ public class CodecInputSurface extends OpenGLContext
     public void release()
     {
         super.release();
-        surface.release();
+        mSurface.release();
     }
 }

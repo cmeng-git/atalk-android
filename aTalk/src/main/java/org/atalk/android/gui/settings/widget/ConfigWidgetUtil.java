@@ -7,24 +7,26 @@ package org.atalk.android.gui.settings.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-
-import androidx.annotation.NonNull;
-import androidx.preference.EditTextPreference;
-import androidx.preference.EditTextPreference.OnBindEditTextListener;
-import androidx.preference.Preference;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.preference.*;
+import androidx.preference.EditTextPreference.OnBindEditTextListener;
+
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
+import org.atalk.impl.neomedia.codec.video.AndroidEncoder;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
  * Class that handles common attributes and operations for all configuration widgets.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 class ConfigWidgetUtil implements OnBindEditTextListener
 {
@@ -119,8 +121,15 @@ class ConfigWidgetUtil implements OnBindEditTextListener
             public void run()
             {
                 ConfigurationService confService = AndroidGUIActivator.getConfigurationService();
-                if (confService != null)
+                if (confService != null) {
                     confService.setProperty(parent.getKey(), value);
+                    if (parent.getKey().equals(AndroidDecoder.HW_DECODING_ENABLE_PROPERTY)) {
+                        setSurfaceOption(AndroidDecoder.DIRECT_SURFACE_DECODE_PROPERTY, value);
+                    }
+                    else if (parent.getKey().equals(AndroidEncoder.HW_ENCODING_ENABLE_PROPERTY)) {
+                        setSurfaceOption(AndroidEncoder.DIRECT_SURFACE_ENCODE_PROPERTY, value);
+                    }
+                }
             }
         };
 
@@ -130,4 +139,18 @@ class ConfigWidgetUtil implements OnBindEditTextListener
             store.run();
     }
 
+    /**
+     *  Couple the codec surface enable option to the codec option state;
+     *  Current aTalk implementation requires surface option for android codec to be selected by fmj
+     *
+     * @param key surface preference key
+     * @param value the value to persist.
+     */
+    private void setSurfaceOption(String key, Object value) {
+        AndroidGUIActivator.getConfigurationService().setProperty(key, value);
+        ConfigCheckBox surfaceEnable = parent.getPreferenceManager().findPreference(key);
+        if (surfaceEnable != null) {
+            surfaceEnable.setChecked((Boolean) value);
+        }
+    }
 }

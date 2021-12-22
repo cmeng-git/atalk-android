@@ -8,7 +8,6 @@ package org.atalk.impl.neomedia.device;
 import androidx.annotation.NonNull;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.BackgroundManager;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
@@ -73,8 +72,6 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     private static List<CaptureDeviceInfo> preInitializeDevices;
 
     public static final String PROP_DEVICES = "devices";
-
-    private static BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
     /**
      * Returns a <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s which are elements of a specific
@@ -173,24 +170,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                         OSUtils.IS_ANDROID ? null : ".PortAudioSystem", ".AudioSilenceSystem", ".NoneAudioSystem"};
                 break;
             case VIDEO:
-                /*
-                 * Android-O blocks camera access while app is in background; Otherwise android alerts
-                 * notification to user: "aTalk has been detected using camera".
-                 * Setup AndroidCameraSystem to handle all DeviceSystem derived class that are dependent on camera access
-                 * Note: Must ensure AndroidCameraSystem is the last deviceSystem to be initialized before calling
-                 * DeviceConfiguration.extractConfiguredVideoCaptureDevices();
-                 */
-                if (backgroundManager.isAppInBackground()) {
-                    try {
-                        Timber.i("System in background, setup AndroidCameraSystem for re-init");
-                        AndroidCameraSystem.class.newInstance();
-                    } catch (Exception e) {
-                        Timber.w("AndroidCameraSystem newInstance() failed");
-                    }
-                    return;
-                }
                 classNames = new String[]{
-                        OSUtils.IS_ANDROID ? ".MediaRecorderSystem" : null,
+                        // MediaRecorderSystem not working for API-23; so remove the support
+                        // OSUtils.IS_ANDROID ? ".MediaRecorderSystem" : null,
                         OSUtils.IS_ANDROID ? ".AndroidCameraSystem" : null,
                         (OSUtils.IS_LINUX || OSUtils.IS_FREEBSD) ? ".Video4Linux2System" : null,
                         OSUtils.IS_MAC ? ".QuickTimeSystem" : null,
@@ -414,13 +396,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
         this.mediaType = mediaType;
         this.locatorProtocol = locatorProtocol;
         this.features = features;
-
-        if (backgroundManager.isAppInBackground() && (mediaType == MediaType.VIDEO)) {
-            // Timber.w("Android camera doInitialize() to setup listener for re-init");
-            doInitialize();
-        }
-        else
-            invokeDeviceSystemInitialize(this);
+        invokeDeviceSystemInitialize(this);
     }
 
     /**

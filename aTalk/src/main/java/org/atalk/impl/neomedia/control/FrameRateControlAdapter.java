@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.control;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 
 import javax.media.Control;
 import javax.media.control.FrameRateControl;

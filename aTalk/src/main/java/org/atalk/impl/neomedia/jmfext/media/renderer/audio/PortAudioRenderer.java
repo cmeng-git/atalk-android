@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.renderer.audio;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.impl.neomedia.control.DiagnosticsControl;
 import org.atalk.impl.neomedia.device.*;
 import org.atalk.impl.neomedia.jmfext.media.protocol.portaudio.DataSource;

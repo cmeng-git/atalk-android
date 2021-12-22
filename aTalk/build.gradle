@@ -1,16 +1,26 @@
+// import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 buildscript {
     repositories {
         google()
         mavenCentral()
+//        maven {
+//            url "https://plugins.gradle.org/m2/"
+//        }
     }
 
     dependencies {
+        // https://github.com/hannesa2/jarjar/releases/tag/1.0.3
+        // classpath "com.github.hannesa2.jarjar.gradle:jajar-gradle:1.0.3"
         classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
+
+        // classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar'
+// apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
     maven {
@@ -41,6 +51,9 @@ repositories {
 configurations {
     fdroidImplementation
     playstoreImplementation
+
+    // define a separate configuration for shadow
+    internalize
 
     // dependency libraries duplication conflict cause by smack-xmlparser-xpp3
     all*.exclude group: 'xpp3', module: 'xpp3_min'
@@ -75,14 +88,14 @@ android {
         // sourceCompatibility JavaVersion.VERSION_11
         // targetCompatibility JavaVersion.VERSION_11
 
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 207010
-        versionName "2.7.1"
+        versionCode 208000
+        versionName "2.8.0"
 
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.compileSdkVersion
@@ -215,9 +228,6 @@ ext {
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
     // Remove source reference in .idea/libraries if source mismatched with class jar
-
-    // For smack own repository SNAPSHOT release
-    // smackVersion = '4.4.0-alpha3-SNAPSHOT' // 20200407.115900-6
 }
 
 dependencies {
@@ -227,21 +237,19 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "androidx.activity:activity:1.4.0"
-    implementation "androidx.fragment:fragment:1.3.6"
-    implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "androidx.legacy:legacy-support-v13:1.0.0"
-    implementation "androidx.appcompat:appcompat:1.3.1"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.preference:preference:1.1.1"
-
-    implementation "com.google.android.material:material:1.4.0"
+    implementation 'androidx.activity:activity:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.fragment:fragment:1.4.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.preference:preference:1.1.1'
 
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
-    implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'com.jakewharton:butterknife:10.2.3'
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
         transitive = false
@@ -254,9 +262,12 @@ dependencies {
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v5.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.7'
-    implementation 'com.google.android.exoplayer:exoplayer:2.15.1'
+    // implementation 'com.github.hannesa2:jarjar2:1.0.3'
+    implementation 'com.google.android.exoplayer:exoplayer:2.16.1'
+    implementation 'com.google.android.material:material:1.4.0'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.3.1'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
@@ -308,8 +319,8 @@ dependencies {
 
     implementation "org.igniterealtime.smack:smack-compression-jzlib:4.4.0-alpha3-SNAPSHOT"
     implementation "org.igniterealtime.smack:smack-core:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
-    implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
     implementation "org.igniterealtime.smack:smack-im:$smackVersion"
     implementation "org.igniterealtime.smack:smack-legacy:$smackVersion"
     implementation "org.igniterealtime.smack:smack-resolver-minidns:$smackVersion"
@@ -328,7 +339,6 @@ dependencies {
 
     playstoreImplementation "com.google.android.gms:play-services-location:18.0.0"
     playstoreImplementation "com.google.android.gms:play-services-maps:18.0.0"
-    // playstoreImplementation "com.google.android.gms:play-services-maps:17.0.1"
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.0.0"
 
     /*
@@ -340,14 +350,7 @@ dependencies {
      */
     implementation jarjar.repackage {
         from('org.jitsi:fmj:1.0.1-jitsi')
-        // destinationDir new File("${projectDir}/libs")
         destinationName "fmj-1.0.1-jitsi.jar"
-
-        classRename 'java.awt.**', 'org.atalk.android.util.java.awt.@1'
-        classRename 'java.beans.**', 'org.atalk.android.util.java.beans.@1'
-        classRename 'javax.swing.**', 'org.atalk.android.util.javax.swing.@1'
-        classRename 'javax.sound.**', 'org.atalk.android.util.javax.sound.@1'
-        classRename 'javax.imageio.**', 'org.atalk.android.util.javax.imageio.@1'
 
         // remove extracted modules for changes
         classDelete 'net.sf.fmj.media.RegistryDefaults'
@@ -367,6 +370,7 @@ dependencies {
         // Use the latest release version: ice4j-2.0.0-20190607.184546-36.jar
         // == 'ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac'
         from('com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac') {
+        // from('org.jitsi:ice4j:3.0-46-g64a7ca8') {
             transitive = false
         }
         // destinationDir new File("${projectDir}/libs")
@@ -386,7 +390,6 @@ dependencies {
         // classDelete 'org.ice4j.ice.ConnectivityCheckClient'
         // classDelete 'org.ice4j.ice.ConnectivityCheckServer'
     }
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.3.1'
 
     // implementation 'ch.imvs:sdes4j:1.1.5' - not compatible due to java library use
     // libraries from maven repository but need to change Base64 to ApacheBase64 to avoid conflict with android
@@ -405,6 +408,44 @@ dependencies {
         classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
     }
 }
+
+///* a task to create the relocated libs, must be defined before used below in dependencies */
+//task internalizeJar(type: ShadowJar) {
+//    // this is not needed but prevents conflicts with other artifacts you may want to create
+//    archiveClassifier.set('intern')
+//    configurations = [project.configurations.internalize] // our configuration from above
+//
+//    // i.e. transitive = false
+//    dependencies {
+//        exclude(dependency('commons-codec:commons-codec:'))
+//        exclude(dependency('org.bitlet:weupnp:'))
+//        exclude(dependency('org.opentelecoms.sdp:sdp-api:'))
+//    }
+//
+//    // ===== org.jitsi:fmj:1.0.1-jitsi =====
+//    exclude 'net.sf.fmj.media.RegistryDefaults'
+//    exclude 'javax.media.format.VideoFormat'
+//    exclude 'javax.media.Manager**'
+//
+//    // ===== com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac =====
+//    relocate 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
+//    // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
+//    relocate 'java.time.Duration', 'org.threeten.bp.Duration'
+//    // Clean up and optimize call to weupnp call - reduces threads avoid time race condition
+//    exclude 'org.ice4j.ice.harvest.UPNPHarvester**.class'
+//
+//    // ===== org.jitsi:fmj:1.0.1-jitsi =====
+//    relocate 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
+//}
+//
+//// These libs are the dependency of the internalizeJar configuration
+//dependencies {
+//    internalize 'org.jitsi:fmj:1.0.1-jitsi'
+//    internalize 'com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac'
+//    internalize 'ch.imvs:sdes4j:1.1.4'
+//
+//    implementation tasks.internalizeJar.outputs.files // our real project uses the relocated jar as dependency
+//}
 
 /*
  * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this need to be
@@ -456,8 +497,8 @@ task updateVersionFile(type: Copy) {
     into 'build/outputs/apk'
 }
 
+// Uncomment below lines if you want to show all deprecated warnings
 tasks.withType(JavaCompile) {
-    // Uncomment below two lines if you want to show all deprecated warnings
     // options.compilerArgs << '-Xlint:unchecked'
     // options.deprecation = true
 }

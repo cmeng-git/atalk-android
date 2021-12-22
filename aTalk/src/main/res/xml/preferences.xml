@@ -231,15 +231,6 @@
                     android:value="media_type.AUDIO" />
             </intent>
         </Preference>
-
-        <Preference
-            android:summary="@string/service_gui_settings_MEDIA_CODEC_LIST_SUMMARY"
-            android:title="@string/service_gui_settings_MEDIA_CODEC_LIST">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetClass="org.atalk.android.gui.settings.MediaCodecList"
-                android:targetPackage="org.atalk.android" />
-        </Preference>
     </PreferenceCategory>
 
     <!-- Phone Call Settings -->

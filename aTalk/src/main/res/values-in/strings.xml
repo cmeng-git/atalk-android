@@ -1394,10 +1394,10 @@
     <string name="service_gui_settings_USE_FRONT_CAMERA">Gunakan kamera depan</string>
 
     <!-- Video codecs -->
-    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Gunakan dekode permukaan langsung (perlu dihidupkan ulang)</string>
-    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Gunakan pengkodean permukaan langsung (perlu dihidupkan ulang)</string>
-    <string name="service_gui_settings_HW_DECODE">Gunakan decoding perangkat keras (perlu dihidupkan ulang)</string>
-    <string name="service_gui_settings_HW_ENCODE">Gunakan pengkodean perangkat keras</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Gunakan dekode permukaan langsung</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Gunakan pengkodean permukaan langsung</string>
+    <string name="service_gui_settings_HW_DECODE">Gunakan decoding perangkat keras (restart diperlukan)</string>
+    <string name="service_gui_settings_HW_ENCODE">Gunakan pengkodean perangkat keras (restart diperlukan)</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">Daftar pembuat enkode/dekoder internal</string>
     <string name="service_gui_settings_Restart_Hint">Perlu memulai ulang aTalk</string>

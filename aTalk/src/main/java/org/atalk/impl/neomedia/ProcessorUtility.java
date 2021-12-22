@@ -79,9 +79,9 @@ public class ProcessorUtility implements ControllerListener
             // realize, the processor will be closed
             if (ce instanceof ControllerClosedEvent) {
                 if (ce instanceof ControllerErrorEvent)
-                    Timber.w("ControllerErrorEvent: %s", ce);
+                    Timber.w("ControllerErrorEvent: %s", ((ControllerErrorEvent) ce).getMessage());
                 else
-                    Timber.d("ControllerClosedEvent: %s", ce);
+                    Timber.d("ControllerClosedEvent: %s", ((ControllerClosedEvent) ce).getMessage());
                 setFailed(true);
                 // All controller events, send a notification to the waiting thread in waitForState method.
             }

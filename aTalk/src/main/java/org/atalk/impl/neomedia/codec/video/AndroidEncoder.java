@@ -5,23 +5,30 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import android.annotation.TargetApi;
+import static org.atalk.impl.neomedia.codec.video.CodecInfo.MEDIA_CODEC_TYPE_VP9;
+
 import android.media.*;
-import android.os.Build;
 import android.view.Surface;
 
-import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.util.java.awt.Dimension;
+import org.atalk.android.aTalkApp;
 import org.atalk.impl.neomedia.MediaServiceImpl;
+import org.atalk.impl.neomedia.VideoMediaStreamImpl;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.codec.Constants;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.media.Format;
 import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
+import javax.media.protocol.DataSource;
+
+import timber.log.Timber;
 
 /**
  * Video encoder based on <tt>MediaCodec</tt>.
@@ -31,16 +38,6 @@ import javax.media.format.YUVFormat;
  */
 public class AndroidEncoder extends AndroidCodec
 {
-    /**
-     * Default output formats
-     */
-    private static final VideoFormat[] SUPPORTED_OUTPUT_FORMATS = new VideoFormat[]{
-            new VideoFormat(Constants.VP9),
-            new VideoFormat(Constants.VP8),
-            new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0"),
-            new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "1")
-    };
-
     /**
      * Name of configuration property that enables this encoder.
      */
@@ -59,31 +56,27 @@ public class AndroidEncoder extends AndroidCodec
     /**
      * Input <tt>Surface</tt> object.
      */
-    private Surface inputSurface;
+    private Surface mInputSurface;
 
     /**
-     * Returns <tt>true</tt> if hardware encoding is enabled.
+     * Default output formats supported by this android encoder
      *
-     * @return <tt>true</tt> if hardware encoding is enabled.
+     * see: https://developer.android.com/guide/topics/media/media-formats#video-formats
      */
-    private static boolean isHwEncodingEnabled()
-    {
-        boolean supported = AndroidUtils.hasAPI(16);
-
-        return LibJitsi.getConfigurationService().getBoolean(HW_ENCODING_ENABLE_PROPERTY, supported);
-    }
+    private static final VideoFormat[] SUPPORTED_OUTPUT_FORMATS;
 
     /**
-     * Returns <tt>true</tt> if input <tt>Surface</tt> mode is enabled.
-     *
-     * @return <tt>true</tt> if input <tt>Surface</tt> mode is enabled.
+     * List of vFormats supported by this android device. VP9 encoder only supported on certain android device.
      */
-    public static boolean isDirectSurfaceEnabled()
-    {
-        boolean supported = AndroidUtils.hasAPI(18);
-
-        return isHwEncodingEnabled()
-                && supported && LibJitsi.getConfigurationService().getBoolean(DIRECT_SURFACE_ENCODE_PROPERTY, supported);
+    private static List<VideoFormat> vFormats = new ArrayList<>();
+    static {
+        if (CodecInfo.getCodecForType(MEDIA_CODEC_TYPE_VP9, true) != null) {
+            vFormats.add(new VideoFormat(Constants.VP9));
+        }
+        vFormats.add(new VideoFormat(Constants.VP8));
+        vFormats.add(new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0"));
+        vFormats.add(new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "1"));
+        SUPPORTED_OUTPUT_FORMATS = vFormats.toArray(vFormats.toArray(new VideoFormat[0]));
     }
 
     /**
@@ -96,8 +89,12 @@ public class AndroidEncoder extends AndroidCodec
 
         useInputSurface = isDirectSurfaceEnabled();
         if (useInputSurface) {
-            inputFormats = new VideoFormat[]{new VideoFormat(Constants.ANDROID_SURFACE, null,
-                    Format.NOT_SPECIFIED, Surface.class, Format.NOT_SPECIFIED)};
+            inputFormats = new VideoFormat[]{new VideoFormat(
+                    Constants.ANDROID_SURFACE,
+                    null,
+                    Format.NOT_SPECIFIED,
+                    Surface.class,
+                    Format.NOT_SPECIFIED)};
         }
         else {
             inputFormats = new VideoFormat[]{new YUVFormat(
@@ -112,6 +109,79 @@ public class AndroidEncoder extends AndroidCodec
         }
         inputFormat = null;
         outputFormat = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureMediaCodec(MediaCodec codec, String codecType)
+            throws ResourceUnavailableException
+    {
+        if (inputFormat == null)
+            throw new ResourceUnavailableException("Output format not set");
+
+        Dimension size = ((VideoFormat) inputFormat).getSize();
+        if (size == null)
+            throw new ResourceUnavailableException("Size not set");
+
+        if (aTalkApp.isPortrait) {
+            size = new Dimension(size.height, size.width);
+        }
+        Timber.d("Encoder video input format: %s => %s", inputFormat, size);
+
+        // Setup encoder properties.  Failing to specify some of these can cause the MediaCodec
+        // configure() call to throw an unhelpful exception.
+        MediaFormat format = MediaFormat.createVideoFormat(codecType, size.width, size.height);
+        int colorFormat = useInputSurface
+                ? MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface
+                : MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar;
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat);
+
+        int bitrate = ((MediaServiceImpl) LibJitsi.getMediaService()).getDeviceConfiguration().getVideoBitrate() * 1024;
+        format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 30);
+
+        codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
+        if (useInputSurface) {
+            mInputSurface = codec.createInputSurface();
+        }
+    }
+
+    /**
+     * Returns <tt>true</tt> if hardware encoding is enabled.
+     *
+     * @return <tt>true</tt> if hardware encoding is enabled.
+     */
+    private static boolean isHwEncodingEnabled()
+    {
+        // boolean supported = AndroidUtils.hasAPI(16);
+        return LibJitsi.getConfigurationService().getBoolean(HW_ENCODING_ENABLE_PROPERTY, true);
+    }
+
+    /**
+     * Returns <tt>true</tt> if input <tt>Surface</tt> mode is enabled.
+     *
+     * @return <tt>true</tt> if input <tt>Surface</tt> mode is enabled.
+     */
+    public static boolean isDirectSurfaceEnabled()
+    {
+        // boolean supported = AndroidUtils.hasAPI(18);
+        return isHwEncodingEnabled()
+                && LibJitsi.getConfigurationService().getBoolean(DIRECT_SURFACE_ENCODE_PROPERTY, true);
+    }
+
+    /**
+     * Check if the specified hardware encoder is supported on this device
+     * @see VideoMediaStreamImpl#selectVideoSize(DataSource, int, int)
+     *
+     * @param codec Encoder name
+     * @return true if supported
+     */
+    public static boolean isCodecSupported(String codec)
+    {
+        return isDirectSurfaceEnabled() && vFormats.toString().contains(codec);
     }
 
     /**
@@ -147,7 +217,7 @@ public class AndroidEncoder extends AndroidCodec
      * Sets the input format.
      *
      * @param format format to set
-     * @return format
+     * @return the selected inputFormat
      */
     @Override
     public Format setInputFormat(Format format)
@@ -156,6 +226,8 @@ public class AndroidEncoder extends AndroidCodec
             return null;
 
         inputFormat = format;
+        // Timber.d(new Exception(),"Encoder video input format set: %s", inputFormat);
+
         // Return the selected inputFormat
         return inputFormat;
     }
@@ -174,6 +246,7 @@ public class AndroidEncoder extends AndroidCodec
                 || (matches(format, getMatchingOutputFormats(inputFormat)) == null))
             return null;
 
+        // Timber.d(new Exception(),"Encoder video output format set: %s", inputFormat);
         VideoFormat videoFormat = (VideoFormat) format;
         /*
          * An Encoder translates raw media data in (en)coded media data. Consequently, the size of
@@ -187,7 +260,7 @@ public class AndroidEncoder extends AndroidCodec
             size = ((VideoFormat) outputFormat).getSize();
 
         outputFormat = new VideoFormat(videoFormat.getEncoding(), size,
-                /* maxDataLength */Format.NOT_SPECIFIED, videoFormat.getDataType(), videoFormat.getFrameRate());
+                /* maxDataLength */ Format.NOT_SPECIFIED, videoFormat.getDataType(), videoFormat.getFrameRate());
 
         // Return the selected outputFormat
         return outputFormat;
@@ -205,49 +278,10 @@ public class AndroidEncoder extends AndroidCodec
     /**
      * {@inheritDoc}
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    @Override
-    protected void configureMediaCodec(MediaCodec codec, String codecType)
-            throws ResourceUnavailableException
-    {
-        if (outputFormat == null)
-            throw new ResourceUnavailableException("Output format not set");
-
-        VideoFormat vformat = (VideoFormat) outputFormat;
-        Dimension outSize = vformat.getSize();
-        Dimension inSize = vformat.getSize();
-
-        if (outSize == null && inSize == null)
-            throw new ResourceUnavailableException("Size not set");
-
-        Dimension size = outSize == null ? inSize : outSize;
-        MediaFormat format = MediaFormat.createVideoFormat(codecType, size.width, size.height);
-
-        // Select color format
-        int colorFormat = useInputSurface ? MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface
-                : MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420Planar;
-        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat);
-
-        int bitrate = ((MediaServiceImpl) LibJitsi.getMediaService()).getDeviceConfiguration()
-                .getVideoBitrate() * 1024;
-        format.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
-        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 30);
-
-        codec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
-
-        if (useInputSurface) {
-            inputSurface = codec.createInputSurface();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Surface getSurface()
     {
-        return inputSurface;
+        return mInputSurface;
     }
 
     /**
@@ -258,9 +292,16 @@ public class AndroidEncoder extends AndroidCodec
     {
         super.doClose();
 
-        if (inputSurface != null) {
-            inputSurface.release();
-            inputSurface = null;
+        if (mInputSurface != null) {
+            mInputSurface.release();
+            mInputSurface = null;
         }
     }
+
+//    @Override
+//    protected void onSizeChanged(Dimension dimension)
+//    {
+//        ((VideoFormat) inputFormat).setVideoSize(dimension);
+//        Timber.d("Encoder video input format set on video dimension change: %s", inputFormat);
+//    }
 }

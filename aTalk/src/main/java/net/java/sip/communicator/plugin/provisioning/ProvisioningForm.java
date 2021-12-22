@@ -8,10 +8,10 @@ package net.java.sip.communicator.plugin.provisioning;
 import net.java.sip.communicator.plugin.desktoputil.SIPCommTextField;
 import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 
-import org.atalk.android.util.javax.swing.JButton;
-import org.atalk.android.util.javax.swing.JCheckBox;
-import org.atalk.android.util.javax.swing.JRadioButton;
-import org.atalk.android.util.javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 /**
  * @author Yana Stamcheva

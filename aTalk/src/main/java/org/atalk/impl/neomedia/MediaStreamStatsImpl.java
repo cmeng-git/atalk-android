@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia;
 import net.sf.fmj.media.rtp.*;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.device.MediaDeviceSession;
 import org.atalk.impl.neomedia.device.VideoMediaDeviceSession;
 import org.atalk.impl.neomedia.rtcp.*;

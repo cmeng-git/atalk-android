@@ -1401,10 +1401,10 @@
     <string name="service_gui_settings_USE_FRONT_CAMERA">Usar a câmera frontal</string>
 
     <!-- Video codecs -->
-    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Usar decodificação Direct Surface (reinício necessário)</string>
-    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Usar codificação Direct Surface (reinício necessário)</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Usar decodificação Direct Surface</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Usar codificação Direct Surface</string>
     <string name="service_gui_settings_HW_DECODE">Usar a decodificação de hardware (reinício necessário)</string>
-    <string name="service_gui_settings_HW_ENCODE">Usar codificação de hardware</string>
+    <string name="service_gui_settings_HW_ENCODE">Usar codificação de hardware (reinício necessário)</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST">Codecs de mídia</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">Lista de codificadores/descodificadores de mídia integrados</string>
     <string name="service_gui_settings_Restart_Hint">Requer reiniciação de aTalk</string>

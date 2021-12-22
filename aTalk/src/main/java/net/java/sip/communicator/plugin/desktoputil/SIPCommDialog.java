@@ -1,6 +1,6 @@
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.javax.swing.JDialog;
+import javax.swing.JDialog;
 
 public class SIPCommDialog extends JDialog
 {

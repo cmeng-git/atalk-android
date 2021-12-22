@@ -6,10 +6,10 @@
  */
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.Image;
-import org.atalk.android.util.java.awt.event.ActionListener;
-import org.atalk.android.util.javax.swing.JButton;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 
 /**
  * The <tt>SIPCommButton</tt> is a very flexible <tt>JButton</tt> that allows

@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.device;
 
-import org.atalk.android.util.java.awt.*;
+import java.awt.*;
 
 /**
  * Represents a physical screen display.

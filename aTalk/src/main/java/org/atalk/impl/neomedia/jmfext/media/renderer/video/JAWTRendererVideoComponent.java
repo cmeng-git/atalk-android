@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.renderer.video;
 
-import org.atalk.android.util.java.awt.*;
+import java.awt.*;
 import org.atalk.impl.neomedia.codec.video.SwScale;
 import org.atalk.util.OSUtils;
 

@@ -5,9 +5,9 @@
  */
 package org.atalk.impl.neomedia.imgstreaming;
 
-import org.atalk.android.util.java.awt.geom.AffineTransform;
-import org.atalk.android.util.java.awt.image.BufferedImage;
-import org.atalk.android.util.java.awt.image.WritableRaster;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 
 /**
  * Provides utility functions used by the <tt>imgstreaming</tt> package(s).

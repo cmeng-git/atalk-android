@@ -15,7 +15,7 @@
  */
 package org.atalk.util.event;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 
 import java.util.EventObject;
 

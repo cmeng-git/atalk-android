@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.EncodingConfigurationImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.device.ScreenDeviceImpl;

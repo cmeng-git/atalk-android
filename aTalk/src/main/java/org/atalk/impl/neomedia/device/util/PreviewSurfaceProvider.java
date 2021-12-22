@@ -5,24 +5,28 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
+import android.hardware.camera2.CameraDevice;
 import android.view.*;
 
-import org.atalk.service.osgi.OSGiActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
+import timber.log.Timber;
 
 /**
- * The class exposes methods for managing preview surface state which must be synchronized with
- * currently used {@link android.hardware.Camera} state.<br/>
+ * The class exposes methods for managing preview surfaceView state which must be synchronized with
+ * currently used {@link CameraDevice} state.
  * The surface must be present before the camera is started and for this purpose
- * {@link #obtainObject()} method shall be used. <br/>
+ * {@link #obtainObject()} method shall be used.
+ *
  * When the call is ended, before the <tt>Activity</tt> is finished we should ensure that the camera
- * has been stopped(which is done by video telephony internals), so we should wait for it to be
+ * has been stopped (which is done by video telephony internals), so we should wait for it to be
  * disposed by invoking method {@link #waitForObjectRelease()}. It will block current
  * <tt>Thread</tt> until it happens or an <tt>Exception</tt> will be thrown if timeout occurs.
  */
 public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
         implements SurfaceHolder.Callback
 {
-    private SurfaceView mSurfaceView;
+    private AutoFitSurfaceView mSurfaceView;
 
     /**
      * Flag indicates whether {@link SurfaceView#setZOrderMediaOverlay(boolean)} should be called on
@@ -36,9 +40,9 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * @param parent parent <tt>OSGiActivity</tt> instance.
      * @param container the <tt>ViewGroup</tt> that will hold maintained <tt>SurfaceView</tt>.
      * @param setZMediaOverlay if set to <tt>true</tt> then the <tt>SurfaceView</tt> will be
-     * displayed on the top of other surfaces.
+     * displayed on the top of other surfaces e.g. local camera surface preview
      */
-    public PreviewSurfaceProvider(OSGiActivity parent, ViewGroup container, boolean setZMediaOverlay)
+    public PreviewSurfaceProvider(AppCompatActivity parent, ViewGroup container, boolean setZMediaOverlay)
     {
         super(parent, container);
         this.setZMediaOverlay = setZMediaOverlay;
@@ -47,45 +51,37 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
     @Override
     protected View createViewInstance()
     {
-        mSurfaceView = new SurfaceView(mActivity);
+        mSurfaceView = new AutoFitSurfaceView(mActivity);
         mSurfaceView.getHolder().addCallback(this);
         if (setZMediaOverlay)
             mSurfaceView.setZOrderMediaOverlay(true);
         return mSurfaceView;
     }
 
-    public SurfaceView getSurfaceView() {
-        return mSurfaceView;
+    public void setAspectRatio(int width, int height)
+    {
+        if (mSurfaceView != null) {
+            mSurfaceView.setAspectRatio(width, height);
+        } else {
+            Timber.w(" setAspectRatio for mSurfaceView is null");
+        }
     }
 
     /**
-     * Method is called before <tt>Camera</tt> is started and shall return non <tt>null</tt>
-     * {@link SurfaceHolder} instance.
+     * Method is called before <tt>Camera</tt> is started and shall return non <tt>null</tt> {@link SurfaceHolder} instance.
+     * The is also used by android decoder.
      *
      * @return {@link SurfaceHolder} instance that will be used for local video preview
      */
     @Override
     public SurfaceHolder obtainObject()
     {
+        // Timber.e(new Exception("Obtain Object for testing only"));
         return super.obtainObject();
     }
 
     /**
-     * Returns maintained <tt>View</tt> object.
-     *
-     * @return maintained <tt>View</tt> object.
-     */
-    public View getView()
-    {
-        if (obtainObject() != null) {
-            return view;
-        }
-        throw new RuntimeException("Failed to obtain view");
-    }
-
-    /**
-     * Method is called when <tt>Camera</tt> is stopped and it's safe to release the {@link Surface}
-     * object.
+     * Method is called when <tt>Camera</tt> is stopped and it's safe to release the {@link Surface} object.
      */
     @Override
     public void onObjectReleased()
@@ -94,8 +90,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
     }
 
     /**
-     * Should return current {@link Display} rotation as defined in
-     * {@link android.view.Display#getRotation()}.
+     * Should return current {@link Display} rotation as defined in {@link android.view.Display#getRotation()}.
      *
      * @return current {@link Display} rotation as one of values:
      * {@link Surface#ROTATION_0}, {@link Surface#ROTATION_90}, {@link Surface#ROTATION_180}, {@link Surface#ROTATION_270}.
@@ -112,11 +107,18 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
      * {@link Surface}, so you should not draw into the Surface here if your normal rendering will
      * be in another thread.
      *
+     * Must setFixedSize() to the user selected video size, to ensure local preview is in correct aspect ratio
+     * https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession(android.hardware.camera2.params.SessionConfiguration)
+     *
      * @param holder The SurfaceHolder whose surface is being created.
      */
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
+        // Timber.d("SurfaceHolder created setFixedSize: %s", mVideoSize);
+        if (mVideoSize != null) {
+            holder.setFixedSize(mVideoSize.width, mVideoSize.height);
+        }
         onObjectCreated(holder);
     }
 
@@ -136,31 +138,29 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
         /*
          * surfaceChange event is mainly triggered by local video preview change by user; currently
          * not implemented in android aTalk. Hence no action is required.
-         * Note: the event get trigger whenever there is an init of the local video preview
-         * e.g. init or toggle camera
+         * Note: the event get trigger whenever there is an init of the local video preview e.g. init or toggle camera
          * Timber.w("Preview surface change size: %s x %s", width, height);
          */
+        // Timber.d("SurfaceHolder size changed: [%s x %s]; %s", width, height, holder);
+        // preview surface does not exist
         // if (mHolder.getSurface() == null){
-        // // preview surface does not exist
-        // return;
+        //     return;
         // }
         //
         // // stop preview before making changes
         // try {
-        // mCamera.stopPreview();
+        //     mCamera.stopPreview();
         // } catch (Exception e){
-        // // ignore: tried to stop a non-existent preview
+                // ignore: tried to stop a non-existent preview
         // }
-        //
-        // // set preview size and make any resize, rotate or reformatting changes here
-        //
-        // // start preview with new settings
+
+        // set preview size and make any resize, rotate or reformatting changes here
+        // start preview with new settings
         // try {
-        // mCamera.setPreviewDisplay(mHolder);
-        // mCamera.startPreview();
-        //
+        //     mCamera.setPreviewDisplay(mHolder);
+        //     mCamera.startPreview();
         // } catch (Exception e){
-        // Timber.e("Error starting camera preview: %s", e.getMessage());
+        //     Timber.e("Error starting camera preview: %s", e.getMessage());
         // }
     }
 

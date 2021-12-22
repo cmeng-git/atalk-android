@@ -5,10 +5,11 @@
  */
 package org.atalk.android.gui.call;
 
+import static android.hardware.camera2.CameraMetadata.LENS_FACING_BACK;
+import static android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT;
+
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -25,20 +26,18 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.controller.SimpleDragController;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.util.java.awt.Component;
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.util.*;
-import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
+import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.CameraStreamBase;
 import org.atalk.service.neomedia.ViewAccessor;
 import org.atalk.service.osgi.OSGiFragment;
 import org.atalk.util.event.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.Component;
+import java.awt.Dimension;
 import java.util.Iterator;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -94,7 +93,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * <tt>OpenGlCtxProvider</tt> that provides Open GL context for local preview rendering. It is
      * used in direct surface encoding mode.
      */
-    public OpenGlCtxProvider mLocalPreviewCtxProvider;
+    public OpenGlCtxProvider mLocalPreviewGlCtxProvider;
+
+    private ViewDependentProvider<?> currentPreviewProvider;
 
     /**
      * Instance of video listener that should be unregistered once this Activity is destroyed
@@ -206,15 +207,21 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
         // Creates and registers surface handler for events
         localPreviewSurface = new PreviewSurfaceProvider(mCallActivity, localPreviewContainer, true);
         CameraUtils.setPreviewSurfaceProvider(localPreviewSurface);
-
-        // not necessary???? Does not seem to get call in camera setup
-        mLocalPreviewCtxProvider = new OpenGlCtxProvider(mCallActivity, localPreviewContainer);
-
         // Makes the local preview window draggable on the screen
         localPreviewContainer.setOnTouchListener(new SimpleDragController());
 
+        /*
+         * Initialize android hardware encoder and decoder Preview and surfaceProvider;
+         * use only if hardware encoder/decoder are enabled.
+         *
+         * See Constants#ANDROID_SURFACE, DataSource#AbstractPushBufferStream and AndroidEncoder#isDirectSurfaceEnabled
+         * on conditions for the selection and use of this stream in SurfaceStream setup
+         * i.e. AndroidEncoder#DIRECT_SURFACE_ENCODE_PROPERTY must be true
+         */
+        mLocalPreviewGlCtxProvider = new OpenGlCtxProvider(mCallActivity, localPreviewContainer);
         AndroidDecoder.renderSurfaceProvider = new PreviewSurfaceProvider(mCallActivity, remoteVideoContainer, false);
-        // Makes the preview display draggable on the screen - not applicable in aTalk default full screen mode
+
+        // Make the remote preview display draggable on the screen - not applicable in aTalk default full screen mode
         // remoteVideoContainer.setOnTouchListener(new SimpleDragController());
     }
 
@@ -226,7 +233,8 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             Timber.e("Call is null");
             return;
         }
-        initLocalPreviewContainer();
+        // currentPreviewProvider always null onResume; See VideoCallActivity#onConfigurationChanged(),
+        // initLocalPreviewContainer(currentPreviewProvider);
 
         // Checks if call peer has video component
         Iterator<? extends CallPeer> peers = mCall.getCallPeers();
@@ -243,45 +251,35 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Restores local video state if it was enabled or on first video call entry; The local preview size is
      * configured to be proportional to the actually camera captured video dimension with the default width.
+     * The localPreview can either be localPreviewSurface or mLocalPreviewGlCtxProvider
+     *
+     * Note: runOnUiThread(0 for view as this may be call from non-main thread
      */
-    public void initLocalPreviewContainer()
+    public void initLocalPreviewContainer(ViewDependentProvider provider)
     {
+        currentPreviewProvider = provider;
         if (wasVideoEnabled || isLocalVideoEnabled()) {
+            if (provider != null) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) localPreviewContainer.getLayoutParams();
+                Dimension videoSize = provider.getVideoSize();
+                // Local preview size has default fixed width of 160 (landscape mode)
+                float scale = getResources().getDisplayMetrics().density * DEFAULT_PREVIEW_WIDTH / videoSize.width;
+                Dimension previewSize;
+                if (aTalkApp.isPortrait) {
+                    previewSize = new Dimension(videoSize.height, videoSize.width);
+                }
+                else {
+                    previewSize = videoSize;
+                }
+                params.width = (int) (previewSize.width * scale + 0.5);
+                params.height = (int) (previewSize.height * scale + 0.5);
 
-            DeviceConfiguration deviceConfig = NeomediaServiceUtils.getMediaServiceImpl().getDeviceConfiguration();
-            Dimension videoSize = deviceConfig.getVideoSize();
-
-            // Remote and Local video preview dimension follows phone orientation i.e. portrait or landscape
-            int cameraId = PreviewStream.getCameraId();
-
-            // Not initialized on first  call upon aTalk start up
-            if (cameraId == -1) {
-                AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();
-                cameraId = (selectedCamera == null) ? 0 : AndroidCamera.getCameraId(selectedCamera.getLocator());
-                Timber.e("Selected CameraID: %s", cameraId);
+                runOnUiThread(() -> {
+                    localPreviewContainer.setLayoutParams(params);
+                    provider.setAspectRatio(params.width, params.height);
+                });
+                Timber.d("SurfaceView instance Size: [%s x %s]; %s", params.width, params.height, provider.getView());
             }
-
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) localPreviewContainer.getLayoutParams();
-
-            // Get actual preview size for the phone in its current orientation
-            List<Camera.Size> supportSizes = CameraUtils.getSupportSizeForCameraId(cameraId);
-            Dimension optimizedSize = CameraUtils.getOptimalPreviewSize(videoSize, supportSizes);
-
-            // Local preview size has default fixed width of 160 (landscape mode)
-            float scale = getResources().getDisplayMetrics().density * DEFAULT_PREVIEW_WIDTH / optimizedSize.width;
-            Dimension previewSize;
-            if (aTalkApp.isPortrait) {
-                previewSize = new Dimension(optimizedSize.height, optimizedSize.width);
-            }
-            else {
-                previewSize = optimizedSize;
-            }
-            params.width = (int) (previewSize.width * scale + 0.5f);
-            params.height = (int) (previewSize.height * scale + 0.5f);
-
-            localPreviewContainer.setLayoutParams(params);
-            Timber.d("Local preview container size: %s=[%sx%s]", cameraId, params.width, params.height);
-
             // Set proper videoCallButtonState and restore local video
             initLocalVideoState(true);
         }
@@ -316,9 +314,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
              * 20210306 - must setLocalVideoEnabled(false) to restart camera after screen orientation changed
              */
             //  if (!mCallback.isBackToChat()) {
-            //                previewSurfaceHandler.setPreviewSurface(PreviewStream.getCamera());
+            //        previewSurfaceHandler.setPreviewSurface(PreviewStream.getCamera());
             //  }
-            //            else {
+            //  else {
             setLocalVideoEnabled(false);
 
             localPreviewSurface.waitForObjectRelease();
@@ -334,7 +332,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
         super.onDestroy();
         // Release shared video component
         remoteVideoContainer.removeAllViews();
-        mLocalPreviewCtxProvider = null;
+        mLocalPreviewGlCtxProvider = null;
     }
 
     @Override
@@ -412,15 +410,16 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
         String back = getString(R.string.service_gui_settings_USE_BACK_CAMERA);
         if (item.getTitle().equals(back)) {
             // Switch to back camera and toggle item name
-            newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(Camera.CameraInfo.CAMERA_FACING_BACK);
+            newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(LENS_FACING_BACK);
             item.setTitle(R.string.service_gui_settings_USE_FRONT_CAMERA);
         }
         else {
             // Switch to front camera and toggle item name
-            newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(Camera.CameraInfo.CAMERA_FACING_FRONT);
+            newDevice = AndroidCamera.getCameraFromCurrentDeviceSystem(LENS_FACING_FRONT);
             item.setTitle(back);
         }
 
+        // Timber.w("New Camera selected: %s", newDevice.getName());
         // Switch the camera in separate thread
         cameraSwitchThread = new Thread()
         {
@@ -428,7 +427,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             public void run()
             {
                 if (newDevice != null) {
-                    PreviewStream instance = PreviewStream.getInstance();
+                    CameraStreamBase instance = CameraStreamBase.getInstance();
                     instance.switchCamera(newDevice.getLocator(), isLocalVideoEnabled());
 
                     // Keep track of created threads
@@ -475,7 +474,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      *
      * @return <tt>true</tt> if local video is enabled.
      */
-    private boolean isLocalVideoEnabled()
+    public boolean isLocalVideoEnabled()
     {
         return CallManager.isLocalVideoEnabled(mCall);
     }
@@ -488,11 +487,13 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     private void setLocalVideoEnabled(boolean enable)
     {
         if (mCall == null) {
-            Timber.e("Call instance is null(the call has ended already ?)");
+            Timber.e("Call instance is null (the call has ended already?)");
             return;
         }
         CallManager.enableLocalVideo(mCall, enable);
     }
+
+    // ============ Remote video view handler ============
 
     /**
      * Adds a video listener for the given call peer.
@@ -519,6 +520,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
 
                 public void videoRemoved(VideoEvent event)
                 {
+                    // Timber.w(new Exception(), "Call Peer: %s; event: %s", callPeer, event);
                     handleVideoEvent(callPeer, event);
                 }
 
@@ -529,6 +531,36 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             };
         }
         osvt.addVideoListener(callPeer, callPeerVideoListener);
+    }
+
+    /**
+     * Handles a video event.
+     *
+     * @param callPeer the corresponding call peer
+     * @param event the <tt>VideoEvent</tt> that notified us
+     */
+    public void handleVideoEvent(CallPeer callPeer, final VideoEvent event)
+    {
+        if (event.isConsumed())
+            return;
+        event.consume();
+
+        /*
+         * VideoEvent.LOCAL: local video events are not handled here because the preview is required for the
+         * camera to start, and it must not be removed until is stopped, so it's handled by directly
+         */
+        if (event.getOrigin() == VideoEvent.REMOTE) {
+            int eventType = event.getType();
+            Component visualComponent = ((eventType == VideoEvent.VIDEO_ADDED)
+                    || (eventType == VideoEvent.VIDEO_SIZE_CHANGE))
+                    ? event.getVisualComponent() : null;
+
+            SizeChangeVideoEvent scve = (eventType == VideoEvent.VIDEO_SIZE_CHANGE)
+                    ? (SizeChangeVideoEvent) event : null;
+
+            Timber.d("handleVideoEvent %s; %s", eventType, visualComponent);
+            handleRemoteVideoEvent(visualComponent, scve);
+        }
     }
 
     /**
@@ -555,8 +587,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     /**
-     * Initializes remote video for the call. Visual component is null on initial setup.
-     * but no null on phone rotate: Need to re-init remote video on screen rotation
+     * Initializes remote video for the call. Visual component is always null on initial setup;
+     * but non-null on phone rotate: Need to re-init remote video on screen rotation. However device
+     * rotation is currently handled by onConfigurationChanged, so handleRemoteVideoEvent will not be called
      *
      * Let remote handleVideoEvent triggers the initial setup.
      * Multiple quick access to GLSurfaceView can cause problem.
@@ -570,48 +603,18 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
 
         if (pps != null) {
             OperationSetVideoTelephony osvt = pps.getOperationSet(OperationSetVideoTelephony.class);
-
             if (osvt != null)
                 visualComponent = osvt.getVisualComponent(callPeer);
         }
-        initOnPhoneOrientationChange = true;
-        handleRemoteVideoEvent(visualComponent, null);
-    }
 
-    /**
-     * Handles a video event.
-     *
-     * @param callPeer the corresponding call peer
-     * @param event the <tt>VideoEvent</tt> that notified us
-     */
-    public void handleVideoEvent(CallPeer callPeer, final VideoEvent event)
-    {
-        if (event.isConsumed())
-            return;
-        event.consume();
-
-        /*
-         * if (event.getOrigin() == VideoEvent.LOCAL) {
-         * 	local video events are not used because the preview is required for the camera to start,
-         *  and it must not be removed until is stopped, so it's handled by direct cooperation with
-         *  .jmfext.media.protocol.mediarecorder.DataSource
-         * }
-         */
-        if (event.getOrigin() == VideoEvent.REMOTE) {
-            int eventType = event.getType();
-            Component visualComponent = ((eventType == VideoEvent.VIDEO_ADDED)
-                    || (eventType == VideoEvent.VIDEO_SIZE_CHANGE))
-                    ? event.getVisualComponent() : null;
-
-            SizeChangeVideoEvent scve = (eventType == VideoEvent.VIDEO_SIZE_CHANGE)
-                    ? (SizeChangeVideoEvent) event : null;
-
-            handleRemoteVideoEvent(visualComponent, scve);
+        if (visualComponent != null) {
+            initOnPhoneOrientationChange = true;
+            handleRemoteVideoEvent(visualComponent, null);
         }
     }
 
     /**
-     * Handles remote video event arguments.
+     * Handles the remote video event.
      *
      * @param visualComponent the remote video <tt>Component</tt> if available or <tt>null</tt> otherwise.
      * visualComponent is null on video call initial setup and on remote video removed.
@@ -621,10 +624,10 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     private void handleRemoteVideoEvent(final Component visualComponent, final SizeChangeVideoEvent scvEvent)
     {
         if (visualComponent instanceof ViewAccessor) {
-            this.remoteVideoAccessor = (ViewAccessor) visualComponent;
+            remoteVideoAccessor = (ViewAccessor) visualComponent;
         }
         else {
-            this.remoteVideoAccessor = null;
+            remoteVideoAccessor = null;
             // null visualComponent evaluates to false, so need to check here before warn
             // Report component is not compatible
             if (visualComponent != null) {
@@ -639,7 +642,6 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             if (remoteVideoAccessor != null) {
                 View view = remoteVideoAccessor.getView(mCallActivity);
                 Dimension preferredSize = selectRemotePreferredSize(visualComponent, view, scvEvent);
-                Timber.w("Remote video content changed @ size: %s", preferredSize.toString());
                 doAlignRemoteVideo(view, preferredSize);
             }
 
@@ -657,7 +659,6 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
              * remote video change event.
              */
             else {
-                Timber.w("Remote video view container removed.");
                 remoteVideoContainer.preferredSize = null;
                 doAlignRemoteVideo(null, null);
             }
@@ -718,11 +719,13 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     {
         if (remoteVideoView != null) {
             // GLSurfaceView frequent changes can cause error, so change only if necessary
-            boolean sizeChange = remoteVideoContainer.setVideoPreferredSize(preferredSize);
+            boolean sizeChange = remoteVideoContainer.setVideoPreferredSize(preferredSize, initOnPhoneOrientationChange);
+            Timber.w("Remote video view alignment @ size: %s; sizeChange: %s; initOnPhoneOrientationChange: %s",
+                    preferredSize, sizeChange, initOnPhoneOrientationChange);
             if (!sizeChange && !initOnPhoneOrientationChange) {
-                Timber.d("No change in remote video viewContainer dimension!: %s", preferredSize);
                 return;
             }
+
             // reset the flag after use
             initOnPhoneOrientationChange = false;
 
@@ -732,6 +735,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
                 remoteVideoContainer.removeAllViews();
                 remoteVideoContainer.addView(remoteVideoView);
             }
+
             // When remote video is visible then the call info is positioned in the bottom part of the screen
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) callInfoGroup.getLayoutParams();
             params.addRule(RelativeLayout.CENTER_VERTICAL, 0);
@@ -746,7 +750,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             calleeAvatar.setVisibility(View.GONE);
             remoteVideoContainer.setVisibility(View.VISIBLE);
         }
-        else {
+        else { // if (!initOnPhoneOrientationChange) {
+            Timber.d("Remote video view removed: %s", preferredSize);
+
             remoteVideoContainer.removeAllViews();
 
             // When remote video is hidden then the call info is centered below the avatar
@@ -828,24 +834,16 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     /**
-     * Set the remote video container to max possible size; but does not help when call start in landscape.
-     * The display video only occupies part of the view window. So it is not call/use currently
-     *
-     * @param isPortrait Phone orientation
+     * Init both the local and remote video container on device rotation.
      */
-    @SuppressLint("WrongCall")
-    public void initRemoteVideoContainer(boolean isPortrait)
+    public void initVideoViewOnRotation()
     {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) remoteVideoContainer.getLayoutParams();
-        if (isPortrait) {
-            params.width = aTalkApp.mDisplaySize.width;
-            params.height = aTalkApp.mDisplaySize.height;
+        initLocalPreviewContainer(currentPreviewProvider);
+
+        if (remoteVideoAccessor != null) {
+            initOnPhoneOrientationChange = true;
+            handleRemoteVideoEvent((Component) remoteVideoAccessor, null);
         }
-        else {
-            params.width = aTalkApp.mDisplaySize.height;
-            params.height = aTalkApp.mDisplaySize.width;
-        }
-        remoteVideoContainer.setLayoutParams(params);
-        remoteVideoContainer.setPreferredSizeChange(true);
     }
+
 }

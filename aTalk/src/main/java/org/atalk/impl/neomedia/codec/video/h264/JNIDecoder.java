@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.codec.video.h264;
 
 import net.iharder.Base64;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrame;

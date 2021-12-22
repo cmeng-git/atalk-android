@@ -27,11 +27,11 @@ import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.contactlist.UIContactDetailImpl;
 import org.atalk.android.gui.contactlist.UIContactImpl;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.util.java.awt.Component;
-import org.atalk.android.util.java.awt.Point;
-import org.atalk.android.util.java.awt.event.ActionEvent;
-import org.atalk.android.util.java.awt.event.ActionListener;
-import org.atalk.android.util.javax.swing.*;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 
 import java.util.*;
 

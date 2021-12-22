@@ -13,7 +13,6 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.util.MediaType;

@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.javax.swing.Icon;
+import javax.swing.Icon;
 
 /**
  * A convenience class used to store combobox complex objects.

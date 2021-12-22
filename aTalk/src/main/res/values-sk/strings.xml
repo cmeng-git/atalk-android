@@ -1400,10 +1400,10 @@
     <string name="service_gui_settings_USE_FRONT_CAMERA">Používajte prednú kameru</string>
 
     <!-- Video codecs -->
-    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Použiť priame dekódovanie povrchu (vyžaduje sa reštart)</string>
-    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Použiť priame kódovanie povrchu (vyžaduje sa reštart)</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Použiť priame dekódovanie povrchu</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Použiť priame kódovanie povrchu</string>
     <string name="service_gui_settings_HW_DECODE">Použiť hardvérové dekódovanie (vyžaduje sa reštart)</string>
-    <string name="service_gui_settings_HW_ENCODE">Použite hardvérové kódovanie</string>
+    <string name="service_gui_settings_HW_ENCODE">Použite hardvérové kódovanie (vyžaduje sa reštart)</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">Zoznam vstavaných kodérov / dekodérov médií</string>
     <string name="service_gui_settings_Restart_Hint">Vyžadovať reštartovanie aTalk</string>

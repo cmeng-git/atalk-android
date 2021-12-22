@@ -19,6 +19,7 @@ import javax.media.Controls;
 import javax.media.*;
 import javax.media.control.FormatControl;
 import javax.media.control.FrameRateControl;
+import javax.media.format.VideoFormat;
 import javax.media.protocol.*;
 
 import timber.log.Timber;
@@ -29,6 +30,7 @@ import timber.log.Timber;
  *
  * @param <AbstractBufferStreamT> the type of <tt>AbstractBufferStream</tt> through which this
  * <tt>AbstractBufferCaptureDevice</tt> is to give access to its media data
+ *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
@@ -109,16 +111,14 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Creates a new <tt>FormatControl</tt> instance which is to be associated with a
-     * <tt>PushBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>PushBufferDataSource</tt>. As the <tt>FormatControl</tt>s of a
-     * <tt>PushBufferDataSource</tt> can be requested before {@link #connect()}, its
-     * <tt>PushBufferStream</tt>s may not exist at the time of the request for the creation of the
+     * Creates a new <tt>FormatControl</tt> instance which is to be associated with a <tt>PushBufferStream</tt>
+     * at a specific zero-based index in the list of streams of this <tt>PushBufferDataSource</tt>.
+     * As the <tt>FormatControl</tt>s of a <tt>PushBufferDataSource</tt> can be requested before {@link #connect()},
+     * its <tt>PushBufferStream</tt>s may not exist at the time of the request for the creation of the
      * <tt>FormatControl</tt>.
      *
      * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> in the list of streams of this
-     * <tt>PushBufferDataSource</tt> which is to be associated with the new
-     * <tt>FormatControl</tt> instance
+     * <tt>PushBufferDataSource</tt> which is to be associated with the new <tt>FormatControl</tt> instance
      * @return a new <tt>FormatControl</tt> instance which is to be associated with a
      * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
      * streams of this <tt>PushBufferDataSource</tt>
@@ -128,30 +128,27 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
         return new AbstractFormatControl()
         {
             /**
-             * The <tt>Format</tt> of this <tt>FormatControl</tt> and, respectively, of the media data of its owner.
-             */
-            private Format format;
-
-            /**
              * Gets the <tt>Format</tt> of the media data of the owner of this <tt>FormatControl</tt>.
              *
              * @return the <tt>Format</tt> of the media data of the owner of this <tt>FormatControl</tt>
              */
             public Format getFormat()
             {
-                format = AbstractBufferCaptureDevice.this.internalGetFormat(streamIndex, format);
-                return format;
+                mFormat = AbstractBufferCaptureDevice.this.internalGetFormat(streamIndex, mFormat);
+                return mFormat;
             }
 
             /**
              * Gets the <tt>Format</tt>s in which the owner of this <tt>FormatControl</tt> is
              * capable of providing media data.
              *
-             * @return an array of <tt>Format</tt>s in which the owner of this
-             *         <tt>FormatControl</tt> is capable of providing media data
+             * @return an array of <tt>Format</tt>s in which the owner of this <tt>FormatControl</tt>
+             * is capable of providing media data
              */
             public Format[] getSupportedFormats()
             {
+                // Timber.d("FormatControl getSupportedFormats for streamIndex: %s; size = %s", streamIndex,
+                //        AbstractBufferCaptureDevice.this.getSupportedFormats(streamIndex).length);
                 return AbstractBufferCaptureDevice.this.getSupportedFormats(streamIndex);
             }
 
@@ -159,8 +156,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
              * Implements {@link FormatControl#setFormat(Format)}. Attempts to set the
              * <tt>Format</tt> in which the owner of this <tt>FormatControl</tt> is to provide media data.
              *
-             * @param format
-             *        the <tt>Format</tt> to be set on this instance
+             * @param format the <tt>Format</tt> to be set on this instance
              * @return the currently set <tt>Format</tt> after the attempt to set it on this
              *         instance if <tt>format</tt> is supported by this instance and regardless of
              *         whether it was actually set; <tt>null</tt> if <tt>format</tt> is not supported by this instance
@@ -168,12 +164,10 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
             @Override
             public Format setFormat(Format format)
             {
+                Format oldFormat = super.getFormat();
                 Format setFormat = super.setFormat(format);
-
                 if (setFormat != null) {
-                    setFormat = AbstractBufferCaptureDevice.this.internalSetFormat(streamIndex, setFormat, format);
-                    if (setFormat != null)
-                        this.format = setFormat;
+                    setFormat = AbstractBufferCaptureDevice.this.internalSetFormat(streamIndex, oldFormat, format);
                 }
                 return setFormat;
             }
@@ -188,9 +182,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     protected FormatControl[] createFormatControls()
     {
         FormatControl formatControl = createFormatControl(0);
-
-        return (formatControl == null)
-                ? EMPTY_FORMAT_CONTROLS : new FormatControl[]{formatControl};
+        return (formatControl == null) ? EMPTY_FORMAT_CONTROLS : new FormatControl[]{formatControl};
     }
 
     /**
@@ -224,8 +216,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
 
     /**
      * Create a new <tt>AbstractBufferStream</tt> which is to be at a specific zero-based index in
-     * the list of streams of this <tt>AbstractBufferCaptureDevice</tt>. The
-     * <tt>Format</tt>-related
+     * the list of streams of this <tt>AbstractBufferCaptureDevice</tt>. The <tt>Format</tt>-related
      * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
      *
      * @param streamIndex the zero-based index of the <tt>AbstractBufferStream</tt> in the list of streams of
@@ -557,10 +548,8 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
                 synchronized (getStreamSyncRoot()) {
                     if (streams != null) {
                         AbstractBufferStream<?> stream = streams[streamIndex];
-
                         if (stream != null) {
                             Format streamFormat = stream.internalGetFormat();
-
                             if (streamFormat != null)
                                 return streamFormat;
                         }
@@ -588,8 +577,9 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     private FormatControl[] internalGetFormatControls()
     {
         synchronized (controlsSyncRoot) {
-            if (formatControls == null)
+            if (formatControls == null) {
                 formatControls = createFormatControls();
+            }
             return formatControls;
         }
     }
@@ -651,10 +641,11 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
 
             if (formatControls != null) {
                 int formatControlCount = formatControls.length;
-
                 streams = new AbstractBufferStream[formatControlCount];
-                for (int i = 0; i < formatControlCount; i++)
+                for (int i = 0; i < formatControlCount; i++) {
                     streams[i] = createStream(i, formatControls[i]);
+                    // Timber.d("Index: %s; Stream: %s; Control: %s", i, streams[i], formatControls[i]);
+                }
 
                 /*
                  * Start the streams if this DataSource has already been started.
@@ -681,14 +672,11 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-     * <tt>PushBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>PushBufferDataSource</tt>.
+     * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a <tt>PushBufferStream</tt>
+     * at a specific zero-based index in the list of streams of this <tt>PushBufferDataSource</tt>.
      *
-     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is
-     * to be set
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
+     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is to be set
+     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt>
      * @param newValue the <tt>Format</tt> which is to be set
      * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
      * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
@@ -702,7 +690,6 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
             synchronized (getStreamSyncRoot()) {
                 if (streams != null) {
                     AbstractBufferStream<?> stream = streams[streamIndex];
-
                     if (stream != null)
                         return stream.internalSetFormat(newValue);
                 }

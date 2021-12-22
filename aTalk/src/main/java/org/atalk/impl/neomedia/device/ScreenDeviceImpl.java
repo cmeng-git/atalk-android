@@ -5,13 +5,13 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.DisplayMode;
-import org.atalk.android.util.java.awt.GraphicsDevice;
+import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
 import org.atalk.service.neomedia.device.ScreenDevice;
-import org.atalk.android.util.java.awt.GraphicsEnvironment;
-import org.atalk.android.util.java.awt.Point;
-import org.atalk.android.util.java.awt.Rectangle;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 /**
  * Implementation of <tt>ScreenDevice</tt>.

@@ -12,7 +12,7 @@ import timber.log.Timber;
 
 /**
  * based on https://gist.github.com/steveliles/11116937
- * Usage:
+ * Usage: Use for camera processing < version 2.8.0 with old camera API implmentation
  *
  * 1. Get the Foreground Singleton, passing a Context or Application object unless you
  * are sure that the Singleton has definitely already been initialised elsewhere.
@@ -21,22 +21,23 @@ import timber.log.Timber;
  * 2.b) Register to be notified (useful in Service or other non-UI components):
  *
  * BackgroundManager.Listener myListener = new Foreground.Listener(){
- * public void onAppForeground(){
- * // ... whatever you want to do
- * }
- * public void onAppBackground(){
- * // ... whatever you want to do
- * }
+ *     public void onAppForeground(){
+ *         // ... whatever you want to do
+ *     }
+ *
+ *     public void onAppBackground(){
+ *         // ... whatever you want to do
+ *     }
  * }
  *
  * public void onCreate(){
- * super.onCreate();
- * BackgroundManager.get(this).addListener(listener);
+ *     super.onCreate();
+ *     BackgroundManager.get(this).addListener(listener);
  * }
  *
  * public void onDestroy(){
- * super.onCreate();
- * BackgroundManager.get(this).removeListener(listener);
+ *     super.onCreate();
+ *     BackgroundManager.get(this).removeListener(listener);
  * }
  */
 public class BackgroundManager implements Application.ActivityLifecycleCallbacks

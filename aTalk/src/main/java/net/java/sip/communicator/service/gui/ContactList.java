@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.contactsource.*;
 import net.java.sip.communicator.service.gui.event.ContactListListener;
 import net.java.sip.communicator.service.gui.event.MetaContactQueryListener;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 
 import java.util.Collection;
 import java.util.List;

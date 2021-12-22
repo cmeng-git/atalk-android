@@ -12,7 +12,7 @@ import javax.media.control.*;
 import javax.media.format.*;
 import javax.media.protocol.*;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrame;

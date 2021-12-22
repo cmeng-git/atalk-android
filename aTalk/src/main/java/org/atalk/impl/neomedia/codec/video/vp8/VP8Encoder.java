@@ -6,7 +6,7 @@
  */
 package org.atalk.impl.neomedia.codec.video.vp8;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.video.VPX;

@@ -9,6 +9,8 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.awt.Dimension;
+
 import timber.log.Timber;
 
 /**
@@ -24,12 +26,12 @@ public abstract class ViewDependentProvider<T>
     /**
      * Timeout for dispose surface operation
      */
-    private static final long REMOVAL_TIMEOUT = 10000L;
+    private static final long REMOVAL_TIMEOUT = 5000L;
 
     /**
      * Timeout for create surface operation
      */
-    private static final long CREATE_TIMEOUT = 10000L;
+    private static final long CREATE_TIMEOUT = 5000L;
 
     /**
      * <tt>Activity</tt> context.
@@ -47,9 +49,24 @@ public abstract class ViewDependentProvider<T>
     protected View view;
 
     /**
+     * Use for surfaceCreation to set surface holder size for correct camera local preview aspect ratio
+     * This size is the user selected video resolution independent of the device orientation
+     */
+    protected Dimension mVideoSize;
+
+    /**
      * Provided object created when <tt>View</tt> is visible.
      */
     protected T providedObject;
+
+    /**
+     * Factory method that creates new <tt>View</tt> instance.
+     *
+     * @return new <tt>View</tt> instance.
+     */
+    protected abstract View createViewInstance();
+
+    public abstract void setAspectRatio(int width, int height);
 
     /**
      * Create a new instance of <tt>ViewDependentProvider</tt>.
@@ -81,11 +98,29 @@ public abstract class ViewDependentProvider<T>
     }
 
     /**
-     * Factory method that creates new <tt>View</tt> instance.
+     * Returns maintained <tt>View</tt> object.
      *
-     * @return new <tt>View</tt> instance.
+     * @return maintained <tt>View</tt> object.
      */
-    protected abstract View createViewInstance();
+    public View getView()
+    {
+        return view;
+    }
+
+    /**
+     * Set the {@link #mVideoSize} with the video size selected by user for this instance
+     *
+     * @param size user selected video size independent of the device orientation
+     */
+    public void setVideoSize(Dimension size)
+    {
+        mVideoSize = size;
+    }
+
+    public Dimension getVideoSize()
+    {
+        return mVideoSize;
+    }
 
     /**
      * Checks if maintained view exists and removes if from the <tt>container</tt>.

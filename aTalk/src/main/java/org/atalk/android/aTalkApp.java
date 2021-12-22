@@ -13,12 +13,14 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.SensorManager;
+import android.hardware.camera2.CameraManager;
 import android.media.AudioManager;
 import android.os.*;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.*;
 
@@ -37,13 +39,14 @@ import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
-import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
 import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
+
+import java.awt.Dimension;
 
 import timber.log.Timber;
 
@@ -53,7 +56,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class aTalkApp extends Application implements LifecycleObserver
+public class aTalkApp extends Application implements LifecycleEventObserver
 {
     /**
      * Name of config property that indicates whether foreground icon should be displayed.
@@ -182,20 +185,18 @@ public class aTalkApp extends Application implements LifecycleObserver
         super.onTerminate();
     }
 
-    // ========= Lifecycle implementations ======= //
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    public void onAppForegrounded()
+    // ========= LifecycleEventObserver implementations ======= //
+    @Override
+    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event)
     {
-        isForeground = true;
-        Timber.d("APP FOREGROUNDED");
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onAppBackgrounded()
-    {
-        isForeground = false;
-        Timber.d("APP BACKGROUNDED");
+        if (Lifecycle.Event.ON_START == event) {
+            isForeground = true;
+            Timber.d("APP FOREGROUNDED");
+        }
+        else if (Lifecycle.Event.ON_STOP == event) {
+            isForeground = false;
+            Timber.d("APP BACKGROUNDED");
+        }
     }
 
     /**
@@ -247,6 +248,16 @@ public class aTalkApp extends Application implements LifecycleObserver
     public static AudioManager getAudioManager()
     {
         return (AudioManager) getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+    }
+
+    /**
+     * Retrieves <tt>CameraManager</tt> instance using application context.
+     *
+     * @return <tt>CameraManager</tt> service instance.
+     */
+    public static CameraManager getCameraManager()
+    {
+        return (CameraManager) getGlobalContext().getSystemService(Context.CAMERA_SERVICE);
     }
 
     /**

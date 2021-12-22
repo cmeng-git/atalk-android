@@ -520,7 +520,7 @@ public final class Manager
         }
 
         try {
-            Timber.i("### Creating Processor for DataSource ###: %s for type: %s", source, contentType);
+            Timber.d("### Creating Processor for DataSource ###: %s for type: %s", source, contentType);
             Processor processor = createProcessor(source, contentType);
             return processor;
         } catch (IOException e) {

@@ -20,7 +20,7 @@ import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.resources.*;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.util.javax.swing.ImageIcon;
+import javax.swing.ImageIcon;
 import org.osgi.framework.ServiceEvent;
 
 import java.io.*;

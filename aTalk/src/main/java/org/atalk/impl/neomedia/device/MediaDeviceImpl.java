@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.device;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.*;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDevice;

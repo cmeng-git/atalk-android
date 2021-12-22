@@ -19,7 +19,7 @@ import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 import java.util.*;
 

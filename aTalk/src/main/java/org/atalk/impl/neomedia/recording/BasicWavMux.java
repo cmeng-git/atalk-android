@@ -65,7 +65,7 @@ public class BasicWavMux extends BasicMux
 	@Override
 	public void writeHeader()
 	{
-		final org.atalk.android.util.javax.sound.sampled.AudioFormat javaSoundAudioFormat
+		final javax.sound.sampled.AudioFormat javaSoundAudioFormat
 				= JavaSoundUtils.convertFormat((AudioFormat) inputs[0]);
 		byte[] header = JavaSoundCodec.createWavHeader(javaSoundAudioFormat);
 		if (header != null)

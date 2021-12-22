@@ -16,7 +16,7 @@
 package org.atalk.impl.neomedia.codec.video.vp9;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.util.ByteArrayBuffer;
@@ -30,8 +30,6 @@ import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 
 import timber.log.Timber;
-
-import static org.atalk.util.RTPUtils.GT;
 
 /**
  * A depacketizer for VP9 codec which handles Constants.VP9_RTP stream data
@@ -227,7 +225,7 @@ public class DePacketizer extends AbstractCodec2
         //        inSeq, Integer.toHexString(inPictureId), inMarker, inIsStartOfFrame, inPdSize, inPayloadLength, empty, lastSentSeq);
 
         if (empty && lastSentSeq != -1
-                && RTPUtils.sequenceNumberComparator.compare(inSeq, lastSentSeq) != GT) {
+                && RTPUtils.sequenceNumberComparator.compare(inSeq, lastSentSeq) <= 0) {
             Timber.d("Discarding old packet (while empty) %s", inSeq);
             outBuffer.setDiscard(true);
             return BUFFER_PROCESSED_OK;
@@ -241,19 +239,20 @@ public class DePacketizer extends AbstractCodec2
                     | (timestamp != -1 && inRtpTimestamp != -1
                     && inRtpTimestamp != timestamp)) {
                 //inSeq <= firstSeq
-                if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) != GT) {
+                if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) <= 0) {
                     // the packet belongs to a previous frame. discard it
                     Timber.i("Discarding old packet %s", inSeq);
                     outBuffer.setDiscard(true);
                     return BUFFER_PROCESSED_OK;
                 }
-                //inSeq > firstSeq (and also presumably isSeq > lastSeq)
+                // ReSync the firstSeq if process has dropped out data; must do this else MediaCodec decoder has problem
+                else if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) > 0) {
+                    firstSeq = inSeq;
+                }
+                // never reach here?
                 else {
                     // the packet belongs to a subsequent frame (to the one currently being held). Drop the current frame.
-                    Timber.i("Discarding saved packets on arrival of a packet for a subsequent frame: %s", inSeq);
-
-                    // TODO: this would be the place to complain about the
-                    // not-well-received PictureID by sending a RTCP SLI or NACK.
+                    Timber.i("Discarding saved packets on arrival of a packet for a subsequent frame: %s; %s", inSeq, firstSeq);
                     reinit();
                 }
             }
@@ -292,10 +291,10 @@ public class DePacketizer extends AbstractCodec2
         // update fields
         frameLength += inPayloadLength;
         if (firstSeq == -1
-                || (RTPUtils.sequenceNumberComparator.compare(firstSeq, inSeq) == GT))
+                || (RTPUtils.sequenceNumberComparator.compare(firstSeq, inSeq) > 0))
             firstSeq = inSeq;
         if (lastSeq == -1
-                || (RTPUtils.sequenceNumberComparator.compare(inSeq, lastSeq) == GT))
+                || (RTPUtils.sequenceNumberComparator.compare(inSeq, lastSeq) > 0))
             lastSeq = inSeq;
 
         if (empty) {

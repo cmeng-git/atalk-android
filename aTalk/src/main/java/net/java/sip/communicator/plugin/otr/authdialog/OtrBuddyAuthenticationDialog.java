@@ -13,9 +13,9 @@ import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.plugin.otr.authdialog.FingerprintAuthenticationPanel.ActionComboBoxItem;
 import net.java.sip.communicator.service.protocol.Contact;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.java.awt.event.*;
-import org.atalk.android.util.javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 import java.security.PublicKey;
 

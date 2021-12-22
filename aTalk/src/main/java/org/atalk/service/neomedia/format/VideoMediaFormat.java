@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.format;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 /**
  * The interface represents a video format. Video formats characterize video streams and the

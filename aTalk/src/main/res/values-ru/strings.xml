@@ -1387,10 +1387,10 @@
     <string name="service_gui_settings_USE_FRONT_CAMERA">Использовать переднюю камеру</string>
 
     <!-- Video codecs -->
-    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Использовать прямое поверхностное декодирование (требуется перезагрузка)</string>
-    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Использовать прямое кодирование (требуется перезагрузка)</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Использовать прямое поверхностное декодирование</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Использовать прямое кодирование</string>
     <string name="service_gui_settings_HW_DECODE">Использовать аппаратное декодирование (требуется перезагрузка)</string>
-    <string name="service_gui_settings_HW_ENCODE">Использовать аппаратное кодирование</string>
+    <string name="service_gui_settings_HW_ENCODE">Использовать аппаратное кодирование (требуется перезагрузка)</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">Список встроенных медиакодеров/декодеров</string>
     <string name="service_gui_settings_Restart_Hint">Требовать перезапустить aTalk</string>

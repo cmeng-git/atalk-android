@@ -346,7 +346,7 @@ public abstract class MediaFormatImpl<T extends Format>
 
     /**
      * Remove the specific parameter name-value pair from advancedAttributes
-     * @see FORMAT_PARAMETER_ATTR_IMAGEATTR
+     * @see #FORMAT_PARAMETER_ATTR_IMAGEATTR
      *
      * @param parameterName the key of the <parameter/> name-value pair to be removed
      */

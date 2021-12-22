@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.codec.audio.ilbc;
 import javax.media.*;
 import javax.media.format.*;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.FormatParametersAwareCodec;

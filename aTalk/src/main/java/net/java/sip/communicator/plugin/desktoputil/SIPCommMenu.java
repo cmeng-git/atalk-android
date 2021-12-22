@@ -6,9 +6,9 @@
  */
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.javax.swing.ImageIcon;
-import org.atalk.android.util.javax.swing.JCheckBoxMenuItem;
-import org.atalk.android.util.javax.swing.JMenu;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
 
 /**
  * The <tt>SIPCommMenu</tt> is very similar to a JComboBox. The main

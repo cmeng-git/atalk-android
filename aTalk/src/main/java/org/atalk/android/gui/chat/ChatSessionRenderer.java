@@ -6,7 +6,7 @@
  */
 package org.atalk.android.gui.chat;
 
-import org.atalk.android.util.javax.swing.Icon;
+import javax.swing.Icon;
 
 import net.java.sip.communicator.service.protocol.*;
 

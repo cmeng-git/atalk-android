@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 import javax.media.Format;
 import javax.media.format.VideoFormat;

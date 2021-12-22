@@ -5,8 +5,8 @@
  */
 package org.xmpp.extensions.inputevt;
 
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.event.ComponentEvent;
+import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;

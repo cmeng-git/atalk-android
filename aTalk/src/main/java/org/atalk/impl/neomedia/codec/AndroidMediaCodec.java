@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.codec;
 
 import android.media.*;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.impl.neomedia.codec.video.ByteBuffer;

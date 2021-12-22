@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.service.neomedia.*;

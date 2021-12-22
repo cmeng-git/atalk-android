@@ -8,8 +8,8 @@ package net.java.sip.communicator.service.gui.event;
 
 import net.java.sip.communicator.service.gui.Chat;
 
-import org.atalk.android.util.java.awt.event.MouseEvent;
-import org.atalk.android.util.javax.swing.JMenuItem;
+import java.awt.event.MouseEvent;
+import javax.swing.JMenuItem;
 
 import java.util.List;
 

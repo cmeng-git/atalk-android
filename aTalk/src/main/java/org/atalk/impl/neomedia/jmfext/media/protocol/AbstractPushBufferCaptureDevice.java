@@ -35,8 +35,7 @@ public abstract class AbstractPushBufferCaptureDevice extends PushBufferDataSour
         }
 
         @Override
-        protected AbstractPushBufferStream<?> createStream(int streamIndex,
-                FormatControl formatControl)
+        protected AbstractPushBufferStream<?> createStream(int streamIndex, FormatControl formatControl)
         {
             return AbstractPushBufferCaptureDevice.this.createStream(streamIndex, formatControl);
         }
@@ -160,11 +159,9 @@ public abstract class AbstractPushBufferCaptureDevice extends PushBufferDataSour
      * information of the new instance
      * @return a new <tt>PushBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
      * in the list of streams of this <tt>PushBufferDataSource</tt> and which has its
-     * <tt>Format</tt>-related information abstracted by the specified
-     * <tt>formatControl</tt>
+     * <tt>Format</tt>-related information abstracted by the specified <tt>formatControl</tt>
      */
-    protected abstract AbstractPushBufferStream<?> createStream(int streamIndex,
-            FormatControl formatControl);
+    protected abstract AbstractPushBufferStream<?> createStream(int streamIndex, FormatControl formatControl);
 
     /**
      * Closes the connection to the media source specified by the <tt>MediaLocator</tt> of this
@@ -199,9 +196,8 @@ public abstract class AbstractPushBufferCaptureDevice extends PushBufferDataSour
         /*
          * While it is not clear whether the streams can be released upon disconnect,
          * com.imb.media.protocol.SuperCloneableDataSource gets the streams of the DataSource it
-         * adapts (i.e. this DataSource when SourceCloneable support is to be created for it)
-         * before #connect(). Unfortunately, it means that it isn't clear when the streams are to be
-         * disposed.
+         * adapts (i.e. this DataSource when SourceCloneable support is to be created for it) before
+         * #connect(). Unfortunately, it means that it isn't clear when the streams are to be disposed.
          */
     }
 
@@ -210,8 +206,7 @@ public abstract class AbstractPushBufferCaptureDevice extends PushBufferDataSour
      * override and be sure that there will be no request to start the transfer of media data if
      * it has already been started.
      *
-     * @throws IOException if anything goes wrong while starting the transfer of media data from this
-     * <tt>DataSource</tt>
+     * @throws IOException if anything goes wrong while starting the transfer of media data from this <tt>DataSource</tt>
      */
     protected void doStart()
             throws IOException
@@ -224,8 +219,7 @@ public abstract class AbstractPushBufferCaptureDevice extends PushBufferDataSour
      * and be sure that there will be no request to stop the transfer of media data if it has not
      * been started yet.
      *
-     * @throws IOException if anything goes wrong while stopping the transfer of media data from this
-     * <tt>DataSource</tt>
+     * @throws IOException if anything goes wrong while stopping the transfer of media data from this <tt>DataSource</tt>
      */
     protected void doStop()
             throws IOException
@@ -270,11 +264,9 @@ public abstract class AbstractPushBufferCaptureDevice extends PushBufferDataSour
     }
 
     /**
-     * Implements {@link javax.media.protocol.DataSource#getControls()}. Gets the controls
-     * available for this instance.
+     * Implements {@link javax.media.protocol.DataSource#getControls()}. Gets the controls available for this instance.
      *
-     * @return an array of <tt>Object</tt>s which represent the controls available for this
-     * instance
+     * @return an array of <tt>Object</tt>s which represent the controls available for this instance
      */
     @Override
     public Object[] getControls()

@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.hardware.Camera;
+import android.hardware.camera2.CameraCharacteristics;
 
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
@@ -24,18 +24,17 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-@SuppressWarnings("deprecation")
 public class AndroidCamera extends CaptureDeviceInfo
 {
     /**
      * The facing of the camera is opposite to that of the screen.
      */
-    public static final int FACING_BACK = Camera.CameraInfo.CAMERA_FACING_BACK;
+    public static final int FACING_BACK = CameraCharacteristics.LENS_FACING_FRONT;
 
     /**
      * The facing of the camera is the same as that of the screen.
      */
-    public static final int FACING_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    public static final int FACING_FRONT = CameraCharacteristics.LENS_FACING_FRONT;
 
     /**
      * Creates a new instance of <tt>AndroidCamera</tt>
@@ -53,13 +52,13 @@ public class AndroidCamera extends CaptureDeviceInfo
      * Creates <tt>MediaLocator</tt> for given parameters.
      *
      * @param locatorProtocol locator protocol that identifies device system.
-     * @param cameraId ID of camera that identifies the {@link Camera}.
-     * @param cameraInfo <tt>CameraInfo</tt> corresponding to given <tt>cameraId</tt>.
+     * @param cameraId ID of camera that identifies the camera.
+     * @param facing direction of the corresponding to given <tt>cameraId</tt>.
      * @return camera <tt>MediaLocator</tt> for given parameters.
      */
-    public static MediaLocator constructLocator(String locatorProtocol, int cameraId, Camera.CameraInfo cameraInfo)
+    public static MediaLocator constructLocator(String locatorProtocol, String cameraId, int facing)
     {
-        return new MediaLocator(locatorProtocol + ":" + cameraId + "/" + cameraInfo.facing);
+        return new MediaLocator(locatorProtocol + ":" + cameraId + "/" + facing);
     }
 
     /**
@@ -88,10 +87,10 @@ public class AndroidCamera extends CaptureDeviceInfo
      * @param locator the <tt>MediaLocator</tt> that identifies the camera.
      * @return extracted camera id from given <tt>locator</tt>.
      */
-    public static int getCameraId(MediaLocator locator)
+    public static String getCameraId(MediaLocator locator)
     {
         String remainder = locator.getRemainder();
-        return Integer.parseInt(remainder.substring(0, remainder.indexOf("/")));
+        return remainder.substring(0, remainder.indexOf("/"));
     }
 
     /**

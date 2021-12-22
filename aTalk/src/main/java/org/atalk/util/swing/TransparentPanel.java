@@ -15,8 +15,8 @@
  */
 package org.atalk.util.swing;
 
-import org.atalk.android.util.java.awt.LayoutManager;
-import org.atalk.android.util.javax.swing.JPanel;
+import java.awt.LayoutManager;
+import javax.swing.JPanel;
 
 /**
  * Represents a <tt>JPanel</tt> which sets its <tt>opaque</tt> property to <tt>false</tt> during its initialization.

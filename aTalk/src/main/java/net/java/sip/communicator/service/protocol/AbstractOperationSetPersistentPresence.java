@@ -58,7 +58,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      */
     protected AbstractOperationSetPersistentPresence(T pps)
     {
-        this.mPPS = pps;
+        mPPS = pps;
     }
 
     /**

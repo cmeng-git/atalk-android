@@ -17,9 +17,9 @@ package net.java.sip.communicator.service.gui;
 
 import java.util.*;
 
-import org.atalk.android.util.java.awt.Component;
-import org.atalk.android.util.javax.swing.JButton;
-import org.atalk.android.util.javax.swing.JMenuItem;
+import java.awt.Component;
+import javax.swing.JButton;
+import javax.swing.JMenuItem;
 
 import net.java.sip.communicator.service.protocol.*;
 

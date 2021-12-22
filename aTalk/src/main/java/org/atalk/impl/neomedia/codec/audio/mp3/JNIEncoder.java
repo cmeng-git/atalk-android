@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.codec.audio.mp3;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.impl.neomedia.codec.audio.FFmpegAudioEncoder;
 import org.atalk.service.neomedia.control.FlushableControl;
 import org.atalk.impl.neomedia.codec.FFmpeg;

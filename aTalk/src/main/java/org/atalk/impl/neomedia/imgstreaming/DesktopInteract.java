@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.imgstreaming;
 
-import org.atalk.android.util.java.awt.image.BufferedImage;
+import java.awt.image.BufferedImage;
 
 /**
  * Interface to capture desktop screen.

@@ -38,9 +38,8 @@ import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
-import org.atalk.android.util.java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
-import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
+import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.CameraStreamBase;
 import org.atalk.impl.neomedia.transform.sdes.SDesControlImpl;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiActivity;
@@ -48,6 +47,7 @@ import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.Jid;
 
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.EventObject;
@@ -368,6 +368,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
             return;
 
         finishing = true;
+        callNotificationControl = null;
+
         new Thread(() -> {
             // Waits for the camera to be stopped
             videoFragment.ensureCameraClosed();
@@ -387,7 +389,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         }).start();
     }
 
-    public static VideoHandlerFragment getVideoFragment() {
+    public static VideoHandlerFragment getVideoFragment()
+    {
         return videoFragment;
     }
 
@@ -1247,14 +1250,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         if (call.getCallState() != CallState.CALL_ENDED) {
             // Must update aTalkApp isPortrait before calling; found to have race condition
             aTalkApp.isPortrait = (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
-            videoFragment.initLocalPreviewContainer();
 
-            // cmeng: does not seem to help when call starts in landscape, so omit it for now
-            // videoFragment.initRemoteVideoContainer(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
-
-            PreviewStream instance = PreviewStream.getInstance();
+            videoFragment.initVideoViewOnRotation();
+            CameraStreamBase instance = CameraStreamBase.getInstance();
             if (instance != null)
-               instance.initCameraOnRotation();
+                instance.initPreviewOnRotation(true);
         }
     }
 }

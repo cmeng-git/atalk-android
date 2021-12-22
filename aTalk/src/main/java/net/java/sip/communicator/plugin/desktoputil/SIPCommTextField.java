@@ -1,11 +1,11 @@
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.javax.swing.text.JTextComponent;
-import org.atalk.android.util.java.awt.Color;
-import org.atalk.android.util.javax.swing.JTextField;
-import org.atalk.android.util.javax.swing.event.DocumentEvent;
-import org.atalk.android.util.javax.swing.event.DocumentListener;
-import org.atalk.android.util.javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 
 public class SIPCommTextField extends JTextField implements DocumentListener {
 

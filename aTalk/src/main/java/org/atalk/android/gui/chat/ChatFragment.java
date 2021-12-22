@@ -1115,9 +1115,14 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
          */
         public Object getItem(int pos)
         {
-            return (pos < getCount()) ? messages.get(pos) : null;
+            return ((pos >= 0) && (pos < getCount())) ? messages.get(pos) : null;
         }
 
+        /*
+         * java.lang.ArrayIndexOutOfBoundsException:
+         * at java.util.ArrayList.get (ArrayList.java:439)
+         * at org.atalk.android.gui.chat.ChatFragment$ChatListAdapter.getItem (ChatFragment.java:1118)
+         */
         ChatMessage getMessage(int pos)
         {
             if (getItem(pos) instanceof MessageDisplay) {
