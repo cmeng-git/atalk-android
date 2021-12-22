@@ -6,7 +6,7 @@
  */
 package org.atalk.impl.neomedia.codec.video.vp8;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
@@ -190,7 +190,7 @@ public class VP8Decoder extends AbstractCodec2
          * outputBuffer is all setup now. Check the decoder context for more decoded frames.
          */
         img = VPX.codec_get_frame(vpctx, iter);
-        if (img == 0) //no more frames
+        if (img == 0) // no more frames
         {
             leftoverFrames = false;
             return BUFFER_PROCESSED_OK;

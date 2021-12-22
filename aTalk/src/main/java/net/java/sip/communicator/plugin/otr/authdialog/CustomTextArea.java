@@ -1,7 +1,7 @@
 package net.java.sip.communicator.plugin.otr.authdialog;
 
-import org.atalk.android.util.java.awt.Color;
-import org.atalk.android.util.javax.swing.JTextArea;
+import java.awt.Color;
+import javax.swing.JTextArea;
 
 /**
  * A special {@link JTextArea} for use in the OTR authentication panels.

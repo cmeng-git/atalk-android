@@ -1,11 +1,17 @@
+// import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 buildscript {
     repositories {
         google()
         mavenCentral()
+//        maven {
+//            url "https://plugins.gradle.org/m2/"
+//        }
     }
 
     dependencies {
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1"
+        // classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
     }
 }
 
@@ -14,6 +20,7 @@ plugins {
 }
 
 apply plugin: 'org.anarres.jarjar'
+// apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
     google()
@@ -23,7 +30,42 @@ repositories {
     }
 }
 
+//configurations {
+//    // define a separate configuration for shadow
+//    internalize
+//}
+
 def smackVersion = '4.4.4'
+
+/* a task to create the relocated libs, must be defined before used below in dependencies */
+//task internalizeJar(type: ShadowJar) {
+//    archiveClassifier.set("m2/org/igniterealtime/smack/smack-intern/${smackVersion}/smack")
+//    configurations = [project.configurations.internalize] // our configuration from above
+//
+//    // i.e. transitive = false
+//    dependencies {
+//        exclude(dependency('org.hsluv:hsluv:'))
+//        exclude(dependency('org.igniterealtime.smack:smack-core:'))
+//        exclude(dependency('org.igniterealtime.smack:smack-im:'))
+//        exclude(dependency('org.igniterealtime.smack:smack-xmlparser:'))
+//        exclude(dependency('org.jxmpp:jxmpp-core:'))
+//        exclude(dependency('org.jxmpp:jxmpp-jid:'))
+//        exclude(dependency('org.jxmpp:jxmpp-util-cache:'))
+//        exclude(dependency('org.minidns:minidns-core:'))
+//    }
+//
+//    // ===== smack - 4.4.3 =====
+//    exclude 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
+//    exclude 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
+//}
+//
+//// These libs are the dependency of the internalizeJar configuration
+//dependencies {
+//    internalize "org.igniterealtime.smack:smack-experimental:$smackVersion"
+//    internalize "org.igniterealtime.smack:smack-extensions:$smackVersion"
+//
+//    implementation tasks.internalizeJar.outputs.files // our real project uses the relocated jar as dependency
+//}
 
 def jarJarDeps = task("jarJarDeps") {
     doFirst {

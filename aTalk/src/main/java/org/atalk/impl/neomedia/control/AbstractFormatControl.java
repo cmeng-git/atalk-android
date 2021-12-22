@@ -5,8 +5,7 @@
  */
 package org.atalk.impl.neomedia.control;
 
-import org.atalk.android.util.java.awt.Component;
-
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +15,18 @@ import javax.media.control.FormatControl;
 /**
  * Provides an abstract implementation of <tt>FormatControl</tt> which facilitates implementers by requiring
  * them to implement just {@link FormatControl#getSupportedFormats()} and {@link FormatControl#getFormat()}.
+ * https://docs.oracle.com/cd/E17802_01/j2se/javase/technologies/desktop/media/jmf/2.1.1/apidocs/javax/media/control/FormatControl.html
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
 public abstract class AbstractFormatControl implements FormatControl
 {
+    /**
+     * The <tt>Format</tt> of this <tt>FormatControl</tt> and, respectively, of the media data of its owner.
+     */
+    protected Format mFormat = null;
+
     /**
      * The indicator which determines whether this track is enabled.
      */
@@ -43,7 +48,7 @@ public abstract class AbstractFormatControl implements FormatControl
      * specific <tt>Controls</tt> implementation.
      *
      * @param controlsImpl the <tt>Controls</tt> implementation from which the <tt>FormatControl</tt>
-	 * instances are to be retrieved
+     * instances are to be retrieved
      * @return an array of <tt>FormatControl</tt> instances from the list of controls available for
      * the specified <tt>Controls</tt> implementation
      */
@@ -51,9 +56,10 @@ public abstract class AbstractFormatControl implements FormatControl
     {
         List<FormatControl> formatControls = new ArrayList<>();
 
-        for (Object control : controlsImpl.getControls())
+        for (Object control : controlsImpl.getControls()) {
             if (control instanceof FormatControl)
                 formatControls.add((FormatControl) control);
+        }
         return formatControls.toArray(new FormatControl[0]);
     }
 
@@ -78,8 +84,18 @@ public abstract class AbstractFormatControl implements FormatControl
     }
 
     /**
+     * Obtain the format that this object is set to.
+     *
+     * @return the current format.
+     */
+    public Format getFormat()
+    {
+        return mFormat;
+    }
+
+    /**
      * Implements {@link FormatControl#setFormat(Format)}. Not supported and just returns the currently
-	 * set format if the specified <tt>Format</tt> is supported and <tt>null</tt> if it is not supported.
+     * set format if the specified <tt>Format</tt> is supported and <tt>null</tt> if it is not supported.
      *
      * @param format the <tt>Format</tt> to be set on this instance
      * @return the currently set <tt>Format</tt> after the attempt to set it on this instance if
@@ -93,34 +109,27 @@ public abstract class AbstractFormatControl implements FormatControl
 
     /**
      * Implements setting the <tt>Format</tt> of a specific <tt>FormatControl</tt> as documented for
-     * {@link FormatControl#setFormat(Format)} in the case of not supporting <tt>Format</tt> setting.
+     * {@link FormatControl#setFormat(Format) for JMF} in the case of not supporting <tt>Format</tt> setting.
+     *
+     * https://docs.oracle.com/cd/E17802_01/j2se/javase/technologies/desktop/media/jmf/2.1.1/apidocs/javax/media/control/FormatControl.html
+     * Sets the data format. The method returns null if the format is not supported. Otherwise, it returns the format that's actually set.
      *
      * @param formatControl the <tt>FormatControl</tt> for which the functionality is implemented
      * @param format the <tt>Format</tt> specified to be set to <tt>formatControl</tt> and which will be
      * ignored in accord with the documentation of <tt>FormatControl#setFormat(Format)</tt>
-     * @return the currently set <tt>Format</tt> of <tt>formatControl</tt> if <tt>format</tt> is
-     * supported by <tt>formatControl</tt>; <tt>null</tt> if <tt>format</tt> is not
-     * supported by <tt>formatControl</tt>
+     * @return null if the format is not supported; otherwise return the format that's actually set
      */
-    public static Format setFormat(FormatControl formatControl, Format format)
+    public Format setFormat(FormatControl formatControl, Format format)
     {
-        /*
-         * Determine whether the specified format is supported by this instance because we have to return
-         * null if it is not supported. Or at least that is what I gather from the respective javadoc.
-         */
-        boolean formatIsSupported = false;
-
-        if (format != null)
-            for (Format supportedFormat : formatControl.getSupportedFormats())
-                if (supportedFormat.matches(format)) {
-                    formatIsSupported = true;
+        mFormat = null;
+        if (format != null) {
+            // Determine whether the specified format is supported by this instance
+            for (Format sFormat : formatControl.getSupportedFormats())
+                if (sFormat.matches(format)) {
+                    mFormat = sFormat;
                     break;
                 }
-
-        /*
-         * We do not actually support setFormat so we have to return the currently set format if the
-         * specified format is supported.
-         */
-        return formatIsSupported ? formatControl.getFormat() : null;
+        }
+        return mFormat;
     }
 }

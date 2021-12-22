@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.systray;
 
-import org.atalk.android.util.javax.swing.JComponent;
+import javax.swing.JComponent;
 
 /**
  * The <tt>PopupMessage</tt> class encloses informations to show in a popup.

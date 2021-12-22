@@ -17,7 +17,7 @@ package net.java.sip.communicator.service.resources;
 
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.util.javax.swing.ImageIcon;
+import javax.swing.ImageIcon;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.*;

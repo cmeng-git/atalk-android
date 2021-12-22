@@ -16,36 +16,37 @@ public class OpenGLContext
 {
     private static final int EGL_RECORDABLE_ANDROID = 0x3142;
 
-    private EGLDisplay eglDisplay = EGL14.EGL_NO_DISPLAY;
-    private EGLContext eglContext = EGL14.EGL_NO_CONTEXT;
-    private EGLSurface eglSurface = EGL14.EGL_NO_SURFACE;
+    private EGLDisplay mEGLDisplay = EGL14.EGL_NO_DISPLAY;
+    private EGLContext mEGLContext = EGL14.EGL_NO_CONTEXT;
+    private EGLSurface mEGLSurface = EGL14.EGL_NO_SURFACE;
 
     /**
      * Prepares EGL. We want a GLES 2.0 context and a surface that supports recording.
      */
-    public OpenGLContext(boolean recorder, Object window, EGLContext sharedContext)
+    public OpenGLContext(boolean recorder, Object objSurface, EGLContext sharedContext)
     {
-        eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
-        if (eglDisplay == EGL14.EGL_NO_DISPLAY) {
+        mEGLDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
+        if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
             throw new RuntimeException("unable to get EGL14 display");
         }
         int[] majorVersion = new int[1];
         int[] minorVersion = new int[1];
-        if (!EGL14.eglInitialize(eglDisplay, majorVersion, 0, minorVersion, 0)) {
+        if (!EGL14.eglInitialize(mEGLDisplay, majorVersion, 0, minorVersion, 0)) {
+            mEGLDisplay = null;
             throw new RuntimeException("unable to initialize EGL14");
         }
         Timber.i("EGL version: %s.%s", majorVersion[0], minorVersion[0]);
 
-        EGLConfig config = chooseEglConfig(eglDisplay, recorder);
+        EGLConfig eglConfig = chooseEglConfig(mEGLDisplay, recorder);
 
         // Configure context for OpenGL ES 2.0.
         int[] attrib_list = {EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE};
-        eglContext = EGL14.eglCreateContext(eglDisplay, config, sharedContext, attrib_list, 0);
+        mEGLContext = EGL14.eglCreateContext(mEGLDisplay, eglConfig, sharedContext, attrib_list, 0);
         checkEglError("eglCreateContext");
 
         // Create a window surface, and attach it to the Surface we received.
         int[] surfaceAttribs = {EGL14.EGL_NONE};
-        eglSurface = EGL14.eglCreateWindowSurface(eglDisplay, config, window, surfaceAttribs, 0);
+        mEGLSurface = EGL14.eglCreateWindowSurface(mEGLDisplay, eglConfig, objSurface, surfaceAttribs, 0);
         checkEglError("eglCreateWindowSurface");
     }
 
@@ -85,26 +86,26 @@ public class OpenGLContext
      */
     public void release()
     {
-        if (eglDisplay != EGL14.EGL_NO_DISPLAY) {
-            EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
-                    EGL14.EGL_NO_CONTEXT);
-            EGL14.eglDestroySurface(eglDisplay, eglSurface);
-            EGL14.eglDestroyContext(eglDisplay, eglContext);
+        if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
+            // Android is unusual in that it uses a reference-counted EGLDisplay.  So for
+            // every eglInitialize() we need an eglTerminate().
+            EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
+            EGL14.eglDestroySurface(mEGLDisplay, mEGLSurface);
+            EGL14.eglDestroyContext(mEGLDisplay, mEGLContext);
             EGL14.eglReleaseThread();
-            EGL14.eglTerminate(eglDisplay);
+            EGL14.eglTerminate(mEGLDisplay);
         }
-
-        eglDisplay = EGL14.EGL_NO_DISPLAY;
-        eglContext = EGL14.EGL_NO_CONTEXT;
-        eglSurface = EGL14.EGL_NO_SURFACE;
+        mEGLDisplay = EGL14.EGL_NO_DISPLAY;
+        mEGLContext = EGL14.EGL_NO_CONTEXT;
+        mEGLSurface = EGL14.EGL_NO_SURFACE;
     }
 
-    public void ensureIsCurrentCtx()
+    public void makeCurrent()
     {
         EGLContext ctx = EGL14.eglGetCurrentContext();
         EGLSurface surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW);
-        if (!eglContext.equals(ctx) || !eglSurface.equals(surface)) {
-            if (!EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)) {
+        if (!mEGLContext.equals(ctx) || !mEGLSurface.equals(surface)) {
+            if (!EGL14.eglMakeCurrent(mEGLDisplay, mEGLSurface, mEGLSurface, mEGLContext)) {
                 throw new RuntimeException("eglMakeCurrent failed "
                         + GLUtils.getEGLErrorString(EGL14.eglGetError()));
             }
@@ -114,10 +115,10 @@ public class OpenGLContext
     /**
      * Sets "no surface" and "no context" on the current display.
      */
-    public void ensureIsNotCurrentCtx()
+    public void releaseEGLSurfaceContext()
     {
-        if (eglDisplay != EGL14.EGL_NO_DISPLAY) {
-            EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
+        if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
+            EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
                     EGL14.EGL_NO_CONTEXT);
         }
     }
@@ -127,7 +128,7 @@ public class OpenGLContext
      */
     public void swapBuffers()
     {
-        if (!EGL14.eglSwapBuffers(eglDisplay, eglSurface)) {
+        if (!EGL14.eglSwapBuffers(mEGLDisplay, mEGLSurface)) {
             throw new RuntimeException("Cannot swap buffers");
         }
         checkEglError("opSwapBuffers");
@@ -138,7 +139,7 @@ public class OpenGLContext
      */
     public void setPresentationTime(long nsecs)
     {
-        EGLExt.eglPresentationTimeANDROID(eglDisplay, eglSurface, nsecs);
+        EGLExt.eglPresentationTimeANDROID(mEGLDisplay, mEGLSurface, nsecs);
         checkEglError("eglPresentationTimeANDROID");
     }
 
@@ -155,6 +156,6 @@ public class OpenGLContext
 
     public EGLContext getContext()
     {
-        return eglContext;
+        return mEGLContext;
     }
 }

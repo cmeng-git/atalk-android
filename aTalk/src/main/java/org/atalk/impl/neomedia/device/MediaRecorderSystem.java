@@ -1,20 +1,36 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.impl.neomedia.device;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
+import android.graphics.SurfaceTexture;
+import android.hardware.camera2.*;
+import android.hardware.camera2.params.StreamConfigurationMap;
+import android.text.TextUtils;
+import android.util.Size;
+
+import androidx.core.content.ContextCompat;
 
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.util.BackgroundManager;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
@@ -27,25 +43,25 @@ import java.util.*;
 
 import javax.media.*;
 
-import androidx.core.content.ContextCompat;
 import timber.log.Timber;
 
 /**
  * Discovers and registers <tt>MediaRecorder</tt> capture devices with FMJ.
+ * Not further use in aTalk since v2.8.0; after android API 23, android drops support for non-seekable
+ * file descriptors i.e. mediaRecorder.setOutputFile(createLocalSocket());
  *
- * @author Lyubomir Marinov
- * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class MediaRecorderSystem extends DeviceSystem
 {
     private static final String VIDEO_SIZE = ".video.size";
 
+    /**
+     * Supported preview sizes by android camera for user selection
+     */
     public static Dimension[] SUPPORTED_SIZES = new Dimension[]{};
 
     private static boolean isMediaRecorderInitialized = false;
-
-    private static final BackgroundManager backgroundManager = BackgroundManager.getInstance();
 
     /**
      * Initializes a new <tt>MediaRecorderSystem</tt> instance which discovers and registers
@@ -70,125 +86,115 @@ public class MediaRecorderSystem extends DeviceSystem
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
             return;
         }
-        // Re-init of MediaRecorderSystem is handled within AndroidCameraSystem when app returns to Foreground
-        else if (backgroundManager.isAppInBackground()) {
-            Timber.w("Unable to initialize media recorder while in background");
-            return;
-        }
 
-        // cleanup camera properties messed up by camera2
-        // cleanMediaDB();
+        try {
+            CameraManager cameraManager = aTalkApp.getCameraManager();
+            String[] cameraIdList = cameraManager.getCameraIdList();
 
-        int cameraCount = Camera.getNumberOfCameras();
-        Timber.d("Number of cameras for MediaRecorder: %s", cameraCount);
-        if (cameraCount < 1) {
-            return;
-        }
+            // Timber.d("Number of android cameras: %s", cameraIdList.length);
+            if (cameraIdList.length == 0) {
+                return;
+            }
 
-        ConfigurationService mConfig = UtilActivator.getConfigurationService();
-        List<CaptureDeviceInfo> captureDevices = new LinkedList<>();
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            ConfigurationService mConfig = UtilActivator.getConfigurationService();
+            List<AndroidCamera> captureDevices = new LinkedList<>();
 
-        for (int cameraId = 0; cameraId < cameraCount; cameraId++) {
-            // create a locator with camera id and its facing direction (cameraInfo)
-            Camera.getCameraInfo(cameraId, cameraInfo);
-            MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_MEDIARECORDER, cameraId, cameraInfo);
+            for (String cameraId : cameraIdList) {
+                CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
+                StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                if (map == null) {
+                    continue;
+                }
 
-            // Init the preferred sizes which is supported by the Camera.
-            List<Dimension> sizes = new ArrayList<>();
+                // create a locator with camera id and its facing direction (cameraInfo)
+                Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                MediaLocator locator = AndroidCamera.constructLocator(LOCATOR_PROTOCOL_MEDIARECORDER, cameraId, facing);
 
-            String vs = mConfig.getString(locator + VIDEO_SIZE, null);
-            if (!CameraUtils.getSupportedSizes(vs, sizes)) {
-                Camera camera = null;
-                try {
-                    camera = Camera.open(cameraId);
-                    Camera.Parameters params = camera.getParameters();
-                    List<Camera.Size> supportedSizes = params.getSupportedVideoSizes();
+                // List of preferred resolutions which is supported by the Camera.
+                List<Dimension> sizes = new ArrayList<>();
+
+                String vSize = mConfig.getString(locator + VIDEO_SIZE, null);
+                if (TextUtils.isEmpty(vSize) || !CameraUtils.getSupportedSizes(vSize, sizes)) {
+                    /*
+                     * Check if the Camera API2 is supported with camCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+                     * Return an int corresponding to the level of support for Camera API2.
+                     * If equal to CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY, cameraId does not support Camera API2.
+                     */
+                    Integer sLevel = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
+                    if (CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY == sLevel) {
+                        Timber.w("Camera API2 is not supported for camera: %s", cameraId);
+                        continue;
+                    }
+                    else {
+                        Timber.w("Camera API2 is supported for camera: %s; Level: %s", cameraId, sLevel);
+                    }
+
+                    Size[] supportedSizes = map.getOutputSizes(SurfaceTexture.class);
                     if (supportedSizes == null) {
                         /*
                          * The video size is the same as the preview size.
                          * MediaRecorder.setVideoSize(int,int) will most likely fail, print a line in
                          * logcat and not throw an exception (in DataSource.doStart()).
                          */
-                        supportedSizes = params.getSupportedPreviewSizes();
-                        if (supportedSizes != null) {
-                            Timber.i("Preview sizes supported by %s: %s",
-                                    locator, CameraUtils.cameraSizesToString(supportedSizes));
-                        }
+                        Timber.w("get Output Preview Sizes returned null for camera: %s", cameraId);
+                        continue;
                     }
                     else {
                         Timber.i("Video sizes supported by %s: %s",
                                 locator, CameraUtils.cameraSizesToString(supportedSizes));
                     }
-                    mConfig.setProperty(locator + VIDEO_SIZE, CameraUtils.cameraSizesToString(supportedSizes));
 
-                    // Keep a copy of the video resolution supportSizes for cameraId
+                    // Save to DB and keep a copy of the video resolution supportSizes for cameraId
+                    mConfig.setProperty(locator + VIDEO_SIZE, CameraUtils.cameraSizesToString(supportedSizes));
                     CameraUtils.setCameraSupportSize(cameraId, supportedSizes);
 
                     // Selects only compatible dimensions
-                    for (Camera.Size s : supportedSizes) {
-                        Dimension candidate = new Dimension(s.width, s.height);
+                    for (Size candidate : supportedSizes) {
                         if (CameraUtils.isPreferredSize(candidate)) {
-                            sizes.add(candidate);
+                            sizes.add(new Dimension(candidate.getWidth(), candidate.getHeight()));
                         }
                     }
-                } finally {
-                    if (camera != null)
-                        camera.release();
                 }
+
+                Timber.i("Video preferred: %s: %s", locator, CameraUtils.dimensionsToString(sizes));
+                int count = sizes.size();
+                if (count == 0)
+                    continue;
+
+                // Saves supported video sizes
+                Dimension[] array = new Dimension[count];
+                sizes.toArray(array);
+                SUPPORTED_SIZES = array;
+
+                Format[] formats = new Format[count];
+                for (int i = 0; i < count; i++) {
+                    formats[i] = new ParameterizedVideoFormat(Constants.H264, sizes.get(i),
+                            Format.NOT_SPECIFIED /* maxDataLength */, Format.byteArray,
+                            Format.NOT_SPECIFIED /* frameRate */, ParameterizedVideoFormat.toMap(
+                            VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "1"));
+                }
+
+                // Create display name
+                String name = (facing == CameraCharacteristics.LENS_FACING_FRONT)
+                        ? aTalkApp.getResString(R.string.service_gui_settings_CAMERA_FRONT)
+                        : aTalkApp.getResString(R.string.service_gui_settings_CAMERA_BACK);
+                name += " (MediaRecoder#" + cameraId + ")";
+
+                // XXX Prefer the front-facing camera over the back-facing one.
+                AndroidCamera device = new AndroidCamera(name, locator, formats);
+                if (facing == CameraCharacteristics.LENS_FACING_FRONT)
+                    captureDevices.add(0, device);
+                else
+                    captureDevices.add(device);
             }
-            Timber.i("Video preferred: %s: %s", locator, CameraUtils.dimensionsToString(sizes));
 
-            int count = sizes.size();
-            if (count == 0)
-                continue;
-
-            // Saves supported video sizes
-            Dimension[] array = new Dimension[count];
-            sizes.toArray(array);
-            SUPPORTED_SIZES = array;
-
-            Format[] formats = new Format[count];
-            for (int i = 0; i < count; i++) {
-                formats[i] = new ParameterizedVideoFormat(Constants.H264, sizes.get(i),
-                        Format.NOT_SPECIFIED /* maxDataLength */, Format.byteArray,
-                        Format.NOT_SPECIFIED /* frameRate */, ParameterizedVideoFormat.toMap(
-                        VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "1"));
+            if (!captureDevices.isEmpty()) {
+                for (AndroidCamera captureDevice : captureDevices)
+                    CaptureDeviceManager.addDevice(captureDevice);
             }
-
-            // Create display name
-            Camera.getCameraInfo(cameraId, cameraInfo);
-            String name = cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT
-                    ? aTalkApp.getResString(R.string.service_gui_settings_CAMERA_FRONT)
-                    : aTalkApp.getResString(R.string.service_gui_settings_CAMERA_BACK);
-            name += " (MediaRecoder#" + cameraId + ")";
-
-            AndroidCamera device = new AndroidCamera(name, locator, formats);
-
-            // XXX Prefer the front-facing camera over the back-facing one.
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT)
-                captureDevices.add(0, device);
-            else
-                captureDevices.add(device);
-        }
-
-        if (!captureDevices.isEmpty()) {
-            for (CaptureDeviceInfo captureDevice : captureDevices)
-                CaptureDeviceManager.addDevice(captureDevice);
-        }
-        isMediaRecorderInitialized = true;
-    }
-
-    public static void cleanMediaDB()
-    {
-        String[] prefixes = new String[]{LOCATOR_PROTOCOL_MEDIARECORDER, LOCATOR_PROTOCOL_ANDROIDCAMERA};
-
-        ConfigurationService cs = UtilActivator.getConfigurationService();
-        for (String prefix : prefixes) {
-            List<String> mediaProperties = cs.getPropertyNamesByPrefix(prefix, false);
-            for (String property : mediaProperties) {
-                cs.setProperty(property, null);
-            }
+            isMediaRecorderInitialized = true;
+        } catch (CameraAccessException e) {
+            Timber.w("Exception in MediaRecorderSystem init: %s", e.getMessage());
         }
     }
 }

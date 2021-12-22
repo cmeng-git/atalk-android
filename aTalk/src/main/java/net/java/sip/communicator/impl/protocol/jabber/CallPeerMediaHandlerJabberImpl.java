@@ -13,7 +13,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.util.AndroidUtils;
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
@@ -1142,7 +1142,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if (supportedFormats.isEmpty()) {
             // remote party must have messed up our Jingle description. throw an exception.
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
-                    "Remote party sent an invalid Jingle answer.",
+                    "Remote party sent an invalid Jingle Content stanza.",
                     OperationFailedException.ILLEGAL_ARGUMENT, null);
         }
 
@@ -1183,12 +1183,12 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         List<RTPExtension> supportedExtensions = getExtensionsForType(mediaType);
         List<RTPExtension> rtpExtensions = intersectRTPExtensions(remoteRTPExtensions, supportedExtensions);
 
-        MediaFormat offerFormat = supportedFormats.get(0); // cmeng: why first media?
+        // Media format offer priority is send according in the sequence; use sender first preferred choice
+        MediaFormat offerFormat = supportedFormats.get(0);
         supportQualityControls = offerFormat.hasParameter(FORMAT_PARAMETER_ATTR_IMAGEATTR);
 
-        // check for options from remote party and set them locally
+        // check for video options from remote party and set them locally
         if (mediaType.equals(MediaType.VIDEO) && modify) {
-            // update stream
             MediaStream stream = getStream(MediaType.VIDEO);
 
             if (stream != null && dev != null) {

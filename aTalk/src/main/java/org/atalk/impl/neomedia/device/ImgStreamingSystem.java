@@ -8,8 +8,8 @@ package org.atalk.impl.neomedia.device;
 import javax.media.*;
 import javax.media.format.*;
 
-import org.atalk.android.util.java.awt.Dimension;
-import org.atalk.android.util.java.awt.Toolkit;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;

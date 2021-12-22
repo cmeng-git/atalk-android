@@ -333,8 +333,7 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
             if (data) {
                 // Ignore RTP packets coming from peers whose MediaStream's
                 // direction does not allow receiving.
-                if (!streamRTPManager.streamRTPManager.getMediaStream().getDirection()
-                        .allowsReceiving()) {
+                if (!streamRTPManager.streamRTPManager.getMediaStream().getDirection().allowsReceiving()) {
                     // FIXME We are ignoring RTP packets received from peers who we
                     // do not want to receive from ONLY in the sense that we are not
                     // translating/forwarding them to the other peers. Do not we

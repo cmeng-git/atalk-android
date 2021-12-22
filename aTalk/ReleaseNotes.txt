@@ -1,5 +1,87 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.8.0 (208000)
+Release Date:   12/22/2021
+Author:         cmeng
+- Migrate to use android Camera2 API replacing deprecated Camera API
+- Enhance remote video streaming handling to give higher frame rate and smoother display transition when sending device is rotated
+- Fix remote video playback view in full screen when media call is started with device in landscape mode; see RemoteVideoLayout
+- Improve remote video handler to avoid unintentionally removing the remoteVideoContainer view, causing display disruption
+- Init camera parameters even when aTalk is in background mode - CameraManager has no such restrictions with Camera2 implementation
+
+- Fixed both VP8/VP9 DePacketizer causing problem in AndroidCodec i.e.
+  // int outputBufferIdx = codec.dequeueOutputBuffer(mBufferInfo, 0);
+  // int inputBufferIdx = codec.dequeueInputBuffer(0);
+  // ReSync the firstSeq if process has dropped out data; must do this else MediaCodec decode has the above problems
+  * else if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) > 0) {
+        firstSeq = inSeq;
+    }
+
+- Disable user selectable 'use direct surface option' for android hardware decoder/encoder option:
+  * Note: Current aTalk implementation requires direct surface option to be enabled in order
+  * for fmj to use the android codec if enabled. So couple both the surface and codec options
+  * FMJ will pick software decoder preference over hardware decode if isDirectSurfaceEnabled == false
+  * FMJ will pick software encoder preference over hardware encoder if isDirectSurfaceEnabled == false
+  * Both android encoder and decoder required aTalk restart to take effect if codec enable state changed
+
+- Fixed android decoder problem using SurfaceView:
+  * VideoHandlerFragment#doAlignRemoteVideo(); RemoteVideoLayout => preferredSizeChanged
+  * Render the buffer with the default timestamp: Call releaseOutputBuffer(bufferId, true).
+    see https://developer.android.com/reference/android/media/MediaCodec
+- Fixed android encoder using SurfaceView
+  * Merged SurfaceManager into SurfaceStream
+  * Camera2 requires mSurfaceTexture.updateTexImage() to be executed in onFrameAvailable() thread
+
+- Must check if the selected androidCodec is supported by the device when hardware encode is enabled
+  * https://developer.android.com/guide/topics/media/media-formats#video-formats
+  * AndroidEncoder#SUPPORTED_OUTPUT_FORMATS() depends on device capability.
+  * see VideoMediaStreamImpl#selectVideoSize(DataSource, int, int)
+- AndroidEncoder#configureMediaCodec(); need only to consider inputFormat for video size
+  and taken into account in MediaFormat.createVideoFormat() pending device orientation (streaming video aspect ratio)
+- Alert user on hardware codec init problem if any (when codec is not supported)
+
+- Implement AbstractFormatControl#setFormat() as per JMF doc and cleanup the extended classes
+  https://docs.oracle.com/cd/E17802_01/j2se/javase/technologies/desktop/media/jmf/2.1.1/apidocs/javax/media/control/FormatControl.html
+
+- CameraStreamBase#MFormat: must use a clone copy of the reference format given in streamFormats[];
+  i.e. mFormat = (VideoFormat) streamFormats[0].clone();
+  otherwise mFormat.setVideoSize(mPreviewSize) will change the actual item in the formatControl.getSupportedFormats();
+  causing problem in VideoMediaStreamImpl#selectVideoSize() to fail with no matched items, and androidCodec to work on first instance only
+
+- Replace deprecated LifecycleObserver with LifecycleEventObserver in aTalkApp
+- The user selected video capture device for media recorder is not retrieved properly
+  Fix DeviceConfiguration#extractConfiguredVideoCaptureDevice() checking algorithm
+- Disable MediaRecorder support for aTalk;
+  after android API 23, android drops support for non-seekable file descriptors i.e. mediaRecorder.setOutputFile(createLocalSocket());
+
+- ChatPanel#mergeCachedMessage must take care of outOfBound Index, else ArrayIndexOutOfBoundsException
+- Adapt AndroidUIServiceImpl#getSize to cater for different android API, to avoid system crash.
+- Add playback speed support to AudioBgService class; UI currently not implemented.
+- Move MediaCodecs info setting into Expert settings preference screen.
+
+- Relocate all java/javax classes to its original location - no relocation required for fmj (AS linker not further throw duplication)
+- Upgrade smack to version 4.4.4
+- Upgrade build to support android-12(s) i.e. API-31
+
+=========================================================================
+Version:        2.7.2 (207020)
+Release Date:   12/03/2021
+Author:         cmeng
+- Fixed both VP8/VP9 DePacketizer causing problem in AndroidCodec i.e.
+  // int outputBufferIdx = codec.dequeueOutputBuffer(mBufferInfo, 0);
+  // int inputBufferIdx = codec.dequeueInputBuffer(0);
+  // ReSync the firstSeq if process has dropped out data; must do this else MediaCodec decode has the above problems
+  * else if (RTPUtils.sequenceNumberComparator.compare(inSeq, firstSeq) > 0) {
+        firstSeq = inSeq;
+    }
+
+- Fixed android decoder problem using SurfaceView:
+  * VideoHandlerFragment#doAlignRemoteVideo(); RemoteVideoLayout => preferredSizeChanged
+  * Render the buffer with the default timestamp: Call releaseOutputBuffer(bufferId, true).
+    see https://developer.android.com/reference/android/media/MediaCodec
+- Alert user on hardware codec init problem
+
+=========================================================================
 Version:        2.7.1 (207010)
 Release Date:   11/05/2021
 Author:         cmeng
@@ -8,7 +90,7 @@ Author:         cmeng
 - Adapt AndroidUIServiceImpl#getSize to cater for different android API, to avoid system crash.
 - Add playback speed support to AudioBgService class
 - Upgrade smack to version 4.4.4
-- Upgrade build to support android-12(S) i.e. API-31
+- Upgrade build to support android-12(s) i.e. API-31
 
 =========================================================================
 Version:        2.7.0 (207000)

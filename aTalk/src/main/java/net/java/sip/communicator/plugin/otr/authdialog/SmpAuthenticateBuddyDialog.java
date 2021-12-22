@@ -12,10 +12,10 @@ import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.java.awt.event.ActionEvent;
-import org.atalk.android.util.java.awt.event.ActionListener;
-import org.atalk.android.util.javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 
 /**
  * The dialog that pops up when the remote party send us SMP request. It contains detailed information for the user about the authentication

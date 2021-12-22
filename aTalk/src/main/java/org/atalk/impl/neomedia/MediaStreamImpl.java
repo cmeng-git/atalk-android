@@ -31,9 +31,7 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.ByteArrayBuffer;
-import org.atalk.util.MediaType;
-import org.atalk.util.RTPUtils;
+import org.atalk.util.*;
 import org.atalk.util.logging.DiagnosticContext;
 
 import java.beans.PropertyChangeEvent;
@@ -42,9 +40,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.*;
 
 import javax.media.Format;
 import javax.media.MediaLocator;
@@ -53,9 +49,7 @@ import javax.media.format.UnsupportedFormatException;
 import javax.media.protocol.*;
 import javax.media.rtp.*;
 import javax.media.rtp.event.*;
-import javax.media.rtp.rtcp.Feedback;
-import javax.media.rtp.rtcp.Report;
-import javax.media.rtp.rtcp.SenderReport;
+import javax.media.rtp.rtcp.*;
 
 import timber.log.Timber;
 
@@ -133,7 +127,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     /**
      * The <tt>MediaDirection</tt> in which this <tt>MediaStream</tt> is allowed to stream media.
      */
-    private MediaDirection direction;
+    private MediaDirection mDirection;
 
     /**
      * The <tt>Map</tt> of associations in this <tt>MediaStream</tt> and the <tt>RTPManager</tt> it
@@ -823,7 +817,6 @@ public class MediaStreamImpl extends AbstractMediaStream
         for (int streamIndex = 0; streamIndex < streamCount; streamIndex++) {
             try {
                 SendStream sendStream = rtpManager.createSendStream(dataSource, streamIndex);
-
                 Timber.log(TimberLog.FINER, "Created SendStream with hashCode %s for %s and streamIndex %s in RTPManager with hashCode %s",
                         sendStream.hashCode(), toString(dataSource), streamIndex, rtpManager.hashCode());
 
@@ -1281,7 +1274,7 @@ public class MediaStreamImpl extends AbstractMediaStream
     @Override
     public MediaDirection getDirection()
     {
-        return (direction == null) ? getDeviceDirection() : direction;
+        return (mDirection == null) ? getDeviceDirection() : mDirection;
     }
 
     /**
@@ -2212,7 +2205,7 @@ public class MediaStreamImpl extends AbstractMediaStream
         // trigger codec close/open, so remove device change check. See PreviewStream#switchCamera()
         // if ((deviceSession == null) || (deviceSession.getDevice() != device)) {
         if (deviceSession == null) {
-            assertDirection(direction, device.getDirection(), "device");
+            assertDirection(mDirection, device.getDirection(), "device");
 
             MediaDeviceSession oldValue = deviceSession;
             MediaFormat format;
@@ -2251,7 +2244,7 @@ public class MediaStreamImpl extends AbstractMediaStream
              * being able to set a new device if it is mandatory for the new device to fully cover
              * any previously-set direction.
              */
-            direction = null;
+            mDirection = null;
 
             if (deviceSession != null) {
                 if (format != null)
@@ -2292,19 +2285,19 @@ public class MediaStreamImpl extends AbstractMediaStream
     {
         if (direction == null)
             throw new NullPointerException("direction");
-        if (this.direction == direction)
+        if (mDirection == direction)
             return;
 
         Timber.log(TimberLog.FINER, "Changing direction of stream %s from: %s to: %s",
-                hashCode(), this.direction, direction);
+                hashCode(), mDirection, direction);
 
         /*
          * Make sure that the specified direction is in accord with the direction of the
          * MediaDevice of this instance.
          */
         assertDirection(direction, getDeviceDirection(), "direction");
-        this.direction = direction;
-        switch (this.direction) {
+        mDirection = direction;
+        switch (mDirection) {
             case INACTIVE:
                 stop(MediaDirection.SENDRECV);
                 return;
@@ -2321,7 +2314,7 @@ public class MediaStreamImpl extends AbstractMediaStream
                 return;
         }
         if (started)
-            start(this.direction);
+            start(mDirection);
 
         // Make sure that RTP is filtered in accord with the direction of this
         // MediaStream, so that we don't have to worry about, for example, new
@@ -2494,11 +2487,15 @@ public class MediaStreamImpl extends AbstractMediaStream
              * called as part of the execution of the former.
              */
             getRTPManagerForRTPTranslator = false;
-
             startSendStreams();
 
-            if (deviceSession != null)
-                deviceSession.start(MediaDirection.SENDONLY);
+            // cmeng: must send the actual direction which handled both send and receive stream at the same time;
+            // else the remoteVideoContainer will get removed even if it is enabled
+            // @link {VideoMediaDeviceSession#startedDirectionChanged(MediaDirection oldValue, MediaDirection newValue)}
+            if (deviceSession != null) {
+                // deviceSession.start(MediaDirection.SENDONLY);
+                deviceSession.start(direction);
+            }
 
             if (MediaDirection.RECVONLY.equals(startedDirection))
                 startedDirection = MediaDirection.SENDRECV;
@@ -2521,11 +2518,12 @@ public class MediaStreamImpl extends AbstractMediaStream
              * called as part of the execution of the former.
              */
             getRTPManagerForRTPTranslator = false;
-
             startReceiveStreams();
 
-            if (deviceSession != null)
-                deviceSession.start(MediaDirection.RECVONLY);
+            if (deviceSession != null) {
+                // deviceSession.start(MediaDirection.RECVONLY);
+                deviceSession.start(direction);
+            }
 
             if (MediaDirection.SENDONLY.equals(startedDirection))
                 startedDirection = MediaDirection.SENDRECV;

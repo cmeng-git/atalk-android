@@ -1,51 +1,62 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 
-import android.hardware.Camera;
-import android.view.SurfaceHolder;
+import android.graphics.ImageFormat;
+import android.hardware.camera2.*;
+import android.media.Image;
+import android.media.ImageReader;
+import android.view.*;
+import android.widget.RelativeLayout;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
-import org.atalk.android.util.java.awt.Dimension;
+import androidx.annotation.NonNull;
+
+import org.atalk.android.gui.call.VideoCallActivity;
+import org.atalk.android.gui.call.VideoHandlerFragment;
+import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.device.util.AndroidCamera;
-import org.atalk.impl.neomedia.device.util.CameraUtils;
+import org.atalk.impl.neomedia.device.util.AutoFitSurfaceView;
+import org.atalk.impl.neomedia.device.util.PreviewSurfaceProvider;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import javax.media.Buffer;
-import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 
 import timber.log.Timber;
 
 /**
- * The video stream captures frames using camera preview callbacks in YUV format. As an input
- * Android YV12 format is used which is almost YUV420 planar except that for some dimensions padding
- * is added to U,V strides. See {@link #YV12toYUV420PlanarRotate(byte[], byte[], int, int, int)}.
+ * The video stream captures frames using camera2 OnImageAvailableListener callbacks in YUV420_888 format
+ * as input; and covert it from multi-plane to single plane. The output is transformed/rotated according
+ * to the camera orientation See {@link #YUV420PlanarRotate(Image, byte[], int, int)}.
  *
- * @author Pawel Domas
  * @author Eng Chong Meng
  */
-@SuppressWarnings("deprecation")
-public class PreviewStream extends CameraStreamBase implements Camera.PreviewCallback
+public class PreviewStream extends CameraStreamBase
 {
     /**
-     * Buffers queue for camera YUV12 image bytes
+     * Buffers queue for camera2 YUV420_888 multi plan image buffered data
      */
-    final private LinkedList<byte[]> bufferQueue = new LinkedList<>();
+    final private LinkedList<Image> bufferQueue = new LinkedList<>();
 
-    /**
-     *  In use camera rotation, adjusted for camera lens facing direction  - for video streaming
-     */
-    private int mSensorOrientation;
-
-    private static PreviewStream instance;
+    private PreviewSurfaceProvider mSurfaceProvider;
 
     /**
      * Creates a new instance of <tt>PreviewStream</tt>.
@@ -56,12 +67,6 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
     public PreviewStream(DataSource dataSource, FormatControl formatControl)
     {
         super(dataSource, formatControl);
-        instance = this;
-    }
-
-    public static PreviewStream getInstance()
-    {
-        return instance;
     }
 
     /**
@@ -79,300 +84,247 @@ public class PreviewStream extends CameraStreamBase implements Camera.PreviewCal
      * {@inheritDoc}
      */
     @Override
-    protected void onInitPreview()
+    public void stop()
             throws IOException
     {
-        Camera.CameraInfo camInfo = new Camera.CameraInfo();
-        Camera.getCameraInfo(mCameraId, camInfo);
-        if (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            mSensorOrientation = (360 - mPreviewOrientation) % 360;
-        }
-        else {
-            mSensorOrientation = mPreviewOrientation;
-        }
-
-        // Alloc two buffers
-        Camera.Parameters params = mCamera.getParameters();
-        Camera.Size previewSize = params.getPreviewSize();
-
-        // aTalk native camera preview is always set to landscape mode
-        int bufferSize = calcYV12Size(previewSize, false);
-
-        Timber.i("Camera captured preview = %dx%d @%d-DEG with buffer size: %d for image format: %08x",
-                previewSize.width, previewSize.height, mSensorOrientation, bufferSize, params.getPreviewFormat());
-
-        mCamera.addCallbackBuffer(new byte[bufferSize]);
-        SurfaceHolder previewSurface = CameraUtils.obtainPreviewSurface();
-        mCamera.setPreviewDisplay(previewSurface);
-        mCamera.setPreviewCallbackWithBuffer(this);
+        super.stop();
+        // close the local video preview surface
+        if (mSurfaceProvider != null)
+            mSurfaceProvider.onObjectReleased();
     }
 
     /**
      * {@inheritDoc}
+     * aTalk native camera acquired YUV420 preview is always in landscape mode
      */
     @Override
-    public void onPreviewFrame(byte[] data, Camera camera)
+    protected void onInitPreview()
     {
-        if (data == null) {
-            Timber.e("Null data received on callback, invalid buffer size?");
-            return;
-        }
-        // Calculate statistics for average frame rate
-        calcStats();
+        try {
+            /*
+             * set up the target surfaces for local video preview display; Before calling obtainObject(),
+             * must setViewSize() for use in surfaceHolder.setFixedSize() on surfaceCreated
+             * Then only set the local previewSurface size by calling initLocalPreviewContainer()
+             * Note: Do not change the following execution order
+             */
+            VideoHandlerFragment videoFragment = VideoCallActivity.getVideoFragment();
+            mSurfaceProvider = videoFragment.localPreviewSurface;
+            mSurfaceProvider.setVideoSize(optimizedSize);
+            Timber.d("Set surfaceSize (PreviewStream): %s", optimizedSize);
 
-        // Convert image format
-        synchronized (bufferQueue) {
-            bufferQueue.addFirst(data);
+            SurfaceHolder surfaceHolder = mSurfaceProvider.obtainObject(); // this will create the surfaceView
+            videoFragment.initLocalPreviewContainer(mSurfaceProvider);
+            Surface previewSurface = surfaceHolder.getSurface();
+
+            // Setup ImageReader to retrieve image data for remote video streaming
+            mImageReader = ImageReader.newInstance(optimizedSize.width, optimizedSize.height, ImageFormat.YUV_420_888, 2);
+            mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
+
+            // Need to add both the surface and the ImageReader surface as targets to the preview capture request:
+            mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            mCaptureBuilder.addTarget(previewSurface);
+            mCaptureBuilder.addTarget(mImageReader.getSurface());
+            // For picture taking only
+            // mPreviewRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, mSensorOrientation);
+
+            mCameraDevice.createCaptureSession(Arrays.asList(previewSurface, mImageReader.getSurface()),
+                    new CameraCaptureSession.StateCallback()
+                    {
+                        @Override
+                        public void onConfigured(@NonNull CameraCaptureSession session)
+                        {
+                            mCaptureSession = session;
+                            updateCaptureRequest();
+                        }
+
+                        @Override
+                        public void onConfigureFailed(@NonNull CameraCaptureSession session)
+                        {
+                            Timber.e("Camera capture session config failed: %s", session);
+                        }
+                    }, null);
+        } catch (CameraAccessException e) {
+            Timber.e("Camera capture session create exception: %s", e.getMessage());
         }
-        transferHandler.transferData(this);
     }
 
     /**
-     * {@inheritDoc}
+     * Update the camera capture request.
+     * Start the camera capture session with repeating request for smoother video streaming.
+     */
+    protected void updateCaptureRequest()
+    {
+        // The camera is already closed, so abort
+        if (null == mCameraDevice) {
+            Timber.e("Camera capture session config - camera closed, return");
+            return;
+        }
+        try {
+            // Auto focus should be continuous for camera preview.
+            mCaptureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+            mCaptureSession.setRepeatingRequest(mCaptureBuilder.build(), null, mBackgroundHandler);
+            // Has sluggish video streaming performance, do not use
+            // mCaptureSession.capture(mPreviewBuilder.build(), null, mBackgroundHandler);
+            inTransition = false;
+        } catch (CameraAccessException e) {
+            Timber.e("Update capture request exception: %s", e.getMessage());
+        }
+    }
+
+    /**
+     * Must use try wth resource in reader.acquireNextImage() for IllegalStateException; else
+     * ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
+     * maxImages (2) has already been acquired, call #close before acquiring more.
+     * Also reader.acquireLatestImage() may return null image; need to use acquireNextImage() in aTalk implementation;
+     *
+     * Note: The acquired image is always in landscape mode e.g. 1280x720.
+     */
+    private final ImageReader.OnImageAvailableListener mOnImageAvailableListener = reader -> {
+        if (inTransition)
+            return;
+
+        try (Image image = reader.acquireNextImage()) {
+            if ((image != null) && ImageFormat.YUV_420_888 == image.getFormat()) {
+                // Seem to be cleaner without reading the image data
+                // if (inTransition) {
+                //     Timber.w("Discarded acquired image in transition @ ImageReader!");
+                //     image.close();
+                //     return;
+                // }
+
+                if (TimberLog.isTraceEnable)
+                    calcStats(); // Calculate statistics for average frame rate if enable
+                synchronized (bufferQueue) {
+                    bufferQueue.addFirst(image);
+                }
+                transferHandler.transferData(this);
+            }
+        } catch (Exception e) {
+            Timber.e(e, "OnImage available exception: %s", e.getMessage());
+        }
+    };
+
+    /**
+     * Pop the oldest image in the bufferQueue for processing; i.e.
+     * transformation and copy into the buffer for remote video data streaming
+     *
+     * Note: Sync problem between device rotation with new swap/flip; inTransition get clear with old image data in process.
+     * (PreviewStream.java:188)#lambda$new$0$PreviewStream: OnImage available exception: index=345623 out of bounds (limit=345600)
+     *
+     * @param buffer streaming data buffer to be filled
+     * @throws IOException on image buffer not accessible
      */
     @Override
     public void read(Buffer buffer)
             throws IOException
     {
-        byte[] data;
+        Image image;
         synchronized (bufferQueue) {
-            data = bufferQueue.removeLast();
+            image = bufferQueue.removeLast();
         }
 
-        // cmeng - Camera actual preview dimension may not necessary be same as set format when rotated
-        int w = mFormat.getSize().width;
-        int h = mFormat.getSize().height;
-        int outLen = (w * h * 12) / 8;
+        if (inTransition) {
+            Timber.w("Discarded acquired image in transition @ packet read!");
+            buffer.setDiscard(true);
+        }
+        else {
+            // Camera actual preview dimension may not necessary be same as set remote video format when rotated
+            int w = mFormat.getSize().width;
+            int h = mFormat.getSize().height;
+            int outLen = (w * h * 12) / 8;
 
-        byte[] copy = AbstractCodec2.validateByteArraySize(buffer, outLen, false);
-        YV12toYUV420PlanarRotate(data, copy, w, h, mSensorOrientation);
-        buffer.setLength(outLen);
-        buffer.setFlags(Buffer.FLAG_LIVE_DATA | Buffer.FLAG_RELATIVE_TIME);
-        buffer.setTimeStamp(System.currentTimeMillis());
+            // Set the buffer timeStamp before YUV processing, as it may take some times
+            // On J7: Timestamp seems implausible relative to expectedPresent if performs after the process
+            buffer.setFormat(mFormat);
+            buffer.setLength(outLen);
+            buffer.setFlags(Buffer.FLAG_LIVE_DATA | Buffer.FLAG_RELATIVE_TIME);
+            buffer.setTimeStamp(System.currentTimeMillis());
 
-        // Put the buffer for reuse
-        if (mCamera != null)
-            mCamera.addCallbackBuffer(data);
+            byte[] copy = AbstractCodec2.validateByteArraySize(buffer, outLen, false);
+            try {
+                YUV420PlanarRotate(image, copy, w, h);
+            } catch (Exception e) {
+                Timber.w("YUV420Planar Rotate exception: %s", e.getMessage());
+                buffer.setDiscard(true);
+            }
+        }
+        image.close();
     }
 
     /**
      * http://www.wordsaretoys.com/2013/10/25/roll-that-camera-zombie-rotation-and-coversion-from-yv12-to-yuv420planar/
-     * Original code has been modified and optimised for aTalk rotation without stretching the image
+     * Original code has been modified for camera2 UV420_888 and optimised for aTalk rotation without stretching the image
      *
-     * Converts Android YV12 format to YUV420 planar and rotate according to camera orientation.
+     * Transform android YUV420_888 image orientation according to camera orientation.
      * ## Swap: means swapping the x & y coordinates, which provides a 90-degree anticlockwise rotation,
-     * ## Flip: means mirroring the image for a 180-degree rotation.
+     * ## Flip: means mirroring the image for a 180-degree rotation, adjusted for inversion by for camera2
      * Note: Android does have condition with Swap && Flip in display orientation
      *
-     * @param input input buffer - YV12 frame image bytes.
-     * @param output output buffer - YUV420 frame format.
+     * @param image input image with multi-plane YUV428_888 format.
      * @param width final output stream image width.
      * @param height final output stream image height.
-     * @param rotation camera/preview rotation: 270 = phone rotated clockwise 90 degree (portrait mode)
      */
-    private void YV12toYUV420PlanarRotate(byte[] input, byte[] output, int width, int height, int rotation)
+    protected void YUV420PlanarRotate(Image image, byte[] output, int width, int height)
     {
-        boolean swap = (rotation == 90 || rotation == 270);
-        boolean flip = (rotation == 90 || rotation == 180);
-
         // Init w * h parameters: Assuming input preview buffer dimension is always in landscape mode
         int wi = width - 1;
         int hi = height - 1;
 
-        // Actual input preview frame dimension - for calculating YV12 indexes for input data buffer
-        int wp = width;
-        int hp = height;
-        if (swap) {
-            wp = height;
-            hp = width;
-        }
+        // Output buffer: I420uvSize is a 1/4 of the Y size
+        int ySize = width * height;
+        int I420uvSize = ySize >> 2;
 
-        // Constants for UV planes transformation on input preview frame buffer
-        int yStride = (int) Math.ceil(wp / 16.0) * 16;
-        int ySize = yStride * hp;
+        // Input image buffer parameters
+        ByteBuffer yBuffer = image.getPlanes()[0].getBuffer();
+        ByteBuffer uBuffer = image.getPlanes()[1].getBuffer();
+        ByteBuffer vBuffer = image.getPlanes()[2].getBuffer();
 
-        int uvStride = (int) Math.ceil((yStride / 2.0) / 16.0) * 16;
-        int uvSize = uvStride * (hp >> 1);
+        int yRowStride = image.getPlanes()[0].getRowStride();
+        int yPixelStride = image.getPlanes()[0].getPixelStride();
 
-        // I420uvSize is a 1/4 of the Y size
-        int I420uvSize = (width * height >> 2);
+        // The U/V planes are guaranteed to have the same row stride and pixel stride.
+        int uvRowStride = image.getPlanes()[1].getRowStride();
+        int uvPixelStride = image.getPlanes()[1].getPixelStride();
 
-        // Performance input to output buffer transformation iterate over output buffer
+        // Performance input to output buffer transformation iterate over output buffer;
+        // input index xi & yi are transformed according to swap & flip
         for (int yo = 0; yo < height; yo++) {
             for (int xo = 0; xo < width; xo++) {
                 // default input index for direct 1:1 transform
                 int xi = xo, yi = yo;
 
                 // The video frame: w and h are swapped at input frame - no image stretch required
-                if (swap && flip) {
+                if (mSwap && mFlip) {
                     xi = yo;
                     yi = wi - xo;
                 }
-                else if (swap) {
+                else if (mSwap) {
                     xi = hi - yo;
                     yi = xo;
                 }
-                else if (flip) {
+                else if (mFlip) {
                     xi = wi - xi;
                     yi = hi - yi;
                 }
                 // Transform Y luminous data bytes from input to output
-                output[width * yo + xo] = input[yStride * yi + xi];
+                output[width * yo + xo] = yBuffer.get(yRowStride * yi + yPixelStride * xi);
 
                 /*
-                 * ## Transform UV data bytes - UV has only 1/4 of Y bytes :
-                 * To locate a pixel in these planes, divide all the x and y coordinates by two. Using
-                 * width as the stride, so it also gets divided by two i.e. wi2. Planar offsets into
-                 * the image can be found by using the size of the Y plane ySize = (width * height) and
-                 * the size of a chroma plane qs = (ySize / 4). Must swap the UV planes between input and
-                 * output for YV12 to YVU420 transformation
+                 * ## Transform UV data bytes - UV has only 1/4 of Y bytes:
+                 * To locate a pixel in these planes, divide all the xi and yi coordinates by two;
+                 * and using the UV parameters i.e. uvRowStride and uvPixelStride
                  */
-                if ((yo % 2) + (xo % 2) == 0) // 1 vu byte for 2x2 Y data bytes
+                if ((yo % 2) + (xo % 2) == 0) // 1 UV byte for 2x2 Y data bytes
                 {
                     int uv420YIndex = ySize + (width >> 1) * (yo >> 1);
                     int uo = uv420YIndex + (xo >> 1);
                     int vo = I420uvSize + uo;
 
-                    int ui = ySize + uvStride * (yi >> 1) + (xi >> 1);
-                    int vi = uvSize + ui;
+                    int uvIdx = (uvRowStride * (yi >> 1)) + (uvPixelStride * (xi >> 1));
 
-                    output[uo] = input[vi]; // Cb (U)
-                    output[vo] = input[ui]; // Cr (V)
+                    output[uo] = uBuffer.get(uvIdx); // Cb (U)
+                    output[vo] = vBuffer.get(uvIdx); // Cr (V)
                 }
-            }
-        }
-    }
-
-    /**
-     * Calculates YV12 image data bufferSize in bytes. The buffer is used to receive the generated preview streaming data,
-     * hence need to consider when image is swap (rotated). aTalk always set for native camera preview in landscape mode.
-     *
-     * For resolutions: 1920x1080, 1440x1080, 1280x720, 960x720, 720x480*, 640x480, 320x240
-     * Except for 720x480*, the calculated buffer sizes for all other resolutions are always larger when swap is true.
-     *
-     * Note: lower buffer size than required will cause android to throw:
-     * E/Camera-JNI: Callback buffer was too small! Expected 522240 bytes, but got 518400 bytes!
-     *
-     * @param previewSize camera preview size.
-     * @param swap indicate the camera is rotated, and width and height must be swapped to get the buffer size
-     * @return YV12 image data size in bytes.
-     */
-    private static int calcYV12Size(Camera.Size previewSize, boolean swap)
-    {
-        int wp = previewSize.width;
-        int hp = previewSize.height;
-        if (swap) {
-            wp = previewSize.height;
-            hp = previewSize.width;
-        }
-
-        float yStride = (int) Math.ceil(wp / 16.0) * 16;
-        float uvStride = (int) Math.ceil((yStride / 2.0) / 16.0) * 16;
-        float ySize = yStride * hp;
-        float uvSize = uvStride * hp / 2;
-        return (int) (ySize + uvSize * 2);
-    }
-
-    //    /**
-    //     * Converts Android YV12 format to YUV420 planar without rotation support
-    //     *
-    //     * @param input: input YV12 image bytes.
-    //     * @param output: output buffer.
-    //     * @param width: image width.
-    //     * @param height: image height.
-    //     */
-    //    static void YV12toYUV420Planar(final byte[] input, final byte[] output, final int width, final int height)
-    //    {
-    //        if (width % 16 != 0)
-    //            throw new IllegalArgumentException("Unsupported width: " + width);
-    //
-    //        int yStride = (int) Math.ceil(width / 16.0) * 16;
-    //        int uvStride = (int) Math.ceil((yStride / 2) / 16.0) * 16;
-    //        int ySize = yStride * height;
-    //        int uvSize = uvStride * height / 2;
-    //
-    //        int I420uvStride = (int) (((yStride / 2) / 16.0) * 16);
-    //        int I420uvSize = width * height / 4;
-    //        int uvStridePadding = uvStride - I420uvStride;
-    //
-    //        System.arraycopy(input, 0, output, 0, ySize); // Y
-    //
-    //        // If padding is 0 then just swap U and V planes
-    //        if (uvStridePadding == 0) {
-    //            System.arraycopy(input, ySize, output, ySize + uvSize, uvSize); // Cr (V)
-    //            System.arraycopy(input, ySize + uvSize, output, ySize, uvSize); // Cb (U)
-    //        }
-    //        else {
-    //            Timber.w("Not recommended resolution: %sx%s", width, height);
-    //            int src = ySize;
-    //            int dst = ySize;
-    //            // Copy without padding
-    //            for (int y = 0; y < height / 2; y++) {
-    //                System.arraycopy(input, src + uvSize, output, dst, I420uvStride); // Cb (U)
-    //                System.arraycopy(input, src, output, dst + I420uvSize, I420uvStride); // Cr (V)
-    //                src += uvStride;
-    //                dst += I420uvStride;
-    //            }
-    //        }
-    //    }
-
-    /**
-     * Update cameraRotation for YV12toYUV420PlanarRotate(); both mPreviewSize and cameraRotation must be updated
-     * Set camera local preview display orientation according to device rotation in setDisplayOrientation()
-     */
-    public void initCameraOnRotation()
-    {
-        Camera.CameraInfo camInfo = new Camera.CameraInfo();
-        Camera.getCameraInfo(mCameraId, camInfo);
-        int rotation = CameraUtils.getPreviewOrientation(mCameraId);
-        boolean swap = (rotation == 90) || (rotation == 270);
-
-        if (swap) {
-            mPreviewSize = new Dimension(optimizedSize.height, optimizedSize.width);
-        }
-        else {
-            mPreviewSize = optimizedSize;
-        }
-
-        // Streaming video always send in dimension according to the phone orientation
-        mFormat.setVideoSize(mPreviewSize);
-
-        if (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            mSensorOrientation = (360 - rotation) % 360;
-        }
-        else {
-            mSensorOrientation = rotation;
-        }
-
-        Timber.d("set camera display orientation: %s : %s", swap, rotation);
-        // To take care user rotate device before mCamera is initialized.
-        if (mCamera != null)
-            mCamera.setDisplayOrientation(rotation);
-    }
-
-    /**
-     * Switch to the camera selected by user. Show preview only if local video streaming is enabled
-     * User needs to enable the camera to send the video stream to remote user.
-     *
-     * @param cameraLocator MediaLocator
-     * @param isLocalVideoEnable true is local video is enabled for sending
-     */
-    public void switchCamera(MediaLocator cameraLocator, boolean isLocalVideoEnable)
-    {
-        AndroidCamera.setSelectedCamera(cameraLocator);
-        mCameraId = AndroidCamera.getCameraId(cameraLocator);
-
-        // Stop preview and release the current camera if any before switching, otherwise app will crash
-        if (mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.release();
-        }
-
-        if (isLocalVideoEnable) {
-            try {
-                start();
-            } catch (IOException e) {
-                aTalkApp.showToastMessage(R.string.service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED, cameraLocator, e.getMessage());
             }
         }
     }

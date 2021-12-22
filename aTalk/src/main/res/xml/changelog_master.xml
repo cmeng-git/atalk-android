@@ -6,10 +6,27 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.8.0 (12/22/2021)" versioncode="208000">
+        <change>Migrate to use android Camera2 API replacing deprecated Camera API; remove the old camera background handler</change>
+        <change>Enhance remote video streaming handling with higher frame rate; also smoother display transition when sending device is rotated</change>
+        <change>Fix remote video playback view in full screen mode when media call is started with device in landscape mode</change>
+        <change>Disable user selectable 'use direct surface' options; current implementation requires direct surface for android hardware codec to work</change>
+        <change>Check before use, if android hardware encoder is supported by the device if selected; else fall back to use software encoder</change>
+        <change>Fix problem where android hardware encoder works only on first instance. Current android encode works in portrait mode only</change>
+        <change>Fix both the VP8/VP9 DePacketizer frame sync algorithm, cause problem in android codec data process</change>
+        <change>Fix 'Array Index OutOfBounds Exception' in chat message session window display on some cases</change>
+        <change>Disable MediaRecorder support for aTalk; non-seekable file descriptors not further supported by android API 23 and above</change>
+        <change>Replace deprecated LifecycleObserver with LifecycleEventObserver</change>
+        <change>Move MediaCodecs info setting into Expert settings preference screen</change>
+        <change>Relocate all java/javax classes to its original location - no relocation required for fmj</change>
+        <change>Upgrade smack to version 4.4.4</change>
+        <change>Upgrade build to support android-12(s) i.e. API-31</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.7.1 (11/05/2021)" versioncode="207010">
         <change>The user selected capture device for media recorder is not retrieved properly on start up</change>
         <change>Adapt AndroidUIServiceImpl#getSize to cater for different android API, to avoid system crash.</change>
-        <change>Upgrade build to support android-12(S) i.e. API-31</change>
         <change>Final 2.7.x version before porting to use camera2</change>
         <change>Bug fixes and enhancements</change>
     </release>

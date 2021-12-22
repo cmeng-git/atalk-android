@@ -9,10 +9,10 @@ package net.java.sip.communicator.plugin.desktoputil;
 import net.java.sip.communicator.plugin.desktoputil.plaf.SIPCommMenuBarUI;
 import net.java.sip.communicator.util.skin.Skinnable;
 
-import org.atalk.android.util.javax.swing.JComponent;
-import org.atalk.android.util.javax.swing.JMenuBar;
-import org.atalk.android.util.javax.swing.UIDefaults;
-import org.atalk.android.util.javax.swing.UIManager;
+import javax.swing.JComponent;
+import javax.swing.JMenuBar;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 
 /**
  * The SIPCommMenuBar is a <tt>JMenuBar</tt> without border decoration that can

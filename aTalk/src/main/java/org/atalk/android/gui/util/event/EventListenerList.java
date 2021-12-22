@@ -5,8 +5,8 @@
  */
 package org.atalk.android.gui.util.event;
 
-import org.atalk.android.util.java.awt.event.ActionListener;
-import org.atalk.android.util.javax.swing.event.DocumentListener;
+import java.awt.event.ActionListener;
+import javax.swing.event.DocumentListener;
 
 import java.util.ArrayList;
 

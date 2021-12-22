@@ -5,19 +5,29 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.mediarecorder;
 
-import android.hardware.Camera;
+import android.annotation.SuppressLint;
+import android.graphics.SurfaceTexture;
+import android.hardware.camera2.*;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaRecorder;
+import android.media.MediaRecorder.VideoSource;
 import android.net.LocalServerSocket;
 import android.net.LocalSocket;
 import android.os.Process;
+import android.os.*;
 import android.view.Surface;
+import android.view.SurfaceHolder;
 
+import androidx.annotation.NonNull;
+
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.util.java.awt.Dimension;
+import org.atalk.android.gui.call.VideoCallActivity;
+import org.atalk.android.gui.call.VideoHandlerFragment;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.h264.H264;
-import org.atalk.impl.neomedia.device.util.AndroidCamera;
-import org.atalk.impl.neomedia.device.util.CameraUtils;
+import org.atalk.impl.neomedia.device.util.*;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.persistance.FileBackend;
@@ -26,6 +36,8 @@ import org.atalk.service.neomedia.codec.Constants;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import javax.media.*;
 import javax.media.control.FormatControl;
@@ -121,10 +133,49 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
     private int maxLocalSocketKeySize;
 
-    protected static int mCameraId;
+    protected static String mCameraId;
 
-    private Camera mCamera;
+    /**
+     * A reference to the opened {@link CameraDevice} for mCameraId.
+     */
+    protected CameraDevice mCameraDevice;
+
+    /**
+     * A reference to the current {@link android.hardware.camera2.CameraCaptureSession} for preview.
+     */
+    private CameraCaptureSession mCaptureSession;
+    private CaptureRequest.Builder mCaptureBuilder;
+
     private VideoFormat mVideoFormat = null;
+
+    /**
+     * The {@link android.util.Size} of video recording.
+     */
+    private Dimension mVideoSize;
+
+    /**
+     * The {@link android.util.Size} of camera preview.
+     */
+    private Dimension mPreviewSize;
+
+    private Surface mPreviewSurface;
+
+    protected PreviewSurfaceProvider mSurfaceProvider;
+
+    /**
+     * An additional thread for running tasks that shouldn't block the UI.
+     */
+    private HandlerThread backgroundThread;
+
+    /**
+     * A {@link Handler} for running tasks in the background.
+     */
+    protected Handler mBackgroundHandler;
+
+    /**
+     * A {@link Semaphore} to prevent the app from exiting before closing the camera.
+     */
+    private final Semaphore mCameraOpenCloseLock = new Semaphore(1);
 
     /**
      * The <tt>MediaRecorder</tt> which implements the actual capturing of media data for this <tt>DataSource</tt>.
@@ -165,6 +216,10 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      * The picture and sequence parameter set for video.
      */
     private H264Parameters h264Params;
+
+    protected ParcelFileDescriptor[] mParcelFileDescriptors;
+    protected ParcelFileDescriptor mParcelRead;
+    protected ParcelFileDescriptor mParcelWrite;
 
     /**
      * Initializes a new <tt>DataSource</tt> instance.
@@ -218,6 +273,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
      * @throws IOException if anything goes wrong while starting the transfer of media data from this <tt>DataSource</tt>
      * @see AbstractPushBufferCaptureDevice#doStart()
      */
+    @SuppressLint("MissingPermission")
     @Override
     protected synchronized void doStart()
             throws IOException
@@ -225,18 +281,17 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         if (mediaRecorder == null) {
             mCameraId = AndroidCamera.getCameraId(getLocator());
             mediaRecorder = new MediaRecorder();
-            mCamera = null;
+            mCameraDevice = null;
+
+            // We need a local socket to forward data output by the camera to the packetizer
+            createSockets();
 
             try {
-                // Gets the Camera instance which corresponds to this MediaLocator of this <tt>DataSource</tt>.
-                mCamera = CameraUtils.getCamera(getLocator());
-                if (mCamera == null) {
-                    throw new RuntimeException("Unable to select camera for locator: " + getLocator());
+                if (!mCameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
+                    throw new RuntimeException("Time out waiting to lock camera opening.");
                 }
-
-                // Adjust preview display orientation
-                int rotation = CameraUtils.getPreviewOrientation(AndroidCamera.getCameraId(getLocator()));
-                mCamera.setDisplayOrientation(rotation);
+                // Timber.e(new Exception("Media recorder data source tracing only!!!"));
+                startBackgroundThread();
 
                 Format[] streamFormats = getStreamFormats();
                 // Selects video format
@@ -250,12 +305,70 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                     throw new RuntimeException("H264 not supported");
                 }
 
-                // Tries to read previously stored parameters
+                CameraManager manager = aTalkApp.getCameraManager();
+                CameraCharacteristics characteristics = manager.getCameraCharacteristics(mCameraId);
+                StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                if (map == null) {
+                    throw new RuntimeException("Cannot get available preview/video sizes");
+                }
+                /*
+                 * Reflect the size of the VideoFormat of this DataSource on the Camera. It should not be
+                 * necessary because it is the responsibility of MediaRecorder to configure the Camera it is
+                 * provided with. Anyway, MediaRecorder.setVideoSize(int,int) is not always supported so it may
+                 * (or may not) turn out that Camera.Parameters.setPictureSize(int,int) saves the day in some cases.
+                 */
+                mVideoSize = mVideoFormat.getSize();
+                mPreviewSize = CameraUtils.getOptimalPreviewSize(mVideoSize, map.getOutputSizes(SurfaceTexture.class));
+                Timber.d("Video / preview size: %s %s; %s", mVideoSize, mPreviewSize, mVideoFormat);
+
+                manager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
+
+            } catch (CameraAccessException e) {
+                Timber.e("openCamera: Cannot access the camera.");
+            } catch (NullPointerException e) {
+                Timber.e("Camera2API is not supported on the device.");
+            } catch (InterruptedException e) {
+                // throw new RuntimeException("Interrupted while trying to lock camera opening.");
+                Timber.w("Exception in start camera init: %s", e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its status.
+     */
+    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback()
+    {
+        @Override
+        public void onOpened(@NonNull CameraDevice cameraDevice)
+        {
+            mCameraDevice = cameraDevice;
+            mCameraOpenCloseLock.release();
+
+            try {
+                /*
+                 * set up the target surfaces for local video preview display; Before calling obtainObject(),
+                 * must setSurfaceSize() for surfaceHolder.setFixedSize() on surfaceCreated
+                 * Then set the local previewSurface size by calling initLocalPreviewContainer()
+                 * Note: Do not change the following execution order
+                 */
+                VideoHandlerFragment videoFragment = VideoCallActivity.getVideoFragment();
+                mSurfaceProvider = videoFragment.localPreviewSurface;
+                mSurfaceProvider.setVideoSize(mPreviewSize);
+                // Need to init for AndroidDecoder when hardware decode is enabled
+                // AndroidDecoder.renderSurfaceProvider.setSurfaceSize(mPreviewSize);
+
+                SurfaceHolder surfaceHolder = mSurfaceProvider.obtainObject(); // this will create the surfaceView
+                videoFragment.initLocalPreviewContainer(mSurfaceProvider);
+                mPreviewSurface = surfaceHolder.getSurface();
+
+                // Tries to read previously stored parameters; Obtain/save h264 parameters from short sample video if null
                 h264Params = H264Parameters.getStoredParameters(mVideoFormat);
                 if (h264Params == null) {
                     obtainParameters();
                 }
                 else {
+                    // startPreview();  // Testing only: not required for aTalk implementation
                     startVideoRecording();
                 }
 
@@ -264,83 +377,152 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                 closeMediaRecorder();
             }
         }
-    }
+
+        @Override
+        public void onDisconnected(@NonNull CameraDevice cameraDevice)
+        {
+            mCameraDevice.close();
+            mCameraDevice = null;
+            mCameraOpenCloseLock.release();
+        }
+
+        @Override
+        public void onError(@NonNull CameraDevice cameraDevice, int error)
+        {
+            String errMessage;
+            switch (error) {
+                case ERROR_CAMERA_IN_USE:
+                    errMessage = "Camera in use";
+                    break;
+                case ERROR_MAX_CAMERAS_IN_USE:
+                    errMessage = "Maximum cameras in use";
+                    break;
+                case ERROR_CAMERA_DISABLED:
+                    errMessage = "Device policy";
+                    break;
+                case ERROR_CAMERA_DEVICE:
+                    errMessage = "Fatal (device)";
+                    break;
+                case ERROR_CAMERA_SERVICE:
+                    errMessage = "Fatal (service)";
+                    break;
+                default:
+                    errMessage = "UnKnown";
+            }
+            Timber.e("Set camera preview failed: %s", errMessage);
+            aTalkApp.showGenericError(R.string.service_gui_DEVICE_VIDEO_FORMAT_NOT_SUPPORTED, "", errMessage);
+
+            mediaRecorder.release();
+            mediaRecorder = null;
+            videoFrameInterval = 0;
+
+            cameraDevice.close();
+            mCameraDevice = null;
+            mCameraOpenCloseLock.release();
+        }
+    };
 
     /**
      * Must use H264/RTP for video encoder
      *
-     *  After API 23, android doesn't allow non seekable file descriptors i.e. mOutputFile = null
+     * After API 23, android doesn't allow non seekable file descriptors i.e. mOutputFile = null
      * org.atalk.android E/(DataSource.java:294)#startVideoRecording: IllegalStateException (media recorder) in configuring data source: : null
      *     java.lang.IllegalStateException
      *         at android.media.MediaRecorder._start(Native Method)
      *         at android.media.MediaRecorder.start(MediaRecorder.java:1340)
-     *         at org.atalk.impl.neomedia.jmfext.media.protocol.mediarecorder.DataSource.startVideoRecording(DataSource.java:295)
+     *         at org.atalk.impl.neomedia.jmfext.media.protocol.mediarecorder.DataSource.startVideoRecording(DataSource.java:469)
      */
     private void startVideoRecording()
     {
+        if ((null == mCameraDevice) || (null == mPreviewSize)) {
+            return;
+        }
+
         try {
-            mOutputFile = null;
-            // mOutputFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), System.currentTimeMillis() + ".mp4").getAbsolutePath();
+            closeCaptureSession();
+
+            // mOutputFile = null;
+            mOutputFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), System.currentTimeMillis() + ".mp4").getAbsolutePath();
 
             // Configure media recorder for video recording
-            configureMediaRecorder();
+            // mediaRecorder.setVideoSource(VideoSource.DEFAULT);  // has problem with this
+            configureMediaRecorder(mVideoFormat, VideoSource.SURFACE);
 
+            // Sets the path of the output file to be produced. Call this after setOutputFormat() but before prepare().
             if (mOutputFile == null) {
-                mediaRecorder.setOutputFile(createLocalSocket());
+                // after API 23, android doesn't allow non seekable file descriptors; both no working
+                // mediaRecorder.setOutputFile(createLocalSocket());
+                mediaRecorder.setOutputFile(mParcelWrite.getFileDescriptor());
             }
             else
                 mediaRecorder.setOutputFile(mOutputFile);
 
             mediaRecorder.prepare();
-            mediaRecorder.start(); // always cause IllegalStateException
-            super.doStart();
+            mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
 
-        } catch (IllegalStateException re) {
-            Timber.e(re, "IllegalStateException (media recorder) in configuring data source: : %s", re.getMessage());
-            closeMediaRecorder();
-        } catch (ThreadDeath td) {
-            throw (ThreadDeath) td;
-        } catch (IOException e) {
+            // Set up Surface for the camera preview
+            List<Surface> surfaces = new ArrayList<>();
+            surfaces.add(mPreviewSurface);
+            mCaptureBuilder.addTarget(mPreviewSurface);
+
+            // Set up Surface for the MediaRecorder
+            Surface recorderSurface = mediaRecorder.getSurface();
+            surfaces.add(recorderSurface);
+            mCaptureBuilder.addTarget(recorderSurface);
+
+            // Start a capture session; Once the session starts, we can start recording
+            mCameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback()
+            {
+                @Override
+                public void onConfigured(@NonNull CameraCaptureSession session)
+                {
+                    mCaptureSession = session;
+                    updateCaptureRequest();
+                    mediaRecorder.start();
+
+                    try {
+                        DataSource.super.doStart();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onConfigureFailed(@NonNull CameraCaptureSession session)
+                {
+                    aTalkApp.showToastMessage("Media recording failed");
+                }
+            }, mBackgroundHandler);
+        } catch (CameraAccessException | IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Configures the camera and media recorder to work with given <tt>videoFormat</tt>.
+     * Note: Do not change the order of the parameters setup before referring to MediaRecorder class
+     *
+     * @param videoFormat the video format to be used.
      */
-    private void configureMediaRecorder()
+    private void configureMediaRecorder(VideoFormat videoFormat, int videoSource) throws IOException
     {
-        mCamera.unlock();
-        mediaRecorder.setCamera(mCamera);
-
         // The sources need to be specified before setting recording-parameters or encoders, e.g. before setOutputFormat().
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        // ==> IllegalStateException in prepare when OUTPUT == null
+        mediaRecorder.setVideoSource(videoSource);
+
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 
-        /*
-         * Reflect the size of the VideoFormat of this DataSource on the Camera. It should not be
-         * necessary because it is the responsibility of MediaRecorder to configure the Camera it is
-         * provided with. Anyway, MediaRecorder.setVideoSize(int,int) is not always supported so it may
-         * (or may not) turn out that Camera.Parameters.setPictureSize(int,int) saves the day in some cases.
-         */
-        Dimension videoSize = mVideoFormat.getSize();
-//        if ((videoSize != null) && (videoSize.height > 0) && (videoSize.width > 0)) {
-//            Camera.Parameters params = camera.getParameters();
-//            if (params != null) {
-//                params.setPictureSize(videoSize.width, videoSize.height);
-//                camera.setParameters(params);
-//            }
-//        }
-
-        if ((videoSize != null) && (videoSize.height > 0) && (videoSize.width > 0)) {
+        // Setup media recorder video size
+        if ((mVideoSize != null) && (mVideoSize.height > 0) && (mVideoSize.width > 0)) {
             Timber.w("Set video size for '%s' with %sx%s.",
-                    getLocator(), videoSize.width, videoSize.height);
-            mediaRecorder.setVideoSize(videoSize.width, videoSize.height);
+                    getLocator(), mVideoSize.width, mVideoSize.height);
+            mediaRecorder.setVideoSize(mVideoSize.width, mVideoSize.height);
         }
 
         // Setup media recorder bitrate and frame rate
         mediaRecorder.setVideoEncodingBitRate(10000000);
-        float frameRate = mVideoFormat.getFrameRate();
+        float frameRate = videoFormat.getFrameRate();
         if (frameRate <= 0)
             frameRate = 15;
 
@@ -352,15 +534,10 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
         // Stack Overflow says that setVideoSize should be called before setVideoEncoder.
         mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        Surface previewSurface = CameraUtils.obtainPreviewSurface().getSurface();
-        if (previewSurface == null) {
-            Timber.e(new NullPointerException(), "Preview surface must not be null");
-        }
-        mediaRecorder.setPreviewDisplay(previewSurface);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
         // Adjust preview display orientation
-        int previewOrientation = CameraUtils.getPreviewOrientation(AndroidCamera.getCameraId(getLocator()));
-        // cmeng - added for correct video orientation streaming
+        int previewOrientation = CameraUtils.getPreviewOrientation(mCameraId);
         mediaRecorder.setOrientationHint(previewOrientation);
 
         // Reset to recording max duration/size, as it may have been manipulated during parameters retrieval
@@ -369,21 +546,83 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
+     * Start the camera preview.
+     */
+    private void startPreview()
+    {
+        if ((null == mCameraDevice) || (null == mPreviewSize)) {
+            return;
+        }
+
+        try {
+            closeCaptureSession();
+            mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            mCaptureBuilder.addTarget(mPreviewSurface);
+
+            mCameraDevice.createCaptureSession(Collections.singletonList(mPreviewSurface),
+                    new CameraCaptureSession.StateCallback()
+                    {
+                        @Override
+                        public void onConfigured(@NonNull CameraCaptureSession session)
+                        {
+                            mCaptureSession = session;
+                            updateCaptureRequest();
+                        }
+
+                        @Override
+                        public void onConfigureFailed(@NonNull CameraCaptureSession session)
+                        {
+                            aTalkApp.showToastMessage("Camera preview start failed");
+                        }
+                    }, mBackgroundHandler);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Update the camera preview. {@link #startPreview()} needs to be called in advance.
+     */
+    private void updateCaptureRequest()
+    {
+        if (null == mCameraDevice) {
+            return;
+        }
+        try {
+            mCaptureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+            mCaptureSession.setRepeatingRequest(mCaptureBuilder.build(), null, mBackgroundHandler);
+        } catch (CameraAccessException e) {
+            Timber.e("Update catpure request exception: %s", e.getMessage());
+        }
+    }
+
+    private void closeCaptureSession()
+    {
+        if (mCaptureSession != null) {
+            mCaptureSession.close();
+            mCaptureSession = null;
+        }
+    }
+
+    /**
      * Tries to read sequence and picture video parameters by recording sample video and parsing
-     * "avcC" part of "stsd" mp4 box.
+     * "avcC" part of "stsd" mp4 box. Process takes about 3 seconds
+     *
+     * Note: Cannot use limitMonitor = new Object() to wait, affect mediaRecorder operations:
+     * IllegalStateException (stop called in an invalid state: 8)
      *
      * @throws IOException if we failed to retrieve the parameters.
      */
     private void obtainParameters()
             throws IOException
     {
-        final String sampleFile = aTalkApp.getGlobalContext().getCacheDir().getPath() + "/atalk-test.mpeg4";
-        File outFile = new File(sampleFile);
-        Timber.d("Obtaining H264Parameters from short sample video file: %s", sampleFile);
+        mOutputFile = aTalkApp.getGlobalContext().getCacheDir().getPath() + "/atalk-test.mpeg4";
+        File outFile = new File(mOutputFile);
+        Timber.d("Obtaining H264Parameters from short sample video file: %s", mOutputFile);
 
         // Configure media recorder for obtainParameters
-        configureMediaRecorder();
-        mediaRecorder.setOutputFile(sampleFile);
+        configureMediaRecorder(mVideoFormat, VideoSource.SURFACE);
+        mediaRecorder.setOutputFile(mOutputFile);
 
         // Limit recording time to 1 sec and max file to 1MB
         mediaRecorder.setMaxDuration(1000);
@@ -395,17 +634,14 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                     || what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED) {
                 Timber.d("Limit monitor notified: %s", what);
 
-                // Disable the callback
                 mediaRecorder.setOnInfoListener(null);
+                closeCaptureSession();
                 mediaRecorder.stop();
                 mediaRecorder.reset();
 
                 try {
-                    mCamera.reconnect();
-                    mCamera.stopPreview();
-
                     // Retrieve SPS and PPS parameters
-                    H264Parameters h264Params = new H264Parameters(sampleFile);
+                    H264Parameters h264Params = new H264Parameters(mOutputFile);
                     H264Parameters.storeParameters(h264Params, mVideoFormat);
                     h264Params.logParameters();
                 } catch (IOException e) {
@@ -422,8 +658,36 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             }
         });
 
+        // Must use createCaptureSession() to start mediaRecorder, else sampleFile is empty
         mediaRecorder.prepare();
-        mediaRecorder.start();
+        try {
+            mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD);
+
+            // Set up Surface for the MediaRecorder
+            Surface recorderSurface = mediaRecorder.getSurface();
+            mCaptureBuilder.addTarget(recorderSurface);
+
+            // Start a capture session; Once the session starts, we can start recording
+            mCameraDevice.createCaptureSession(Collections.singletonList(recorderSurface), new CameraCaptureSession.StateCallback()
+            {
+                @Override
+                public void onConfigured(@NonNull CameraCaptureSession session)
+                {
+                    mCaptureSession = session;
+                    mediaRecorder.start();
+                    updateCaptureRequest();
+                    Timber.d("Capture session: %s", session);
+                }
+
+                @Override
+                public void onConfigureFailed(@NonNull CameraCaptureSession session)
+                {
+                    Timber.e("Obtaining h264 parameters failed");
+                }
+            }, mBackgroundHandler);
+        } catch (CameraAccessException e) {
+            Timber.e("Media recorder capture session exception: %s", e.getMessage());
+        }
     }
 
     /**
@@ -436,6 +700,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     protected synchronized void doStop()
             throws IOException
     {
+        closeMediaRecorder();
+        stopBackgroundThread();
         super.doStop();
 
         /*
@@ -504,26 +770,23 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                     Timber.d("Stopping/releasing MediaRecorder seemed to take a long time - give up.");
                 }
             }
-
-            if (mCamera != null) {
-                mCamera.reconnect();
-                final Camera camera = this.mCamera;
-                this.mCamera = null;
-                CameraUtils.releaseCamera(camera);
-            }
         }
     }
 
     /**
-     * Closes the current {@link Camera}.
+     * Closes the current {@link CameraDevice}.
      */
     protected void closeMediaRecorder()
     {
-        if (mCamera != null) {
+        if (mCameraDevice != null) {
             try {
-                mCamera.reconnect();
-                mCamera.release();
-                mCamera = null;
+                mCameraOpenCloseLock.acquire();
+                closeCaptureSession();
+
+                if (null != mCameraDevice) {
+                    mCameraDevice.close();
+                    mCameraDevice = null;
+                }
                 videoFrameInterval = 0;
 
                 if (mediaRecorder != null) {
@@ -531,8 +794,11 @@ public class DataSource extends AbstractPushBufferCaptureDevice
                     mediaRecorder.release();
                     mediaRecorder = null;
                 }
-            } catch (IOException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException("Interrupted while trying to close camera.", e);
+            } finally {
+                mCameraOpenCloseLock.release();
+                mSurfaceProvider.onObjectReleased();
             }
         }
     }
@@ -577,6 +843,15 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         }
     }
 
+    private void createSockets()
+            throws IOException
+    {
+        mParcelFileDescriptors = ParcelFileDescriptor.createPipe();
+        mParcelRead = new ParcelFileDescriptor(mParcelFileDescriptors[0]);
+        mParcelWrite = new ParcelFileDescriptor(mParcelFileDescriptors[1]);
+    }
+
+    // ===================== LocalServerSocket (not further support >= API-21 =========================
     private FileDescriptor createLocalSocket()
             throws IOException
     {
@@ -939,6 +1214,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             readNAL(localSocketKey, delayed, delayed.length);
         }
     }
+    // ===================== End of LocalServerSocket (not further support >= API-21 =========================
 
     public static long readUnsignedInt(InputStream inputStream, int byteCount)
             throws IOException
@@ -1036,6 +1312,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
         try {
             inputStream = localSocket.getInputStream();
+            // inputStream = new ParcelFileDescriptor.AutoCloseInputStream(mParcelRead);
             dataSourceKey = readLine(inputStream, maxDataSourceKeySize);
         } catch (IOException ioe) {
             /*
@@ -1249,6 +1526,28 @@ public class DataSource extends AbstractPushBufferCaptureDevice
             BufferTransferHandler transferHandler = this.transferHandler;
             if (transferHandler != null)
                 transferHandler.transferData(this);
+        }
+    }
+
+    // ===============================================================
+    private void startBackgroundThread()
+    {
+        if (backgroundThread == null) {
+            backgroundThread = new HandlerThread("CameraBackground");
+            backgroundThread.start();
+            mBackgroundHandler = new Handler(backgroundThread.getLooper());
+        }
+    }
+
+    private void stopBackgroundThread()
+    {
+        backgroundThread.quitSafely();
+        try {
+            backgroundThread.join();
+            backgroundThread = null;
+            mBackgroundHandler = null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

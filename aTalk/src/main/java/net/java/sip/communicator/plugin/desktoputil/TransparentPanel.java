@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.java.awt.LayoutManager;
+import java.awt.LayoutManager;
 
 /**
  * Provides compatibility with source code written prior to the inception of

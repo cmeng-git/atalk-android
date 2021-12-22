@@ -36,7 +36,7 @@ public class Constants
 
     /**
      * The Android Surface constant. It is used as VideoFormat pseudo encoding in which case the
-     * object is passed through the buffers instead of byte array for example.
+     * object is passed through the buffers instead of byte array (image) for example.
      */
     public static final String ANDROID_SURFACE = "android_surface";
 

@@ -13,10 +13,10 @@ import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.javax.swing.*;
-import org.atalk.android.util.javax.swing.event.DocumentEvent;
-import org.atalk.android.util.javax.swing.event.DocumentListener;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import java.security.PublicKey;
 

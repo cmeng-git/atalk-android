@@ -10,10 +10,11 @@ import android.opengl.GLSurfaceView;
 import android.view.View;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Component;
-import org.atalk.android.util.java.awt.Graphics;
+import java.awt.Component;
+import java.awt.Graphics;
 import org.atalk.service.neomedia.ViewAccessor;
 
+import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
@@ -34,7 +35,7 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
     /**
      * The <tt>GLSurfaceView</tt> is the actual visual counterpart of this <tt>java.awt.Component</tt>.
      */
-    private GLSurfaceView view;
+    private GLSurfaceView glSurfaceView;
 
     /**
      * Initializes a new <tt>JAWTRendererAndroidVideoComponent</tt> which is to be the visual
@@ -57,11 +58,12 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
      */
     public synchronized GLSurfaceView getView(Context context)
     {
-        if ((view == null) && (context != null)) {
-            view = new GLSurfaceView(context);
+        if ((glSurfaceView == null) && (context != null)) {
+            glSurfaceView = new GLSurfaceView(context);
             if (TimberLog.isTraceEnable)
-                view.setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS);
-            view.setRenderer(new GLSurfaceView.Renderer()
+                glSurfaceView.setDebugFlags(GLSurfaceView.DEBUG_LOG_GL_CALLS);
+
+            glSurfaceView.setRenderer(new GLSurfaceView.Renderer()
             {
                 /**
                  * Implements {@link GLSurfaceView.Renderer#onDrawFrame(GL10)}. Draws the current frame.
@@ -78,15 +80,14 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
                     // TODO Auto-generated method stub
                 }
 
-                public void onSurfaceCreated(GL10 gl,
-                        javax.microedition.khronos.egl.EGLConfig config)
+                public void onSurfaceCreated(GL10 gl, EGLConfig config)
                 {
                     // TODO Auto-generated method stub
                 }
             });
-            view.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         }
-        return view;
+        return glSurfaceView;
     }
 
     /**
@@ -112,7 +113,7 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
     @Override
     public synchronized void repaint()
     {
-        if (view != null)
-            view.requestRender();
+        if (glSurfaceView != null)
+            glSurfaceView.requestRender();
     }
 }

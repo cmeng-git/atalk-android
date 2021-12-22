@@ -9,8 +9,8 @@ package net.java.sip.communicator.plugin.otr.authdialog;
 import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.javax.swing.*;
+import java.awt.*;
+import javax.swing.*;
 
 /**
  * @author Marin Dzhigarov

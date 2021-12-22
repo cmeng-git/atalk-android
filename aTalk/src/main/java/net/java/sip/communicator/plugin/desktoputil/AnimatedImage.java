@@ -6,10 +6,10 @@
  */
 package net.java.sip.communicator.plugin.desktoputil;
 
-import org.atalk.android.util.java.awt.Image;
-import org.atalk.android.util.java.awt.event.ActionEvent;
-import org.atalk.android.util.java.awt.event.ActionListener;
-import org.atalk.android.util.java.awt.image.BufferedImage;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 /**
  * AnimatedImage will display a series of Images in a predetermined sequence.

@@ -1374,10 +1374,10 @@
     <string name="service_gui_settings_USE_FRONT_CAMERA">Frontkamera verwenden</string>
 
     <!-- Video codecs -->
-    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Direct Surface Decoding verwenden (Neustart erforderlich)</string>
-    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Direct Surface Encoding verwenden (Neustart erforderlich)</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Direct Surface Decoding verwenden</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Direct Surface Encoding verwenden</string>
     <string name="service_gui_settings_HW_DECODE">Hardware-Decodierung verwenden (Neustart erforderlich)</string>
-    <string name="service_gui_settings_HW_ENCODE">Hardwarekodierung verwenden</string>
+    <string name="service_gui_settings_HW_ENCODE">Hardwarekodierung verwenden (Neustart erforderlich)</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">Liste der integrierten Medien Encoder/Decoder</string>
     <string name="service_gui_settings_Restart_Hint">Erfordert aTalk Neustart</string>

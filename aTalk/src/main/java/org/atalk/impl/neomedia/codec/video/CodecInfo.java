@@ -67,7 +67,7 @@ public abstract class CodecInfo
 
         MediaCodecInfo[] codecInfos = new MediaCodecList(REGULAR_CODECS).getCodecInfos();
         for (MediaCodecInfo codecInfo : codecInfos) {
-            Timber.i("Codec discovered: %s/%s", codecInfo.getName(), Arrays.toString(codecInfo.getSupportedTypes()));
+            // Timber.d("Codec discovered: %s/%s", codecInfo.getName(), Arrays.toString(codecInfo.getSupportedTypes()));
             CodecInfo ci = CodecInfo.getCodecInfo(codecInfo);
             if (ci != null) {
                 codecs.add(ci);

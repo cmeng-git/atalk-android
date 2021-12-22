@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.quicktime;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.control.FrameRateControlAdapter;
 import org.atalk.impl.neomedia.device.DeviceSystem;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;

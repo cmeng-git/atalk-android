@@ -25,8 +25,8 @@ import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.util.java.awt.image.BufferedImage;
-import org.atalk.android.util.javax.swing.ImageIcon;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;

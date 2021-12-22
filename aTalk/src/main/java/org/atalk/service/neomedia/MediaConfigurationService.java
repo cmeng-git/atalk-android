@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.util.MediaType;
 

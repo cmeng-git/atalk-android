@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.service.neomedia.rtp.*;
 import org.atalk.service.neomedia.stats.MediaStreamStats2;
 

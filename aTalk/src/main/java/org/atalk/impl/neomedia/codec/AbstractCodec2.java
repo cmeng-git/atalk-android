@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.codec;
 import net.sf.fmj.media.AbstractCodec;
 import net.sf.fmj.media.AbstractPlugIn;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 import javax.media.*;
 import javax.media.format.YUVFormat;
@@ -269,7 +269,6 @@ public abstract class AbstractCodec2 extends AbstractCodec
             return;
 
         doClose();
-
         opened = false;
         super.close();
     }
@@ -298,8 +297,8 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * Gets the <tt>Format</tt>s which are supported by this <tt>Codec</tt> as output when the
      * input is in a specific <tt>Format</tt>.
      *
-     * @param inputFormat the <tt>Format</tt> of the input for which the supported output <tt>Format</tt>s are
-     * to be returned
+     * @param inputFormat the <tt>Format</tt> of the input for which the supported
+     * output <tt>Format</tt>s are to be returned
      * @return an array of <tt>Format</tt>s supported by this <tt>Codec</tt> as output when the
      * input is in the specified <tt>inputFormat</tt>
      */
@@ -423,7 +422,6 @@ public abstract class AbstractCodec2 extends AbstractCodec
             if (outLenProcessed < 0)
                 outLenProcessed = 0;
         }
-
         this.inLenProcessed += inLenProcessed;
         this.outLenProcessed += outLenProcessed;
 

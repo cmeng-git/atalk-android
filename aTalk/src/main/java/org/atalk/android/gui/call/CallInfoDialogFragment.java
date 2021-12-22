@@ -16,7 +16,7 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.MediaType;

@@ -5,22 +5,24 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
-import android.os.Build;
 import android.view.Surface;
 
-import org.atalk.android.util.java.awt.Dimension;
+import org.atalk.android.gui.call.RemoteVideoLayout;
 import org.atalk.impl.neomedia.device.util.PreviewSurfaceProvider;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.codec.Constants;
 
+import java.awt.Dimension;
+
 import javax.media.Format;
 import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
+
+import timber.log.Timber;
 
 /**
  * The video decoder based on <tt>MediaCodec</tt>.
@@ -51,9 +53,56 @@ public class AndroidDecoder extends AndroidCodec
     private Dimension outputSize;
 
     /**
-     * Surface provider used to obtain <tt>Surface</tt> object that will be used for decoded video rendering.
+     * Surface provider used to obtain <tt>SurfaceView</tt> object that will be used for decoded remote video rendering.
      */
     public static PreviewSurfaceProvider renderSurfaceProvider;
+
+    /**
+     * Default Input formats  supported by android decoder.
+     * https://developer.android.com/guide/topics/media/media-formats#video-formats
+     */
+    private static final VideoFormat[] INPUT_FORMATS = new VideoFormat[]{
+            new VideoFormat(Constants.VP9),
+            new VideoFormat(Constants.VP8),
+            new VideoFormat(Constants.H264),
+            new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0")};
+
+    /**
+     * Create a new instance of <tt>AndroidDecoder</tt>.
+     */
+    public AndroidDecoder()
+    {
+        super("AndroidDecoder", VideoFormat.class, getOutputFormats(), false);
+        if (isHwDecodingEnabled())
+            inputFormats = INPUT_FORMATS;
+        else
+            inputFormats = EMPTY_FORMATS;
+
+        useOutputSurface = isDirectSurfaceEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     * inputFormat is not used to set video size; as the video dimension is not defined prior to received video
+     *
+     * @see RemoteVideoLayout#setVideoPreferredSize(Dimension, boolean)
+     */
+    @Override
+    protected void configureMediaCodec(MediaCodec codec, String codecType)
+    {
+        MediaFormat format = MediaFormat.createVideoFormat(codecType, 176, 144);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, 8000000);
+        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
+        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 30);
+
+        // Select color format
+        int colorFormat = getColorFormat();
+        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat);
+
+        // https://github.com/google/grafika/blob/master/app/src/main/java/com/android/grafika/PlayMovieSurfaceActivity.java
+        Surface surface = useSurface() ? getSurface() : null;
+        codec.configure(format, surface, null, 0);
+    }
 
     /**
      * Returns <tt>true</tt> if hardware decoding is supported and enabled.
@@ -62,7 +111,7 @@ public class AndroidDecoder extends AndroidCodec
      */
     public static boolean isHwDecodingEnabled()
     {
-        return LibJitsi.getConfigurationService().getBoolean(HW_DECODING_ENABLE_PROPERTY, false);
+        return LibJitsi.getConfigurationService().getBoolean(HW_DECODING_ENABLE_PROPERTY, true);
     }
 
     /**
@@ -77,50 +126,36 @@ public class AndroidDecoder extends AndroidCodec
     }
 
     /**
-     * Input formats list.
+     * Obtain the video output video format based on user defined option:
+     * a. None
+     * b. Direct surface
+     * c. YUV format
+     *
+     * @return video format as per User selected options
      */
-    private static final VideoFormat[] INPUT_FORMATS = new VideoFormat[]{
-            new VideoFormat(Constants.VP9),
-            new VideoFormat(Constants.VP8),
-            new VideoFormat(Constants.H264),
-            new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0")};
-
     static Format[] getOutputFormats()
     {
         if (!isHwDecodingEnabled())
             return EMPTY_FORMATS;
 
         if (isDirectSurfaceEnabled()) {
-            return new Format[]{new VideoFormat(Constants.ANDROID_SURFACE)};
+            return new Format[]{
+                    new VideoFormat(Constants.ANDROID_SURFACE)
+            };
         }
         else {
             return new Format[]{new YUVFormat(
                     /* size */null,
-                    /* maxDataLength */Format.NOT_SPECIFIED, Format.byteArray,
-                    /* frameRate */Format.NOT_SPECIFIED, YUVFormat.YUV_420,
+                    /* maxDataLength */Format.NOT_SPECIFIED,
+                    Format.byteArray,
+                    /* frameRate */Format.NOT_SPECIFIED,
+                    YUVFormat.YUV_420,
                     /* strideY */Format.NOT_SPECIFIED,
                     /* strideUV */Format.NOT_SPECIFIED,
                     /* offsetY */Format.NOT_SPECIFIED,
                     /* offsetU */Format.NOT_SPECIFIED,
                     /* offsetV */Format.NOT_SPECIFIED)};
         }
-    }
-
-    /**
-     * Creates new instance of <tt>AndroidDecoder</tt>.
-     */
-    public AndroidDecoder()
-    {
-        super("AndroidDecoder", VideoFormat.class, getOutputFormats(), false);
-
-        useOutputSurface = isDirectSurfaceEnabled();
-        if (isHwDecodingEnabled())
-            inputFormats = INPUT_FORMATS;
-        else
-            inputFormats = EMPTY_FORMATS;
-
-        inputFormat = null;
-        outputFormat = null;
     }
 
     /**
@@ -139,14 +174,20 @@ public class AndroidDecoder extends AndroidCodec
         if (useSurface()) {
             return new VideoFormat[]{
                     // new SurfaceFormat(inputVideoFormat.getSize()),
-                    new VideoFormat(Constants.ANDROID_SURFACE, inputVideoFormat.getSize(),
-                            Format.NOT_SPECIFIED, Surface.class, Format.NOT_SPECIFIED)};
+                    new VideoFormat(
+                            Constants.ANDROID_SURFACE,
+                            inputVideoFormat.getSize(),
+                            Format.NOT_SPECIFIED,
+                            Surface.class,
+                            Format.NOT_SPECIFIED)};
         }
         else {
             return new VideoFormat[]{new YUVFormat(
                     /* size */inputVideoFormat.getSize(),
-                    /* maxDataLength */Format.NOT_SPECIFIED, Format.byteArray,
-                    /* frameRate */Format.NOT_SPECIFIED, YUVFormat.YUV_420,
+                    /* maxDataLength */Format.NOT_SPECIFIED,
+                    Format.byteArray,
+                    /* frameRate */Format.NOT_SPECIFIED,
+                    YUVFormat.YUV_420,
                     /* strideY */Format.NOT_SPECIFIED,
                     /* strideUV */Format.NOT_SPECIFIED,
                     /* offsetY */Format.NOT_SPECIFIED,
@@ -160,14 +201,13 @@ public class AndroidDecoder extends AndroidCodec
      *
      * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
      * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this
-     * <tt>Codec</tt>
+     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this <tt>Codec</tt>
      */
     @Override
     public Format setOutputFormat(Format format)
     {
-        if (!(format instanceof VideoFormat) || (matches(format,
-                getMatchingOutputFormats(inputFormat)) == null))
+        if (!(format instanceof VideoFormat)
+                || (matches(format, getMatchingOutputFormats(inputFormat)) == null))
             return null;
 
         VideoFormat videoFormat = (VideoFormat) format;
@@ -205,25 +245,6 @@ public class AndroidDecoder extends AndroidCodec
      * {@inheritDoc}
      */
     @Override
-    protected void configureMediaCodec(MediaCodec codec, String codecType)
-    {
-        // VideoFormat vformat = (VideoFormat) inputFormat;
-        MediaFormat format = MediaFormat.createVideoFormat(codecType, 176, 144);
-        // vformat.getSize().width, vformat.getSize().height);
-        format.setInteger(MediaFormat.KEY_BIT_RATE, 8000000);
-        format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
-        format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 30);
-
-        // Select color format
-        int colorFormat = getColorFormat();
-        format.setInteger(MediaFormat.KEY_COLOR_FORMAT, colorFormat);
-        codec.configure(format, useSurface() ? getSurface() : null, null, 0);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected Surface getSurface()
     {
         return renderSurfaceProvider.obtainObject().getSurface();
@@ -240,9 +261,10 @@ public class AndroidDecoder extends AndroidCodec
     }
 
     @Override
-    protected void onSizeDiscovered(Dimension dimension)
+    protected void onSizeChanged(Dimension dimension)
     {
         outputSize = dimension;
         setOutputFormat(outputFormat);
+        Timber.d("Set decode outputFormat on video dimension change: %s", dimension);
     }
 }

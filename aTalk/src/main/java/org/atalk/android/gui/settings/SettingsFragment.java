@@ -27,11 +27,10 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.ThemeHelper.Theme;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
-import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.device.MediaRecorderSystem;
+import org.atalk.impl.neomedia.device.*;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
@@ -501,7 +500,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
      */
     private static Dimension resolutionForStr(String resStr)
     {
-        Dimension[] resolutions = MediaRecorderSystem.SUPPORTED_SIZES;
+        Dimension[] resolutions = AndroidCameraSystem.SUPPORTED_SIZES;
         for (Dimension resolution : resolutions) {
             if (resToStr(resolution).equals(resStr))
                 return resolution;

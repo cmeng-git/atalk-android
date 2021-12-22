@@ -1403,10 +1403,10 @@
     <string name="service_gui_settings_USE_FRONT_CAMERA">Use front camera</string>
 
     <!-- Video codecs -->
-    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Use direct surface decoding (restart required)</string>
-    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Use direct surface encoding (restart required)</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_DECODE">Use direct surface decoding</string>
+    <string name="service_gui_settings_DIRECT_SURFACE_ENCODE">Use direct surface encoding</string>
     <string name="service_gui_settings_HW_DECODE">Use hardware decoding (restart required)</string>
-    <string name="service_gui_settings_HW_ENCODE">Use hardware encoding</string>
+    <string name="service_gui_settings_HW_ENCODE">Use hardware encoding (restart required)</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST">MediaCodecs</string>
     <string name="service_gui_settings_MEDIA_CODEC_LIST_SUMMARY">List of built-in media encoders/decoders</string>
     <string name="service_gui_settings_Restart_Hint">Require to restart aTalk</string>

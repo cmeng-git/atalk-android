@@ -15,8 +15,8 @@
  */
 package org.atalk.util.swing;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.javax.swing.JLabel;
+import java.awt.*;
+import javax.swing.JLabel;
 
 import java.util.*;
 

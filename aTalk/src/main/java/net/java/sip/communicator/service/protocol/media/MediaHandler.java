@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.event.DTMFListener;
 import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.control.KeyFrameControl;
@@ -63,7 +63,7 @@ public class MediaHandler extends PropertyChangeNotifier
 
     /**
      * The <tt>KeyFrameControl</tt> currently known to this <tt>MediaHandler</tt> and made
-     * available by {@link #videoStream}.
+     * available by {@link #mVideoStream}.
      */
     private KeyFrameControl keyFrameControl;
 
@@ -210,8 +210,8 @@ public class MediaHandler extends PropertyChangeNotifier
                 if (source == audioStream) {
                     setLocalSSRC(MediaType.AUDIO, audioStream.getLocalSourceID());
                 }
-                else if (source == videoStream) {
-                    setLocalSSRC(MediaType.VIDEO, videoStream.getLocalSourceID());
+                else if (source == mVideoStream) {
+                    setLocalSSRC(MediaType.VIDEO, mVideoStream.getLocalSourceID());
                 }
             }
             else if (MediaStream.PNAME_REMOTE_SSRC.equals(propertyName)) {
@@ -220,8 +220,8 @@ public class MediaHandler extends PropertyChangeNotifier
                 if (source == audioStream) {
                     setRemoteSSRC(MediaType.AUDIO, audioStream.getRemoteSourceID());
                 }
-                else if (source == videoStream) {
-                    setRemoteSSRC(MediaType.VIDEO, videoStream.getRemoteSourceID());
+                else if (source == mVideoStream) {
+                    setRemoteSSRC(MediaType.VIDEO, mVideoStream.getRemoteSourceID());
                 }
             }
         }
@@ -239,10 +239,10 @@ public class MediaHandler extends PropertyChangeNotifier
     /**
      * The <tt>VideoMediaStream</tt> which this instance uses to send and receive video.
      */
-    private VideoMediaStream videoStream;
+    private VideoMediaStream mVideoStream;
 
     /**
-     * The <tt>VideoListener</tt> which listens to {@link #videoStream} for changes in the
+     * The <tt>VideoListener</tt> which listens to {@link #mVideoStream} for changes in the
      * availability of visual <tt>Component</tt>s displaying remote video and re-fires them as
      * originating from this instance.
      */
@@ -698,7 +698,7 @@ public class MediaHandler extends PropertyChangeNotifier
             case AUDIO:
                 return audioStream;
             case VIDEO:
-                return videoStream;
+                return mVideoStream;
             default:
                 throw new IllegalArgumentException("mediaType");
         }
@@ -1145,32 +1145,32 @@ public class MediaHandler extends PropertyChangeNotifier
      */
     private void setVideoStream(VideoMediaStream videoStream)
     {
-        if (this.videoStream != videoStream) {
+        if (mVideoStream != videoStream) {
             /*
              * Make sure we will no longer notify the registered VideoListeners about changes in
              * the availability of video in the old videoStream.
              */
             List<Component> oldVisualComponents = null;
 
-            if (this.videoStream != null) {
-                this.videoStream.removePropertyChangeListener(streamPropertyChangeListener);
+            if (mVideoStream != null) {
+                mVideoStream.removePropertyChangeListener(streamPropertyChangeListener);
 
-                this.videoStream.removeVideoListener(videoStreamVideoListener);
-                oldVisualComponents = this.videoStream.getVisualComponents();
+                mVideoStream.removeVideoListener(videoStreamVideoListener);
+                oldVisualComponents = mVideoStream.getVisualComponents();
 
                 /*
                  * The current videoStream is going away so this CallPeerMediaHandler should no
                  * longer use its KeyFrameControl.
                  */
                 setKeyFrameControlFromVideoStream(null);
-                this.videoStream.close();
+                mVideoStream.close();
             }
-            this.videoStream = videoStream;
+            mVideoStream = videoStream;
 
             /*
              * The videoStream has just changed so this CallPeerMediaHandler should use its KeyFrameControl.
              */
-            setKeyFrameControlFromVideoStream(this.videoStream);
+            setKeyFrameControlFromVideoStream(mVideoStream);
 
             long videoLocalSSRC;
             long videoRemoteSSRC;
@@ -1180,13 +1180,13 @@ public class MediaHandler extends PropertyChangeNotifier
              */
             List<Component> newVisualComponents = null;
 
-            if (this.videoStream != null) {
-                this.videoStream.addPropertyChangeListener(streamPropertyChangeListener);
-                videoLocalSSRC = this.videoStream.getLocalSourceID();
-                videoRemoteSSRC = this.videoStream.getRemoteSourceID();
+            if (mVideoStream != null) {
+                mVideoStream.addPropertyChangeListener(streamPropertyChangeListener);
+                videoLocalSSRC = mVideoStream.getLocalSourceID();
+                videoRemoteSSRC = mVideoStream.getRemoteSourceID();
 
-                this.videoStream.addVideoListener(videoStreamVideoListener);
-                newVisualComponents = this.videoStream.getVisualComponents();
+                mVideoStream.addVideoListener(videoStreamVideoListener);
+                newVisualComponents = mVideoStream.getVisualComponents();
             }
             else {
                 videoLocalSSRC = videoRemoteSSRC = CallPeerMediaHandler.SSRC_UNKNOWN;

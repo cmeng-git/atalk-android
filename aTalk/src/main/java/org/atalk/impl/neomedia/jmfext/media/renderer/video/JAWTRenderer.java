@@ -6,19 +6,19 @@
 package org.atalk.impl.neomedia.jmfext.media.renderer.video;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.javax.swing.SwingUtilities;
 import org.atalk.impl.neomedia.codec.video.SwScale;
 import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
 import org.atalk.util.OSUtils;
 import org.atalk.util.swing.VideoLayout;
 
+import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.media.*;
 import javax.media.format.*;
 import javax.media.renderer.VideoRenderer;
+import javax.swing.SwingUtilities;
 
 import timber.log.Timber;
 
@@ -28,8 +28,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class JAWTRenderer extends AbstractRenderer<VideoFormat>
-        implements VideoRenderer
+public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements VideoRenderer
 {
     /**
      * The default, initial height and width to set on the <tt>Component</tt>s of
@@ -48,8 +47,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
      * The array of supported input formats.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS = new Format[]{
-            OSUtils.IS_LINUX
-                    ? new YUVFormat(
+            OSUtils.IS_LINUX ? new YUVFormat(
                     null /* size */,
                     Format.NOT_SPECIFIED /* maxDataLength */,
                     Format.intArray,
@@ -61,8 +59,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
                     Format.NOT_SPECIFIED /* offsetU */,
                     Format.NOT_SPECIFIED /* offsetV */)
 
-                    : OSUtils.IS_ANDROID
-                    ? new RGBFormat(
+                    : OSUtils.IS_ANDROID ? new RGBFormat(
                     null,
                     Format.NOT_SPECIFIED,
                     Format.intArray,
@@ -241,16 +238,9 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat>
                 Class<?> componentClass = Class.forName(componentClassName.toString());
                 Constructor<?> componentConstructor = componentClass.getConstructor(JAWTRenderer.class);
                 component = (Component) componentConstructor.newInstance(this);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException
+                    | InstantiationException | IllegalAccessException cnfe) {
                 reflectiveOperationException = cnfe;
-            } catch (IllegalAccessException iae) {
-                reflectiveOperationException = iae;
-            } catch (InstantiationException ie) {
-                reflectiveOperationException = ie;
-            } catch (InvocationTargetException ite) {
-                reflectiveOperationException = ite;
-            } catch (NoSuchMethodException nsme) {
-                reflectiveOperationException = nsme;
             }
             if (reflectiveOperationException != null)
                 throw new RuntimeException(reflectiveOperationException);

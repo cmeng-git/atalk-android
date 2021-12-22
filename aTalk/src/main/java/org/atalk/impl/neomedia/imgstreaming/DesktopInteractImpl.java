@@ -5,8 +5,8 @@
  */
 package org.atalk.impl.neomedia.imgstreaming;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.java.awt.image.BufferedImage;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import org.atalk.util.OSUtils;
 
 import timber.log.Timber;

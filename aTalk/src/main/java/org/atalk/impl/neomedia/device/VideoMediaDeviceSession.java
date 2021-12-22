@@ -6,11 +6,11 @@
 package org.atalk.impl.neomedia.device;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.java.awt.event.ComponentAdapter;
-import org.atalk.android.util.java.awt.event.ComponentEvent;
-import org.atalk.android.util.javax.swing.ImageIcon;
-import org.atalk.android.util.javax.swing.SwingUtilities;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import org.atalk.impl.neomedia.*;
 import org.atalk.impl.neomedia.codec.video.HFlip;
 import org.atalk.impl.neomedia.codec.video.SwScale;
@@ -330,7 +330,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                 Dimension dim = VideoMediaStreamImpl.selectVideoSize(captureDevice, videoSize.width, videoSize.height);
                 frameRate = deviceConfig.getFrameRate();
                 if (dim != null)
-                    Timber.i("video send resolution: [%dx%d]", dim.width, dim.height);
+                    Timber.i("Video set initial resolution: [%dx%d]", dim.width, dim.height);
             }
 
             FrameRateControl frameRateControl = (FrameRateControl) captureDevice.getControl(FrameRateControl.class.getName());
@@ -1466,10 +1466,10 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
                     }
                 }
             }
-            else if (state > Processor.Configured) {
+            else {
                 /*
                  * cmeng: Video size change is triggered by media decoder and may change due to quality change
-                 * Therefor must not dispose of the player when a remote video dimension change;
+                 * Therefore must not dispose of the player when a remote video dimension change;
                  * otherwise there is no player when new video streaming/format is received (with no jingle action).
                  */
                 Component visualComponent = getVisualComponent(player);

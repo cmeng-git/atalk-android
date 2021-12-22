@@ -9,9 +9,9 @@ import com.sun.media.util.Registry;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.java.awt.event.*;
-import org.atalk.android.util.javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 import org.atalk.impl.neomedia.codec.*;
 import org.atalk.impl.neomedia.codec.video.*;
 import org.atalk.impl.neomedia.device.*;

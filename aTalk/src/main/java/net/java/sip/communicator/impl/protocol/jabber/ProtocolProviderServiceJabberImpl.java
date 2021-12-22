@@ -1371,6 +1371,17 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          */
         public void connected(XMPPConnection connection)
         {
+            /*
+             * re-init mConnection in case this is a new re-connection; FFR:
+             * java.lang.IllegalArgumentException:
+             * at org.jivesoftware.smack.util.Objects.requireNonNull (Objects.java:42)
+             *  at org.jivesoftware.smack.Manager.<init> (Manager.java:33)
+             * at org.jivesoftware.smackx.iqversion.VersionManager.<init> (VersionManager.java:84)
+             * at org.jivesoftware.smackx.iqversion.VersionManager.getInstanceFor (VersionManager.java:106)
+             * at net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl.initServicesAndFeatures (ProtocolProviderServiceJabberImpl.java:1734)
+             */
+            mConnection = (AbstractXMPPConnection) connection;
+
             xmppConnected.reportSuccess();
             if (connection instanceof XMPPTCPConnection)
                 setTrafficClass();

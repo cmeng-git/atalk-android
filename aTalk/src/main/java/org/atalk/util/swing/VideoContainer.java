@@ -15,9 +15,9 @@
  */
 package org.atalk.util.swing;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.java.awt.event.*;
-import org.atalk.android.util.javax.swing.SwingUtilities;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.SwingUtilities;
 
 import java.beans.*;
 

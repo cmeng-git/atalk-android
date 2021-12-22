@@ -15,8 +15,8 @@
  */
 package org.atalk.util.swing;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.JPanel;
 
 /**
  * Represents a <tt>LayoutManager</tt> which centers the first

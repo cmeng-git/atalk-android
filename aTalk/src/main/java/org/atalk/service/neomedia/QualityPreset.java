@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia;
 
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 
 /**
  * Predefined quality preset used to specify some video settings during an existing call or when

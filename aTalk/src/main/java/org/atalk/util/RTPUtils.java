@@ -20,23 +20,10 @@ import java.util.Comparator;
 /**
  * RTP-related static utility methods.
  *
- * // @deprecated
- *
  * @author Boris Grozev
  */
 public class RTPUtils
 {
-    /**
-    The compare() method in Java compares two class specific objects (x, y) given as parameters.
-     It returns the value:
-     a. 0: if (x==y)
-     b. -1: if (x < y)
-     c. 1: if (x > y)
-    */
-    public final static int EQ = 0;
-    public final static int LT = -1;
-    public final static int GT = 1;
-
     /**
      * Hex characters for converting bytes to readable hex strings
      */
@@ -88,7 +75,6 @@ public class RTPUtils
     {
         return as16Bits(a - b);
     }
-
 
     /**
      * Apply a delta to a given sequence number and return the result (taking rollover into account)
@@ -261,8 +247,7 @@ public class RTPUtils
      * E.g. it works for: [0, 2^15-1] and ([50000, 2^16) u [0, 10000])
      * Doesn't work for: [0, 2^15] and ([0, 2^15-1] u {2^16-1}) and [0, 2^16)
      */
-    public static final Comparator<? super Integer> sequenceNumberComparator
-            = (Comparator<Integer>) (a, b) -> {
+    public static final Comparator<? super Integer> sequenceNumberComparator = (Comparator<Integer>) (a, b) -> {
         if (a.equals(b)) {
             return 0;
         }

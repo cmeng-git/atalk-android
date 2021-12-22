@@ -9,7 +9,7 @@ package org.atalk.impl.neomedia.codec.video;
 import net.sf.fmj.media.AbstractCodec;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.control.FrameProcessingControlImpl;
 

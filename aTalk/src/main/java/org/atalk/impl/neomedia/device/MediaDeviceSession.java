@@ -5,8 +5,9 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.ProcessorUtility;
 import org.atalk.impl.neomedia.control.AbstractControls;
@@ -1132,15 +1133,16 @@ public class MediaDeviceSession extends PropertyChangeNotifier
             }
         }
         else if (ev instanceof ControllerClosedEvent) {
+            // cmeng: unsupported hw codec will trigger this event
+            if (ev instanceof ControllerErrorEvent) {
+                String errMessage = ((ControllerErrorEvent) ev).getMessage();
+                Timber.w("ControllerErrorEvent: %s", errMessage);
+                aTalkApp.showToastMessage(errMessage);
+            } else {
+                Timber.d("ControllerClosedEvent: %s", ((ControllerClosedEvent) ev).getMessage());
+            }
+
             Processor processor = (Processor) ev.getSourceController();
-
-            /*
-             * If everything goes according to plan, we should've removed the ControllerListener
-             * from the processor by now.
-             */
-            Timber.w("%s", ev.toString());
-
-            // TODO Should the access to processor be synchronized?
             if ((processor != null) && (this.processor == processor))
                 processorIsPrematurelyClosed = true;
         }

@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.device;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.android.util.java.awt.Dimension;
+import java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.service.configuration.ConfigurationService;
@@ -465,7 +465,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
 
             videoCaptureDevice = extractConfiguredVideoCaptureDevice(formats);
             if (videoCaptureDevice != null)
-                Timber.i("Found configuredvideo device: %s <= %s.", videoDevName, videoCaptureDevice.getName());
+                Timber.i("Found configured video device: %s <= %s.", videoDevName, videoCaptureDevice.getName());
 			else 
 				Timber.w("No Video Device was found for %s.", videoDevName);
         }
@@ -581,8 +581,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
 
             if (useCase != MediaUseCase.ANY) {
                 for (CaptureDeviceInfo cdi : cdis) {
-                    MediaUseCase cdiUseCase = DeviceSystem.LOCATOR_PROTOCOL_IMGSTREAMING
-                            .equalsIgnoreCase(cdi.getLocator().getProtocol())
+                    MediaUseCase cdiUseCase
+                            = DeviceSystem.LOCATOR_PROTOCOL_IMGSTREAMING.equalsIgnoreCase(cdi.getLocator().getProtocol())
                             ? MediaUseCase.DESKTOP : MediaUseCase.CALL;
 
                     if (cdiUseCase.equals(useCase))

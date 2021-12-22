@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import org.atalk.android.util.java.awt.Component;
+import java.awt.Component;
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
 import org.atalk.util.event.VideoListener;
@@ -15,9 +15,8 @@ import java.text.ParseException;
 import java.util.List;
 
 /**
- * Represents an <tt>OperationSet</tt> giving access to video-specific functionality in telephony
- * such as visual <tt>Component</tt>s displaying video and listening to dynamic availability of such
- * <tt>Component</tt>s.
+ * Represents an <tt>OperationSet</tt> giving access to video-specific functionality in telephony such as
+ * visual <tt>Component</tt>s displaying video and listening to dynamic availability of such <tt>Component</tt>s.
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent

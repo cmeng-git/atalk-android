@@ -11,9 +11,9 @@ import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.service.protocol.Contact;
 
-import org.atalk.android.util.java.awt.*;
-import org.atalk.android.util.javax.swing.*;
-import org.atalk.android.util.javax.swing.plaf.basic.BasicProgressBarUI;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 
 /**
  * The dialog that pops up when SMP negotiation starts.

@@ -15,7 +15,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.service.neomedia.codec.Constants;
 
 /**
- * Camera data source. Creates <tt>PreviewStream</tt> or <tt>SurfaceStream</tt> based on the used format encoding.
+ * Camera data source. Creates <tt>PreviewStream</tt> or <tt>SurfaceStream</tt> based on the used encode format.
  *
  * @author Pawel Domas
  */
@@ -45,8 +45,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 	@Override
 	protected Format setFormat(int streamIndex, Format oldValue, Format newValue)
 	{
+		// This DataSource VideoFormat supports setFormat.
 		if (newValue instanceof VideoFormat) {
-			// This DataSource supports setFormat.
 			return newValue;
 		}
 		else
