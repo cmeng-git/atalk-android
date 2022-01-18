@@ -16,10 +16,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.jingle.IceUdpTransportExtension;
-import org.xmpp.extensions.jingle.RtpDescriptionExtension;
-import org.xmpp.extensions.jingle.element.JingleContent;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.jingle.IceUdpTransportExtension;
+import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 import java.net.InetAddress;
 import java.util.*;

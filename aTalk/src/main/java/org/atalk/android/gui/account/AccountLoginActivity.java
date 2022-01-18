@@ -14,8 +14,8 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.menu.ExitMenuActivity;
-import org.atalk.android.gui.util.AndroidUtils;
 import org.osgi.framework.*;
 
 import java.util.Map;
@@ -116,26 +116,25 @@ public class AccountLoginActivity extends ExitMenuActivity
 
             switch (e.getErrorCode()) {
                 case OperationFailedException.ILLEGAL_ARGUMENT:
-                    AndroidUtils.showAlertDialog(this, R.string.service_gui_LOGIN_FAILED,
+                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
                             R.string.service_gui_USERNAME_NULL);
                     break;
                 case OperationFailedException.IDENTIFICATION_CONFLICT:
-                    AndroidUtils.showAlertDialog(this, R.string.service_gui_LOGIN_FAILED,
+                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
                             R.string.service_gui_USER_EXISTS_ERROR);
                     break;
                 case OperationFailedException.SERVER_NOT_SPECIFIED:
-                    AndroidUtils.showAlertDialog(this, R.string.service_gui_LOGIN_FAILED,
+                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
                             R.string.service_gui_SPECIFY_SERVER);
                     break;
                 default:
-                    AndroidUtils.showAlertDialog(this, getString(R.string.service_gui_LOGIN_FAILED),
-                            getString(R.string.service_gui_ACCOUNT_CREATION_FAILED,
-                                    e.getMessage()));
+                    DialogActivity.showDialog(this, R.string.service_gui_LOGIN_FAILED,
+                            R.string.service_gui_ACCOUNT_CREATION_FAILED, e.getMessage());
             }
         } catch (Exception e) {
             Timber.e(e, "Exception while adding account: %s", e.getMessage());
-            AndroidUtils.showAlertDialog(this, getString(R.string.service_gui_ERROR),
-                    getString(R.string.service_gui_ACCOUNT_CREATION_FAILED, e.getMessage()));
+            DialogActivity.showDialog(this, R.string.service_gui_ERROR,
+                    R.string.service_gui_ACCOUNT_CREATION_FAILED, e.getMessage());
         }
         return null;
     }

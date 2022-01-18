@@ -6,15 +6,16 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.atalk.util.MediaType;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.jingle.*;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 
 import org.atalk.service.neomedia.*;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.xmpp.extensions.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;

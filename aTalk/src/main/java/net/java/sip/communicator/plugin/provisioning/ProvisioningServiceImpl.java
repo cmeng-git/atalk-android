@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.NameValuePair;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.httputil.HttpUtils;
 import org.atalk.service.resources.ResourceManagementService;
@@ -478,7 +478,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
                     else
                         errorMsg = "";
 
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                             R.string.plugin_provisioning_PROV_FAILED, R.string.plugin_provisioning_PROV_FAILED_MSG);
 
                     // as shutdown service is not started and other bundles are scheduled to start, stop all of them

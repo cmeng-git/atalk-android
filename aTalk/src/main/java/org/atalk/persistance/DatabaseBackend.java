@@ -16,6 +16,7 @@
  */
 package org.atalk.persistance;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -58,6 +59,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
+@SuppressLint("Range")
 public class DatabaseBackend extends SQLiteOpenHelper
 {
     /**

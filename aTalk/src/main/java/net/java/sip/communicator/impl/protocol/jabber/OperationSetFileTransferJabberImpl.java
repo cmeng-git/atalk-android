@@ -26,8 +26,8 @@ import org.jivesoftware.smackx.filetransfer.*;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
-import org.xmpp.extensions.thumbnail.Thumbnail;
-import org.xmpp.extensions.thumbnail.ThumbnailFile;
+import org.jivesoftware.smackx.thumbnail.Thumbnail;
+import org.jivesoftware.smackx.thumbnail.ThumbnailFile;
 
 import java.io.File;
 import java.lang.reflect.Method;

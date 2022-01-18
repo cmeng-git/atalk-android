@@ -17,7 +17,6 @@
 package org.atalk.android.gui.webview;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,16 +40,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.Stack;
 
 import timber.log.Timber;
 
+/**
+ * The class displays the content accessed via given web link
+ * https://developer.android.com/guide/webapps/webview
+ *
+ * @author Eng Chong Meng
+ */
 @SuppressLint("SetJavaScriptEnabled")
 public class WebViewFragment extends OSGiFragment implements OnKeyListener
 {
     private WebView webview;
     private ProgressBar progressbar;
-    private static Context instance;
     private static final Stack<String> urlStack = new Stack<>();
 
     // stop webView.goBack() once we have started reload from urlStack
@@ -59,40 +63,28 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
     private String webUrl = null;
     private ValueCallback<Uri[]> mUploadMessageArray;
 
-    private ActivityResultLauncher<String> mGetContents;
-
     @SuppressLint("JavascriptInterface")
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        // init webUrl with urlStack.pop() if non-empty, else load from default in DB
-        if (urlStack.isEmpty()) {
-            webUrl = ConfigurationUtils.getWebPage();
-            urlStack.push(webUrl);
-        }
-        else {
-            webUrl = urlStack.pop();
-        }
-
-        instance = getContext();
         View contentView = inflater.inflate(R.layout.webview_main, container, false);
         progressbar = contentView.findViewById(R.id.progress);
         progressbar.setIndeterminate(true);
 
         webview = contentView.findViewById(R.id.webview);
-
         final WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
 
+        // https://developer.android.com/guide/webapps/webview#BindingJavaScript
         webview.addJavascriptInterface(aTalkApp.getGlobalContext(), "Android");
         if (BuildConfig.DEBUG) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-        webSettings.setMixedContentMode(0);
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
-        mGetContents = getFileUris();
 
+        ActivityResultLauncher<String> mGetContents = getFileUris();
         webview.setWebChromeClient(new WebChromeClient()
         {
             public void onProgressChanged(WebView view, int progress)
@@ -120,7 +112,17 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
             }
         });
 
+        // https://developer.android.com/guide/webapps/webview#HandlingNavigation
         webview.setWebViewClient(new MyWebViewClient(this));
+
+        // init webUrl with urlStack.pop() if non-empty, else load from default in DB
+        if (urlStack.isEmpty()) {
+            webUrl = ConfigurationUtils.getWebPage();
+            urlStack.push(webUrl);
+        }
+        else {
+            webUrl = urlStack.pop();
+        }
         webview.loadUrl(webUrl);
         return contentView;
     }
@@ -134,6 +136,26 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         webview.setFocusableInTouchMode(true);
         webview.requestFocus();
         webview.setOnKeyListener(this);
+    }
+
+    /**
+     * Init webView so it download root url stored in DB on next init
+     */
+    public static void initWebView()
+    {
+        urlStack.clear();
+    }
+
+    /**
+     * Push the last loaded/user clicked url page to the urlStack for later retrieval in onCreateView(),
+     * allow same web page to be shown when user slides and returns to the webView
+     *
+     * @param url loaded/user clicked url
+     */
+    public void addLastUrl(String url)
+    {
+        urlStack.push(url);
+        isLoadFromStack = false;
     }
 
     /**
@@ -165,30 +187,6 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
         super.onConfigurationChanged(newConfig);
     }
 
-    public static Context getInstance()
-    {
-        return instance;
-    }
-
-    /**
-     * Init webView so it download root url stored in DB on next init
-     */
-    public static void initWebView()
-    {
-        urlStack.clear();
-    }
-
-    /**
-     * Add the own loaded url page to stack for later retrieval (goBack)
-     *
-     * @param url loaded url
-     */
-    public void addUrl(String url)
-    {
-        urlStack.push(url);
-        isLoadFromStack = false;
-    }
-
     public static Bitmap getBitmapFromURL(String src)
     {
         try {
@@ -211,14 +209,13 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
      * @param v view
      * @param keyCode the entered key keycode
      * @param event the key Event
-     *
      * @return true if process
      */
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event)
     {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            // android os will not pass in KEYCODE_MENU???
+            // android OS will not pass in KEYCODE_MENU???
             if (keyCode == KeyEvent.KEYCODE_MENU) {
                 webview.loadUrl("javascript:MovimTpl.toggleMenu()");
                 return true;
@@ -226,6 +223,7 @@ public class WebViewFragment extends OSGiFragment implements OnKeyListener
 
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 if (!isLoadFromStack && webview.canGoBack()) {
+                    // Remove the last saved/displayed url push in addLastUrl, so an actual previous page is shown
                     if (!urlStack.isEmpty())
                         urlStack.pop();
                     webview.goBack();

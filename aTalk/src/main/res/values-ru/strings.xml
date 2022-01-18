@@ -128,6 +128,8 @@
     <string name="service_gui_CALL_END">Удаленный абонент завершил звонок: %1$s</string>
     <string name="service_gui_CALL_FAILED">Не удалось выполнить вызов</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Журнал вызовов</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Подтвердите и выберите пункты «Выбрать все», прежде чем переходить к пункту «Удалить».</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Ни одна запись не выбрана для удаления</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Вы уверены, что хотите удалить все выбранные записи вызовов?</string>
     <string name="service_gui_CALL_INCOMING">Входящий вызов, полученный от: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Входящий вызов</string>
@@ -137,7 +139,7 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Мы не смогли найти никаких активных аудио/видео устройств, следовательно, не смогли создать вызов.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Нет настроенного аудиоустройства.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Отсутствует аудиокодек.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Устройство или кодек %1$s не полностью сконфигурирован в «Настройки&#8230;». Проверьте и настройте.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Устройство или кодек неправильно настроены в \'Настройки…\': %1$s</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Вы хотите продолжить вызов?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Не найдено подходящих форматов медиа против предложения %1$s для приема вызова. Проверьте настройки устройства и кодека в «Настройки&#8230;».</string>
     <string name="service_gui_CALL_OUTGOING">Исходящий вызов</string>
@@ -411,6 +413,7 @@
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Требуется регистрация в чате.</string>
     <string name="service_gui_CHATROOM_JOIN_TITLE">Вступить в чат</string>
     <string name="service_gui_CHATROOM_JOIN_NAME">Введите имя комнаты для чата, к которой вы хотели бы присоединиться.</string>
+    <string name="service_gui_CHATROOM_JOIN_SUBJECT_NULL">Пожалуйста, введите название чата, к которому вы хотите присоединиться.</string>
     <string name="service_gui_CHATROOM_JOIN_WIZARD">Вступить в мастер чата</string>
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha вызов</string>
@@ -759,19 +762,21 @@
     <string name="service_gui_avatar_REMOVE_ICON">Удалить текущее изображение</string>
 
     <!-- Update checker -->
-    <string name="plugin_updatechecker_BUTTON_DOWNLOAD">Загрузить</string>
-    <string name="plugin_updatechecker_BUTTON_INSTALL">Установить</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED_TITLE">Загрузить готовый</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED">Обновление загружается и готово к установке.</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE">Выполняется</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS">Выполняется обновление загрузки.</string>
-    <string name="plugin_updatechecker_DIALOG_MESSAGE">Доступна новая версия (%1$s-%2$s) для %3$s.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE">Текущая установленная версия: (%1$s-%2$s) обновлена.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">Нет новой версии</string>
-    <string name="plugin_updatechecker_DIALOG_TITLE">Установить обновления</string>
-    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Не удалось загрузить новое обновление!</string>
-    <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Проверить наличие обновлений</string>
-    <string name="plugin_newsoftware_DIALOG_MESSAGE">Доступна новая версия программного обеспечения (%1$s).</string>
+    <string name="plugin_update_Download">Загрузить</string>
+    <string name="plugin_update_Install">Установить</string>
+    <string name="plugin_update_ReInstall">Переустановить</string>
+    <string name="plugin_update_Download_Completed">Загрузить готовый</string>
+    <string name="plugin_update_Download_Ready">Обновление (%1$s) загружается и готово к установке.</string>
+    <string name="plugin_update_InProgress">Выполняется</string>
+    <string name="plugin_update_Download_InProgress">Выполняется обновление загрузки.</string>
+    <string name="plugin_update_Update_Available">Доступна новая версия (%1$s-%2$s) для %3$s.</string>
+    <string name="plugin_update_UpToDate">Текущая установленная версия: (%1$s-%2$s) обновлена.</string>
+    <string name="plugin_update_New_Version_None">Нет новой версии</string>
+    <string name="plugin_update_Install_Update">Установить обновления</string>
+    <string name="plugin_update_Download_failed">Не удалось загрузить новое обновление!</string>
+    <string name="plugin_update_Check_Update">Проверить наличие обновлений</string>
+    <string name="plugin_update_Version_Invalid">Загруженный apk не соответствует; действительный: %s (%s)</string>
+    <string name="plugin_update_New_Version_Available">Доступна новая версия программного обеспечения (%1$s).</string>
 
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">Обо мне:</string>

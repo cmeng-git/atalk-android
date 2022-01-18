@@ -19,6 +19,7 @@ package org.atalk.android.gui.util;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.*;
@@ -82,7 +83,7 @@ public class ComboBox extends LinearLayout
         ImageButton _button = new ImageButton(context);
         _button.setImageResource(android.R.drawable.arrow_down_float);
         _button.setOnClickListener(v -> {
-            if (!spinnerList.contains(getText())) {
+            if (!TextUtils.isEmpty(getText()) && !spinnerList.contains(getText())) {
                 ViewUtil.hideKeyboard(mContext, _text);
                 setSuggestionSource(spinnerList); // rest to user supplied list
             }

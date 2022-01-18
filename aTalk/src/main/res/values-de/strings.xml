@@ -128,6 +128,8 @@
     <string name="service_gui_CALL_END">Der entfernte Anrufer hat den Anruf beendet: %1$s</string>
     <string name="service_gui_CALL_FAILED">Gescheiteter Anruf</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Anrufverlauf</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Bestätigen und \'Alle auswählen\' Elemente, bevor Sie mit \'Löschen\' fortfahren</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Kein Datensatz zum Löschen ausgewählt</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Möchten Sie wirklich alle ausgewählten Anrufdatensätze löschen?</string>
     <string name="service_gui_CALL_INCOMING">Eingehender Anruf von: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Eingehender Anruf</string>
@@ -137,7 +139,7 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Es steht kein Audio/Video-Gerät zur Verfügung, kann Anruf nicht ausführen.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Kein Audiogerät definiert.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Kein Audiocodec aktiviert.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Das %1$s Gerät oder dessen Codec ist nicht richtig unter\'Einstellungen…\' konfiguriert. Bitte überprüfen.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Das Gerät oder der Codec ist in \'Einstellungen…\' nicht richtig konfiguriert: %1$s</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Soll der Anruf fortgesetzt werden?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Es wurden keine passenden Mediaformate zum eigehenden Anruf %1$s gefunden. Bitte überprüfe das Gerät und dessen Codecs unter \'Einstellungen…\'.</string>
     <string name="service_gui_CALL_OUTGOING">Ausgehender Anruf</string>
@@ -409,6 +411,7 @@
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Dieser Chatraum benötigt eine Registrierung.</string>
     <string name="service_gui_CHATROOM_JOIN_TITLE">Chatraum beitreten</string>
     <string name="service_gui_CHATROOM_JOIN_NAME">Bitte gebe den Chatraumnamen an dem du beitreten möchtest.</string>
+    <string name="service_gui_CHATROOM_JOIN_SUBJECT_NULL">Bitte geben Sie den Namen des Chatrooms ein, dem Sie beitreten möchten.</string>
     <string name="service_gui_CHATROOM_JOIN_WIZARD">Chatraum Betreten Assistent</string>
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha Herausforderung</string>
@@ -758,19 +761,21 @@
     <string name="service_gui_avatar_REMOVE_ICON">Aktuelles Bild entfernen</string>
 
     <!-- Update checker -->
-    <string name="plugin_updatechecker_BUTTON_DOWNLOAD">Herunterladen</string>
-    <string name="plugin_updatechecker_BUTTON_INSTALL">Installieren</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED_TITLE">Laden beendet</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED">Das Update wurde heruntergeladen und kann jetzt installiert werden.</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE">In Bearbeitung</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS">Beim Herunterladen</string>
-    <string name="plugin_updatechecker_DIALOG_MESSAGE">Eine neue Version (%1$s-%2$s) für %3$s steht zum Herunterladen zur Verfügung.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE">Die installierte Version: (%1$s-%2$s) ist aktuell.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">Keine neue Version</string>
-    <string name="plugin_updatechecker_DIALOG_TITLE">Updates installieren</string>
-    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Fehler beim Herunterladen des neuen Updates!</string>
-    <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Nach Updates suchen</string>
-    <string name="plugin_newsoftware_DIALOG_MESSAGE">Eine neue Softwareversion (%1$s) ist verfügbar.</string>
+    <string name="plugin_update_Download">Herunterladen</string>
+    <string name="plugin_update_Install">Installieren</string>
+    <string name="plugin_update_ReInstall">Neu installieren</string>
+    <string name="plugin_update_Download_Completed">Laden beendet</string>
+    <string name="plugin_update_Download_Ready">Das Update (%1$s) wurde heruntergeladen und kann jetzt installiert werden.</string>
+    <string name="plugin_update_InProgress">In Bearbeitung</string>
+    <string name="plugin_update_Download_InProgress">Beim Herunterladen</string>
+    <string name="plugin_update_Update_Available">Eine neue Version (%1$s-%2$s) für %3$s steht zum Herunterladen zur Verfügung.</string>
+    <string name="plugin_update_UpToDate">Die installierte Version: (%1$s-%2$s) ist aktuell.</string>
+    <string name="plugin_update_New_Version_None">Keine neue Version</string>
+    <string name="plugin_update_Install_Update">Updates installieren</string>
+    <string name="plugin_update_Download_failed">Fehler beim Herunterladen des neuen Updates!</string>
+    <string name="plugin_update_Check_Update">Nach Updates suchen</string>
+    <string name="plugin_update_Version_Invalid">Heruntergeladene apk stimmt nicht überein; tatsächlich: %s (%s)</string>
+    <string name="plugin_update_New_Version_Available">Eine neue Softwareversion (%1$s) ist verfügbar.</string>
 
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">Über mich:</string>

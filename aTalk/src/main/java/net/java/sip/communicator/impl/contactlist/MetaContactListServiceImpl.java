@@ -18,13 +18,13 @@ package net.java.sip.communicator.impl.contactlist;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.contactlist.event.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.json.JSONObject;
 import org.osgi.framework.*;
@@ -122,9 +122,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * exist in the server stored contact list and adding locally contacts that were found on
      * the server but not in the local database).
      * <p>
-     * 2) The only provide non persistent implementations of OperationSetPresence, the meta
-     * contact list impl would create subscriptions for all local contacts in the corresponding
-     * protocol provider.
+     * 2) The only provide non persistent implementations of OperationSetPresence, the meta contact list
+     * impl would create subscriptions for all local contacts in the corresponding protocol provider.
      * <p>
      * This implementation would also start listening for any newly registered protocol provider
      * implementations and perform the same algorithm with them.
@@ -352,7 +351,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         // NA for aTalk, as groups are stored in DB
         // Iterator<ContactGroup> contactGroupsForPPS = metaGroup.getContactGroupsForProvider(protoProvider);
         // if (contactGroupsForPPS.hasNext()) {
-            // we already have at least one group corresponding to the metaGroup
+        // we already have at least one group corresponding to the metaGroup
         //     return contactGroupsForPPS.next();
         // }
 
@@ -861,7 +860,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             throw new IllegalArgumentException(metaContact + " is not a MetaContactImpl instance");
         }
 
-        MetaContactGroupImpl mcGroupImpl =  (MetaContactGroupImpl) newMetaGroup;
+        MetaContactGroupImpl mcGroupImpl = (MetaContactGroupImpl) newMetaGroup;
         MetaContactImpl metaContactImpl = (MetaContactImpl) metaContact;
 
         // first remove the meta contact from its current parent, then add to new metaGroup
@@ -1563,7 +1562,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * @param ownerProvider the provider that <tt>contact</tt> belongs to.
      * @return true if the contact is in the contact event ignore list and false otherwise.
      */
-    private boolean isContactInEventIgnoreList(String contact, ProtocolProviderService ownerProvider)
+    private boolean isContactInEventIgnoreList(@NonNull String contact, ProtocolProviderService ownerProvider)
     {
         List<ProtocolProviderService> existingProvList = mContactEventIgnoreList.get(contact);
         return (existingProvList != null) && existingProvList.contains(ownerProvider);
@@ -1597,17 +1596,15 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     }
 
     /**
-     * Removes the <tt>contact</tt> from the group event ignore list so that events concerning
-     * this group get treated.
+     * Removes the <tt>contact</tt> from the group event ignore list so that events concerning this group get treated.
      *
      * @param contact the contact whose that we'd want out of the ignore list.
      * @param ownerProvider the provider that <tt>group</tt> belongs to.
      */
-    private void removeContactFromEventIgnoreList(String contact,
-            ProtocolProviderService ownerProvider)
+    private void removeContactFromEventIgnoreList(String contact, ProtocolProviderService ownerProvider)
     {
         // first check whether the registration actually exists.
-        if (!isContactInEventIgnoreList(contact, ownerProvider)) {
+        if (TextUtils.isEmpty(contact) || !isContactInEventIgnoreList(contact, ownerProvider)) {
             return;
         }
 

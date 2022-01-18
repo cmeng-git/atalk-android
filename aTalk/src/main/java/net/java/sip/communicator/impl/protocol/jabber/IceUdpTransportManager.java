@@ -23,9 +23,9 @@ import org.ice4j.security.LongTermCredential;
 import org.ice4j.socket.DatagramPacketFilter;
 import org.ice4j.socket.MultiplexingDatagramSocket;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.xmpp.extensions.jingle.CandidateType;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.CandidateType;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.xmpp.jnodes.smack.SmackServiceNode;
 
 import java.beans.PropertyChangeEvent;

@@ -128,6 +128,8 @@
     <string name="service_gui_CALL_END">The remote caller has ended the call: %1$s</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call History</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirm and \'Select All\' items, before proceed to \'Delete\'</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_NONE">None record selected for delete</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Are you sure you want to purge all selected call records?</string>
     <string name="service_gui_CALL_INCOMING">Incoming call received from: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Incoming call</string>
@@ -137,7 +139,7 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">We could not find any active Audio/Video devices hence unable to create the call.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">No audio device configured.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">No audio codec enabled.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">The %1$s device or codec is not fully configured in \'Settings…\'. Please check and setup.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">The device or codec is not properly configured in \'Settings…\'.  %1$s</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Would you like to continue the call?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No matching media formats found against offer %1$s to receive call. Please verify device and codec setup in \'Settings…\'.</string>
     <string name="service_gui_CALL_OUTGOING">Outgoing call</string>
@@ -425,6 +427,7 @@
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION"> The chat room requires registration.</string>
     <string name="service_gui_CHATROOM_JOIN_TITLE">Join chat room</string>
     <string name="service_gui_CHATROOM_JOIN_NAME">Please enter the name of the chat room you would like to join.</string>
+    <string name="service_gui_CHATROOM_JOIN_SUBJECT_NULL">Please enter a subject for the chat room</string>
     <string name="service_gui_CHATROOM_JOIN_WIZARD">Join chat room wizard</string>
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha challenge</string>
@@ -777,19 +780,21 @@
     <string name="service_gui_avatar_REMOVE_ICON">Remove current picture</string>
 
     <!-- Update checker -->
-    <string name="plugin_updatechecker_BUTTON_DOWNLOAD">Download</string>
-    <string name="plugin_updatechecker_BUTTON_INSTALL">Install</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED_TITLE">Download finished</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED">Update is downloaded and ready to be installed.</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE">In progress</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS">Downloading update is in progress.</string>
-    <string name="plugin_updatechecker_DIALOG_MESSAGE">A new released version (%1$s-%2$s) for %3$s is available for download.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE">Your current installed version: (%1$s-%2$s) is up to date.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">No new version</string>
-    <string name="plugin_updatechecker_DIALOG_TITLE">Install Updates</string>
-    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Failed to download new update!</string>
-    <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Check for updates</string>
-    <string name="plugin_newsoftware_DIALOG_MESSAGE">A new software version (%1$s) is available.</string>
+    <string name="plugin_update_Download">Download</string>
+    <string name="plugin_update_Install">Install</string>
+    <string name="plugin_update_ReInstall">Reinstall</string>
+    <string name="plugin_update_Download_Completed">Download finished</string>
+    <string name="plugin_update_Download_Ready">Update (%1$s) is downloaded and ready to be installed.</string>
+    <string name="plugin_update_InProgress">In progress</string>
+    <string name="plugin_update_Download_InProgress">Downloading update is in progress.</string>
+    <string name="plugin_update_Update_Available">A new released version (%1$s-%2$s) for %3$s is available for download.</string>
+    <string name="plugin_update_UpToDate">Your current installed version: (%1$s-%2$s) is up to date.</string>
+    <string name="plugin_update_New_Version_None">No new version</string>
+    <string name="plugin_update_Install_Update">Install Updates</string>
+    <string name="plugin_update_Download_failed">Failed to download new update!</string>
+    <string name="plugin_update_Check_Update">Check for updates</string>
+    <string name="plugin_update_Version_Invalid">Downloaded apk does not match; actual: %s (%s)</string>
+    <string name="plugin_update_New_Version_Available">A new software version (%1$s) is available.</string>
 
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">About Me:</string>

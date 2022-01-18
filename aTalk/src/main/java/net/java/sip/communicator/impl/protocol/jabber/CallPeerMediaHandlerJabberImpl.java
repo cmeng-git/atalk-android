@@ -5,6 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
+import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
+
 import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.*;
@@ -12,8 +15,7 @@ import net.java.sip.communicator.service.protocol.media.*;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.VideoCallActivity;
-import org.atalk.android.gui.util.AndroidUtils;
-import java.awt.Component;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.*;
@@ -21,23 +23,21 @@ import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.colibri.SourceExtension;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jxmpp.jid.Jid;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.SourceExtension;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.JingleContent;
-import org.xmpp.extensions.jingle.element.JingleContent.Senders;
 
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
 
 import ch.imvs.sdes4j.srtp.SrtpCryptoAttribute;
 import timber.log.Timber;
-
-import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
-import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
 /**
  * An XMPP specific extension of the generic media handler.
@@ -1324,9 +1324,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         if (!atLeastOneValidDescription) {
             // don't just throw exception. Must inform user to take action
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_CALL),
-                    aTalkApp.getResString(R.string.service_gui_CALL_NO_MATCHING_FORMAT_H, remoteFormats.toString())
-            );
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_CALL,
+                    R.string.service_gui_CALL_NO_MATCHING_FORMAT_H, remoteFormats.toString());
 
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
                     "Offer contained no media formats or no valid media descriptions.",

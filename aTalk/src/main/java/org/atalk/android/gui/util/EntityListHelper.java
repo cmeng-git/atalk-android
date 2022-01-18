@@ -16,6 +16,8 @@
  */
 package org.atalk.android.gui.util;
 
+import static org.atalk.android.R.id.cb_media_delete;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,8 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
-
-import static org.atalk.android.R.id.cb_media_delete;
 
 /**
  * The <tt>EntityListHelper</tt> is the class through which we make operations with the
@@ -120,7 +120,7 @@ public class EntityListHelper
             try {
                 metaContactListService.removeMetaContact(contact);
             } catch (Exception ex) {
-                AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
+                DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
             }
         }).start();
     }
@@ -165,12 +165,13 @@ public class EntityListHelper
             try {
                 AndroidGUIActivator.getContactListService().removeMetaContactGroup(group);
             } catch (Exception ex) {
-                AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_GROUP), ex.getMessage());
+                DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_GROUP), ex.getMessage());
             }
         }).start();
     }
 
     // ----------------- Erase History for metaContact or ChatRoom----------------------- //
+
     /**
      * Erase chat history for either MetaContact or ChatRoomWrapper
      *
@@ -293,6 +294,7 @@ public class EntityListHelper
     }
 
     // ----------- Erase all the local stored chat history for all the entities (currently this is disabled) ------------- //
+
     /**
      * Erase all the local stored chat history for all the entities i.e. MetaContacts or ChatRoomWrappers.
      *
@@ -374,6 +376,7 @@ public class EntityListHelper
     }
 
     // ----------------- Erase Call History ----------------------- //
+
     /**
      * Erase local store call history
      *

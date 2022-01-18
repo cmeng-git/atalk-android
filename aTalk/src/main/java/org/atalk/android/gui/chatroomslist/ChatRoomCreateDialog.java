@@ -340,7 +340,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
 
-        if (!TextUtils.isEmpty(chatRoomID) && (nickName != null) && (getSelectedProvider() != null)) {
+        if (!TextUtils.isEmpty(chatRoomID) && (nickName != null) && (subject != null) && (getSelectedProvider() != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
 
             // create new if chatRoom does not exist
@@ -415,6 +415,9 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         }
         else if (nickName == null) {
             aTalkApp.showToastMessage(R.string.service_gui_CHANGE_NICKNAME_NULL);
+        }
+        else if (subject == null) {
+            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_SUBJECT_NULL);
         }
         else {
             aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_FAILED, nickName, chatRoomID);

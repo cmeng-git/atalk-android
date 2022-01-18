@@ -35,7 +35,7 @@ public interface CallHistoryService
     String TABLE_NAME = "callHistory";
     String UUID = "uuid";
     String TIME_STAMP = "timeStamp";        // TimeStamp
-    String ACCOUNT_UID = "accountUid";    // account uid
+    String ACCOUNT_UID = "accountUid";      // account uid
     String CALL_START = "callStart";        // callStart TimeStamp
     String CALL_END = "callEnd";            // callEnd TimeStamp
     String DIRECTION = "direction";         // dir

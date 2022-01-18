@@ -85,7 +85,6 @@ public class AndroidGUIActivator implements BundleActivator
      * <tt>GlobalDisplayDetailsService</tt> instance.
      */
     private static GlobalDisplayDetailsService globalDisplayService;
-    private static AlertUIService alertUIService;
     private static CredentialsStorageService credentialsService;
 
     private static MessageHistoryService messageHistoryService;
@@ -112,10 +111,6 @@ public class AndroidGUIActivator implements BundleActivator
         SecurityAuthority securityAuthority = new AndroidSecurityAuthority();
         uiService = new AndroidUIServiceImpl(securityAuthority);
         bundleContext.registerService(UIService.class.getName(), uiService, null);
-
-        // Register the alert service android implementation.
-        alertUIService = new AlertUIServiceImpl(aTalkApp.getGlobalContext());
-        bundleContext.registerService(AlertUIService.class.getName(), alertUIService, null);
 
         // Creates and registers presence status handler
         this.presenceStatusHandler = new PresenceStatusHandler();
@@ -223,16 +218,6 @@ public class AndroidGUIActivator implements BundleActivator
     public static AndroidUIServiceImpl getUIService()
     {
         return uiService;
-    }
-
-    /**
-     * Returns the implementation of the <tt>AlertUIService</tt>.
-     *
-     * @return the implementation of the <tt>AlertUIService</tt>
-     */
-    public static AlertUIService getAlertUIService()
-    {
-        return alertUIService;
     }
 
     /**

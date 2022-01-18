@@ -293,28 +293,11 @@ public class FilePathHelper
     {
         String filePath = "";
         // Query the uri with condition.
-        Cursor cursor = contentResolver.query(uri, null, whereClause, null, null);
+        Cursor cursor = contentResolver.query(uri, new String[] {MediaStore.MediaColumns.DATA}, whereClause, null, null);
         if (cursor != null) {
-            boolean moveToFirst = cursor.moveToFirst();
-            if (moveToFirst) {
-                // Get columns name by uri type.
-                String columnName = null;
-
-                if (uri == MediaStore.Images.Media.EXTERNAL_CONTENT_URI) {
-                    columnName = MediaStore.Images.Media.DATA;
-                }
-                else if (uri == MediaStore.Audio.Media.EXTERNAL_CONTENT_URI) {
-                    columnName = MediaStore.Audio.Media.DATA;
-                }
-                else if (uri == MediaStore.Video.Media.EXTERNAL_CONTENT_URI) {
-                    columnName = MediaStore.Video.Media.DATA;
-                }
-
-                // Get column value which is the uri related file local-path.
-                if (columnName != null) {
-                    int columnIndex = cursor.getColumnIndex(columnName);
-                    filePath = cursor.getString(columnIndex);
-                }
+            // Get column value which is the uri related file path.
+            if (cursor.moveToFirst()) {
+                filePath = cursor.getString(0);
             }
             cursor.close();
         }

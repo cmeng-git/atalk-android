@@ -9,6 +9,8 @@ import android.content.Context;
 
 import net.java.sip.communicator.service.gui.AlertUIService;
 
+import org.atalk.android.gui.dialogs.DialogActivity;
+
 /**
  * The <tt>AlertUIServiceImpl</tt> provides an android implementation of the <tt>AlertUIService</tt>.
  *
@@ -30,17 +32,6 @@ public class AlertUIServiceImpl implements AlertUIService
     }
 
     /**
-     * Shows an alert dialog with the given title and message.
-     *
-     * @param title the title of the dialog
-     * @param message the message to be displayed
-     */
-    public void showAlertDialog(String title, String message)
-    {
-        AndroidUtils.showAlertDialog(androidContext, title, message);
-    }
-
-    /**
      * Shows an alert dialog with the given title message and exception corresponding to the error.
      *
      * @param title the title of the dialog
@@ -49,8 +40,8 @@ public class AlertUIServiceImpl implements AlertUIService
      */
     public void showAlertDialog(String title, String message, Throwable e)
     {
-        AndroidUtils.showAlertDialog(androidContext, title, message);
-        System.err.println("Exception occured: %s" + e);
+        DialogActivity.showDialog(androidContext, title, message);
+        System.err.println("Exception occurred: %s" + e);
     }
 
     /**
@@ -63,7 +54,7 @@ public class AlertUIServiceImpl implements AlertUIService
     public void showAlertDialog(String title, String message, int type)
     {
         // TODO: Implement type warning, error, etc.
-        AndroidUtils.showAlertDialog(androidContext, title, message);
+        DialogActivity.showDialog(androidContext, title, message);
     }
 
     /**
@@ -74,7 +65,7 @@ public class AlertUIServiceImpl implements AlertUIService
      */
     public void showAlertPopup(String title, String message)
     {
-        AndroidUtils.showAlertDialog(androidContext, title, message);
+        DialogActivity.showDialog(androidContext, title, message);
     }
 
     /**
@@ -86,7 +77,7 @@ public class AlertUIServiceImpl implements AlertUIService
      */
     public void showAlertPopup(String title, String message, Throwable e)
     {
-        AndroidUtils.showAlertDialog(androidContext, title, message);
+        DialogActivity.showDialog(androidContext, title, message);
     }
 
     /**
@@ -99,7 +90,7 @@ public class AlertUIServiceImpl implements AlertUIService
      */
     public void showAlertPopup(String title, String message, String errorDialogTitle, String errorDialogMessage)
     {
-        AndroidUtils.showAlertDialog(androidContext, title, message);
+        DialogActivity.showDialog(androidContext, title, message);
     }
 
     /**
@@ -113,7 +104,7 @@ public class AlertUIServiceImpl implements AlertUIService
      */
     public void showAlertPopup(String title, String message, String errorDialogTitle, String errorDialogMessage, Throwable e)
     {
-        AndroidUtils.showAlertDialog(androidContext, title, message);
+        DialogActivity.showDialog(androidContext, title, message);
     }
 
     /**

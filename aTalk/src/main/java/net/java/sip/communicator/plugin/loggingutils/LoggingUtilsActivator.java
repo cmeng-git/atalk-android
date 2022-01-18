@@ -63,7 +63,7 @@ public class LoggingUtilsActivator implements BundleActivator
     /**
      * The Log Upload service registration.
      */
-    private ServiceRegistration logUploadServReg = null;
+    private ServiceRegistration<?> logUploadServReg = null;
 
     /**
      * <tt>LogUploadService</tt> impl instance for android.

@@ -114,7 +114,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         ListView fingerprintsList = findViewById(R.id.fp_list);
         fingerprintsList.setAdapter(fpListAdapter);
 
-        // userJid may be null
+        // mOmemoManager can never be null from caller??? NPE from FFR: OmemoAuthenticateDialog.onCreate (OmemoAuthenticateDialog.java:118)
         BareJid userJid = mOmemoManager.getOwnJid();
         String localFingerprint = null;
         try {

@@ -206,8 +206,8 @@ public class CallRecord
             callStart = df.format(startTime);
         }
 
-        Long callTime = (endTime.getTime() - start);
-        CharSequence callDuration = null;
+        long callTime = (endTime.getTime() - start);
+        CharSequence callDuration;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             callDuration = formatDuration(callTime);
         }

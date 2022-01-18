@@ -131,6 +131,8 @@
     <string name="service_gui_CALL_END">La persona que llama ha finalizado la llamada.: %1$s</string>
     <string name="service_gui_CALL_FAILED">Llamada fallida</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de Llamadas</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirme y \'Seleccione todos\' los elementos, antes de continuar con \'Eliminar\'</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Ningún registro seleccionado para eliminar</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">¿Está seguro de que desea purgar todos los registros de llamadas seleccionados?</string>
     <string name="service_gui_CALL_INCOMING">Llamada recibida desde: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Llamada entrante</string>
@@ -140,7 +142,7 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Ningún dispositivo de audio configurado.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">No hay ningún codec de audio activado.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">El dispositivo o códec %1$s no está totalmente configurado en \'Ajustes…\'. Por favor, comprobar y configurar.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">El dispositivo o códec no está configurado correctamente en \'Ajustes…\': %1$s</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">¿Continuar la llamada?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">No hay formatos de medios que coincidan con la oferta %1$s para recibir llamadas. Por favor, compruebar la configuración del dispositivo y el códec en \'Ajustes…\'.</string>
     <string name="service_gui_CALL_OUTGOING">Llamada saliente</string>
@@ -428,6 +430,7 @@
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION"> La sala de chat requiere registro.</string>
     <string name="service_gui_CHATROOM_JOIN_TITLE">Unirse a una sala de charla</string>
     <string name="service_gui_CHATROOM_JOIN_NAME">Por favor, introduce el nombre de la sala de chat a la que te gustaría unirte.</string>
+    <string name="service_gui_CHATROOM_JOIN_SUBJECT_NULL">Ingrese el nombre de la sala de chat a la que desea unirse.</string>
     <string name="service_gui_CHATROOM_JOIN_WIZARD">Unirse con el asistente de la sala de charla</string>
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha</string>
@@ -786,19 +789,21 @@
     <string name="service_gui_avatar_REMOVE_ICON">Eliminar la imagen actual</string>
 
     <!-- Update checker -->
-    <string name="plugin_updatechecker_BUTTON_DOWNLOAD">Descargar</string>
-    <string name="plugin_updatechecker_BUTTON_INSTALL">Instalar</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED_TITLE">Descarga finalizada</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED">La actualización está descargada y lista para ser instalada.</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE">En progreso</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS">La descarga de la actualización está en curso.</string>
-    <string name="plugin_updatechecker_DIALOG_MESSAGE">Una nueva versión (%1$s-%2$s) para %3$s está disponible para su descarga.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE">Versión instalada actual: (%1$s-%2$s) está actualizada.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">No hay nueva versión</string>
-    <string name="plugin_updatechecker_DIALOG_TITLE">Instalar las actualizaciones</string>
-    <string name="plugin_updatechecker_DOWNLOAD_FAILED">¡Error al descargar la nueva actualización!</string>
-    <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Comprobar actualizaciones</string>
-    <string name="plugin_newsoftware_DIALOG_MESSAGE">Una nueva versión de software (%1$s) está disponible.</string>
+    <string name="plugin_update_Download">Descargar</string>
+    <string name="plugin_update_Install">Instalar</string>
+    <string name="plugin_update_ReInstall">Reinstalar</string>
+    <string name="plugin_update_Download_Completed">Descarga finalizada</string>
+    <string name="plugin_update_Download_Ready">La actualización (%1$s) está descargada y lista para ser instalada.</string>
+    <string name="plugin_update_InProgress">En progreso</string>
+    <string name="plugin_update_Download_InProgress">La descarga de la actualización está en curso.</string>
+    <string name="plugin_update_Update_Available">Una nueva versión (%1$s-%2$s) para %3$s está disponible para su descarga.</string>
+    <string name="plugin_update_UpToDate">Versión instalada actual: (%1$s-%2$s) está actualizada.</string>
+    <string name="plugin_update_New_Version_None">No hay nueva versión</string>
+    <string name="plugin_update_Install_Update">Instalar las actualizaciones</string>
+    <string name="plugin_update_Download_failed">¡Error al descargar la nueva actualización!</string>
+    <string name="plugin_update_Check_Update">Comprobar actualizaciones</string>
+    <string name="plugin_update_Version_Invalid">El apk descargado no coincide; real: %s (%s)</string>
+    <string name="plugin_update_New_Version_Available">Una nueva versión de software (%1$s) está disponible.</string>
 
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">Sobre mi:</string>

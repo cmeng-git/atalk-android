@@ -27,7 +27,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
 import org.atalk.android.gui.chat.*;
 import org.atalk.android.gui.chatroomslist.*;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.*;
@@ -350,9 +350,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             sourceAdHocChatRoom.addMessageListener(this);
         }
         else if (evt.getEventType().equals(LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOIN_FAILED)) {
-            AndroidGUIActivator.getAlertUIService().showAlertPopup(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_REASON,
-                            sourceAdHocChatRoom.getName(), evt.getReason()));
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_ERROR,
+                    R.string.service_gui_CHATROOM_JOIN_FAILED_REASON, sourceAdHocChatRoom.getName(), evt.getReason());
         }
         else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals
@@ -414,9 +413,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             sourceChatRoom.addLocalUserRoleListener(this);
         }
         else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOIN_FAILED.equals(eventType)) {
-            AndroidGUIActivator.getAlertUIService().showAlertPopup(aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED_REASON,
-                            sourceChatRoom.getName(), evt.getReason()));
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_ERROR,
+                    R.string.service_gui_CHATROOM_JOIN_FAILED_REASON, sourceChatRoom.getName(), evt.getReason());
         }
         else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED.equals(eventType)
@@ -504,10 +502,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             List<String> members = new LinkedList<>(contacts);
             chatRoom = groupChatOpSet.createAdHocChatRoom("chatroom-" + new Date().getTime(), members, reason);
         } catch (OperationFailedException | OperationNotSupportedException ex) {
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                    aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_CHATROOM_CREATE_ERROR,
-                            protocolProvider.getProtocolDisplayName()));
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_ERROR,
+                    R.string.service_gui_CHATROOM_CREATE_ERROR, protocolProvider.getProtocolDisplayName());
         }
 
         if (chatRoom != null) {
@@ -533,10 +529,8 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
 
         if (chatRoom == null) {
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                    aTalkApp.getResString(R.string.service_gui_WARNING),
-                    aTalkApp.getResString(R.string.service_gui_CHATROOM_NOT_CONNECTED,
-                            chatRoomWrapper.getAdHocChatRoomName()));
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_WARNING,
+                    R.string.service_gui_CHATROOM_NOT_CONNECTED, chatRoomWrapper.getAdHocChatRoomName());
             return;
         }
         new JoinAdHocChatRoomTask(chatRoomWrapper).execute();
@@ -607,7 +601,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             chatRoom.leave();
         }
         else {
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                     R.string.service_gui_WARNING, R.string.service_gui_CHATROOM_LEAVE_NOT_CONNECTED);
         }
     }
@@ -779,7 +773,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             }
 
             if (!SUCCESS.equals(returnCode) && !AUTHENTICATION_FAILED.equals(returnCode)) {
-                MUCActivator.getAlertUIService().showAlertDialog(
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                         aTalkApp.getResString(R.string.service_gui_ERROR), errorMessage);
             }
         }

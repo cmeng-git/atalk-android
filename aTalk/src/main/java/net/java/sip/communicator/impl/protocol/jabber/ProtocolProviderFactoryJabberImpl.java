@@ -151,7 +151,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
         /*
          * Need to kill the protocolProvider service prior to making and account properties updates
          */
-        ServiceRegistration registration = registeredAccounts.get(accountID);
+        ServiceRegistration<?> registration = registeredAccounts.get(accountID);
         if (registration != null) {
             try {
                 // unregister provider before removing it.
@@ -159,10 +159,11 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
                     protocolProvider.unregister();
                     protocolProvider.shutdown();
                 }
-            } catch (Throwable ignore) {
+                registration.unregister();
+            } catch (Throwable e) {
                 // don't care as we are modifying and will unregister the service and will register again
+                Timber.w("Exception in modifyAccount: %s", e.getMessage());
             }
-            registration.unregister();
         }
 
         if (accountProperties == null)
@@ -178,7 +179,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
             unloadAccount(accountID);
             accountID.updateJabberAccountID(userId);
             getAccountManager().modifyAccountId(accountID);
-            // Let purge unused identitity to clean up. incase user change the mind
+            // Let purge unused identity to clean up. in case user change the mind
             // ((SQLiteOmemoStore) OmemoService.getInstance().getOmemoStoreBackend()).cleanUpOmemoDB();
         }
         else {

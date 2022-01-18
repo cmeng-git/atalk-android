@@ -40,14 +40,6 @@ public interface AlertUIService
     static final int ERROR = 0;
 
     /**
-     * Shows an alert dialog with the given title and message.
-     *
-     * @param title the title of the dialog
-     * @param message the message to be displayed
-     */
-    void showAlertDialog(String title, String message);
-
-    /**
      * Shows an alert dialog with the given title message and exception corresponding to the error.
      *
      * @param title the title of the dialog

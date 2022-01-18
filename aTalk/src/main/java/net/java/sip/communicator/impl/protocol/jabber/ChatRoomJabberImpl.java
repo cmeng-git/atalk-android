@@ -26,7 +26,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.conference.CaptchaDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
@@ -38,6 +38,7 @@ import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.jitsimeet.*;
 import org.jivesoftware.smackx.muc.*;
 import org.jivesoftware.smackx.muc.filter.MUCUserStatusCodeFilter;
 import org.jivesoftware.smackx.muc.packet.Destroy;
@@ -62,9 +63,8 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtension;
-import org.xmpp.extensions.condesc.TransportExtension;
-import org.xmpp.extensions.jitsimeet.*;
+import org.jivesoftware.smackx.condesc.ConferenceDescriptionExtension;
+import org.jivesoftware.smackx.condesc.TransportExtension;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
@@ -867,8 +867,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         try {
             mMultiUserChat.destroy(reason, roomName);
         } catch (NoResponseException | NotConnectedException | InterruptedException e) {
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_ERROR),
-                    aTalkApp.getResString(R.string.service_gui_CHATROOM_DESTROY_EXCEPTION, e.getMessage()));
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_ERROR,
+                    R.string.service_gui_CHATROOM_DESTROY_EXCEPTION, e.getMessage());
             return false;
         }
         return true;

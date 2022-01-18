@@ -109,7 +109,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     /**
      * The message source service registration.
      */
-    private ServiceRegistration messageSourceServiceReg = null;
+    private ServiceRegistration<?> messageSourceServiceReg = null;
 
     private SQLiteDatabase mDB;
     private ContentValues contentValues = new ContentValues();

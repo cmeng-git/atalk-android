@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.DataObject;
 
 import org.jetbrains.annotations.NotNull;
-import org.xmpp.extensions.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import java.beans.PropertyChangeListener;
 import java.util.*;

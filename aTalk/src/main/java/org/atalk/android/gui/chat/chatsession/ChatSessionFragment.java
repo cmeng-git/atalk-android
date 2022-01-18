@@ -77,7 +77,7 @@ public class ChatSessionFragment extends OSGiFragment
     /**
      * The list of chat session records
      */
-    private List<ChatSessionRecord> sessionRecords = new ArrayList<>();
+    private final List<ChatSessionRecord> sessionRecords = new ArrayList<>();
 
     /**
      * The Chat session adapter for user selection
@@ -92,24 +92,24 @@ public class ChatSessionFragment extends OSGiFragment
     /**
      * A map of <Entity Jid, MetaContact>
      */
-    private Map<String, MetaContact> mMetaContacts = new LinkedHashMap<>();
+    private final Map<String, MetaContact> mMetaContacts = new LinkedHashMap<>();
 
     /**
      * A map of <Entity Jid, ChatRoomWrapper>
      */
-    private Map<String, ChatRoomWrapper> chatRoomWrapperList = new LinkedHashMap<>();
+    private final Map<String, ChatRoomWrapper> chatRoomWrapperList = new LinkedHashMap<>();
 
     /**
      * A map of <Account Jid, ChatRoomProviderWrapper>
      */
-    private Map<String, ChatRoomProviderWrapper> mucRCProviderList = new LinkedHashMap<>();
+    private final Map<String, ChatRoomProviderWrapper> mucRCProviderList = new LinkedHashMap<>();
 
     private List<String> chatRoomList = new ArrayList<>();
 
     /**
      * A map reference of entity to ChatRecordViewHolder for the unread message count update
      */
-    private static Map<String, ChatRecordViewHolder> crViewHolderMap = new HashMap<>();
+    private static final Map<String, ChatRecordViewHolder> crViewHolderMap = new HashMap<>();
 
     private MUCServiceImpl mucService;
 
@@ -173,12 +173,10 @@ public class ChatSessionFragment extends OSGiFragment
 
         private ChatSessionAdapter(LayoutInflater inflater)
         {
-            sessionRecords.clear();
-            mMetaContacts.clear();
             mInflater = inflater;
 
             new InitChatRoomWrapper().execute();
-            new getChatSessionRecords().execute();
+            new getChatSessionRecords(new Date()).execute();
         }
 
         @Override
@@ -196,13 +194,13 @@ public class ChatSessionFragment extends OSGiFragment
         /**
          * Remove the sessionRecord by its sessionUuid
          *
-         * @param ssesionUuid session Uuid
+         * @param sessionUuid session Uuid
          */
-        public void removeItem(String ssesionUuid)
+        public void removeItem(String sessionUuid)
         {
             int index = 0;
             for (ChatSessionRecord cdRecord : sessionRecords) {
-                if (cdRecord.getSessionUuid().equals(ssesionUuid))
+                if (cdRecord.getSessionUuid().equals(sessionUuid))
                     break;
                 index++;
             }
@@ -331,6 +329,16 @@ public class ChatSessionFragment extends OSGiFragment
          */
         private class getChatSessionRecords extends AsyncTask<Void, Void, Void>
         {
+            final Date mEndDate;
+
+            public getChatSessionRecords(Date date)
+            {
+                mEndDate = date;
+                sessionRecords.clear();
+                mMetaContacts.clear();
+                chatSessionListView.clearChoices();
+            }
+
             @Override
             protected Void doInBackground(Void... params)
             {
@@ -343,7 +351,7 @@ public class ChatSessionFragment extends OSGiFragment
                         addContactStatusListener(pps);
                         String userUid = pps.getAccountID().getAccountUniqueID();
 
-                        csRecordPPS = mMHS.findSessionByEndDate(userUid, new Date());
+                        csRecordPPS = mMHS.findSessionByEndDate(userUid, mEndDate);
                         if (csRecordPPS.size() != 0)
                             sessionRecords.addAll(csRecordPPS);
                     }
@@ -511,9 +519,7 @@ public class ChatSessionFragment extends OSGiFragment
     public void onTaskComplete(Integer result, List<String> deletedUUIDs)
     {
         if (result > 0) {
-            sessionRecords.clear();
-            mMetaContacts.clear();
-            chatSessionAdapter.new getChatSessionRecords().execute();
+            chatSessionAdapter.new getChatSessionRecords(new Date()).execute();
         }
     }
 

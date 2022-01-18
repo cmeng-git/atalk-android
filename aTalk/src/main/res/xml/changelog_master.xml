@@ -6,6 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="2.8.1 (01/18/2022)" versioncode="208010">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Enhance Call History UI to allow deletion of records order than the specified timestamp</change>
+        <change>Check to ensure chatRoom creation cannot have subject set to null (smack 4.4.4 Bookmarks assert value != null)</change>
+        <change>Change FilePathHelper#getRealPath to use MediaStore.MediaColumns.DATA to retrieve filePath disregard of the content type</change>
+        <change>Allow download and install/reinstall the apk for the new or same version (Debug version only)</change>
+        <change>Upgrade build to support android API-32</change>
+        <change>Fix (if possible) all Crash/ANR cases from FFR prior to v2.8.0</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="2.8.0 (12/22/2021)" versioncode="208000">
         <change>Migrate to use android Camera2 API replacing deprecated Camera API; remove the old camera background handler</change>
         <change>Enhance remote video streaming handling with higher frame rate; also smoother display transition when sending device is rotated</change>
@@ -46,7 +57,6 @@
     </release>
 
     <release version="2.6.4 (08/21/2021)" versioncode="206040">
-        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Fix problem when "Chat history logging" option is disabled, any file transfer session will purge all the logged messages.</change>
         <change>Fix chat messages view is not updated properly when more history messages are being fetched with user scrolling up.</change>
         <change>Ensure file transfer status is consistently being reported even after resume from chat session closed.</change>

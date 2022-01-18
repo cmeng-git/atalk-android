@@ -31,7 +31,6 @@ import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
-import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.osgi.framework.*;
@@ -54,8 +53,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     /**
      * Sort database message records by TimeStamp in ASC or DESC
      */
-    private static final String ORDER_ASC = ChatMessage.TIME_STAMP + " ASC";
-    private static final String ORDER_DESC = ChatMessage.TIME_STAMP + " DESC";
+    private static final String ORDER_ASC = CallHistoryService.CALL_START + " ASC";
+    private static final String ORDER_DESC = CallHistoryService.CALL_START + " DESC";
 
     private static String[] STRUCTURE_NAMES = new String[]{
             "accountUID", "callStart", "callEnd",
@@ -64,7 +63,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
             "callParticipantStates", "callEndReason",
             "callParticipantNames", "secondaryCallParticipantIDs"};
 
-    private static HistoryRecordStructure recordStructure = new HistoryRecordStructure(STRUCTURE_NAMES);
+    private static final HistoryRecordStructure recordStructure = new HistoryRecordStructure(STRUCTURE_NAMES);
 
     private static final char DELIMITER = ',';
 
@@ -233,7 +232,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
     /**
      * Returns all the calls made by all the contacts in the supplied <tt>metaContact</tt>
-     * on and after the given date.
+     * on and after and include the given date.
      *
      * @param metaContact MetaContact which contacts participate in the returned calls
      * @param startDate Date the start date of the calls
@@ -252,7 +251,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
             Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
                     CallHistoryService.ENTITY_JID + "=? AND "
-                            + CallHistoryService.TIME_STAMP + ">=?", args, null, null, ORDER_ASC);
+                            + CallHistoryService.CALL_START + ">=?", args, null, null, ORDER_ASC);
 
             while (cursor.moveToNext()) {
                 result.add(convertHistoryRecordToCallRecord(cursor));
@@ -262,7 +261,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Returns all the calls made after the given date
+     * Returns all the calls made after and include the given date
      *
      * @param startDate Date the start date of the calls
      * @return the <tt>CallHistoryQuery</tt>, corresponding to this find
@@ -275,7 +274,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         String[] args = {startTimeStamp};
 
         Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
-                CallHistoryService.TIME_STAMP + ">=?", args, null, null, ORDER_ASC);
+                CallHistoryService.CALL_START + ">=?", args, null, null, ORDER_ASC);
 
         while (cursor.moveToNext()) {
             result.add(convertHistoryRecordToCallRecord(cursor));
@@ -285,7 +284,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
     /**
      * Returns all the calls made by all the contacts in the supplied metaContact before
-     * the given date
+     * and include the given date
      *
      * @param metaContact MetaContact which contacts participate in the returned calls
      * @param endDate Date the end date of the calls
@@ -303,7 +302,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
             Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
                     CallHistoryService.ENTITY_JID + "=? AND "
-                            + CallHistoryService.TIME_STAMP + "<?", args, null, null, ORDER_ASC);
+                            + CallHistoryService.CALL_START + "<=?", args, null, null, ORDER_ASC);
 
             while (cursor.moveToNext()) {
                 result.add(convertHistoryRecordToCallRecord(cursor));
@@ -313,29 +312,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Returns all the calls made before the given date
-     *
-     * @param endDate Date the end date of the calls
-     * @return Collection of CallRecords with CallPeerRecord
-     */
-    public Collection<CallRecord> findByEndDate(Date endDate)
-    {
-        TreeSet<CallRecord> result = new TreeSet<>(new CallRecordComparator());
-
-        String endTimeStamp = String.valueOf(endDate.getTime());
-        String[] args = {endTimeStamp};
-
-        Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
-                CallHistoryService.TIME_STAMP + "<?", args, null, null, ORDER_ASC);
-
-        while (cursor.moveToNext()) {
-            result.add(convertHistoryRecordToCallRecord(cursor));
-        }
-        return result;
-    }
-
-    /**
-     * Returns all the calls made before the given date
+     * Returns all the calls made by the accountUuid, before and include the given date
      *
      * @param endDate Date the end date of the calls
      * @return Collection of CallRecords with CallPeerRecord
@@ -349,7 +326,29 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
         Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
                 CallHistoryService.ACCOUNT_UID + "=? AND "
-                        + CallHistoryService.TIME_STAMP + "<?", args, null, null, ORDER_DESC);
+                        + CallHistoryService.CALL_START + "<=?", args, null, null, ORDER_DESC);
+
+        while (cursor.moveToNext()) {
+            result.add(convertHistoryRecordToCallRecord(cursor));
+        }
+        return result;
+    }
+
+    /**
+     * Returns all the calls made before and include the given date
+     *
+     * @param endDate Date the end date of the calls
+     * @return Collection of CallRecords with CallPeerRecord
+     */
+    public Collection<CallRecord> findByEndDate(Date endDate)
+    {
+        TreeSet<CallRecord> result = new TreeSet<>(new CallRecordComparator());
+
+        String endTimeStamp = String.valueOf(endDate.getTime());
+        String[] args = {endTimeStamp};
+
+        Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
+                CallHistoryService.CALL_START + "<=?", args, null, null, ORDER_ASC);
 
         while (cursor.moveToNext()) {
             result.add(convertHistoryRecordToCallRecord(cursor));
@@ -380,8 +379,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
             Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
                     CallHistoryService.ENTITY_JID + "=? AND "
-                            + CallHistoryService.TIME_STAMP + ">=? AND "
-                            + CallHistoryService.TIME_STAMP + "<?",
+                            + CallHistoryService.CALL_START + ">=? AND "
+                            + CallHistoryService.CALL_START + "<?",
                     args, null, null, ORDER_ASC);
 
             while (cursor.moveToNext()) {
@@ -407,8 +406,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         String[] args = {startTimeStamp, endTimeStamp};
 
         Cursor cursor = mDB.query(CallHistoryService.TABLE_NAME, null,
-                CallHistoryService.TIME_STAMP + ">=? AND "
-                        + CallHistoryService.TIME_STAMP + "<?", args, null, null, ORDER_ASC);
+                CallHistoryService.CALL_START + ">=? AND "
+                        + CallHistoryService.CALL_START + "<?", args, null, null, ORDER_ASC);
 
         while (cursor.moveToNext()) {
             result.add(convertHistoryRecordToCallRecord(cursor));
@@ -731,9 +730,9 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
                     ? "" : item.getPeerSecondaryAddress());
         }
 
-        Long timeStamp = new Date().getTime();
         String Uuid = callRecord.getCallUuid();
         String accountUid = callRecord.getSourceCall().getProtocolProvider().getAccountID().getAccountUniqueID();
+        Long timeStamp = new Date().getTime();
 
         contentValues.clear();
         contentValues.put(CallHistoryService.UUID, Uuid);

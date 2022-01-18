@@ -30,7 +30,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
@@ -510,7 +509,7 @@ public final class HttpFileUploadManager extends Manager {
         urlConnection.setDoOutput(true);
         urlConnection.setFixedLengthStreamingMode(fileSize);
         urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
-        for (Entry<String, String> header : slot.getHeaders().entrySet()) {
+        for (Map.Entry<String, String> header : slot.getHeaders().entrySet()) {
             urlConnection.setRequestProperty(header.getKey(), header.getValue());
         }
 

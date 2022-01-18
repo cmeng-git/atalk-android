@@ -22,7 +22,7 @@ public class HistoryActivator implements BundleActivator
 	/**
 	 * The service registration.
 	 */
-	private ServiceRegistration serviceRegistration;
+	private ServiceRegistration<?> serviceRegistration;
 
 	/**
 	 * Initialize and start history service

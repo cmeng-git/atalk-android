@@ -11,26 +11,27 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.*;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.BundleContext;
 
 import java.util.Collection;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import timber.log.Timber;
 
 /**
@@ -121,7 +122,6 @@ public class CallContactFragment extends OSGiFragment
                 if (Roster.getInstanceFor(connection).contains(JidCreate.bareFrom(calleeAddress))) {
 
                     String accountAddress = provider.getAccountID().getAccountJid();
-
                     MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, accountAddress);
                     menuItem.setOnMenuItemClickListener(item -> {
                         createCall(provider, calleeAddress);
@@ -155,7 +155,7 @@ public class CallContactFragment extends OSGiFragment
                     CallManager.createCall(provider, destination, false);
                 } catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
-                    AndroidUtils.showAlertDialog(getActivity(), getString(R.string.service_gui_ERROR), t.getMessage());
+                    DialogActivity.showDialog(getActivity(), getString(R.string.service_gui_ERROR), t.getMessage());
                 }
             }
         }.start();

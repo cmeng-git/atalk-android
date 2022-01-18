@@ -213,7 +213,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
         return bundle;
     }
 
-    public ServiceRegistration registerService(BundleImpl origin, Class clazz, String[] classNames,
+    public ServiceRegistration registerService(BundleImpl origin, Class<?> clazz, String[] classNames,
             Object service, Dictionary<String, ?> properties)
     {
         if ((classNames == null) || (classNames.length == 0))
@@ -233,19 +233,10 @@ public class FrameworkImpl extends BundleImpl implements Framework
                         if (Class.forName(className, false, classLoader).isAssignableFrom(serviceClass)) {
                             illegalArgumentException = false;
                         }
-                    } catch (ClassNotFoundException cnfe) {
-                        cause = cnfe;
-                    } catch (ExceptionInInitializerError eiie) {
+                    } catch (ClassNotFoundException | LinkageError eiie) {
                         cause = eiie;
-                    } catch (LinkageError le) {
-                        cause = le;
                     }
-                    if (illegalArgumentException) {
-                        IllegalArgumentException iae = new IllegalArgumentException(className);
-                        if (cause != null)
-                            iae.initCause(cause);
-                        throw iae;
-                    }
+                    if (illegalArgumentException) throw new IllegalArgumentException(className, cause);
                 }
             }
         }
@@ -309,7 +300,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
                 }
             };
 
-            frameworkStartLevel.setStartLevel(startLevel, new FrameworkListener[]{listener});
+            frameworkStartLevel.setStartLevel(startLevel, listener);
             synchronized (listener) {
                 boolean interrupted = false;
 
@@ -435,8 +426,11 @@ public class FrameworkImpl extends BundleImpl implements Framework
         if (removed) {
             fireServiceEvent(ServiceEvent.UNREGISTERING, serviceRegistration.getReference());
         }
-        else
+        else {
+            // Just log an warning, do not throw?
+            Timber.w("%s is not registered with ServiceRegistration", serviceRegistration);
             throw new IllegalStateException("serviceRegistrations");
+        }
     }
 
     public ServiceReference<?>[] getRegisteredServices()

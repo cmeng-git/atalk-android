@@ -20,7 +20,7 @@ public class NotificationServiceActivator implements BundleActivator
 {
     protected static BundleContext bundleContext;
     private static ConfigurationService configService;
-    private ServiceRegistration notificationService;
+    private ServiceRegistration<?> notificationService;
 
     public void start(BundleContext bc)
             throws Exception

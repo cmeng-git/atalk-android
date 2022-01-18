@@ -44,8 +44,8 @@ import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
-import org.xmpp.extensions.jingle.RtpDescriptionExtension;
-import org.xmpp.extensions.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import java.util.*;
 import java.util.concurrent.Callable;

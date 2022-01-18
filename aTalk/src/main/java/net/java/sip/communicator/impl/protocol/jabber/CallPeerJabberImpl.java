@@ -24,12 +24,12 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.SourceExtension;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.*;
-import org.xmpp.extensions.jingle.element.JingleContent.Senders;
-import org.xmpp.extensions.jitsimeet.SSRCInfoExtension;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.colibri.SourceExtension;
+import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.element.*;
+import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
+import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.*;
