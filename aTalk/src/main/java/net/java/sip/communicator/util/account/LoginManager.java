@@ -13,6 +13,7 @@ import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.osgi.framework.*;
 
@@ -357,11 +358,10 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
 //				else if (errorCode == OperationFailedException.NETWORK_FAILURE) {
 //					Timber.e(alertMsg + "network failure: " + ex);
 //				}
-                UtilActivator.getAlertUIService().showAlertDialog(
-                        aTalkApp.getResString(R.string.service_gui_ERROR),
-                        aTalkApp.getResString(R.string.service_gui_LOGOFF_NOT_SUCCEEDED,
-                                protocolProvider.getAccountID().getUserID(),
-                                protocolProvider.getAccountID().getService()));
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                        R.string.service_gui_ERROR, R.string.service_gui_LOGOFF_NOT_SUCCEEDED,
+                        protocolProvider.getAccountID().getUserID(),
+                        protocolProvider.getAccountID().getService());
             }
         }
     }

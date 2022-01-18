@@ -37,7 +37,7 @@ public class JabberActivator implements BundleActivator
     /**
      * Service reference for the currently valid Jabber provider factory.
      */
-    private ServiceRegistration jabberPpFactoryServReg = null;
+    private ServiceRegistration<?> jabberPpFactoryServReg = null;
 
     /**
      * Bundle context from OSGi.

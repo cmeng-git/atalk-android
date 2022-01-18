@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.*;
 import org.atalk.android.gui.call.JingleMessageHelper;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
-import org.xmpp.extensions.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import java.util.Map;
 

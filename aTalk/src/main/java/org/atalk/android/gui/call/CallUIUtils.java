@@ -24,8 +24,7 @@ public class CallUIUtils
             if (image != null && image.length > 0)
                 return image;
         }
-        return UtilActivator.getResources()
-                .getImageInBytes(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
+        return UtilActivator.getResources().getImageInBytes(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
     }
 
     public static String getCalleeAddress(Call incomingCall)

@@ -9,10 +9,10 @@ import net.java.sip.communicator.impl.protocol.jabber.JabberActivator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.util.MediaType;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.JingleContent;
-import org.xmpp.extensions.jingle.element.JingleContent.Creator;
-import org.xmpp.extensions.jingle.element.JingleContent.Senders;
+import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleContent.Creator;
+import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 
 import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.NetworkUtils;

@@ -12,12 +12,11 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.service.protocol.ContactGroup;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.service.osgi.OSGiDialogFragment;
 
 import timber.log.Timber;
@@ -105,7 +104,8 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
                     AndroidGUIActivator.getContactListService().moveMetaContact(metaContact, selectedItem);
                 } catch (MetaContactListException e) {
                     Timber.e(e, "%s", e.getMessage());
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Error", e.getMessage());
+                    DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                            aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
                 }
             }
         }.start();

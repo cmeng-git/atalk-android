@@ -20,14 +20,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.*;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 
-import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 
@@ -35,13 +36,19 @@ import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
+/**
+ * The class implements the WebViewClient for App internal web access
+ * https://developer.android.com/guide/webapps/webview
+ *
+ * @author Eng Chong Meng
+ */
 public class MyWebViewClient extends WebViewClient
 {
     // Domain match pattern for last two segments of host
     private final Pattern pattern = Pattern.compile("^.*?[.](.*?[.].+?)$");
 
-    private WebViewFragment viewFragment;
-    private Context mContext;
+    private final WebViewFragment viewFragment;
+    private final Context mContext;
 
     private EditText mPasswordField;
 
@@ -51,11 +58,13 @@ public class MyWebViewClient extends WebViewClient
         mContext = viewFragment.getContext();
     }
 
+    @Override
     public boolean shouldOverrideUrlLoading(WebView webView, String url)
     {
-        // This is my website, so do not override; let my WebView load the page
+        // Timber.d("shouldOverrideUrlLoading for url (webView url): %s (%s)", url, webView.getUrl());
+        // This user clicked url is from the same website, so do not override; let MyWebViewClient load the page
         if (isDomainMatch(webView, url)) {
-            viewFragment.addUrl(url);
+            viewFragment.addLastUrl(url);
             return false;
         }
 
@@ -75,16 +84,33 @@ public class MyWebViewClient extends WebViewClient
         return true;
     }
 
+    /**
+     * If you click on any link inside the webpage of the WebView, that page will not be loaded inside your WebView.
+     * In order to do that you need to extend your class from WebViewClient and override the method below.
+     * https://developer.android.com/guide/webapps/webview#HandlingNavigation
+     *
+     * @param view The WebView that is initiating the callback.
+     * @param request Object containing the details of the request.
+     * @return {@code true} to cancel the current load, otherwise return {@code false}.
+     */
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request)
+    {
+        String url = request.getUrl().toString();
+        return shouldOverrideUrlLoading(view, url);
+    }
+
     // public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
     // {
     //     view.loadUrl("file:///android_asset/movim/error.html");
     // }
 
-//    public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error)
-//    {
-//        // view.loadUrl("file:///android_asset/movim/ssl.html");
-//    }
+    // public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error)
+    // {
+    //     // view.loadUrl("file:///android_asset/movim/ssl.html");
+    // }
 
+    @Override
     public void onReceivedHttpAuthRequest(final WebView view, final HttpAuthHandler handler, final String host,
             final String realm)
     {
@@ -134,7 +160,7 @@ public class MyWebViewClient extends WebViewClient
     }
 
     /**
-     * Match case inSenstitive for whole or at least last two segment of host
+     * Match non-case sensitive for whole or at least last two segment of host
      *
      * @param webView the current webView
      * @param url to be loaded
@@ -146,11 +172,11 @@ public class MyWebViewClient extends WebViewClient
         String aim = Uri.parse(url).getHost();
 
         // return true if this is the first time url loading or exact match of host
-        if (StringUtils.isEmpty(origin) || origin.equalsIgnoreCase(aim))
+        if (TextUtils.isEmpty(origin) || origin.equalsIgnoreCase(aim))
             return true;
 
         // return false if aim contains no host string i.e. not a url e.g. mailto:info[at]example.com
-        if (StringUtils.isEmpty(aim))
+        if (TextUtils.isEmpty(aim))
             return false;
 
         String originDomain = pattern.matcher(origin).replaceAll("$1");

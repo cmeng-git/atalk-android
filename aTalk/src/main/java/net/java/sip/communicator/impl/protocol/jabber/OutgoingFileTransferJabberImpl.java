@@ -19,8 +19,8 @@ import org.jivesoftware.smackx.bob.*;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
-import org.xmpp.extensions.thumbnail.Thumbnail;
-import org.xmpp.extensions.thumbnail.ThumbnailFile;
+import org.jivesoftware.smackx.thumbnail.Thumbnail;
+import org.jivesoftware.smackx.thumbnail.ThumbnailFile;
 
 import java.io.File;
 

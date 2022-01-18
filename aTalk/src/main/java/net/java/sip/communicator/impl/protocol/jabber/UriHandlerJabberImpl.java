@@ -14,6 +14,8 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.argdelegation.UriHandler;
 import net.java.sip.communicator.service.gui.ExportedWindow;
 import net.java.sip.communicator.service.gui.PopupDialog;
@@ -21,7 +23,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.*;
@@ -30,7 +32,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
@@ -51,7 +52,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     /**
      * A reference to the OSGi registration we create with this handler.
      */
-    private ServiceRegistration ourServiceRegistration = null;
+    private ServiceRegistration<?> ourServiceRegistration = null;
 
     /**
      * The object that we are using to synchronize our service registration.
@@ -196,7 +197,6 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
             for (String protocol : getProtocol()) {
                 registrationProperties.put(UriHandler.PROTOCOL_PROPERTY, protocol);
             }
-
             ourServiceRegistration = JabberActivator.bundleContext.registerService(
                     UriHandler.class.getName(), this, registrationProperties);
         }
@@ -369,7 +369,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         //				.showMessagePopupDialog(message, "Failed to create chat!",
         //						PopupDialog.ERROR_MESSAGE);
 
-        AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Failed to create chat!", message);
+        DialogActivity.showDialog(aTalkApp.getGlobalContext(), "Failed to create chat!", message);
         Timber.e(exc, "%s", message);
     }
 

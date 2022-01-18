@@ -5,10 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.atalk.android.gui.call.JingleMessageHelper;
-import org.xmpp.extensions.coin.CoinIQ;
-import org.xmpp.extensions.jingle.CoinExtension;
-import org.xmpp.extensions.jingle.element.Jingle;
+import org.jivesoftware.smackx.coin.CoinIQ;
+import org.jivesoftware.smackx.jingle.CoinExtension;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;

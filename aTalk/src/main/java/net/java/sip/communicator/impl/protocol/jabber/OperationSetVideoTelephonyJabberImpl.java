@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetVideoTelephony;
 
 import org.atalk.service.neomedia.QualityControl;
-import org.xmpp.extensions.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import timber.log.Timber;
 

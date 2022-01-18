@@ -18,8 +18,6 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.dialogs.ProgressDialogFragment;
-import org.atalk.android.gui.util.AndroidUtils;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
@@ -151,7 +149,7 @@ public class AndroidCallUtil
                     CallManager.createCall(provider, callee.toString(), isVideoCall);
                 } catch (Throwable t) {
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
-                    AndroidUtils.showAlertDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());
+                    DialogActivity.showDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());
                 } finally {
 //                    if (DialogActivity.waitForDialogOpened(dialogId)) {
 //                        DialogActivity.closeDialog(dialogId);

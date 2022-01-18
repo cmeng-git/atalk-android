@@ -25,14 +25,13 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.jingle.*;
 import org.jxmpp.jid.*;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-import org.xmpp.extensions.condesc.CallIdExtension;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.*;
-import org.xmpp.extensions.jitsimeet.StartMutedExtension;
+import org.jivesoftware.smackx.condesc.CallIdExtension;
+import org.jivesoftware.smackx.jingle.element.*;
 
 import java.util.*;
 

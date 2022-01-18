@@ -26,14 +26,15 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.contactlist.UIContactDetailImpl;
 import org.atalk.android.gui.contactlist.UIContactImpl;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
+
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
-
 import java.util.*;
+
+import javax.swing.*;
 
 /**
  * The <tt>ChooseCallAccountDialog</tt> is the dialog shown when calling a
@@ -248,7 +249,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
                         telephonyContact.getPreferredProtocol(opSetClass));
 
                 if (providers == null || providers.size() <= 0) {
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                             R.string.service_gui_CALL_FAILED, R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT);
                     return;
                 }

@@ -128,6 +128,8 @@
     <string name="service_gui_CALL_END">Penelepon jarak jauh telah mengakhiri panggilan: %1$s</string>
     <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat Panggilan</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Konfirmasi dan \'Pilih Semua\' item, sebelum melanjutkan ke \'Hapus\'</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Tidak ada catatan yang dipilih untuk dihapus</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin membersihkan semua catatan panggilan yang dipilih?</string>
     <string name="service_gui_CALL_INCOMING">Panggilan masuk diterima dari: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Panggilan masuk</string>
@@ -137,7 +139,7 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Kami tidak dapat menemukan perangkat Audio/Video yang aktif sehingga tidak dapat membuat panggilan.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Tidak ada perangkat audio yang dikonfigurasi.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Tidak ada codec audio yang diaktifkan.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Perangkat %1$s atau codec tidak sepenuhnya terkonfigurasi di\'Pengaturan…\'. Silakan periksa dan siapkan.</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Perangkat atau codec tidak dikonfigurasi dengan betul di \'Pengaturan…\': %1$s</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Apakah Anda ingin melanjutkan panggilan?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Tidak ada format media yang cocok yang ditemukan terhadap penawaran %1$s untuk menerima panggilan. Harap verifikasi pengaturan perangkat dan codec di\'Pengaturan…\'.</string>
     <string name="service_gui_CALL_OUTGOING">Panggilan keluar</string>
@@ -410,7 +412,8 @@
     <string name="service_gui_CHATROOM_JOIN_FAILED_PASSWORD">Ruang obrolan meminta kata sandi.</string>
     <string name="service_gui_CHATROOM_JOIN_FAILED_REGISTRATION">Ruang obrolan membutuhkan registrasi.</string>
     <string name="service_gui_CHATROOM_JOIN_TITLE">Bergabung dengan ruang obrolan</string>
-    <string name="service_gui_CHATROOM_JOIN_NAME">Masukkan nama ruang obrolan yang ingin Anda ikuti.</string>
+    <string name="service_gui_CHATROOM_JOIN_NAME">Isikan nama ruang obrolan yang Anda ingin bergabung.</string>
+    <string name="service_gui_CHATROOM_JOIN_SUBJECT_NULL">Silakan isikan subjek ruang obrolan yang Anda igin bergabung.</string>
     <string name="service_gui_CHATROOM_JOIN_WIZARD">Bergabung dengan wizard ruang chat</string>
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Tantangan Captcha</string>
@@ -768,19 +771,21 @@
     <string name="service_gui_avatar_REMOVE_ICON">Hapus gambar saat ini</string>
 
     <!-- Update checker -->
-	<string name="plugin_updatechecker_BUTTON_DOWNLOAD">Unduh</string>
-    <string name="plugin_updatechecker_BUTTON_INSTALL">Pasang</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED_TITLE">Unduhan selesai</string>
-    <string name="plugin_updatechecker_DIALOG_DOWNLOADED">Pembaruan diunduh dan siap untuk dipasang.</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE">Sedang berlangsung</string>
-    <string name="plugin_updatechecker_DIALOG_IN_PROGRESS">Mengunduh pembaruan sedang berlangsung.</string>
-    <string name="plugin_updatechecker_DIALOG_MESSAGE">Versi baru yang dirilis ( %1$s- %2$s) untuk %3$s tersedia untuk diunduh.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE">Versi yang terinstal saat ini: ( %1$s- %2$s) sudah diperbarui.</string>
-    <string name="plugin_updatechecker_DIALOG_NOUPDATE_TITLE">Tidak ada versi baru</string>
-    <string name="plugin_updatechecker_DIALOG_TITLE">Instal Pembaruan</string>
-    <string name="plugin_updatechecker_DOWNLOAD_FAILED">Gagal mengunduh pembaruan baru!</string>
-    <string name="plugin_updatechecker_UPDATE_MENU_ENTRY">Periksa pembaruan</string>
-    <string name="plugin_newsoftware_DIALOG_MESSAGE">Versi perangkat lunak baru ( %1$s) tersedia.</string>
+	<string name="plugin_update_Download">Unduh</string>
+    <string name="plugin_update_Install">Instal</string>
+    <string name="plugin_update_ReInstall">Instal ulang</string>
+    <string name="plugin_update_Download_Completed">Unduhan selesai</string>
+    <string name="plugin_update_Download_Ready">Pembaruan (%1$s) diunduh dan siap untuk dipasang.</string>
+    <string name="plugin_update_InProgress">Sedang berlangsung</string>
+    <string name="plugin_update_Download_InProgress">Mengunduh pembaruan sedang berlangsung.</string>
+    <string name="plugin_update_Update_Available">Versi baru yang dirilis ( %1$s- %2$s) untuk %3$s tersedia untuk diunduh.</string>
+    <string name="plugin_update_UpToDate">Versi yang terinstal saat ini: ( %1$s- %2$s) sudah diperbarui.</string>
+    <string name="plugin_update_New_Version_None">Tidak ada versi baru</string>
+    <string name="plugin_update_Install_Update">Instal Pembaruan</string>
+    <string name="plugin_update_Download_failed">Gagal mengunduh pembaruan baru!</string>
+    <string name="plugin_update_Check_Update">Periksa pembaruan</string>
+    <string name="plugin_update_Version_Invalid">apk yang diunduh tidak cocok; sebenarnya: %s (%s)</string>
+    <string name="plugin_update_New_Version_Available">Versi perangkat lunak baru ( %1$s) tersedia.</string>
 
     <!-- account info -->
     <string name="plugin_accountinfo_ABOUT_ME">Tentang Saya:</string>

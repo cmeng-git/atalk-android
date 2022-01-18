@@ -23,13 +23,8 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class ServiceRegistrationImpl implements ServiceRegistration
 {
-    private static final Comparator<String> CASE_INSENSITIVE_COMPARATOR = new Comparator<String>()
-    {
-        public int compare(String s1, String s2)
-        {
-            return s1.compareToIgnoreCase(s2);
-        }
-    };
+    private static final Comparator<String> CASE_INSENSITIVE_COMPARATOR
+			= (s1, s2) -> s1.compareToIgnoreCase(s2);
 
     private static final Map<String, Object> EMPTY_PROPERTIES = newCaseInsensitiveMapInstance();
     private final BundleImpl bundle;

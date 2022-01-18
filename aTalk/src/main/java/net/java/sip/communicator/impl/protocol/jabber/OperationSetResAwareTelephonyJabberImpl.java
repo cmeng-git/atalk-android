@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.xmpp.extensions.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 
 /**
  * @author Yana Stamcheva

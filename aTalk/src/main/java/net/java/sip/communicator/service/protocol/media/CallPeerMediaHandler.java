@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.service.neomedia.*;
 import org.atalk.service.neomedia.codec.Constants;
@@ -749,11 +749,9 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         }
 
         if (supportFormats.size() == 0) {
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                    aTalkApp.getResString(R.string.service_gui_CALL),
-                    aTalkApp.getResString(R.string.service_gui_CALL_NO_DEVICE_CODEC_H,
-                            (mediaDevice != null) ? mediaDevice.getMediaType().toString() : "Unknown")
-            );
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                    R.string.service_gui_CALL, R.string.service_gui_CALL_NO_DEVICE_CODEC_H,
+                    (mediaDevice != null) ? mediaDevice.getMediaType().toString() : "Unknown");
         }
         return supportFormats;
     }

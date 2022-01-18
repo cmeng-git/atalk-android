@@ -131,11 +131,8 @@ public class CallHistoryFragment extends OSGiFragment
 
         private CallHistoryAdapter(LayoutInflater inflater)
         {
-            callRecords.clear();
-            mMetaContacts.clear();
-
             mInflater = inflater;
-            new getCallRecords().execute();
+            new getCallRecords(new Date()).execute();
         }
 
         @Override
@@ -238,6 +235,16 @@ public class CallHistoryFragment extends OSGiFragment
          */
         private class getCallRecords extends AsyncTask<Void, Void, Void>
         {
+            final Date mEndDate;
+
+            public getCallRecords(Date date)
+            {
+                mEndDate = date;
+                callRecords.clear();
+                mMetaContacts.clear();
+                callListView.clearChoices();
+            }
+
             @Override
             protected Void doInBackground(Void... params)
             {
@@ -252,7 +259,7 @@ public class CallHistoryFragment extends OSGiFragment
                         AccountID accountId = pps.getAccountID();
                         String userUuId = accountId.getAccountUniqueID();
 
-                        callRecordPPS = CHS.findByEndDate(userUuId, new Date());
+                        callRecordPPS = CHS.findByEndDate(userUuId, mEndDate);
                         if (callRecordPPS.size() != 0)
                             callRecords.addAll(callRecordPPS);
                     }
@@ -387,9 +394,7 @@ public class CallHistoryFragment extends OSGiFragment
     public void onTaskComplete(Integer result, List<String> deletedUUIDs)
     {
         if (result > 0) {
-            callRecords.clear();
-            mMetaContacts.clear();
-            callHistoryAdapter.new getCallRecords().execute();
+            callHistoryAdapter.new getCallRecords(new Date()).execute();
         }
     }
 
@@ -442,14 +447,11 @@ public class CallHistoryFragment extends OSGiFragment
     /**
      * ActionMode with multi-selection implementation for chatListView
      */
-    private AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener()
+    private final AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener()
     {
         int cPos;
         int headerCount;
         int checkListSize;
-
-        MenuItem mDelete;
-        MenuItem mSelectAll;
 
         SparseBooleanArray checkedList;
 
@@ -477,6 +479,23 @@ public class CallHistoryFragment extends OSGiFragment
             CallRecord callRecord;
 
             switch (item.getItemId()) {
+                case R.id.cr_delete_older:
+                    if (checkedList.size() > 0 &&  checkedList.valueAt(0)) {
+                        cPos = checkedList.keyAt(0) - headerCount;
+                        cType = callHistoryAdapter.getItemViewType(cPos);
+                        if (cType == callHistoryAdapter.CALL_RECORD) {
+                            callRecord = (CallRecord) callHistoryAdapter.getItem(cPos);
+                            if (callRecord != null) {
+                                Date startDate = callRecord.getStartTime();
+                                callHistoryAdapter.new getCallRecords(startDate).execute();
+                                checkedList.clear();
+                                mode.setTitle("0");
+                                aTalkApp.showToastMessage(R.string.service_gui_CALL_HISTORY_REMOVE_HINT);
+                            }
+                        }
+                    }
+                    return true;
+
                 case R.id.cr_select_all:
                     int size = callHistoryAdapter.getCount();
                     if (size < 2)
@@ -493,8 +512,12 @@ public class CallHistoryFragment extends OSGiFragment
                     return true;
 
                 case R.id.cr_delete:
-                    List<String> callUuidDel = new ArrayList<>();
+                    if (checkedList.size() == 0) {
+                        aTalkApp.showToastMessage(R.string.service_gui_CALL_HISTORY_REMOVE_NONE);
+                        return true;
+                    }
 
+                    List<String> callUuidDel = new ArrayList<>();
                     for (int i = 0; i < checkListSize; i++) {
                         if (checkedList.valueAt(i)) {
                             cPos = checkedList.keyAt(i) - headerCount;
@@ -517,7 +540,7 @@ public class CallHistoryFragment extends OSGiFragment
             }
         }
 
-        // Called when the action mActionMode is created; startActionMode() was called
+        // Called when the action ActionMode is created; startActionMode() was called
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu)
         {
@@ -525,15 +548,11 @@ public class CallHistoryFragment extends OSGiFragment
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.call_history_menu, menu);
             headerCount = callListView.getHeaderViewsCount();
-
-            mDelete = menu.findItem(R.id.cr_delete);
-            mSelectAll = menu.findItem(R.id.cr_select_all);
-
             return true;
         }
 
-        // Called each time the action mActionMode is shown. Always called after onCreateActionMode,
-        // but may be called multiple times if the mActionMode is invalidated.
+        // Called each time the action ActionMode is shown. Always called after onCreateActionMode,
+        // but may be called multiple times if the ActionMode is invalidated.
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu)
         {
@@ -542,13 +561,13 @@ public class CallHistoryFragment extends OSGiFragment
             return false;
         }
 
-        // Called when the user exits the action mActionMode
+        // Called when the user exits the action ActionMode
         @Override
         public void onDestroyActionMode(ActionMode mode)
         {
             // Here you can make any necessary updates to the activity when
             // the CAB is removed. By default, selected items are deselected/unchecked.
-            ActionMode mActionMode = null;
+            callHistoryAdapter.new getCallRecords(new Date()).execute();
         }
     };
 

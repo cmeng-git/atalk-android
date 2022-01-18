@@ -1462,13 +1462,16 @@ public class OperationSetPersistentPresenceJabberImpl
             contactChangesListener.addPresenceEvent(presence);
         }
 
-        // Update resource if receive from instances of user presence and localContact is not null
-        BareJid userJid = mPPS.getOurJID().asBareJid();
         if (localContact == null)
             localContact = getLocalContact();
-        if ((localContact != null) && (address != null) && userJid.isParentOf(address)) {
-            // Timber.d("Smack presence update own instance %s %s: %s", userJid, address, localContact);
-            updateResource(localContact, null, presence);
+
+        // Update resource if receive from instances of user presence and localContact is not null
+        if ((localContact != null) && (address != null)) {
+            EntityFullJid ourJid = mPPS.getOurJID(); // Received NPE from FFR
+            if ((ourJid != null) && ourJid.asBareJid().isParentOf(address)) {
+                // Timber.d("Smack presence update own instance %s %s: %s", userJid, address, localContact);
+                updateResource(localContact, null, presence);
+            }
         }
     }
 

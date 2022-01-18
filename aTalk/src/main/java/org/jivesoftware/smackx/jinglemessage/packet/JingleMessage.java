@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jinglemessage.packet;
 
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.xmpp.extensions.jingle.RtpDescriptionExtension;
+import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
 
 import java.util.ArrayList;
 import java.util.List;

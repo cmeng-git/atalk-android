@@ -91,7 +91,7 @@ public class OnlineUpdateService extends IntentService
                 NotificationCompat.Builder nBuilder;
                 nBuilder = new NotificationCompat.Builder(this, AndroidNotifications.DEFAULT_GROUP);
 
-                String msgString = getString(R.string.plugin_newsoftware_DIALOG_MESSAGE,
+                String msgString = getString(R.string.plugin_update_New_Version_Available,
                         updateService.getLatestVersion());
                 nBuilder.setSmallIcon(R.drawable.ic_notification);
                 nBuilder.setWhen(System.currentTimeMillis());

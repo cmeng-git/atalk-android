@@ -29,7 +29,6 @@ import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.android.gui.call.JingleMessageHelper;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
-import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
@@ -92,8 +91,10 @@ import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
 import org.jivesoftware.smackx.iqversion.VersionManager;
+import org.jivesoftware.smackx.jingle.*;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
+import org.jivesoftware.smackx.jitsimeet.*;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
@@ -117,25 +118,23 @@ import org.minidns.dnssec.DnssecValidationFailedException;
 import org.minidns.record.SRV;
 import org.osgi.framework.ServiceReference;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmpp.extensions.DefaultExtensionElementProvider;
-import org.xmpp.extensions.coin.CoinIQ;
-import org.xmpp.extensions.coin.CoinIQProvider;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.colibri.ColibriIQProvider;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtension;
-import org.xmpp.extensions.condesc.ConferenceDescriptionExtensionProvider;
-import org.xmpp.extensions.inputevt.InputEvtIQ;
-import org.xmpp.extensions.inputevt.InputEvtIQProvider;
-import org.xmpp.extensions.jibri.JibriIq;
-import org.xmpp.extensions.jibri.JibriIqProvider;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.Jingle;
-import org.xmpp.extensions.jingle.provider.JingleProvider;
-import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQ;
-import org.xmpp.extensions.jingleinfo.JingleInfoQueryIQProvider;
-import org.xmpp.extensions.jitsimeet.*;
-import org.xmpp.extensions.thumbnail.Thumbnail;
-import org.xmpp.extensions.thumbnail.ThumbnailStreamInitiationProvider;
+import org.jivesoftware.smackx.DefaultExtensionElementProvider;
+import org.jivesoftware.smackx.coin.CoinIQ;
+import org.jivesoftware.smackx.coin.CoinIQProvider;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.colibri.ColibriIQProvider;
+import org.jivesoftware.smackx.condesc.ConferenceDescriptionExtension;
+import org.jivesoftware.smackx.condesc.ConferenceDescriptionExtensionProvider;
+import org.jivesoftware.smackx.inputevt.InputEvtIQ;
+import org.jivesoftware.smackx.inputevt.InputEvtIQProvider;
+import org.jivesoftware.smackx.jibri.JibriIq;
+import org.jivesoftware.smackx.jibri.JibriIqProvider;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.provider.JingleProvider;
+import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQ;
+import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQProvider;
+import org.jivesoftware.smackx.thumbnail.Thumbnail;
+import org.jivesoftware.smackx.thumbnail.ThumbnailStreamInitiationProvider;
 import org.xmpp.jnodes.smack.*;
 
 import java.io.File;
@@ -3052,7 +3051,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             instruction = aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_INSTRUCTION,
                     confirmExt.getMethod(), confirmExt.getUrl(), confirmExt.getId(), mAccountID.getAccountJid());
         }
-        AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
+        DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
                 aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_TITLE), instruction,
                 aTalkApp.getResString(R.string.service_gui_ACCEPT), this);
     }
@@ -3119,7 +3118,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Retrieve the XMPP connection socket used by the protocolProvider (by reflection)
      *
      * @return the socket which is used for this connection.
-     * @see XMPPTCPConnection# socket.
+     * @see XMPPTCPConnection#socket.
      */
     public Socket getSocket()
     {

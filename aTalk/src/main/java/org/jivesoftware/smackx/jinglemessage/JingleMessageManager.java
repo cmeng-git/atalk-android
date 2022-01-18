@@ -53,7 +53,7 @@ public final class JingleMessageManager extends Manager
     }
 
     /**
-     * Message filter to listen for message sent from DomianJid i.e. server with normal or
+     * Message filter to listen for message sent from DomainJid i.e. server with normal or
      * has extensionElement i.e. XEP-0071: XHTML-IM
      */
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(

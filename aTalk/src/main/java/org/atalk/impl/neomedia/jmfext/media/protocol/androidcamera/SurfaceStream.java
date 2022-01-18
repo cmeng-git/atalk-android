@@ -70,11 +70,6 @@ public class SurfaceStream extends CameraStreamBase
     private Surface mPreviewSurface;
 
     /**
-     * Surface texture manager that manages input surface; if only using SurfaceManager implementation.
-     */
-    private SurfaceTextureManager surfaceManager;
-
-    /**
      * Capture thread.
      */
     private Thread captureThread;
@@ -459,21 +454,5 @@ public class SurfaceStream extends CameraStreamBase
         // null if the graph realization cannot proceed due to unsupported codec
         if (myCtxProvider != null)
             myCtxProvider.onObjectReleased();
-    }
-
-    /**
-     * Use only for SurfaceManager in implementation;
-     * not use in aTalk to be removed in future release on SurfaceManger removed
-     *
-     * Pushes the received image frame to the android encoder;
-     * this must be executed within the SurfaceTextureManage#onFrameAvailable() thread
-     */
-    public void pushEncoderData(SurfaceTexture st)
-    {
-        // Pushes the received image frame to the android encoder
-        surfaceManager.drawImage();
-        mEncoderSurface.setPresentationTime(st.getTimestamp());
-        mEncoderSurface.swapBuffers();
-        transferHandler.transferData(this);
     }
 }

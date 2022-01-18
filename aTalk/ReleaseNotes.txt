@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.8.1 (208010)
+Release Date:   01/18/2022
+Author:         cmeng
+- Enhance Call History UI to allow deletion of records order than the specified timestamp i.e. CALL_START
+- Check to ensure chatRoom creation cannot have subject set to null (smack 4.4.4 Bookmarks assert value != null)
+- Change FilePathHelper#getRealPath to use MediaStore.MediaColumns.DATA to retrieve filePath disregard of the content type
+- Cleanup DialogActivity for all other modules to refer to; remove all unused dialog functions in AndroidUtils.
+- Allow download and install/reinstall the debug apk for the new or same version
+- Change downloaded apk path to ./aTalk/tmp to auto create new apk filename if exist; else FilePathHelper#getFilePathWithCreate() will keep old apk file if exit
+- Upgrade build to support android API-32
+- Remove RandomUtils.java #secureRandomBytes() class and use  RandomUtil#fillWithSecureRandom(key);
+- Purge unused SurfaceTextureManager class
+- Move all xmpp directories and files into org.jivesoftware.smackx structure in preparation for future jingle features enhancements
+- Fix (if possible) all Crash/ANR cases from FFR prior to v2.8.0
+
+=========================================================================
 Version:        2.8.0 (208000)
 Release Date:   12/22/2021
 Author:         cmeng

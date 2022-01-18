@@ -84,7 +84,7 @@ public class DialogActivity extends OSGiActivity
     /**
      * Static map holds listeners for currently displayed dialogs.
      */
-    private static Map<Long, DialogListener> listenersMap = new HashMap<>();
+    private static final Map<Long, DialogListener> listenersMap = new HashMap<>();
 
     /**
      * Static list holds existing dialog instances (since onCreate() until onDestroy()). Only
@@ -107,7 +107,7 @@ public class DialogActivity extends OSGiActivity
      */
     private boolean confirmed;
 
-    private static LocalBroadcastManager localBroadcastManager
+    private static final LocalBroadcastManager localBroadcastManager
             = LocalBroadcastManager.getInstance(aTalkApp.getGlobalContext());
 
     /**
@@ -154,7 +154,7 @@ public class DialogActivity extends OSGiActivity
             if (savedInstanceState == null) {
                 try {
                     // Instantiate content fragment
-                    Class contentClass = Class.forName(contentFragment);
+                    Class<?> contentClass = Class.forName(contentFragment);
                     Fragment fragment = (Fragment) contentClass.newInstance();
 
                     // Set fragment arguments
@@ -234,7 +234,7 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Fired when confirm button is clicked.
+     * Fired when the confirm button is clicked.
      *
      * @param v the confirm button view.
      */
@@ -356,19 +356,6 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Show simple alert that will be disposed when user presses OK button.
-     *
-     * @param ctx Android context.
-     * @param title the dialog title that will be used.
-     * @param message the dialog message that will be used.
-     */
-    public static void showDialog(Context ctx, String title, String message)
-    {
-        Intent alert = getDialogIntent(ctx, title, message);
-        ctx.startActivity(alert);
-    }
-
-    /**
      * Creates an <tt>Intent</tt> that will display a dialog with given <tt>title</tt> and content <tt>message</tt>.
      *
      * @param ctx Android context.
@@ -383,6 +370,34 @@ public class DialogActivity extends OSGiActivity
         alert.putExtra(EXTRA_MESSAGE, message);
         alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return alert;
+    }
+
+    /**
+     * Show simple alert that will be disposed when user presses OK button.
+     *
+     * @param ctx Android context.
+     * @param title the dialog title that will be used.
+     * @param message the dialog message that will be used.
+     */
+    public static void showDialog(Context ctx, String title, String message)
+    {
+        Intent alert = getDialogIntent(ctx, title, message);
+        ctx.startActivity(alert);
+    }
+
+    /**
+     * Shows a dialog for the given context and a title given by <tt>titleId</tt> and
+     * message given by <tt>messageId</tt> with its optional arg.
+     *
+     * @param ctx the android <tt>Context</tt>
+     * @param titleId the title identifier in the resources
+     * @param messageId the message identifier in the resources
+     * @param arg optional arg for the message expansion.
+     */
+    public static void showDialog(Context ctx, int titleId, int messageId, Object... arg)
+    {
+        Intent alert = getDialogIntent(ctx, ctx.getString(titleId), ctx.getString(messageId, arg));
+        ctx.startActivity(alert);
     }
 
     /**
@@ -416,17 +431,19 @@ public class DialogActivity extends OSGiActivity
     /**
      * Shows confirm dialog allowing to handle confirm action using supplied <tt>listener</tt>.
      *
-     * @param context Android context.
+     * @param context the android context.
      * @param title dialog title Res that will be used
-     * @param message dialog message Res that wil be used.
+     * @param message the message identifier in the resources
      * @param confirmTxt confirm button label Res.
-     * @param listener the confirm action listener.
+     * @param listener the <tt>DialogInterface.DialogListener</tt> to attach to the confirm button
+     * @param arg optional arg for the message resource arg.
      */
     public static void showConfirmDialog(Context context, int title, int message,
-            int confirmTxt, DialogListener listener)
+            int confirmTxt, DialogListener listener, Object... arg)
     {
         Resources res = aTalkApp.getAppResources();
-        showConfirmDialog(context, res.getString(title), res.getString(message), res.getString(confirmTxt), listener);
+        showConfirmDialog(context, res.getString(title), res.getString(message, arg),
+                res.getString(confirmTxt), listener);
     }
 
     /**

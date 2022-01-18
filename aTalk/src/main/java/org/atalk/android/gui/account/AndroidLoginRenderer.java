@@ -44,7 +44,7 @@ public class AndroidLoginRenderer implements LoginRenderer
     /**
      * The <tt>CallListener</tt>.
      */
-    private CallListener androidCallListener;
+    private final CallListener androidCallListener;
 
     /**
      * The android implementation of the provider presence listener.
@@ -69,7 +69,7 @@ public class AndroidLoginRenderer implements LoginRenderer
     /**
      * List of global status listeners.
      */
-    private EventListenerList<PresenceStatus> globalStatusListeners = new EventListenerList<>();
+    private final EventListenerList<PresenceStatus> globalStatusListeners = new EventListenerList<>();
 
     /**
      * Caches avatar image to track the changes
@@ -192,11 +192,10 @@ public class AndroidLoginRenderer implements LoginRenderer
             final LoginManager loginManagerCallback)
     {
         AccountID accountID = protocolProvider.getAccountID();
-        AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
-                aTalkApp.getResString(R.string.service_gui_ERROR),
-                aTalkApp.getResString(R.string.service_gui_CONNECTION_FAILED_MSG,
-                        accountID.getUserID(), accountID.getService()),
-                aTalkApp.getResString(R.string.service_gui_RETRY),
+        DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                R.string.service_gui_ERROR,
+                R.string.service_gui_CONNECTION_FAILED_MSG,
+                R.string.service_gui_RETRY,
                 new DialogActivity.DialogListener()
                 {
                     public boolean onConfirmClicked(DialogActivity dialog)
@@ -208,7 +207,7 @@ public class AndroidLoginRenderer implements LoginRenderer
                     public void onDialogCancelled(DialogActivity dialog)
                     {
                     }
-                });
+                }, accountID.getUserID(), accountID.getService());
     }
 
     /**

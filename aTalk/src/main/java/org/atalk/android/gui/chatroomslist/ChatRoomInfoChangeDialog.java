@@ -28,7 +28,6 @@ import net.java.sip.communicator.service.protocol.ChatRoom;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 
@@ -39,9 +38,9 @@ import org.atalk.service.osgi.OSGiFragment;
  */
 public class ChatRoomInfoChangeDialog extends OSGiFragment
 {
-    private static String EXTRA_CHATROOM = "chatRoom";
-    private static String EXTRA_NICK = "nick";
-    private static String EXTRA_Subject = "subject";
+    private static final String EXTRA_CHATROOM = "chatRoom";
+    private static final String EXTRA_NICK = "nick";
+    private static final String EXTRA_Subject = "subject";
 
     private Context mContext;
     private ChatRoomWrapper mChatRoomWrapper;
@@ -109,7 +108,7 @@ public class ChatRoomInfoChangeDialog extends OSGiFragment
             String subject = ViewUtil.toString(view.findViewById(R.id.chatRoom_Subject_Edit));
 
             if (nickName == null) {
-                AndroidUtils.showAlertDialog(mContext, R.string.service_gui_CHANGE_ROOM_INFO,
+                DialogActivity.showDialog(mContext, R.string.service_gui_CHANGE_ROOM_INFO,
                         R.string.service_gui_CHANGE_NICKNAME_NULL);
                 return false;
             }

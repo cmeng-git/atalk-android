@@ -19,10 +19,9 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.contactlist.UIContactImpl;
-import org.atalk.android.gui.util.AndroidUtils;
-import java.awt.Component;
-import javax.swing.JComponent;
-import org.atalk.service.neomedia.*;
+import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.service.neomedia.MediaService;
+import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.MediaDevice;
@@ -31,8 +30,11 @@ import org.atalk.util.MediaType;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
 
+import java.awt.Component;
 import java.text.ParseException;
 import java.util.*;
+
+import javax.swing.JComponent;
 
 import timber.log.Timber;
 
@@ -91,7 +93,7 @@ public class CallManager
             ArrayList<String> toRemove = new ArrayList<>();
             while (activeCallsIter.hasNext()) {
                 String key = activeCallsIter.next();
-                if (activeCalls.get(key).equals(call))
+                if (Objects.equals(activeCalls.get(key), call))
                     toRemove.add(key);
             }
             for (String removeKey : toRemove) {
@@ -340,7 +342,7 @@ public class CallManager
             }
         }
         else {
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+            DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                     R.string.service_gui_WARNING, R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT);
         }
     }
@@ -869,10 +871,8 @@ public class CallManager
                     errMsg = aTalkApp.getResString(R.string.service_gui_CALL_NO_AUDIO_CODEC);
                 }
                 if (errMsg != null) {
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                            aTalkApp.getResString(R.string.service_gui_CALL), errMsg + ":  "
-                                    + aTalkApp.getResString(R.string.service_gui_CALL_NO_DEVICE_CODEC_H, "")
-                    );
+                    DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                            R.string.service_gui_CALL, R.string.service_gui_CALL_NO_DEVICE_CODEC_H, errMsg);
                     return;
                 }
             }
@@ -911,7 +911,7 @@ public class CallManager
 
                 if (t.getMessage() != null)
                     message += "\n" + t.getMessage();
-                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                         aTalkApp.getResString(R.string.service_gui_ERROR), message);
             }
         }
@@ -1024,7 +1024,7 @@ public class CallManager
     private static void addUIContactCall(UIContactImpl uiContact, Call call)
     {
         if (uiContactCalls == null)
-            uiContactCalls = new WeakHashMap<Call, UIContactImpl>();
+            uiContactCalls = new WeakHashMap<>();
 
         uiContactCalls.put(call, uiContact);
     }
@@ -1057,7 +1057,7 @@ public class CallManager
         /**
          * Whether user has selected sharing full screen or region.
          */
-        private boolean fullscreen;
+        private final boolean fullscreen;
 
         /**
          * Creates a desktop sharing session thread.
@@ -1104,7 +1104,7 @@ public class CallManager
             }
             if (exception != null) {
                 Timber.e("The call could not be created: %s", exception.getMessage());
-                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                         aTalkApp.getResString(R.string.service_gui_ERROR), exception.getMessage());
             }
 
@@ -1256,7 +1256,7 @@ public class CallManager
                 }
 
                 List<String> contactList = entry.getValue();
-                String[] contactArray = contactList.toArray(new String[contactList.size()]);
+                String[] contactArray = contactList.toArray(new String[0]);
 
                 if (ConfigurationUtils.isNormalizePhoneNumber())
                     normalizePhoneNumbers(contactArray);
@@ -1316,7 +1316,7 @@ public class CallManager
                     }
                 } catch (Exception e) {
                     Timber.e(e, "Failed to invite callees: %s", Arrays.toString(contactArray));
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                    DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                             aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
                 }
             }
@@ -1363,7 +1363,7 @@ public class CallManager
                 }
             } catch (Exception e) {
                 Timber.e(e, "Failed to invite callees: %s", Arrays.toString(callees));
-                AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                         aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
             }
         }
@@ -1622,7 +1622,7 @@ public class CallManager
      *
      * @param callees the list of contact addresses or phone numbers to be normalized
      */
-    private static void normalizePhoneNumbers(String callees[])
+    private static void normalizePhoneNumbers(String[] callees)
     {
         for (int i = 0; i < callees.length; i++)
             callees[i] = AndroidGUIActivator.getPhoneNumberI18nService().normalize(callees[i]);

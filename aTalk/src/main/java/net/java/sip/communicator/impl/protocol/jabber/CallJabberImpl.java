@@ -24,9 +24,9 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
-import org.xmpp.extensions.colibri.ColibriConferenceIQ;
-import org.xmpp.extensions.jingle.*;
-import org.xmpp.extensions.jingle.element.*;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.element.*;
 
 import java.lang.ref.WeakReference;
 import java.util.*;

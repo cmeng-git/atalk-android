@@ -26,7 +26,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.jivesoftware.smack.util.RandomUtils;
+import org.jivesoftware.smack.util.RandomUtil;
 
 /**
  * Utility code for XEP-XXXX: OMEMO Media Sharing.
@@ -53,7 +53,9 @@ public class OmemoMediaSharingUtils {
     }
 
     public static byte[] generateRandomIV(int len) {
-        return RandomUtils.secureRandomBytes(len);
+        byte[] key = new byte[len];
+        RandomUtil.fillWithSecureRandom(key);
+        return key;
     }
 
     /**

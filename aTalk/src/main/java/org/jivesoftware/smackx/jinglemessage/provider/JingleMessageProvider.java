@@ -23,7 +23,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
-import org.xmpp.extensions.jingle.RtpDescriptionExtension;
+import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
 
 import java.io.IOException;
 

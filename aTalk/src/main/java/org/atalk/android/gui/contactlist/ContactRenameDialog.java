@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiDialogFragment;
 
@@ -98,7 +98,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
                     AndroidGUIActivator.getContactListService().renameMetaContact(metaContact, newDisplayName);
                 } catch (MetaContactListException e) {
                     Timber.e(e, "%s", e.getMessage());
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(), "Error", e.getMessage());
+                    showErrorMessage(e.getMessage());
                 }
             }
         }.start();
@@ -135,7 +135,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
      */
     private void showErrorMessage(String errMessage)
     {
-        Context ctx = aTalkApp.getGlobalContext();
-        AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errMessage);
+        DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                aTalkApp.getResString(R.string.service_gui_ERROR), errMessage);
     }
 }

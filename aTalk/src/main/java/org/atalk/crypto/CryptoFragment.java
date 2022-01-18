@@ -16,10 +16,22 @@
  */
 package org.atalk.crypto;
 
+import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrEngine;
+import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrKeyManager;
+import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_MUC_NORMAL;
+import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_NORMAL;
+import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OMEMO;
+import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OTR;
+import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OTR_UA;
+import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_UNKNOWN;
+
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.*;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentTransaction;
 
 import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
@@ -58,18 +70,7 @@ import java.net.URI;
 import java.security.PublicKey;
 import java.util.*;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
-
-import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrEngine;
-import static net.java.sip.communicator.plugin.otr.OtrActivator.scOtrKeyManager;
-import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_MUC_NORMAL;
-import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_NORMAL;
-import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OMEMO;
-import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OTR;
-import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_OTR_UA;
-import static org.atalk.android.gui.chat.ChatFragment.MSGTYPE_UNKNOWN;
 
 /**
  * Fragment when added to <tt>Activity</tt> will display the padlock allowing user to select
@@ -728,10 +729,12 @@ public class CryptoFragment extends OSGiFragment
      *
      * @param chatSessionId chat session Uuid
      */
-    public static void resetEncryptionChoice(String chatSessionId){
+    public static void resetEncryptionChoice(String chatSessionId)
+    {
         if (TextUtils.isEmpty(chatSessionId)) {
             encryptionChoice.clear();
-        } else {
+        }
+        else {
             encryptionChoice.remove(chatSessionId);
         }
     }
@@ -1127,7 +1130,9 @@ public class CryptoFragment extends OSGiFragment
                     onOptionsItemSelected(mNone);
                     break;
                 case MSGTYPE_OMEMO:
-                    onOptionsItemSelected(mOmemo);
+                    // Do not emulate Omemo button press if mOmemoManager is null
+                    if (mOmemoManager != null)
+                        onOptionsItemSelected(mOmemo);
                     break;
                 case MSGTYPE_OTR:
                     onOptionsItemSelected(mOtr);

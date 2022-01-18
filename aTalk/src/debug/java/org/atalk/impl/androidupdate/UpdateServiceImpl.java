@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.androidupdate;
 
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.*;
 import android.content.pm.PackageInfo;
@@ -12,14 +13,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.*;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.version.Version;
 import org.atalk.service.version.VersionService;
@@ -40,7 +40,7 @@ import timber.log.Timber;
 public class UpdateServiceImpl implements UpdateService
 {
     // Default update link
-    private static final String[] updateLinks = {"https://atalk.sytes.net", "https://atalk.mooo.com"};
+    private static final String[] updateLinks = {"https://atalk.sytes.net"};
 
     /**
      * Apk mime type constant.
@@ -51,7 +51,7 @@ public class UpdateServiceImpl implements UpdateService
     private static final String filePath = "/releases/atalk-android/versionupdate.properties";
 
     /**
-     * Current installed version string
+     * Current installed version string / version Code
      */
     private String currentVersion;
     private long currentVersionCode;
@@ -61,6 +61,8 @@ public class UpdateServiceImpl implements UpdateService
      */
     private String latestVersion;
     private long latestVersionCode;
+
+    private boolean mIsLatest = false;
 
     /* DownloadManager Broadcast Receiver Handler */
     private DownloadReceiver downloadReceiver = null;
@@ -91,44 +93,20 @@ public class UpdateServiceImpl implements UpdateService
     @Override
     public void checkForUpdates(boolean notifyAboutNewestVersion)
     {
-        boolean isLatest = isLatestVersion();
+        // cmeng: reverse the logic to !isLatestVersion() for testing
+        mIsLatest = isLatestVersion();
         Timber.i("Is latest: %s\nCurrent version: %s\nLatest version: %s\nDownload link: %s",
-                isLatest, currentVersion, latestVersion, downloadLink);
+                mIsLatest, currentVersion, latestVersion, downloadLink);
         // Timber.i("Changes link: %s", changesLink);
 
-        // cmeng: reverse the logic for !isLast for testing
-        if (!isLatest && (downloadLink != null)) {
-            // Check old or scheduled downloads
-            List<Long> previousDownloads = getOldDownloads();
-            if (previousDownloads.size() > 0) {
-                long lastDownload = previousDownloads.get(previousDownloads.size() - 1);
+        if (!mIsLatest && (downloadLink != null)) {
+            if (checkLastDLFileAction() < DownloadManager.ERROR_UNKNOWN)
+                return;
 
-                int lastJobStatus = checkDownloadStatus(lastDownload);
-                if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
-                    DownloadManager downloadManager = aTalkApp.getDownloadManager();
-                    Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
-                    File apkFile = new File(FilePathHelper.getFilePath(aTalkApp.getGlobalContext(), fileUri));
-
-                    // Ask the user if he wants to install if available and valid apk is found
-                    if (isValidApkVersion(apkFile, latestVersionCode)) {
-                        askInstallDownloadedApk(fileUri);
-                        return;
-                    }
-                }
-                else if (lastJobStatus != DownloadManager.STATUS_FAILED) {
-                    // Download is in progress or scheduled for retry
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                            aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_IN_PROGRESS_TITLE),
-                            aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_IN_PROGRESS));
-                    return;
-                }
-            }
-
-            AndroidUtils.showAlertConfirmDialog(aTalkApp.getGlobalContext(),
-                    aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_TITLE),
-                    aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_MESSAGE,
-                            latestVersion, Long.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME)),
-                    aTalkApp.getResString(R.string.plugin_updatechecker_BUTTON_DOWNLOAD),
+            DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                    R.string.plugin_update_Install_Update,
+                    R.string.plugin_update_Update_Available,
+                    R.string.plugin_update_Download,
                     new DialogActivity.DialogListener()
                     {
                         @Override
@@ -142,16 +120,71 @@ public class UpdateServiceImpl implements UpdateService
                         public void onDialogCancelled(DialogActivity dialog)
                         {
                         }
-                    }
+                    }, latestVersion, Long.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME)
             );
         }
         else if (notifyAboutNewestVersion) {
             // Notify that running version is up to date
-            AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                    aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_NOUPDATE_TITLE),
-                    aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_NOUPDATE,
-                            currentVersion, Long.toString(currentVersionCode)));
+            DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                    R.string.plugin_update_New_Version_None,
+                    R.string.plugin_update_UpToDate,
+                    R.string.plugin_update_Download,
+                    new DialogActivity.DialogListener()
+                    {
+                        @Override
+                        public boolean onConfirmClicked(DialogActivity dialog)
+                        {
+                            if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN)
+                                downloadApk();
+                            return true;
+                        }
+
+                        @Override
+                        public void onDialogCancelled(DialogActivity dialog)
+                        {
+                        }
+                    }, currentVersion, currentVersionCode
+            );
         }
+    }
+
+    /**
+     * Check for any existing downloaded file and take appropriate action;
+     *
+     * @return Last DownloadManager status; default to DownloadManager.ERROR_UNKNOWN if status unknown
+     */
+    private int checkLastDLFileAction()
+    {
+        // Check old or scheduled downloads
+        int lastJobStatus = DownloadManager.ERROR_UNKNOWN;
+
+        List<Long> previousDownloads = getOldDownloads();
+        if (previousDownloads.size() > 0) {
+            long lastDownload = previousDownloads.get(previousDownloads.size() - 1);
+
+            lastJobStatus = checkDownloadStatus(lastDownload);
+            if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
+                DownloadManager downloadManager = aTalkApp.getDownloadManager();
+                Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
+
+                // Ask the user if he wants to install the valid apk when found
+                if (isValidApkVersion(fileUri, latestVersionCode)) {
+                    askInstallDownloadedApk(fileUri);
+                }
+            }
+            else if (lastJobStatus != DownloadManager.STATUS_FAILED) {
+                // Download is in progress or scheduled for retry
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                        R.string.plugin_update_InProgress,
+                        R.string.plugin_update_Download_InProgress);
+            }
+            else {
+                // Download is in progress or scheduled for retry
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                        R.string.plugin_update_Install_Update, R.string.plugin_update_Download_failed);
+            }
+        }
+        return lastJobStatus;
     }
 
     /**
@@ -162,9 +195,9 @@ public class UpdateServiceImpl implements UpdateService
     private void askInstallDownloadedApk(Uri fileUri)
     {
         DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
-                R.string.plugin_updatechecker_DIALOG_DOWNLOADED_TITLE,
-                R.string.plugin_updatechecker_DIALOG_DOWNLOADED,
-                R.string.plugin_updatechecker_BUTTON_INSTALL,
+                R.string.plugin_update_Download_Completed,
+                R.string.plugin_update_Download_Ready,
+                mIsLatest ? R.string.plugin_update_ReInstall : R.string.plugin_update_Install,
                 new DialogActivity.DialogListener()
                 {
                     @Override
@@ -177,10 +210,9 @@ public class UpdateServiceImpl implements UpdateService
                         else
                             intent = new Intent(Intent.ACTION_VIEW);
 
+                        intent.setDataAndType(fileUri, APK_MIME_TYPE);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        intent.setDataAndType(fileUri, APK_MIME_TYPE);
-
                         aTalkApp.getGlobalContext().startActivity(intent);
                         return true;
                     }
@@ -189,7 +221,7 @@ public class UpdateServiceImpl implements UpdateService
                     public void onDialogCancelled(DialogActivity dialog)
                     {
                     }
-                });
+                }, latestVersion);
     }
 
     /**
@@ -199,6 +231,7 @@ public class UpdateServiceImpl implements UpdateService
      * @return download status of the job identified by given id. If given job is not found
      * {@link DownloadManager#STATUS_FAILED} will be returned.
      */
+    @SuppressLint("Range")
     private int checkDownloadStatus(long id)
     {
         DownloadManager downloadManager = aTalkApp.getDownloadManager();
@@ -230,7 +263,8 @@ public class UpdateServiceImpl implements UpdateService
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setMimeType(APK_MIME_TYPE);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        File dnFile = new File(FileBackend.getaTalkStore(FileBackend.TMP, true), fileName);
+        request.setDestinationUri(Uri.fromFile(dnFile));
 
         DownloadManager downloadManager = aTalkApp.getDownloadManager();
         long jobId = downloadManager.enqueue(request);
@@ -242,30 +276,8 @@ public class UpdateServiceImpl implements UpdateService
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            List<Long> previousDownloads = getOldDownloads();
-            if (previousDownloads.size() > 0) {
-                long lastDownload = previousDownloads.get(previousDownloads.size() - 1);
-
-                int lastJobStatus = checkDownloadStatus(lastDownload);
-                if (lastJobStatus == DownloadManager.STATUS_SUCCESSFUL) {
-                    DownloadManager downloadManager = aTalkApp.getDownloadManager();
-                    Uri fileUri = downloadManager.getUriForDownloadedFile(lastDownload);
-                    File apkFile = new File(FilePathHelper.getFilePath(aTalkApp.getGlobalContext(), fileUri));
-
-                    // Ask the user if he wants to install if available and valid apk is found
-                    if (isValidApkVersion(apkFile, latestVersionCode)) {
-                        askInstallDownloadedApk(fileUri);
-                        return;
-                    }
-                }
-                else if (lastJobStatus == DownloadManager.STATUS_FAILED) {
-                    // Download is in progress or scheduled for retry
-                    AndroidUtils.showAlertDialog(aTalkApp.getGlobalContext(),
-                            aTalkApp.getResString(R.string.plugin_updatechecker_DIALOG_TITLE),
-                            aTalkApp.getResString(R.string.plugin_updatechecker_DOWNLOAD_FAILED));
-                    return;
-                }
-            }
+            if (checkLastDLFileAction() < DownloadManager.ERROR_UNKNOWN)
+                return;
 
             // unregistered downloadReceiver
             if (downloadReceiver != null) {
@@ -313,7 +325,6 @@ public class UpdateServiceImpl implements UpdateService
     void removeOldDownloads()
     {
         List<Long> apkIds = getOldDownloads();
-
         DownloadManager downloadManager = aTalkApp.getDownloadManager();
         for (long id : apkIds) {
             Timber.d("Removing .apk for id %s", id);
@@ -325,20 +336,35 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Validate the downloaded apk file for correct versionCode and its apk name
      *
-     * @param apkFile apk File
-     * @param versionCode apk versionCode
+     * @param fileUri apk Uri
+     * @param versionCode use the given versionCode to check against the apk versionCode
      * @return true if apkFile has the specified versionCode
      */
-    private boolean isValidApkVersion(File apkFile, long versionCode)
+    private boolean isValidApkVersion(Uri fileUri, long versionCode)
     {
-        boolean isValid = false;
+        // Default to valid as getPackageArchiveInfo() always return null; but sometimes OK
+        boolean isValid = true;
+        File apkFile = new File(FilePathHelper.getFilePath(aTalkApp.getGlobalContext(), fileUri));
 
         if (apkFile.exists()) {
+            // Get downloaded apk actual versionCode and check its versionCode validity
             PackageManager pm = aTalkApp.getGlobalContext().getPackageManager();
-            PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), 0);
-            isValid = (info != null) && (versionCode == info.versionCode);
-        }
+            PackageInfo pckgInfo = pm.getPackageArchiveInfo(apkFile.getPath(), 0);
 
+            if (pckgInfo != null) {
+                long apkVersionCode;
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+                    apkVersionCode = pckgInfo.versionCode;
+                else
+                    apkVersionCode = pckgInfo.getLongVersionCode();
+
+                isValid = (versionCode == apkVersionCode);
+                if (!isValid) {
+                    aTalkApp.showToastMessage(R.string.plugin_update_Version_Invalid, apkVersionCode, versionCode);
+                    Timber.d("Downloaded apk actual version code: %s (%s)", apkVersionCode, versionCode);
+                }
+            }
+        }
         return isValid;
     }
 

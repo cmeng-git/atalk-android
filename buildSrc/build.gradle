@@ -103,6 +103,15 @@ jarJarDeps.dependsOn(
 
             // Add support for chatStat in conference room
             classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
+
+            classDelete 'org.jivesoftware.smackx.jingle.element.Jingle'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleAction'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent$**'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleReason'
+            classDelete 'org.jivesoftware.smackx.jingle.provider.JingleProvider'
+            classDelete 'org.jivesoftware.smackx.jingle.provider.JingleProvider$**'
+            classDelete 'org.jivesoftware.smackx.jingle.JingleUtil'
         }
 )
 

@@ -2,7 +2,7 @@ package javax.swing.text;
 
 import java.util.Dictionary;
 
-import org.xmpp.extensions.colibri.ColibriConferenceIQ.Content;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ.Content;
 
 import org.atalk.android.gui.util.event.EventListenerList;
 import javax.swing.event.DocumentListener;

@@ -24,7 +24,7 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.util.AndroidUtils;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.EntityJid;
 
@@ -192,6 +192,6 @@ public class InvitationReceivedDialog extends Dialog
     private void showErrorMessage(String errorMessage)
     {
         Context ctx = aTalkApp.getGlobalContext();
-        AndroidUtils.showAlertDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errorMessage);
+        DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errorMessage);
     }
 }

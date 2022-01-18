@@ -98,11 +98,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     static public final String INTENT_ACCOUNT_ID = "account_id";
 
     /**
-     * The id for the "select image from the gallery" intent result
-     */
-    static private final int SELECT_IMAGE = 1;
-
-    /**
      * The account's {@link OperationSetPresence} used to perform presence operations
      */
     private OperationSetPresence accountPresence;
@@ -1220,7 +1215,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Method handles callbacks from external {@link Intent} that retrieve avatar image
      *
-     * @param requestCode the request code {@link #SELECT_IMAGE}
+     * @param requestCode the request code
      * @param resultCode the result code
      * @param data the source {@link Intent} that returns the result
      */
@@ -1266,7 +1261,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
     private void showAvatarChangeError()
     {
-        AndroidUtils.showAlertDialog(this, getString(R.string.service_gui_ERROR), getString(R.string.service_gui_AVATAR_SET_ERROR, mAccount.getAccountName()));
+        DialogActivity.showDialog(this,
+                R.string.service_gui_ERROR, R.string.service_gui_AVATAR_SET_ERROR, mAccount.getAccountName());
     }
 
     /**
