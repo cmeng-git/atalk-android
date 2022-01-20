@@ -57,7 +57,7 @@
     <string name="service_gui_PASSWORD">Contraseña:</string>
     <string name="send_process_signal">Enviar señal de proceso</string>
     <string name="show_call_info">Información de la llamada</string>
-    <string name="show_call_zrtp_info">"Información de llamada ZRTP</string>
+    <string name="show_call_zrtp_info">"Información ZRTP de llamada</string>
     <string name="stop_osgi_framework">Detener el proceso OSGi</string>
     <string name="store_password">Guardar la contraseña</string>
     <string name="system_settings">Ajustes&#8230;</string>
@@ -139,7 +139,7 @@
     <string name="service_gui_CALL_INITIATING_STATUS">Iniciando la llamada</string>
     <string name="service_gui_CALL_REJECTED">%1$s ha rechazado la llamada.</string>
     <string name="service_gui_CALL_MISSED_CALL">Llamadas perdidas de:</string>
-    <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Video activo, por lo que no se pudo hacer la llamada..</string>
+    <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Vídeo activo, por lo que no se pudo hacer la llamada..</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Ningún dispositivo de audio configurado.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">No hay ningún codec de audio activado.</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_H">El dispositivo o códec no está configurado correctamente en \'Ajustes…\': %1$s</string>
@@ -207,7 +207,7 @@
 	<string name="service_gui_CHATROOM_REQUIRES_PASSWORD">La sala %1$s requiere contraseña para ser miembro.</string>
     <string name="service_gui_CHATROOM_STATUS_OFF">Deshabilitar estado de la sala</string>
     <string name="service_gui_CHATROOM_STATUS_ON">Habilitar estado de la sala</string>
-	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Asunto de la habitación cambiado: \'%1$s\' => \'%2$s\'</string>
+	<string name="service_gui_CHATROOM_SUBJECT_CHANGED">Asunto de la sala cambiado: \'%1$s\' => \'%2$s\'</string>
 	<string name="service_gui_CHAT_ROOMS">Salas</string>
 	<string name="service_gui_CHAT_NICKNAME_CHANGE">%1$s ahora se conoce como %2$s</string>
 	<string name="service_gui_CLEAR_CUSTOM_MESSAGES">Borrar los mensajes personalizados</string>
@@ -216,7 +216,7 @@
     <string name="service_gui_CLOSE_CHAT">Cerrar la sesión actual del chat</string>
     <string name="service_gui_CONNECTED_STATUS">Conectado</string>
     <string name="service_gui_CONNECTING_ACCOUNT">Conectando %1$s</string>
-	<string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Connectando*</string>
+	<string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Conectando*</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Fallo en el login de conexión de la cuenta: Nombre de usuario: %1$s\n
         Nombre del servidor: %2$s\nComprobar la conexión de red o ponerse en contacto con el administrador de red para obtener mas información.</string>
     <string name="service_gui_CONNECTING_STATUS">Conectando</string>
@@ -253,7 +253,7 @@
     <string name="About_action">Acerca de</string>
     <string name="About_help">Ayuda</string>
     <string name="check_new_version">Comprobar actualizaciones</string>
-    <string name="show_history_log">Historial de registros</string>
+    <string name="show_history_log">Historial de cambios</string>
     <string name="Online_help">Ayuda online</string>
 
     <!-- HTTP Authorization Request Dialog -->
@@ -294,7 +294,7 @@
 
     <!-- Location Permissions -->
     <string name="permission_rationale_location">El acceso al servicio de localización es necesario para usar la función \"mi localización"\, que muestra tu posición actual en el mapa.</string>
-    <string name="location_permission_denied">Esta muestra requiere permiso de ubicación para habilitar la capa \"mi ubicación"\. Por favor, inténtalo de nuevo y concede acceso para usar la ubicación.\nSi el permiso ha sido denegado permanentemente, se puede habilitar desde la Configuración del sistema &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="location_permission_denied">Este ejemplo requiere permiso de ubicación para habilitar la capa \"mi ubicación"\. Por favor, inténtalo de nuevo y concede acceso para usar la ubicación.\nSi el permiso ha sido denegado permanentemente, se puede habilitar desde la Configuración del sistema &gt; Apps &gt; \'Google Maps API Demos\'.</string>
     <string name="permission_required_toast">Se requiere permiso de ubicación para esta demostración.</string>
 
     <!-- Persistent Store -->
@@ -310,7 +310,7 @@
     <string name="service_gui_REFRESH_STORES_ROSTER">XEP-0237: Lista de participantes</string>
     <string name="service_gui_REFRESH_STORES_OMEMO">XEP-0384: Cifrado OMEMO</string>
 
-    <string name="service_gui_UNREGISTERED_MESSAGE">Error en el inicio de sesión de conexión de la cuenta:\nNombre de usuario: %1$s\nServidor Name: %2$s\nLa cuenta está fuera de línea.</string>
+    <string name="service_gui_UNREGISTERED_MESSAGE">Error en el inicio de sesión de conexión de la cuenta:\nNombre de usuario: %1$s\nServidor: %2$s\nLa cuenta está fuera de línea.</string>
     <string name="service_gui_CREATE_VIDEO_BRIDGE">Crear una pasarela de vídeo&#8230;</string>
     <string name="service_gui_CREATE_VIDEO_BRIDGE_MENU">Crear una pasarela de vídeo</string>
     <string name="service_gui_CREATE_JOIN_VIDEO_CONFERENCE">Crear / Unirse a una videoconferencia</string>
@@ -416,7 +416,7 @@
 
     <string name="service_gui_CHATROOM_DESTROY">Destruir esta sala de charla</string>
     <string name="service_gui_CHATROOM_DESTROY_EXCEPTION">Se produjo un error al destruir la sala de chat:\n%1$s </string>
-    <string name="service_gui_CHATROOM_DESTROY_ERROR">Error al eliminar el chatRoom en el servidor:\n\'%1$s\'\n%2$s\n\nSe debe purgar el chatRoom local.</string>
+    <string name="service_gui_CHATROOM_DESTROY_ERROR">Error al eliminar la sala en el servidor:\n\'%1$s\'\n%2$s\n\nSe debe purgar la sala local.</string>
     <string name="service_gui_CHATROOM_DESTROY_MESSAGE">¡Este grupo ha sido destruido!\nMotivo: %1$s</string>
     <string name="service_gui_CHATROOM_DESTROY_NOTE">Para informar a otros participantes, ingrese un motivo y un lugar alternativo para unirse.</string>
     <string name="service_gui_CHATROOM_DESTROY_PROMPT">Propietario de la cuenta: %1$s.\n¿Seguro que quiere eliminar\n\'%2$s\'\ny todo su historial de charla?</string>
@@ -542,7 +542,7 @@
     <string name="service_gui_RENAME">Renombrar</string>
     <string name="service_gui_REGISTRATION_REQUIRED">Error en el registro de la cuenta en el servidor:\n%s"</string>
     <string name="service_gui_SAVE">Guardar</string>
-    <string name="service_gui_SHOW_STACK_TRACE">Mostrar pila de traza</string>
+    <string name="service_gui_SHOW_STACK_TRACE">Mostrar traza de pila</string>
     <string name="service_gui_STREET">Calle</string>
     <string name="service_gui_SUBMIT">Enviar</string>
     <string name="service_gui_USER_LOGIN">Por favor Iniciar sesión</string>
