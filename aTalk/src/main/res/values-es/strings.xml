@@ -1571,7 +1571,7 @@
 
     <!-- Android Permissions -->
     <string name="app_info_permissions_button">Información de la App</string>
-    <string name="ask_for_all_permissions_button">Solicitar todo</string>
+    <string name="ask_for_all_permissions_button">Todos</string>
     <string name="ask_for_audio_permission_button">Audio</string>
     <string name="ask_for_camera_permission_button">Cámara</string>
     <string name="ask_for_contacts_permission_button">Contactos</string>
