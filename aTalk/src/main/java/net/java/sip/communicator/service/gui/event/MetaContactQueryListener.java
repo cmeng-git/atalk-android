@@ -7,7 +7,7 @@
 package net.java.sip.communicator.service.gui.event;
 
 /**
- * The <tt>MetaContactQueryListener</tt> listens for events coming from a <tt>MetaContactListService</tt> filtering.
+ * The <code>MetaContactQueryListener</code> listens for events coming from a <code>MetaContactListService</code> filtering.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -15,23 +15,23 @@ package net.java.sip.communicator.service.gui.event;
 public interface MetaContactQueryListener
 {
     /**
-     * Indicates that a <tt>MetaContact</tt> has been received for a search in the <tt>MetaContactListService</tt>.
+     * Indicates that a <code>MetaContact</code> has been received for a search in the <code>MetaContactListService</code>.
      *
-     * @param event the received <tt>MetaContactQueryEvent</tt>
+     * @param event the received <code>MetaContactQueryEvent</code>
      */
     void metaContactReceived(MetaContactQueryEvent event);
 
     /**
-     * Indicates that a <tt>MetaGroup</tt> has been received from a search in the <tt>MetaContactListService</tt>.
+     * Indicates that a <code>MetaGroup</code> has been received from a search in the <code>MetaContactListService</code>.
      *
-     * @param event the <tt>MetaGroupQueryEvent</tt> that has been received
+     * @param event the <code>MetaGroupQueryEvent</code> that has been received
      */
     void metaGroupReceived(MetaGroupQueryEvent event);
 
     /**
      * Indicates that a query has changed its status.
      *
-     * @param event the <tt>MetaContactQueryStatusEvent</tt> that notified us
+     * @param event the <code>MetaContactQueryStatusEvent</code> that notified us
      */
     void metaContactQueryStatusChanged(MetaContactQueryStatusEvent event);
 }

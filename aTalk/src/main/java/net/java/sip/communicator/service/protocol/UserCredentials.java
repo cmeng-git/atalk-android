@@ -41,7 +41,7 @@ public class UserCredentials
     private Boolean isServerOverridden = false;
 
     /**
-     * <tt>true</tt> when user cancel the Credential request.
+     * <code>true</code> when user cancel the Credential request.
      */
     private boolean userCancel = false;
 
@@ -145,7 +145,7 @@ public class UserCredentials
      * Specifies if server requires BCrypt passWord
      * <p>
      *
-     * @param ibRegistration <tt>true</tt> requests IB Registration
+     * @param ibRegistration <code>true</code> requests IB Registration
      */
     public void setIbRegistration(boolean ibRegistration)
     {
@@ -156,7 +156,7 @@ public class UserCredentials
      * Determines if  IB Registration is required
      * <p>
      *
-     * @return <tt>true</tt> if IB Registration is required.
+     * @return <code>true</code> if IB Registration is required.
      */
     public boolean isIbRegistration()
     {
@@ -272,7 +272,7 @@ public class UserCredentials
      * Specifies if user has canceled the Login User Credential
      * <p>
      *
-     * @param isCancel <tt>true</tt> if user has click "Cancel" during Login User Credential prompt
+     * @param isCancel <code>true</code> if user has click "Cancel" during Login User Credential prompt
      */
     public void setUserCancel(boolean isCancel)
     {
@@ -283,7 +283,7 @@ public class UserCredentials
      * Determines if user has canceled the Login User Credential
      * <p>
      *
-     * @return <tt>true</tt> if user has click "Cancel" during Login User Credential prompt
+     * @return <code>true</code> if user has click "Cancel" during Login User Credential prompt
      */
     public boolean isUserCancel()
     {

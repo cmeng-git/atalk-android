@@ -26,9 +26,9 @@ public interface VolumeControl
     String PLAYBACK_VOLUME_LEVEL_PROPERTY_NAME = "media.PLAYBACK_VOLUME_LEVEL";
 
     /**
-     * Adds a <tt>VolumeChangeListener</tt> to be informed about changes in the volume level of this instance.
+     * Adds a <code>VolumeChangeListener</code> to be informed about changes in the volume level of this instance.
      *
-     * @param listener the <tt>VolumeChangeListener</tt> to be informed about changes in the volume level of
+     * @param listener the <code>VolumeChangeListener</code> to be informed about changes in the volume level of
      * this instance
      */
     void addVolumeChangeListener(VolumeChangeListener listener);
@@ -62,10 +62,10 @@ public interface VolumeControl
     float getVolume();
 
     /**
-     * Removes a <tt>VolumeChangeListener</tt> to no longer be notified about changes in the volume
+     * Removes a <code>VolumeChangeListener</code> to no longer be notified about changes in the volume
      * level of this instance.
      *
-     * @param listener the <tt>VolumeChangeListener</tt> to no longer be notified about changes in the volume
+     * @param listener the <code>VolumeChangeListener</code> to no longer be notified about changes in the volume
      * level of this instance
      */
     void removeVolumeChangeListener(VolumeChangeListener listener);

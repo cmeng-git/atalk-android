@@ -9,8 +9,8 @@ package net.java.sip.communicator.service.systray;
 import net.java.sip.communicator.service.systray.event.*;
 
 /**
- * The <tt>PopupMessageHandler</tt> role is to give different methods to display
- * <tt>PopupMessage</tt> and listen for events (user click) coming from that popup.
+ * The <code>PopupMessageHandler</code> role is to give different methods to display
+ * <code>PopupMessage</code> and listen for events (user click) coming from that popup.
  *
  * @author Symphorien Wanko
  * @author Eng Chong Meng
@@ -25,17 +25,17 @@ public interface PopupMessageHandler
     void addPopupMessageListener(SystrayPopupMessageListener listener);
 
     /**
-     * Removes a listener previously added with <tt>addPopupMessageListener</tt>.
+     * Removes a listener previously added with <code>addPopupMessageListener</code>.
      *
      * @param listener the listener to remove
      */
     void removePopupMessageListener(SystrayPopupMessageListener listener);
 
     /**
-     * Shows the given <tt>PopupMessage</tt>. Any given <tt>PopupMessage</tt>
+     * Shows the given <code>PopupMessage</code>. Any given <code>PopupMessage</code>
      * will provide a minimum of two values: a message title and a message body.
      * These two values are respectively available via
-     * <tt>PopupMessage#getMessageTitle()</tt> and <tt>PopupMessage#getMessage()</tt>
+     * <code>PopupMessage#getMessageTitle()</code> and <code>PopupMessage#getMessage()</code>
      *
      * @param popupMessage the message to show
      */

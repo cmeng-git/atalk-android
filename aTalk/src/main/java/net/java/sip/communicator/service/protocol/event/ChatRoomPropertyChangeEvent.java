@@ -16,7 +16,7 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * A <tt>ChatRoomPropertyChangeEvent</tt> is issued whenever a chat room property has changed. Event
+ * A <code>ChatRoomPropertyChangeEvent</code> is issued whenever a chat room property has changed. Event
  * codes defined in this class describe properties whose changes are being announced through this
  * event.
  *
@@ -31,23 +31,23 @@ public class ChatRoomPropertyChangeEvent extends java.beans.PropertyChangeEvent
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * The name of the <tt>ChatRoom</tt> subject property.
+	 * The name of the <code>ChatRoom</code> subject property.
 	 */
 	public static final String CHAT_ROOM_SUBJECT = "ChatRoomSubject";
 
 	/**
-	 * The name of the <tt>ChatRoom</tt> subject property.
+	 * The name of the <code>ChatRoom</code> subject property.
 	 */
 	public static final String CHAT_ROOM_USER_NICKNAME = "ChatRoomUserNickname";
 
 	/**
-	 * Creates a <tt>ChatRoomPropertyChangeEvent</tt> indicating that a change has occurred for
-	 * property <tt>propertyName</tt> in the <tt>source</tt> chat room and that its value has
-	 * changed from <tt>oldValue</tt> to <tt>newValue</tt>.
+	 * Creates a <code>ChatRoomPropertyChangeEvent</code> indicating that a change has occurred for
+	 * property <code>propertyName</code> in the <code>source</code> chat room and that its value has
+	 * changed from <code>oldValue</code> to <code>newValue</code>.
 	 * <p>
 	 * 
 	 * @param source
-	 *        the <tt>ChatRoom</tt> whose property has changed.
+	 *        the <code>ChatRoom</code> whose property has changed.
 	 * @param propertyName
 	 *        the name of the property that has changed.
 	 * @param oldValue
@@ -64,7 +64,7 @@ public class ChatRoomPropertyChangeEvent extends java.beans.PropertyChangeEvent
 	/**
 	 * Returns the source chat room for this event.
 	 *
-	 * @return the <tt>ChatRoom</tt> associated with this event.
+	 * @return the <code>ChatRoom</code> associated with this event.
 	 */
 	public ChatRoom getSourceChatRoom()
 	{

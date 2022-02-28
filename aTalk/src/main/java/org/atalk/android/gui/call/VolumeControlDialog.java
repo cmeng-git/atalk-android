@@ -122,9 +122,9 @@ public class VolumeControlDialog extends OSGiDialogFragment implements VolumeCha
 	}
 
 	/**
-	 * Returns the <tt>SeekBar</tt> used to control the volume.
+	 * Returns the <code>SeekBar</code> used to control the volume.
 	 * 
-	 * @return the <tt>SeekBar</tt> used to control the volume.
+	 * @return the <code>SeekBar</code> used to control the volume.
 	 */
 	private SeekBar getVolumeBar()
 	{
@@ -143,15 +143,15 @@ public class VolumeControlDialog extends OSGiDialogFragment implements VolumeCha
 	}
 
 	/**
-	 * Calculates the progress value suitable for given <tt>SeekBar</tt> from the device volume level.
+	 * Calculates the progress value suitable for given <code>SeekBar</code> from the device volume level.
 	 * 
 	 * @param volumeBar
-	 *        the <tt>SeekBar</tt> for which the progress value will be calculated.
+	 *        the <code>SeekBar</code> for which the progress value will be calculated.
 	 * @param volLevel
-	 *        actual volume level from <tt>VolumeControl</tt>. Value <tt>-1.0</tt> means the level is invalid and
+	 *        actual volume level from <code>VolumeControl</code>. Value <code>-1.0</code> means the level is invalid and
 	 *        default progress value should be provided.
 	 * @return the progress value calculated from given volume level that will be suitable for specified
-	 *         <tt>SeekBar</tt>.
+	 *         <code>SeekBar</code>.
 	 */
 	private int getVolumeBarProgress(SeekBar volumeBar, float volLevel)
 	{
@@ -203,9 +203,9 @@ public class VolumeControlDialog extends OSGiDialogFragment implements VolumeCha
 	}
 
 	/**
-	 * Creates the <tt>VolumeControlDialog</tt> that can be used to control output volume gain level.
+	 * Creates the <code>VolumeControlDialog</code> that can be used to control output volume gain level.
 	 * 
-	 * @return the <tt>VolumeControlDialog</tt> for output volume gain level.
+	 * @return the <code>VolumeControlDialog</code> for output volume gain level.
 	 */
 	static public VolumeControlDialog createOutputVolCtrlDialog()
 	{
@@ -219,9 +219,9 @@ public class VolumeControlDialog extends OSGiDialogFragment implements VolumeCha
 	}
 
 	/**
-	 * Creates the <tt>VolumeControlDialog</tt> for controlling microphone gain level.
+	 * Creates the <code>VolumeControlDialog</code> for controlling microphone gain level.
 	 * 
-	 * @return the <tt>VolumeControlDialog</tt> that can be used to set microphone gain level.
+	 * @return the <code>VolumeControlDialog</code> that can be used to set microphone gain level.
 	 */
 	static public VolumeControlDialog createInputVolCtrlDialog()
 	{

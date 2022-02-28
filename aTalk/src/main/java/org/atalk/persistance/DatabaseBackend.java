@@ -55,7 +55,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The <tt>DatabaseBackend</tt> uses SQLite to store all the aTalk application data in the database "dbRecords.db"
+ * The <code>DatabaseBackend</code> uses SQLite to store all the aTalk application data in the database "dbRecords.db"
  *
  * @author Eng Chong Meng
  */

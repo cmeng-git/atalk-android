@@ -24,7 +24,7 @@ import timber.log.Timber;
 
 /**
  * The class implements a dispatch event thread. The thread will
- * fire event every time it is added through the <tt>fireSystemActivityEvent()</tt>
+ * fire event every time it is added through the <code>fireSystemActivityEvent()</code>
  * method and would then deliver it to a registered listener if any.
  * If the event has time set we used it as a delay before dispatching the event.
  * <p>
@@ -104,7 +104,7 @@ public class SystemActivityEventDispatcher implements Runnable
     /**
      * Delivers the specified event to all registered listeners.
      *
-     * @param evt the <tt>SystemActivityEvent</tt> that we'd like delivered to all registered message listeners.
+     * @param evt the <code>SystemActivityEvent</code> that we'd like delivered to all registered message listeners.
      */
     protected void fireSystemActivityEvent(SystemActivityEvent evt)
     {
@@ -115,7 +115,7 @@ public class SystemActivityEventDispatcher implements Runnable
      * Delivers the specified event to all registered listeners. Without
      * using the thread, but delivering them in the calling thread.
      *
-     * @param evt the <tt>SystemActivityEvent</tt> that we'd like delivered to
+     * @param evt the <code>SystemActivityEvent</code> that we'd like delivered to
      * all registered message listeners.
      */
     protected void fireSystemActivityEventCurrentThread(SystemActivityEvent evt)
@@ -131,7 +131,7 @@ public class SystemActivityEventDispatcher implements Runnable
     /**
      * Delivers the specified event to all registered listeners.
      *
-     * @param evt the <tt>SystemActivityEvent</tt> that we'd like delivered to
+     * @param evt the <code>SystemActivityEvent</code> that we'd like delivered to
      * all registered message listeners.
      * @param wait time in ms. to wait before firing the event.
      */
@@ -150,9 +150,9 @@ public class SystemActivityEventDispatcher implements Runnable
     }
 
     /**
-     * Delivers the specified event to the <tt>listener</tt>.
+     * Delivers the specified event to the <code>listener</code>.
      *
-     * @param evt the <tt>SystemActivityEvent</tt> that we'd like delivered to
+     * @param evt the <code>SystemActivityEvent</code> that we'd like delivered to
      * the listener.
      * @param listener that will receive the event.
      */

@@ -45,10 +45,10 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
     private MetaContact metaContact;
 
     /**
-     * Creates a new instance of <tt>MoveToGroupDialog</tt>.
+     * Creates a new instance of <code>MoveToGroupDialog</code>.
      *
      * @param metaContact the contact that will be moved.
-     * @return parametrized instance of <tt>MoveToGroupDialog</tt>.
+     * @return parametrized instance of <code>MoveToGroupDialog</code>.
      */
     public static MoveToGroupDialog getInstance(MetaContact metaContact)
     {

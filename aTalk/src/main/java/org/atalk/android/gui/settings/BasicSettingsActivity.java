@@ -15,7 +15,7 @@ import org.atalk.service.osgi.OSGiPreferenceActivity;
 
 /**
  * Base class for settings screens which only adds preferences from XML resource.
- * By default preference resource id is obtained from <tt>Activity</tt> meta-data,
+ * By default preference resource id is obtained from <code>Activity</code> meta-data,
  * resource key: "androidx.preference".
  *
  * @author Pawel Domas

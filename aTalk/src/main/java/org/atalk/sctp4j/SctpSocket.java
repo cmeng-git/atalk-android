@@ -178,7 +178,7 @@ public class SctpSocket
 
     /**
      * The indicator which determines whether {@link #close()} has been invoked
-     * on this <tt>SctpSocket</tt>. It does NOT indicate whether
+     * on this <code>SctpSocket</code>. It does NOT indicate whether
      * {@link Sctp#closeSocket(long)} has been invoked with {@link #ptr}.
      */
     private boolean closed = false;
@@ -226,7 +226,7 @@ public class SctpSocket
     private int ptrLockCount = 0;
 
     /**
-     * Creates new instance of <tt>SctpSocket</tt>.
+     * Creates new instance of <code>SctpSocket</code>.
      *
      * @param ptr native socket pointer.
      * @param localPort local SCTP port on which this socket is bound.
@@ -281,7 +281,7 @@ public class SctpSocket
      * Usrscp is currently configured to work in non blocking mode thus this
      * method should be polled in intervals.
      *
-     * @return <tt>true</tt> if we have accepted incoming connection
+     * @return <code>true</code> if we have accepted incoming connection
      * successfully.
      */
     public boolean accept()
@@ -377,12 +377,12 @@ public class SctpSocket
 
     /**
      * Locks {@link #ptr} for reading and returns its value if this
-     * <tt>SctpSocket</tt> has not been closed (yet). Each <tt>lockPtr</tt>
-     * method invocation must be balanced with a subsequent <tt>unlockPtr</tt>
+     * <code>SctpSocket</code> has not been closed (yet). Each <code>lockPtr</code>
+     * method invocation must be balanced with a subsequent <code>unlockPtr</code>
      * method invocation.
      *
-     * @return <tt>ptr</tt>
-     * @throws IOException if this <tt>SctpSocket</tt> has (already) been closed
+     * @return <code>ptr</code>
+     * @throws IOException if this <code>SctpSocket</code> has (already) been closed
      */
     private long lockPtr()
             throws IOException
@@ -437,7 +437,7 @@ public class SctpSocket
     /**
      * Fired when usrsctp stack sends notification.
      *
-     * @param notification the <tt>SctpNotification</tt> triggered.
+     * @param notification the <code>SctpNotification</code> triggered.
      */
     private void onNotification(SctpNotification notification)
     {
@@ -471,7 +471,7 @@ public class SctpSocket
     }
 
     /**
-     * Notifies this <tt>SctpSocket</tt> about incoming data.
+     * Notifies this <code>SctpSocket</code> about incoming data.
      *
      * @param data buffer holding received data
      * @param sid stream id
@@ -518,14 +518,14 @@ public class SctpSocket
     }
 
     /**
-     * Sends given <tt>data</tt> on selected SCTP stream using given payload
+     * Sends given <code>data</code> on selected SCTP stream using given payload
      * protocol identifier.
      *
      * @param data the data to send.
      * @param ordered should we care about message order ?
      * @param sid SCTP stream identifier
      * @param ppid payload protocol identifier
-     * @return sent bytes count or <tt>-1</tt> in case of an error.
+     * @return sent bytes count or <code>-1</code> in case of an error.
      */
     public int send(byte[] data, boolean ordered, int sid, int ppid)
             throws IOException
@@ -534,7 +534,7 @@ public class SctpSocket
     }
 
     /**
-     * Sends given <tt>data</tt> on selected SCTP stream using given payload
+     * Sends given <code>data</code> on selected SCTP stream using given payload
      * protocol identifier.
      *
      * @param data the data to send.
@@ -543,7 +543,7 @@ public class SctpSocket
      * @param ordered should we care about message order ?
      * @param sid SCTP stream identifier
      * @param ppid payload protocol identifier
-     * @return sent bytes count or <tt>-1</tt> in case of an error.
+     * @return sent bytes count or <code>-1</code> in case of an error.
      */
     public int send(
             byte[] data, int offset, int len,
@@ -584,7 +584,7 @@ public class SctpSocket
     /**
      * Sets the link that will be used to send network packets.
      *
-     * @param link <tt>NetworkLink</tt> that will be used by this instance to
+     * @param link <code>NetworkLink</code> that will be used by this instance to
      * send network packets.
      */
     public void setLink(NetworkLink link)
@@ -603,11 +603,11 @@ public class SctpSocket
     }
 
     /**
-     * Unlocks {@link #ptr} for reading. If this <tt>SctpSocket</tt> has been
-     * closed while <tt>ptr</tt> was locked for reading and there are no other
-     * readers at the time of the method invocation, closes <tt>ptr</tt>. Each
-     * <tt>unlockPtr</tt> method invocation must be balanced with a previous
-     * <tt>lockPtr</tt> method invocation.
+     * Unlocks {@link #ptr} for reading. If this <code>SctpSocket</code> has been
+     * closed while <code>ptr</code> was locked for reading and there are no other
+     * readers at the time of the method invocation, closes <code>ptr</code>. Each
+     * <code>unlockPtr</code> method invocation must be balanced with a previous
+     * <code>lockPtr</code> method invocation.
      */
     private void unlockPtr()
     {
@@ -647,7 +647,7 @@ public class SctpSocket
          * Fired when usrsctp stack sends notification.
          *
          * @param socket the {@link SctpSocket} notification source.
-         * @param notification the <tt>SctpNotification</tt> triggered.
+         * @param notification the <code>SctpNotification</code> triggered.
          */
         public void onSctpNotification(
                 SctpSocket socket,

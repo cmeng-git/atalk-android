@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 /**
  * Collects the (last) RTCP (SR, RR, and XR) reports sent and received by a local peer (for the
- * purposes of <tt>MediaStreamStats</tt>).
+ * purposes of <code>MediaStreamStats</code>).
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -24,14 +24,14 @@ import timber.log.Timber;
 public class RTCPReports
 {
     /**
-     * The list of <tt>RTCPReportListener</tt>s to be notified by this instance about the receiving
+     * The list of <code>RTCPReportListener</code>s to be notified by this instance about the receiving
      * and sending of RTCP RR, SR, and XR. Implemented as copy-on-write storage in order to
      * optimize the firing of events to the listeners.
      */
     private List<RTCPReportListener> listeners = Collections.emptyList();
 
     /**
-     * The <tt>Object</tt> which synchronizes the (write) access to {@link #listeners}.
+     * The <code>Object</code> which synchronizes the (write) access to {@link #listeners}.
      */
     private final Object listenerSyncRoot = new Object();
 
@@ -92,11 +92,11 @@ public class RTCPReports
     private final Map<Integer, RTCPExtendedReport.VoIPMetricsReportBlock> sentVoIPMetrics = new HashMap<>();
 
     /**
-     * Adds a new <tt>RTCPReportListener</tt> to be notified by this instance about the receiving
+     * Adds a new <code>RTCPReportListener</code> to be notified by this instance about the receiving
      * and sending of RTCP RR, SR and XR.
      *
-     * @param listener the <tt>RTCPReportListener</tt> to add
-     * @throws NullPointerException if the specified <tt>listener</tt> is <tt>null</tt>
+     * @param listener the <code>RTCPReportListener</code> to add
+     * @throws NullPointerException if the specified <code>listener</code> is <code>null</code>
      */
     public void addRTCPReportListener(RTCPReportListener listener)
     {
@@ -118,7 +118,7 @@ public class RTCPReports
      * Gets the latest RTCP XR received from a specific SSRC (of remote originator).
      *
      * @param ssrc the SSRC of the RTCP XR (remote) originator
-     * @return the latest RTCP XR received from the specified <tt>ssrc</tt>
+     * @return the latest RTCP XR received from the specified <code>ssrc</code>
      */
     public RTCPExtendedReport getReceivedRTCPExtendedReport(int ssrc)
     {
@@ -146,7 +146,7 @@ public class RTCPReports
      *
      * @param sourceSSRC the SSRC of the local source
      * @return the latest RTCP SR or RR report block received from a remote sender/originator for
-     * the specified <tt>sourceSSRC</tt>
+     * the specified <code>sourceSSRC</code>
      */
     public RTCPFeedback getReceivedRTCPFeedback(int sourceSSRC)
     {
@@ -174,7 +174,7 @@ public class RTCPReports
      * Gets the latest RTCP SR or RR received from a specific SSRC (of remote sender/originator).
      *
      * @param senderSSRC the SSRC of the RTCP SR or RR (remote) sender/originator
-     * @return the latest RTCP SR or RR received from the specified <tt>senderSSRC</tt>
+     * @return the latest RTCP SR or RR received from the specified <code>senderSSRC</code>
      */
     public RTCPReport getReceivedRTCPReport(int senderSSRC)
     {
@@ -217,7 +217,7 @@ public class RTCPReports
      *
      * @param sourceSSRC the SSRC of the local source
      * @return the RTCP extended report (XR) VoIP Metrics block received from a remote originator
-     * for the specified <tt>sourceSSRC</tt>
+     * for the specified <code>sourceSSRC</code>
      */
     public RTCPExtendedReport.VoIPMetricsReportBlock getReceivedRTCPVoIPMetrics(int sourceSSRC)
     {
@@ -227,10 +227,10 @@ public class RTCPReports
     }
 
     /**
-     * Gets a list of the <tt>RTCPReportListener</tt>s to be notified by this instance about the
+     * Gets a list of the <code>RTCPReportListener</code>s to be notified by this instance about the
      * receiving and sending of RTCP RR, SR, and XR.
      *
-     * @return a list of the <tt>RTCPReportListener</tt>s to be notified by this instance about the
+     * @return a list of the <code>RTCPReportListener</code>s to be notified by this instance about the
      * receiving and sending of RTCP RR, SR, and XR
      */
     public List<RTCPReportListener> getRTCPReportListeners()
@@ -242,7 +242,7 @@ public class RTCPReports
      * Gets the latest RTCP XR sent from a specific SSRC (of local originator).
      *
      * @param ssrc the SSRC of the RTCP XR (local) originator
-     * @return the latest RTCP XR sent from the specified <tt>ssrc</tt>
+     * @return the latest RTCP XR sent from the specified <code>ssrc</code>
      */
     public RTCPExtendedReport getSentRTCPExtendedReport(int ssrc)
     {
@@ -270,7 +270,7 @@ public class RTCPReports
      *
      * @param sourceSSRC the SSRC of the remote source
      * @return the latest RTCP SR or RR report block received from a local sender/originator for
-     * the specified <tt>sourceSSRC</tt>
+     * the specified <code>sourceSSRC</code>
      */
     public RTCPFeedback getSentRTCPFeedback(int sourceSSRC)
     {
@@ -296,7 +296,7 @@ public class RTCPReports
      * Gets the latest RTCP SR or RR sent from a specific SSRC (of local sender/originator).
      *
      * @param senderSSRC the SSRC of the RTCP SR or RR (local) sender/originator
-     * @return the latest RTCP SR or RR sent from the specified <tt>senderSSRC</tt>
+     * @return the latest RTCP SR or RR sent from the specified <code>senderSSRC</code>
      */
     public RTCPReport getSentRTCPReport(int senderSSRC)
     {
@@ -338,7 +338,7 @@ public class RTCPReports
      *
      * @param sourceSSRC the SSRC of the remote source
      * @return the RTCP extended report (XR) VoIP Metrics block sent from a local originator for
-     * the specified <tt>sourceSSRC</tt>
+     * the specified <code>sourceSSRC</code>
      */
     public RTCPExtendedReport.VoIPMetricsReportBlock getSentRTCPVoIPMetrics(int sourceSSRC)
     {
@@ -348,10 +348,10 @@ public class RTCPReports
     }
 
     /**
-     * Removes an existing <tt>RTCPReportListener</tt> to no longer be notified by this instance
+     * Removes an existing <code>RTCPReportListener</code> to no longer be notified by this instance
      * about the receiving and sending of RTCP RR, SR and XR.
      *
-     * @param listener the <tt>RTCPReportListener</tt> to remove
+     * @param listener the <code>RTCPReportListener</code> to remove
      */
     public void removeRTCPReportListener(RTCPReportListener listener)
     {
@@ -375,12 +375,12 @@ public class RTCPReports
     }
 
     /**
-     * Notifies this instance that a specific <tt>RTCPExtendedReport</tt> was received by the local
-     * endpoint. Remembers the received <tt>extendedReport</tt> and notifies the
-     * <tt>RTCPReportListener</tt>s added to this instance.
+     * Notifies this instance that a specific <code>RTCPExtendedReport</code> was received by the local
+     * endpoint. Remembers the received <code>extendedReport</code> and notifies the
+     * <code>RTCPReportListener</code>s added to this instance.
      *
-     * @param extendedReport the received <tt>RTCPExtendedReport</tt>
-     * @throws NullPointerException if the specified <tt>extendedReport</tt> is <tt>null</tt>
+     * @param extendedReport the received <code>RTCPExtendedReport</code>
+     * @throws NullPointerException if the specified <code>extendedReport</code> is <code>null</code>
      */
     public void rtcpExtendedReportReceived(RTCPExtendedReport extendedReport)
     {
@@ -419,12 +419,12 @@ public class RTCPReports
     }
 
     /**
-     * Notifies this instance that a specific <tt>RTCPExtendedReport</tt> was sent by the local
-     * endpoint. Remembers the sent <tt>extendedReport</tt> and notifies the
-     * <tt>RTCPReportListener</tt>s added to this instance.
+     * Notifies this instance that a specific <code>RTCPExtendedReport</code> was sent by the local
+     * endpoint. Remembers the sent <code>extendedReport</code> and notifies the
+     * <code>RTCPReportListener</code>s added to this instance.
      *
-     * @param extendedReport the sent <tt>RTCPExtendedReport</tt>
-     * @throws NullPointerException if the specified <tt>extendedReport</tt> is <tt>null</tt>
+     * @param extendedReport the sent <code>RTCPExtendedReport</code>
+     * @throws NullPointerException if the specified <code>extendedReport</code> is <code>null</code>
      */
     public void rtcpExtendedReportSent(RTCPExtendedReport extendedReport)
     {
@@ -463,12 +463,12 @@ public class RTCPReports
     }
 
     /**
-     * Notifies this instance that a specific <tt>RTCPReport</tt> was received by the local
-     * endpoint. Remembers the received <tt>report</tt> and notifies the
-     * <tt>RTCPReportListener</tt>s added to this instance.
+     * Notifies this instance that a specific <code>RTCPReport</code> was received by the local
+     * endpoint. Remembers the received <code>report</code> and notifies the
+     * <code>RTCPReportListener</code>s added to this instance.
      *
-     * @param report the received <tt>RTCPReport</tt>
-     * @throws NullPointerException if the specified <tt>report</tt> is <tt>null</tt>
+     * @param report the received <code>RTCPReport</code>
+     * @throws NullPointerException if the specified <code>report</code> is <code>null</code>
      */
     public void rtcpReportReceived(RTCPReport report)
     {
@@ -522,12 +522,12 @@ public class RTCPReports
     }
 
     /**
-     * Notifies this instance that a specific <tt>RTCPReport</tt> was sent by the local endpoint.
-     * Remembers the sent <tt>report</tt> and notifies the <tt>RTCPReportListener</tt>s added to
+     * Notifies this instance that a specific <code>RTCPReport</code> was sent by the local endpoint.
+     * Remembers the sent <code>report</code> and notifies the <code>RTCPReportListener</code>s added to
      * this instance.
      *
-     * @param report the sent <tt>RTCPReport</tt>
-     * @throws NullPointerException if the specified <tt>report</tt> is <tt>null</tt>
+     * @param report the sent <code>RTCPReport</code>
+     * @throws NullPointerException if the specified <code>report</code> is <code>null</code>
      */
     public void rtcpReportSent(RTCPReport report)
     {

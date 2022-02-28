@@ -117,7 +117,7 @@ public class DHCPTransaction
     }
 
     /**
-     * A <tt>TimerTask</tt> that will handle retransmission of DHCP INFORM.
+     * A <code>TimerTask</code> that will handle retransmission of DHCP INFORM.
      *
      * @author Sebastien Vincent
      */

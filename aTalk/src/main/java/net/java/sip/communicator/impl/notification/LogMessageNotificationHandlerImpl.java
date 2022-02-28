@@ -16,7 +16,7 @@ import static net.java.sip.communicator.service.notification.LogMessageNotificat
 import static net.java.sip.communicator.service.notification.LogMessageNotificationAction.TRACE_LOG_TYPE;
 
 /**
- * An implementation of the <tt>LogMessageNotificationHandler</tt> interface.
+ * An implementation of the <code>LogMessageNotificationHandler</code> interface.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng

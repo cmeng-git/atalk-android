@@ -43,10 +43,10 @@ public class AdHocChatRoomListChangeEvent extends EventObject
 	public static final int AD_HOC_CHATROOM_CHANGED = 3;
 
 	/**
-	 * Creates a new <tt>AdHocChatRoom</tt> event according to the specified parameters.
+	 * Creates a new <code>AdHocChatRoom</code> event according to the specified parameters.
 	 *
 	 * @param source
-	 * 		the <tt>AdHocChatRoom</tt> instance that is added to the AdHocChatRoomsList
+	 * 		the <code>AdHocChatRoom</code> instance that is added to the AdHocChatRoomsList
 	 * @param eventID
 	 * 		one of the AD_HOC_CHATROOM_XXX static fields indicating the nature of the event.
 	 */
@@ -57,9 +57,9 @@ public class AdHocChatRoomListChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the source <tt>AdHocChatRoom</tt>.
+	 * Returns the source <code>AdHocChatRoom</code>.
 	 *
-	 * @return the source <tt>AdHocChatRoom</tt>.
+	 * @return the source <code>AdHocChatRoom</code>.
 	 */
 	public AdHocChatRoomWrapper getSourceAdHocChatRoom()
 	{
@@ -67,9 +67,9 @@ public class AdHocChatRoomListChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns a String representation of this <tt>GuiAdHocChatRoomEvent</tt>.
+	 * Returns a String representation of this <code>GuiAdHocChatRoomEvent</code>.
 	 *
-	 * @return A String representation of this <tt>GuiAdHocChatRoomEvent</tt>.
+	 * @return A String representation of this <code>GuiAdHocChatRoomEvent</code>.
 	 */
 	@Override
 	public String toString()

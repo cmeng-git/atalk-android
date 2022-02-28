@@ -25,7 +25,7 @@ public interface WhiteboardInvitationRejectionListener
 	 * Called when an invitee rejects an invitation previously sent by us.
 	 *
 	 * @param evt
-	 *        the instance of the <tt>WhiteboardInvitationRejectedEvent</tt> containing the rejected
+	 *        the instance of the <code>WhiteboardInvitationRejectedEvent</code> containing the rejected
 	 *        white-board invitation as well as the source provider where this happened.
 	 */
 	public void invitationRejected(WhiteboardInvitationRejectedEvent evt);

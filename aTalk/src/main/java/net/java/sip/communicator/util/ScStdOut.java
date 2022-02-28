@@ -37,7 +37,7 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Returns the default System.out <tt>PrintStream</tt> that was in use
+     * Returns the default System.out <code>PrintStream</code> that was in use
      * before this class was instantiated.
      *
      * @return the original System.out PrintStream
@@ -48,9 +48,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>string</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>string</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param string the <tt>String</tt> to print.
+     * @param string the <code>String</code> to print.
      */
     @Override
     public void print(String string)
@@ -60,9 +60,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>boolean</tt> to print.
+     * @param x the <code>boolean</code> to print.
      */
     @Override
     public void println(boolean x)
@@ -72,9 +72,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>char</tt> to print.
+     * @param x the <code>char</code> to print.
      */
     @Override
     public void println(char x)
@@ -84,9 +84,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>char[]</tt> to print.
+     * @param x the <code>char[]</code> to print.
      */
     @Override
     public void println(char[] x)
@@ -96,9 +96,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>double</tt> to print.
+     * @param x the <code>double</code> to print.
      */
     @Override
     public void println(double x)
@@ -108,9 +108,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>float</tt> to print.
+     * @param x the <code>float</code> to print.
      */
     @Override
     public void println(float x)
@@ -120,9 +120,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>int</tt> to print.
+     * @param x the <code>int</code> to print.
      */
     @Override
     public void println(int x)
@@ -132,9 +132,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>long</tt> to print.
+     * @param x the <code>long</code> to print.
      */
     @Override
     public void println(long x)
@@ -144,9 +144,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>Object</tt> to print.
+     * @param x the <code>Object</code> to print.
      */
     @Override
     public void println(Object x)
@@ -156,9 +156,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>x</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>x</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param x the <tt>String</tt> to print.
+     * @param x the <code>String</code> to print.
      */
     @Override
     public void println(String x)
@@ -168,9 +168,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>b</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>b</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param b the <tt>boolean</tt> to print.
+     * @param b the <code>boolean</code> to print.
      */
     @Override
     public void print(boolean b)
@@ -180,9 +180,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>c</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>c</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param c the <tt>char</tt> to print.
+     * @param c the <code>char</code> to print.
      */
     @Override
     public void print(char c)
@@ -192,9 +192,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>s</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>s</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param s the <tt>char[]</tt> to print.
+     * @param s the <code>char[]</code> to print.
      */
     @Override
     public void print(char[] s)
@@ -204,9 +204,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>d</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>d</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param d the <tt>double</tt> to print.
+     * @param d the <code>double</code> to print.
      */
     @Override
     public void print(double d)
@@ -216,9 +216,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>f</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>f</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param f the <tt>float</tt> to print.
+     * @param f the <code>float</code> to print.
      */
     @Override
     public void print(float f)
@@ -228,9 +228,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>i</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>i</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param i the <tt>int</tt> to print.
+     * @param i the <code>int</code> to print.
      */
     @Override
     public void print(int i)
@@ -240,9 +240,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>l</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>l</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param l the <tt>long</tt> to print.
+     * @param l the <code>long</code> to print.
      */
     @Override
     public void print(long l)
@@ -252,9 +252,9 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints <tt>obj</tt> if <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints <code>obj</code> if <code>stdOutPrintingEnabled</code> is enabled.
      *
-     * @param obj the <tt>Object</tt> to print.
+     * @param obj the <code>Object</code> to print.
      */
     @Override
     public void print(Object obj)
@@ -264,7 +264,7 @@ public class ScStdOut extends PrintStream
     }
 
     /**
-     * Prints an empty line <tt>stdOutPrintingEnabled</tt> is enabled.
+     * Prints an empty line <code>stdOutPrintingEnabled</code> is enabled.
      */
     @Override
     public void println()

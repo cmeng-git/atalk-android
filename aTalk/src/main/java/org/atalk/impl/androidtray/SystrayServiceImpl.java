@@ -35,12 +35,12 @@ public class SystrayServiceImpl extends AbstractSystrayService
     private final PopupListenerImpl popupMessageListener = new PopupListenerImpl();
 
     /**
-     * <tt>BroadcastReceiver</tt> that catches "on click" and "clear" events for displayed notifications.
+     * <code>BroadcastReceiver</code> that catches "on click" and "clear" events for displayed notifications.
      */
     private final PopupClickReceiver clickReceiver;
 
     /**
-     * Creates new instance of <tt>SystrayServiceImpl</tt>.
+     * Creates new instance of <code>SystrayServiceImpl</code>.
      */
     public SystrayServiceImpl()
     {
@@ -136,8 +136,8 @@ public class SystrayServiceImpl extends AbstractSystrayService
     }
 
     /**
-     * Class implements <tt>SystrayPopupMessageListener</tt> in order to display chat
-     * <tt>Activity</tt> when popup is clicked.
+     * Class implements <code>SystrayPopupMessageListener</code> in order to display chat
+     * <code>Activity</code> when popup is clicked.
      */
     private class PopupListenerImpl implements SystrayPopupMessageListener
     {

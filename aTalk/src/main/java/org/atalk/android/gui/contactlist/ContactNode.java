@@ -15,7 +15,7 @@ package org.atalk.android.gui.contactlist;
 import net.java.sip.communicator.service.gui.*;
 
 /**
- * The <tt>ContactNode</tt> is a <tt>ContactListNode</tt> corresponding to a given <tt>UIContact</tt>.
+ * The <code>ContactNode</code> is a <code>ContactListNode</code> corresponding to a given <code>UIContact</code>.
  *
  * @author Yana Stamcheva
  */
@@ -23,7 +23,7 @@ import net.java.sip.communicator.service.gui.*;
 public class ContactNode implements ContactListNode
 {
 	/**
-	 * The <tt>UIContact</tt> corresponding to this contact node.
+	 * The <code>UIContact</code> corresponding to this contact node.
 	 */
 	private final UIContact contact;
 
@@ -33,10 +33,10 @@ public class ContactNode implements ContactListNode
 	private boolean isActive;
 
 	/**
-	 * Creates a <tt>ContactNode</tt> by specifying the corresponding <tt>contact</tt>.
+	 * Creates a <code>ContactNode</code> by specifying the corresponding <code>contact</code>.
 	 * 
 	 * @param contact
-	 *        the <tt>UIContactImpl</tt> corresponding to this node
+	 *        the <code>UIContactImpl</code> corresponding to this node
 	 */
 	public ContactNode(UIContactImpl contact)
 	{
@@ -45,9 +45,9 @@ public class ContactNode implements ContactListNode
 	}
 
 	/**
-	 * Returns the corresponding <tt>UIContactImpl</tt>.
+	 * Returns the corresponding <code>UIContactImpl</code>.
 	 *
-	 * @return the corresponding <tt>UIContactImpl</tt>
+	 * @return the corresponding <code>UIContactImpl</code>
 	 */
 	// public UIContactImpl getContactDescriptor()
 	// {
@@ -65,10 +65,10 @@ public class ContactNode implements ContactListNode
 	}
 
 	/**
-	 * Returns <tt>true</tt> if this contact node has unread received messages waiting, otherwise returns <tt>false</tt>
+	 * Returns <code>true</code> if this contact node has unread received messages waiting, otherwise returns <code>false</code>
 	 * .
 	 * 
-	 * @return <tt>true</tt> if this contact node has unread received messages waiting, otherwise returns <tt>false</tt>
+	 * @return <code>true</code> if this contact node has unread received messages waiting, otherwise returns <code>false</code>
 	 */
 	public boolean isActive()
 	{

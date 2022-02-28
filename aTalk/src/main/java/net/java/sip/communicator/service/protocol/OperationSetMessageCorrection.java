@@ -13,8 +13,8 @@ package net.java.sip.communicator.service.protocol;
 public interface OperationSetMessageCorrection extends OperationSetBasicInstantMessaging
 {
     /**
-     * Replaces the message with ID <tt>correctedMessageUID</tt> sent to the contact <tt>to</tt>
-     * with the message <tt>message</tt>
+     * Replaces the message with ID <code>correctedMessageUID</code> sent to the contact <code>to</code>
+     * with the message <code>message</code>
      *
      * @param to The contact to send the message to.
      * @param resource The ContactResource to send the message to.

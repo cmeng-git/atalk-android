@@ -25,7 +25,7 @@ import java.util.Date;
 import timber.log.Timber;
 
 /**
- * The <tt>ChatMessageImpl</tt> class encapsulates message information in order to provide a
+ * The <code>ChatMessageImpl</code> class encapsulates message information in order to provide a
  * single object containing all data needed to display a chat message.
  *
  * @author Yana Stamcheva
@@ -101,7 +101,7 @@ public class ChatMessageImpl implements ChatMessage
 
     /**
      * The unique identifier of the last message that this message should replace,
-     * or <tt>null</tt> if this is a new message.
+     * or <code>null</code> if this is a new message.
      */
     private final String correctedMessageUID;
 
@@ -165,7 +165,7 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Creates a <tt>ChatMessageImpl</tt> by specifying all parameters of the message.
+     * Creates a <code>ChatMessageImpl</code> by specifying all parameters of the message.
      *
      * @param sender The string Id of the message sender.
      * @param senderName the sender display name
@@ -508,9 +508,9 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Returns the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
+     * Returns the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      *
-     * @return the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
+     * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      */
     public String getCorrectedMessageUID()
     {
@@ -518,11 +518,11 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Indicates if the given <tt>nextMsg</tt> should be considered as consecutive message;
+     * Indicates if the given <code>nextMsg</code> should be considered as consecutive message;
      * checking it against the previous message type and the next message.
      *
      * @param nextMsg the next message to check
-     * @return <tt>true</tt> if the given message is a consecutive message, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the given message is a consecutive message, <code>false</code> - otherwise
      */
     public boolean isConsecutiveMessage(ChatMessage nextMsg)
     {

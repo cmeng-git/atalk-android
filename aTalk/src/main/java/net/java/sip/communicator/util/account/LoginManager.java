@@ -20,12 +20,12 @@ import org.osgi.framework.*;
 import timber.log.Timber;
 
 /**
- * The <tt>LoginManager</tt> manages the login operation. Here we obtain the
- * <tt>ProtocolProviderFactory</tt>, we make the account installation and we handle all events
+ * The <code>LoginManager</code> manages the login operation. Here we obtain the
+ * <code>ProtocolProviderFactory</code>, we make the account installation and we handle all events
  * related to the registration state.
  * <p/>
- * The <tt>LoginManager</tt> is the one that opens one or more <tt>LoginWindow</tt>s for each
- * <tt>ProtocolProviderFactory</tt>. The <tt>LoginWindow</tt> is where user could enter an
+ * The <code>LoginManager</code> is the one that opens one or more <code>LoginWindow</code>s for each
+ * <code>ProtocolProviderFactory</code>. The <code>LoginWindow</code> is where user could enter an
  * identifier and password.
  * <p/>
  * Note that the behavior of this class will be changed when the Configuration Service is ready.
@@ -39,7 +39,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
     private final LoginRenderer loginRenderer;
 
     /**
-     * Creates an instance of the <tt>LoginManager</tt>, by specifying the main application window.
+     * Creates an instance of the <code>LoginManager</code>, by specifying the main application window.
      *
      * @param loginRenderer the main application window
      */
@@ -188,10 +188,10 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
     }
 
     /**
-     * Implements the <tt>ServiceListener</tt> method. Verifies whether the passed event
-     * concerns a <tt>ProtocolProviderService</tt> and adds the corresponding UI controls.
+     * Implements the <code>ServiceListener</code> method. Verifies whether the passed event
+     * concerns a <code>ProtocolProviderService</code> and adds the corresponding UI controls.
      *
-     * @param event The <tt>ServiceEvent</tt> object.
+     * @param event The <code>ServiceEvent</code> object.
      */
 
     public void serviceChanged(ServiceEvent event)
@@ -221,7 +221,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
     /**
      * Adds all UI components (status selector box, etc) related to the given protocol provider.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>
+     * @param protocolProvider the <code>ProtocolProviderService</code>
      */
     private void handleProviderAdded(ProtocolProviderService protocolProvider)
     {
@@ -251,7 +251,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
     /**
      * Removes all UI components related to the given protocol provider.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>
+     * @param protocolProvider the <code>ProtocolProviderService</code>
      */
     private void handleProviderRemoved(ProtocolProviderService protocolProvider)
     {
@@ -259,9 +259,9 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
     }
 
     /**
-     * Returns <tt>true</tt> to indicate the atalk has been manually disconnected, <tt>false</tt> - otherwise.
+     * Returns <code>true</code> to indicate the atalk has been manually disconnected, <code>false</code> - otherwise.
      *
-     * @return <tt>true</tt> to indicate the atalk has been manually disconnected, <tt>false</tt> - otherwise
+     * @return <code>true</code> to indicate the atalk has been manually disconnected, <code>false</code> - otherwise
      */
     public boolean isManuallyDisconnected()
     {
@@ -271,8 +271,8 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
     /**
      * Sets the manually disconnected property.
      *
-     * @param manuallyDisconnected <tt>true</tt> to indicate the atalk has been manually
-     * disconnected, <tt>false</tt> - otherwise
+     * @param manuallyDisconnected <code>true</code> to indicate the atalk has been manually
+     * disconnected, <code>false</code> - otherwise
      */
     public void setManuallyDisconnected(boolean manuallyDisconnected)
     {

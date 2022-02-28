@@ -61,7 +61,7 @@ public class WhiteboardSessionPresenceChangeEvent extends EventObject
 	public static final String LOCAL_USER_DROPPED = "LocalUserDropped";
 
 	/**
-	 * The <tt>WhiteboardSession</tt> to which the change is related.
+	 * The <code>WhiteboardSession</code> to which the change is related.
 	 */
 	private WhiteboardSession whiteboardSession = null;
 
@@ -76,13 +76,13 @@ public class WhiteboardSessionPresenceChangeEvent extends EventObject
 	private String reason = null;
 
 	/**
-	 * Creates a <tt>WhiteboardSessionPresenceChangeEvent</tt> representing that a change in local
+	 * Creates a <code>WhiteboardSessionPresenceChangeEvent</code> representing that a change in local
 	 * participant presence in the source white-board has occured.
 	 *
 	 * @param source
-	 *        the <tt>OperationSetWhiteboarding</tt>, which produced this event
+	 *        the <code>OperationSetWhiteboarding</code>, which produced this event
 	 * @param session
-	 *        the <tt>WhiteboardSession</tt> that this event is about
+	 *        the <code>WhiteboardSession</code> that this event is about
 	 * @param eventType
 	 *        the type of this event.
 	 * @param reason
@@ -99,9 +99,9 @@ public class WhiteboardSessionPresenceChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>OperationSetWhiteboarding</tt>, where this event has occurred.
+	 * Returns the <code>OperationSetWhiteboarding</code>, where this event has occurred.
 	 *
-	 * @return the <tt>OperationSetWhiteboarding</tt>, where this event has occurred
+	 * @return the <code>OperationSetWhiteboarding</code>, where this event has occurred
 	 */
 	public OperationSetWhiteboarding getWhiteboardOpSet()
 	{
@@ -109,9 +109,9 @@ public class WhiteboardSessionPresenceChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>WhiteboardSession</tt>, that this event is about.
+	 * Returns the <code>WhiteboardSession</code>, that this event is about.
 	 *
-	 * @return the <tt>WhiteboardSession</tt>, that this event is about
+	 * @return the <code>WhiteboardSession</code>, that this event is about
 	 */
 	public WhiteboardSession getWhiteboardSession()
 	{

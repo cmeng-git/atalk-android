@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>GenericEvent</tt>s indicate reception of an new generic event.
+ * <code>GenericEvent</code>s indicate reception of an new generic event.
  *
  * @author Damian Minkov
  */
@@ -107,9 +107,9 @@ public class GenericEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>ProtocolProviderService</tt> which originated this event.
+	 * Returns the <code>ProtocolProviderService</code> which originated this event.
 	 *
-	 * @return the source <tt>ProtocolProviderService</tt>
+	 * @return the source <code>ProtocolProviderService</code>
 	 */
 	public ProtocolProviderService getSourceProvider()
 	{

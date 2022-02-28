@@ -80,7 +80,7 @@ public interface Contact
      * Returns the status of the contact as per the last status update we've received for it. Note
      * that this method is not to perform any network operations and will simply return the status
      * received in the last status update message. If you want a reliable way of retrieving
-     * someone's status, you should use the <tt>queryContactStatus()</tt> method in <tt>OperationSetPresence</tt>.
+     * someone's status, you should use the <code>queryContactStatus()</code> method in <code>OperationSetPresence</code>.
      *
      * @return the PresenceStatus that we've received in the last status update pertaining to this contact.
      */
@@ -142,7 +142,7 @@ public interface Contact
      * operation set. The method may also return null if no such data is required and the contact
      * address is sufficient for restoring the contact.
      *
-     * @return A <tt>String</tt> that could be used to create a unresolved instance of this contact
+     * @return A <code>String</code> that could be used to create a unresolved instance of this contact
      * during a next run of the application, before establishing network connectivity or
      * null if no such data is required.
      */
@@ -173,7 +173,7 @@ public interface Contact
     /**
      * Indicates if this contact supports resources.
      *
-     * @return <tt>true</tt> if this contact supports resources, <tt>false</tt> otherwise
+     * @return <code>true</code> if this contact supports resources, <code>false</code> otherwise
      */
     boolean supportResources();
 
@@ -185,16 +185,16 @@ public interface Contact
     Collection<ContactResource> getResources();
 
     /**
-     * Adds the given <tt>ContactResourceListener</tt> to listen for events related to contact resources changes.
+     * Adds the given <code>ContactResourceListener</code> to listen for events related to contact resources changes.
      *
-     * @param l the <tt>ContactResourceListener</tt> to add
+     * @param l the <code>ContactResourceListener</code> to add
      */
     void addResourceListener(ContactResourceListener l);
 
     /**
-     * Removes the given <tt>ContactResourceListener</tt> listening for events related to contact resources changes.
+     * Removes the given <code>ContactResourceListener</code> listening for events related to contact resources changes.
      *
-     * @param l the <tt>ContactResourceListener</tt> to remove
+     * @param l the <code>ContactResourceListener</code> to remove
      */
     void removeResourceListener(ContactResourceListener l);
 

@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>WhiteboardInvitationReceivedEvent</tt>s indicate reception of an invitation to join a
+ * <code>WhiteboardInvitationReceivedEvent</code>s indicate reception of an invitation to join a
  * whiteboard.
  *
  * @author Yana Stamcheva
@@ -41,13 +41,13 @@ public class WhiteboardInvitationReceivedEvent extends EventObject
 	private Date timestamp;
 
 	/**
-	 * Creates an <tt>WhiteboardInvitationReceivedEvent</tt> representing reception of the
-	 * <tt>source</tt> invitation received from the specified <tt>from</tt> white-board participant.
+	 * Creates an <code>WhiteboardInvitationReceivedEvent</code> representing reception of the
+	 * <code>source</code> invitation received from the specified <code>from</code> white-board participant.
 	 *
 	 * @param whiteboardOpSet
-	 *        the <tt>OperationSetWhiteboarding</tt>, which dispatches this event
+	 *        the <code>OperationSetWhiteboarding</code>, which dispatches this event
 	 * @param invitation
-	 *        the <tt>WhiteboardInvitation</tt> that this event is for.
+	 *        the <code>WhiteboardInvitation</code> that this event is for.
 	 * @param timestamp
 	 *        the exact date when the event ocurred.
 	 */
@@ -71,9 +71,9 @@ public class WhiteboardInvitationReceivedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>WhiteboardInvitation</tt> that this event is for.
+	 * Returns the <code>WhiteboardInvitation</code> that this event is for.
 	 *
-	 * @return the <tt>WhiteboardInvitation</tt> that this event is for.
+	 * @return the <code>WhiteboardInvitation</code> that this event is for.
 	 */
 	public WhiteboardInvitation getInvitation()
 	{

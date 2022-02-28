@@ -22,9 +22,9 @@ public interface OperationSetSmsMessaging extends OperationSet
 	 * @param content
 	 *        content value
 	 * @param contentType
-	 *        the MIME-type for <tt>content</tt>
+	 *        the MIME-type for <code>content</code>
 	 * @param contentEncoding
-	 *        encoding used for <tt>content</tt>
+	 *        encoding used for <code>content</code>
 	 * @return the newly created message.
 	 */
 	public IMessage createMessage(byte[] content, String contentType, String contentEncoding);
@@ -40,46 +40,46 @@ public interface OperationSetSmsMessaging extends OperationSet
 	public IMessage createMessage(String messageText);
 
 	/**
-	 * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> contact.
+	 * Sends the <code>message</code> to the destination indicated by the <code>to</code> contact.
 	 * 
 	 * @param to
-	 *        the <tt>Contact</tt> to send <tt>message</tt> to
+	 *        the <code>Contact</code> to send <code>message</code> to
 	 * @param message
-	 *        the <tt>IMessage</tt> to send.
+	 *        the <code>IMessage</code> to send.
 	 * @throws java.lang.IllegalStateException
 	 *         if the underlying stack is not registered and initialized.
 	 * @throws java.lang.IllegalArgumentException
-	 *         if <tt>to</tt> is not an instance belonging to the underlying implementation.
+	 *         if <code>to</code> is not an instance belonging to the underlying implementation.
 	 */
 	public void sendSmsMessage(Contact to, IMessage message)
 		throws IllegalStateException, IllegalArgumentException;
 
 	/**
-	 * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> parameter.
+	 * Sends the <code>message</code> to the destination indicated by the <code>to</code> parameter.
 	 * 
 	 * @param to
-	 *        the destination to send <tt>message</tt> to
+	 *        the destination to send <code>message</code> to
 	 * @param message
-	 *        the <tt>IMessage</tt> to send.
+	 *        the <code>IMessage</code> to send.
 	 * @throws java.lang.IllegalStateException
 	 *         if the underlying stack is not registered and initialized.
 	 * @throws java.lang.IllegalArgumentException
-	 *         if <tt>to</tt> is not an instance belonging to the underlying implementation.
+	 *         if <code>to</code> is not an instance belonging to the underlying implementation.
 	 */
 	public void sendSmsMessage(String to, IMessage message)
 		throws IllegalStateException, IllegalArgumentException;
 
 	/**
-	 * Sends the <tt>file</tt> to the destination indicated by the <tt>to</tt> parameter.
+	 * Sends the <code>file</code> to the destination indicated by the <code>to</code> parameter.
 	 * 
 	 * @param to
-	 *        the destination to send <tt>message</tt> to
+	 *        the destination to send <code>message</code> to
 	 * @param file
-	 *        the <tt>file</tt> to send.
+	 *        the <code>file</code> to send.
 	 * @throws java.lang.IllegalStateException
 	 *         if the underlying stack is not registered and initialized.
 	 * @throws java.lang.IllegalArgumentException
-	 *         if <tt>to</tt> is not an instance belonging to the underlying implementation.
+	 *         if <code>to</code> is not an instance belonging to the underlying implementation.
 	 * @throws OperationNotSupportedException
 	 *         if the given contact client or server does not support file transfers
 	 */
@@ -91,16 +91,16 @@ public interface OperationSetSmsMessaging extends OperationSet
 	 * successful message delivery, failure or reception of incoming messages..
 	 *
 	 * @param listener
-	 *        the <tt>MessageListener</tt> to register.
+	 *        the <code>MessageListener</code> to register.
 	 */
 	public void addMessageListener(MessageListener listener);
 
 	/**
-	 * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon
+	 * Unregisters <code>listener</code> so that it won't receive any further notifications upon
 	 * successful message delivery, failure or reception of incoming messages..
 	 *
 	 * @param listener
-	 *        the <tt>MessageListener</tt> to unregister.
+	 *        the <code>MessageListener</code> to unregister.
 	 */
 	public void removeMessageListener(MessageListener listener);
 
@@ -109,7 +109,7 @@ public interface OperationSetSmsMessaging extends OperationSet
 	 *
 	 * @param contentType
 	 *        the type we want to check
-	 * @return <tt>true</tt> if the protocol supports it and <tt>false</tt> otherwise.
+	 * @return <code>true</code> if the protocol supports it and <code>false</code> otherwise.
 	 */
 	public boolean isContentTypeSupported(String contentType);
 

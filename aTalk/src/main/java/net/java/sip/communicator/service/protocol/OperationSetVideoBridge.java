@@ -51,8 +51,8 @@ public interface OperationSetVideoBridge extends OperationSet
      * Indicates if there's an active video bridge available at this moment. The Jabber provider may
      * announce support for video bridge, but it should not be used for calling until it becomes actually active.
      *
-     * @return <tt>true</tt> to indicate that there's currently an active available video bridge,
-     * <tt>false</tt> - otherwise
+     * @return <code>true</code> to indicate that there's currently an active available video bridge,
+     * <code>false</code> - otherwise
      */
     public boolean isActive();
 }

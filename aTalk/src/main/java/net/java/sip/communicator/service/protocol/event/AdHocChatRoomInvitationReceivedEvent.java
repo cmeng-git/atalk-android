@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>AdHocChatRoomInvitationReceivedEvent</tt>s indicate reception of an invitation to join an
+ * <code>AdHocChatRoomInvitationReceivedEvent</code>s indicate reception of an invitation to join an
  * ad-hoc chat room.
  *
  * @author Valentin Martinet
@@ -37,13 +37,13 @@ public class AdHocChatRoomInvitationReceivedEvent extends EventObject
 	private final Date timestamp;
 
 	/**
-	 * Creates an <tt>InvitationReceivedEvent</tt> representing reception of the <tt>source</tt>
-	 * invitation received from the specified <tt>from</tt> ad-hoc chat room participant.
+	 * Creates an <code>InvitationReceivedEvent</code> representing reception of the <code>source</code>
+	 * invitation received from the specified <code>from</code> ad-hoc chat room participant.
 	 *
 	 * @param adHocMultiUserChatOpSet
-	 *        the <tt>OperationSetAdHocMultiUserChat</tt>, which dispatches this event
+	 *        the <code>OperationSetAdHocMultiUserChat</code>, which dispatches this event
 	 * @param invitation
-	 *        the <tt>AdHocChatRoomInvitation</tt> that this event is for
+	 *        the <code>AdHocChatRoomInvitation</code> that this event is for
 	 * @param timestamp
 	 *        the exact date when the event occurred.
 	 */
@@ -68,9 +68,9 @@ public class AdHocChatRoomInvitationReceivedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>AdHocChatRoomInvitation</tt> that this event is for.
+	 * Returns the <code>AdHocChatRoomInvitation</code> that this event is for.
 	 *
-	 * @return the <tt>AdHocChatRoomInvitation</tt> that this event is for.
+	 * @return the <code>AdHocChatRoomInvitation</code> that this event is for.
 	 */
 	public AdHocChatRoomInvitation getInvitation()
 	{

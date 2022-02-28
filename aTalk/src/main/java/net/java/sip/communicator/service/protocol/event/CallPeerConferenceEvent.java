@@ -27,7 +27,7 @@ public class CallPeerConferenceEvent extends EventObject
 	 * The ID of <code>CallPeerConferenceEvent</code> which notifies about a change in the
 	 * characteristic of a specific <code>CallPeer</code> being a conference focus. The event does
 	 * not carry information about a specific <code>ConferenceMember</code> i.e. the
-	 * <code>conferenceMember</code> property is of value <tt>null</tt>.
+	 * <code>conferenceMember</code> property is of value <code>null</code>.
 	 */
 	public static final int CONFERENCE_FOCUS_CHANGED = 1;
 
@@ -48,14 +48,14 @@ public class CallPeerConferenceEvent extends EventObject
 	public static final int CONFERENCE_MEMBER_REMOVED = 3;
 
 	/**
-	 * The ID of <tt>CallPeerConferenceEvent</tt> which notifies about an error packet received from
-	 * a <tt>CallPeer</tt> .
+	 * The ID of <code>CallPeerConferenceEvent</code> which notifies about an error packet received from
+	 * a <code>CallPeer</code> .
 	 */
 	public static final int CONFERENCE_MEMBER_ERROR_RECEIVED = 4;
 
 	/**
 	 * The <code>ConferenceMember</code> which has been changed (e.g. added to or removed from the
-	 * conference) if this event has been fired because of such a change; otherwise, <tt>null</tt>.
+	 * conference) if this event has been fired because of such a change; otherwise, <code>null</code>.
 	 */
 	private final ConferenceMember conferenceMember;
 
@@ -69,7 +69,7 @@ public class CallPeerConferenceEvent extends EventObject
 
 	/**
 	 * The error message associated with the error packet that was received. If the eventID is not
-	 * {@link #CONFERENCE_MEMBER_ERROR_RECEIVED} the value should should be <tt>null</tt>.
+	 * {@link #CONFERENCE_MEMBER_ERROR_RECEIVED} the value should should be <code>null</code>.
 	 */
 	private final String errorString;
 
@@ -111,18 +111,18 @@ public class CallPeerConferenceEvent extends EventObject
 	}
 
 	/**
-	 * Initializes a new <tt>CallPeerConferenceEvent</tt> which is to be fired by a specific
-	 * <tt>CallPeer</tt> and which notifies about a change in its conference-related information
-	 * pertaining to a specific <tt>ConferenceMember</tt>.
+	 * Initializes a new <code>CallPeerConferenceEvent</code> which is to be fired by a specific
+	 * <code>CallPeer</code> and which notifies about a change in its conference-related information
+	 * pertaining to a specific <code>ConferenceMember</code>.
 	 *
 	 * @param sourceCallPeer
-	 *        the <tt>CallPeer</tt> which is to fire the new event
+	 *        the <code>CallPeer</code> which is to fire the new event
 	 * @param eventID
 	 *        the ID of this event which may be {@link #CONFERENCE_MEMBER_ADDED} and
 	 *        {@link #CONFERENCE_MEMBER_REMOVED} and indicates the specifics of the change in the
 	 *        conference-related information and the details this event carries
 	 * @param conferenceMember
-	 *        the <tt>ConferenceMember</tt> which caused the new event to be fired
+	 *        the <code>ConferenceMember</code> which caused the new event to be fired
 	 * @param errorString
 	 *        the error string associated with the error packet that is received
 	 */
@@ -141,7 +141,7 @@ public class CallPeerConferenceEvent extends EventObject
 	 * the conference) if this event has been fired because of such a change.
 	 *
 	 * @return the <code>ConferenceMember</code> which has been changed if this event has been fired
-	 *         because of such a change; otherwise, <tt>null</tt>
+	 *         because of such a change; otherwise, <code>null</code>
 	 */
 	public ConferenceMember getConferenceMember()
 	{

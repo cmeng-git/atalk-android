@@ -17,7 +17,7 @@ import java.util.logging.LogManager;
 
 /**
  * Implements the class which is to have its name specified to {@link LogManager} via the system property
- * <tt>java.util.logging.config.class</tt> and which is to read in the initial configuration.
+ * <code>java.util.logging.config.class</code> and which is to read in the initial configuration.
  *
  * @author Lyubomir Marinov
  */

@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
- * Represents a default/base implementation of <tt>OperationSetDesktopSharingClient</tt> which
+ * Represents a default/base implementation of <code>OperationSetDesktopSharingClient</code> which
  * attempts to make it easier for implementers to provide complete solutions while focusing on
  * implementation-specific functionality.
  *
@@ -31,16 +31,16 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
         implements OperationSetDesktopSharingClient
 {
     /**
-     * The <tt>CallPeerListener</tt> which listens to modifications in the properties/state of
-     * <tt>CallPeer</tt>.
+     * The <code>CallPeerListener</code> which listens to modifications in the properties/state of
+     * <code>CallPeer</code>.
      */
     private final CallPeerListener callPeerListener = new CallPeerAdapter()
     {
         /**
-         * Indicates that a change has occurred in the status of the source <tt>CallPeer</tt>.
+         * Indicates that a change has occurred in the status of the source <code>CallPeer</code>.
          *
          * @param evt
-         *        the <tt>CallPeerChangeEvent</tt> instance containing the source event as well as
+         *        the <code>CallPeerChangeEvent</code> instance containing the source event as well as
          *        its previous and its new status
          */
         @Override
@@ -65,7 +65,7 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
     private Vector<CallPeer> grantedRemoteControlPeers = new Vector<>();
 
     /**
-     * The list of <tt>RemoteControlListener</tt>s to be notified when a change in remote control
+     * The list of <code>RemoteControlListener</code>s to be notified when a change in remote control
      * access occurs.
      */
     private final List<WeakReference<RemoteControlListener>> listeners = new ArrayList<WeakReference<RemoteControlListener>>();
@@ -76,16 +76,16 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
      */
     private List<String> deferredRemoteControlPeers = new ArrayList<>();
     /**
-     * The <tt>ProtocolProviderService</tt> implementation which created this instance and for which
+     * The <code>ProtocolProviderService</code> implementation which created this instance and for which
      * telephony conferencing services are being provided by this instance.
      */
     protected final T parentProvider;
 
     /**
-     * Initializes a new <tt>AbstractOperationSetDesktopSharing</tt> instance which is to be
-     * provided by a specific <tt>ProtocolProviderService.
+     * Initializes a new <code>AbstractOperationSetDesktopSharing</code> instance which is to be
+     * provided by a specific <code>ProtocolProviderService.
      *
-     * @param parentProvider the <tt>ProtocolProviderService</tt> implementation which is creating the new instance
+     * @param parentProvider the <code>ProtocolProviderService</code> implementation which is creating the new instance
      * and for which telephony conferencing services are being provided by this instance
      */
     protected AbstractOperationSetDesktopSharingClient(T parentProvider)
@@ -94,16 +94,16 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
     }
 
     /**
-     * Adds a <tt>RemoteControlListener</tt> to be notified when the remote peer accepts to give us
+     * Adds a <code>RemoteControlListener</code> to be notified when the remote peer accepts to give us
      * full control of their desktop.
      * <p>
-     * The default implementation of <tt>AbstractOperationSetDesktopSharingClient</tt> adds a
-     * <tt>WeakReference</tt> to the specified <tt>RemoteControlListener</tt> in order to avoid
-     * memory leaks because of code which calls <tt>addRemoteControlListener</tt> and never calls
-     * <tt>removeRemoteControlListener</tt>.
+     * The default implementation of <code>AbstractOperationSetDesktopSharingClient</code> adds a
+     * <code>WeakReference</code> to the specified <code>RemoteControlListener</code> in order to avoid
+     * memory leaks because of code which calls <code>addRemoteControlListener</code> and never calls
+     * <code>removeRemoteControlListener</code>.
      * </p>
      *
-     * @param listener the <tt>RemoteControlListener</tt> to add
+     * @param listener the <code>RemoteControlListener</code> to add
      */
     public void addRemoteControlListener(RemoteControlListener listener)
     {
@@ -142,9 +142,9 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
     }
 
     /**
-     * Fires a <tt>RemoteControlGrantedEvent</tt> to all registered listeners.
+     * Fires a <code>RemoteControlGrantedEvent</code> to all registered listeners.
      *
-     * @param peer the <tt>CallPeer</tt>
+     * @param peer the <code>CallPeer</code>
      */
     public void fireRemoteControlGranted(CallPeer peer)
     {
@@ -166,9 +166,9 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
     }
 
     /**
-     * Fires a <tt>RemoteControlGrantedEvent</tt> to all registered listeners.
+     * Fires a <code>RemoteControlGrantedEvent</code> to all registered listeners.
      *
-     * @param peer the <tt>CallPeer</tt>
+     * @param peer the <code>CallPeer</code>
      */
     public void fireRemoteControlRevoked(CallPeer peer)
     {
@@ -190,9 +190,9 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
     }
 
     /**
-     * Gets a list of <tt>RemoteControlListener</tt>s to be notified of remote control access changes.
+     * Gets a list of <code>RemoteControlListener</code>s to be notified of remote control access changes.
      *
-     * @return a list of <tt>RemoteControlListener</tt>s to be notifed of remote control access changes
+     * @return a list of <code>RemoteControlListener</code>s to be notifed of remote control access changes
      */
     protected List<RemoteControlListener> getListeners()
     {
@@ -215,10 +215,10 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
     }
 
     /**
-     * Removes a <tt>RemoteControlListener</tt> to be notified when remote peer accept/revoke to
+     * Removes a <code>RemoteControlListener</code> to be notified when remote peer accept/revoke to
      * give us full control.
      *
-     * @param listener <tt>RemoteControlListener</tt> to remove
+     * @param listener <code>RemoteControlListener</code> to remove
      */
     public void removeRemoteControlListener(RemoteControlListener listener)
     {
@@ -261,12 +261,12 @@ public abstract class AbstractOperationSetDesktopSharingClient<T extends Protoco
     }
 
     /**
-     * Returns the <tt>RemoteControlListener</tt> corresponding to the given <tt>callPeer</tt>, if
+     * Returns the <code>RemoteControlListener</code> corresponding to the given <code>callPeer</code>, if
      * it exists.
      *
-     * @param callPeer the <tt>CallPeer</tt> to get the corresponding <tt>RemoteControlListener</tt> of
-     * @return the <tt>RemoteControlListener</tt> corresponding to the given <tt>callPeer</tt>, if
-     * it exists; <tt>null</tt>, otherwise
+     * @param callPeer the <code>CallPeer</code> to get the corresponding <code>RemoteControlListener</code> of
+     * @return the <code>RemoteControlListener</code> corresponding to the given <code>callPeer</code>, if
+     * it exists; <code>null</code>, otherwise
      */
     protected RemoteControlListener getListener(CallPeer callPeer)
     {

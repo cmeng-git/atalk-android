@@ -18,9 +18,9 @@ package net.java.sip.communicator.service.gui;
 import java.util.Date;
 
 /**
- * The <tt>Chat</tt> interface is meant to be implemented by the GUI component class representing
+ * The <code>Chat</code> interface is meant to be implemented by the GUI component class representing
  * a chat. Through the <i>isChatFocused</i> method the other bundles could check the visibility
- * of the chat component. The <tt>ChatFocusListener</tt> is used to inform other bundles
+ * of the chat component. The <code>ChatFocusListener</code> is used to inform other bundles
  * when a chat has changed its focus state.
  *
  * @author Yana Stamcheva
@@ -35,7 +35,7 @@ public interface Chat
     public static final int CHAT_BUFFER_SIZE = 50000;
 
     /**
-     * Checks if this <tt>Chat</tt> is currently focused.
+     * Checks if this <code>Chat</code> is currently focused.
      *
      * @return TRUE if the chat is focused, FALSE - otherwise
      */
@@ -49,7 +49,7 @@ public interface Chat
     String getMessage();
 
     /**
-     * Bring this chat to front if <tt>b</tt> is true, hide it otherwise.
+     * Bring this chat to front if <code>b</code> is true, hide it otherwise.
      *
      * @param isVisible tells if the chat will be made visible or not.
      */
@@ -63,7 +63,7 @@ public interface Chat
     void setMessage(String message);
 
     /**
-     * Adds a message to this <tt>Chat</tt>.
+     * Adds a message to this <code>Chat</code>.
      *
      * @param contactName the name of the contact sending the message
      * @param date the time at which the message is sent or received
@@ -75,10 +75,10 @@ public interface Chat
 
     /**
      * Adds a new ChatLinkClickedListener. The callback is called for every link whose scheme is
-     * <tt>jitsi</tt>. It is the callback's responsibility to filter the action based on the URI.
+     * <code>jitsi</code>. It is the callback's responsibility to filter the action based on the URI.
      * <p>
      * Example:<br>
-     * <tt>jitsi://classname/action?query</tt><br>
+     * <code>jitsi://classname/action?query</code><br>
      * Use the name of the registering class as the host, the action to execute as the path and
      * any parameters as the query.
      *

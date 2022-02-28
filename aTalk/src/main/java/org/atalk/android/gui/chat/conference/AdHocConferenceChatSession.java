@@ -29,7 +29,7 @@ import org.atalk.android.gui.chat.*;
 import java.util.*;
 
 /**
- * An implementation of <tt>ChatSession</tt> for ad-hoc conference chatting.
+ * An implementation of <code>ChatSession</code> for ad-hoc conference chatting.
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
@@ -41,7 +41,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     private final ChatPanel sessionRenderer;
 
     /**
-     * Creates an instance of <tt>AdHocConferenceChatSession</tt>, by specifying the
+     * Creates an instance of <code>AdHocConferenceChatSession</code>, by specifying the
      * sessionRenderer to be used for communication with the UI and the ad-hoc chat room
      * corresponding to this conference session.
      *
@@ -291,10 +291,10 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     }
 
     /**
-     * Returns the <tt>ChatSessionRenderer</tt> that provides the connection between this chat
+     * Returns the <code>ChatSessionRenderer</code> that provides the connection between this chat
      * session and its UI.
      *
-     * @return The <tt>ChatSessionRenderer</tt>.
+     * @return The <code>ChatSessionRenderer</code>.
      */
     @Override
     public ChatPanel getChatSessionRenderer()
@@ -319,7 +319,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      * Loads the given chat room in the this chat conference panel. Loads all members and adds all
      * corresponding listeners.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> to load
+     * @param chatRoom the <code>ChatRoom</code> to load
      */
     public void loadChatRoom(AdHocChatRoom chatRoom)
     {
@@ -329,7 +329,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     }
 
     /**
-     * Implements the <tt>ChatPanel.getChatStatusIcon</tt> method.
+     * Implements the <code>ChatPanel.getChatStatusIcon</code> method.
      *
      * @return the status icon corresponding to this ad-hoc chat room
      */
@@ -376,8 +376,8 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     }
 
     /**
-     * Invoked when <tt>AdHocChatRoomParticipantPresenceChangeEvent</tt> are received. When a new
-     * participant (<tt>Contact</tt>) has joined the chat adds it to the list of chat
+     * Invoked when <code>AdHocChatRoomParticipantPresenceChangeEvent</code> are received. When a new
+     * participant (<code>Contact</code>) has joined the chat adds it to the list of chat
      * participants on the right of the chat window. When a participant has left or quit it's
      * removed from the chat window.
      */

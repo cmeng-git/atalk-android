@@ -18,8 +18,8 @@ import java.util.Map.Entry;
 import timber.log.Timber;
 
 /**
- * The <tt>IPPIAccountRegistrationWizard</tt> is an implementation of the
- * <tt>AccountRegistrationWizard</tt> for the SIP protocol. It should allow
+ * The <code>IPPIAccountRegistrationWizard</code> is an implementation of the
+ * <code>AccountRegistrationWizard</code> for the SIP protocol. It should allow
  * the user to create and configure a new SIP account.
  *
  * @author Yana Stamcheva
@@ -45,7 +45,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      *
      * @param userName the account user name
      * @param password the password
-     * @return the <tt>ProtocolProviderService</tt> corresponding to the newly
+     * @return the <code>ProtocolProviderService</code> corresponding to the newly
      * created account.
      * @throws OperationFailedException problem signing in.
      */
@@ -61,7 +61,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      *
      * @param userName the account user name
      * @param password the password
-     * @return the <tt>ProtocolProviderService</tt> corresponding to the newly
+     * @return the <code>ProtocolProviderService</code> corresponding to the newly
      * created account.
      * @throws OperationFailedException problem signing in.
      */
@@ -89,7 +89,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      * the account
      * @param userName the user identifier
      * @param passwd the password
-     * @return the <tt>ProtocolProviderService</tt> for the new account.
+     * @return the <code>ProtocolProviderService</code> for the new account.
      * @throws OperationFailedException problem installing account
      */
     private ProtocolProviderService installAccount(

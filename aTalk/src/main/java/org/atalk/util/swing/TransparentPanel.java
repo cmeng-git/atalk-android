@@ -19,7 +19,7 @@ import java.awt.LayoutManager;
 import javax.swing.JPanel;
 
 /**
- * Represents a <tt>JPanel</tt> which sets its <tt>opaque</tt> property to <tt>false</tt> during its initialization.
+ * Represents a <code>JPanel</code> which sets its <code>opaque</code> property to <code>false</code> during its initialization.
  *
  * @author Yana Stamcheva
  */
@@ -28,7 +28,7 @@ public class TransparentPanel extends JPanel
     private static final long serialVersionUID = 0L;
 
     /**
-     * Initializes a new <tt>TransparentPanel</tt> instance.
+     * Initializes a new <code>TransparentPanel</code> instance.
      */
     public TransparentPanel()
     {
@@ -36,9 +36,9 @@ public class TransparentPanel extends JPanel
     }
 
     /**
-     * Initializes a new <tt>TransparentPanel</tt> instance which is to use a specific <tt>LayoutManager</tt>.
+     * Initializes a new <code>TransparentPanel</code> instance which is to use a specific <code>LayoutManager</code>.
      *
-     * @param layout the <tt>LayoutManager</tt> to be used by the new instance
+     * @param layout the <code>LayoutManager</code> to be used by the new instance
      */
     public TransparentPanel(LayoutManager layout)
     {

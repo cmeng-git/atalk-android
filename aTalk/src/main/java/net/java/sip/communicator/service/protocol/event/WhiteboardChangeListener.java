@@ -28,7 +28,7 @@ public interface WhiteboardChangeListener extends EventListener
     /**
      * Indicates that a new whiteboard participant has joined the source whiteboard.
      *
-     * @param evt the <tt>WhiteboardParticipantEvent</tt> containing the source whiteboard and
+     * @param evt the <code>WhiteboardParticipantEvent</code> containing the source whiteboard and
      * whiteboard participant.
      */
     void whiteboardParticipantAdded(WhiteboardParticipantEvent evt);
@@ -36,7 +36,7 @@ public interface WhiteboardChangeListener extends EventListener
     /**
      * Indicates that a whiteboard participant has left the source whiteboard.
      *
-     * @param evt the <tt>WhiteboardParticipantEvent</tt> containing the source whiteboard and
+     * @param evt the <code>WhiteboardParticipantEvent</code> containing the source whiteboard and
      * whiteboard participant.
      */
     void whiteboardParticipantRemoved(WhiteboardParticipantEvent evt);
@@ -44,7 +44,7 @@ public interface WhiteboardChangeListener extends EventListener
     /**
      * Indicates that a change has occurred in the state of the source whiteboard.
      *
-     * @param evt the <tt>WhiteboardChangeEvent</tt> instance containing the source whiteboards and its
+     * @param evt the <code>WhiteboardChangeEvent</code> instance containing the source whiteboards and its
      * old and new state.
      */
     void whiteboardStateChanged(WhiteboardChangeEvent evt);

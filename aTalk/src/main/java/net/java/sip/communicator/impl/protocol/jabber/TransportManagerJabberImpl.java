@@ -5,7 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 
@@ -15,17 +14,16 @@ import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jxmpp.jid.Jid;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.jingle.IceUdpTransportExtension;
-import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
+import org.jivesoftware.smackx.jingle.*;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jxmpp.jid.Jid;
 
 import java.net.InetAddress;
 import java.util.*;
 
 /**
- * <tt>TransportManager</tt>s gather local candidates for incoming and outgoing calls. Their work
+ * <code>TransportManager</code>s gather local candidates for incoming and outgoing calls. Their work
  * starts by calling a start method which, using the remote peer's session description, would start
  * the harvest. Calling a second wrap up method would deliver the candidate harvest, possibly after
  * blocking if it has not yet completed.
@@ -37,17 +35,17 @@ import java.util.*;
 public abstract class TransportManagerJabberImpl extends TransportManager<CallPeerJabberImpl>
 {
     /**
-     * The ID that we will be assigning to our next candidate. We use <tt>int</tt>s for
-     * inter-operability reasons (Emil: I believe that GTalk uses <tt>int</tt>s. If that turns out
-     * not to be the case we can stop using <tt>int</tt>s here if that's an issue).
+     * The ID that we will be assigning to our next candidate. We use <code>int</code>s for
+     * inter-operability reasons (Emil: I believe that GTalk uses <code>int</code>s. If that turns out
+     * not to be the case we can stop using <code>int</code>s here if that's an issue).
      */
     private static int nextID = 1;
 
     /**
      * The information pertaining to the Jisti Videobridge conference which the local peer
      * represented by this instance is a focus of. It gives a view of the whole Jitsi Videobridge
-     * conference managed by the associated <tt>CallJabberImpl</tt> which provides information
-     * specific to this <tt>TransportManager</tt> only.
+     * conference managed by the associated <code>CallJabberImpl</code> which provides information
+     * specific to this <code>TransportManager</code> only.
      */
     private ColibriConferenceIQ colibri;
 
@@ -57,13 +55,13 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     private int currentGeneration = 0;
 
     /**
-     * The indicator which determines whether this <tt>TransportManager</tt> instance is responsible t0
+     * The indicator which determines whether this <code>TransportManager</code> instance is responsible t0
      * establish the connectivity with the associated Jitsi Videobridge (in case it is being employed at all).
      */
     boolean isEstablishingConnectivityWithJitsiVideobridge = false;
 
     /**
-     * The indicator which determines whether this <tt>TransportManager</tt> instance is yet to
+     * The indicator which determines whether this <code>TransportManager</code> instance is yet to
      * start establishing the connectivity with the associated Jitsi Videobridge (in case it is
      * being employed at all).
      */
@@ -80,15 +78,15 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Returns the <tt>InetAddress</tt> that is most likely to be to be used as a next hop when
-     * contacting the specified <tt>destination</tt>. This is an utility method that is used
+     * Returns the <code>InetAddress</code> that is most likely to be to be used as a next hop when
+     * contacting the specified <code>destination</code>. This is an utility method that is used
      * whenever we have to choose one of our local addresses to put in the Via, Contact or (in the
      * case of no registrar accounts) From headers.
      *
      * @param peer the CallPeer that we would contact.
-     * @return the <tt>InetAddress</tt> that is most likely to be to be used as a next hop when
-     * contacting the specified <tt>destination</tt>.
-     * @throws IllegalArgumentException if <tt>destination</tt> is not a valid host/IP/FQDN
+     * @return the <code>InetAddress</code> that is most likely to be to be used as a next hop when
+     * contacting the specified <code>destination</code>.
+     * @throws IllegalArgumentException if <code>destination</code> is not a valid host/IP/FQDN
      */
     @Override
     protected InetAddress getIntendedDestination(CallPeerJabberImpl peer)
@@ -111,20 +109,20 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Gets the <tt>MediaStreamTarget</tt> to be used as the <tt>target</tt> of the
-     * <tt>MediaStream</tt> with a specific <tt>MediaType</tt>.
+     * Gets the <code>MediaStreamTarget</code> to be used as the <code>target</code> of the
+     * <code>MediaStream</code> with a specific <code>MediaType</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which is to have its
-     * <tt>target</tt> set to the returned <tt>MediaStreamTarget</tt>
-     * @return the <tt>MediaStreamTarget</tt> to be used as the <tt>target</tt> of the
-     * <tt>MediaStream</tt> with the specified <tt>MediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which is to have its
+     * <code>target</code> set to the returned <code>MediaStreamTarget</code>
+     * @return the <code>MediaStreamTarget</code> to be used as the <code>target</code> of the
+     * <code>MediaStream</code> with the specified <code>MediaType</code>
      */
     public abstract MediaStreamTarget getStreamTarget(MediaType mediaType);
 
     /**
-     * Gets the XML namespace of the Jingle transport implemented by this <tt>TransportManagerJabberImpl</tt>.
+     * Gets the XML namespace of the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>.
      *
-     * @return the XML namespace of the Jingle transport implemented by this <tt>TransportManagerJabberImpl</tt>
+     * @return the XML namespace of the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>
      */
     public abstract String getXmlNamespace();
 
@@ -148,27 +146,27 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
 
     /**
      * Sends transport-related information received from the remote peer to the associated Jiitsi
-     * Videobridge in order to update the (remote) <tt>ColibriConferenceIQ.Channel</tt> associated
-     * with this <tt>TransportManager</tt> instance.
+     * Videobridge in order to update the (remote) <code>ColibriConferenceIQ.Channel</code> associated
+     * with this <code>TransportManager</code> instance.
      *
-     * @param map a <tt>Map</tt> of media-IceUdpTransportExtensionElement pairs which represents the
+     * @param map a <code>Map</code> of media-IceUdpTransport pairs which represents the
      * transport-related information which has been received from the remote peer and which
      * is to be sent to the associated Jitsi Videobridge
      */
-    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransportExtension> map)
+    protected void sendTransportInfoToJitsiVideobridge(Map<String, IceUdpTransport> map)
             throws OperationFailedException
     {
         CallPeerJabberImpl peer = getCallPeer();
         boolean initiator = !peer.isInitiator();
         ColibriConferenceIQ conferenceRequest = null;
 
-        for (Map.Entry<String, IceUdpTransportExtension> e : map.entrySet()) {
+        for (Map.Entry<String, IceUdpTransport> e : map.entrySet()) {
             String media = e.getKey();
             MediaType mediaType = MediaType.parseString(media);
             ColibriConferenceIQ.Channel channel = getColibriChannel(mediaType, false /* remote */);
 
             if (channel != null) {
-                IceUdpTransportExtension transport;
+                IceUdpTransport transport;
                 try {
                     transport = cloneTransportAndCandidates(e.getValue());
                 } catch (OperationFailedException ofe) {
@@ -212,18 +210,18 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Starts transport candidate harvest for a specific <tt>JingleContent</tt> that we are
+     * Starts transport candidate harvest for a specific <code>JingleContent</code> that we are
      * going to offer or answer with.
      *
-     * @param theirContent the <tt>JingleContent</tt> offered by the remote peer to which we are going
-     * to answer with <tt>ourContent</tt> or <tt>null</tt> if <tt>ourContent</tt> will be an offer to the remote peer
-     * @param ourContent the <tt>JingleContent</tt> for which transport candidate harvest is to be started
-     * @param transportInfoSender a <tt>TransportInfoSender</tt> if the harvested transport candidates are to be sent in
-     * a <tt>transport-info</tt> rather than in <tt>ourContent</tt>; otherwise, <tt>null</tt>
-     * @param media the media of the <tt>RtpDescriptionExtensionElement</tt> child of <tt>ourContent</tt>
-     * @return a <tt>ExtensionElement</tt> to be added as a child to <tt>ourContent</tt>; otherwise, <tt>null</tt>
+     * @param theirContent the <code>JingleContent</code> offered by the remote peer to which we are going
+     * to answer with <code>ourContent</code> or <code>null</code> if <code>ourContent</code> will be an offer to the remote peer
+     * @param ourContent the <code>JingleContent</code> for which transport candidate harvest is to be started
+     * @param transportInfoSender a <code>TransportInfoSender</code> if the harvested transport candidates are to be sent in
+     * a <code>transport-info</code> rather than in <code>ourContent</code>; otherwise, <code>null</code>
+     * @param media the media of the <code>RtpDescriptionExtensionElement</code> child of <code>ourContent</code>
+     * @return a <code>ExtensionElement</code> to be added as a child to <code>ourContent</code>; otherwise, <code>null</code>
      * @throws OperationFailedException if anything goes wrong while starting transport candidate harvest for
-     * the specified <tt>ourContent</tt>
+     * the specified <code>ourContent</code>
      */
     protected abstract ExtensionElement startCandidateHarvest(JingleContent theirContent,
             JingleContent ourContent, TransportInfoSender transportInfoSender, String media)
@@ -239,16 +237,16 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      * and that we should use in case we need to know what transports our peer is using.
      * @param ourAnswer the content descriptions that we should be adding our transport lists to.
      * This is used i.e. when their offer is null, for sending the Jingle session-initiate offer.
-     * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
-     * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
-     * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
-     * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
+     * @param transportInfoSender the <code>TransportInfoSender</code> to be used by this
+     * <code>TransportManagerJabberImpl</code> to send <code>transport-info</code> <code>Jingle</code>s
+     * from the local peer to the remote peer if this <code>TransportManagerJabberImpl</code>
+     * wishes to utilize <code>transport-info</code>. Local candidate addresses sent by this
+     * <code>TransportManagerJabberImpl</code> in <code>transport-info</code> are expected to not be
      * included in the result of {@link #wrapupCandidateHarvest()}.
      * @throws OperationFailedException if we fail to allocate a port number.
      */
-    public void startCandidateHarvest(List<JingleContent> theirOffer,
-            List<JingleContent> ourAnswer, TransportInfoSender transportInfoSender)
+    public void startCandidateHarvest(List<JingleContent> theirOffer, List<JingleContent> ourAnswer,
+            TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
         CallPeerJabberImpl peer = getCallPeer();
@@ -339,15 +337,25 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
 
             // it might be that we decided not to reply to this content
             if (ourContent != null) {
-                JingleContent theirContent = (theirOffer == null)
-                        ? null : findContentByName(theirOffer, contentName);
-                RtpDescriptionExtension rtpDesc
-                        = ourContent.getFirstChildOfType(RtpDescriptionExtension.class);
+                JingleContent theirContent = (theirOffer == null) ? null : findContentByName(theirOffer, contentName);
+                RtpDescription rtpDesc = ourContent.getFirstChildElement(RtpDescription.class);
                 String media = rtpDesc.getMedia();
                 ExtensionElement pe = startCandidateHarvest(theirContent, ourContent, transportInfoSender, media);
 
-                if (pe != null)
-                    ourContent.addChildExtension(pe);
+                // This will add the transport-info into the jingleContent for session-initiate
+                if (pe != null) {
+                    ourContent.addChildElement(pe);
+                }
+
+                // cmeng (20220228): Not working: Correct JingleContent created but not the same instance/reference
+                // i.e. OurContent1: JingleContent@67c0ff2 <> OurContent2: JingleContent@19b25f9 (new)
+//                if (pe != null) {
+//                    Timber.w("OurContent1: %s:\n %s\n%s", ourContent, ourContent.toXML(), pe.toXML());
+//                    ourContent = (JingleContent) ourContent.getBuilder(null)
+//                            .addChildElement(pe)
+//                            .build();
+//                    Timber.w("OurContent2: %s: %s",ourContent, ourContent.toXML());
+//                }
             }
         }
     }
@@ -362,11 +370,11 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     public abstract List<JingleContent> wrapupCandidateHarvest();
 
     /**
-     * Looks through the <tt>cpExtList</tt> and returns the {@link JingleContent} with the specified name.
+     * Looks through the <code>cpExtList</code> and returns the {@link JingleContent} with the specified name.
      *
      * @param cpExtList the list that we will be searching for a specific content.
      * @param name the name of the content element we are looking for.
-     * @return the {@link JingleContent} with the specified name or <tt>null</tt> if no
+     * @return the {@link JingleContent} with the specified name or <code>null</code> if no
      * such content element exists.
      */
     public static JingleContent findContentByName(Iterable<JingleContent> cpExtList, String name)
@@ -379,16 +387,16 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Starts the connectivity establishment of this <tt>TransportManagerJabberImpl</tt> i.e. checks
+     * Starts the connectivity establishment of this <code>TransportManagerJabberImpl</code> i.e. checks
      * the connectivity between the local and the remote peers given the remote counterpart of the
      * negotiation between them.
      *
-     * @param remote the collection of <tt>JingleContent</tt>s which represents the remote
+     * @param remote the collection of <code>JingleContent</code>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
-     * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
-     * otherwise, <tt>false</tt>. <tt>TransportManagerJabberImpl</tt> implementations which
-     * do not perform connectivity checks (e.g. raw UDP) should return <tt>true</tt>. The
-     * default implementation does not perform connectivity checks and always returns <tt>true</tt>.
+     * @return <code>true</code> if connectivity establishment has been started in response to the call;
+     * otherwise, <code>false</code>. <code>TransportManagerJabberImpl</code> implementations which
+     * do not perform connectivity checks (e.g. raw UDP) should return <code>true</code>. The
+     * default implementation does not perform connectivity checks and always returns <code>true</code>.
      */
     public boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
             throws OperationFailedException
@@ -397,24 +405,24 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Starts the connectivity establishment of this <tt>TransportManagerJabberImpl</tt> i.e. checks
+     * Starts the connectivity establishment of this <code>TransportManagerJabberImpl</code> i.e. checks
      * the connectivity between the local and the remote peers given the remote counterpart of the
      * negotiation between them.
      *
-     * @param remote a <tt>Map</tt> of media-<tt>IceUdpTransportExtensionElement</tt> pairs which represents
+     * @param remote a <code>Map</code> of media-<code>IceUdpTransport</code> pairs which represents
      * the remote counterpart of the negotiation between the local and the remote peers
-     * @return <tt>true</tt> if connectivity establishment has been started in response to the call;
-     * otherwise, <tt>false</tt>. <tt>TransportManagerJabberImpl</tt> implementations which
-     * do not perform connectivity checks (e.g. raw UDP) should return <tt>true</tt>. The
-     * default implementation does not perform connectivity checks and always returns <tt>true</tt>.
+     * @return <code>true</code> if connectivity establishment has been started in response to the call;
+     * otherwise, <code>false</code>. <code>TransportManagerJabberImpl</code> implementations which
+     * do not perform connectivity checks (e.g. raw UDP) should return <code>true</code>. The
+     * default implementation does not perform connectivity checks and always returns <code>true</code>.
      */
-    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransportExtension> remote)
+    protected boolean startConnectivityEstablishment(Map<String, IceUdpTransport> remote)
     {
         return true;
     }
 
     /**
-     * Notifies this <tt>TransportManagerJabberImpl</tt> that it should conclude any started connectivity establishment.
+     * Notifies this <code>TransportManagerJabberImpl</code> that it should conclude any started connectivity establishment.
      *
      * @throws OperationFailedException if anything goes wrong with connectivity establishment (i.e. ICE failed, ...)
      */
@@ -425,26 +433,26 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
 
     /**
      * Removes a content with a specific name from the transport-related part of the session
-     * represented by this <tt>TransportManagerJabberImpl</tt> which may have been reported through
-     * previous calls to the <tt>startCandidateHarvest</tt> and <tt>startConnectivityEstablishment</tt> methods.
+     * represented by this <code>TransportManagerJabberImpl</code> which may have been reported through
+     * previous calls to the <code>startCandidateHarvest</code> and <code>startConnectivityEstablishment</code> methods.
      *
-     * <b>Note</b>: Because <tt>TransportManager</tt> deals with <tt>MediaType</tt>s, not content
-     * names and <tt>TransportManagerJabberImpl</tt> does not implement translating from content
-     * name to <tt>MediaType</tt>, implementers are expected to call
+     * <b>Note</b>: Because <code>TransportManager</code> deals with <code>MediaType</code>s, not content
+     * names and <code>TransportManagerJabberImpl</code> does not implement translating from content
+     * name to <code>MediaType</code>, implementers are expected to call
      * {@link TransportManager#closeStreamConnector(MediaType)}.
      *
      * @param name the name of the content to be removed from the transport-related part of the session
-     * represented by this <tt>TransportManagerJabberImpl</tt>
+     * represented by this <code>TransportManagerJabberImpl</code>
      */
     public abstract void removeContent(String name);
 
     /**
      * Removes a content with a specific name from a specific collection of contents and closes any
-     * associated <tt>StreamConnector</tt>.
+     * associated <code>StreamConnector</code>.
      *
      * @param contents the collection of contents to remove the content with the specified name from
      * @param name the name of the content to remove
-     * @return the removed <tt>JingleContent</tt> if any; otherwise, <tt>null</tt>
+     * @return the removed <code>JingleContent</code> if any; otherwise, <code>null</code>
      */
     protected JingleContent removeContent(Iterable<JingleContent> contents, String name)
     {
@@ -466,18 +474,18 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Clones a specific <tt>IceUdpTransportExtensionElement</tt> and its candidates.
+     * Clones a specific <code>IceUdpTransport</code> and its candidates.
      *
-     * @param src the <tt>IceUdpTransportExtensionElement</tt> to be cloned
-     * @return a new <tt>IceUdpTransportExtensionElement</tt> instance which has the same run-time
-     * type, attributes, namespace, text and candidates as the specified <tt>src</tt>
-     * @throws OperationFailedException if an error occurs during the cloing of the specified <tt>src</tt> and its candidates
+     * @param src the <code>IceUdpTransport</code> to be cloned
+     * @return a new <code>IceUdpTransport</code> instance which has the same run-time
+     * type, attributes, namespace, text and candidates as the specified <code>src</code>
+     * @throws OperationFailedException if an error occurs during the cloing of the specified <code>src</code> and its candidates
      */
-    static IceUdpTransportExtension cloneTransportAndCandidates(IceUdpTransportExtension src)
+    static IceUdpTransport cloneTransportAndCandidates(IceUdpTransport src)
             throws OperationFailedException
     {
         try {
-            return IceUdpTransportExtension.cloneTransportAndCandidates(src);
+            return IceUdpTransport.cloneTransportAndCandidates(src, false);
         } catch (Exception e) {
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(
                     "Failed to close transport and candidates.", OperationFailedException.GENERAL_ERROR, e);
@@ -486,7 +494,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Releases the resources acquired by this <tt>TransportManager</tt> and prepares it for garbage collection.
+     * Releases the resources acquired by this <code>TransportManager</code> and prepares it for garbage collection.
      */
     public void close()
     {
@@ -495,12 +503,12 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Closes a specific <tt>StreamConnector</tt> associated with a specific <tt>MediaType</tt>. If
-     * this <tt>TransportManager</tt> has a reference to the specified <tt>streamConnector</tt>, it remains.
-     * Also expires the <tt>ColibriConferenceIQ.Channel</tt> associated with the closed <tt>StreamConnector</tt>.
+     * Closes a specific <code>StreamConnector</code> associated with a specific <code>MediaType</code>. If
+     * this <code>TransportManager</code> has a reference to the specified <code>streamConnector</code>, it remains.
+     * Also expires the <code>ColibriConferenceIQ.Channel</code> associated with the closed <code>StreamConnector</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> associated with the specified <tt>streamConnector</tt>
-     * @param streamConnector the <tt>StreamConnector</tt> to be closed
+     * @param mediaType the <code>MediaType</code> associated with the specified <code>streamConnector</code>
+     * @param streamConnector the <code>StreamConnector</code> to be closed
      */
     @Override
     protected void closeStreamConnector(MediaType mediaType, StreamConnector streamConnector)
@@ -610,21 +618,21 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Initializes a new <tt>ExtensionElement</tt> instance appropriate to the type of Jingle
-     * transport represented by this <tt>TransportManager</tt>. The new instance is not initialized
+     * Initializes a new <code>ExtensionElement</code> instance appropriate to the type of Jingle
+     * transport represented by this <code>TransportManager</code>. The new instance is not initialized
      * with any attributes or child extensions.
      *
-     * @return a new <tt>ExtensionElement</tt> instance appropriate to the type of Jingle transport
-     * represented by this <tt>TransportManager</tt>
+     * @return a new <code>ExtensionElement</code> instance appropriate to the type of Jingle transport
+     * represented by this <code>TransportManager</code>
      */
     protected abstract ExtensionElement createTransportPacketExtension();
 
     /**
-     * Creates a media <tt>StreamConnector</tt> for a stream of a specific <tt>MediaType</tt>. The
+     * Creates a media <code>StreamConnector</code> for a stream of a specific <code>MediaType</code>. The
      * minimum and maximum of the media port boundaries are taken into account.
      *
-     * @param mediaType the <tt>MediaType</tt> of the stream for which a <tt>StreamConnector</tt> is to be created
-     * @return a <tt>StreamConnector</tt> for the stream of the specified <tt>mediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the stream for which a <code>StreamConnector</code> is to be created
+     * @return a <code>StreamConnector</code> for the stream of the specified <code>mediaType</code>
      * @throws OperationFailedException if the binding of the sockets fails
      */
     protected StreamConnector doCreateStreamConnector(MediaType mediaType)
@@ -634,14 +642,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
     }
 
     /**
-     * Finds a <tt>TransportManagerJabberImpl</tt> participating in a telephony conference utilizing
+     * Finds a <code>TransportManagerJabberImpl</code> participating in a telephony conference utilizing
      * the Jitsi Videobridge server-side technology that this instance is participating in which is
-     * establishing the connectivity with the Jitsi Videobridge server (as opposed to a <tt>CallPeer</tt>).
+     * establishing the connectivity with the Jitsi Videobridge server (as opposed to a <code>CallPeer</code>).
      *
-     * @return a <tt>TransportManagerJabberImpl</tt> which is participating in a telephony
+     * @return a <code>TransportManagerJabberImpl</code> which is participating in a telephony
      * conference utilizing the Jitsi Videobridge server-side technology that this instance
      * is participating in which is establishing the connectivity with the Jitsi Videobridge
-     * server (as opposed to a <tt>CallPeer</tt>).
+     * server (as opposed to a <code>CallPeer</code>).
      */
     TransportManagerJabberImpl findTransportManagerEstablishingConnectivityWithJitsiVideobridge()
     {
@@ -674,18 +682,18 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
 
     /**
      * Gets the {@link ColibriConferenceIQ.Channel} which belongs to a content associated with a
-     * specific <tt>MediaType</tt> and is to be either locally or remotely used.
+     * specific <code>MediaType</code> and is to be either locally or remotely used.
      *
-     * <b>Note</b>: Modifications to the <tt>ColibriConferenceIQ.Channel</tt> instance returned by
+     * <b>Note</b>: Modifications to the <code>ColibriConferenceIQ.Channel</code> instance returned by
      * the method propagate to (the state of) this instance.
      *
-     * @param mediaType the <tt>MediaType</tt> associated with the content which contains the
-     * <tt>ColibriConferenceIQ.Channel</tt> to get
-     * @param local <tt>true</tt> if the <tt>ColibriConferenceIQ.Channel</tt> which is to be used locally
-     * is to be returned or <tt>false</tt> for the one which is to be used remotely
-     * @return the <tt>ColibriConferenceIQ.Channel</tt> which belongs to a content associated with
-     * the specified <tt>mediaType</tt> and which is to be used in accord with the specified
-     * <tt>local</tt> indicator if such a channel exists; otherwise, <tt>null</tt>
+     * @param mediaType the <code>MediaType</code> associated with the content which contains the
+     * <code>ColibriConferenceIQ.Channel</code> to get
+     * @param local <code>true</code> if the <code>ColibriConferenceIQ.Channel</code> which is to be used locally
+     * is to be returned or <code>false</code> for the one which is to be used remotely
+     * @return the <code>ColibriConferenceIQ.Channel</code> which belongs to a content associated with
+     * the specified <code>mediaType</code> and which is to be used in accord with the specified
+     * <code>local</code> indicator if such a channel exists; otherwise, <code>null</code>
      */
     ColibriConferenceIQ.Channel getColibriChannel(MediaType mediaType, boolean local)
     {

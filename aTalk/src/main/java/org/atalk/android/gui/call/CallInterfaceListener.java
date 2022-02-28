@@ -16,7 +16,7 @@
 package org.atalk.android.gui.call;
 
 /**
- * The <tt>CallInterfaceListener</tt> is notified when the call interface has
+ * The <code>CallInterfaceListener</code> is notified when the call interface has
  * been started after the call was created.
  *
  * @author Yana Stamcheva

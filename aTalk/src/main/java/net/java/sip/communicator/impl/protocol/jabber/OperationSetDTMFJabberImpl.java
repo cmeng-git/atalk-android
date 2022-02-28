@@ -32,12 +32,12 @@ public class OperationSetDTMFJabberImpl extends AbstractOperationSetDTMF
     }
 
     /**
-     * Sends the <tt>DTMFTone</tt> <tt>tone</tt> to <tt>callPeer</tt>.
+     * Sends the <code>DTMFTone</code> <code>tone</code> to <code>callPeer</code>.
      *
-     * @param callPeer the call peer to send <tt>tone</tt> to.
-     * @param tone the DTMF tone to send to <tt>callPeer</tt>.
+     * @param callPeer the call peer to send <code>tone</code> to.
+     * @param tone the DTMF tone to send to <code>callPeer</code>.
      * @throws OperationFailedException with code OPERATION_NOT_SUPPORTED if DTMF tones are not supported for
-     * <tt>callPeer</tt>.
+     * <code>callPeer</code>.
      * @throws NullPointerException if one of the arguments is null.
      * @throws IllegalArgumentException in case the call peer does not belong to the underlying implementation.
      */

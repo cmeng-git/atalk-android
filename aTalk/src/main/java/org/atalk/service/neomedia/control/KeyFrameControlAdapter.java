@@ -15,12 +15,12 @@ import java.util.*;
 public class KeyFrameControlAdapter implements KeyFrameControl
 {
 	/**
-	 * The <tt>KeyFrameRequestee</tt>s made available by this <tt>KeyFrameControl</tt>.
+	 * The <code>KeyFrameRequestee</code>s made available by this <code>KeyFrameControl</code>.
 	 */
 	private List<KeyFrameRequestee> keyFrameRequestees = new ArrayList<>(0);
 
 	/**
-	 * The <tt>KeyFrameRequester</tt>s made available by this <tt>KeyFrameControl</tt>.
+	 * The <code>KeyFrameRequester</code>s made available by this <code>KeyFrameControl</code>.
 	 */
 	private List<KeyFrameRequester> keyFrameRequesters = new ArrayList<>(0);
 

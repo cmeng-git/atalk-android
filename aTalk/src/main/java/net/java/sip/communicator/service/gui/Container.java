@@ -7,7 +7,7 @@
 package net.java.sip.communicator.service.gui;
 
 /**
- * The <tt>Container</tt> wraps a string which is meant to point
+ * The <code>Container</code> wraps a string which is meant to point
  * to a plugin container. The plugin container is a GUI container that contains
  * plugin components.
  *
@@ -196,7 +196,7 @@ public class Container
     private String containerName;
 
     /**
-     * Creates a <tt>Container</tt> from the given container name.
+     * Creates a <code>Container</code> from the given container name.
      *
      * @param containerName the name of the container.
      */
@@ -206,9 +206,9 @@ public class Container
     }
 
     /**
-     * Returns the String identifier of this <tt>Container</tt>.
+     * Returns the String identifier of this <code>Container</code>.
      *
-     * @return the String identifier of this <tt>Container</tt>.
+     * @return the String identifier of this <code>Container</code>.
      */
     public String getID()
     {

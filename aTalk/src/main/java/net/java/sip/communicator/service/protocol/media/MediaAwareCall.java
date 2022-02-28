@@ -26,12 +26,12 @@ import java.util.List;
  * This class is only meant for use by protocol implementations and should/could not be accessed by
  * bundles that are simply using the telephony functionalities.
  *
- * @param <T> the peer extension class like, for example, <tt>CallPeerSipImpl</tt> or
- * <tt>CallPeerJabberImpl</tt>
- * @param <U> the provider extension class like, for example, <tt>OperationSetBasicTelephonySipImpl</tt>
- * or <tt>OperationSetBasicTelephonySipImpl</tt>
- * @param <V> the provider extension class like, for example, <tt>ProtocolProviderServiceSipImpl</tt> or
- * <tt>ProtocolProviderServiceJabberImpl</tt>
+ * @param <T> the peer extension class like, for example, <code>CallPeerSipImpl</code> or
+ * <code>CallPeerJabberImpl</code>
+ * @param <U> the provider extension class like, for example, <code>OperationSetBasicTelephonySipImpl</code>
+ * or <code>OperationSetBasicTelephonySipImpl</code>
+ * @param <V> the provider extension class like, for example, <code>ProtocolProviderServiceSipImpl</code> or
+ * <code>ProtocolProviderServiceJabberImpl</code>
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -41,10 +41,10 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
         implements CallPeerListener, PropertyChangeListener, DTMFListener
 {
     /**
-     * The name of the property of <tt>MediaAwareCall</tt> the value of which corresponds to the
-     * value returned by {@link #getDefaultDevice(MediaType)}. The <tt>oldValue</tt> and the
-     * <tt>newValue</tt> of the fired <tt>PropertyChangeEvent</tt> are not to be relied on and
-     * instead a call to <tt>getDefaultDevice</tt> is to be performed to retrieve the new value.
+     * The name of the property of <code>MediaAwareCall</code> the value of which corresponds to the
+     * value returned by {@link #getDefaultDevice(MediaType)}. The <code>oldValue</code> and the
+     * <code>newValue</code> of the fired <code>PropertyChangeEvent</code> are not to be relied on and
+     * instead a call to <code>getDefaultDevice</code> is to be performed to retrieve the new value.
      */
     public static final String DEFAULT_DEVICE = "defaultDevice";
 
@@ -54,15 +54,15 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     protected boolean localVideoAllowed = false;
 
     /**
-     * The <tt>OperationSetBasicTelephony</tt> implementation which created us.
+     * The <code>OperationSetBasicTelephony</code> implementation which created us.
      */
     protected final U parentOpSet;
 
     /**
-     * The list of <tt>SoundLevelListener</tt>s interested in level changes of local audio.
+     * The list of <code>SoundLevelListener</code>s interested in level changes of local audio.
      * <p>
      * It is implemented as a copy-on-write storage because the number of additions and removals of
-     * <tt>SoundLevelListener</tt>s is expected to be far smaller than the number of audio level
+     * <code>SoundLevelListener</code>s is expected to be far smaller than the number of audio level
      * changes. The access to it is to be synchronized using
      * {@link #localUserAudioLevelListenersSyncRoot}.
      * </p>
@@ -70,24 +70,24 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     private List<SoundLevelListener> localUserAudioLevelListeners;
 
     /**
-     * The <tt>Object</tt> to synchronize the access to {@link #localUserAudioLevelListeners}.
+     * The <code>Object</code> to synchronize the access to {@link #localUserAudioLevelListeners}.
      */
     private final Object localUserAudioLevelListenersSyncRoot = new Object();
 
     /**
-     * The indicator which determines whether this <tt>Call</tt> is set to transmit "silence"
+     * The indicator which determines whether this <code>Call</code> is set to transmit "silence"
      * instead of the actual media.
      */
     private boolean mute = false;
 
     /**
-     * Device used in call will be chosen according to <tt>MediaUseCase</tt>.
+     * Device used in call will be chosen according to <code>MediaUseCase</code>.
      */
     protected MediaUseCase mediaUseCase = MediaUseCase.ANY;
 
     /**
      * The listener that would actually subscribe for level events from the media handler if there's
-     * at least one listener in <tt>localUserAudioLevelListeners</tt>.
+     * at least one listener in <code>localUserAudioLevelListeners</code>.
      */
     private final SimpleAudioLevelListener localAudioLevelDelegator = new SimpleAudioLevelListener()
     {
@@ -98,7 +98,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     };
 
     /**
-     * Crates a <tt>Call</tt> instance belonging to <tt>parentOpSet</tt>.
+     * Crates a <code>Call</code> instance belonging to <code>parentOpSet</code>.
      *
      * @param parentOpSet a reference to the operation set that's creating us and that
      * we would be able to use for even dispatching.
@@ -111,10 +111,10 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Adds <tt>callPeer</tt> to the list of peers in this call. If the call peer is already
+     * Adds <code>callPeer</code> to the list of peers in this call. If the call peer is already
      * included in the call, the method has no effect.
      *
-     * @param callPeer the new <tt>CallPeer</tt>
+     * @param callPeer the new <code>CallPeer</code>
      */
     public void addCallPeer(T callPeer)
     {
@@ -137,11 +137,11 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Removes <tt>callPeer</tt> from the list of peers in this call. The method has no effect if
+     * Removes <code>callPeer</code> from the list of peers in this call. The method has no effect if
      * there was no such peer in the call.
      *
-     * @param evt the event containing the <tt>CallPeer</tt> leaving the call and the reason (if any)
-     * for the <tt>CallPeerChangeEvent</tt>. Use the event as the cause for the call state change event.
+     * @param evt the event containing the <code>CallPeer</code> leaving the call and the reason (if any)
+     * for the <code>CallPeerChangeEvent</code>. Use the event as the cause for the call state change event.
      */
     private void removeCallPeer(CallPeerChangeEvent evt)
     {
@@ -221,7 +221,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * Verifies whether the call peer has entered a state.
      *
-     * @param evt The <tt>CallPeerChangeEvent</tt> instance containing the source event as well as its
+     * @param evt The <code>CallPeerChangeEvent</code> instance containing the source event as well as its
      * previous and its new status.
      */
     public void peerStateChanged(CallPeerChangeEvent evt)
@@ -241,9 +241,9 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Returns a reference to the <tt>OperationSetBasicTelephony</tt> implementation instance that created this call.
+     * Returns a reference to the <code>OperationSetBasicTelephony</code> implementation instance that created this call.
      *
-     * @return a reference to the <tt>OperationSetBasicTelephony</tt> instance that created this call.
+     * @return a reference to the <code>OperationSetBasicTelephony</code> instance that created this call.
      */
     public U getParentOperationSet()
     {
@@ -251,15 +251,15 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Gets the <tt>RTPTranslator</tt> which forwards RTP and RTCP traffic between the
-     * <tt>CallPeer</tt>s of this <tt>Call</tt> when the local peer represented by this
-     * <tt>Call</tt> is acting as a conference focus.
+     * Gets the <code>RTPTranslator</code> which forwards RTP and RTCP traffic between the
+     * <code>CallPeer</code>s of this <code>Call</code> when the local peer represented by this
+     * <code>Call</code> is acting as a conference focus.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which RTP
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which RTP
      * and RTCP traffic is to be forwarded between
-     * @return the <tt>RTPTranslator</tt> which forwards RTP and RTCP traffic between the
-     * <tt>CallPeer</tt>s of this <tt>Call</tt> when the local peer represented by this
-     * <tt>Call</tt> is acting as a conference focus
+     * @return the <code>RTPTranslator</code> which forwards RTP and RTCP traffic between the
+     * <code>CallPeer</code>s of this <code>Call</code> when the local peer represented by this
+     * <code>Call</code> is acting as a conference focus
      */
     public RTPTranslator getRTPTranslator(MediaType mediaType)
     {
@@ -267,12 +267,12 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Gets the indicator which determines whether the local peer represented by this <tt>Call</tt>
+     * Gets the indicator which determines whether the local peer represented by this <code>Call</code>
      * is acting as a conference focus and thus may need to send the corresponding parameters in its
      * outgoing signaling.
      *
-     * @return <tt>true</tt> if the local peer represented by this <tt>Call</tt> is acting as a
-     * conference focus; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the local peer represented by this <code>Call</code> is acting as a
+     * conference focus; otherwise, <code>false</code>
      */
     @Override
     public boolean isConferenceFocus()
@@ -281,20 +281,20 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Gets a <tt>MediaDevice</tt> which is capable of capture and/or playback of media of the
-     * specified <tt>MediaType</tt>, is the default choice of the user for a <tt>MediaDevice</tt>
-     * with the specified <tt>MediaType</tt> and is appropriate for the current state of this <tt>Call</tt>.
+     * Gets a <code>MediaDevice</code> which is capable of capture and/or playback of media of the
+     * specified <code>MediaType</code>, is the default choice of the user for a <code>MediaDevice</code>
+     * with the specified <code>MediaType</code> and is appropriate for the current state of this <code>Call</code>.
      * <p>
-     * For example, when the local peer represented by this <tt>Call</tt> instance is acting as a
+     * For example, when the local peer represented by this <code>Call</code> instance is acting as a
      * conference focus, the audio device must be a mixer.
      * </p>
      *
-     * @param mediaType the <tt>MediaType</tt> in which the retrieved <tt>MediaDevice</tt> is to capture
+     * @param mediaType the <code>MediaType</code> in which the retrieved <code>MediaDevice</code> is to capture
      * and/or play back media
-     * @return a <tt>MediaDevice</tt> which is capable of capture and/or playback of media of the
-     * specified <tt>mediaType</tt>, is the default choice of the user for a
-     * <tt>MediaDevice</tt> with the specified <tt>mediaType</tt> and is appropriate for the
-     * current state of this <tt>Call</tt>
+     * @return a <code>MediaDevice</code> which is capable of capture and/or playback of media of the
+     * specified <code>mediaType</code>, is the default choice of the user for a
+     * <code>MediaDevice</code> with the specified <code>mediaType</code> and is appropriate for the
+     * current state of this <code>Call</code>
      */
     public MediaDevice getDefaultDevice(MediaType mediaType)
     {
@@ -302,13 +302,13 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
+     * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
      * notified about changes in local sound level related information. When the first listener is
      * being registered the method also registers its single listener with the call peer media
      * handlers so that it would receive level change events and delegate them to the listeners that
      * have registered with us.
      *
-     * @param l the <tt>SoundLevelListener</tt> to add
+     * @param l the <code>SoundLevelListener</code> to add
      */
     @Override
     public void addLocalUserSoundLevelListener(SoundLevelListener l)
@@ -338,12 +338,12 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Removes a specific <tt>SoundLevelListener</tt> from the list of listeners interested in and
-     * notified about changes in local sound level related information. If <tt>l</tt> is the last
+     * Removes a specific <code>SoundLevelListener</code> from the list of listeners interested in and
+     * notified about changes in local sound level related information. If <code>l</code> is the last
      * listener that we had here we are also going to unregister our own level event delegate in
      * order to stop level calculations.
      *
-     * @param l the <tt>SoundLevelListener</tt> to remove
+     * @param l the <code>SoundLevelListener</code> to remove
      */
     @Override
     public void removeLocalUserSoundLevelListener(SoundLevelListener l)
@@ -409,8 +409,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * Determines whether this call is mute.
      *
-     * @return <tt>true</tt> if an audio streams being sent to the call peers are currently muted;
-     * <tt>false</tt>, otherwise
+     * @return <code>true</code> if an audio streams being sent to the call peers are currently muted;
+     * <code>false</code>, otherwise
      */
     public boolean isMute()
     {
@@ -437,9 +437,9 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * Modifies the local media setup of all peers in the call to reflect the requested setting for
      * the streaming of the local video and then passes the setting to the participating
-     * <tt>MediaAwareCallPeer</tt> instances.
+     * <code>MediaAwareCallPeer</code> instances.
      *
-     * @param allowed <tt>true</tt> if local video transmission is allowed and <tt>false</tt> otherwise.
+     * @param allowed <code>true</code> if local video transmission is allowed and <code>false</code> otherwise.
      * @param useCase the use case of the video (i.e video call or desktop streaming/sharing session)
      * @throws OperationFailedException if video initialization fails.
      */
@@ -473,14 +473,14 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Determines whether the streaming of local video in this <tt>Call</tt> is currently allowed.
+     * Determines whether the streaming of local video in this <code>Call</code> is currently allowed.
      * The setting does not reflect the availability of actual video capture devices, it just
      * expresses the local policy (or desire of the user) to have the local video streamed in the
      * case the system is actually able to do so.
      *
      * @param useCase the use case of the video (i.e video call or desktop streaming/sharing session)
-     * @return <tt>true</tt> if the streaming of local video for this <tt>Call</tt> is allowed;
-     * otherwise, <tt>false</tt>
+     * @return <code>true</code> if the streaming of local video for this <code>Call</code> is allowed;
+     * otherwise, <code>false</code>
      */
     public boolean isLocalVideoAllowed(MediaUseCase useCase)
     {
@@ -490,8 +490,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * Determines whether we are currently streaming video toward at least one of the peers in this call.
      *
-     * @return <tt>true</tt> if we are currently streaming video toward at least one of the peers in
-     * this call and <tt>false</tt> otherwise.
+     * @return <code>true</code> if we are currently streaming video toward at least one of the peers in
+     * this call and <code>false</code> otherwise.
      */
     public boolean isLocalVideoStreaming()
     {
@@ -505,12 +505,12 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Registers a <tt>listener</tt> with all <tt>CallPeer</tt> currently participating with the
+     * Registers a <code>listener</code> with all <code>CallPeer</code> currently participating with the
      * call so that it would be notified of changes in video related properties (e.g.
-     * <tt>LOCAL_VIDEO_STREAMING</tt>).
+     * <code>LOCAL_VIDEO_STREAMING</code>).
      *
-     * @param listener the <tt>PropertyChangeListener</tt> to be notified when the properties associated with
-     * member <tt>CallPeer</tt>s change their values.
+     * @param listener the <code>PropertyChangeListener</code> to be notified when the properties associated with
+     * member <code>CallPeer</code>s change their values.
      */
     public void addVideoPropertyChangeListener(PropertyChangeListener listener)
     {
@@ -521,11 +521,11 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Removes <tt>listener</tt> from all <tt>CallPeer</tt>s currently participating with the call
+     * Removes <code>listener</code> from all <code>CallPeer</code>s currently participating with the call
      * so that it won't receive further notifications on changes in video related properties (e.g.
-     * <tt>LOCAL_VIDEO_STREAMING</tt>).
+     * <code>LOCAL_VIDEO_STREAMING</code>).
      *
-     * @param listener the <tt>PropertyChangeListener</tt> to unregister from member <tt>CallPeer</tt>s
+     * @param listener the <code>PropertyChangeListener</code> to unregister from member <code>CallPeer</code>s
      * change their values.
      */
     public void removeVideoPropertyChangeListener(PropertyChangeListener listener)
@@ -537,13 +537,13 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Creates a new <tt>Recorder</tt> which is to record this <tt>Call</tt> (into a file which is
-     * to be specified when starting the returned <tt>Recorder</tt>).
+     * Creates a new <code>Recorder</code> which is to record this <code>Call</code> (into a file which is
+     * to be specified when starting the returned <code>Recorder</code>).
      *
-     * @return a new <tt>Recorder</tt> which is to record this <tt>Call</tt> (into a file which is
-     * to be specified when starting the returned <tt>Recorder</tt>)
-     * @throws OperationFailedException if anything goes wrong while creating the new <tt>Recorder</tt> for this
-     * <tt>Call</tt>
+     * @return a new <code>Recorder</code> which is to record this <code>Call</code> (into a file which is
+     * to be specified when starting the returned <code>Recorder</code>)
+     * @throws OperationFailedException if anything goes wrong while creating the new <code>Recorder</code> for this
+     * <code>Call</code>
      */
     public Recorder createRecorder()
             throws OperationFailedException
@@ -569,7 +569,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
                 /**
                  * When call ends we stop recording.
                  *
-                 * @param evt the <tt>CallChangeEvent</tt> instance containing the source
+                 * @param evt the <code>CallChangeEvent</code> instance containing the source
                  */
                 public void callStateChanged(CallChangeEvent evt)
                 {
@@ -583,7 +583,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
                 /**
                  * We listen for mute on newly added call peers.
                  *
-                 * @param evt the <tt>CallPeerEvent</tt> containing the source call
+                 * @param evt the <code>CallPeerEvent</code> containing the source call
                  */
                 public void callPeerAdded(CallPeerEvent evt)
                 {
@@ -594,7 +594,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
                 /**
                  * We stop listen for mute on removed call peers.
                  *
-                 * @param evt he <tt>CallPeerEvent</tt> containing the source call
+                 * @param evt he <code>CallPeerEvent</code> containing the source call
                  */
                 public void callPeerRemoved(CallPeerEvent evt)
                 {
@@ -651,9 +651,9 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Sets the <tt>MediaDevice</tt> to be used by this <tt>Call</tt> for audio capture and/or playback.
+     * Sets the <code>MediaDevice</code> to be used by this <code>Call</code> for audio capture and/or playback.
      *
-     * @param audioDevice the <tt>MediaDevice</tt> to be used by this <tt>Call</tt> for audio capture and/or playback
+     * @param audioDevice the <code>MediaDevice</code> to be used by this <code>Call</code> for audio capture and/or playback
      */
     public void setAudioDevice(MediaDevice audioDevice)
     {
@@ -661,11 +661,11 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Sets the <tt>MediaDevice</tt> to be used by this <tt>Call</tt> for video capture and/or
-     * playback and the use case of the video streaming in this <tt>MediaAwareCall</tt>.
+     * Sets the <code>MediaDevice</code> to be used by this <code>Call</code> for video capture and/or
+     * playback and the use case of the video streaming in this <code>MediaAwareCall</code>.
      *
-     * @param videoDevice the <tt>MediaDevice</tt> to be used by this <tt>Call</tt> for video capture and/or playback
-     * @param useCase the use case of the video streaming to be set on this <tt>MediaAwareCall</tt> such as
+     * @param videoDevice the <code>MediaDevice</code> to be used by this <code>Call</code> for video capture and/or playback
+     * @param useCase the use case of the video streaming to be set on this <code>MediaAwareCall</code> such as
      * webcam capture or desktop sharing/streaming
      */
     public void setVideoDevice(MediaDevice videoDevice, MediaUseCase useCase)
@@ -680,12 +680,12 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     }
 
     /**
-     * Sets the state of this <tt>Call</tt> and fires a new <tt>CallChangeEvent</tt> notifying the
-     * registered <tt>CallChangeListener</tt>s about the change of the state.
+     * Sets the state of this <code>Call</code> and fires a new <code>CallChangeEvent</code> notifying the
+     * registered <code>CallChangeListener</code>s about the change of the state.
      *
-     * @param newState the <tt>CallState</tt> into which this <tt>Call</tt> is to enter
-     * @param cause the <tt>CallPeerChangeEvent</tt> which is the cause for the request to have this
-     * <tt>Call</tt> enter the specified <tt>CallState</tt>
+     * @param newState the <code>CallState</code> into which this <code>Call</code> is to enter
+     * @param cause the <code>CallPeerChangeEvent</code> which is the cause for the request to have this
+     * <code>Call</code> enter the specified <code>CallState</code>
      * @see Call#setCallState(CallState, CallPeerChangeEvent)
      */
     @Override
@@ -703,7 +703,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
      * Notifies this instance about a change of the value of a specific property from a specific old
      * value to a specific new value.
      *
-     * @param ev a <tt>PropertyChangeEvent</tt> which specifies the name of the property which has its
+     * @param ev a <code>PropertyChangeEvent</code> which specifies the name of the property which has its
      * value changed and the old and new values
      */
     public void propertyChange(PropertyChangeEvent ev)
@@ -727,14 +727,14 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * Notifies this instance that the value of its property {@link Call#CONFERENCE_FOCUS} has
      * changed from a specific old value to a specific new value. Fires a
-     * <tt>PropertyChangeEvent</tt> to the registered <tt>PropertyChangeListener</tt>s. Protocol
-     * implementations which extend <tt>MediaAwareCall</tt> will likely want to override in order to
-     * add notifying the associated <tt>CallPeer</tt>s about the change of the property value (e.g.
+     * <code>PropertyChangeEvent</code> to the registered <code>PropertyChangeListener</code>s. Protocol
+     * implementations which extend <code>MediaAwareCall</code> will likely want to override in order to
+     * add notifying the associated <code>CallPeer</code>s about the change of the property value (e.g.
      * SIP will want to include the &quot;isfocus&quot; parameter in the Contact header while the
      * local peer is acting as a conference focus.)
      *
-     * @param oldValue the value of the property <tt>CONFERENCE_FOCUS</tt> before the change
-     * @param newValue the value of the property <tt>CONFERENCE_FOCUS</tt> after the change
+     * @param oldValue the value of the property <code>CONFERENCE_FOCUS</code> before the change
+     * @param newValue the value of the property <code>CONFERENCE_FOCUS</code> after the change
      */
     protected void conferenceFocusChanged(boolean oldValue, boolean newValue)
     {
@@ -744,8 +744,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * {@inheritDoc}
      *
-     * Creates a new <tt>MediaAwareCallConference</tt> to represent the media-specific information
-     * associated with the telephony conference-related state of this <tt>MediaAwareCall</tt>.
+     * Creates a new <code>MediaAwareCallConference</code> to represent the media-specific information
+     * associated with the telephony conference-related state of this <code>MediaAwareCall</code>.
      */
     @Override
     protected CallConference createConference()
@@ -756,8 +756,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * {@inheritDoc}
      *
-     * Makes sure that the telephony conference-related state of this <tt>MediaAwareCall</tt> is
-     * represented by a <tt>MediaAwareCallConference</tt> instance.
+     * Makes sure that the telephony conference-related state of this <code>MediaAwareCall</code> is
+     * represented by a <code>MediaAwareCallConference</code> instance.
      */
     @Override
     public MediaAwareCallConference getConference()
@@ -768,7 +768,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * {@inheritDoc}
      *
-     * Listens to the changes in the values of the properties of this <tt>Call</tt>.
+     * Listens to the changes in the values of the properties of this <code>Call</code>.
      */
     @Override
     protected void firePropertyChange(String property, Object oldValue, Object newValue)
@@ -797,8 +797,8 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
     /**
      * {@inheritDoc}
      *
-     * Makes sure that the telephony conference-related state of this <tt>MediaAwareCall</tt> is
-     * represented by a <tt>MediaAwareCallConference</tt> instance.
+     * Makes sure that the telephony conference-related state of this <code>MediaAwareCall</code> is
+     * represented by a <code>MediaAwareCallConference</code> instance.
      */
     @Override
     public void setConference(CallConference conference)

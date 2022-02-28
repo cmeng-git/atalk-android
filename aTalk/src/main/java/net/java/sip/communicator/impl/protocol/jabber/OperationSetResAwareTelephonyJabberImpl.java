@@ -20,15 +20,15 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 public class OperationSetResAwareTelephonyJabberImpl implements OperationSetResourceAwareTelephony
 {
     /**
-     * The <tt>OperationSetBasicTelephonyJabberImpl</tt> supported by the parent Jabber protocol provider
+     * The <code>OperationSetBasicTelephonyJabberImpl</code> supported by the parent Jabber protocol provider
      */
     private final OperationSetBasicTelephonyJabberImpl jabberTelephony;
 
     /**
-     * Creates an instance of <tt>OperationSetResourceAwareTelephonyImpl</tt> by specifying the
+     * Creates an instance of <code>OperationSetResourceAwareTelephonyImpl</code> by specifying the
      * basic telephony operation set.
      *
-     * @param basicTelephony the <tt>OperationSetBasicTelephonyJabberImpl</tt> supported by the parent Jabber
+     * @param basicTelephony the <code>OperationSetBasicTelephonyJabberImpl</code> supported by the parent Jabber
      * protocol provider
      */
     public OperationSetResAwareTelephonyJabberImpl(OperationSetBasicTelephonyJabberImpl basicTelephony)
@@ -37,13 +37,13 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
     }
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> given by her
-     * <tt>Contact</tt> on a specific <tt>ContactResource</tt> to it.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> given by her
+     * <code>Contact</code> on a specific <code>ContactResource</code> to it.
      *
      * @param callee the address of the callee who we should invite to a new call
      * @param calleeResource the specific resource to which the invite should be sent
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      */
     public Call createCall(Contact callee, ContactResource calleeResource)
@@ -53,13 +53,13 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
     }
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> given by her
-     * <tt>Contact</tt> on a specific <tt>ContactResource</tt> to it.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> given by her
+     * <code>Contact</code> on a specific <code>ContactResource</code> to it.
      *
      * @param callee the address of the callee who we should invite to a new call
      * @param calleeResource the specific resource to which the invite should be sent
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      */
     public Call createCall(String callee, String calleeResource)
@@ -69,13 +69,13 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
     }
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> given by her <tt>Contact</tt> to it.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> given by her <code>Contact</code> to it.
      *
      * @param callee the address of the callee who we should invite to a new call
      * @param calleeResource the specific resource to which the invite should be sent
-     * @param conference the <tt>CallConference</tt> in which the newly-created <tt>Call</tt> is to participate
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @param conference the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      */
     public Call createCall(Contact callee, ContactResource calleeResource, CallConference conference)
@@ -85,13 +85,13 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
     }
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her <tt>String</tt> URI.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>String</code> URI.
      *
-     * @param uri the address of the callee who we should invite to a new <tt>Call</tt>
+     * @param uri the address of the callee who we should invite to a new <code>Call</code>
      * @param calleeResource the specific resource to which the invite should be sent
-     * @param conference the <tt>CallConference</tt> in which the newly-created <tt>Call</tt> is to participate
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @param conference the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      */
     public Call createCall(String uri, String calleeResource, CallConference conference)
@@ -110,10 +110,9 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
         }
 
         CallPeer callPeer = jabberTelephony.createOutgoingCall(call, uri, fullCalleeUri, null);
-
         if (callPeer == null) {
-            throw new OperationFailedException("Failed to create outgoing call"
-                    + " because no peer was created", OperationFailedException.INTERNAL_ERROR);
+            throw new OperationFailedException("Failed to create outgoing call because no peer was created",
+                    OperationFailedException.INTERNAL_ERROR);
         }
         Call callOfCallPeer = callPeer.getCall();
         // We may have a Google Talk call here.

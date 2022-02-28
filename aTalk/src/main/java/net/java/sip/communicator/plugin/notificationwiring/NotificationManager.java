@@ -136,7 +136,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     private final Map<Object, Long> proactiveTimer = new HashMap<>();
 
     /**
-     * Fires a chat message notification for the given event type through the <tt>NotificationService</tt>.
+     * Fires a chat message notification for the given event type through the <code>NotificationService</code>.
      *
      * @param chatDescriptor the chat contact to which the chat message corresponds; the chat contact could be a
      * Contact or a ChatRoom.
@@ -199,12 +199,12 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Fires a notification for the given event type through the <tt>NotificationService</tt>. The
-     * event type is one of the static constants defined in the <tt>NotificationManager</tt> class.
+     * Fires a notification for the given event type through the <code>NotificationService</code>. The
+     * event type is one of the static constants defined in the <code>NotificationManager</code> class.
      *
      * <b>Note</b>: The uses of the method at the time of this writing do not take measures to stop looping sounds
      * if the respective notifications use them i.e. there is implicit agreement that the notifications fired through
-     * the method do not loop sounds. Consequently, the method passes arguments to <tt>NotificationService</tt>
+     * the method do not loop sounds. Consequently, the method passes arguments to <code>NotificationService</code>
      * so that sounds are played once only.
      *
      * @param eventType the event type for which we want to fire a notification
@@ -217,8 +217,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Fires a notification for the given event type through the <tt>NotificationService</tt>. The
-     * event type is one of the static constants defined in the <tt>NotificationManager</tt> class.
+     * Fires a notification for the given event type through the <code>NotificationService</code>. The
+     * event type is one of the static constants defined in the <code>NotificationManager</code> class.
      *
      * @param eventType the event type for which we want to fire a notification
      * @param loopCondition the method which will determine whether any sounds played as part of the specified
@@ -231,13 +231,13 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Fires a notification through the <tt>NotificationService</tt> with a specific event type, a
+     * Fires a notification through the <code>NotificationService</code> with a specific event type, a
      * specific message title and a specific message.
      *
      * <b>Note</b>: The uses of the method at the time of this writing do not take measures to
      * stop looping sounds if the respective notifications use them i.e. there is implicit
      * agreement that the notifications fired through the method do not loop sounds. Consequently,
-     * the method passes arguments to <tt>NotificationService</tt> so that sounds are played once only.
+     * the method passes arguments to <code>NotificationService</code> so that sounds are played once only.
      *
      * @param eventType the event type of the notification to be fired
      * @param msgType the notification sub-category message type
@@ -254,13 +254,13 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Fires a message notification for the given event type through the <tt>NotificationService</tt>.
+     * Fires a message notification for the given event type through the <code>NotificationService</code>.
      *
      * @param eventType the event type for which we fire a notification
      * @param messageTitle the title of the message
      * @param message the content of the message
      * @param cmdargs the value to be provided to
-     * {@link CommandNotificationHandler#execute(CommandNotificationAction, Map)} as the <tt>cmdargs</tt> argument
+     * {@link CommandNotificationHandler#execute(CommandNotificationAction, Map)} as the <code>cmdargs</code> argument
      * @param loopCondition the method which will determine whether any sounds played as part of the specified
      * notification will continue looping
      * @return a reference to the fired notification to stop it.
@@ -285,9 +285,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Returns all <tt>ProtocolProviderFactory</tt>s obtained from the bundle context.
+     * Returns all <code>ProtocolProviderFactory</code>s obtained from the bundle context.
      *
-     * @return all <tt>ProtocolProviderFactory</tt>s obtained from the bundle context
+     * @return all <code>ProtocolProviderFactory</code>s obtained from the bundle context
      */
     public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
     {
@@ -346,7 +346,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * if it has only one {@code ChatRoomMember} who is not the local user.
      *
      * @param chatRoom the {@code ChatRoom} to be determined as private or not
-     * @return <tt>true</tt> if the specified {@code ChatRoom} is private; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the specified {@code ChatRoom} is private; otherwise, <code>false</code>
      */
     private static boolean isPrivate(ChatRoom chatRoom)
     {
@@ -363,12 +363,12 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Determines whether the <tt>DIALING</tt> sound notification should be played for a specific <tt>CallPeer</tt>.
+     * Determines whether the <code>DIALING</code> sound notification should be played for a specific <code>CallPeer</code>.
      *
-     * @param weakPeer the <tt>CallPeer</tt> for which it is to be determined whether the <tt>DIALING</tt>
+     * @param weakPeer the <code>CallPeer</code> for which it is to be determined whether the <code>DIALING</code>
      * sound notification is to be played
-     * @return <tt>true</tt> if the <tt>DIALING</tt> sound notification should be played for the
-     * specified <tt>callPeer</tt>; otherwise, tt>false</tt>
+     * @return <code>true</code> if the <code>DIALING</code> sound notification should be played for the
+     * specified <code>callPeer</code>; otherwise, code>false</code>
      */
     private static boolean shouldPlayDialingSound(WeakReference<CallPeer> weakPeer)
     {
@@ -417,7 +417,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Implements CallListener.callEnded. Stops sounds that are playing at the moment if there're any.
      *
-     * @param evt the <tt>CallEvent</tt>
+     * @param evt the <code>CallEvent</code>
      */
     public void callEnded(CallEvent evt)
     {
@@ -440,9 +440,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Implements the <tt>CallChangeListener.callPeerAdded</tt> method.
+     * Implements the <code>CallChangeListener.callPeerAdded</code> method.
      *
-     * @param evt the <tt>CallPeerEvent</tt> that notifies us for the change
+     * @param evt the <code>CallPeerEvent</code> that notifies us for the change
      */
     public void callPeerAdded(CallPeerEvent evt)
     {
@@ -456,9 +456,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Implements the <tt>CallChangeListener.callPeerRemoved</tt> method.
+     * Implements the <code>CallChangeListener.callPeerRemoved</code> method.
      *
-     * @param evt the <tt>CallPeerEvent</tt> that has been triggered
+     * @param evt the <code>CallPeerEvent</code> that has been triggered
      */
     public void callPeerRemoved(CallPeerEvent evt)
     {
@@ -550,7 +550,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * When a request has been received we show a notification.
      *
-     * @param event <tt>FileTransferRequestEvent</tt>
+     * @param event <code>FileTransferRequestEvent</code>
      * @see ScFileTransferListener#fileTransferRequestReceived(FileTransferRequestEvent)
      */
     public void fileTransferRequestReceived(FileTransferRequestEvent event)
@@ -581,7 +581,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Adds all listeners related to the given protocol provider.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>
+     * @param protocolProvider the <code>ProtocolProviderService</code>
      */
     private void handleProviderAdded(ProtocolProviderService protocolProvider)
     {
@@ -657,7 +657,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Removes all listeners related to the given protocol provider.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>
+     * @param protocolProvider the <code>ProtocolProviderService</code>
      */
     private void handleProviderRemoved(ProtocolProviderService protocolProvider)
     {
@@ -723,7 +723,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Implements CallListener.incomingCallReceived. Upon received a call, plays the phone ring tone to the user
      * and gathers caller information that may be used by a user-specified command (incomingCall event trigger).
      *
-     * @param evt the <tt>CallEvent</tt>
+     * @param evt the <code>CallEvent</code>
      */
     public void incomingCallReceived(CallEvent evt)
     {
@@ -811,7 +811,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Checks if the contained call is a conference call.
      *
      * @param call the call to check
-     * @return {@code true} if the contained <tt>Call</tt> is a conference call, otherwise returns {@code false}.
+     * @return {@code true} if the contained <code>Call</code> is a conference call, otherwise returns {@code false}.
      */
     public boolean isConference(Call call)
     {
@@ -837,9 +837,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Implements the <tt>LocalUserAdHocChatRoomPresenceListener.localUserPresenceChanged</tt> method
+     * Implements the <code>LocalUserAdHocChatRoomPresenceListener.localUserPresenceChanged</code> method
      *
-     * @param evt the <tt>LocalUserAdHocChatRoomPresenceChangeEvent</tt> that notified us of a presence change
+     * @param evt the <code>LocalUserAdHocChatRoomPresenceChangeEvent</code> that notified us of a presence change
      */
     public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt)
     {
@@ -855,9 +855,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
     /**
      * cmeng: should remove this from here
-     * Implements the <tt>LocalUserChatRoomPresenceListener.localUserPresenceChanged</tt> method.
+     * Implements the <code>LocalUserChatRoomPresenceListener.localUserPresenceChanged</code> method.
      *
-     * @param evt the <tt>LocalUserChatRoomPresenceChangeEvent</tt> that notified us
+     * @param evt the <code>LocalUserChatRoomPresenceChangeEvent</code> that notified us
      */
     public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
     {
@@ -929,9 +929,9 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Implements the <tt>AdHocChatRoomMessageListener.messageReceived</tt> method. <br>
+     * Implements the <code>AdHocChatRoomMessageListener.messageReceived</code> method. <br>
      *
-     * @param evt the <tt>AdHocChatRoomMessageReceivedEvent</tt> that notified us
+     * @param evt the <code>AdHocChatRoomMessageReceivedEvent</code> that notified us
      */
     public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
     {
@@ -965,10 +965,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Implements the <tt>ChatRoomMessageListener.messageReceived</tt> method. <br>
-     * Obtains the corresponding <tt>ChatPanel</tt> and process the message there.
+     * Implements the <code>ChatRoomMessageListener.messageReceived</code> method. <br>
+     * Obtains the corresponding <code>ChatPanel</code> and process the message there.
      *
-     * @param evt the <tt>ChatRoomMessageReceivedEvent</tt> that notified us that a message has been received
+     * @param evt the <code>ChatRoomMessageReceivedEvent</code> that notified us that a message has been received
      */
     public void messageReceived(ChatRoomMessageReceivedEvent evt)
     {
@@ -1030,7 +1030,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Fired on new messages.
      *
-     * @param evt the <tt>MessageReceivedEvent</tt> containing details on the received message
+     * @param evt the <code>MessageReceivedEvent</code> containing details on the received message
      */
     public void messageReceived(MessageReceivedEvent evt)
     {
@@ -1075,7 +1075,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Do nothing. Implements CallListener.outGoingCallCreated.
      *
-     * @param event the <tt>CallEvent</tt>
+     * @param event the <code>CallEvent</code>
      */
     public void outgoingCallCreated(CallEvent event)
     {
@@ -1204,10 +1204,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Notifies that a specific <tt>Recorder</tt> has stopped recording the media associated with
+     * Notifies that a specific <code>Recorder</code> has stopped recording the media associated with
      * it.
      *
-     * @param recorder the <tt>Recorder</tt> which has stopped recording its associated media
+     * @param recorder the <code>Recorder</code> which has stopped recording its associated media
      */
     public void recorderStopped(Recorder recorder)
     {
@@ -1365,7 +1365,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * When a <tt>securityOnEvent</tt> is received.
+     * When a <code>securityOnEvent</code> is received.
      *
      * @param evt the event we received
      */
@@ -1398,10 +1398,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     }
 
     /**
-     * Implements the <tt>ServiceListener</tt> method. Verifies whether the passed event concerns
-     * a <tt>ProtocolProviderService</tt> and adds the corresponding listeners.
+     * Implements the <code>ServiceListener</code> method. Verifies whether the passed event concerns
+     * a <code>ProtocolProviderService</code> and adds the corresponding listeners.
      *
-     * @param event The <tt>ServiceEvent</tt> object.
+     * @param event The <code>ServiceEvent</code> object.
      */
     public void serviceChanged(ServiceEvent event)
     {

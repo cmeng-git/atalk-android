@@ -54,7 +54,7 @@ public interface SDesControl extends SrtpControl
      * {@link #getInitiatorCryptoAttributes()}) based on the peer's first matching cipher suite.
      *
      * @param peerAttributes The peer's crypto offers.
-     * @return A SrtpCryptoAttribute when a matching cipher suite was found; <tt>null</tt>, otherwise.
+     * @return A SrtpCryptoAttribute when a matching cipher suite was found; <code>null</code>, otherwise.
      */
     SrtpCryptoAttribute initiatorSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes);
 
@@ -63,7 +63,7 @@ public interface SDesControl extends SrtpControl
      * the local crypto attribute. Used when the control is running in the role as responder.
      *
      * @param peerAttributes The peer's crypto attribute offering.
-     * @return The local crypto attribute for the answer of the offer or <tt>null</tt> if no
+     * @return The local crypto attribute for the answer of the offer or <code>null</code> if no
      * matching cipher suite could be found.
      */
     SrtpCryptoAttribute responderSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes);

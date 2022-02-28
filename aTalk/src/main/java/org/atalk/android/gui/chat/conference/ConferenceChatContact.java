@@ -21,7 +21,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatContact;
 
 /**
- * The <tt>ConferenceChatContact</tt> represents a <tt>ChatContact</tt> in a conference chat.
+ * The <code>ConferenceChatContact</code> represents a <code>ChatContact</code> in a conference chat.
  *
  * @author Yana Stamcheva
  * @author Lubomir Marinov
@@ -30,9 +30,9 @@ public class ConferenceChatContact extends ChatContact<ChatRoomMember>
 {
 
     /**
-     * Creates an instance of <tt>ChatContact</tt> by passing to it the <tt>ChatRoomMember</tt> for which it is created.
+     * Creates an instance of <code>ChatContact</code> by passing to it the <code>ChatRoomMember</code> for which it is created.
      *
-     * @param chatRoomMember the <tt>ChatRoomMember</tt> for which this <tt>ChatContact</tt> is created.
+     * @param chatRoomMember the <code>ChatRoomMember</code> for which this <code>ChatContact</code> is created.
      */
     public ConferenceChatContact(ChatRoomMember chatRoomMember)
     {

@@ -47,21 +47,21 @@ public interface MediaStreamStats
 	double getDownloadRateKiloBitPerSec();
 
 	/**
-	 * Returns the download video size if this stream downloads a video, or <tt>null</tt> if not.
+	 * Returns the download video size if this stream downloads a video, or <code>null</code> if not.
 	 *
-	 * @return the download video size if this stream downloads a video, or <tt>null</tt> if not.
+	 * @return the download video size if this stream downloads a video, or <code>null</code> if not.
 	 */
 	Dimension getDownloadVideoSize();
 
 	/**
-	 * Returns the <tt>MediaStream</tt> encoding.
+	 * Returns the <code>MediaStream</code> encoding.
 	 *
 	 * @return the encoding used by the stream.
 	 */
 	String getEncoding();
 
 	/**
-	 * Returns the <tt>MediaStream</tt> encoding rate (in Hz).
+	 * Returns the <code>MediaStream</code> encoding rate (in Hz).
 	 *
 	 * @return the encoding rate used by the stream.
 	 */
@@ -82,14 +82,14 @@ public interface MediaStreamStats
 	int getJitterBufferDelayPackets();
 
 	/**
-	 * Returns the local IP address of the <tt>MediaStream</tt>.
+	 * Returns the local IP address of the <code>MediaStream</code>.
 	 *
 	 * @return the local IP address of the stream.
 	 */
 	String getLocalIPAddress();
 
 	/**
-	 * Returns the local port of the <tt>MediaStream</tt>.
+	 * Returns the local port of the <code>MediaStream</code>.
 	 *
 	 * @return the local port of the stream.
 	 */
@@ -205,14 +205,14 @@ public interface MediaStreamStats
 	double getPercentDiscarded();
 
 	/**
-	 * Returns the remote IP address of the <tt>MediaStream</tt>.
+	 * Returns the remote IP address of the <code>MediaStream</code>.
 	 *
 	 * @return the remote IP address of the stream.
 	 */
 	String getRemoteIPAddress();
 
 	/**
-	 * Returns the remote port of the <tt>MediaStream</tt>.
+	 * Returns the remote port of the <code>MediaStream</code>.
 	 *
 	 * @return the remote port of the stream.
 	 */
@@ -231,7 +231,7 @@ public interface MediaStreamStats
 	 * Returns the RTT computed with the RTCP feedback (cf. RFC3550, section 6.4.1, subsection
 	 * "delay since last SR (DLSR): 32 bits").
 	 *
-	 * @return The RTT computed with the RTCP feedback. Returns <tt>-1</tt> if
+	 * @return The RTT computed with the RTCP feedback. Returns <code>-1</code> if
 	 * the RTT has not been computed yet. Otherwise the RTT in ms.
 	 * @deprecated use the appropriate method from {@link MediaStreamStats2} instead.
 	 */
@@ -266,18 +266,18 @@ public interface MediaStreamStats
 	double getUploadRateKiloBitPerSec();
 
 	/**
-	 * Returns the upload video size if this stream uploads a video, or <tt>null</tt> if not.
+	 * Returns the upload video size if this stream uploads a video, or <code>null</code> if not.
 	 *
-	 * @return the upload video size if this stream uploads a video, or <tt>null</tt> if not.
+	 * @return the upload video size if this stream uploads a video, or <code>null</code> if not.
 	 */
 	Dimension getUploadVideoSize();
 
 	/**
 	 * Checks whether there is an adaptive jitter buffer enabled for at least one of the
-	 * <tt>ReceiveStream</tt>s of the <tt>MediaStreamImpl</tt>.
+	 * <code>ReceiveStream</code>s of the <code>MediaStreamImpl</code>.
 	 *
-	 * @return <tt>true</tt> if there is an adaptive jitter buffer enabled for at least one of the
-	 * <tt>ReceiveStream</tt>s of the <tt>MediaStreamImpl</tt>; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if there is an adaptive jitter buffer enabled for at least one of the
+	 * <code>ReceiveStream</code>s of the <code>MediaStreamImpl</code>; otherwise, <code>false</code>
 	 */
 	boolean isAdaptiveBufferEnabled();
 

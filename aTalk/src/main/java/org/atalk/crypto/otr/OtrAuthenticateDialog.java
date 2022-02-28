@@ -39,7 +39,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
     private final static String EXTRA_SESSION_UUID = "uuid";
 
     /**
-     * The <tt>Contact</tt> that belongs to OTR session handled by this instance.
+     * The <code>Contact</code> that belongs to OTR session handled by this instance.
      */
     private OtrContact otrContact;
     private String remoteFingerprint;
@@ -89,7 +89,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
     /**
      * Method fired when the ok button is clicked.
      *
-     * @param v ok button's <tt>View</tt>.
+     * @param v ok button's <code>View</code>.
      */
     public void onOkClicked(View v)
     {
@@ -112,7 +112,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
     /**
      * Method fired when the cancel button is clicked.
      *
-     * @param v the cancel button's <tt>View</tt>
+     * @param v the cancel button's <code>View</code>
      */
     public void onCancelClicked(View v)
     {
@@ -120,7 +120,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
     }
 
     /**
-     * Creates parametrized <tt>Intent</tt> of buddy authenticate dialog.
+     * Creates parametrized <code>Intent</code> of buddy authenticate dialog.
      *
      * @param uuid the UUID of OTR session.
      * @return buddy authenticate dialog parametrized with given OTR session's UUID.

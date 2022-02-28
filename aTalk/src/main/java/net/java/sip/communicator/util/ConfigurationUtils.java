@@ -938,7 +938,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isAutoStartOnBoot" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isAutoStartOnBoot" property through the <code>ConfigurationService</code>.
      *
      * @param autoStart {@code true} to auto start aTalk on device reboot
      */
@@ -961,7 +961,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isTtsEnable" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isTtsEnable" property through the <code>ConfigurationService</code>.
      *
      * @param ttsEnable {@code true} to enable tts option
      */
@@ -977,7 +977,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isTtsEnable" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isTtsEnable" property through the <code>ConfigurationService</code>.
      *
      * @param delay is the amount of time to wait before start the TTS
      */
@@ -999,7 +999,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     * Updates the "sendChatStateNotifications" property through the <code>ConfigurationService</code>.
      *
      * @param isDeliveryReceipt {@code true} to indicate that message delivery receipts are enabled,
      * {@code false} otherwise.
@@ -1023,7 +1023,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     * Updates the "sendChatStateNotifications" property through the <code>ConfigurationService</code>.
      *
      * @param isChatStateNotification {@code true} to indicate that chat state notifications are enabled,
      * {@code false} otherwise.
@@ -1047,7 +1047,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     * Updates the "sendChatStateNotifications" property through the <code>ConfigurationService</code>.
      *
      * @param sendThumbnail {@code true} to indicate that chat state notifications are enabled,
      * {@code false} otherwise.
@@ -1084,7 +1084,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "acceptFileSize" property through the <tt>ConfigurationService</tt>.
+     * Updates the "acceptFileSize" property through the <code>ConfigurationService</code>.
      *
      * @param fileSize indicates if the maximum file size for auto accept.
      */
@@ -1106,7 +1106,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isPresenceSubscribeAuto" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isPresenceSubscribeAuto" property through the <code>ConfigurationService</code>.
      *
      * @param presenceSubscribeAuto {@code true} to indicate that chat state notifications are enabled,
      * {@code false} otherwise.
@@ -1159,7 +1159,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isMultiChatWindowEnabled" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isMultiChatWindowEnabled" property through the <code>ConfigurationService</code>.
      *
      * @param isEnabled indicates if the chat window could contain multiple chats or only one chat.
      */
@@ -1183,7 +1183,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isLeaveChatRoomOnWindowClose" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isLeaveChatRoomOnWindowClose" property through the <code>ConfigurationService</code>.
      *
      * @param isLeave indicates whether to leave chat room on window close.
      */
@@ -1217,7 +1217,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isHistoryShown" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isHistoryShown" property through the <code>ConfigurationService</code>.
      *
      * @param isShown indicates if the message history is shown
      */
@@ -1228,7 +1228,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isRecentMessagesShown" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isRecentMessagesShown" property through the <code>ConfigurationService</code>.
      *
      * @param isShown indicates if the recent messages is shown
      */
@@ -1405,7 +1405,7 @@ public class ConfigurationUtils
     /**
      * Indicates if the chat room user configuration functionality is disabled.
      *
-     * @return <tt>true</tt> if the chat room configuration is disabled, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the chat room configuration is disabled, <code>false</code> - otherwise
      */
     public static boolean isChatRoomConfigDisabled()
     {
@@ -1488,7 +1488,7 @@ public class ConfigurationUtils
 
     /**
      * Return the "sendMessageCommand" property that was saved previously through the
-     * <tt>ConfigurationService</tt>. Indicates to the user interface whether the default send
+     * <code>ConfigurationService</code>. Indicates to the user interface whether the default send
      * message command is Enter or  CTRL-Enter.
      *
      * @return "Enter" or "CTRL-Enter" message commands.
@@ -1499,7 +1499,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "sendMessageCommand" property through the <tt>ConfigurationService</tt>.
+     * Updates the "sendMessageCommand" property through the <code>ConfigurationService</code>.
      *
      * @param newMessageCommand the command used to send a message ( it could be ENTER_COMMAND or CTRL_ENTER_COMMAND)
      */
@@ -1511,7 +1511,7 @@ public class ConfigurationUtils
 
     /**
      * Return the "lastContactParent" property that was saved previously through the
-     * <tt>ConfigurationService</tt>. Indicates the last selected group on adding new contact
+     * <code>ConfigurationService</code>. Indicates the last selected group on adding new contact
      *
      * @return group name of the last selected group when adding contact.
      */
@@ -1535,10 +1535,10 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the protocol provider associated with the given <tt>accountId</tt>.
+     * Returns the protocol provider associated with the given <code>accountId</code>.
      *
      * @param savedAccountId the identifier of the account
-     * @return the protocol provider associated with the given <tt>accountId</tt>
+     * @return the protocol provider associated with the given <code>accountId</code>
      */
     private static ProtocolProviderService findProviderFromAccountId(String savedAccountId)
     {
@@ -1573,7 +1573,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "webPage" property through the <tt>ConfigurationService</tt>.
+     * Updates the "webPage" property through the <code>ConfigurationService</code>.
      *
      * @param webPage the web page for access.
      */
@@ -1594,7 +1594,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "chatHistorySize" property through the <tt>ConfigurationService</tt>.
+     * Updates the "chatHistorySize" property through the <code>ConfigurationService</code>.
      *
      * @param historySize indicates if the history logging is enabled.
      */
@@ -1774,7 +1774,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "sendChatStateNotifications" property through the <tt>ConfigurationService</tt>.
+     * Updates the "sendChatStateNotifications" property through the <code>ConfigurationService</code>.
      *
      * @param headsUp {@code true} to indicate HeadUp notifications are enabled,
      * {@code false} otherwise.
@@ -1873,7 +1873,7 @@ public class ConfigurationUtils
     /**
      * Indicates if the single interface is enabled.
      *
-     * @return <tt>true</tt> if the single window interface is enabled, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the single window interface is enabled, <code>false</code> - otherwise
      */
     public static boolean isSingleWindowInterfaceEnabled()
     {
@@ -1932,9 +1932,9 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "singleWindowInterface" property through the <tt>ConfigurationService</tt>.
+     * Updates the "singleWindowInterface" property through the <code>ConfigurationService</code>.
      *
-     * @param isEnabled {@code true} to indicate that the single window interface is enabled, <tt>false</tt> - otherwise
+     * @param isEnabled {@code true} to indicate that the single window interface is enabled, <code>false</code> - otherwise
      */
     public static void setSingleWindowInterfaceEnabled(boolean isEnabled)
     {
@@ -1953,7 +1953,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "showOffline" property through the <tt>ConfigurationService</tt>.
+     * Updates the "showOffline" property through the <code>ConfigurationService</code>.
      *
      * @param isShowOffline {@code true} to indicate that the offline users should be shown, {@code false} otherwise.
      */
@@ -1964,7 +1964,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "showCallPanel" property through the <tt>ConfigurationService</tt>.
+     * Updates the "showCallPanel" property through the <code>ConfigurationService</code>.
      *
      * @param isCallPanelShown {@code true} to indicate that the call panel should be shown, {@code false} otherwise.
      */
@@ -1975,7 +1975,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "showApplication" property through the <tt>ConfigurationService</tt>.
+     * Updates the "showApplication" property through the <code>ConfigurationService</code>.
      *
      * @param isVisible {@code true} to indicate that the application should be shown, {@code false} otherwise.
      */
@@ -1990,7 +1990,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "showAppQuitWarning" property through the <tt>ConfigurationService</tt>.
+     * Updates the "showAppQuitWarning" property through the <code>ConfigurationService</code>.
      *
      * @param isWarningShown indicates if the message warning the user that the application would not be closed if
      * she clicks the X button would be shown again.
@@ -2012,7 +2012,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "lastContactParent" property through the <tt>ConfigurationService</tt>.
+     * Updates the "lastContactParent" property through the <code>ConfigurationService</code>.
      *
      * @param groupName the group name of the selected group when adding last contact
      */
@@ -2023,7 +2023,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isMoveContactQuestionEnabled" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isMoveContactQuestionEnabled" property through the <code>ConfigurationService</code>.
      *
      * @param isRequested indicates if a confirmation would be requested from user during the move contact process.
      */
@@ -2035,7 +2035,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isTransparentWindowEnabled" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isTransparentWindowEnabled" property through the <code>ConfigurationService</code>.
      *
      * @param isTransparent indicates if the transparency is enabled in the application.
      */
@@ -2046,7 +2046,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isChatToolbarVisible" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isChatToolbarVisible" property through the <code>ConfigurationService</code>.
      *
      * @param isVisible indicates if the chat toolbar is visible.
      */
@@ -2057,7 +2057,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isChatSimpleThemeEnabled" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isChatSimpleThemeEnabled" property through the <code>ConfigurationService</code>.
      *
      * @param isEnabled indicates if the chat simple theme is enabled
      */
@@ -2068,7 +2068,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "isChatStyleBarVisible" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isChatStyleBarVisible" property through the <code>ConfigurationService</code>.
      *
      * @param isVisible indicates if the chat styleBar is visible.
      */
@@ -2079,7 +2079,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the pChatWriteAreaSize property through the <tt>ConfigurationService</tt>.
+     * Updates the pChatWriteAreaSize property through the <code>ConfigurationService</code>.
      *
      * @param size the new size to set
      */
@@ -2090,7 +2090,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the "SEND_FILE_LAST_DIR" property through the <tt>ConfigurationService</tt>.
+     * Updates the "SEND_FILE_LAST_DIR" property through the <code>ConfigurationService</code>.
      *
      * @param lastDir last download directory
      */
@@ -2195,7 +2195,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the value of a contact option property through the <tt>ConfigurationService</tt>.
+     * Updates the value of a contact option property through the <code>ConfigurationService</code>.
      * The property-value pair is stored a JSONObject element in contact options
      *
      * @param contactJid the identifier/BareJid of the contact table to update
@@ -2222,11 +2222,11 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the contact options, saved via the <tt>ConfigurationService</tt>.
+     * Returns the contact options, saved via the <code>ConfigurationService</code>.
      *
      * @param contactJid the identifier/BareJid of the contact table to retrieve
      * @param property the property name in the contact options
-     * @return the value of the contact options property, saved via the <tt>ConfigurationService</tt>.
+     * @return the value of the contact options property, saved via the <code>ConfigurationService</code>.
      */
     public static String getContactProperty(Jid contactJid, String property)
     {
@@ -2240,10 +2240,10 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the options saved in <tt>ConfigurationService</tt> associated with the <tt>Contact</tt>.
+     * Returns the options saved in <code>ConfigurationService</code> associated with the <code>Contact</code>.
      *
      * @param contactJid the identifier/BareJid of the contact table to update
-     * @return the contact options saved in <tt>ConfigurationService</tt>.
+     * @return the contact options saved in <code>ConfigurationService</code>.
      */
     private static JSONObject getContactOptions(Jid contactJid)
     {
@@ -2271,7 +2271,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Saves a chat room through the <tt>ConfigurationService</tt>.
+     * Saves a chat room through the <code>ConfigurationService</code>.
      *
      * @param protocolProvider the protocol provider to which the chat room belongs
      * @param oldChatRoomId the old identifier of the chat room
@@ -2316,7 +2316,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Removes a chatRoom through the <tt>ConfigurationService</tt>.
+     * Removes a chatRoom through the <code>ConfigurationService</code>.
      *
      * @param protocolProvider the protocol provider to which the chat room belongs
      * @param chatRoomId the identifier of the chat room to remove
@@ -2331,7 +2331,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the status of the chat room through the <tt>ConfigurationService</tt>.
+     * Updates the status of the chat room through the <code>ConfigurationService</code>.
      *
      * @param protocolProvider the protocol provider to which the chat room belongs
      * @param chatRoomId the identifier of the chat room to update
@@ -2344,11 +2344,11 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the last chat room status, saved through the <tt>ConfigurationService</tt>.
+     * Returns the last chat room status, saved through the <code>ConfigurationService</code>.
      *
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomId the identifier of the chat room
-     * @return the last chat room status, saved through the <tt>ConfigurationService</tt>.
+     * @return the last chat room status, saved through the <code>ConfigurationService</code>.
      */
     public static String getChatRoomStatus(ProtocolProviderService protocolProvider, String chatRoomId)
     {
@@ -2356,7 +2356,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Updates the value of a chat room property through the <tt>ConfigurationService</tt>.
+     * Updates the value of a chat room property through the <code>ConfigurationService</code>.
      *
      * @param protocolProvider the protocol provider to which the chat room belongs
      * @param chatRoomId the identifier of the chat room to update
@@ -2386,12 +2386,12 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the chat room property, saved through the <tt>ConfigurationService</tt>.
+     * Returns the chat room property, saved through the <code>ConfigurationService</code>.
      *
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomId the identifier of the chat room
-     * @param property the property name, saved through the <tt>ConfigurationService</tt>.
-     * @return the value of the property, saved through the <tt>ConfigurationService</tt>.
+     * @param property the property name, saved through the <code>ConfigurationService</code>.
+     * @return the value of the property, saved through the <code>ConfigurationService</code>.
      */
     public static String getChatRoomProperty(ProtocolProviderService protocolProvider,
             String chatRoomId, String property)
@@ -2406,12 +2406,12 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the chat room prefix saved in <tt>ConfigurationService</tt> associated with the
-     * <tt>accountID</tt> and <tt>chatRoomID</tt>.
+     * Returns the chat room prefix saved in <code>ConfigurationService</code> associated with the
+     * <code>accountID</code> and <code>chatRoomID</code>.
      *
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomId the chat room id
-     * @return the chat room prefix saved in <tt>ConfigurationService</tt>.
+     * @return the chat room prefix saved in <code>ConfigurationService</code>.
      */
     private static JSONObject getChatRoomAttributes(ProtocolProviderService protocolProvider, String chatRoomId)
     {
@@ -2440,15 +2440,15 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns the chatRoom prefix saved in <tt>ConfigurationService</tt> associated with the
-     * <tt>accountID</tt> and <tt>chatRoomID</tt>.
+     * Returns the chatRoom prefix saved in <code>ConfigurationService</code> associated with the
+     * <code>accountID</code> and <code>chatRoomID</code>.
      * <p>
      * chatRoomPrefix is used as property to store encrypted password in DB. So need to start
      * with AccountUuid for it to handle properly and to auto-clean when the account is removed.
      *
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomID the chat room id (cmeng: can contain account serviceName e.g. example.org??)
-     * @return the chatRoom sessionUid saved in <tt>ConfigurationService</tt>.
+     * @return the chatRoom sessionUid saved in <code>ConfigurationService</code>.
      */
     public static String getChatRoomPrefix(ProtocolProviderService protocolProvider, String chatRoomID)
     {
@@ -2465,7 +2465,7 @@ public class ConfigurationUtils
     }
 
     /**
-     * Stores the last group <tt>status</tt> for the given <tt>groupID</tt>.
+     * Stores the last group <code>status</code> for the given <code>groupID</code>.
      *
      * @param groupID the identifier of the group (prefixed with group)
      * @param isCollapsed indicates if the group is collapsed or expanded
@@ -2495,10 +2495,10 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <tt>true</tt> if the group given by <tt>groupID</tt> is collapsed or <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the group given by <code>groupID</code> is collapsed or <code>false</code> otherwise.
      *
      * @param groupID the identifier of the group
-     * @return <tt>true</tt> if the group given by <tt>groupID</tt> is collapsed or <tt>false</tt> otherwise
+     * @return <code>true</code> if the group given by <code>groupID</code> is collapsed or <code>false</code> otherwise
      */
     public static boolean isContactListGroupCollapsed(String groupID)
     {
@@ -2519,7 +2519,7 @@ public class ConfigurationUtils
     /**
      * Indicates if the account configuration is disabled.
      *
-     * @return <tt>true</tt> if the account manual configuration and creation is disabled, otherwise return <tt>false</tt>
+     * @return <code>true</code> if the account manual configuration and creation is disabled, otherwise return <code>false</code>
      */
     public static boolean isShowAccountConfig()
     {
@@ -2621,7 +2621,7 @@ public class ConfigurationUtils
     /**
      * Returns the package name under which we would store information for the given factory.
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt>, which package name we're looking for
+     * @param factory the <code>ProtocolProviderFactory</code>, which package name we're looking for
      * @return the package name under which we would store information for the given factory
      */
     public static String getFactoryImplPackageName(ProtocolProviderFactory factory)
@@ -2725,11 +2725,11 @@ public class ConfigurationUtils
     }
 
     /**
-     * Returns <tt>true</tt> if the account associated with <tt>protocolProvider</tt> has at least
-     * one video format enabled in it's configuration, <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the account associated with <code>protocolProvider</code> has at least
+     * one video format enabled in it's configuration, <code>false</code> otherwise.
      *
-     * @return <tt>true</tt> if the account associated with <tt>protocolProvider</tt> has at least
-     * one video format enabled in it's configuration, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the account associated with <code>protocolProvider</code> has at least
+     * one video format enabled in it's configuration, <code>false</code> otherwise.
      */
     public static boolean hasEnabledVideoFormat(ProtocolProviderService protocolProvider)
     {

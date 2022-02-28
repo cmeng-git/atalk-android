@@ -480,8 +480,8 @@ public class HistoryServiceImpl implements HistoryService
      * Enumerates existing histories.
      *
      * @param rawId the start of the HistoryID of all the histories that will be returned.
-     * @return list of histories which HistoryID starts with <tt>rawId</tt>.
-     * @throws IllegalArgumentException if the <tt>rawId</tt> contains ids which are missing in current history.
+     * @return list of histories which HistoryID starts with <code>rawId</code>.
+     * @throws IllegalArgumentException if the <code>rawId</code> contains ids which are missing in current history.
      */
     public List<HistoryID> getExistingHistories(String[] rawId)
             throws IllegalArgumentException
@@ -529,7 +529,7 @@ public class HistoryServiceImpl implements HistoryService
     }
 
     /**
-     * Get existing files in <tt>res</tt> and their corresponding historyIDs.
+     * Get existing files in <code>res</code> and their corresponding historyIDs.
      *
      * @param sourceFolder the folder to search into.
      * @param rawID the rawID.

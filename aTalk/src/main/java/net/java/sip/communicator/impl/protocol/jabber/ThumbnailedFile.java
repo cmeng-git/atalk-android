@@ -8,7 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import java.io.File;
 
 /**
- * A <tt>ThumbnailedFile</tt> is a file with a thumbnail.
+ * A <code>ThumbnailedFile</code> is a file with a thumbnail.
  *
  * @author Yana Stamcheva
  */
@@ -28,9 +28,9 @@ public class ThumbnailedFile extends File
     private final byte[] thumbnail;
 
     /**
-     * Creates a <tt>ThumbnailedFile</tt>, by specifying the base <tt>file</tt>, the
-     * <tt>thumbnailWidth</tt> and <tt>thumbnailHeight</tt>, the <tt>thumbnailMimeType</tt> and the
-     * <tt>thumbnail</tt> itself.
+     * Creates a <code>ThumbnailedFile</code>, by specifying the base <code>file</code>, the
+     * <code>thumbnailWidth</code> and <code>thumbnailHeight</code>, the <code>thumbnailMimeType</code> and the
+     * <code>thumbnail</code> itself.
      *
      * @param file the base file
      * @param thumbnailWidth the width of the thumbnail

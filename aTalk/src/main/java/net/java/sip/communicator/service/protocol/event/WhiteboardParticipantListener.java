@@ -16,8 +16,8 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * A <tt>WhiteboardParticipantListener</tt> receives events notifying of changes that have occurred
- * within a <tt>WhiteboardParticipant</tt>. Such changes may pertain to current whiteboard
+ * A <code>WhiteboardParticipantListener</code> receives events notifying of changes that have occurred
+ * within a <code>WhiteboardParticipant</code>. Such changes may pertain to current whiteboard
  * participant state, their display name, address...
  *
  * @author Julien Waechter
@@ -29,7 +29,7 @@ public interface WhiteboardParticipantListener extends EventListener
     /**
      * Indicates that a change has occurred in the status of the source WhiteboardParticipant.
      *
-     * @param evt The <tt>WhiteboardParticipantChangeEvent</tt> instance containing the source event as
+     * @param evt The <code>WhiteboardParticipantChangeEvent</code> instance containing the source event as
      * well as its previous and its new status.
      */
     void participantStateChanged(WhiteboardParticipantChangeEvent evt);
@@ -37,7 +37,7 @@ public interface WhiteboardParticipantListener extends EventListener
     /**
      * Indicates that a change has occurred in the display name of the source WhiteboardParticipant.
      *
-     * @param evt The <tt>WhiteboardParticipantChangeEvent</tt> instance containing the source event as
+     * @param evt The <code>WhiteboardParticipantChangeEvent</code> instance containing the source event as
      * well as its previous and its new display names.
      */
     void participantDisplayNameChanged(WhiteboardParticipantChangeEvent evt);
@@ -45,7 +45,7 @@ public interface WhiteboardParticipantListener extends EventListener
     /**
      * Indicates that a change has occurred in the image of the source WhiteboardParticipant.
      *
-     * @param evt The <tt>WhiteboardParticipantChangeEvent</tt> instance containing the source event as
+     * @param evt The <code>WhiteboardParticipantChangeEvent</code> instance containing the source event as
      * well as its previous and its new image.
      */
     void participantImageChanged(WhiteboardParticipantChangeEvent evt);

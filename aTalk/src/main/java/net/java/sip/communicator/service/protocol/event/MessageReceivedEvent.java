@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * <tt>MessageReceivedEvent</tt>s indicate reception of an instant message.
+ * <code>MessageReceivedEvent</code>s indicate reception of an instant message.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -40,7 +40,7 @@ public class MessageReceivedEvent extends EventObject
     private Contact from = null;
 
     /**
-     * The <tt>ContactResource</tt>, from which the message was sent.
+     * The <code>ContactResource</code>, from which the message was sent.
      */
     private ContactResource fromResource = null;
 
@@ -70,11 +70,11 @@ public class MessageReceivedEvent extends EventObject
     private ChatRoom privateMessagingContactRoom = null;
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
      * @param timestamp the exact date when the event occurred.
      */
     public MessageReceivedEvent(IMessage source, Contact from, Date timestamp)
@@ -83,11 +83,11 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
      * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
      * correction.
      */
@@ -98,11 +98,11 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
      * @param timestamp the exact date when the event occurred.
      * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
      * correction.
@@ -113,12 +113,12 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
-     * @param fromResource the <tt>ContactResource</tt>, from which this message was sent.
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
+     * @param fromResource the <code>ContactResource</code>, from which this message was sent.
      * @param timestamp the exact date when the event occurred.
      * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
      * correction.
@@ -131,12 +131,12 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
-     * @param fromResource the <tt>ContactResource</tt>, from which this message was sent
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
+     * @param fromResource the <code>ContactResource</code>, from which this message was sent
      * @param timestamp the exact date when the event occurred.
      * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
      * correction.
@@ -152,11 +152,11 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
      * @param timestamp the exact date when the event occurred.
      * @param eventType the type of message event that this instance represents (one of the
      * XXX_MESSAGE_RECEIVED static fields).
@@ -167,12 +167,12 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
-     * @param fromResource the <tt>ContactResource</tt>, from which this message was sent
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
+     * @param fromResource the <code>ContactResource</code>, from which this message was sent
      * @param timestamp the exact date when the event occurred.
      * @param eventType the type of message event that this instance represents (one of the
      * XXX_MESSAGE_RECEIVED static fields).
@@ -183,12 +183,12 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose reception this event represents.
-     * @param from the <tt>Contact</tt> that has sent this message.
-     * @param fromResource the <tt>ContactResource</tt>, from which this message was sent
+     * @param source the <code>IMessage</code> whose reception this event represents.
+     * @param from the <code>Contact</code> that has sent this message.
+     * @param fromResource the <code>ContactResource</code>, from which this message was sent
      * @param timestamp the exact date when the event occurred.
      * @param eventType the type of message event that this instance represents (one of the
      * XXX_MESSAGE_RECEIVED static fields).
@@ -215,10 +215,10 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that has sent the <tt>IMessage</tt> whose
+     * Returns a reference to the <code>Contact</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      *
-     * @return a reference to the <tt>Contact</tt> that has sent the <tt>IMessage</tt> whose
+     * @return a reference to the <code>Contact</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      */
     public Contact getSourceContact()
@@ -227,10 +227,10 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>ContactResource</tt> that has sent the <tt>IMessage</tt> whose
+     * Returns a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      *
-     * @return a reference to the <tt>ContactResource</tt> that has sent the <tt>IMessage</tt> whose
+     * @return a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      */
     public ContactResource getContactResource()
@@ -241,7 +241,7 @@ public class MessageReceivedEvent extends EventObject
     /**
      * Returns the message that triggered this event
      *
-     * @return the <tt>IMessage</tt> that triggered this event.
+     * @return the <code>IMessage</code> that triggered this event.
      */
     public IMessage getSourceMessage()
     {
@@ -295,11 +295,11 @@ public class MessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns <tt>true</true> if this is private messaging event and
-     * <tt>false</tt> if not.
+     * Returns <code>true</true> if this is private messaging event and
+     * <code>false</code> if not.
      *
-     * @return <tt>true</true> if this is private messaging event and
-     * <tt>false</tt> if not.
+     * @return <code>true</true> if this is private messaging event and
+     * <code>false</code> if not.
      */
     public boolean isPrivateMessaging()
     {

@@ -31,7 +31,7 @@ import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.Jid;
 
 /**
- * The <tt>Jingle Message</tt> UI allowing caller to retract the call
+ * The <code>Jingle Message</code> UI allowing caller to retract the call
  *
  * @author Eng Chong Meng
  */

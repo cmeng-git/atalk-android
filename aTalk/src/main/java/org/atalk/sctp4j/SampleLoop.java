@@ -20,7 +20,7 @@ import java.io.IOException;
 import timber.log.Timber;
 
 /**
- * Sample that uses two <tt>SctpSocket</tt>s with {@link DirectLink}.
+ * Sample that uses two <code>SctpSocket</code>s with {@link DirectLink}.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

@@ -19,7 +19,7 @@ public abstract class AbstractOperationSetServerStoredAccountInfo implements
         OperationSetServerStoredAccountInfo
 {
     /**
-     * A list of listeners registered for <tt>ServerStoredDetailsChangeListener</tt>s.
+     * A list of listeners registered for <code>ServerStoredDetailsChangeListener</code>s.
      */
     private final List<ServerStoredDetailsChangeListener> serverStoredDetailsListeners = new ArrayList<ServerStoredDetailsChangeListener>();
 
@@ -27,7 +27,7 @@ public abstract class AbstractOperationSetServerStoredAccountInfo implements
      * Registers a ServerStoredDetailsChangeListener with this operation set so that it gets
      * notifications of details change.
      *
-     * @param listener the <tt>ServerStoredDetailsChangeListener</tt> to register.
+     * @param listener the <code>ServerStoredDetailsChangeListener</code> to register.
      */
     public void addServerStoredDetailsChangeListener(ServerStoredDetailsChangeListener listener)
     {
@@ -38,10 +38,10 @@ public abstract class AbstractOperationSetServerStoredAccountInfo implements
     }
 
     /**
-     * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon details
+     * Unregisters <code>listener</code> so that it won't receive any further notifications upon details
      * change.
      *
-     * @param listener the <tt>ServerStoredDetailsChangeListener</tt> to unregister.
+     * @param listener the <code>ServerStoredDetailsChangeListener</code> to unregister.
      */
     public void removeServerStoredDetailsChangeListener(ServerStoredDetailsChangeListener listener)
     {

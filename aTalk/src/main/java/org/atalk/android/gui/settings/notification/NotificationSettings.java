@@ -26,7 +26,7 @@ import org.atalk.service.resources.ResourceManagementService;
 import java.util.*;
 
 /**
- * The <tt>Activity</tt> lists all notification events. When user selects one of them the details screen is opened.
+ * The <code>Activity</code> lists all notification events. When user selects one of them the details screen is opened.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -99,7 +99,7 @@ public class NotificationSettings extends OSGiActivity
         private final Map<String, String> sortedEvents = new TreeMap<>();
 
         /**
-         * Creates new instance of <tt>NotificationsAdapter</tt>;
+         * Creates new instance of <code>NotificationsAdapter</code>;
          * Values are sorted in ascending order by eventNames for user easy reference.
          */
         NotificationsAdapter()

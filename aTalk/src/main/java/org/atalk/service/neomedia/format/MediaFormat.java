@@ -10,7 +10,7 @@ import org.atalk.util.MediaType;
 import java.util.Map;
 
 /**
- * The <tt>MediaFormat</tt> interface represents a generic (i.e. audio/video or other) format used
+ * The <code>MediaFormat</code> interface represents a generic (i.e. audio/video or other) format used
  * to represent media represent a media stream.
  * <p>
  * The interface contains utility methods for extracting common media format properties such as the
@@ -24,7 +24,7 @@ import java.util.Map;
 public interface MediaFormat
 {
     /**
-     * The constant returned by {@link #getRTPPayloadType()} when the <tt>MediaFormat</tt> instance
+     * The constant returned by {@link #getRTPPayloadType()} when the <code>MediaFormat</code> instance
      * describes a format without an RTP payload type (number) known in RFC 3551 "RTP Profile for
      * Audio and Video Conferences with Minimal Control".
      */
@@ -41,70 +41,70 @@ public interface MediaFormat
     int MAX_DYNAMIC_PAYLOAD_TYPE = 127;
 
     /**
-     * Returns the type of this <tt>MediaFormat</tt> (e.g. audio or video).
+     * Returns the type of this <code>MediaFormat</code> (e.g. audio or video).
      *
-     * @return the <tt>MediaType</tt> that this format represents (e.g. audio or video).
+     * @return the <code>MediaType</code> that this format represents (e.g. audio or video).
      */
     MediaType getMediaType();
 
     /**
-     * Returns the name of the encoding (i.e. codec) used by this <tt>MediaFormat</tt>.
+     * Returns the name of the encoding (i.e. codec) used by this <code>MediaFormat</code>.
      *
-     * @return The name of the encoding that this <tt>MediaFormat</tt> is using.
+     * @return The name of the encoding that this <code>MediaFormat</code> is using.
      */
     String getEncoding();
 
     /**
-     * Returns the clock rate associated with this <tt>MediaFormat</tt>.
+     * Returns the clock rate associated with this <code>MediaFormat</code>.
      *
      * @return The clock rate associated with this format.
      */
     double getClockRate();
 
     /**
-     * Returns a <tt>String</tt> representation of the clock rate associated with this
-     * <tt>MediaFormat</tt> making sure that the value appears as an integer (i.e. contains no
+     * Returns a <code>String</code> representation of the clock rate associated with this
+     * <code>MediaFormat</code> making sure that the value appears as an integer (i.e. contains no
      * decimal point) unless it is actually a non integer.
      *
-     * @return a <tt>String</tt> representation of the clock rate associated with this <tt>MediaFormat</tt>.
+     * @return a <code>String</code> representation of the clock rate associated with this <code>MediaFormat</code>.
      */
     String getClockRateString();
 
     /**
-     * Returns a <tt>String</tt> representation of the real used clock rate associated with this
-     * <tt>MediaFormat</tt> making sure that the value appears as an integer (i.e. contains no
+     * Returns a <code>String</code> representation of the real used clock rate associated with this
+     * <code>MediaFormat</code> making sure that the value appears as an integer (i.e. contains no
      * decimal point) unless it is actually a non integer. This function corrects the problem of the
      * G.722 codec which advertises its clock rate to be 8 kHz while 16 kHz is really used to encode
      * the stream (that's an error noted in the respective RFC and kept for the sake of compatibility.).
      *
-     * @return a <tt>String</tt> representation of the real used clock rate associated with this <tt>MediaFormat</tt>.
+     * @return a <code>String</code> representation of the real used clock rate associated with this <code>MediaFormat</code>.
      */
     String getRealUsedClockRateString();
 
     /**
-     * Determines whether this <tt>MediaFormat</tt> is equal to <tt>mediaFormat</tt> i.e. they have
+     * Determines whether this <code>MediaFormat</code> is equal to <code>mediaFormat</code> i.e. they have
      * the same encoding, clock rate, format parameters, advanced attributes, etc.
      *
-     * @param mediaFormat the <tt>MediaFormat</tt> to compare to this instance
-     * @return <tt>true</tt> if <tt>mediaFormat</tt> is equal to this format and <tt>false</tt> otherwise.
+     * @param mediaFormat the <code>MediaFormat</code> to compare to this instance
+     * @return <code>true</code> if <code>mediaFormat</code> is equal to this format and <code>false</code> otherwise.
      */
     @Override
     boolean equals(Object mediaFormat);
 
     /**
-     * Determines whether the format parameters of this <tt>MediaFormat</tt> match a specific set of format parameters.
+     * Determines whether the format parameters of this <code>MediaFormat</code> match a specific set of format parameters.
      *
-     * @param fmtps the set of format parameters to match to the format parameters of this <tt>MediaFormat</tt>
-     * @return <tt>true</tt> if this <tt>MediaFormat</tt> considers <tt>fmtps</tt> matching its
-     * format parameters; otherwise, <tt>false</tt>
+     * @param fmtps the set of format parameters to match to the format parameters of this <code>MediaFormat</code>
+     * @return <code>true</code> if this <code>MediaFormat</code> considers <code>fmtps</code> matching its
+     * format parameters; otherwise, <code>false</code>
      */
     boolean formatParametersMatch(Map<String, String> fmtps);
 
     /**
-     * Returns a <tt>Map</tt> containing advanced parameters specific to this particular <tt>MediaFormat</tt>.
+     * Returns a <code>Map</code> containing advanced parameters specific to this particular <code>MediaFormat</code>.
      * The parameters returned here are meant for use in SIP/SDP or XMPP session descriptions.
      *
-     * @return a <tt>Map</tt> containing advanced parameters specific to this particular <tt>MediaFormat</tt>
+     * @return a <code>Map</code> containing advanced parameters specific to this particular <code>MediaFormat</code>
      */
     Map<String, String> getAdvancedAttributes();
 
@@ -125,20 +125,20 @@ public interface MediaFormat
     void removeParameter(String parameterName);
 
     /**
-     * Returns a <tt>Map</tt> containing parameters specific to this particular <tt>MediaFormat</tt>.
+     * Returns a <code>Map</code> containing parameters specific to this particular <code>MediaFormat</code>.
      * The parameters returned here are meant for use in SIP/SDP or XMPP session descriptions
      * where they get transported through the "fmtp:" attribute or <parameter/> tag respectively.
      *
-     * @return a <tt>Map</tt> containing parameters specific to this particular <tt>MediaFormat</tt>
+     * @return a <code>Map</code> containing parameters specific to this particular <code>MediaFormat</code>
      * .
      */
     Map<String, String> getFormatParameters();
 
     /**
-     * Gets the RTP payload type (number) of this <tt>MediaFormat</tt> as it is known in RFC 3551
+     * Gets the RTP payload type (number) of this <code>MediaFormat</code> as it is known in RFC 3551
      * "RTP Profile for Audio and Video Conferences with Minimal Control".
      *
-     * @return the RTP payload type of this <tt>MediaFormat</tt> if it is known in RFC 3551 "RTP
+     * @return the RTP payload type of this <code>MediaFormat</code> if it is known in RFC 3551 "RTP
      * Profile for Audio and Video Conferences with Minimal Control"; otherwise,
      * {@link #RTP_PAYLOAD_TYPE_UNKNOWN}
      */
@@ -159,35 +159,35 @@ public interface MediaFormat
     Map<String, String> getAdditionalCodecSettings();
 
     /**
-     * Returns a <tt>String</tt> representation of this <tt>MediaFormat</tt> containing important
+     * Returns a <code>String</code> representation of this <code>MediaFormat</code> containing important
      * format attributes such as the encoding for example.
      *
-     * @return a <tt>String</tt> representation of this <tt>MediaFormat</tt>.
+     * @return a <code>String</code> representation of this <code>MediaFormat</code>.
      */
     @Override
     String toString();
 
     /**
-     * Determines whether this <tt>MediaFormat</tt> matches properties of a specific
-     * <tt>MediaFormat</tt>, such as <tt>mediaType</tt>, <tt>encoding</tt>, <tt>clockRate</tt> and
-     * <tt>channels</tt> for <tt>MediaFormat</tt>s with <tt>mediaType</tt> equal to {@link MediaType#AUDIO}.
+     * Determines whether this <code>MediaFormat</code> matches properties of a specific
+     * <code>MediaFormat</code>, such as <code>mediaType</code>, <code>encoding</code>, <code>clockRate</code> and
+     * <code>channels</code> for <code>MediaFormat</code>s with <code>mediaType</code> equal to {@link MediaType#AUDIO}.
      *
      * @param format the {@link MediaFormat} whose properties we'd like to examine
      */
     boolean matches(MediaFormat format);
 
     /**
-     * Determines whether this <tt>MediaFormat</tt> has specific values for its properties
-     * <tt>mediaType</tt>, <tt>encoding</tt>, <tt>clockRate</tt> and <tt>channels</tt> for
-     * <tt>MediaFormat</tt>s with <tt>mediaType</tt> equal to {@link MediaType#AUDIO}.
+     * Determines whether this <code>MediaFormat</code> has specific values for its properties
+     * <code>mediaType</code>, <code>encoding</code>, <code>clockRate</code> and <code>channels</code> for
+     * <code>MediaFormat</code>s with <code>mediaType</code> equal to {@link MediaType#AUDIO}.
      *
      * @param mediaType the type we expect {@link MediaFormat} to have
      * @param encoding the encoding we are looking for.
      * @param clockRate the clock rate that we'd like the format to have.
      * @param channels the number of channels that expect to find in this format
-     * @param formatParameters the format parameters expected to match these of the specified <tt>format</tt>
-     * @return <tt>true</tt> if the specified <tt>format</tt> has specific values for its properties
-     * <tt>mediaType</tt>, <tt>encoding</tt>, <tt>clockRate</tt> and <tt>channels</tt>; otherwise, <tt>false</tt>
+     * @param formatParameters the format parameters expected to match these of the specified <code>format</code>
+     * @return <code>true</code> if the specified <code>format</code> has specific values for its properties
+     * <code>mediaType</code>, <code>encoding</code>, <code>clockRate</code> and <code>channels</code>; otherwise, <code>false</code>
      */
     boolean matches(MediaType mediaType, String encoding, double clockRate, int channels,
             Map<String, String> formatParameters);

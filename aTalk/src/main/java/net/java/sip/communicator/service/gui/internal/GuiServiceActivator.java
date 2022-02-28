@@ -18,17 +18,17 @@ import org.osgi.framework.BundleContext;
 public class GuiServiceActivator implements BundleActivator
 {
     /**
-     * The <tt>BundleContext</tt> of the service.
+     * The <code>BundleContext</code> of the service.
      */
     private static BundleContext bundleContext;
 
     /**
-     * The <tt>ResourceManagementService</tt>, which gives access to application resources.
+     * The <code>ResourceManagementService</code>, which gives access to application resources.
      */
     private static ResourceManagementService resourceService;
 
     /**
-     * Returns the <tt>BundleContext</tt>.
+     * Returns the <code>BundleContext</code>.
      *
      * @return bundle context
      */
@@ -40,7 +40,7 @@ public class GuiServiceActivator implements BundleActivator
     /**
      * Initialize and start GUI service
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      */
     public void start(BundleContext bundleContext)
     {
@@ -50,7 +50,7 @@ public class GuiServiceActivator implements BundleActivator
     /**
      * Stops this bundle.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      */
     public void stop(BundleContext bundleContext)
     {
@@ -59,9 +59,9 @@ public class GuiServiceActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * Returns the <code>ResourceManagementService</code>, through which we will access all resources.
      *
-     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
     public static ResourceManagementService getResources()
     {

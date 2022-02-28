@@ -16,10 +16,10 @@ package org.atalk.service.version;
 public interface VersionService
 {
 	/**
-	 * Returns a <tt>Version</tt> object containing version details of the SIP Communicator
+	 * Returns a <code>Version</code> object containing version details of the SIP Communicator
 	 * version that we're currently running.
 	 *
-	 * @return a <tt>Version</tt> object containing version details of the SIP Communicator
+	 * @return a <code>Version</code> object containing version details of the SIP Communicator
 	 * version that we're currently running.
 	 */
 	Version getCurrentVersion();
@@ -29,11 +29,11 @@ public interface VersionService
 	String getCurrentVersionName();
 
 	/**
-	 * Returns a Version instance corresponding to the <tt>version</tt> string.
+	 * Returns a Version instance corresponding to the <code>version</code> string.
 	 *
 	 * @param version
-	 * 		a version String that we have obtained by calling a <tt>Version.toString()</tt> method.
-	 * @return the <tt>Version</tt> object corresponding to the <tt>version</tt> string.
+	 * 		a version String that we have obtained by calling a <code>Version.toString()</code> method.
+	 * @return the <code>Version</code> object corresponding to the <code>version</code> string.
 	 */
 	Version parseVersionString(String version);
 }

@@ -26,12 +26,12 @@ public class LegacyClickableToastCtrl
 	private static final long DISPLAY_DURATION = 10000;
 
 	/**
-	 * The toast <tt>View</tt> container.
+	 * The toast <code>View</code> container.
 	 */
 	protected View toastView;
 
 	/**
-	 * The <tt>TextView</tt> displaying message text.
+	 * The <code>TextView</code> displaying message text.
 	 */
 	private TextView messageView;
 
@@ -51,10 +51,10 @@ public class LegacyClickableToastCtrl
 	protected CharSequence toastMessage;
 
 	/**
-	 * Creates new instance of <tt>ClickableToastController</tt>.
+	 * Creates new instance of <code>ClickableToastController</code>.
 	 *
 	 * @param toastView
-	 *        the <tt>View</tt> that will be animated. Must contain <tt>R.id.toast_msg</tt> <tt>TextView</tt>.
+	 *        the <code>View</code> that will be animated. Must contain <code>R.id.toast_msg</code> <code>TextView</code>.
 	 * @param clickListener
 	 *        the click listener that will be notified when the toast is clicked.
 	 */
@@ -63,15 +63,15 @@ public class LegacyClickableToastCtrl
 	}
 
 	/**
-	 * Creates new instance of <tt>ClickableToastController</tt>.
+	 * Creates new instance of <code>ClickableToastController</code>.
 	 *
 	 * @param toastView
-	 *        the <tt>View</tt> that will be animated. Must contain <tt>R.id.toast_msg</tt> <tt>TextView</tt>.
+	 *        the <code>View</code> that will be animated. Must contain <code>R.id.toast_msg</code> <code>TextView</code>.
 	 * @param clickListener
 	 *        the click listener that will be notified when the toast is clicked.
 	 * @param toastButtonId
-	 *        the id of <tt>View</tt> contained in <tt>toastView
-	 * </tt> that will be used as a button.
+	 *        the id of <code>View</code> contained in <code>toastView
+	 * </code> that will be used as a button.
 	 */
 	public LegacyClickableToastCtrl(View toastView, View.OnClickListener clickListener, int toastButtonId) {
 		this.toastView = toastView;
@@ -92,7 +92,7 @@ public class LegacyClickableToastCtrl
 	 * Shows the toast.
 	 *
 	 * @param immediate
-	 *        if <tt>true</tt> there wil be no animation.
+	 *        if <code>true</code> there wil be no animation.
 	 * @param message
 	 *        the toast text to use.
 	 */
@@ -111,7 +111,7 @@ public class LegacyClickableToastCtrl
 	 * Hides the toast.
 	 *
 	 * @param immediate
-	 *        if <tt>true</tt> no animation will be used.
+	 *        if <code>true</code> no animation will be used.
 	 */
 	public void hideToast(boolean immediate)
 	{

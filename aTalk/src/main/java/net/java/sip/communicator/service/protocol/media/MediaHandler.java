@@ -30,7 +30,7 @@ import timber.log.Timber;
 import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
 /**
- * Implements media control code which allows state sharing among multiple <tt>CallPeerMediaHandler</tt>s.
+ * Implements media control code which allows state sharing among multiple <code>CallPeerMediaHandler</code>s.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -39,48 +39,48 @@ import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZ
 public class MediaHandler extends PropertyChangeNotifier
 {
     /**
-     * The <tt>AudioMediaStream</tt> which this instance uses to send and receive audio.
+     * The <code>AudioMediaStream</code> which this instance uses to send and receive audio.
      */
     private AudioMediaStream audioStream;
 
     /**
-     * The <tt>CsrcAudioLevelListener</tt> that this instance sets on its {@link #audioStream} if
+     * The <code>CsrcAudioLevelListener</code> that this instance sets on its {@link #audioStream} if
      * {@link #csrcAudioLevelListeners} is not empty.
      */
     private final CsrcAudioLevelListener csrcAudioLevelListener = MediaHandler.this::audioLevelsReceived;
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #csrcAudioLevelListener} and
+     * The <code>Object</code> which synchronizes the access to {@link #csrcAudioLevelListener} and
      * {@link #csrcAudioLevelListeners}.
      */
     private final Object csrcAudioLevelListenerLock = new Object();
 
     /**
-     * The list of <tt>CsrcAudioLevelListener</tt>s to be notified about audio level-related
+     * The list of <code>CsrcAudioLevelListener</code>s to be notified about audio level-related
      * information received from the remote peer(s).
      */
     private List<CsrcAudioLevelListener> csrcAudioLevelListeners = Collections.emptyList();
 
     /**
-     * The <tt>KeyFrameControl</tt> currently known to this <tt>MediaHandler</tt> and made
+     * The <code>KeyFrameControl</code> currently known to this <code>MediaHandler</code> and made
      * available by {@link #mVideoStream}.
      */
     private KeyFrameControl keyFrameControl;
 
     /**
-     * The <tt>KeyFrameRequester</tt> implemented by this <tt>MediaHandler</tt> and provided to {@link #keyFrameControl} .
+     * The <code>KeyFrameRequester</code> implemented by this <code>MediaHandler</code> and provided to {@link #keyFrameControl} .
      */
     private final KeyFrameControl.KeyFrameRequester keyFrameRequester = MediaHandler.this::requestKeyFrame;
 
     private final List<KeyFrameControl.KeyFrameRequester> keyFrameRequesters = new LinkedList<>();
 
     /**
-     * The last-known local SSRCs of the <tt>MediaStream</tt>s of this instance indexed by <tt>MediaType</tt> ordinal.
+     * The last-known local SSRCs of the <code>MediaStream</code>s of this instance indexed by <code>MediaType</code> ordinal.
      */
     private final long[] localSSRCs;
 
     /**
-     * The <tt>SimpleAudioLeveListener</tt> that this instance sets on its {@link #audioStream} if
+     * The <code>SimpleAudioLeveListener</code> that this instance sets on its {@link #audioStream} if
      * {@link #localUserAudioLevelListeners} is not empty in order to listen to changes in the
      * levels of the audio sent from the local user/peer to the remote peer(s).
      */
@@ -93,24 +93,24 @@ public class MediaHandler extends PropertyChangeNotifier
     };
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #localUserAudioLevelListener}
+     * The <code>Object</code> which synchronizes the access to {@link #localUserAudioLevelListener}
      * and {@link #localUserAudioLevelListeners}.
      */
     private final Object localUserAudioLevelListenerLock = new Object();
 
     /**
-     * The list of <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of
+     * The list of <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of
      * the audio sent from the local peer/user to the remote peer(s).
      */
     private List<SimpleAudioLevelListener> localUserAudioLevelListeners = Collections.emptyList();
 
     /**
-     * The last-known remote SSRCs of the <tt>MediaStream</tt>s of this instance indexed by <tt>MediaType</tt> ordinal.
+     * The last-known remote SSRCs of the <code>MediaStream</code>s of this instance indexed by <code>MediaType</code> ordinal.
      */
     private final long[] remoteSSRCs;
 
     /**
-     * The <tt>SrtpControl</tt>s of the <tt>MediaStream</tt>s of this instance.
+     * The <code>SrtpControl</code>s of the <code>MediaStream</code>s of this instance.
      */
     private final SrtpControls srtpControls = new SrtpControls();
 
@@ -151,7 +151,7 @@ public class MediaHandler extends PropertyChangeNotifier
     private final List<SrtpListener> srtpListeners = new LinkedList<>();
 
     /**
-     * The set of listeners in the application (<tt>Jitsi</tt>) which are to be notified of DTMF events.
+     * The set of listeners in the application (<code>Jitsi</code>) which are to be notified of DTMF events.
      */
     private final Set<DTMFListener> dtmfListeners = new HashSet<>();
 
@@ -161,7 +161,7 @@ public class MediaHandler extends PropertyChangeNotifier
     private final MyDTMFListener dtmfListener = new MyDTMFListener();
 
     /**
-     * The <tt>SimpleAudioLeveListener</tt> that this instance sets on its {@link #audioStream} if
+     * The <code>SimpleAudioLeveListener</code> that this instance sets on its {@link #audioStream} if
      * {@link #streamAudioLevelListeners} is not empty in order to listen to changes in the levels
      * of the audio received from the remote peer(s) to the local user/peer.
      */
@@ -175,28 +175,28 @@ public class MediaHandler extends PropertyChangeNotifier
     };
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #streamAudioLevelListener} and
+     * The <code>Object</code> which synchronizes the access to {@link #streamAudioLevelListener} and
      * {@link #streamAudioLevelListeners}.
      */
     private final Object streamAudioLevelListenerLock = new Object();
 
     /**
-     * The list of <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of
+     * The list of <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of
      * the audio sent from remote peer(s) to the local peer/user.
      */
     private List<SimpleAudioLevelListener> streamAudioLevelListeners = Collections.emptyList();
 
     /**
-     * The <tt>PropertyChangeListener</tt> which listens to changes in the values of the properties
-     * of the <tt>MediaStream</tt>s of this instance.
+     * The <code>PropertyChangeListener</code> which listens to changes in the values of the properties
+     * of the <code>MediaStream</code>s of this instance.
      */
     private final PropertyChangeListener streamPropertyChangeListener = new PropertyChangeListener()
     {
         /**
-         * Notifies this <tt>PropertyChangeListener</tt> that the value of a specific
+         * Notifies this <code>PropertyChangeListener</code> that the value of a specific
          * property of the notifier it is registered with has changed.
          *
-         * @param evt a <tt>PropertyChangeEvent</tt> which describes the source of the event, the name
+         * @param evt a <code>PropertyChangeEvent</code> which describes the source of the event, the name
          * of the property which has changed its value and the old and new values of the property
          * @see PropertyChangeListener#propertyChange(PropertyChangeEvent)
          */
@@ -228,7 +228,7 @@ public class MediaHandler extends PropertyChangeNotifier
     };
 
     /**
-     * The number of references to the <tt>MediaStream</tt>s of this instance returned by
+     * The number of references to the <code>MediaStream</code>s of this instance returned by
      * {@link #configureStream(CallPeerMediaHandler, MediaDevice, MediaFormat, MediaStreamTarget,
      * MediaDirection, List, MediaStream, boolean)} to {@link CallPeerMediaHandler}s as new instances.
      */
@@ -237,13 +237,13 @@ public class MediaHandler extends PropertyChangeNotifier
     private final VideoNotifierSupport videoNotifierSupport = new VideoNotifierSupport(this, true);
 
     /**
-     * The <tt>VideoMediaStream</tt> which this instance uses to send and receive video.
+     * The <code>VideoMediaStream</code> which this instance uses to send and receive video.
      */
     private VideoMediaStream mVideoStream;
 
     /**
-     * The <tt>VideoListener</tt> which listens to {@link #mVideoStream} for changes in the
-     * availability of visual <tt>Component</tt>s displaying remote video and re-fires them as
+     * The <code>VideoListener</code> which listens to {@link #mVideoStream} for changes in the
+     * availability of visual <code>Component</code>s displaying remote video and re-fires them as
      * originating from this instance.
      */
     private final VideoListener videoStreamVideoListener = new VideoListener()
@@ -282,12 +282,12 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a specific <tt>CsrcAudioLevelListener</tt> to the list of
-     * <tt>CsrcAudioLevelListener</tt>s to be notified about audio level-related information
+     * Adds a specific <code>CsrcAudioLevelListener</code> to the list of
+     * <code>CsrcAudioLevelListener</code>s to be notified about audio level-related information
      * received from the remote peer(s).
      *
-     * @param listener the <tt>CsrcAudioLevelListener</tt> to add to the list of
-     * <tt>CsrcAudioLevelListener</tt>s to be notified about audio level-related information
+     * @param listener the <code>CsrcAudioLevelListener</code> to add to the list of
+     * <code>CsrcAudioLevelListener</code>s to be notified about audio level-related information
      * received from the remote peer(s)
      */
     void addCsrcAudioLevelListener(CsrcAudioLevelListener listener)
@@ -329,12 +329,12 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a specific <tt>SimpleAudioLevelListener</tt> to the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the audio
+     * Adds a specific <code>SimpleAudioLevelListener</code> to the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the audio
      * sent from the local peer/user to the remote peer(s).
      *
-     * @param listener the <tt>SimpleAudioLevelListener</tt> to add to the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the
+     * @param listener the <code>SimpleAudioLevelListener</code> to add to the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the
      * audio sent from the local peer/user to the remote peer(s)
      */
     void addLocalUserAudioLevelListener(SimpleAudioLevelListener listener)
@@ -371,8 +371,8 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a <tt>DTMFListener</tt> which will be notified when DTMF events are received from the
-     * <tt>MediaHandler</tt> 's audio stream.
+     * Adds a <code>DTMFListener</code> which will be notified when DTMF events are received from the
+     * <code>MediaHandler</code> 's audio stream.
      *
      * @param listener the listener to add.
      */
@@ -383,8 +383,8 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a <tt>DTMFListener</tt> from the set of listeners to be notified for DTMF events
-     * from this <tt>MediaHandler</tt>'s audio steam.
+     * Removes a <code>DTMFListener</code> from the set of listeners to be notified for DTMF events
+     * from this <code>MediaHandler</code>'s audio steam.
      *
      * @param listener the listener to remove.
      */
@@ -394,12 +394,12 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a specific <tt>SimpleAudioLevelListener</tt> to the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the audio
+     * Adds a specific <code>SimpleAudioLevelListener</code> to the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the audio
      * sent from remote peer(s) to the local peer/user.
      *
-     * @param listener the <tt>SimpleAudioLevelListener</tt> to add to the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the
+     * @param listener the <code>SimpleAudioLevelListener</code> to add to the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the
      * audio sent from the remote peer(s) to the local peer/user
      */
     void addStreamAudioLevelListener(SimpleAudioLevelListener listener)
@@ -423,12 +423,12 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Registers a specific <tt>VideoListener</tt> with this instance so that it starts receiving
-     * notifications from it about changes in the availability of visual <tt>Component</tt>s
+     * Registers a specific <code>VideoListener</code> with this instance so that it starts receiving
+     * notifications from it about changes in the availability of visual <code>Component</code>s
      * displaying video.
      *
-     * @param listener the <tt>VideoListener</tt> to be registered with this instance and to start receiving
-     * notifications from it about changes in the availability of visual <tt>Component</tt>s
+     * @param listener the <code>VideoListener</code> to be registered with this instance and to start receiving
+     * notifications from it about changes in the availability of visual <code>Component</code>s
      * displaying video
      */
     void addVideoListener(VideoListener listener)
@@ -437,13 +437,13 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this instance that a <tt>SimpleAudioLevelListener</tt> has been invoked. Forwards
-     * the notification to a specific list of <tt>SimpleAudioLevelListener</tt>s.
+     * Notifies this instance that a <code>SimpleAudioLevelListener</code> has been invoked. Forwards
+     * the notification to a specific list of <code>SimpleAudioLevelListener</code>s.
      *
-     * @param lock the <tt>Object</tt> which is to be used to synchronize the access to
-     * <tt>listeners</tt>.
-     * @param listeners the list of <tt>SimpleAudioLevelListener</tt>s to forward the notification to
-     * @param level the value of the audio level to notify <tt>listeners</tt> about
+     * @param lock the <code>Object</code> which is to be used to synchronize the access to
+     * <code>listeners</code>.
+     * @param listeners the list of <code>SimpleAudioLevelListener</code>s to forward the notification to
+     * @param level the value of the audio level to notify <code>listeners</code> about
      */
     private void audioLevelChanged(Object lock, List<SimpleAudioLevelListener> listeners,
             int level)
@@ -483,10 +483,10 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Closes the <tt>MediaStream</tt> that this instance uses for a specific <tt>MediaType</tt>
+     * Closes the <code>MediaStream</code> that this instance uses for a specific <code>MediaType</code>
      * and prepares it for garbage collection.
      *
-     * @param mediaType the <tt>MediaType</tt> that we'd like to stop a stream for.
+     * @param mediaType the <code>MediaType</code> that we'd like to stop a stream for.
      */
     protected void closeStream(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType)
     {
@@ -523,21 +523,21 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Configures <tt>stream</tt> to use the specified <tt>device</tt>, <tt>format</tt>,
-     * <tt>target</tt>, <tt>direction</tt>, etc.
+     * Configures <code>stream</code> to use the specified <code>device</code>, <code>format</code>,
+     * <code>target</code>, <code>direction</code>, etc.
      *
-     * @param device the <tt>MediaDevice</tt> to be used by <tt>stream</tt> for capture and playback
-     * @param format the <tt>MediaFormat</tt> that we'd like the new stream to transmit in.
-     * @param target the <tt>MediaStreamTarget</tt> containing the RTP and RTCP address:port couples that
+     * @param device the <code>MediaDevice</code> to be used by <code>stream</code> for capture and playback
+     * @param format the <code>MediaFormat</code> that we'd like the new stream to transmit in.
+     * @param target the <code>MediaStreamTarget</code> containing the RTP and RTCP address:port couples that
      * the new stream would be sending packets to.
-     * @param direction the <tt>MediaDirection</tt> that we'd like the new stream to use (i.e. sendonly,
+     * @param direction the <code>MediaDirection</code> that we'd like the new stream to use (i.e. sendonly,
      * sendrecv, recvonly, or inactive).
-     * @param rtpExtensions the list of <tt>RTPExtension</tt>s that should be enabled for this stream.
-     * @param stream the <tt>MediaStream</tt> that we'd like to configure.
+     * @param rtpExtensions the list of <code>RTPExtension</code>s that should be enabled for this stream.
+     * @param stream the <code>MediaStream</code> that we'd like to configure.
      * @param masterStream whether the stream to be used as master if secured
-     * @return the <tt>MediaStream</tt> that we received as a parameter (for convenience reasons).
-     * @throws OperationFailedException if setting the <tt>MediaFormat</tt> or connecting to the specified
-     * <tt>MediaDevice</tt> fails for some reason.
+     * @return the <code>MediaStream</code> that we received as a parameter (for convenience reasons).
+     * @throws OperationFailedException if setting the <code>MediaFormat</code> or connecting to the specified
+     * <code>MediaDevice</code> fails for some reason.
      */
     protected MediaStream configureStream(CallPeerMediaHandler<?> callPeerMediaHandler,
             MediaDevice device, MediaFormat format, MediaStreamTarget target, MediaDirection direction,
@@ -605,21 +605,21 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this <tt>MediaHandler</tt> about a
-     * specific type of change in the availability of a specific visual <tt>Component</tt>
+     * Notifies the <code>VideoListener</code>s registered with this <code>MediaHandler</code> about a
+     * specific type of change in the availability of a specific visual <code>Component</code>
      * depicting video.
      *
-     * @param type the type of change as defined by <tt>VideoEvent</tt> in the availability of the
-     * specified visual <tt>Component</tt> depicting video
-     * @param visualComponent the visual <tt>Component</tt> depicting video which has been added or removed in this
-     * <tt>MediaHandler</tt>
+     * @param type the type of change as defined by <code>VideoEvent</code> in the availability of the
+     * specified visual <code>Component</code> depicting video
+     * @param visualComponent the visual <code>Component</code> depicting video which has been added or removed in this
+     * <code>MediaHandler</code>
      * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally
      * captured); {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a
      * remote peer is streaming it)
-     * @return <tt>true</tt> if this event and, more specifically, the visual <tt>Component</tt> it
+     * @return <code>true</code> if this event and, more specifically, the visual <code>Component</code> it
      * describes have been consumed and should be considered owned, referenced (which is
-     * important because <tt>Component</tt>s belong to a single <tt>Container</tt> at a
-     * time); otherwise, <tt>false</tt>
+     * important because <code>Component</code>s belong to a single <code>Container</code> at a
+     * time); otherwise, <code>false</code>
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin)
     {
@@ -627,11 +627,11 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this <tt>MediaHandler</tt> about a
-     * specific <tt>VideoEvent</tt>.
+     * Notifies the <code>VideoListener</code>s registered with this <code>MediaHandler</code> about a
+     * specific <code>VideoEvent</code>.
      *
-     * @param event the <tt>VideoEvent</tt> to fire to the <tt>VideoListener</tt>s registered with this
-     * <tt>MediaHandler</tt>
+     * @param event the <code>VideoEvent</code> to fire to the <code>VideoListener</code>s registered with this
+     * <code>MediaHandler</code>
      */
     protected void fireVideoEvent(VideoEvent event)
     {
@@ -641,9 +641,9 @@ public class MediaHandler extends PropertyChangeNotifier
     /**
      * Gets the SRTP control type used for a given media type.
      *
-     * @param mediaType the <tt>MediaType</tt> to get the SRTP control type for
+     * @param mediaType the <code>MediaType</code> to get the SRTP control type for
      * @return the SRTP control type (MIKEY, SDES, ZRTP) used for the given media type or
-     * <tt>null</tt> if SRTP is not enabled for the given media type
+     * <code>null</code> if SRTP is not enabled for the given media type
      */
     SrtpControl getEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType)
     {
@@ -667,9 +667,9 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>SrtpControl</tt>s of the <tt>MediaStream</tt>s of this instance.
+     * Gets the <code>SrtpControl</code>s of the <code>MediaStream</code>s of this instance.
      *
-     * @return the <tt>SrtpControl</tt>s of the <tt>MediaStream</tt>s of this instance
+     * @return the <code>SrtpControl</code>s of the <code>MediaStream</code>s of this instance
      */
     SrtpControls getSrtpControls(CallPeerMediaHandler<?> callPeerMediaHandler)
     {
@@ -684,13 +684,13 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>MediaStream</tt> of this instance which is of a specific <tt>MediaType</tt>. If
-     * this instance doesn't have such a <tt>MediaStream</tt>, returns <tt>null</tt>
+     * Gets the <code>MediaStream</code> of this instance which is of a specific <code>MediaType</code>. If
+     * this instance doesn't have such a <code>MediaStream</code>, returns <code>null</code>
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> to retrieve
-     * @return the <tt>MediaStream</tt> of this <tt>CallPeerMediaHandler</tt> which is of the
-     * specified <tt>mediaType</tt> if this instance has such a <tt>MediaStream</tt>;
-     * otherwise, <tt>null</tt>
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> to retrieve
+     * @return the <code>MediaStream</code> of this <code>CallPeerMediaHandler</code> which is of the
+     * specified <code>mediaType</code> if this instance has such a <code>MediaStream</code>;
+     * otherwise, <code>null</code>
      */
     MediaStream getStream(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType)
     {
@@ -705,21 +705,21 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Creates if necessary, and configures the stream that this <tt>MediaHandler</tt> is using for
-     * the <tt>MediaType</tt> matching the one of the <tt>MediaDevice</tt>.
+     * Creates if necessary, and configures the stream that this <code>MediaHandler</code> is using for
+     * the <code>MediaType</code> matching the one of the <code>MediaDevice</code>.
      *
-     * @param connector the <tt>MediaConnector</tt> that we'd like to bind the newly created stream to.
-     * @param device the <tt>MediaDevice</tt> that we'd like to attach the newly created
-     * <tt>MediaStream</tt> to.
-     * @param format the <tt>MediaFormat</tt> that we'd like the new <tt>MediaStream</tt> to be set to
+     * @param connector the <code>MediaConnector</code> that we'd like to bind the newly created stream to.
+     * @param device the <code>MediaDevice</code> that we'd like to attach the newly created
+     * <code>MediaStream</code> to.
+     * @param format the <code>MediaFormat</code> that we'd like the new <code>MediaStream</code> to be set to
      * transmit in.
-     * @param target the <tt>MediaStreamTarget</tt> containing the RTP and RTCP address:port couples that
+     * @param target the <code>MediaStreamTarget</code> containing the RTP and RTCP address:port couples that
      * the new stream would be sending packets to.
-     * @param direction the <tt>MediaDirection</tt> that we'd like the new stream to use (i.e. sendonly,
+     * @param direction the <code>MediaDirection</code> that we'd like the new stream to use (i.e. sendonly,
      * sendrecv, recvonly, or inactive).
-     * @param rtpExtensions the list of <tt>RTPExtension</tt>s that should be enabled for this stream.
+     * @param rtpExtensions the list of <code>RTPExtension</code>s that should be enabled for this stream.
      * @param masterStream whether the stream to be used as master if secured
-     * @return the newly created <tt>MediaStream</tt>.
+     * @return the newly created <code>MediaStream</code>.
      * @throws OperationFailedException if creating the stream fails for any reason (like for example accessing
      * the device or setting the format).
      */
@@ -766,8 +766,8 @@ public class MediaHandler extends PropertyChangeNotifier
     /**
      * Processes a request for a (video) key frame from a remote peer to the local peer.
      *
-     * @return <tt>true</tt> if the request for a (video) key frame has been honored by the local
-     * peer; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the request for a (video) key frame has been honored by the local
+     * peer; otherwise, <code>false</code>
      */
     boolean processKeyFrameRequest(CallPeerMediaHandler<?> callPeerMediaHandler)
     {
@@ -777,9 +777,9 @@ public class MediaHandler extends PropertyChangeNotifier
 
     /**
      * Registers all dynamic payload mappings and any payload type overrides that are known to this
-     * <tt>MediaHandler</tt> with the specified <tt>MediaStream</tt>.
+     * <code>MediaHandler</code> with the specified <code>MediaStream</code>.
      *
-     * @param stream the <tt>MediaStream</tt> that we'd like to register our dynamic payload mappings with.
+     * @param stream the <code>MediaStream</code> that we'd like to register our dynamic payload mappings with.
      */
     private void registerDynamicPTsWithStream(CallPeerMediaHandler<?> callPeerMediaHandler, MediaStream stream)
     {
@@ -811,11 +811,11 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Registers with the specified <tt>MediaStream</tt> all RTP extensions negotiated by this
-     * <tt>MediaHandler</tt>.
+     * Registers with the specified <code>MediaStream</code> all RTP extensions negotiated by this
+     * <code>MediaHandler</code>.
      *
-     * @param stream the <tt>MediaStream</tt> that we'd like to register our <tt>RTPExtension</tt>s with.
-     * @param rtpExtensions the list of <tt>RTPExtension</tt>s that should be enabled for <tt>stream</tt>.
+     * @param stream the <code>MediaStream</code> that we'd like to register our <code>RTPExtension</code>s with.
+     * @param rtpExtensions the list of <code>RTPExtension</code>s that should be enabled for <code>stream</code>.
      */
     private void registerRTPExtensionsWithStream(CallPeerMediaHandler<?> callPeerMediaHandler,
             List<RTPExtension> rtpExtensions, MediaStream stream)
@@ -829,12 +829,12 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a specific <tt>CsrcAudioLevelListener</tt> to the list of
-     * <tt>CsrcAudioLevelListener</tt>s to be notified about audio level-related information
+     * Removes a specific <code>CsrcAudioLevelListener</code> to the list of
+     * <code>CsrcAudioLevelListener</code>s to be notified about audio level-related information
      * received from the remote peer(s).
      *
-     * @param listener the <tt>CsrcAudioLevelListener</tt> to remove from the list of
-     * <tt>CsrcAudioLevelListener</tt>s to be notified about audio level-related information
+     * @param listener the <code>CsrcAudioLevelListener</code> to remove from the list of
+     * <code>CsrcAudioLevelListener</code>s to be notified about audio level-related information
      * received from the remote peer(s)
      */
     void removeCsrcAudioLevelListener(CsrcAudioLevelListener listener)
@@ -868,12 +868,12 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a specific <tt>SimpleAudioLevelListener</tt> to the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the audio
+     * Removes a specific <code>SimpleAudioLevelListener</code> to the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the audio
      * sent from the local peer/user to the remote peer(s).
      *
-     * @param listener the <tt>SimpleAudioLevelListener</tt> to remove from the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the
+     * @param listener the <code>SimpleAudioLevelListener</code> to remove from the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the
      * audio sent from the local peer/user to the remote peer(s)
      */
     void removeLocalUserAudioLevelListener(SimpleAudioLevelListener listener)
@@ -905,12 +905,12 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a specific <tt>SimpleAudioLevelListener</tt> to the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the audio
+     * Removes a specific <code>SimpleAudioLevelListener</code> to the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the audio
      * sent from remote peer(s) to the local peer/user.
      *
-     * @param listener the <tt>SimpleAudioLevelListener</tt> to remote from the list of
-     * <tt>SimpleAudioLevelListener</tt>s to be notified about changes in the level of the
+     * @param listener the <code>SimpleAudioLevelListener</code> to remote from the list of
+     * <code>SimpleAudioLevelListener</code>s to be notified about changes in the level of the
      * audio sent from the remote peer(s) to the local peer/user
      */
     void removeStreamAudioLevelListener(SimpleAudioLevelListener listener)
@@ -933,11 +933,11 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Unregisters a specific <tt>VideoListener</tt> from this instance so that it stops receiving
-     * notifications from it about changes in the availability of visual <tt>Component</tt>s displaying video.
+     * Unregisters a specific <code>VideoListener</code> from this instance so that it stops receiving
+     * notifications from it about changes in the availability of visual <code>Component</code>s displaying video.
      *
-     * @param listener the <tt>VideoListener</tt> to be unregistered from this instance and to stop receiving
-     * notifications from it about changes in the availability of visual <tt>Component</tt>s displaying video
+     * @param listener the <code>VideoListener</code> to be unregistered from this instance and to stop receiving
+     * notifications from it about changes in the availability of visual <code>Component</code>s displaying video
      */
     void removeVideoListener(VideoListener listener)
     {
@@ -945,10 +945,10 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Requests a key frame from the remote peer of the associated <tt>VideoMediaStream</tt> of this <tt>MediaHandler</tt>.
+     * Requests a key frame from the remote peer of the associated <code>VideoMediaStream</code> of this <code>MediaHandler</code>.
      *
-     * @return <tt>true</tt> if this <tt>MediaHandler</tt> has indeed requested a key frame from then
-     * remote peer of its associated <tt>VideoMediaStream</tt> in response to the call; otherwise, <tt>false</tt>
+     * @return <code>true</code> if this <code>MediaHandler</code> has indeed requested a key frame from then
+     * remote peer of its associated <code>VideoMediaStream</code> in response to the call; otherwise, <code>false</code>
      */
     protected boolean requestKeyFrame()
     {
@@ -966,9 +966,9 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>AudioMediaStream</tt> which this instance is to use to send and receive audio.
+     * Sets the <code>AudioMediaStream</code> which this instance is to use to send and receive audio.
      *
-     * @param audioStream the <tt>AudioMediaStream</tt> which this instance is to use to send and receive audio
+     * @param audioStream the <code>AudioMediaStream</code> which this instance is to use to send and receive audio
      */
     private void setAudioStream(AudioMediaStream audioStream)
     {
@@ -1028,11 +1028,11 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>KeyFrameControl</tt> currently known to this <tt>MediaHandler</tt> made
-     * available by a specific <tt>VideoMediaStream</tt>.
+     * Sets the <code>KeyFrameControl</code> currently known to this <code>MediaHandler</code> made
+     * available by a specific <code>VideoMediaStream</code>.
      *
-     * @param videoStream the <tt>VideoMediaStream</tt> the <tt>KeyFrameControl</tt> of which is to be set as
-     * the currently known to this <tt>MediaHandler</tt>
+     * @param videoStream the <code>VideoMediaStream</code> the <code>KeyFrameControl</code> of which is to be set as
+     * the currently known to this <code>MediaHandler</code>
      */
     private void setKeyFrameControlFromVideoStream(VideoMediaStream videoStream)
     {
@@ -1050,10 +1050,10 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the last-known local SSRC of the <tt>MediaStream</tt> of a specific <tt>MediaType</tt>.
+     * Sets the last-known local SSRC of the <code>MediaStream</code> of a specific <code>MediaType</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> to set the last-known local SSRC of
-     * @param localSSRC the last-known local SSRC of the <tt>MediaStream</tt> of the specified <tt>mediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> to set the last-known local SSRC of
+     * @param localSSRC the last-known local SSRC of the <code>MediaStream</code> of the specified <code>mediaType</code>
      */
     private void setLocalSSRC(MediaType mediaType, long localSSRC)
     {
@@ -1080,16 +1080,16 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>VolumeControl</tt> which is to control the volume (level) of the audio received in/by a
-     * specific <tt>AudioMediaStream</tt> and played back in order to achieve call-specific volume (level).
+     * Sets the <code>VolumeControl</code> which is to control the volume (level) of the audio received in/by a
+     * specific <code>AudioMediaStream</code> and played back in order to achieve call-specific volume (level).
      * <p>
      * <b>Note</b>: The implementation makes the volume (level) telephony conference-specific.
      * </p>
      *
-     * @param audioStream the <tt>AudioMediaStream</tt> on which a <tt>VolumeControl</tt> from the specified
-     * <tt>call</tt> is to be set
-     * @param call the <tt>MediaAwareCall</tt> which provides the <tt>VolumeControl</tt> to be set on the
-     * specified <tt>audioStream</tt>
+     * @param audioStream the <code>AudioMediaStream</code> on which a <code>VolumeControl</code> from the specified
+     * <code>call</code> is to be set
+     * @param call the <code>MediaAwareCall</code> which provides the <code>VolumeControl</code> to be set on the
+     * specified <code>audioStream</code>
      */
     private void setOutputVolumeControl(AudioMediaStream audioStream, MediaAwareCall<?, ?, ?> call)
     {
@@ -1109,10 +1109,10 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the last-known remote SSRC of the <tt>MediaStream</tt> of a specific <tt>MediaType</tt>.
+     * Sets the last-known remote SSRC of the <code>MediaStream</code> of a specific <code>MediaType</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> to set the last-known remote SSRC
-     * @param remoteSSRC the last-known remote SSRC of the <tt>MediaStream</tt> of the specified <tt>mediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> to set the last-known remote SSRC
+     * @param remoteSSRC the last-known remote SSRC of the <code>MediaStream</code> of the specified <code>mediaType</code>
      */
     private void setRemoteSSRC(MediaType mediaType, long remoteSSRC)
     {
@@ -1139,9 +1139,9 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>VideoMediaStream</tt> which this instance is to use to send and receive video.
+     * Sets the <code>VideoMediaStream</code> which this instance is to use to send and receive video.
      *
-     * @param videoStream the <tt>VideoMediaStream</tt> which this instance is to use to send and receive video
+     * @param videoStream the <code>VideoMediaStream</code> which this instance is to use to send and receive video
      */
     private void setVideoStream(VideoMediaStream videoStream)
     {
@@ -1221,9 +1221,9 @@ public class MediaHandler extends PropertyChangeNotifier
     }
 
     /**
-     * Implements a <tt>libjitsi</tt> <tt>DTMFListener</tt>, which receives events from an
-     * <tt>AudioMediaStream</tt>, translate them into <tt>Jitsi</tt> events (
-     * <tt>DTMFReceivedEvent</tt>s) and forward them to any registered listeners.
+     * Implements a <code>libjitsi</code> <code>DTMFListener</code>, which receives events from an
+     * <code>AudioMediaStream</code>, translate them into <code>Jitsi</code> events (
+     * <code>DTMFReceivedEvent</code>s) and forward them to any registered listeners.
      */
     private class MyDTMFListener implements org.atalk.service.neomedia.event.DTMFListener
     {
@@ -1248,7 +1248,7 @@ public class MediaHandler extends PropertyChangeNotifier
         }
 
         /**
-         * Sends an <tt>DTMFReceivedEvent</tt> to all listeners.
+         * Sends an <code>DTMFReceivedEvent</code> to all listeners.
          *
          * @param event the event to send.
          */

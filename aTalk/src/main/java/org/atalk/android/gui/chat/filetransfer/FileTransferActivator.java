@@ -29,7 +29,7 @@ import java.util.Date;
 import timber.log.Timber;
 
 /**
- * Android FileTransferActivator activator which registers <tt>ScFileTransferListener</tt>
+ * Android FileTransferActivator activator which registers <code>ScFileTransferListener</code>
  * for each protocol service provider specific to this system. It listens in to any incoming
  * fileTransferRequestReceived and generate a message to be display in the respective chatPanel
  * for user action.
@@ -158,9 +158,9 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
     }
 
     /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been received.
+     * Called when a new <code>IncomingFileTransferRequest</code> has been received.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the newly received request and other details.
+     * @param event the <code>FileTransferRequestEvent</code> containing the newly received request and other details.
      */
     @Override
     public void fileTransferRequestReceived(FileTransferRequestEvent event)
@@ -178,26 +178,26 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
     /**
      * Nothing to do here, because we already know when a file transfer is created.
      *
-     * @param event the <tt>FileTransferCreatedEvent</tt> that notified us
+     * @param event the <code>FileTransferCreatedEvent</code> that notified us
      */
     public void fileTransferCreated(FileTransferCreatedEvent event)
     {
     }
 
     /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been rejected. Nothing to do
+     * Called when a new <code>IncomingFileTransferRequest</code> has been rejected. Nothing to do
      * here, because we are the one who rejects the request.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
      */
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
     }
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who send it.
+     * Called when an <code>IncomingFileTransferRequest</code> has been canceled from the contact who send it.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
+     * @param event the <code>FileTransferRequestEvent</code> containing the request which was canceled.
      */
     public void fileTransferRequestCanceled(FileTransferRequestEvent event)
     {

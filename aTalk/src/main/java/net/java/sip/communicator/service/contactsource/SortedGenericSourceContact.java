@@ -18,8 +18,8 @@ package net.java.sip.communicator.service.contactsource;
 import java.util.*;
 
 /**
- * The <tt>ProtocolSourceContact</tt> provides a sorted
- * <tt>GenericSourceContact</tt>. <tt>SourceContact</tt>-s are sorted
+ * The <code>ProtocolSourceContact</code> provides a sorted
+ * <code>GenericSourceContact</code>. <code>SourceContact</code>-s are sorted
  * alphabetically and based on their presence status.
  */
 public class SortedGenericSourceContact
@@ -32,11 +32,11 @@ public class SortedGenericSourceContact
     private final ContactQuery parentQuery;
 
     /**
-     * Creates an instance of <tt>ProtocolSourceContact</tt>.
+     * Creates an instance of <code>ProtocolSourceContact</code>.
      *
-     * @param parentQuery the parent <tt>ContactQuery</tt>, which generated
+     * @param parentQuery the parent <code>ContactQuery</code>, which generated
      * this result contact
-     * @param cSourceService the parent <tt>ContactSourceService</tt>, of
+     * @param cSourceService the parent <code>ContactSourceService</code>, of
      * which this source contact is part
      * @param displayName the display name of the contact
      * @param contactDetails the list of contact details

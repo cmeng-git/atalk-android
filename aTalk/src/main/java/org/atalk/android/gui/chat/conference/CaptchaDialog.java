@@ -161,7 +161,7 @@ public class CaptchaDialog extends Dialog
     }
 
     /**
-     * Handles the <tt>ActionEvent</tt> triggered when one user clicks on the Submit button.
+     * Handles the <code>ActionEvent</code> triggered when one user clicks on the Submit button.
      * Reply with the following Captcha IQ
      * <iq type='set' from='robot@abuser.com/zombie' to='victim.com' xml:lang='en' id='z140r0s'>
      * <captcha xmlns='urn:xmpp:captcha'>

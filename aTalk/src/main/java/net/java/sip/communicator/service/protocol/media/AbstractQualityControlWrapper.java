@@ -16,7 +16,7 @@ import org.atalk.service.neomedia.VideoMediaStream;
  * A wrapper of media quality control.
  *
  * @param <T>
- *        <tt>MediaAwareCallPeer</tt>
+ *        <code>MediaAwareCallPeer</code>
  * @author Damian Minkov
  * @author Sebastien Vincent
  */

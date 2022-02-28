@@ -14,8 +14,8 @@ import org.atalk.service.osgi.OSGiActivity;
 import androidx.fragment.app.Fragment;
 
 /**
- * Tha <tt>CallContactActivity</tt> can be used to call contact. The phone number can be filled
- * from <tt>Intent</tt> data.
+ * Tha <code>CallContactActivity</code> can be used to call contact. The phone number can be filled
+ * from <code>Intent</code> data.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas

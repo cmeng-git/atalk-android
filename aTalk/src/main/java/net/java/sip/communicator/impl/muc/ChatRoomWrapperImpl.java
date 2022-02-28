@@ -38,7 +38,7 @@ import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**
- * The <tt>ChatRoomWrapper</tt> is the representation of the <tt>ChatRoom</tt> in the GUI. It
+ * The <code>ChatRoomWrapper</code> is the representation of the <code>ChatRoom</code> in the GUI. It
  * stores the information for the chat room even when the corresponding protocol provider is not connected.
  *
  * @author Yana Stamcheva
@@ -133,7 +133,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     };
 
     /**
-     * Creates a <tt>ChatRoomWrapper</tt> by specifying the protocol provider and the name of the chatRoom.
+     * Creates a <code>ChatRoomWrapper</code> by specifying the protocol provider and the name of the chatRoom.
      *
      * @param parentProvider the protocol provider to which the corresponding chat room belongs
      * @param chatRoomID the identifier of the corresponding chat room
@@ -157,7 +157,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
-     * Creates a <tt>ChatRoomWrapper</tt> by specifying the corresponding chat room.
+     * Creates a <code>ChatRoomWrapper</code> by specifying the corresponding chat room.
      *
      * @param parentProvider the protocol provider to which the corresponding chat room belongs
      * @param chatRoom the chat room to which this wrapper corresponds.
@@ -169,9 +169,9 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
-     * Returns the <tt>ChatRoom</tt> that this wrapper represents.
+     * Returns the <code>ChatRoom</code> that this wrapper represents.
      *
-     * @return the <tt>ChatRoom</tt> that this wrapper represents.
+     * @return the <code>ChatRoom</code> that this wrapper represents.
      */
     public ChatRoom getChatRoom()
     {
@@ -179,7 +179,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
-     * Sets the <tt>ChatRoom</tt> that this wrapper represents.
+     * Sets the <code>ChatRoom</code> that this wrapper represents.
      *
      * @param chatRoom the chat room
      */

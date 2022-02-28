@@ -22,8 +22,8 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * <tt>MessageReceivedEvent</tt>s indicate reception of an instant message. (for an ad-hoc chat
- * room; see <tt>AdHocChatRoom</tt>)
+ * <code>MessageReceivedEvent</code>s indicate reception of an instant message. (for an ad-hoc chat
+ * room; see <code>AdHocChatRoom</code>)
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
@@ -63,7 +63,7 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     private final Date timestamp;
 
     /**
-     * The received <tt>IMessage</tt>.
+     * The received <code>IMessage</code>.
      */
     private final IMessage message;
 
@@ -73,13 +73,13 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     private final int eventType;
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>AdHocChatRoom</tt> for which the message is received.
-     * @param from the <tt>Contact</tt> that has sent this message.
+     * @param source the <code>AdHocChatRoom</code> for which the message is received.
+     * @param from the <code>Contact</code> that has sent this message.
      * @param timestamp the exact date when the event occurred.
-     * @param message the received <tt>IMessage</tt>.
+     * @param message the received <code>IMessage</code>.
      * @param eventType the type of message event that this instance represents (one of the
      * XXX_MESSAGE_RECEIVED static fields).
      */
@@ -99,10 +99,10 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that has send the <tt>IMessage</tt> whose
+     * Returns a reference to the <code>Contact</code> that has send the <code>IMessage</code> whose
      * reception this event represents.
      *
-     * @return a reference to the <tt>Contact</tt> that has send the <tt>IMessage</tt> whose
+     * @return a reference to the <code>Contact</code> that has send the <code>IMessage</code> whose
      * reception this event represents.
      */
     public Contact getSourceChatRoomParticipant()
@@ -113,7 +113,7 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>IMessage</tt> that triggered this event.
+     * @return the <code>IMessage</code> that triggered this event.
      */
     public IMessage getMessage()
     {
@@ -131,9 +131,9 @@ public class AdHocChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>AdHocChatRoom</tt> that triggered this event.
+     * Returns the <code>AdHocChatRoom</code> that triggered this event.
      *
-     * @return the <tt>AdHocChatRoom</tt> that triggered this event.
+     * @return the <code>AdHocChatRoom</code> that triggered this event.
      */
     public AdHocChatRoom getSourceChatRoom()
     {

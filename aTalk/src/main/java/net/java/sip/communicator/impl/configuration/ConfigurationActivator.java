@@ -17,14 +17,14 @@ import org.osgi.framework.BundleContext;
 public class ConfigurationActivator implements BundleActivator
 {
     /**
-     * The <tt>BundleContext</tt> in which the configuration bundle has been started and has not been stopped yet.
+     * The <code>BundleContext</code> in which the configuration bundle has been started and has not been stopped yet.
      */
     public static BundleContext bundleContext;
 
     /**
      * Starts the configuration service
      *
-     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi framework.
+     * @param bundleContext the <code>BundleContext</code> as provided by the OSGi framework.
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)
@@ -45,9 +45,9 @@ public class ConfigurationActivator implements BundleActivator
      * Causes the configuration service to store the properties object and unregisters the
      * configuration service.
      *
-     * @param bundleContext <tt>BundleContext</tt>
+     * @param bundleContext <code>BundleContext</code>
      * @throws Exception if anything goes wrong while storing the properties managed by the
-     * <tt>ConfigurationService</tt> implementation provided by this bundle and while
+     * <code>ConfigurationService</code> implementation provided by this bundle and while
      * unregistering the service in question
      */
     public void stop(BundleContext bundleContext)
@@ -56,10 +56,10 @@ public class ConfigurationActivator implements BundleActivator
     }
 
     /**
-     * Gets the <tt>BundleContext</tt> in which the configuration bundle has been started and has
+     * Gets the <code>BundleContext</code> in which the configuration bundle has been started and has
      * not been stopped yet.
      *
-     * @return the <tt>BundleContext</tt> in which the configuration bundle has been started and
+     * @return the <code>BundleContext</code> in which the configuration bundle has been started and
      * has not been stopped yet
      */
     public static BundleContext getBundleContext()

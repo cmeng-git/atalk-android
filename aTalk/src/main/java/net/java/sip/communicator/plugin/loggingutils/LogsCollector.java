@@ -247,7 +247,7 @@ public class LogsCollector
      * Checks whether the crash log file is for our application.
      *
      * @param file the crash log file.
-     * @return <tt>true</tt> if error log is ours.
+     * @return <code>true</code> if error log is ours.
      */
     private static boolean isOurCrashLog(File file)
     {

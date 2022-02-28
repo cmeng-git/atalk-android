@@ -21,7 +21,7 @@ import timber.log.Timber;
 
 /**
  * A class that represents a Conference Information XML document as defined in RFC4575. It wraps
- * around a DOM <tt>Document</tt> providing convenience functions.
+ * around a DOM <code>Document</code> providing convenience functions.
  *
  * {@link "https://tools.ietf.org/html/rfc4575"}
  *
@@ -117,42 +117,42 @@ public class ConferenceInfoDocument
     public static final String DISPLAY_TEXT_ELEMENT = "display-text";
 
     /**
-     * The <tt>Document</tt> object that we wrap around.
+     * The <code>Document</code> object that we wrap around.
      */
     private Document document;
 
     /**
-     * The single <tt>conference-info</tt> element of <tt>document</tt>
+     * The single <code>conference-info</code> element of <code>document</code>
      */
     private Element conferenceInfo;
 
     /**
-     * The <tt>conference-description</tt> child element of <tt>conference-info</tt>.
+     * The <code>conference-description</code> child element of <code>conference-info</code>.
      */
     private Element conferenceDescription;
 
     /**
-     * The <tt>conference-state</tt> child element of <tt>conference-info</tt>.
+     * The <code>conference-state</code> child element of <code>conference-info</code>.
      */
     private Element conferenceState;
 
     /**
-     * The <tt>conference-state</tt> child element of <tt>conference-state</tt>.
+     * The <code>conference-state</code> child element of <code>conference-state</code>.
      */
     private Element userCount;
 
     /**
-     * The <tt>users</tt> child element of <tt>conference-info</tt>.
+     * The <code>users</code> child element of <code>conference-info</code>.
      */
     private Element users;
 
     /**
-     * A list of <tt>User</tt>s representing the children of <tt>users</tt>
+     * A list of <code>User</code>s representing the children of <code>users</code>
      */
     private final List<User> usersList = new LinkedList<>();
 
     /**
-     * Creates a new <tt>ConferenceInfoDocument</tt> instance.
+     * Creates a new <code>ConferenceInfoDocument</code> instance.
      *
      * @throws XMLException if a document failed to be created.
      */
@@ -183,8 +183,8 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Creates a new <tt>ConferenceInfoDocument</tt> instance and populates it by parsing the XML in
-     * <tt>xml</tt>
+     * Creates a new <code>ConferenceInfoDocument</code> instance and populates it by parsing the XML in
+     * <code>xml</code>
      *
      * @param xml the XML string to parse
      * @throws XMLException If parsing failed
@@ -239,8 +239,8 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Creates a new <tt>ConferenceInfoDocument</tt> instance that represents a copy of
-     * <tt>confInfo</tt>
+     * Creates a new <code>ConferenceInfoDocument</code> instance that represents a copy of
+     * <code>confInfo</code>
      *
      * @param confInfo the document to copy
      * @throws XMLException if a document failed to be created.
@@ -265,12 +265,12 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the value of the <tt>version</tt> attribute of the <tt>conference-info</tt> element,
-     * or -1 if there is no <tt>version</tt> attribute or if it's value couldn't be parsed as an
+     * Returns the value of the <code>version</code> attribute of the <code>conference-info</code> element,
+     * or -1 if there is no <code>version</code> attribute or if it's value couldn't be parsed as an
      * integer.
      *
-     * @return the value of the <tt>version</tt> attribute of the <tt>conference-info</tt> element,
-     * or -1 if there is no <tt>version</tt> attribute or if it's value couldn't be parsed
+     * @return the value of the <code>version</code> attribute of the <code>conference-info</code> element,
+     * or -1 if there is no <code>version</code> attribute or if it's value couldn't be parsed
      * as an integer.
      */
     public int getVersion()
@@ -289,9 +289,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the <tt>version</tt> attribute of the <tt>conference-info</tt> element.
+     * Sets the <code>version</code> attribute of the <code>conference-info</code> element.
      *
-     * @param version the value to set the <tt>version</tt> attribute of the <tt>conference-info</tt>
+     * @param version the value to set the <code>version</code> attribute of the <code>conference-info</code>
      * element to.
      */
     public void setVersion(int version)
@@ -300,9 +300,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Gets the value of the <tt>state</tt> attribute of the <tt>conference-info</tt> element.
+     * Gets the value of the <code>state</code> attribute of the <code>conference-info</code> element.
      *
-     * @return the value of the <tt>state</tt> attribute of the <tt>conference-info</tt> element.
+     * @return the value of the <code>state</code> attribute of the <code>conference-info</code> element.
      */
     public State getState()
     {
@@ -310,11 +310,11 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the value of the <tt>state</tt> attribute of the <tt>users</tt> child of the
-     * <tt>conference-info</tt> element.
+     * Returns the value of the <code>state</code> attribute of the <code>users</code> child of the
+     * <code>conference-info</code> element.
      *
-     * @return the value of the <tt>state</tt> attribute of the <tt>users</tt> child of the
-     * <tt>conference-info</tt> element.
+     * @return the value of the <code>state</code> attribute of the <code>users</code> child of the
+     * <code>conference-info</code> element.
      */
     public State getUsersState()
     {
@@ -322,7 +322,7 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the <tt>state</tt> attribute of the <tt>users</tt> chuld of the <tt>conference-info</tt>
+     * Sets the <code>state</code> attribute of the <code>users</code> chuld of the <code>conference-info</code>
      * element.
      *
      * @param state the state to set
@@ -333,9 +333,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the value of the <tt>state</tt> attribute of the <tt>conference-info</tt> element.
+     * Sets the value of the <code>state</code> attribute of the <code>conference-info</code> element.
      *
-     * @param state the value to set the <tt>state</tt> attribute of the <tt>conference-info</tt> element
+     * @param state the value to set the <code>state</code> attribute of the <code>conference-info</code> element
      * to.
      */
     public void setState(State state)
@@ -344,11 +344,11 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the value of the <tt>sid</tt> attribute of the <tt>conference-info</tt> element. This is
+     * Sets the value of the <code>sid</code> attribute of the <code>conference-info</code> element. This is
      * not part of RFC4575 and is here because we are temporarily using it in our XMPP
      * implementation. TODO: remote it when we define another way to handle the Jingle SID
      *
-     * @param sid the value to set the <tt>sid</tt> attribute of the <tt>conference-info</tt> element
+     * @param sid the value to set the <code>sid</code> attribute of the <code>conference-info</code> element
      * to.
      */
     public void setSid(String sid)
@@ -360,7 +360,7 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Gets the value of the <tt>sid</tt> attribute of the <tt>conference-info</tt> element. This is
+     * Gets the value of the <code>sid</code> attribute of the <code>conference-info</code> element. This is
      * not part of RFC4575 and is here because we are temporarily using it in our XMPP
      * implementation. TODO: remote it when we define another way to handle the Jingle SID
      */
@@ -370,9 +370,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the value of the <tt>entity</tt> attribute of the <tt>conference-info</tt> element.
+     * Sets the value of the <code>entity</code> attribute of the <code>conference-info</code> element.
      *
-     * @param entity the value to set the <tt>entity</tt> attribute of the <tt>conference-info</tt>
+     * @param entity the value to set the <code>entity</code> attribute of the <code>conference-info</code>
      * document to.
      */
     public void setEntity(String entity)
@@ -384,9 +384,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Gets the value of the <tt>entity</tt> attribute of the <tt>conference-info</tt> element.
+     * Gets the value of the <code>entity</code> attribute of the <code>conference-info</code> element.
      *
-     * @return The value of the <tt>entity</tt> attribute of the <tt>conference-info</tt> element.
+     * @return The value of the <code>entity</code> attribute of the <code>conference-info</code> element.
      */
     public String getEntity()
     {
@@ -394,10 +394,10 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the content of the <tt>user-count</tt> child element of the <tt>conference-state</tt>
-     * child element of <tt>conference-info</tt>
+     * Sets the content of the <code>user-count</code> child element of the <code>conference-state</code>
+     * child element of <code>conference-info</code>
      *
-     * @param count the value to set the content of <tt>user-count</tt> to
+     * @param count the value to set the content of <code>user-count</code> to
      */
     public void setUserCount(int count)
     {
@@ -418,13 +418,13 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the content of the <tt>user-count</tt> child of the <tt>conference-state</tt> child
-     * of <tt>conference-info</tt>, parsed as an integer, if they exist. Returns -1 if either there
-     * isn't a <tt>conference-state</tt> element, it doesn't have a <tt>user-count</tt> child, or
+     * Returns the content of the <code>user-count</code> child of the <code>conference-state</code> child
+     * of <code>conference-info</code>, parsed as an integer, if they exist. Returns -1 if either there
+     * isn't a <code>conference-state</code> element, it doesn't have a <code>user-count</code> child, or
      * parsing as integer failed.
      *
-     * @return the content of the <tt>user-count</tt> child of the <tt>conference-state</tt> child
-     * of <tt>conference-info</tt> element.
+     * @return the content of the <code>user-count</code> child of the <code>conference-state</code> child
+     * of <code>conference-info</code> element.
      */
     public int getUserCount()
     {
@@ -438,10 +438,10 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the XML representation of the <tt>conference-info</tt> tree, or <tt>null</tt> if an
+     * Returns the XML representation of the <code>conference-info</code> tree, or <code>null</code> if an
      * error occurs while trying to get it.
      *
-     * @return the XML representation of the <tt>conference-info</tt> tree, or <tt>null</tt> if an
+     * @return the XML representation of the <code>conference-info</code> tree, or <code>null</code> if an
      * error occurs while trying to get it.
      */
     public String toXml(String enclosingNamespace)
@@ -458,7 +458,7 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the XML representation of the document (from the <tt>conference-info</tt> element
+     * Returns the XML representation of the document (from the <code>conference-info</code> element
      * down), or an error string in case the XML cannot be generated for some reason.
      *
      * @return the XML representation of the document or an error string.
@@ -471,11 +471,11 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the list of <tt>User</tt> that represents the <tt>user</tt> children of the
-     * <tt>users</tt> child element of <tt>conference-info</tt>
+     * Returns the list of <code>User</code> that represents the <code>user</code> children of the
+     * <code>users</code> child element of <code>conference-info</code>
      *
-     * @return the list of <tt>User</tt> that represents the <tt>user</tt> children of the
-     * <tt>users</tt> child element of <tt>conference-info</tt>
+     * @return the list of <code>User</code> that represents the <code>user</code> children of the
+     * <code>users</code> child element of <code>conference-info</code>
      */
     public List<User> getUsers()
     {
@@ -483,12 +483,12 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Searches this document's <tt>User</tt>s and returns the one with <tt>entity</tt> attribute
-     * <tt>entity</tt>, or <tt>null</tt> if one wasn't found.
+     * Searches this document's <code>User</code>s and returns the one with <code>entity</code> attribute
+     * <code>entity</code>, or <code>null</code> if one wasn't found.
      *
-     * @param entity The value of the <tt>entity</tt> attribute to search for.
-     * @return the <tt>User</tt> of this document with <tt>entity</tt> attribute <tt>entity</tt>, or
-     * <tt>null</tt> if one wasn't found.
+     * @param entity The value of the <code>entity</code> attribute to search for.
+     * @return the <code>User</code> of this document with <code>entity</code> attribute <code>entity</code>, or
+     * <code>null</code> if one wasn't found.
      */
     public User getUser(String entity)
     {
@@ -502,10 +502,10 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Creates a new <tt>User</tt> instance, adds it to the document and returns it.
+     * Creates a new <code>User</code> instance, adds it to the document and returns it.
      *
-     * @param entity The value to use for the <tt>entity</tt> attribute of the new <tt>User</tt>.
-     * @return the newly created <tt>User</tt> instance.
+     * @param entity The value to use for the <code>entity</code> attribute of the new <code>User</code>.
+     * @return the newly created <code>User</code> instance.
      */
     public User addNewUser(String entity)
     {
@@ -520,9 +520,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Adds a copy of <tt>user</tt> to this <tt>ConferenceInfoDocument</tt>
+     * Adds a copy of <code>user</code> to this <code>ConferenceInfoDocument</code>
      *
-     * @param user the <tt>User</tt> to add a copy of
+     * @param user the <code>User</code> to add a copy of
      */
     public void addUser(User user)
     {
@@ -534,9 +534,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Removes a specific <tt>User</tt> (the one with entity <tt>entity</tt>) from the document.
+     * Removes a specific <code>User</code> (the one with entity <code>entity</code>) from the document.
      *
-     * @param entity the entity of the <tt>User</tt> to remove.
+     * @param entity the entity of the <code>User</code> to remove.
      */
     public void removeUser(String entity)
     {
@@ -548,9 +548,9 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the <tt>Document</tt> that this instance wraps around.
+     * Returns the <code>Document</code> that this instance wraps around.
      *
-     * @return the <tt>Document</tt> that this instance wraps around.
+     * @return the <code>Document</code> that this instance wraps around.
      */
     public Document getDocument()
     {
@@ -558,12 +558,12 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Returns the <tt>State</tt> corresponding to the <tt>state</tt> attribute of an
-     * <tt>Element</tt>. Default to <tt>State.FULL</tt> which is the RFC4575 default.
+     * Returns the <code>State</code> corresponding to the <code>state</code> attribute of an
+     * <code>Element</code>. Default to <code>State.FULL</code> which is the RFC4575 default.
      *
-     * @param element the <tt>Element</tt>
-     * @return the <tt>State</tt> corresponding to the <tt>state</tt> attribute of an
-     * <tt>Element</tt>.
+     * @param element the <code>Element</code>
+     * @return the <code>State</code> corresponding to the <code>state</code> attribute of an
+     * <code>Element</code>.
      */
     private State getState(Element element)
     {
@@ -572,11 +572,11 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the "state" attribute of <tt>element</tt> to <tt>state</tt>. If <tt>state</tt> is
-     * <tt>State.FULL</tt> removes the "state" attribute, because this is the default value.
+     * Sets the "state" attribute of <code>element</code> to <code>state</code>. If <code>state</code> is
+     * <code>State.FULL</code> removes the "state" attribute, because this is the default value.
      *
-     * @param element The <tt>Element</tt> for which to set the "state" attribute of.
-     * @param state the <tt>State</tt> which to set.
+     * @param element The <code>Element</code> for which to set the "state" attribute of.
+     * @param state the <code>State</code> which to set.
      */
     private void setState(Element element, State state)
     {
@@ -589,11 +589,11 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Sets the <tt>status</tt> child element of <tt>element</tt>. If <tt>statusString</tt> is
-     * <tt>null</tt>, the child element is removed if present.
+     * Sets the <code>status</code> child element of <code>element</code>. If <code>statusString</code> is
+     * <code>null</code>, the child element is removed if present.
      *
-     * @param element the <tt>Element</tt> for which to set the <tt>status</tt> child element.
-     * @param statusString the <tt>String</tt> to use for the text content of the <tt>status</tt> element
+     * @param element the <code>Element</code> for which to set the <code>status</code> child element.
+     * @param statusString the <code>String</code> to use for the text content of the <code>status</code> element
      */
     private void setStatus(Element element, String statusString)
     {
@@ -612,32 +612,32 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Represents the possible values for the <tt>state</tt> attribute (see RFC4575)
+     * Represents the possible values for the <code>state</code> attribute (see RFC4575)
      */
     public enum State
     {
         /**
-         * State <tt>full</tt>
+         * State <code>full</code>
          */
         FULL("full"),
 
         /**
-         * State <tt>partial</tt>
+         * State <code>partial</code>
          */
         PARTIAL("partial"),
 
         /**
-         * State <tt>deleted</tt>
+         * State <code>deleted</code>
          */
         DELETED("deleted");
 
         /**
-         * The name of this <tt>State</tt>
+         * The name of this <code>State</code>
          */
         private String name;
 
         /**
-         * Creates a <tt>State</tt> instance with the specified name.
+         * Creates a <code>State</code> instance with the specified name.
          *
          * @param name
          */
@@ -647,9 +647,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the name of this <tt>State</tt>
+         * Returns the name of this <code>State</code>
          *
-         * @return the name of this <tt>State</tt>
+         * @return the name of this <code>State</code>
          */
         @Override
         public String toString()
@@ -658,9 +658,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns a <tt>State</tt> value corresponding to the specified <tt>name</tt>
+         * Returns a <code>State</code> value corresponding to the specified <code>name</code>
          *
-         * @return a <tt>State</tt> value corresponding to the specified <tt>name</tt>
+         * @return a <code>State</code> value corresponding to the specified <code>name</code>
          */
         public static State parseString(String name)
         {
@@ -676,27 +676,27 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Wraps around an <tt>Element</tt> and represents a <tt>user</tt> element (child of the
-     * <tt>users</tt> element). See RFC4575.
+     * Wraps around an <code>Element</code> and represents a <code>user</code> element (child of the
+     * <code>users</code> element). See RFC4575.
      */
     public class User
     {
         /**
-         * The underlying <tt>Element</tt>.
+         * The underlying <code>Element</code>.
          */
         private Element userElement;
 
         /**
-         * The list of <tt>Endpoint</tt>s representing the <tt>endpoint</tt> children of this
-         * <tt>User</tt>'s element.
+         * The list of <code>Endpoint</code>s representing the <code>endpoint</code> children of this
+         * <code>User</code>'s element.
          */
         private List<Endpoint> endpointsList = new LinkedList<>();
 
         /**
-         * Creates a new <tt>User</tt> instance with the specified <tt>Element</tt> as its
+         * Creates a new <code>User</code> instance with the specified <code>Element</code> as its
          * underlying element.
          *
-         * @param user the <tt>Element</tt> to use
+         * @param user the <code>Element</code> to use
          */
         private User(Element user)
         {
@@ -709,9 +709,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>entity</tt> attribute of this <tt>User</tt>'s element to <tt>entity</tt>
+         * Sets the <code>entity</code> attribute of this <code>User</code>'s element to <code>entity</code>
          *
-         * @param entity the value to set for the <tt>entity</tt> attribute.
+         * @param entity the value to set for the <code>entity</code> attribute.
          */
         public void setEntity(String entity)
         {
@@ -722,9 +722,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the value of the <tt>entity</tt> attribute of this <tt>User</tt>'s element.
+         * Returns the value of the <code>entity</code> attribute of this <code>User</code>'s element.
          *
-         * @return the value of the <tt>entity</tt> attribute of this <tt>User</tt>'s element.
+         * @return the value of the <code>entity</code> attribute of this <code>User</code>'s element.
          */
         public String getEntity()
         {
@@ -732,9 +732,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>state</tt> attribute of this <tt>User</tt>'s element to <tt>state</tt>
+         * Sets the <code>state</code> attribute of this <code>User</code>'s element to <code>state</code>
          *
-         * @param state the value to use for the <tt>state</tt> attribute.
+         * @param state the value to use for the <code>state</code> attribute.
          */
         public void setState(State state)
         {
@@ -742,9 +742,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the value of the <tt>state</tt> attribute of this <tt>User</tt>'s element
+         * Returns the value of the <code>state</code> attribute of this <code>User</code>'s element
          *
-         * @return the value of the <tt>state</tt> attribute of this <tt>User</tt>'s element
+         * @return the value of the <code>state</code> attribute of this <code>User</code>'s element
          */
         public State getState()
         {
@@ -752,9 +752,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>display-text</tt> child element to this <tt>User</tt>'s element.
+         * Sets the <code>display-text</code> child element to this <code>User</code>'s element.
          *
-         * @param text the text content to use for the <tt>display-text</tt> element.
+         * @param text the text content to use for the <code>display-text</code> element.
          */
         public void setDisplayText(String text)
         {
@@ -773,11 +773,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the text content of the <tt>display-text</tt> child element of this <tt>User</tt>
-         * 's element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * Returns the text content of the <code>display-text</code> child element of this <code>User</code>
+         * 's element, if it has such a child. Returns <code>null</code> otherwise.
          *
-         * @return the text content of the <tt>display-text</tt> child element of this <tt>User</tt>
-         * 's element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * @return the text content of the <code>display-text</code> child element of this <code>User</code>
+         * 's element, if it has such a child. Returns <code>null</code> otherwise.
          */
         public String getDisplayText()
         {
@@ -789,11 +789,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the list of <tt>Endpoint</tt>s which represent the <tt>endpoint</tt> children of
-         * this <tt>User</tt>'s element.
+         * Returns the list of <code>Endpoint</code>s which represent the <code>endpoint</code> children of
+         * this <code>User</code>'s element.
          *
-         * @return the list of <tt>Endpoint</tt>s which represent the <tt>endpoint</tt> children of
-         * this <tt>User</tt>'s element.
+         * @return the list of <code>Endpoint</code>s which represent the <code>endpoint</code> children of
+         * this <code>User</code>'s element.
          */
         public List<Endpoint> getEndpoints()
         {
@@ -801,12 +801,12 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Searches this <tt>User</tt>'s associated <tt>Endpoint</tt>s and returns the one with
-         * <tt>entity</tt> attribute <tt>entity</tt>, or <tt>null</tt> if one wasn't found.
+         * Searches this <code>User</code>'s associated <code>Endpoint</code>s and returns the one with
+         * <code>entity</code> attribute <code>entity</code>, or <code>null</code> if one wasn't found.
          *
-         * @param entity The value of the <tt>entity</tt> attribute to search for.
-         * @return The <tt>Endpoint</tt> with <tt>entity</tt> attribute <tt>entity</tt>, or
-         * <tt>null</tt> if one wasn't found.
+         * @param entity The value of the <code>entity</code> attribute to search for.
+         * @return The <code>Endpoint</code> with <code>entity</code> attribute <code>entity</code>, or
+         * <code>null</code> if one wasn't found.
          */
         public Endpoint getEndpoint(String entity)
         {
@@ -820,10 +820,10 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Creates a new <tt>Endpoint</tt> instance, adds it to this <tt>User</tt> and returns it.
+         * Creates a new <code>Endpoint</code> instance, adds it to this <code>User</code> and returns it.
          *
-         * @param entity The value to use for the <tt>entity</tt> attribute of the new <tt>Endpoint</tt>.
-         * @return the newly created <tt>Endpoint</tt> instance.
+         * @param entity The value to use for the <code>entity</code> attribute of the new <code>Endpoint</code>.
+         * @return the newly created <code>Endpoint</code> instance.
          */
         public Endpoint addNewEndpoint(String entity)
         {
@@ -838,9 +838,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Adds a copy of <tt>endpoint</tt> to this <tt>User</tt>
+         * Adds a copy of <code>endpoint</code> to this <code>User</code>
          *
-         * @param endpoint the <tt>Endpoint</tt> to add a copy of
+         * @param endpoint the <code>Endpoint</code> to add a copy of
          */
         public void addEndpoint(Endpoint endpoint)
         {
@@ -852,10 +852,10 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Removes a specific <tt>Endpoint</tt> (the one with entity <tt>entity</tt>) from this
-         * <tt>User</tt>.
+         * Removes a specific <code>Endpoint</code> (the one with entity <code>entity</code>) from this
+         * <code>User</code>.
          *
-         * @param entity the <tt>entity</tt> of the <tt>Endpoint</tt> to remove
+         * @param entity the <code>entity</code> of the <code>Endpoint</code> to remove
          */
         public void removeEndpoint(String entity)
         {
@@ -868,26 +868,26 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Wraps around an <tt>Element</tt> and represents an <tt>endpoint</tt> element. See RFC4575.
+     * Wraps around an <code>Element</code> and represents an <code>endpoint</code> element. See RFC4575.
      */
     public class Endpoint
     {
         /**
-         * The underlying <tt>Element</tt>.
+         * The underlying <code>Element</code>.
          */
         private Element endpointElement;
 
         /**
-         * The list of <tt>Media</tt>s representing the <tt>media</tt> children elements of this
-         * <tt>Endpoint</tt>'s element.
+         * The list of <code>Media</code>s representing the <code>media</code> children elements of this
+         * <code>Endpoint</code>'s element.
          */
         private List<Media> mediasList = new LinkedList<>();
 
         /**
-         * Creates a new <tt>Endpoint</tt> instance with the specified <tt>Element</tt> as its
+         * Creates a new <code>Endpoint</code> instance with the specified <code>Element</code> as its
          * underlying element.
          *
-         * @param endpoint the <tt>Element</tt> to use
+         * @param endpoint the <code>Element</code> to use
          */
         private Endpoint(Element endpoint)
         {
@@ -900,9 +900,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>entity</tt> attribute of this <tt>Endpoint</tt>'s element to <tt>entity</tt>
+         * Sets the <code>entity</code> attribute of this <code>Endpoint</code>'s element to <code>entity</code>
          *
-         * @param entity the value to set for the <tt>entity</tt> attribute.
+         * @param entity the value to set for the <code>entity</code> attribute.
          */
         public void setEntity(String entity)
         {
@@ -913,9 +913,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the <tt>entity</tt> attribute of this <tt>Endpoint</tt>'s element.
+         * Returns the <code>entity</code> attribute of this <code>Endpoint</code>'s element.
          *
-         * @return the <tt>entity</tt> attribute of this <tt>Endpoint</tt>'s element.
+         * @return the <code>entity</code> attribute of this <code>Endpoint</code>'s element.
          */
         public String getEntity()
         {
@@ -923,9 +923,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>state</tt> attribute of this <tt>User</tt>'s element to <tt>state</tt>
+         * Sets the <code>state</code> attribute of this <code>User</code>'s element to <code>state</code>
          *
-         * @param state the value to use for the <tt>state</tt> attribute.
+         * @param state the value to use for the <code>state</code> attribute.
          */
         public void setState(State state)
         {
@@ -933,9 +933,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the value of the <tt>state</tt> attribute of this <tt>Endpoint</tt>'s element
+         * Returns the value of the <code>state</code> attribute of this <code>Endpoint</code>'s element
          *
-         * @return the value of the <tt>state</tt> attribute of this <tt>Endpoint</tt>'s element
+         * @return the value of the <code>state</code> attribute of this <code>Endpoint</code>'s element
          */
         public State getState()
         {
@@ -943,9 +943,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>status</tt> child element of this <tt>Endpoint</tt>'s element.
+         * Sets the <code>status</code> child element of this <code>Endpoint</code>'s element.
          *
-         * @param status the value to be used for the text content of the <tt>status</tt> element.
+         * @param status the value to be used for the text content of the <code>status</code> element.
          */
         public void setStatus(EndpointStatusType status)
         {
@@ -954,11 +954,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the <tt>EndpointStatusType</tt> corresponding to the <tt>status</tt> child of
-         * this <tt>Endpoint</tt> 's element, or <tt>null</tt>.
+         * Returns the <code>EndpointStatusType</code> corresponding to the <code>status</code> child of
+         * this <code>Endpoint</code> 's element, or <code>null</code>.
          *
-         * @return the <tt>EndpointStatusType</tt> corresponding to the <tt>status</tt> child of
-         * this <tt>Endpoint</tt> 's element, or <tt>null</tt>.
+         * @return the <code>EndpointStatusType</code> corresponding to the <code>status</code> child of
+         * this <code>Endpoint</code> 's element, or <code>null</code>.
          */
         public EndpointStatusType getStatus()
         {
@@ -968,11 +968,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the list of <tt>Media</tt>s which represent the <tt>media</tt> children of this
-         * <tt>Endpoint</tt>'s element.
+         * Returns the list of <code>Media</code>s which represent the <code>media</code> children of this
+         * <code>Endpoint</code>'s element.
          *
-         * @return the list of <tt>Media</tt>s which represent the <tt>media</tt> children of this
-         * <tt>Endpoint</tt>'s element.
+         * @return the list of <code>Media</code>s which represent the <code>media</code> children of this
+         * <code>Endpoint</code>'s element.
          */
         public List<Media> getMedias()
         {
@@ -980,11 +980,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Searches this <tt>Endpoint</tt>'s associated <tt>Media</tt>s and returns the one with
-         * <tt>id</tt> attribute <tt>id</tt>, or <tt>null</tt> if one wasn't found.
+         * Searches this <code>Endpoint</code>'s associated <code>Media</code>s and returns the one with
+         * <code>id</code> attribute <code>id</code>, or <code>null</code> if one wasn't found.
          *
-         * @param id The value of the <tt>id</tt> attribute to search for.
-         * @return The <tt>Media</tt>s with <tt>id</tt> attribute <tt>id</tt>, or <tt>null</tt> if
+         * @param id The value of the <code>id</code> attribute to search for.
+         * @return The <code>Media</code>s with <code>id</code> attribute <code>id</code>, or <code>null</code> if
          * one wasn't found.
          */
         public Media getMedia(String id)
@@ -999,11 +999,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Creates a new <tt>Media</tt> instance, adds it to this <tt>Endpoint</tt> and returns it.
+         * Creates a new <code>Media</code> instance, adds it to this <code>Endpoint</code> and returns it.
          *
-         * @param id The value to use for the <tt>id</tt> attribute of the new <tt>Media</tt>'s
+         * @param id The value to use for the <code>id</code> attribute of the new <code>Media</code>'s
          * element.
-         * @return the newly created <tt>Media</tt> instance.
+         * @return the newly created <code>Media</code> instance.
          */
         public Media addNewMedia(String id)
         {
@@ -1018,9 +1018,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Adds a copy of <tt>media</tt> to this <tt>Endpoint</tt>
+         * Adds a copy of <code>media</code> to this <code>Endpoint</code>
          *
-         * @param media the <tt>Media</tt> to add a copy of
+         * @param media the <code>Media</code> to add a copy of
          */
         public void addMedia(Media media)
         {
@@ -1031,10 +1031,10 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Removes a specific <tt>Media</tt> (the one with id <tt>id</tt>) from this
-         * <tt>Endpoint</tt>.
+         * Removes a specific <code>Media</code> (the one with id <code>id</code>) from this
+         * <code>Endpoint</code>.
          *
-         * @param id the <tt>id</tt> of the <tt>Media</tt> to remove.
+         * @param id the <code>id</code> of the <code>Media</code> to remove.
          */
         public void removeMedia(String id)
         {
@@ -1047,20 +1047,20 @@ public class ConferenceInfoDocument
     }
 
     /**
-     * Wraps around an <tt>Element</tt> and represents a <tt>media</tt> element. See RFC4575.
+     * Wraps around an <code>Element</code> and represents a <code>media</code> element. See RFC4575.
      */
     public class Media
     {
         /**
-         * The underlying <tt>Element</tt>.
+         * The underlying <code>Element</code>.
          */
         private Element mediaElement;
 
         /**
-         * Creates a new <tt>Media</tt> instance with the specified <tt>Element</tt> as its
+         * Creates a new <code>Media</code> instance with the specified <code>Element</code> as its
          * underlying element.
          *
-         * @param media the <tt>Element</tt> to use
+         * @param media the <code>Element</code> to use
          */
         private Media(Element media)
         {
@@ -1068,9 +1068,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>id</tt> attribute of this <tt>Media</tt>'s element to <tt>id</tt>
+         * Sets the <code>id</code> attribute of this <code>Media</code>'s element to <code>id</code>
          *
-         * @param id the value to set for the <tt>id</tt> attribute.
+         * @param id the value to set for the <code>id</code> attribute.
          */
         public void setId(String id)
         {
@@ -1081,9 +1081,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the <tt>id</tt> attribute of this <tt>Media</tt>'s element.
+         * Returns the <code>id</code> attribute of this <code>Media</code>'s element.
          *
-         * @return the <tt>id</tt> attribute of this <tt>Media</tt>'s element.
+         * @return the <code>id</code> attribute of this <code>Media</code>'s element.
          */
         public String getId()
         {
@@ -1091,9 +1091,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>src-id</tt> child element of this <tt>Media</tt>'s element.
+         * Sets the <code>src-id</code> child element of this <code>Media</code>'s element.
          *
-         * @param srcId the value to be used for the text content of the <tt>src-id</tt> element.
+         * @param srcId the value to be used for the text content of the <code>src-id</code> element.
          */
         public void setSrcId(String srcId)
         {
@@ -1112,11 +1112,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the text content of the <tt>src-id</tt> child element of this <tt>Media</tt>'s
-         * element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * Returns the text content of the <code>src-id</code> child element of this <code>Media</code>'s
+         * element, if it has such a child. Returns <code>null</code> otherwise.
          *
-         * @return the text content of the <tt>src-id</tt> child element of this <tt>Media</tt>'s
-         * element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * @return the text content of the <code>src-id</code> child element of this <code>Media</code>'s
+         * element, if it has such a child. Returns <code>null</code> otherwise.
          */
         public String getSrcId()
         {
@@ -1125,9 +1125,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>type</tt> child element of this <tt>Media</tt>'s element.
+         * Sets the <code>type</code> child element of this <code>Media</code>'s element.
          *
-         * @param type the value to be used for the text content of the <tt>type</tt> element.
+         * @param type the value to be used for the text content of the <code>type</code> element.
          */
         public void setType(String type)
         {
@@ -1146,11 +1146,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the text content of the <tt>type</tt> child element of this <tt>Media</tt>'s
-         * element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * Returns the text content of the <code>type</code> child element of this <code>Media</code>'s
+         * element, if it has such a child. Returns <code>null</code> otherwise.
          *
-         * @return the text content of the <tt>type</tt> child element of this <tt>Media</tt>'s
-         * element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * @return the text content of the <code>type</code> child element of this <code>Media</code>'s
+         * element, if it has such a child. Returns <code>null</code> otherwise.
          */
         public String getType()
         {
@@ -1159,9 +1159,9 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Sets the <tt>status</tt> child element of this <tt>Media</tt>'s element.
+         * Sets the <code>status</code> child element of this <code>Media</code>'s element.
          *
-         * @param status the value to be used for the text content of the <tt>status</tt> element.
+         * @param status the value to be used for the text content of the <code>status</code> element.
          */
         public void setStatus(String status)
         {
@@ -1169,11 +1169,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns the text content of the <tt>status</tt> child element of this <tt>Media</tt>'s
-         * element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * Returns the text content of the <code>status</code> child element of this <code>Media</code>'s
+         * element, if it has such a child. Returns <code>null</code> otherwise.
          *
-         * @return the text content of the <tt>status</tt> child element of this <tt>Media</tt>'s
-         * element, if it has such a child. Returns <tt>null</tt> otherwise.
+         * @return the text content of the <code>status</code> child element of this <code>Media</code>'s
+         * element, if it has such a child. Returns <code>null</code> otherwise.
          */
         public String getStatus()
         {
@@ -1240,7 +1240,7 @@ public class ConferenceInfoDocument
         private final String type;
 
         /**
-         * Creates a <tt>EndPointType</tt> instance with the specified name.
+         * Creates a <code>EndPointType</code> instance with the specified name.
          *
          * @param type type name.
          */
@@ -1261,11 +1261,11 @@ public class ConferenceInfoDocument
         }
 
         /**
-         * Returns a <tt>EndPointType</tt>.
+         * Returns a <code>EndPointType</code>.
          *
-         * @param typeStr the <tt>String</tt> that we'd like to parse.
+         * @param typeStr the <code>String</code> that we'd like to parse.
          * @return an EndPointType.
-         * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
+         * @throws IllegalArgumentException in case <code>typeStr</code> is not a valid <code>EndPointType</code>.
          */
         public static EndpointStatusType parseString(String typeStr)
                 throws IllegalArgumentException

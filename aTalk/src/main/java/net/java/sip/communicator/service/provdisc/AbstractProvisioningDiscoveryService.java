@@ -29,7 +29,7 @@ public abstract class AbstractProvisioningDiscoveryService
     implements ProvisioningDiscoveryService
 {
     /**
-     * List of <tt>ProvisioningListener</tt> that will be notified when
+     * List of <code>ProvisioningListener</code> that will be notified when
      * a provisioning URL is retrieved.
      */
     private List<DiscoveryListener> listeners =
@@ -46,7 +46,7 @@ public abstract class AbstractProvisioningDiscoveryService
      * Launch a discovery for a provisioning URL.
      *
      * This method is asynchronous, the response will be notified to any
-     * <tt>ProvisioningListener</tt> registered.
+     * <code>ProvisioningListener</code> registered.
      */
     public abstract void startDiscovery();
 
@@ -60,9 +60,9 @@ public abstract class AbstractProvisioningDiscoveryService
 
     /**
      * Add a listener that will be notified when the
-     * <tt>discoverProvisioningURL</tt> has finished.
+     * <code>discoverProvisioningURL</code> has finished.
      *
-     * @param listener <tt>ProvisioningListener</tt> to add
+     * @param listener <code>ProvisioningListener</code> to add
      */
     public void addDiscoveryListener(DiscoveryListener listener)
     {
@@ -74,9 +74,9 @@ public abstract class AbstractProvisioningDiscoveryService
 
     /**
      * Add a listener that will be notified when the
-     * <tt>discoverProvisioningURL</tt> has finished.
+     * <code>discoverProvisioningURL</code> has finished.
      *
-     * @param listener <tt>ProvisioningListener</tt> to add
+     * @param listener <code>ProvisioningListener</code> to add
      */
     public void removeDiscoveryListener(DiscoveryListener listener)
     {
@@ -87,9 +87,9 @@ public abstract class AbstractProvisioningDiscoveryService
     }
 
     /**
-     * Notify all listeners about a <tt>DiscoveryEvent</tt>.
+     * Notify all listeners about a <code>DiscoveryEvent</code>.
      *
-     * @param event <tt>DiscoveryEvent</tt> that contains provisioning URL
+     * @param event <code>DiscoveryEvent</code> that contains provisioning URL
      */
     public void fireDiscoveryEvent(DiscoveryEvent event)
     {

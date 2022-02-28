@@ -21,7 +21,7 @@ import org.atalk.service.osgi.OSGiActivity;
 import java.util.ArrayList;
 
 /**
- * Activity that lists video <tt>MediaCodec</tt>s available in the system.
+ * Activity that lists video <code>MediaCodec</code>s available in the system.
  *
  * Meaning of the colors:</br><br/>
  * * blue - codec will be used in call<br/>

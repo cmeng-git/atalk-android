@@ -24,7 +24,7 @@ import org.json.JSONException;
 import java.util.*;
 
 /**
- * An implementation of the <tt>ChatSession</tt> interface that represents a user-to-user chat session.
+ * An implementation of the <code>ChatSession</code> interface that represents a user-to-user chat session.
  *
  * @author Yana Stamcheva
  * @author Lubomir Marinov
@@ -48,7 +48,7 @@ public class MetaContactChatSession extends ChatSession
     private final ChatPanel sessionRenderer;
 
     /**
-     * Creates an instance of <tt>MetaContactChatSession</tt> by specifying the
+     * Creates an instance of <code>MetaContactChatSession</code> by specifying the
      * renderer, which gives the connection with the UI, the meta contact
      * corresponding to the session and the protocol contact to be used as transport.
      *
@@ -77,7 +77,7 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Returns the entityBareJid of the <tt>MetaContact</tt>
+     * Returns the entityBareJid of the <code>MetaContact</code>
      *
      * @return the entityBareJid of this chat
      */
@@ -262,10 +262,10 @@ public class MetaContactChatSession extends ChatSession
     /**
      * Initializes all chat transports for this chat session.
      *
-     * @param protocolContact the <tt>Contact</tt> which is to be selected into this instance as the current
-     * i.e. its <tt>ChatTransport</tt> is to be selected as <tt>currentChatTransport</tt>
-     * @param contactResource the <tt>ContactResource</tt>, which is to be selected into this instance
-     * as the current <tt>ChatTransport</tt> if indicated
+     * @param protocolContact the <code>Contact</code> which is to be selected into this instance as the current
+     * i.e. its <code>ChatTransport</code> is to be selected as <code>currentChatTransport</code>
+     * @param contactResource the <code>ContactResource</code>, which is to be selected into this instance
+     * as the current <code>ChatTransport</code> if indicated
      */
     private void initChatTransports(Contact protocolContact, ContactResource contactResource)
     {
@@ -340,11 +340,11 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Implements <tt>MetaContactListListener.metaContactRenamed</tt> method.
+     * Implements <code>MetaContactListListener.metaContactRenamed</code> method.
      * When a meta contact is renamed, updates all related labels in this chat panel.
      * When a meta contact is renamed, updates all related labels in this chat panel.
      *
-     * @param evt the <tt>MetaContactRenamedEvent</tt> that notified us
+     * @param evt the <code>MetaContactRenamedEvent</code> that notified us
      */
     public void metaContactRenamed(MetaContactRenamedEvent evt)
     {
@@ -357,7 +357,7 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Implements <tt>MetaContactListListener.protoContactAdded</tt> method.
+     * Implements <code>MetaContactListListener.protoContactAdded</code> method.
      * When a proto contact is added, updates the "send via" selector box.
      */
     public void protoContactAdded(ProtoContactEvent evt)
@@ -368,10 +368,10 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Implements <tt>MetaContactListListener.protoContactMoved</tt> method.
+     * Implements <code>MetaContactListListener.protoContactMoved</code> method.
      * When a proto contact is moved, updates the "send via" selector box.
      *
-     * @param evt the <tt>ProtoContactEvent</tt> that contains information about
+     * @param evt the <code>ProtoContactEvent</code> that contains information about
      * the old and the new parent of the contact
      */
     public void protoContactMoved(ProtoContactEvent evt)
@@ -385,7 +385,7 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Implements <tt>MetaContactListListener.protoContactRemoved</tt> method.
+     * Implements <code>MetaContactListListener.protoContactRemoved</code> method.
      * When a proto contact is removed, updates the "send via" selector box.
      */
     public void protoContactRemoved(ProtoContactEvent evt)
@@ -407,10 +407,10 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Returns the <tt>ChatContact</tt> corresponding to the given <tt>MetaContact</tt>.
+     * Returns the <code>ChatContact</code> corresponding to the given <code>MetaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt> to search for
-     * @return the <tt>ChatContact</tt> corresponding to the given <tt>MetaContact</tt>.
+     * @param metaContact the <code>MetaContact</code> to search for
+     * @return the <code>ChatContact</code> corresponding to the given <code>MetaContact</code>.
      */
     private ChatContact<?> findChatContactByMetaContact(MetaContact metaContact)
     {
@@ -449,10 +449,10 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Returns the <tt>ChatSessionRenderer</tt> that provides the connection between
+     * Returns the <code>ChatSessionRenderer</code> that provides the connection between
      * this chat session and its UI.
      *
-     * @return The <tt>ChatSessionRenderer</tt>.
+     * @return The <code>ChatSessionRenderer</code>.
      */
     @Override
     public ChatPanel getChatSessionRenderer()
@@ -512,7 +512,7 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Implements the <tt>ChatPanel.getChatStatusIcon</tt> method.
+     * Implements the <code>ChatPanel.getChatStatusIcon</code> method.
      *
      * @return the status icon corresponding to this chat room
      */
@@ -564,9 +564,9 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Adds all chat transports for the given <tt>contact</tt>.
+     * Adds all chat transports for the given <code>contact</code>.
      *
-     * @param contact the <tt>Contact</tt>, which transports to add
+     * @param contact the <code>Contact</code>, which transports to add
      * @param resourceName the resource to be pre-selected
      */
     private void addChatTransports(Contact contact, String resourceName, boolean isSelectedContact)
@@ -631,9 +631,9 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Removes the given <tt>ChatTransport</tt>.
+     * Removes the given <code>ChatTransport</code>.
      *
-     * @param chatTransport the <tt>ChatTransport</tt>.
+     * @param chatTransport the <code>ChatTransport</code>.
      */
     private void removeChatTransport(ChatTransport chatTransport)
     {
@@ -647,9 +647,9 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Removes the given <tt>ChatTransport</tt>.
+     * Removes the given <code>ChatTransport</code>.
      *
-     * @param contact the <tt>ChatTransport</tt>.
+     * @param contact the <code>ChatTransport</code>.
      */
     private void removeChatTransports(Contact contact)
     {
@@ -688,9 +688,9 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Called when a new <tt>ContactResource</tt> has been added to the list of available <tt>Contact</tt> resources.
+     * Called when a new <code>ContactResource</code> has been added to the list of available <code>Contact</code> resources.
      *
-     * @param event the <tt>ContactResourceEvent</tt> that notified us
+     * @param event the <code>ContactResourceEvent</code> that notified us
      */
     public void contactResourceAdded(ContactResourceEvent event)
     {
@@ -701,9 +701,9 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Called when a <tt>ContactResource</tt> has been removed to the list of available <tt>Contact</tt> resources.
+     * Called when a <code>ContactResource</code> has been removed to the list of available <code>Contact</code> resources.
      *
-     * @param event the <tt>ContactResourceEvent</tt> that notified us
+     * @param event the <code>ContactResourceEvent</code> that notified us
      */
     public void contactResourceRemoved(ContactResourceEvent event)
     {
@@ -714,9 +714,9 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Called when a <tt>ContactResource</tt> in the list of available <tt>Contact</tt> resources has been modified.
+     * Called when a <code>ContactResource</code> in the list of available <code>Contact</code> resources has been modified.
      *
-     * @param event the <tt>ContactResourceEvent</tt> that notified us
+     * @param event the <code>ContactResourceEvent</code> that notified us
      */
     public void contactResourceModified(ContactResourceEvent event)
     {
@@ -731,10 +731,10 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Finds the <tt>ChatTransport</tt> corresponding to the given contact <tt>resource</tt>.
+     * Finds the <code>ChatTransport</code> corresponding to the given contact <code>resource</code>.
      *
-     * @param resource the <tt>ContactResource</tt>, which corresponding transport we're looking for
-     * @return the <tt>ChatTransport</tt> corresponding to the given contact <tt>resource</tt>
+     * @param resource the <code>ContactResource</code>, which corresponding transport we're looking for
+     * @return the <code>ChatTransport</code> corresponding to the given contact <code>resource</code>
      */
     private ChatTransport findChatTransportForResource(ContactResource resource)
     {

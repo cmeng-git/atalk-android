@@ -17,10 +17,10 @@ import java.util.*;
 import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
 
 /**
- * The <tt>InteractiveHistoryReaderImpl</tt> is an implementation of the
- * <tt>InteractiveHistoryReader</tt> interface. It allows to search in the history in an
+ * The <code>InteractiveHistoryReaderImpl</code> is an implementation of the
+ * <code>InteractiveHistoryReader</code> interface. It allows to search in the history in an
  * interactive way, i.e. be able to cancel the search at any time and track the results through a
- * <tt>HistoryQueryListener</tt>.
+ * <code>HistoryQueryListener</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -28,16 +28,16 @@ import static net.java.sip.communicator.service.history.HistoryService.DATE_FORM
 public class InteractiveHistoryReaderImpl implements InteractiveHistoryReader
 {
 	/**
-	 * The <tt>HistoryImpl</tt> where this reader is registered.
+	 * The <code>HistoryImpl</code> where this reader is registered.
 	 */
 	private final HistoryImpl history;
 
 	/**
-	 * Creates an instance of <tt>InteractiveHistoryReaderImpl</tt> by specifying the
-	 * corresponding <tt>history</tt> implementation.
+	 * Creates an instance of <code>InteractiveHistoryReaderImpl</code> by specifying the
+	 * corresponding <code>history</code> implementation.
 	 *
 	 * @param history
-	 * 		the corresponding <tt>HistoryImpl</tt> to read from
+	 * 		the corresponding <code>HistoryImpl</code> to read from
 	 */
 	public InteractiveHistoryReaderImpl(HistoryImpl history)
 	{
@@ -45,7 +45,7 @@ public class InteractiveHistoryReaderImpl implements InteractiveHistoryReader
 	}
 
 	/**
-	 * Searches the history for all records containing the <tt>keyword</tt>.
+	 * Searches the history for all records containing the <code>keyword</code>.
 	 *
 	 * @param keyword
 	 * 		the keyword to search for
@@ -61,7 +61,7 @@ public class InteractiveHistoryReaderImpl implements InteractiveHistoryReader
 	}
 
 	/**
-	 * Searches the history for all records containing all <tt>keywords</tt>.
+	 * Searches the history for all records containing all <code>keywords</code>.
 	 *
 	 * @param keywords
 	 * 		array of keywords we search for
@@ -91,7 +91,7 @@ public class InteractiveHistoryReaderImpl implements InteractiveHistoryReader
 	 * 		indicates if the search should be case sensitive
 	 * @param resultCount
 	 * 		the desired number of results
-	 * @return the <tt>HistoryQuery</tt> that could be used to track the results or to cancel the
+	 * @return the <code>HistoryQuery</code> that could be used to track the results or to cancel the
 	 * search
 	 */
 	private HistoryQuery find(final Date startDate, final Date endDate, final String[] keywords,

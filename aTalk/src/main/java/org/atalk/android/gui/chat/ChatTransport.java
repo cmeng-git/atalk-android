@@ -18,7 +18,7 @@ import org.jxmpp.jid.EntityBareJid;
 import java.io.File;
 
 /**
- * The <tt>ChatTransport</tt> is an abstraction of the transport method used when sending messages,
+ * The <code>ChatTransport</code> is an abstraction of the transport method used when sending messages,
  * making calls, etc. through the chat fragment window.
  * A interface class to which the metaContactChat, conference chats are being implemented.
  *
@@ -44,7 +44,7 @@ public interface ChatTransport
     boolean allowsInstantMessage();
 
     /**
-     * Returns <tt>true</tt> if this chat transport supports message corrections and false otherwise.
+     * Returns <code>true</code> if this chat transport supports message corrections and false otherwise.
      *
      * @return {@code true} if this chat transport supports message corrections and false otherwise.
      */
@@ -105,7 +105,7 @@ public interface ChatTransport
     /**
      * Indicates if the display name should only show the resource.
      *
-     * @return <tt>true</tt> if the display name shows only the resource, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the display name shows only the resource, <code>false</code> - otherwise
      */
     boolean isDisplayResourceOnly();
 
@@ -117,9 +117,9 @@ public interface ChatTransport
     PresenceStatus getStatus();
 
     /**
-     * Returns the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     * Returns the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      *
-     * @return the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     * @return the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      */
     ProtocolProviderService getProtocolProvider();
 
@@ -135,7 +135,7 @@ public interface ChatTransport
             throws Exception;
 
     /**
-     * Sends <tt>message</tt> as a message correction through this transport,
+     * Sends <code>message</code> as a message correction through this transport,
      * specifying the mime type (html or plain text) and the id of the
      *
      * @param message The message to send.
@@ -148,14 +148,14 @@ public interface ChatTransport
      * Determines whether this chat transport supports the supplied content type
      *
      * @param mimeType the mime type we want to check
-     * @return <tt>true</tt> if the chat transport supports it and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the chat transport supports it and <code>false</code> otherwise.
      */
     boolean isContentTypeSupported(int mimeType);
 
     /**
      * Whether a dialog need to be opened so the user can enter the destination number.
      *
-     * @return <tt>true</tt> if dialog needs to be open.
+     * @return <code>true</code> if dialog needs to be open.
      */
     boolean askForSMSNumber();
 
@@ -196,7 +196,7 @@ public interface ChatTransport
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
      *
-     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if the send doesn't succeed
      */
     Object sendSticker(File file, int chatType, FileSendConversation xferCon)
@@ -209,7 +209,7 @@ public interface ChatTransport
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
      *
-     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if the send doesn't succeed
      */
     Object sendFile(File file, int chatType, FileSendConversation xferCon)
@@ -238,7 +238,7 @@ public interface ChatTransport
     void inviteChatContact(EntityBareJid contactAddress, String reason);
 
     /**
-     * Returns the parent session of this chat transport. A <tt>ChatSession</tt>
+     * Returns the parent session of this chat transport. A <code>ChatSession</code>
      * could contain more than one transports.
      *
      * @return the parent session of this chat transport

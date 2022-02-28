@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * A <tt>JingleNodesDescriptor</tt> stores information necessary to create a JingleNodes tracker or
+ * A <code>JingleNodesDescriptor</code> stores information necessary to create a JingleNodes tracker or
  * relay candidate harvester that we could use with ICE4J. Descriptors are normally initialized by
  * protocol wizards. They are then used to convert the data into a {@link String} form suitable for
  * storage in an accounts properties Map.
@@ -57,7 +57,7 @@ public class JingleNodeDescriptor implements Serializable
     private boolean relaySupported;
 
     /**
-     * Creates an instance of <tt>JingleNodes</tt> by specifying all parameters.
+     * Creates an instance of <code>JingleNodes</code> by specifying all parameters.
      *
      * @param address address of the JingleNodes
      * @param relaySupported if the JingleNodes supports relay
@@ -91,7 +91,7 @@ public class JingleNodeDescriptor implements Serializable
     /**
      * Returns if the JID has relay support.
      *
-     * @return <tt>true</tt> if relay is supported, <tt>false</tt> otherwise
+     * @return <code>true</code> if relay is supported, <code>false</code> otherwise
      */
     public boolean isRelaySupported()
     {
@@ -153,9 +153,9 @@ public class JingleNodeDescriptor implements Serializable
     }
 
     /**
-     * Returns a <tt>String</tt> representation of this descriptor
+     * Returns a <code>String</code> representation of this descriptor
      *
-     * @return a <tt>String</tt> representation of this descriptor.
+     * @return a <code>String</code> representation of this descriptor.
      */
     @Override
     public String toString()

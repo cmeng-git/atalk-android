@@ -28,7 +28,7 @@ public interface AdHocChatRoomParticipantPresenceListener extends EventListener
 	 * particular ad-hoc chat room has occurred. Changes may include participant being join, left.
 	 *
 	 * @param evt
-     *        the <tt>AdHocChatRoomParticipantPresenceChangeEvent</tt> instance containing the
+     *        the <code>AdHocChatRoomParticipantPresenceChangeEvent</code> instance containing the
 	 *        source chat room and type, and reason of the presence change
 	 */
 	void participantPresenceChanged(AdHocChatRoomParticipantPresenceChangeEvent evt);

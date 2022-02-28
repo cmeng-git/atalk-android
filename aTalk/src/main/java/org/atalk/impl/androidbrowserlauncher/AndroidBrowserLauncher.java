@@ -15,7 +15,7 @@ import org.atalk.android.aTalkApp;
 import timber.log.Timber;
 
 /**
- * Android implementation of <tt>BrowserLauncherService</tt>.
+ * Android implementation of <code>BrowserLauncherService</code>.
  *
  * @author Pawel Domas
  */

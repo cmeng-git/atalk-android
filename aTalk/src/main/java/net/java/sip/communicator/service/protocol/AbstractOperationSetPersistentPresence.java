@@ -16,7 +16,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Represents a default implementation of <tt>OperationSetPersistentPresence</tt> in order to make
+ * Represents a default implementation of <code>OperationSetPersistentPresence</code> in order to make
  * it easier for implementers to provide complete solutions while focusing on implementation-specific details.
  *
  * @author Lubomir Marinov
@@ -26,7 +26,7 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         implements OperationSetPersistentPresence
 {
     /**
-     * A list of listeners registered for <tt>ContactPresenceStatusChangeEvent</tt>s.
+     * A list of listeners registered for <code>ContactPresenceStatusChangeEvent</code>s.
      */
     private final List<ContactPresenceStatusListener> contactPresenceStatusListeners = new Vector<>();
 
@@ -36,25 +36,25 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
     protected final T mPPS;
 
     /**
-     * A list of listeners registered for <tt>ProviderPresenceStatusChangeEvent</tt>s.
+     * A list of listeners registered for <code>ProviderPresenceStatusChangeEvent</code>s.
      */
     private final List<ProviderPresenceStatusListener> providerPresenceStatusListeners = new Vector<>();
 
     /**
-     * A list of listeners registered for <tt>ServerStoredGroupChangeEvent</tt>s.
+     * A list of listeners registered for <code>ServerStoredGroupChangeEvent</code>s.
      */
     private final List<ServerStoredGroupListener> serverStoredGroupListeners = new Vector<>();
 
     /**
-     * The list of listeners interested in <tt>SubscriptionEvent</tt>s.
+     * The list of listeners interested in <code>SubscriptionEvent</code>s.
      */
     private final List<SubscriptionListener> subscriptionListeners = new Vector<>();
 
     /**
-     * Initializes a new <tt>AbstractOperationSetPersistentPresence</tt> instance created by a
-     * specific <tt>ProtocolProviderService</tt> .
+     * Initializes a new <code>AbstractOperationSetPersistentPresence</code> instance created by a
+     * specific <code>ProtocolProviderService</code> .
      *
-     * @param pps the <tt>ProtocolProviderService</tt> which created the new instance
+     * @param pps the <code>ProtocolProviderService</code> which created the new instance
      */
     protected AbstractOperationSetPersistentPresence(T pps)
     {
@@ -364,12 +364,12 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
     }
 
     /**
-     * Sets the display name for <tt>contact</tt> to be <tt>newName</tt>.
+     * Sets the display name for <code>contact</code> to be <code>newName</code>.
      * <p>
      *
-     * @param contact the <tt>Contact</tt> that we are renaming
-     * @param newName a <tt>String</tt> containing the new display name for <tt>metaContact</tt>.
-     * @throws IllegalArgumentException if <tt>contact</tt> is not an instance that belongs to the underlying implementation.
+     * @param contact the <code>Contact</code> that we are renaming
+     * @param newName a <code>String</code> containing the new display name for <code>metaContact</code>.
+     * @throws IllegalArgumentException if <code>contact</code> is not an instance that belongs to the underlying implementation.
      */
     public void setDisplayName(Contact contact, String newName)
             throws IllegalArgumentException

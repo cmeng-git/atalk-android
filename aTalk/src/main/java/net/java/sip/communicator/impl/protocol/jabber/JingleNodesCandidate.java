@@ -13,7 +13,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.net.SocketException;
 
 /**
- * Represents a <tt>Candidate</tt> obtained via Jingle Nodes.
+ * Represents a <code>Candidate</code> obtained via Jingle Nodes.
  *
  * @author Sebastien Vincent
  */
@@ -25,21 +25,21 @@ public class JingleNodesCandidate extends LocalCandidate
     private IceSocketWrapper socket = null;
 
     /**
-     * The <tt>RelayedCandidateDatagramSocket</tt> of this <tt>JingleNodesCandidate</tt>.
+     * The <code>RelayedCandidateDatagramSocket</code> of this <code>JingleNodesCandidate</code>.
      */
     private JingleNodesCandidateDatagramSocket jingleNodesCandidateDatagramSocket = null;
 
     /**
-     * <tt>TransportAddress</tt> of the Jingle Nodes relay where we will send our packet.
+     * <code>TransportAddress</code> of the Jingle Nodes relay where we will send our packet.
      */
     private TransportAddress localEndPoint = null;
 
     /**
-     * Creates a <tt>JingleNodesRelayedCandidate</tt> for the specified transport, address, and base.
+     * Creates a <code>JingleNodesRelayedCandidate</code> for the specified transport, address, and base.
      *
      * @param transportAddress the transport address that this candidate is encapsulating.
-     * @param parentComponent the <tt>Component</tt> that this candidate belongs to.
-     * @param localEndPoint <tt>TransportAddress</tt> of the Jingle Nodes relay where we will send our packet.
+     * @param parentComponent the <code>Component</code> that this candidate belongs to.
+     * @param localEndPoint <code>TransportAddress</code> of the Jingle Nodes relay where we will send our packet.
      */
     public JingleNodesCandidate(TransportAddress transportAddress, Component parentComponent,
             TransportAddress localEndPoint)
@@ -52,12 +52,12 @@ public class JingleNodesCandidate extends LocalCandidate
     }
 
     /**
-     * Gets the <tt>JingleNodesCandidateDatagramSocket</tt> of this <tt>JingleNodesCandidate</tt>.
+     * Gets the <code>JingleNodesCandidateDatagramSocket</code> of this <code>JingleNodesCandidate</code>.
      *
-     * <b>Note</b>: The method is part of the internal API of <tt>RelayedCandidate</tt> and
-     * <tt>TurnCandidateHarvest</tt> and is not intended for public use.
+     * <b>Note</b>: The method is part of the internal API of <code>RelayedCandidate</code> and
+     * <code>TurnCandidateHarvest</code> and is not intended for public use.
      *
-     * @return the <tt>RelayedCandidateDatagramSocket</tt> of this <tt>RelayedCandidate</tt>
+     * @return the <code>RelayedCandidateDatagramSocket</code> of this <code>RelayedCandidate</code>
      */
     private synchronized JingleNodesCandidateDatagramSocket getRelayedCandidateDatagramSocket()
     {
@@ -73,9 +73,9 @@ public class JingleNodesCandidate extends LocalCandidate
     }
 
     /**
-     * Gets the <tt>DatagramSocket</tt> associated with this <tt>Candidate</tt>.
+     * Gets the <code>DatagramSocket</code> associated with this <code>Candidate</code>.
      *
-     * @return the <tt>DatagramSocket</tt> associated with this <tt>Candidate</tt>
+     * @return the <code>DatagramSocket</code> associated with this <code>Candidate</code>
      */
     @Override
     protected IceSocketWrapper getCandidateIceSocketWrapper()

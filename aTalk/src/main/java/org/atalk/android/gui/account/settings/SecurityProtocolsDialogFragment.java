@@ -147,7 +147,7 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     /**
      * Flag indicating whether any changes have been done to security config
      *
-     * @return <tt>true</tt> if any changes have been made
+     * @return <code>true</code> if any changes have been made
      */
     public boolean hasChanges()
     {

@@ -25,7 +25,7 @@ public class Notification
 	private final Hashtable<String, NotificationAction> actionsTable = new Hashtable<>();
 
 	/**
-	 * Creates an instance of <tt>EventNotification</tt> by specifying the event type as declared by the bundle
+	 * Creates an instance of <code>EventNotification</code> by specifying the event type as declared by the bundle
 	 * registering it.
 	 *
 	 * @param eventType
@@ -35,7 +35,7 @@ public class Notification
 	}
 
 	/**
-	 * Adds the given <tt>actionType</tt> to the list of actions for this event notifications.
+	 * Adds the given <code>actionType</code> to the list of actions for this event notifications.
 	 * 
 	 * @param action
 	 *        the the handler that will process the given action type.
@@ -49,7 +49,7 @@ public class Notification
 	}
 
 	/**
-	 * Removes the action corresponding to the given <tt>actionType</tt>.
+	 * Removes the action corresponding to the given <code>actionType</code>.
 	 *
 	 * @param actionType
 	 *        one of NotificationService.ACTION_XXX constants
@@ -70,12 +70,12 @@ public class Notification
 	}
 
 	/**
-	 * Returns the <tt>Action</tt> corresponding to the given <tt>actionType</tt>.
+	 * Returns the <code>Action</code> corresponding to the given <code>actionType</code>.
 	 *
 	 * @param actionType
 	 *        one of NotificationService.ACTION_XXX constants
 	 *
-	 * @return the <tt>Action</tt> corresponding to the given <tt>actionType</tt>
+	 * @return the <code>Action</code> corresponding to the given <code>actionType</code>
 	 */
 	public NotificationAction getAction(String actionType)
 	{

@@ -30,7 +30,7 @@ public interface BrowserLauncherService
      * the method returns immediately and does not report the success or the
      * failure of the opening.
      *
-     * @param url a <tt>String</tt> value which represents the URL to be opened
+     * @param url a <code>String</code> value which represents the URL to be opened
      * in a browser
      */
     public void openURL(String url);

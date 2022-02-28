@@ -18,7 +18,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
- * Edit text preference which persists it's value through the <tt>ConfigurationService</tt>. Current value is reflected
+ * Edit text preference which persists it's value through the <code>ConfigurationService</code>. Current value is reflected
  * in the summary. It also supports minimum and maximum value limits of integer or float type.
  *
  * @author Pawel Domas
@@ -44,7 +44,7 @@ public class ConfigEditText extends EditTextPreference implements Preference.OnP
     private Float floatMax;
 
     /**
-     * <tt>ConfigWidgetUtil</tt> used by this instance
+     * <code>ConfigWidgetUtil</code> used by this instance
      */
     private final ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this, true);
 

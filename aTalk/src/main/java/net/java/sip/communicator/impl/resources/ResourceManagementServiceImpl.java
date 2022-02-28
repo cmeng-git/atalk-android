@@ -29,7 +29,7 @@ import java.net.URL;
 import timber.log.Timber;
 
 /**
- * A default implementation of the <tt>ResourceManagementService</tt>.
+ * A default implementation of the <code>ResourceManagementService</code>.
  *
  * @author Damian Minkov
  * @author Yana Stamcheva
@@ -57,9 +57,9 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>UIService</tt> obtained from the bundle context.
+     * Returns the <code>UIService</code> obtained from the bundle context.
      *
-     * @return the <tt>UIService</tt> obtained from the bundle context
+     * @return the <code>UIService</code> obtained from the bundle context
      */
     private UIService getUIService()
     {
@@ -70,9 +70,9 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Gets a reference to the <tt>UIService</tt> when this one is registered.
+     * Gets a reference to the <code>UIService</code> when this one is registered.
      *
-     * @param event the <tt>ServiceEvent</tt> that has notified us
+     * @param event the <code>ServiceEvent</code> that has notified us
      */
     @Override
     public void serviceChanged(ServiceEvent event)
@@ -143,10 +143,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given path.
+     * Returns the <code>InputStream</code> of the image corresponding to the given path.
      *
      * @param path The path to the image file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given path.
+     * @return the <code>InputStream</code> of the image corresponding to the given path.
      */
     public InputStream getImageInputStreamForPath(String path)
     {
@@ -164,10 +164,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given key.
+     * Returns the <code>InputStream</code> of the image corresponding to the given key.
      *
      * @param streamKey The identifier of the image in the resource properties file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given key.
+     * @return the <code>InputStream</code> of the image corresponding to the given key.
      */
     public InputStream getImageInputStream(String streamKey)
     {
@@ -181,10 +181,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the image corresponding to the given key.
+     * Returns the <code>URL</code> of the image corresponding to the given key.
      *
      * @param urlKey The identifier of the image in the resource properties file.
-     * @return the <tt>URL</tt> of the image corresponding to the given key
+     * @return the <code>URL</code> of the image corresponding to the given key
      */
     public URL getImageURL(String urlKey)
     {
@@ -197,10 +197,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the image corresponding to the given path.
+     * Returns the <code>URL</code> of the image corresponding to the given path.
      *
      * @param path The path to the given image file.
-     * @return the <tt>URL</tt> of the image corresponding to the given path.
+     * @return the <code>URL</code> of the image corresponding to the given path.
      */
     public URL getImageURLForPath(String path)
     {
@@ -215,9 +215,9 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the sound corresponding to the given property key.
+     * Returns the <code>URL</code> of the sound corresponding to the given property key.
      *
-     * @return the <tt>URL</tt> of the sound corresponding to the given property key.
+     * @return the <code>URL</code> of the sound corresponding to the given property key.
      */
     public URL getSoundURL(String urlKey)
     {
@@ -231,10 +231,10 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the sound corresponding to the given path.
+     * Returns the <code>URL</code> of the sound corresponding to the given path.
      *
      * @param path the path, for which we're looking for a sound URL
-     * @return the <tt>URL</tt> of the sound corresponding to the given path.
+     * @return the <code>URL</code> of the sound corresponding to the given path.
      */
     public URL getSoundURLForPath(String path)
     {
@@ -281,7 +281,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
      * Builds a new skin bundle from the zip file content.
      *
      * @param zipFile Zip file with skin information.
-     * @return <tt>File</tt> for the bundle.
+     * @return <code>File</code> for the bundle.
      * @throws Exception When something goes wrong.
      */
     public File prepareSkinBundleFromZip(File zipFile)

@@ -34,7 +34,7 @@ import java.util.Iterator;
 import timber.log.Timber;
 
 /**
- * Implements <tt>OperationSetTelephonyConferencing</tt> for Jabber.
+ * Implements <code>OperationSetTelephonyConferencing</code> for Jabber.
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -52,7 +52,7 @@ public class OperationSetTelephonyConferencingJabberImpl
      */
     private IQRequestHandler iqRequestHandler = null;
     /**
-     * The minimum interval in milliseconds between COINs sent to a single <tt>CallPeer</tt>.
+     * The minimum interval in milliseconds between COINs sent to a single <code>CallPeer</code>.
      */
     private static final int COIN_MIN_INTERVAL = 200;
 
@@ -72,11 +72,11 @@ public class OperationSetTelephonyConferencingJabberImpl
     private boolean isCoinDisabled;
 
     /**
-     * Initializes a new <tt>OperationSetTelephonyConferencingJabberImpl</tt> instance which is to
+     * Initializes a new <code>OperationSetTelephonyConferencingJabberImpl</code> instance which is to
      * provide telephony conferencing services for the specified Jabber
-     * <tt>ProtocolProviderService</tt> implementation.
+     * <code>ProtocolProviderService</code> implementation.
      *
-     * @param parentProvider the Jabber <tt>ProtocolProviderService</tt> implementation which has requested the
+     * @param parentProvider the Jabber <code>ProtocolProviderService</code> implementation which has requested the
      * creation of the new instance and for which the new instance is to provide telephony
      * conferencing services
      */
@@ -88,9 +88,9 @@ public class OperationSetTelephonyConferencingJabberImpl
     }
 
     /**
-     * Implementation of method <tt>registrationStateChange</tt> from interface
-     * RegistrationStateChangeListener for setting up (or down) our <tt>JingleManager</tt> when an
-     * <tt>XMPPConnection</tt> is available
+     * Implementation of method <code>registrationStateChange</code> from interface
+     * RegistrationStateChangeListener for setting up (or down) our <code>JingleManager</code> when an
+     * <code>XMPPConnection</code> is available
      *
      * @param evt the event received
      */
@@ -111,12 +111,12 @@ public class OperationSetTelephonyConferencingJabberImpl
     }
 
     /**
-     * Notifies all <tt>CallPeer</tt>s associated with a specific <tt>Call</tt> about changes in the
+     * Notifies all <code>CallPeer</code>s associated with a specific <code>Call</code> about changes in the
      * telephony conference-related information. In contrast, {@link #notifyAll()} notifies all
-     * <tt>CallPeer</tt>s associated with the telephony conference in which a specific <tt>Call</tt>
+     * <code>CallPeer</code>s associated with the telephony conference in which a specific <code>Call</code>
      * is participating.
      *
-     * @param call the <tt>Call</tt> whose <tt>CallPeer</tt>s are to be notified about changes in the
+     * @param call the <code>Call</code> whose <code>CallPeer</code>s are to be notified about changes in the
      * telephony conference-related information
      */
     @Override
@@ -133,10 +133,10 @@ public class OperationSetTelephonyConferencingJabberImpl
     }
 
     /**
-     * Notifies a specific <tt>CallPeer</tt> about changes in the telephony conference-related
+     * Notifies a specific <code>CallPeer</code> about changes in the telephony conference-related
      * information.
      *
-     * @param callPeer the <tt>CallPeer</tt> to notify.
+     * @param callPeer the <code>CallPeer</code> to notify.
      */
     private void notify(CallPeer callPeer)
     {
@@ -223,12 +223,12 @@ public class OperationSetTelephonyConferencingJabberImpl
     }
 
     /**
-     * Generates the conference-info IQ to be sent to a specific <tt>CallPeer</tt> in order to
+     * Generates the conference-info IQ to be sent to a specific <code>CallPeer</code> in order to
      * notify it of the current state of the conference managed by the local peer.
      *
-     * @param callPeer the <tt>CallPeer</tt> to generate conference-info XML for
-     * @param confInfo the <tt>ConferenceInformationDocument</tt> which is to be included in the IQ
-     * @return the conference-info IQ to be sent to the specified <tt>callPeer</tt> in order to
+     * @param callPeer the <code>CallPeer</code> to generate conference-info XML for
+     * @param confInfo the <code>ConferenceInformationDocument</code> which is to be included in the IQ
+     * @return the conference-info IQ to be sent to the specified <code>callPeer</code> in order to
      * notify it of the current state of the conference managed by the local peer
      */
     private CoinIQ getConferenceInfo(CallPeerJabberImpl callPeer, final ConferenceInfoDocument confInfo)
@@ -259,11 +259,11 @@ public class OperationSetTelephonyConferencingJabberImpl
     }
 
     /**
-     * Creates a new outgoing <tt>Call</tt> into which conference callees are to be invited by this
-     * <tt>OperationSetTelephonyConferencing</tt>.
+     * Creates a new outgoing <code>Call</code> into which conference callees are to be invited by this
+     * <code>OperationSetTelephonyConferencing</code>.
      *
-     * @return a new outgoing <tt>Call</tt> into which conference callees are to be invited by this
-     * <tt>OperationSetTelephonyConferencing</tt>
+     * @return a new outgoing <code>Call</code> into which conference callees are to be invited by this
+     * <code>OperationSetTelephonyConferencing</code>
      * @throws OperationFailedException if anything goes wrong
      */
     @Override
@@ -276,7 +276,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     /**
      * {@inheritDoc}
      * <p/>
-     * Implements the protocol-dependent part of the logic of inviting a callee to a <tt>Call</tt>.
+     * Implements the protocol-dependent part of the logic of inviting a callee to a <code>Call</code>.
      * The protocol-independent part of that logic is implemented by
      * {@link AbstractOperationSetTelephonyConferencing#inviteCalleeToCall(String, Call)}.
      */
@@ -285,20 +285,24 @@ public class OperationSetTelephonyConferencingJabberImpl
             throws OperationFailedException
     {
         return getBasicTelephony().createOutgoingCall(call, calleeAddress,
-                Arrays.asList(new ExtensionElement[]{new CoinExtension(true)}));
+                Arrays.asList(new ExtensionElement[]{
+                        CoinExtension.builder()
+                        .setFocus(true)
+                        .build()
+                }));
     }
 
     /**
-     * Parses a <tt>String</tt> value which represents a callee address specified by the user into
+     * Parses a <code>String</code> value which represents a callee address specified by the user into
      * an object which is to actually represent the callee during the invitation to a conference
-     * <tt>Call</tt>.
+     * <code>Call</code>.
      *
-     * @param calleeAddressString a <tt>String</tt> value which represents a callee address to be parsed into an object
+     * @param calleeAddressString a <code>String</code> value which represents a callee address to be parsed into an object
      * which is to actually represent the callee during the invitation to a conference
-     * <tt>Call</tt>
-     * @return an object which is to actually represent the specified <tt>calleeAddressString</tt>
-     * during the invitation to a conference <tt>Call</tt>
-     * @throws OperationFailedException if parsing the specified <tt>calleeAddressString</tt> fails
+     * <code>Call</code>
+     * @return an object which is to actually represent the specified <code>calleeAddressString</code>
+     * during the invitation to a conference <code>Call</code>
+     * @throws OperationFailedException if parsing the specified <code>calleeAddressString</code> fails
      */
     @Override
     protected String parseAddressString(String calleeAddressString)
@@ -333,10 +337,10 @@ public class OperationSetTelephonyConferencingJabberImpl
 
     /**
      * Tests whether or not the specified packet should be handled by this operation set. This
-     * method is called by smack prior to packet delivery and it would only accept <tt>CoinIQ</tt>s.
+     * method is called by smack prior to packet delivery and it would only accept <code>CoinIQ</code>s.
      *
      * @param packet the packet to test.
-     * @return true if and only if <tt>packet</tt> passes the filter.
+     * @return true if and only if <code>packet</code> passes the filter.
      */
     @Override
     public boolean accept(Stanza packet)
@@ -403,10 +407,10 @@ public class OperationSetTelephonyConferencingJabberImpl
         }
 
         /**
-         * Handles a specific <tt>CoinIQ</tt> sent from a specific <tt>CallPeer</tt>.
+         * Handles a specific <code>CoinIQ</code> sent from a specific <code>CallPeer</code>.
          *
-         * @param callPeer the <tt>CallPeer</tt> from which the specified <tt>CoinIQ</tt> was sent
-         * @param coinIQ the <tt>CoinIQ</tt> which was sent from the specified <tt>callPeer</tt>
+         * @param callPeer the <code>CallPeer</code> from which the specified <code>CoinIQ</code> was sent
+         * @param coinIQ the <code>CoinIQ</code> which was sent from the specified <code>callPeer</code>
          */
         private void handleCoin(CallPeerJabberImpl callPeer, CoinIQ coinIQ)
         {
@@ -422,7 +426,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     /**
      * {@inheritDoc}
      * <p/>
-     * For COINs (XEP-0298), we use the attributes of the <tt>conference-info</tt> element to
+     * For COINs (XEP-0298), we use the attributes of the <code>conference-info</code> element to
      * piggyback a Jingle SID. This is temporary and should be removed once we choose a better way
      * to pass the SID.
      */
@@ -474,10 +478,10 @@ public class OperationSetTelephonyConferencingJabberImpl
     /**
      * {@inheritDoc}
      * <p/>
-     * The URI of the returned <tt>ConferenceDescription</tt> is the occupant JID with which we have
+     * The URI of the returned <code>ConferenceDescription</code> is the occupant JID with which we have
      * joined the room.
      * <p/>
-     * If a Videobridge is available for our <tt>ProtocolProviderService</tt> we use it. TODO: this
+     * If a Videobridge is available for our <code>ProtocolProviderService</code> we use it. TODO: this
      * should be relaxed when we refactor the Videobridge implementation, so that any Videobridge
      * (on any protocol provider) can be used.
      */

@@ -27,7 +27,7 @@ import java.io.IOException;
 import timber.log.Timber;
 
 /**
- * The conference implementation of the <tt>ChatTransport</tt> interface that provides
+ * The conference implementation of the <code>ChatTransport</code> interface that provides
  * abstraction to access to protocol providers.
  *
  * @author Yana Stamcheva
@@ -38,7 +38,7 @@ public class ConferenceChatTransport implements ChatTransport
     private final ChatSession chatSession;
     private final ChatRoom chatRoom;
     /**
-     * <tt>true</tt> when a contact sends a message with XEP-0085 chat state notifications;
+     * <code>true</code> when a contact sends a message with XEP-0085 chat state notifications;
      * override contact disco#info no XEP-0085 feature advertised.
      */
     private static boolean isChatStateSupported = false;
@@ -47,7 +47,7 @@ public class ConferenceChatTransport implements ChatTransport
     private HttpFileUploadManager httpFileUploadManager;
 
     /**
-     * Creates an instance of <tt>ConferenceChatTransport</tt> by specifying the parent chat
+     * Creates an instance of <code>ConferenceChatTransport</code> by specifying the parent chat
      * session and the chat room associated with this transport.
      *
      * @param chatSession the parent chat session.
@@ -100,7 +100,7 @@ public class ConferenceChatTransport implements ChatTransport
     /**
      * Indicates if the display name should only show the resource.
      *
-     * @return <tt>true</tt> if the display name shows only the resource, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the display name shows only the resource, <code>false</code> - otherwise
      */
     public boolean isDisplayResourceOnly()
     {
@@ -118,9 +118,9 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     * Returns the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      *
-     * @return the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     * @return the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -209,7 +209,7 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Sends <tt>message</tt> as a message correction through this transport, specifying the
+     * Sends <code>message</code> as a message correction through this transport, specifying the
      * mime type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
@@ -225,7 +225,7 @@ public class ConferenceChatTransport implements ChatTransport
      * Determines whether this chat transport supports the supplied content type
      *
      * @param mimeType the mime type we want to check
-     * @return <tt>true</tt> if the chat transport supports it and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the chat transport supports it and <code>false</code> otherwise.
      */
     public boolean isContentTypeSupported(int mimeType)
     {
@@ -264,7 +264,7 @@ public class ConferenceChatTransport implements ChatTransport
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon and instance of #FileSendConversation
-     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
@@ -307,7 +307,7 @@ public class ConferenceChatTransport implements ChatTransport
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon and instance of #FileSendConversation
-     * @return the HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     public Object sendFile(File file, int chatType, FileSendConversation xferCon)
@@ -386,7 +386,7 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns the parent session of this chat transport. A <tt>ChatSession</tt> could contain
+     * Returns the parent session of this chat transport. A <code>ChatSession</code> could contain
      * more than one transports.
      *
      * @return the parent session of this chat transport
@@ -471,9 +471,9 @@ public class ConferenceChatTransport implements ChatTransport
     }
 
     /**
-     * Returns <tt>true</tt> if this chat transport supports message corrections and false otherwise.
+     * Returns <code>true</code> if this chat transport supports message corrections and false otherwise.
      *
-     * @return <tt>true</tt> if this chat transport supports message corrections and false otherwise.
+     * @return <code>true</code> if this chat transport supports message corrections and false otherwise.
      */
     public boolean allowsMessageCorrections()
     {

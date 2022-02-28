@@ -22,7 +22,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
 /**
- * The <tt>MetaContactChatContact</tt> represents a <tt>ChatContact</tt> in a
+ * The <code>MetaContactChatContact</code> represents a <code>ChatContact</code> in a
  * user-to-user chat.
  *
  * @author Yana Stamcheva
@@ -32,10 +32,10 @@ public class MetaContactChatContact extends ChatContact<MetaContact>
 {
 
     /**
-     * Creates an instance of <tt>ChatContact</tt> by passing to it the
-     * corresponding <tt>MetaContact</tt> and <tt>Contact</tt>.
+     * Creates an instance of <code>ChatContact</code> by passing to it the
+     * corresponding <code>MetaContact</code> and <code>Contact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt> encapsulating the given <tt>Contact</tt>
+     * @param metaContact the <code>MetaContact</code> encapsulating the given <code>Contact</code>
      */
     public MetaContactChatContact(MetaContact metaContact)
     {

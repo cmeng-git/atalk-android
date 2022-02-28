@@ -43,7 +43,7 @@ import javax.media.protocol.DataSource;
 import timber.log.Timber;
 
 /**
- * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of <tt>VideoMediaStream</tt>.
+ * Extends <code>MediaStreamImpl</code> in order to provide an implementation of <code>VideoMediaStream</code>.
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -57,7 +57,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private static final boolean USE_RTCP_FEEDBACK_PLI = true;
 
     /**
-     * The <tt>RecurringRunnableExecutor</tt> to be utilized by the <tt>MediaStreamImpl</tt> class and its instances.
+     * The <code>RecurringRunnableExecutor</code> to be utilized by the <code>MediaStreamImpl</code> class and its instances.
      */
     private static final RecurringRunnableExecutor recurringRunnableExecutor
             = new RecurringRunnableExecutor(VideoMediaStreamImpl.class.getSimpleName());
@@ -162,19 +162,19 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Selects the <tt>VideoFormat</tt> from the list of supported formats of a specific video <tt>DataSource</tt>
+     * Selects the <code>VideoFormat</code> from the list of supported formats of a specific video <code>DataSource</code>
      * which has a size as close as possible to a specific size and sets it as the format of the specified video
-     * <tt>DataSource</tt>. Must also check if the VideoFormat is supported by the androidEncoder;
+     * <code>DataSource</code>. Must also check if the VideoFormat is supported by the androidEncoder;
      * VP9 encode many not be supported in all android devices.
      *
-     * @param videoDS the video <tt>DataSource</tt> which is to have its supported formats examined and its
-     * format changed to the <tt>VideoFormat</tt> which is as close as possible to the
-     * specified <tt>preferredWidth</tt> and <tt>preferredHeight</tt>
-     * @param preferredWidth the width of the <tt>VideoFormat</tt> to be selected
-     * @param preferredHeight the height of the <tt>VideoFormat</tt> to be selected
-     * @return the size of the <tt>VideoFormat</tt> from the list of supported formats of
-     * <tt>videoDS</tt> which is as close as possible to <tt>preferredWidth</tt> and
-     * <tt>preferredHeight</tt> and which has been set as the format of <tt>videoDS</tt>
+     * @param videoDS the video <code>DataSource</code> which is to have its supported formats examined and its
+     * format changed to the <code>VideoFormat</code> which is as close as possible to the
+     * specified <code>preferredWidth</code> and <code>preferredHeight</code>
+     * @param preferredWidth the width of the <code>VideoFormat</code> to be selected
+     * @param preferredHeight the height of the <code>VideoFormat</code> to be selected
+     * @return the size of the <code>VideoFormat</code> from the list of supported formats of
+     * <code>videoDS</code> which is as close as possible to <code>preferredWidth</code> and
+     * <code>preferredHeight</code> and which has been set as the format of <code>videoDS</code>
      */
     public static Dimension selectVideoSize(DataSource videoDS, final int preferredWidth, final int preferredHeight)
     {
@@ -322,13 +322,13 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * The <tt>VideoListener</tt> which handles <tt>VideoEvent</tt>s from the <tt>MediaDeviceSession</tt> of this
-     * instance and fires respective <tt>VideoEvent</tt>s from this <tt>VideoMediaStream</tt> to its <tt>VideoListener</tt>s.
+     * The <code>VideoListener</code> which handles <code>VideoEvent</code>s from the <code>MediaDeviceSession</code> of this
+     * instance and fires respective <code>VideoEvent</code>s from this <code>VideoMediaStream</code> to its <code>VideoListener</code>s.
      */
     private VideoListener deviceSessionVideoListener;
 
     /**
-     * The <tt>KeyFrameControl</tt> of this <tt>VideoMediaStream</tt>.
+     * The <code>KeyFrameControl</code> of this <code>VideoMediaStream</code>.
      */
     private KeyFrameControl keyFrameControl;
 
@@ -338,7 +338,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private Dimension outputSize;
 
     /**
-     * The <tt>QualityControl</tt> of this <tt>VideoMediaStream</tt>.
+     * The <code>QualityControl</code> of this <code>VideoMediaStream</code>.
      */
     private final QualityControlImpl qualityControl = new QualityControlImpl();
 
@@ -368,21 +368,21 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private final PaddingTermination paddingTermination = new PaddingTermination();
 
     /**
-     * The <tt>RemoteBitrateEstimator</tt> which computes bitrate estimates for the incoming RTP streams.
+     * The <code>RemoteBitrateEstimator</code> which computes bitrate estimates for the incoming RTP streams.
      */
     private final RemoteBitrateEstimatorWrapper remoteBitrateEstimator = new RemoteBitrateEstimatorWrapper(
             VideoMediaStreamImpl.this::remoteBitrateEstimatorOnReceiveBitrateChanged, getDiagnosticContext()
     );
 
     /**
-     * The facility which aids this instance in managing a list of <tt>VideoListener</tt>s and
-     * firing <tt>VideoEvent</tt>s to them.
+     * The facility which aids this instance in managing a list of <code>VideoListener</code>s and
+     * firing <code>VideoEvent</code>s to them.
      * <p>
-     * Since the <tt>videoNotifierSupport</tt> of this <tt>VideoMediaStreamImpl</tt> just forwards
-     * the <tt>VideoEvent</tt>s of the associated <tt>VideoMediaDeviceSession</tt> at the time of
-     * this writing, it does not make sense to have <tt>videoNotifierSupport</tt> executing
+     * Since the <code>videoNotifierSupport</code> of this <code>VideoMediaStreamImpl</code> just forwards
+     * the <code>VideoEvent</code>s of the associated <code>VideoMediaDeviceSession</code> at the time of
+     * this writing, it does not make sense to have <code>videoNotifierSupport</code> executing
      * asynchronously because it does not know whether it has to wait for the delivery of the
-     * <tt>VideoEvent</tt>s and thus it has to default to waiting anyway.
+     * <code>VideoEvent</code>s and thus it has to default to waiting anyway.
      * </p>
      */
     private final VideoNotifierSupport videoNotifierSupport = new VideoNotifierSupport(this, true);
@@ -408,12 +408,12 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     private boolean supportsPli = false;
 
     /**
-     * Initializes a new <tt>VideoMediaStreamImpl</tt> instance which will use the specified <tt>MediaDevice</tt>
-     * for both capture and playback of video exchanged via the specified <tt>StreamConnector</tt>.
+     * Initializes a new <code>VideoMediaStreamImpl</code> instance which will use the specified <code>MediaDevice</code>
+     * for both capture and playback of video exchanged via the specified <code>StreamConnector</code>.
      *
-     * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving video
-     * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
-     * video exchanged via the specified <tt>StreamConnector</tt>
+     * @param connector the <code>StreamConnector</code> the new instance is to use for sending and receiving video
+     * @param device the <code>MediaDevice</code> the new instance is to use for both capture and playback of
+     * video exchanged via the specified <code>StreamConnector</code>
      * @param srtpControl a control which is already created, used to control the srtp operations.
      */
     public VideoMediaStreamImpl(StreamConnector connector, MediaDevice device, SrtpControl srtpControl)
@@ -513,15 +513,15 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Adds a specific <tt>VideoListener</tt> to this <tt>VideoMediaStream</tt> in order to receive
-     * notifications when visual/video <tt>Component</tt>s are being added and removed.
+     * Adds a specific <code>VideoListener</code> to this <code>VideoMediaStream</code> in order to receive
+     * notifications when visual/video <code>Component</code>s are being added and removed.
      * <p>
      * Adding a listener which has already been added does nothing i.e. it is not added more than
-     * once and thus does not receive one and the same <tt>VideoEvent</tt> multiple times.
+     * once and thus does not receive one and the same <code>VideoEvent</code> multiple times.
      * </p>
      *
-     * @param listener the <tt>VideoListener</tt> to be notified when visual/video <tt>Component</tt>s are
-     * being added or removed in this <tt>VideoMediaStream</tt>
+     * @param listener the <code>VideoListener</code> to be notified when visual/video <code>Component</code>s are
+     * being added or removed in this <code>VideoMediaStream</code>
      */
     public void addVideoListener(VideoListener listener)
     {
@@ -552,11 +552,11 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Performs any optional configuration on a specific <tt>RTPConnectorOuputStream</tt> of an
-     * <tt>RTPManager</tt> to be used by this <tt>MediaStreamImpl</tt>.
+     * Performs any optional configuration on a specific <code>RTPConnectorOuputStream</code> of an
+     * <code>RTPManager</code> to be used by this <code>MediaStreamImpl</code>.
      *
-     * @param dataOutputStream the <tt>RTPConnectorOutputStream</tt> to be used by an <tt>RTPManager</tt> of this
-     * <tt>MediaStreamImpl</tt> and to be configured
+     * @param dataOutputStream the <code>RTPConnectorOutputStream</code> to be used by an <code>RTPManager</code> of this
+     * <code>MediaStreamImpl</code> and to be configured
      */
     @Override
     protected void configureDataOutputStream(RTPConnectorOutputStream dataOutputStream)
@@ -586,11 +586,11 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Performs any optional configuration on the <tt>BufferControl</tt> of the specified
-     * <tt>RTPManager</tt> which is to be used as the <tt>RTPManager</tt> of this <tt>MediaStreamImpl</tt>.
+     * Performs any optional configuration on the <code>BufferControl</code> of the specified
+     * <code>RTPManager</code> which is to be used as the <code>RTPManager</code> of this <code>MediaStreamImpl</code>.
      *
-     * @param rtpManager the <tt>RTPManager</tt> which is to be used by this <tt>MediaStreamImpl</tt>
-     * @param bufferControl the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional configuration
+     * @param rtpManager the <code>RTPManager</code> which is to be used by this <code>MediaStreamImpl</code>
+     * @param bufferControl the <code>BufferControl</code> of <code>rtpManager</code> on which any optional configuration
      * is to be performed
      */
     @Override
@@ -610,16 +610,16 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Notifies this <tt>MediaStream</tt> that the <tt>MediaDevice</tt> (and respectively the
-     * <tt>MediaDeviceSession</tt> with it) which this instance uses for capture and playback of
-     * media has been changed. Makes sure that the <tt>VideoListener</tt>s of this instance get
-     * <tt>VideoEvent</tt>s for the new/current <tt>VideoMediaDeviceSession</tt> and not for the old one.
+     * Notifies this <code>MediaStream</code> that the <code>MediaDevice</code> (and respectively the
+     * <code>MediaDeviceSession</code> with it) which this instance uses for capture and playback of
+     * media has been changed. Makes sure that the <code>VideoListener</code>s of this instance get
+     * <code>VideoEvent</code>s for the new/current <code>VideoMediaDeviceSession</code> and not for the old one.
      * <p/>
-     * Note: this overloaded method gets executed in the <tt>MediaStreamImpl</tt> constructor. As a
-     * consequence we cannot assume proper initialization of the fields specific to <tt>VideoMediaStreamImpl</tt>.
+     * Note: this overloaded method gets executed in the <code>MediaStreamImpl</code> constructor. As a
+     * consequence we cannot assume proper initialization of the fields specific to <code>VideoMediaStreamImpl</code>.
      *
-     * @param oldValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance used work with
-     * @param newValue the <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> this instance is to work with
+     * @param oldValue the <code>MediaDeviceSession</code> with the <code>MediaDevice</code> this instance used work with
+     * @param newValue the <code>MediaDeviceSession</code> with the <code>MediaDevice</code> this instance is to work with
      * @see MediaStreamImpl#deviceSessionChanged(MediaDeviceSession, MediaDeviceSession)
      */
     @Override
@@ -647,7 +647,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                     /**
                      * {@inheritDoc}
                      *
-                     * Notifies that a visual <tt>Component</tt> depicting video was reported added
+                     * Notifies that a visual <code>Component</code> depicting video was reported added
                      * by the provider this listener is added to.
                      */
                     public void videoAdded(VideoEvent e)
@@ -659,7 +659,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                     /**
                      * {@inheritDoc}
                      *
-                     * Notifies that a visual <tt>Component</tt> depicting video was reported
+                     * Notifies that a visual <code>Component</code> depicting video was reported
                      * removed by the provider this listener is added to.
                      */
                     public void videoRemoved(VideoEvent e)
@@ -671,7 +671,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
                     /**
                      * {@inheritDoc}
                      *
-                     * Notifies that a visual <tt>Component</tt> depicting video was reported
+                     * Notifies that a visual <code>Component</code> depicting video was reported
                      * updated by the provider this listener is added to.
                      */
                     public void videoUpdate(VideoEvent e)
@@ -697,20 +697,20 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this <tt>VideoMediaStream</tt> about a
-     * specific type of change in the availability of a specific visual <tt>Component</tt> depicting video.
+     * Notifies the <code>VideoListener</code>s registered with this <code>VideoMediaStream</code> about a
+     * specific type of change in the availability of a specific visual <code>Component</code> depicting video.
      *
-     * @param type the type of change as defined by <tt>VideoEvent</tt> in the availability of the
-     * specified visual <tt>Component</tt> depicting video
-     * @param visualComponent the visual <tt>Component</tt> depicting video which has been added or removed in this
-     * <tt>VideoMediaStream</tt>
+     * @param type the type of change as defined by <code>VideoEvent</code> in the availability of the
+     * specified visual <code>Component</code> depicting video
+     * @param visualComponent the visual <code>Component</code> depicting video which has been added or removed in this
+     * <code>VideoMediaStream</code>
      * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally
      * captured); {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a remote peer is streaming it)
-     * @param wait <tt>true</tt> if the call is to wait till the specified <tt>VideoEvent</tt> has been
-     * delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
-     * @return <tt>true</tt> if this event and, more specifically, the visual <tt>Component</tt> it
+     * @param wait <code>true</code> if the call is to wait till the specified <code>VideoEvent</code> has been
+     * delivered to the <code>VideoListener</code>s; otherwise, <code>false</code>
+     * @return <code>true</code> if this event and, more specifically, the visual <code>Component</code> it
      * describes have been consumed and should be considered owned, referenced (which is important because
-     * <tt>Component</tt>s belong to a single <tt>Container</tt> at a time); otherwise, <tt>false</tt>
+     * <code>Component</code>s belong to a single <code>Container</code> at a time); otherwise, <code>false</code>
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
@@ -721,11 +721,11 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this instance about a specific <tt>VideoEvent</tt>.
+     * Notifies the <code>VideoListener</code>s registered with this instance about a specific <code>VideoEvent</code>.
      *
-     * @param event the <tt>VideoEvent</tt> to be fired to the <tt>VideoListener</tt>s registered with this instance
-     * @param wait <tt>true</tt> if the call is to wait till the specified <tt>VideoEvent</tt> has been
-     * delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
+     * @param event the <code>VideoEvent</code> to be fired to the <code>VideoListener</code>s registered with this instance
+     * @param wait <code>true</code> if the call is to wait till the specified <code>VideoEvent</code> has been
+     * delivered to the <code>VideoListener</code>s; otherwise, <code>false</code>
      */
     protected void fireVideoEvent(VideoEvent event, boolean wait)
     {
@@ -747,10 +747,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets the visual <tt>Component</tt>, if any, depicting the video streamed from the local peer to the remote peer.
+     * Gets the visual <code>Component</code>, if any, depicting the video streamed from the local peer to the remote peer.
      *
-     * @return the visual <tt>Component</tt> depicting the local video if local video is actually
-     * being streamed from the local peer to the remote peer; otherwise, <tt>null</tt>
+     * @return the visual <code>Component</code> depicting the local video if local video is actually
+     * being streamed from the local peer to the remote peer; otherwise, <code>null</code>
      */
     public Component getLocalVisualComponent()
     {
@@ -771,9 +771,9 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets the <tt>QualityControl</tt> of this <tt>VideoMediaStream</tt>.
+     * Gets the <code>QualityControl</code> of this <code>VideoMediaStream</code>.
      *
-     * @return the <tt>QualityControl</tt> of this <tt>VideoMediaStream</tt>
+     * @return the <code>QualityControl</code> of this <code>VideoMediaStream</code>
      */
     public QualityControl getQualityControl()
     {
@@ -790,11 +790,11 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets the visual <tt>Component</tt> where video from the remote peer is being rendered or
-     * <tt>null</tt> if no video is currently being rendered.
+     * Gets the visual <code>Component</code> where video from the remote peer is being rendered or
+     * <code>null</code> if no video is currently being rendered.
      *
-     * @return the visual <tt>Component</tt> where video from the remote peer is being rendered or
-     * <tt>null</tt> if no video is currently being rendered
+     * @return the visual <code>Component</code> where video from the remote peer is being rendered or
+     * <code>null</code> if no video is currently being rendered
      * @see VideoMediaStream#getVisualComponent()
      */
     @Deprecated
@@ -805,10 +805,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets the visual <tt>Component</tt>s rendering the <tt>ReceiveStream</tt> corresponding to the given ssrc.
+     * Gets the visual <code>Component</code>s rendering the <code>ReceiveStream</code> corresponding to the given ssrc.
      *
-     * @param ssrc the src-id of the receive stream, which visual <tt>Component</tt> we're looking for
-     * @return the visual <tt>Component</tt> rendering the <tt>ReceiveStream</tt> corresponding to the given ssrc
+     * @param ssrc the src-id of the receive stream, which visual <code>Component</code> we're looking for
+     * @return the visual <code>Component</code> rendering the <code>ReceiveStream</code> corresponding to the given ssrc
      */
     public Component getVisualComponent(long ssrc)
     {
@@ -818,9 +818,9 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Gets a list of the visual <tt>Component</tt>s where video from the remote peer is being rendered.
+     * Gets a list of the visual <code>Component</code>s where video from the remote peer is being rendered.
      *
-     * @return a list of the visual <tt>Component</tt>s where video from the remote peer is being rendered
+     * @return a list of the visual <code>Component</code>s where video from the remote peer is being rendered
      * @see VideoMediaStream#getVisualComponents()
      */
     public List<Component> getVisualComponents()
@@ -837,10 +837,10 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Handles attributes contained in <tt>MediaFormat</tt>.
+     * Handles attributes contained in <code>MediaFormat</code>.
      *
-     * @param format the <tt>MediaFormat</tt> to handle the attributes of
-     * @param attrs the attributes <tt>Map</tt> to handle
+     * @param format the <code>MediaFormat</code> to handle the attributes of
+     * @param attrs the attributes <code>Map</code> to handle
      */
     @Override
     protected void handleAttributes(MediaFormat format, Map<String, String> attrs)
@@ -952,7 +952,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Move origin of a partial desktop streaming <tt>MediaDevice</tt>.
+     * Move origin of a partial desktop streaming <code>MediaDevice</code>.
      *
      * @param x new x coordinate origin
      * @param y new y coordinate origin
@@ -985,7 +985,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Notifies this <tt>VideoMediaStreamImpl</tt> that {@link #remoteBitrateEstimator} has
+     * Notifies this <code>VideoMediaStreamImpl</code> that {@link #remoteBitrateEstimator} has
      * computed a new bitrate estimate for the incoming streams.
      *
      * @param ssrcs Remote source
@@ -997,11 +997,11 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Removes a specific <tt>VideoListener</tt> from this <tt>VideoMediaStream</tt> in order to have to
-     * no longer receive notifications when visual/video <tt>Component</tt>s are being added and removed.
+     * Removes a specific <code>VideoListener</code> from this <code>VideoMediaStream</code> in order to have to
+     * no longer receive notifications when visual/video <code>Component</code>s are being added and removed.
      *
-     * @param listener the <tt>VideoListener</tt> to no longer be notified when visual/video
-     * <tt>Component</tt>s are being added or removed in this <tt>VideoMediaStream</tt>
+     * @param listener the <code>VideoListener</code> to no longer be notified when visual/video
+     * <code>Component</code>s are being added or removed in this <code>VideoMediaStream</code>
      */
     public void removeVideoListener(VideoListener listener)
     {
@@ -1009,14 +1009,14 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Notifies this <tt>MediaStream</tt> implementation that its <tt>RTPConnector</tt> instance
+     * Notifies this <code>MediaStream</code> implementation that its <code>RTPConnector</code> instance
      * has changed from a specific old value to a specific new value. Allows extenders to
-     * override and perform additional processing after this <tt>MediaStream</tt> has changed its
-     * <tt>RTPConnector</tt> instance.
+     * override and perform additional processing after this <code>MediaStream</code> has changed its
+     * <code>RTPConnector</code> instance.
      *
-     * @param oldValue the <tt>RTPConnector</tt> of this <tt>MediaStream</tt> implementation before it got
-     * changed to <tt>newValue</tt>
-     * @param newValue the current <tt>RTPConnector</tt> of this <tt>MediaStream</tt> which replaced <tt>oldValue</tt>
+     * @param oldValue the <code>RTPConnector</code> of this <code>MediaStream</code> implementation before it got
+     * changed to <code>newValue</code>
+     * @param newValue the current <code>RTPConnector</code> of this <code>MediaStream</code> which replaced <code>oldValue</code>
      * @see MediaStreamImpl#rtpConnectorChanged(AbstractRTPConnector, AbstractRTPConnector)
      */
     @Override
@@ -1059,7 +1059,7 @@ public class VideoMediaStreamImpl extends MediaStreamImpl implements VideoMediaS
     }
 
     /**
-     * Updates the <tt>QualityControl</tt> of this <tt>VideoMediaStream</tt>.
+     * Updates the <code>QualityControl</code> of this <code>VideoMediaStream</code>.
      *
      * @param advancedParams parameters of advanced attributes that may affect quality control
      */

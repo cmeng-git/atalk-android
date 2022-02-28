@@ -7,10 +7,10 @@
 package net.java.sip.communicator.service.gui;
 
 /**
- * The <tt>ContactListFilter</tt> is an interface meant to be implemented by
+ * The <code>ContactListFilter</code> is an interface meant to be implemented by
  * modules interested in filtering the contact list. An implementation of this
- * interface should be able to answer if an <tt>UIContact</tt> or an
- * <tt>UIGroup</tt> is matching the corresponding filter.
+ * interface should be able to answer if an <code>UIContact</code> or an
+ * <code>UIGroup</code> is matching the corresponding filter.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -18,24 +18,24 @@ package net.java.sip.communicator.service.gui;
 public interface ContactListFilter
 {
     /**
-     * Indicates if the given <tt>uiGroup</tt> is matching the current filter.
-     * @param uiContact the <tt>UIContact</tt> to check
-     * @return <tt>true</tt> to indicate that the given <tt>uiContact</tt>
-     * matches this filter, <tt>false</tt> - otherwise
+     * Indicates if the given <code>uiGroup</code> is matching the current filter.
+     * @param uiContact the <code>UIContact</code> to check
+     * @return <code>true</code> to indicate that the given <code>uiContact</code>
+     * matches this filter, <code>false</code> - otherwise
      */
     boolean isMatching(UIContact uiContact);
 
     /**
-     * Indicates if the given <tt>uiGroup</tt> is matching the current filter.
-     * @param uiGroup the <tt>UIGroup</tt> to check
-     * @return <tt>true</tt> to indicate that the given <tt>uiGroup</tt>
-     * matches this filter, <tt>false</tt> - otherwise
+     * Indicates if the given <code>uiGroup</code> is matching the current filter.
+     * @param uiGroup the <code>UIGroup</code> to check
+     * @return <code>true</code> to indicate that the given <code>uiGroup</code>
+     * matches this filter, <code>false</code> - otherwise
      */
     boolean isMatching(UIGroup uiGroup);
 
     /**
      * Applies this filter to any interested sources
-     * @param filterQuery the <tt>FilterQuery</tt> that tracks the results of this filtering
+     * @param filterQuery the <code>FilterQuery</code> that tracks the results of this filtering
      */
     void applyFilter(FilterQuery filterQuery);
 }

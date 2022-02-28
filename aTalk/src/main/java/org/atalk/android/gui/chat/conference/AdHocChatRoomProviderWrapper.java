@@ -22,7 +22,7 @@ public class AdHocChatRoomProviderWrapper
 	private final List<AdHocChatRoomWrapper> chatRoomsOrderedCopy = new LinkedList<AdHocChatRoomWrapper>();
 
 	/**
-	 * Creates an instance of <tt>AdHocChatRoomProviderWrapper</tt> by specifying the protocol provider, corresponding to the ad-hoc multi
+	 * Creates an instance of <code>AdHocChatRoomProviderWrapper</code> by specifying the protocol provider, corresponding to the ad-hoc multi
 	 * user chat account.
 	 *
 	 * @param protocolProvider

@@ -16,7 +16,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
- * Checkbox preference that persists the value through <tt>ConfigurationService</tt>.
+ * Checkbox preference that persists the value through <code>ConfigurationService</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -24,7 +24,7 @@ import org.atalk.service.configuration.ConfigurationService;
 public class ConfigCheckBox extends CheckBoxPreference
 {
     /**
-     * <tt>ConfigWidgetUtil</tt> used by this instance.
+     * <code>ConfigWidgetUtil</code> used by this instance.
      */
     private final ConfigWidgetUtil configUtil = new ConfigWidgetUtil(this);
 

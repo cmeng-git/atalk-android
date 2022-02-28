@@ -483,7 +483,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Converts resolution to string.
      *
-     * @param d resolution as <tt>Dimension</tt>
+     * @param d resolution as <code>Dimension</code>
      * @return resolution string.
      */
     private static String resToStr(Dimension d)
@@ -495,7 +495,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * Selects resolution from supported resolutions list for given string.
      *
      * @param resStr resolution string created with method {@link #resToStr(Dimension)}.
-     * @return resolution <tt>Dimension</tt> for given string representation created with method
+     * @return resolution <code>Dimension</code> for given string representation created with method
      * {@link #resToStr(Dimension)}
      */
     private static Dimension resolutionForStr(String resStr)
@@ -510,10 +510,10 @@ public class SettingsFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Retrieves currently registered <tt>PopupMessageHandler</tt> for given <tt>clazz</tt> name.
+     * Retrieves currently registered <code>PopupMessageHandler</code> for given <code>clazz</code> name.
      *
-     * @param clazz the class name of <tt>PopupMessageHandler</tt> implementation.
-     * @return implementation of <tt>PopupMessageHandler</tt> for given class name registered in OSGI context.
+     * @param clazz the class name of <code>PopupMessageHandler</code> implementation.
+     * @return implementation of <code>PopupMessageHandler</code> for given class name registered in OSGI context.
      */
     private PopupMessageHandler getHandlerForClassName(String clazz)
     {

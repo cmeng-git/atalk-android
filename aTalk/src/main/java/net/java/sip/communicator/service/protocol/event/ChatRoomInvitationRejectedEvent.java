@@ -20,7 +20,7 @@ import org.jxmpp.jid.EntityBareJid;
 import java.util.*;
 
 /**
- * <tt>ChatRoomInvitationRejectedEvent</tt>s indicates the reception of a rejection of an
+ * <code>ChatRoomInvitationRejectedEvent</code>s indicates the reception of a rejection of an
  * invitation.
  *
  * @author Emil Ivov
@@ -35,7 +35,7 @@ public class ChatRoomInvitationRejectedEvent extends EventObject
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * The <tt>ChatRoom</tt> for which the initial invitation was.
+	 * The <code>ChatRoom</code> for which the initial invitation was.
 	 */
 	private ChatRoom chatRoom;
 
@@ -55,13 +55,13 @@ public class ChatRoomInvitationRejectedEvent extends EventObject
 	private Date timestamp;
 
 	/**
-	 * Creates a <tt>ChatRoomInvitationRejectedEvent</tt> representing the rejection of an
-	 * invitation, rejected by the given <tt>invitee</tt>.
+	 * Creates a <code>ChatRoomInvitationRejectedEvent</code> representing the rejection of an
+	 * invitation, rejected by the given <code>invitee</code>.
 	 *
 	 * @param source
-	 *        the <tt>OperationSetMultiUserChat</tt> that dispatches this event
+	 *        the <code>OperationSetMultiUserChat</code> that dispatches this event
 	 * @param chatRoom
-	 *        the <tt>ChatRoom</tt> for which the initial invitation was
+	 *        the <code>ChatRoom</code> for which the initial invitation was
 	 * @param invitee
 	 *        the name of the invitee that rejected the invitation
 	 * @param reason
@@ -91,9 +91,9 @@ public class ChatRoomInvitationRejectedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>ChatRoom</tt> for which the initial invitation was.
+	 * Returns the <code>ChatRoom</code> for which the initial invitation was.
 	 *
-	 * @return the <tt>ChatRoom</tt> for which the initial invitation was
+	 * @return the <code>ChatRoom</code> for which the initial invitation was
 	 */
 	public ChatRoom getChatRoom()
 	{
@@ -111,9 +111,9 @@ public class ChatRoomInvitationRejectedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the reason for which the <tt>ChatRoomInvitation</tt> is rejected.
+	 * Returns the reason for which the <code>ChatRoomInvitation</code> is rejected.
 	 *
-	 * @return the reason for which the <tt>ChatRoomInvitation</tt> is rejected.
+	 * @return the reason for which the <code>ChatRoomInvitation</code> is rejected.
 	 */
 	public String getReason()
 	{

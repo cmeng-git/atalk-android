@@ -13,13 +13,13 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * The <tt>ArgDelegator</tt> implements an utility for handling args that have
+ * The <code>ArgDelegator</code> implements an utility for handling args that have
  * been passed as command line arguments but that need the OSGi environment
  * and SIP Communicator to be fully loaded. The class maintains a list of
- * registered delegates (<tt>ArgDelegationPeer</tt>s) that do the actual arg
- * handling. The <tt>ArgDelegator</tt> is previewed for use with the SIP
+ * registered delegates (<code>ArgDelegationPeer</code>s) that do the actual arg
+ * handling. The <code>ArgDelegator</code> is previewed for use with the SIP
  * Communicator argdelegation service. It would therefore record all args
- * until the corresponding <tt>DelegationPeer</tt> has registered here.
+ * until the corresponding <code>DelegationPeer</code> has registered here.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -39,7 +39,7 @@ class ArgDelegator
     private List<String> recordedArgs = new LinkedList<>();
 
     /**
-     * Passes the <tt>uriArg</tt> to the uri delegation peer or, in case
+     * Passes the <code>uriArg</code> to the uri delegation peer or, in case
      * no peer is currently registered, stores it and keeps it until one
      * appears.
      *
@@ -82,7 +82,7 @@ class ArgDelegator
     /**
      * Called when the user has tried to launch a second instance of
      * SIP Communicator while a first one was already running. This method
-     * simply calls its peer method from the <tt>ArgDelegationPeer</tt> and
+     * simply calls its peer method from the <code>ArgDelegationPeer</code> and
      * does nothing if no peer is currently registered.
      */
     public void handleConcurrentInvocationRequest()

@@ -20,7 +20,7 @@ import java.net.DatagramSocket;
 public class RTPConnectorUDPInputStream extends TransformInputStream<DatagramSocket>
 {
     /**
-     * Initializes a new <tt>RTPConnectorInputStream</tt> which is to receive packet data from a specific UDP socket.
+     * Initializes a new <code>RTPConnectorInputStream</code> which is to receive packet data from a specific UDP socket.
      *
      * @param socket the UDP socket the new instance is to receive data from
      */

@@ -8,7 +8,7 @@ package org.atalk.impl.configuration;
 import java.util.*;
 
 /**
- * This class is a sorted version of classical <tt>java.util.Properties</tt>. It is strongly
+ * This class is a sorted version of classical <code>java.util.Properties</code>. It is strongly
  * inspired by http://forums.sun.com/thread.jspa?threadID=141144.
  *
  * @author Sebastien Vincent
@@ -22,11 +22,11 @@ public class SortedProperties extends Properties
     private static final long serialVersionUID = 0L;
 
     /**
-     * Gets an <tt>Enumeration</tt> of the keys in this <tt>Properties</tt> object. Contrary to
-     * the original <tt>Properties</tt> implementation, it forces the keys to be alphabetically
+     * Gets an <code>Enumeration</code> of the keys in this <code>Properties</code> object. Contrary to
+     * the original <code>Properties</code> implementation, it forces the keys to be alphabetically
      * sorted.
      *
-     * @return an <tt>Enumeration</tt> of the keys in this <tt>Properties</tt> object
+     * @return an <code>Enumeration</code> of the keys in this <code>Properties</code> object
      */
     @Override
     public synchronized Enumeration<Object> keys()
@@ -51,12 +51,12 @@ public class SortedProperties extends Properties
     }
 
     /**
-     * Does not allow putting empty <tt>String</tt> keys in this <tt>Properties</tt> object.
+     * Does not allow putting empty <code>String</code> keys in this <code>Properties</code> object.
      *
      * @param key the key
      * @param value the value
-     * @return the previous value of the specified <tt>key</tt> in this <tt>Hashtable</tt>, or
-     * <tt>null</tt> if it did not have one
+     * @return the previous value of the specified <code>key</code> in this <code>Hashtable</code>, or
+     * <code>null</code> if it did not have one
      */
     @Override
     public synchronized Object put(Object key, Object value)

@@ -32,7 +32,7 @@ public interface OperationSetTelephonyConferencing extends OperationSet
      * Creates a conference call with the specified callees as call peers.
      *
      * @param callees the list of addresses that we should call
-     * @param conference the <tt>CallConference</tt> which represents the state of the telephony conference
+     * @param conference the <code>CallConference</code> which represents the state of the telephony conference
      * into which the specified callees are to be invited
      * @return the newly created conference call containing all CallPeers
      * @throws OperationFailedException if establishing the conference call fails
@@ -58,11 +58,11 @@ public interface OperationSetTelephonyConferencing extends OperationSet
             throws OperationFailedException, OperationNotSupportedException, XmppStringprepException;
 
     /**
-     * Sets up a conference with no participants, which members of <tt>chatRoom</tt> can join.
-     * Returns a <tt>ConferenceDescription</tt> that describes how the call can be joined.
+     * Sets up a conference with no participants, which members of <code>chatRoom</code> can join.
+     * Returns a <code>ConferenceDescription</code> that describes how the call can be joined.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> for which to set up a conference.
-     * @return a <tt>ConferenceDescription</tt> corresponding to the created conference.
+     * @param chatRoom the <code>ChatRoom</code> for which to set up a conference.
+     * @return a <code>ConferenceDescription</code> corresponding to the created conference.
      */
     public ConferenceDescription setupConference(ChatRoom chatRoom);
 }

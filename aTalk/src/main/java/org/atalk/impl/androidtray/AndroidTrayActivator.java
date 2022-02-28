@@ -26,7 +26,7 @@ public class AndroidTrayActivator implements BundleActivator
     public static BundleContext bundleContext;
 
     /**
-     * <tt>SystrayServiceImpl</tt> instance.
+     * <code>SystrayServiceImpl</code> instance.
      */
     private SystrayServiceImpl systrayService;
 

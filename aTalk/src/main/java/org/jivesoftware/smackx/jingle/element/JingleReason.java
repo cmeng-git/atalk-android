@@ -1,92 +1,171 @@
-/*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+/**
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * Copyright 2017-2022 Florian Schmaus
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The <tt>reason</tt> element provides human or machine-readable information explaining what
- * prompted the <tt>action</tt> of the encapsulating <tt>jingle</tt> element.
+ * The Jingle 'reason' element.
  *
- * @author Emil Ivov
- * @author Lyubomir Marinov
- * @author Eng Chong Meng
+ * @see <a href="https://xmpp.org/extensions/xep-0166.html#def-reason">XEP-0166 § 7.4</a>
+ *
  */
-
-public class JingleReason implements ExtensionElement
+public class JingleReason implements FullyQualifiedElement
 {
-    /**
-     * The name space (or rather lack thereof ) that the reason element belongs to.
-     */
-    public static final String NAMESPACE = "";
 
-    /**
-     * The name of the "content" element.
-     */
     public static final String ELEMENT = "reason";
-
-    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+    public static final String NAMESPACE = Jingle.NAMESPACE;
 
     /**
      * The name of the text element.
      */
     public static final String TEXT_ELEMENT = "text";
 
-    /**
-     * The reason that this packet extension is transporting.
-     */
-    private final Reason reason;
+    public static AlternativeSession AlternativeSession(String sessionId)
+    {
+        return new AlternativeSession(sessionId);
+    }
+
+    public static final JingleReason Busy = new JingleReason(Reason.busy);
+    public static final JingleReason Cancel = new JingleReason(Reason.cancel);
+    public static final JingleReason ConnectivityError = new JingleReason(Reason.connectivity_error);
+    public static final JingleReason Decline = new JingleReason(Reason.decline);
+    public static final JingleReason Expired = new JingleReason(Reason.expired);
+    public static final JingleReason FailedApplication = new JingleReason(Reason.failed_application);
+    public static final JingleReason FailedTransport = new JingleReason(Reason.failed_transport);
+    public static final JingleReason GeneralError = new JingleReason(Reason.general_error);
+    public static final JingleReason Gone = new JingleReason(Reason.gone);
+    public static final JingleReason IncompatibleParameters = new JingleReason(Reason.incompatible_parameters);
+    public static final JingleReason MediaError = new JingleReason(Reason.media_error);
+    public static final JingleReason SecurityError = new JingleReason(Reason.security_error);
+    public static final JingleReason Success = new JingleReason(Reason.success);
+    public static final JingleReason Timeout = new JingleReason(Reason.timeout);
+    public static final JingleReason UnsupportedApplications = new JingleReason(Reason.unsupported_applications);
+    public static final JingleReason UnsupportedTransports = new JingleReason(Reason.unsupported_transports);
+
+    public enum Reason
+    {
+        alternative_session,
+        busy,
+        cancel,
+        connectivity_error,
+        decline,
+        expired,
+        failed_application,
+        failed_transport,
+        general_error,
+        gone,
+        incompatible_parameters,
+        media_error,
+        security_error,
+        success,
+        timeout,
+        unsupported_applications,
+        unsupported_transports,
+        ;
+
+        protected static final Map<String, Reason> LUT = new HashMap<>(Reason.values().length);
+
+        static {
+            for (Reason reason : Reason.values()) {
+                LUT.put(reason.toString(), reason);
+            }
+        }
+
+        protected final String asString;
+
+        Reason()
+        {
+            asString = name().replace('_', '-');
+        }
+
+        @Override
+        public String toString()
+        {
+            return asString;
+        }
+
+        public static Reason fromString(String string)
+        {
+            Reason reason = LUT.get(string);
+            if (reason == null) {
+                throw new IllegalArgumentException("Unknown reason: " + string);
+            }
+            return reason;
+        }
+    }
+
+    protected final Reason reason;
 
     /**
      * The content of the text element (if any) providing human-readable information about the reason for the action.
      */
-    private String text;
+    private final String text;
 
     /**
      * XEP-0166 mentions that the "reason" element MAY contain an element qualified by some other
      * namespace that provides more detailed machine- readable information about the reason for the action.
      */
-    private ExtensionElement otherExtension;
+    private final ExtensionElement element;
+
+    public JingleReason(Reason reason)
+    {
+        this(reason, null, null);
+    }
 
     /**
-     * Creates a new <tt>JingleReason</tt> instance with the specified reason String.
+     * Creates a new JingleReason instance with the specified reason String.
      *
      * @param reason the reason string that we'd like to transport in this packet extension, which may or
      * may not be one of the static strings defined here.
      * @param text an element providing human-readable information about the reason for the action or
-     * <tt>null</tt> if no such information is currently available.
-     * @param packetExtension any other element that MAY be providing further information or <tt>null</tt> if no
+     * <code>null</code> if no such information is currently available.
+     * @param stanzaExtension any other element that MAY be providing further information or <code>null</code> if no
      * such element has been specified.
      */
-    public JingleReason(Reason reason, String text, ExtensionElement packetExtension)
+    public JingleReason(Reason reason, String text, ExtensionElement element)
     {
         this.reason = reason;
         this.text = text;
-        this.otherExtension = packetExtension;
+        this.element = element;
     }
 
-    /**
-     * Returns the reason string that this packet extension is transporting.
-     *
-     * @return the reason string that this packet extension is transporting.
-     */
-    public Reason getReason()
+    @Override
+    public String getElementName()
     {
-        return reason;
+        return ELEMENT;
+    }
+
+    @Override
+    public String getNamespace()
+    {
+        return NAMESPACE;
     }
 
     /**
-     * Returns human-readable information about the reason for the action or <tt>null</tt> if no
+     * Returns human-readable information about the reason for the action or <code>null</code> if no
      * such information is currently available.
      *
-     * @return human-readable information about the reason for the action or <tt>null</tt> if no
+     * @return human-readable information about the reason for the action or <code>null</code> if no
      * such information is currently available.
      */
     public String getText()
@@ -95,87 +174,75 @@ public class JingleReason implements ExtensionElement
     }
 
     /**
-     * Sets the human-readable information about the reason for the action or <tt>null</tt> if no
-     * such information is currently available
+     * An optional element that provides more detailed machine-readable information about the reason for the action.
      *
-     * @param text the human-readable information about the reason for the action or <tt>null</tt> if no
-     * such information is currently available
+     * @return an element with machine-readable information about this reason or <code>null</code>.
+     * @since 4.4.5
      */
-    public void setText(String text)
-    {
-        this.text = text;
+    public ExtensionElement getElement() {
+        return element;
     }
 
-    /**
-     * Returns an extra extension containing further info about this action or <tt>null</tt> if no
-     * such extension has been specified. This method returns the extension that XEP-0166 refers to
-     * the following way: the "reason" element MAY contain an element qualified by some other
-     * namespace that provides more detailed machine-readable information about the reason for the
-     * action.
-     *
-     * @return an extra extension containing further info about this action or <tt>null</tt> if no
-     * such extension has been specified.
-     */
-    public ExtensionElement getOtherExtension()
-    {
-        return otherExtension;
-    }
-
-    /**
-     * Sets the extra extension containing further info about this action or <tt>null</tt> if no
-     * such extension has been specified.
-     *
-     * @param otherExtension the extra extension containing further info about this action or <tt>null</tt> if no
-     * such extension has been specified
-     */
-    public void setOtherExtension(ExtensionElement otherExtension)
-    {
-        this.otherExtension = otherExtension;
-    }
-
-    /**
-     * Returns the root element name.
-     *
-     * @return the element name.
-     */
-    public String getElementName()
-    {
-        return ELEMENT;
-    }
-
-    /**
-     * Returns the root element XML namespace.
-     *
-     * @return the namespace.
-     */
-    public String getNamespace()
-    {
-        return NAMESPACE;
-    }
-
-    /**
-     * Returns the XML representation of the ExtensionElement.
-     *
-     * @return the packet extension as XML.
-     */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment)
     {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.openElement(getElementName());
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
+        xml.rightAngleBracket();
 
-        xml.halfOpenElement(getReason().toString());
-        xml.closeEmptyElement();
+        xml.emptyElement(reason);
 
         // add reason "text" if we have it
-        xml.optElement(TEXT_ELEMENT, getText());
+        xml.optElement(TEXT_ELEMENT, text);
 
         // add the extra element if it has been specified.
-        if (getOtherExtension() != null) {
-            xml.append(getOtherExtension().toXML(XmlEnvironment.EMPTY));
+        xml.optAppend(element);
+
+        xml.closeElement(this);
+        return xml;
+    }
+
+    public Reason asEnum()
+    {
+        return reason;
+    }
+
+    public static class AlternativeSession extends JingleReason
+    {
+        public static final String SID = "sid";
+        private final String sessionId;
+
+        public AlternativeSession(String sessionId) {
+            this(sessionId, null, null);
         }
 
-        xml.closeElement(getElementName());
-        return xml;
+        public AlternativeSession(String sessionId, String text, ExtensionElement element)
+        {
+            super(Reason.alternative_session, text, element);
+            if (StringUtils.isNullOrEmpty(sessionId)) {
+                throw new NullPointerException("SessionID must not be null or empty.");
+            }
+            this.sessionId = sessionId;
+        }
+
+        @Override
+        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
+        {
+            XmlStringBuilder xml = new XmlStringBuilder(this);
+            xml.rightAngleBracket();
+
+            xml.openElement(reason.asString);
+            xml.openElement(SID);
+            xml.append(sessionId);
+            xml.closeElement(SID);
+            xml.closeElement(reason.asString);
+
+            xml.closeElement(this);
+            return xml;
+        }
+
+        public String getAlternativeSessionId()
+        {
+            return sessionId;
+        }
     }
 }

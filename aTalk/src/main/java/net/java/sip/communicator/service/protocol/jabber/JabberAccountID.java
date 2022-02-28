@@ -34,7 +34,7 @@ public class JabberAccountID extends AccountID
     private static final String JBR_DEFAULT_PREFIX = AccountID.DEFAULT_PREFIX + "jabber.";
 
     /**
-     * Uses anonymous XMPP login if set to <tt>true</tt>.
+     * Uses anonymous XMPP login if set to <code>true</code>.
      */
     public static final String ANONYMOUS_AUTH = "ANONYMOUS_AUTH";
 
@@ -138,7 +138,7 @@ public class JabberAccountID extends AccountID
      * Returns the BOSH URL which should be used to connect to the XMPP server.
      * The value must not be null if BOSH transport is enabled.
      *
-     * @return a <tt>String</tt> with the URL which should be used for BOSH transport
+     * @return a <code>String</code> with the URL which should be used for BOSH transport
      */
     public String getBoshUrl()
     {
@@ -148,7 +148,7 @@ public class JabberAccountID extends AccountID
     /**
      * Sets new URL which should be used for the BOSH transport.
      *
-     * @param boshPath a <tt>String</tt> with the new BOSH URL
+     * @param boshPath a <code>String</code> with the new BOSH URL
      */
     public void setBoshUrl(String boshPath)
     {
@@ -158,7 +158,7 @@ public class JabberAccountID extends AccountID
     /**
      * Returns true is Type is BOSH else false.
      *
-     * @return <tt>true</tt> if (Type == BOSH) else false
+     * @return <code>true</code> if (Type == BOSH) else false
      */
     public boolean isBOSHEnable()
     {
@@ -168,7 +168,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if HTTP proxy should be used for with BOSH protocol. Only HTTP proxy is supported for BOSH
      *
-     * @return <tt>true</tt> if Bosh Http Proxy should be used, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if Bosh Http Proxy should be used, otherwise returns <code>false</code>
      */
     public boolean isBoshHttpProxyEnabled()
     {
@@ -228,7 +228,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates whether anonymous authorization method is used by this account.
      *
-     * @return <tt>true</tt> if anonymous login is enabled on this account.
+     * @return <code>true</code> if anonymous login is enabled on this account.
      */
     public boolean isAnonymousAuthUsed()
     {
@@ -248,7 +248,7 @@ public class JabberAccountID extends AccountID
     /**
      * Determines whether SIP Communicator should be querying Gmail servers for unread mail messages.
      *
-     * @return <tt>true</tt> if we are to enable Gmail notifications and <tt>false</tt> otherwise.
+     * @return <code>true</code> if we are to enable Gmail notifications and <code>false</code> otherwise.
      */
     public boolean isGmailNotificationEnabled()
     {
@@ -258,7 +258,7 @@ public class JabberAccountID extends AccountID
     /**
      * Determines whether SIP Communicator should use Google Contacts as ContactSource
      *
-     * @return <tt>true</tt> if we are to enable Google Contacts and <tt>false</tt> otherwise.
+     * @return <code>true</code> if we are to enable Google Contacts and <code>false</code> otherwise.
      */
     public boolean isGoogleContactsEnabled()
     {
@@ -268,7 +268,7 @@ public class JabberAccountID extends AccountID
     /**
      * Enables anonymous authorization mode on this XMPP account.
      *
-     * @param useAnonymousAuth <tt>true</tt> to use anonymous login.
+     * @param useAnonymousAuth <code>true</code> to use anonymous login.
      */
     public void setUseAnonymousAuth(boolean useAnonymousAuth)
     {
@@ -318,7 +318,7 @@ public class JabberAccountID extends AccountID
     /**
      * Specifies whether SIP Communicator should be querying Gmail servers for unread mail messages.
      *
-     * @param enabled <tt>true</tt> if we are to enable Gmail notification and <tt>false</tt> otherwise.
+     * @param enabled <code>true</code> if we are to enable Gmail notification and <code>false</code> otherwise.
      */
     public void setGmailNotificationEnabled(boolean enabled)
     {
@@ -328,7 +328,7 @@ public class JabberAccountID extends AccountID
     /**
      * Specifies whether SIP Communicator should use Google Contacts as ContactSource.
      *
-     * @param enabled <tt>true</tt> if we are to enable Google Contacts and <tt>false</tt> otherwise.
+     * @param enabled <code>true</code> if we are to enable Google Contacts and <code>false</code> otherwise.
      */
     public void setGoogleContactsEnabled(boolean enabled)
     {
@@ -378,7 +378,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if ice should be used for this account.
      *
-     * @return <tt>true</tt> if ICE should be used for this account, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if ICE should be used for this account, otherwise returns <code>false</code>
      */
     public boolean isUseIce()
     {
@@ -386,9 +386,9 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>useIce</tt> property.
+     * Sets the <code>useIce</code> property.
      *
-     * @param isUseIce <tt>true</tt> to indicate that ICE should be used for this account, <tt>false</tt> -
+     * @param isUseIce <code>true</code> to indicate that ICE should be used for this account, <code>false</code> -
      * otherwise.
      */
     public void setUseIce(boolean isUseIce)
@@ -399,7 +399,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if the stun server should be automatically discovered.
      *
-     * @return <tt>true</tt> if the stun server should be automatically discovered,
+     * @return <code>true</code> if the stun server should be automatically discovered,
      * otherwise false if serverOverride is enabled; serviceDomain is likely not reachable.
      */
     public boolean isAutoDiscoverStun()
@@ -408,9 +408,9 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>autoDiscoverStun</tt> property.
+     * Sets the <code>autoDiscoverStun</code> property.
      *
-     * @param isAutoDiscover <tt>true</tt> to indicate that stun server should be auto-discovered, <tt>false</tt> -
+     * @param isAutoDiscover <code>true</code> to indicate that stun server should be auto-discovered, <code>false</code> -
      * otherwise.
      */
     public void setAutoDiscoverStun(boolean isAutoDiscover)
@@ -419,10 +419,10 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>useDefaultStunServer</tt> property.
+     * Sets the <code>useDefaultStunServer</code> property.
      *
-     * @param isUseDefaultStunServer <tt>true</tt> to indicate that default stun server should be used if no others are
-     * available, <tt>false</tt> otherwise.
+     * @param isUseDefaultStunServer <code>true</code> to indicate that default stun server should be used if no others are
+     * available, <code>false</code> otherwise.
      */
     public void setUseDefaultStunServer(boolean isUseDefaultStunServer)
     {
@@ -430,10 +430,10 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>autoDiscoverJingleNodes</tt> property.
+     * Sets the <code>autoDiscoverJingleNodes</code> property.
      *
-     * @param isAutoDiscoverJingleNodes <tt>true</tt> to indicate that relay server should be auto-discovered,
-     * <tt>false</tt> - otherwise.
+     * @param isAutoDiscoverJingleNodes <code>true</code> to indicate that relay server should be auto-discovered,
+     * <code>false</code> - otherwise.
      */
     public void setAutoDiscoverJingleNodes(boolean isAutoDiscoverJingleNodes)
     {
@@ -443,7 +443,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if the JingleNodes relay server should be automatically discovered.
      *
-     * @return <tt>true</tt> if the relay server should be automatically discovered, otherwise returns <tt>false</tt>.
+     * @return <code>true</code> if the relay server should be automatically discovered, otherwise returns <code>false</code>.
      */
     public boolean isAutoDiscoverJingleNodes()
     {
@@ -451,10 +451,10 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>useJingleNodes</tt> property.
+     * Sets the <code>useJingleNodes</code> property.
      *
-     * @param isUseJingleNodes <tt>true</tt> to indicate that Jingle Nodes should be used for this account,
-     * <tt>false</tt> - otherwise.
+     * @param isUseJingleNodes <code>true</code> to indicate that Jingle Nodes should be used for this account,
+     * <code>false</code> - otherwise.
      */
     public void setUseJingleNodes(boolean isUseJingleNodes)
     {
@@ -464,7 +464,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if JingleNodes relay should be used.
      *
-     * @return <tt>true</tt> if JingleNodes should be used, <tt>false</tt> otherwise
+     * @return <code>true</code> if JingleNodes should be used, <code>false</code> otherwise
      */
     public boolean isUseJingleNodes()
     {
@@ -474,7 +474,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if UPnP should be used for this account.
      *
-     * @return <tt>true</tt> if UPnP should be used for this account, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if UPnP should be used for this account, otherwise returns <code>false</code>
      */
     public boolean isUseUPNP()
     {
@@ -482,9 +482,9 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>useUPNP</tt> property.
+     * Sets the <code>useUPNP</code> property.
      *
-     * @param isUseUPNP <tt>true</tt> to indicate that UPnP should be used for this account, <tt>false</tt> - otherwise.
+     * @param isUseUPNP <code>true</code> to indicate that UPnP should be used for this account, <code>false</code> - otherwise.
      */
     public void setUseUPNP(boolean isUseUPNP)
     {
@@ -502,7 +502,7 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>minimumTLSversion</tt> property.
+     * Sets the <code>minimumTLSversion</code> property.
      *
      * @param minimumTLSversion minimum TLS protocol version
      */
@@ -514,7 +514,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if non-TLS is allowed for this account
      *
-     * @return <tt>true</tt> if non-TLS is allowed for this account, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if non-TLS is allowed for this account, otherwise returns <code>false</code>
      */
     public boolean isAllowNonSecure()
     {
@@ -522,9 +522,9 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>isAllowNonSecure</tt> property.
+     * Sets the <code>isAllowNonSecure</code> property.
      *
-     * @param isAllowNonSecure <tt>true</tt> to indicate that non-TLS is allowed for this account, <tt>false</tt> otherwise.
+     * @param isAllowNonSecure <code>true</code> to indicate that non-TLS is allowed for this account, <code>false</code> otherwise.
      */
     public void setAllowNonSecure(boolean isAllowNonSecure)
     {
@@ -534,7 +534,7 @@ public class JabberAccountID extends AccountID
     /**
      * Indicates if message carbons are allowed for this account
      *
-     * @return <tt>true</tt> if message carbons are allowed for this account, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if message carbons are allowed for this account, otherwise returns <code>false</code>
      */
     public boolean isCarbonDisabled()
     {
@@ -542,10 +542,10 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Sets the <tt>IS_CARBON_DISABLED</tt> property.
+     * Sets the <code>IS_CARBON_DISABLED</code> property.
      *
-     * @param isCarbonEnabled <tt>true</tt> to indicate that message carbons are allowed for this account,
-     * <tt>false</tt> otherwise.
+     * @param isCarbonEnabled <code>true</code> to indicate that message carbons are allowed for this account,
+     * <code>false</code> otherwise.
      */
     public void setDisableCarbon(boolean isCarbonEnabled)
     {
@@ -565,8 +565,8 @@ public class JabberAccountID extends AccountID
     /**
      * Set whether resource auto generation is enabled.
      *
-     * @param resourceAutoGenerated <tt>true</tt> to indicate that the resource is to be auto generated,
-     * <tt>false</tt> otherwise.
+     * @param resourceAutoGenerated <code>true</code> to indicate that the resource is to be auto generated,
+     * <code>false</code> otherwise.
      */
     public void setResourceAutoGenerated(boolean resourceAutoGenerated)
     {
@@ -637,8 +637,8 @@ public class JabberAccountID extends AccountID
     /**
      * Determines whether this account's provider is supposed to auto discover JingleNodes relay.
      *
-     * @return <tt>true</tt> if this provider would need to discover JingleNodes relay,
-     * <tt>false</tt> otherwise
+     * @return <code>true</code> if this provider would need to discover JingleNodes relay,
+     * <code>false</code> otherwise
      */
     public boolean isJingleNodesAutoDiscoveryEnabled()
     {
@@ -649,8 +649,8 @@ public class JabberAccountID extends AccountID
      * Determines whether this account's provider is supposed to auto discover JingleNodes relay by
      * searching our contacts.
      *
-     * @return <tt>true</tt> if this provider would need to discover JingleNodes relay by searching
-     * buddies, <tt>false</tt> otherwise
+     * @return <code>true</code> if this provider would need to discover JingleNodes relay by searching
+     * buddies, <code>false</code> otherwise
      */
     public boolean isJingleNodesSearchBuddiesEnabled()
     {
@@ -660,8 +660,8 @@ public class JabberAccountID extends AccountID
     /**
      * Determines whether this account's provider uses JingleNodes relay (if available).
      *
-     * @return <tt>true</tt> if this provider would use JingleNodes relay (if available),
-     * <tt>false</tt> otherwise
+     * @return <code>true</code> if this provider would use JingleNodes relay (if available),
+     * <code>false</code> otherwise
      */
     public boolean isJingleNodesRelayEnabled()
     {
@@ -677,10 +677,10 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Gets default property value for given <tt>key</tt>.
+     * Gets default property value for given <code>key</code>.
      *
      * @param key the property key
-     * @return default property value for given<tt>key</tt>
+     * @return default property value for given<code>key</code>
      */
     public static String getDefaultStr(String key)
     {
@@ -693,10 +693,10 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Gets default boolean property value for given <tt>key</tt>.
+     * Gets default boolean property value for given <code>key</code>.
      *
      * @param key the property key
-     * @return default property value for given<tt>key</tt>
+     * @return default property value for given<code>key</code>
      */
     public static boolean getDefaultBool(String key)
     {

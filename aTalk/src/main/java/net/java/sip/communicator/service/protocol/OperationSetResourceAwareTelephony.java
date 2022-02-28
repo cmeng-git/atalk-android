@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.protocol;
 
 /**
- * The <tt>OperationSetResourceAwareTelephony</tt> defines methods for creating a call toward a
+ * The <code>OperationSetResourceAwareTelephony</code> defines methods for creating a call toward a
  * specific resource, from which a callee is connected.
  *
  * @author Yana Stamcheva
@@ -14,15 +14,15 @@ package net.java.sip.communicator.service.protocol;
 public interface OperationSetResourceAwareTelephony extends OperationSet
 {
 	/**
-	 * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> given by her
-	 * <tt>Contact</tt> on a specific <tt>ContactResource</tt> to it.
+	 * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> given by her
+	 * <code>Contact</code> on a specific <code>ContactResource</code> to it.
 	 *
 	 * @param callee
 	 *        the address of the callee who we should invite to a new call
 	 * @param calleeResource
 	 *        the specific resource to which the invite should be sent
-	 * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-	 *         <tt>Call</tt> as a <tt>CallPeer</tt>
+	 * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+	 *         <code>Call</code> as a <code>CallPeer</code>
 	 * @throws OperationFailedException
 	 *         with the corresponding code if we fail to create the call
 	 */
@@ -30,15 +30,15 @@ public interface OperationSetResourceAwareTelephony extends OperationSet
 		throws OperationFailedException;
 
 	/**
-	 * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> given by her
-	 * <tt>Contact</tt> on a specific <tt>ContactResource</tt> to it.
+	 * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> given by her
+	 * <code>Contact</code> on a specific <code>ContactResource</code> to it.
 	 *
 	 * @param callee
 	 *        the address of the callee who we should invite to a new call
 	 * @param calleeResource
 	 *        the specific resource to which the invite should be sent
-	 * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-	 *         <tt>Call</tt> as a <tt>CallPeer</tt>
+	 * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+	 *         <code>Call</code> as a <code>CallPeer</code>
 	 * @throws OperationFailedException
 	 *         with the corresponding code if we fail to create the call
 	 */
@@ -46,17 +46,17 @@ public interface OperationSetResourceAwareTelephony extends OperationSet
 		throws OperationFailedException;
 
 	/**
-	 * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her
-	 * <tt>String</tt> URI.
+	 * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her
+	 * <code>String</code> URI.
 	 *
 	 * @param uri
-	 *        the address of the callee who we should invite to a new <tt>Call</tt>
+	 *        the address of the callee who we should invite to a new <code>Call</code>
 	 * @param calleeResource
 	 *        the specific resource to which the invite should be sent
 	 * @param conference
-	 *        the <tt>CallConference</tt> in which the newly-created <tt>Call</tt> is to participate
-	 * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-	 *         <tt>Call</tt> as a <tt>CallPeer</tt>
+	 *        the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+	 * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+	 *         <code>Call</code> as a <code>CallPeer</code>
 	 * @throws OperationFailedException
 	 *         with the corresponding code if we fail to create the call
 	 */
@@ -64,17 +64,17 @@ public interface OperationSetResourceAwareTelephony extends OperationSet
 		throws OperationFailedException;
 
 	/**
-	 * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> given by her
-	 * <tt>Contact</tt> to it.
+	 * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> given by her
+	 * <code>Contact</code> to it.
 	 *
 	 * @param callee
 	 *        the address of the callee who we should invite to a new call
 	 * @param calleeResource
 	 *        the specific resource to which the invite should be sent
 	 * @param conference
-	 *        the <tt>CallConference</tt> in which the newly-created <tt>Call</tt> is to participate
-	 * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-	 *         <tt>Call</tt> as a <tt>CallPeer</tt>
+	 *        the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+	 * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+	 *         <code>Call</code> as a <code>CallPeer</code>
 	 * @throws OperationFailedException
 	 *         with the corresponding code if we fail to create the call
 	 */

@@ -45,14 +45,14 @@ public interface OperationSetUserSearch extends OperationSet
 	public List<CharSequence> search(String searchedString);
 
 	/**
-	 * Returns <tt>true</tt> if the user search service is enabled.
+	 * Returns <code>true</code> if the user search service is enabled.
 	 *
-	 * @return <tt>true</tt> if the user search service is enabled.
+	 * @return <code>true</code> if the user search service is enabled.
 	 */
 	public boolean isEnabled();
 
 	/**
-	 * Adds <tt>UserSearchProviderListener</tt> instance to the list of listeners.
+	 * Adds <code>UserSearchProviderListener</code> instance to the list of listeners.
 	 *
 	 * @param l
 	 *        the listener to be added
@@ -60,7 +60,7 @@ public interface OperationSetUserSearch extends OperationSet
 	public void addUserSearchProviderListener(UserSearchProviderListener l);
 
 	/**
-	 * Removes <tt>UserSearchProviderListener</tt> instance from the list of listeners.
+	 * Removes <code>UserSearchProviderListener</code> instance from the list of listeners.
 	 *
 	 * @param l
 	 *        the listener to be removed

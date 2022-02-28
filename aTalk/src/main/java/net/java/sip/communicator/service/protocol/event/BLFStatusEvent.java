@@ -23,25 +23,25 @@ import java.util.*;
 public class BLFStatusEvent extends EventObject
 {
 	/**
-	 * Indicates that the <tt>BLFStatusEvent</tt> instance was triggered by the change of the line
+	 * Indicates that the <code>BLFStatusEvent</code> instance was triggered by the change of the line
 	 * to offline.
 	 */
 	public static final int STATUS_OFFLINE = 0;
 
 	/**
-	 * Indicates that the <tt>BLFStatusEvent</tt> instance was triggered by the change of the line
+	 * Indicates that the <code>BLFStatusEvent</code> instance was triggered by the change of the line
 	 * to ringing or setting up the call.
 	 */
 	public static final int STATUS_RINGING = 1;
 
 	/**
-	 * Indicates that the <tt>BLFStatusEvent</tt> instance was triggered by the change of the line
+	 * Indicates that the <code>BLFStatusEvent</code> instance was triggered by the change of the line
 	 * to busy, someone is on the phone.
 	 */
 	public static final int STATUS_BUSY = 2;
 
 	/**
-	 * Indicates that the <tt>BLFStatusEvent</tt> instance was triggered by the change of the line
+	 * Indicates that the <code>BLFStatusEvent</code> instance was triggered by the change of the line
 	 * to available, free, no one is using it.
 	 */
 	public static final int STATUS_FREE = 3;

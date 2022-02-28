@@ -11,7 +11,7 @@ import net.java.sip.communicator.util.SimpleServiceActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Activator of <tt>VerifyCertificateDialogService</tt> Android implementation.
+ * Activator of <code>VerifyCertificateDialogService</code> Android implementation.
  *
  * @author Pawel Domas
  */
@@ -41,10 +41,10 @@ public class CertificateDialogActivator extends SimpleServiceActivator<Certifica
     public static CertificateDialogServiceImpl impl;
 
     /**
-     * Gets the <tt>VerifyCertDialog</tt> for given <tt>requestId</tt>.
+     * Gets the <code>VerifyCertDialog</code> for given <code>requestId</code>.
      *
-     * @param requestId identifier of the request managed by <tt>CertificateDialogServiceImpl</tt>.
-     * @return <tt>VerifyCertDialog</tt> for given <tt>requestId</tt> or <tt>null</tt> if service has been shutdown.
+     * @param requestId identifier of the request managed by <code>CertificateDialogServiceImpl</code>.
+     * @return <code>VerifyCertDialog</code> for given <code>requestId</code> or <code>null</code> if service has been shutdown.
      */
     public static VerifyCertDialog getDialog(Long requestId)
     {

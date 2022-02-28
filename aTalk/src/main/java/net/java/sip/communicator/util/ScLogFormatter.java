@@ -41,12 +41,12 @@ public class ScLogFormatter extends java.util.logging.Formatter
     private static String lineSeparator = System.getProperty("line.separator");
 
     /**
-     * Two digit <tt>DecimalFormat</tt> instance, used to format datetime
+     * Two digit <code>DecimalFormat</code> instance, used to format datetime
      */
     private static DecimalFormat twoDigFmt = new DecimalFormat("00");
 
     /**
-     * Three digit <tt>DecimalFormat</tt> instance, used to format datetime
+     * Three digit <code>DecimalFormat</code> instance, used to format datetime
      */
     private static DecimalFormat threeDigFmt = new DecimalFormat("000");
 
@@ -61,7 +61,7 @@ public class ScLogFormatter extends java.util.logging.Formatter
     private static boolean timestampDisabled = false;
 
     /**
-     * The default constructor for <tt>ScLogFormatter</tt> which loads
+     * The default constructor for <code>ScLogFormatter</code> which loads
      * program name property from logging.properties file, if it exists
      */
     public ScLogFormatter()

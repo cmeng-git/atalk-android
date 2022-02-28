@@ -32,9 +32,9 @@ public class MetaContactAvatarUpdateEvent extends MetaContactPropertyChangeEvent
     /**
      * Creates an instance of this event using the specified arguments.
      *
-     * @param source the <tt>MetaContact</tt> that this event is about.
+     * @param source the <code>MetaContact</code> that this event is about.
      * @param oldAvatar the new avatar just of this meta contact.
-     * @param newAvatar the old avatar that just got replaced or <tt>null</tt>.
+     * @param newAvatar the old avatar that just got replaced or <code>null</code>.
      */
     public MetaContactAvatarUpdateEvent(MetaContact source, byte[] oldAvatar, byte[] newAvatar)
     {

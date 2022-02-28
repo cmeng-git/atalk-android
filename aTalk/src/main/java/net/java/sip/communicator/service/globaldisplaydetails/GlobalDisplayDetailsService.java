@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalDispla
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 /**
- * The <tt>GlobalDisplayNameService</tt> offers generic access to a global display name and an
+ * The <code>GlobalDisplayNameService</code> offers generic access to a global display name and an
  * avatar for the local user. It could be used to show or set the local user display name or avatar.
  * <p>
  * A global display name implementation could determine the information by going through all
@@ -37,18 +37,18 @@ public interface GlobalDisplayDetailsService
     byte[] getDisplayAvatar(ProtocolProviderService provider);
 
     /**
-     * Adds the given <tt>GlobalDisplayDetailsListener</tt> to listen for change events concerning
+     * Adds the given <code>GlobalDisplayDetailsListener</code> to listen for change events concerning
      * the global display details.
      *
-     * @param l the <tt>GlobalDisplayDetailsListener</tt> to add
+     * @param l the <code>GlobalDisplayDetailsListener</code> to add
      */
     void addGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l);
 
     /**
-     * Removes the given <tt>GlobalDisplayDetailsListener</tt> listening for change events
+     * Removes the given <code>GlobalDisplayDetailsListener</code> listening for change events
      * concerning the global display details.
      *
-     * @param l the <tt>GlobalDisplayDetailsListener</tt> to remove
+     * @param l the <code>GlobalDisplayDetailsListener</code> to remove
      */
     void removeGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l);
 }

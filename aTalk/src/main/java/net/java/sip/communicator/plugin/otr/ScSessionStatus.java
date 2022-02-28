@@ -7,7 +7,7 @@
 package net.java.sip.communicator.plugin.otr;
 
 /**
- * Extends otr4j's <tt>SessionStatus</tt> with two additional states.
+ * Extends otr4j's <code>SessionStatus</code> with two additional states.
  *
  * @author Marin Dzhigarov
  * @author Eng Chong Meng

@@ -40,14 +40,14 @@ public class SubscriptionMovedEvent extends EventObject
 	 * Creates an event instance with the specified source contact and old and new parent.
 	 *
 	 * @param sourceContact
-	 *        the <tt>Contact</tt> that has been moved.
+	 *        the <code>Contact</code> that has been moved.
 	 * @param sourceProvider
-	 *        a reference to the <tt>ProtocolProviderService</tt> that the source <tt>Contact</tt>
+	 *        a reference to the <code>ProtocolProviderService</code> that the source <code>Contact</code>
 	 *        belongs to.
 	 * @param oldParent
-	 *        the <tt>ContactGroup</tt> that has previously been the parent
+	 *        the <code>ContactGroup</code> that has previously been the parent
 	 * @param newParent
-	 *        the new <tt>ContactGroup</tt> parent of <tt>sourceContact</tt>
+	 *        the new <code>ContactGroup</code> parent of <code>sourceContact</code>
 	 */
 	public SubscriptionMovedEvent(Contact sourceContact, ProtocolProviderService sourceProvider,
 		ContactGroup oldParent, ContactGroup newParent)
@@ -61,7 +61,7 @@ public class SubscriptionMovedEvent extends EventObject
 	/**
 	 * Returns a reference to the contact that has been moved.
 	 * 
-	 * @return a reference to the <tt>Contact</tt> that has been moved.
+	 * @return a reference to the <code>Contact</code> that has been moved.
 	 */
 	public Contact getSourceContact()
 	{
@@ -72,8 +72,8 @@ public class SubscriptionMovedEvent extends EventObject
 	 * Returns a reference to the ContactGroup that contained the source contact before it was
 	 * moved.
 	 * 
-	 * @return a reference to the previous <tt>ContactGroup</tt> parent of the source
-	 *         <tt>Contact</tt>.
+	 * @return a reference to the previous <code>ContactGroup</code> parent of the source
+	 *         <code>Contact</code>.
 	 */
 	public ContactGroup getOldParentGroup()
 	{
@@ -83,8 +83,8 @@ public class SubscriptionMovedEvent extends EventObject
 	/**
 	 * Returns a reference to the ContactGroup that currently contains the source contact.
 	 *
-	 * @return a reference to the current <tt>ContactGroup</tt> parent of the source
-	 *         <tt>Contact</tt>.
+	 * @return a reference to the current <code>ContactGroup</code> parent of the source
+	 *         <code>Contact</code>.
 	 */
 	public ContactGroup getNewParentGroup()
 	{

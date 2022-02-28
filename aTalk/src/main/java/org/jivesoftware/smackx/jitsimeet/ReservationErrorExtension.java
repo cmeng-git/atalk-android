@@ -28,14 +28,14 @@ import javax.xml.namespace.QName;
 public class ReservationErrorExtension extends AbstractExtensionElement
 {
     /**
-     * XML namespace of this packets extension.
-     */
-    public static final String NAMESPACE = ConferenceIq.NAMESPACE;
-
-    /**
      * XML element name of this packets extension.
      */
     public static final String ELEMENT = "reservation-error";
+
+    /**
+     * XML namespace of this packets extension.
+     */
+    public static final String NAMESPACE = ConferenceIq.NAMESPACE;
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
@@ -43,10 +43,10 @@ public class ReservationErrorExtension extends AbstractExtensionElement
      * The name of XML attribute that holds error code returned by
      * the reservation system.
      */
-    public static final String ERROR_CODE_ATTR_NAME = "error-code";
+    public static final String ATTR_ERROR_CODE = "error-code";
 
     /**
-     * Creates new instance of <tt>ReservationErrorExtensionElement</tt>.
+     * Creates new instance of <code>ReservationErrorExtensionElement</code>.
      */
     public ReservationErrorExtension()
     {
@@ -54,7 +54,7 @@ public class ReservationErrorExtension extends AbstractExtensionElement
     }
 
     /**
-     * Creates new instance of <tt>ReservationErrorExtensionElement</tt>.
+     * Creates new instance of <code>ReservationErrorExtensionElement</code>.
      */
     public ReservationErrorExtension(int code)
     {
@@ -65,24 +65,24 @@ public class ReservationErrorExtension extends AbstractExtensionElement
     /**
      * Sets new value for error code attribute.
      *
-     * @param code error code value to set or <tt>-1</tt> to remove
+     * @param code error code value to set or <code>-1</code> to remove
      * the attribute.
      */
     public void setErrorCode(int code)
     {
         if (code == -1) {
-            setAttribute(ERROR_CODE_ATTR_NAME, null);
+            removeAttribute(ATTR_ERROR_CODE);
         }
         else {
-            setAttribute(ERROR_CODE_ATTR_NAME, code);
+            setAttribute(ATTR_ERROR_CODE, code);
         }
     }
 
     /**
-     * Returns error code attribute value or <tt>-1</tt> if is unspecified.
+     * Returns error code attribute value or <code>-1</code> if is unspecified.
      */
     public int getErrorCode()
     {
-        return getAttributeAsInt(ERROR_CODE_ATTR_NAME, -1);
+        return getAttributeAsInt(ATTR_ERROR_CODE, -1);
     }
 }

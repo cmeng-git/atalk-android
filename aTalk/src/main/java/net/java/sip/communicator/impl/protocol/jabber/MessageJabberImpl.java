@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.AbstractMessage;
 import org.atalk.android.gui.chat.ChatMessage;
 
 /**
- * A simple implementation of the <tt>IMessage</tt> interface. Right now the message only supports
+ * A simple implementation of the <code>IMessage</code> interface. Right now the message only supports
  * test contents and no binary data.
  *
  * @author Damian Minkov

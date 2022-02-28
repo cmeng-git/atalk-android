@@ -17,22 +17,22 @@ public interface GoogleContactsService {
 	/**
 	 * Perform a search for a contact using regular expression.
 	 *
-	 * @param cnx <tt>GoogleContactsConnection</tt> to perform the query
+	 * @param cnx <code>GoogleContactsConnection</code> to perform the query
 	 * @param query Google query
 	 * @param count maximum number of matched contacts
 	 * @param callback object that will be notified for each new
-	 * <tt>GoogleContactsEntry</tt> found
-	 * @return list of <tt>GoogleContactsEntry</tt>
+	 * <code>GoogleContactsEntry</code> found
+	 * @return list of <code>GoogleContactsEntry</code>
 	 */
 	public List<GoogleContactsEntry> searchContact(GoogleContactsConnection cnx,
 			GoogleQuery query, int count, GoogleEntryCallback callback);
 
 	/**
-	 * Get a <tt>GoogleContactsConnection</tt>.
+	 * Get a <code>GoogleContactsConnection</code>.
 	 *
 	 * @param login login to connect to the service
 	 * @param password password to connect to the service
-	 * @return <tt>GoogleContactsConnection</tt>.
+	 * @return <code>GoogleContactsConnection</code>.
 	 */
 	public GoogleContactsConnection getConnection(String login,
 			String password);
@@ -40,13 +40,13 @@ public interface GoogleContactsService {
 	/**
 	 * Get the full contacts list.
 	 *
-	 * @return list of <tt>GoogleContactsEntry</tt>
+	 * @return list of <code>GoogleContactsEntry</code>
 	 */
 	public List<GoogleContactsEntry> getContacts();
 
 	/**
 	 * Add a contact source service with the specified
-	 * <tt>GoogleContactsConnection</tt>.
+	 * <code>GoogleContactsConnection</code>.
 	 *
 	 * @param login login
 	 * @param password password
@@ -55,9 +55,9 @@ public interface GoogleContactsService {
 
 	/**
 	 * Add a contact source service with the specified
-	 * <tt>GoogleContactsConnection</tt>.
+	 * <code>GoogleContactsConnection</code>.
 	 *
-	 * @param cnx <tt>GoogleContactsConnection</tt>
+	 * @param cnx <code>GoogleContactsConnection</code>
 	 * @param googleTalk if the contact source has been created as GoogleTalk
 	 * account or via external Google Contacts
 	 */
@@ -66,15 +66,15 @@ public interface GoogleContactsService {
 
 	/**
 	 * Remove a contact source service with the specified
-	 * <tt>GoogleContactsConnection</tt>.
+	 * <code>GoogleContactsConnection</code>.
 	 *
-	 * @param cnx <tt>GoogleContactsConnection</tt>.
+	 * @param cnx <code>GoogleContactsConnection</code>.
 	 */
 	public void removeContactSource(GoogleContactsConnection cnx);
 
 	/**
 	 * Remove a contact source service with the specified
-	 * <tt>GoogleContactsConnection</tt>.
+	 * <code>GoogleContactsConnection</code>.
 	 *
 	 * @param login login
 	 */

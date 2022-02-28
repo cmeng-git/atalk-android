@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.gui.Chat;
 import java.util.EventObject;
 
 /**
- * The <tt>ChatFocusEvent</tt> indicates that a <tt>Chat</tt> has gained or lost the current focus.
+ * The <code>ChatFocusEvent</code> indicates that a <code>Chat</code> has gained or lost the current focus.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -29,19 +29,19 @@ public class ChatFocusEvent extends EventObject
     private int eventID;
 
     /**
-     * Indicates that the ChatFocusEvent instance was triggered by <tt>Chat</tt> gaining the focus.
+     * Indicates that the ChatFocusEvent instance was triggered by <code>Chat</code> gaining the focus.
      */
     public static final int FOCUS_GAINED = 1;
 
     /**
-     * Indicates that the ChatFocusEvent instance was triggered by <tt>Chat</tt> losing the focus.
+     * Indicates that the ChatFocusEvent instance was triggered by <code>Chat</code> losing the focus.
      */
     public static final int FOCUS_LOST = 2;
 
     /**
-     * Creates a new <tt>ChatFocusEvent</tt> according to the specified parameters.
+     * Creates a new <code>ChatFocusEvent</code> according to the specified parameters.
      *
-     * @param source The <tt>Chat</tt> that triggers the event.
+     * @param source The <code>Chat</code> that triggers the event.
      * @param eventID one of the FOCUS_XXX static fields indicating the nature of the event.
      */
     public ChatFocusEvent(Object source, int eventID)
@@ -61,9 +61,9 @@ public class ChatFocusEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>Chat</tt> object that corresponds to this event.
+     * Returns the <code>Chat</code> object that corresponds to this event.
      *
-     * @return the <tt>Chat</tt> object that corresponds to this event
+     * @return the <code>Chat</code> object that corresponds to this event
      */
     public Chat getChat()
     {

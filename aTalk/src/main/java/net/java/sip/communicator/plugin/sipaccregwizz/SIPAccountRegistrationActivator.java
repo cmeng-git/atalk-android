@@ -19,7 +19,7 @@ import java.util.Hashtable;
 import static timber.log.Timber.e;
 
 /**
- * Registers the <tt>SIPAccountRegistrationWizard</tt> in the UI Service.
+ * Registers the <code>SIPAccountRegistrationWizard</code> in the UI Service.
  *
  * @author Yana Stamcheva
  */
@@ -71,9 +71,9 @@ public class SIPAccountRegistrationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ProtocolProviderFactory</tt> for the SIP protocol.
+     * Returns the <code>ProtocolProviderFactory</code> for the SIP protocol.
      *
-     * @return the <tt>ProtocolProviderFactory</tt> for the SIP protocol
+     * @return the <code>ProtocolProviderFactory</code> for the SIP protocol
      */
     public static ProtocolProviderFactory getSIPProtocolProviderFactory()
     {
@@ -97,10 +97,10 @@ public class SIPAccountRegistrationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> obtained from the bundle
+     * Returns the <code>ConfigurationService</code> obtained from the bundle
      * context.
      *
-     * @return the <tt>ConfigurationService</tt> obtained from the bundle
+     * @return the <code>ConfigurationService</code> obtained from the bundle
      * context
      */
     public static ConfigurationService getConfigurationService()
@@ -113,10 +113,10 @@ public class SIPAccountRegistrationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>CertificateService</tt> obtained from the bundle
+     * Returns the <code>CertificateService</code> obtained from the bundle
      * context.
      *
-     * @return the <tt>CertificateService</tt> obtained from the bundle
+     * @return the <code>CertificateService</code> obtained from the bundle
      * context
      */
     public static CertificateService getCertificateService()

@@ -36,7 +36,7 @@ import org.jxmpp.jid.EntityJid;
 public class InvitationReceivedDialog extends Dialog
 {
     /**
-     * The <tt>MultiUserChatManager</tt> is the one that deals with invitation events.
+     * The <code>MultiUserChatManager</code> is the one that deals with invitation events.
      */
     private ConferenceChatManager mMultiUserChatManager;
 
@@ -48,18 +48,18 @@ public class InvitationReceivedDialog extends Dialog
 
     /**
      * The operation set that would handle the rejection if the user choose to reject the
-     * invitation, in case of an <tt>AdHocChatRoom</tt>.
+     * invitation, in case of an <code>AdHocChatRoom</code>.
      */
     private OperationSetAdHocMultiUserChat mMultiUserChatAdHocOpSet = null;
 
     /**
-     * The <tt>ChatRoomInvitation</tt> for which this dialog is.
+     * The <code>ChatRoomInvitation</code> for which this dialog is.
      */
     private ChatRoomInvitation mInvitation = null;
 
     /**
-     * The <tt>AdHocChatRoomInvitation</tt> for which this dialog is, in case of an
-     * <tt>AdHocChatRoom</tt>.
+     * The <code>AdHocChatRoomInvitation</code> for which this dialog is, in case of an
+     * <code>AdHocChatRoom</code>.
      */
     private AdHocChatRoomInvitation mInvitationAdHoc = null;
 
@@ -70,10 +70,10 @@ public class InvitationReceivedDialog extends Dialog
     private String mReason;
 
     /**
-     * Constructs the <tt>ChatInviteDialog</tt>.
+     * Constructs the <code>ChatInviteDialog</code>.
      *
      * // @param multiUserChatManager
-     * the <tt>MultiUserChatManager</tt> is the one that deals with invitation events
+     * the <code>MultiUserChatManager</code> is the one that deals with invitation events
      *
      * @param multiUserChatOpSet the operation set that would handle the rejection if the user choose to reject the
      * invitation
@@ -93,10 +93,10 @@ public class InvitationReceivedDialog extends Dialog
     }
 
     /**
-     * Constructs the <tt>ChatInviteDialog</tt>, in case of an <tt>AdHocChatRoom</tt>.
+     * Constructs the <code>ChatInviteDialog</code>, in case of an <code>AdHocChatRoom</code>.
      *
      * // @param multiUserChatManager
-     * the <tt>MultiUserChatManager</tt> is the one that deals with invitation events
+     * the <code>MultiUserChatManager</code> is the one that deals with invitation events
      *
      * @param multiUserChatAdHocOpSet the operation set that would handle the rejection if the user choose to reject the
      * invitation
@@ -153,7 +153,7 @@ public class InvitationReceivedDialog extends Dialog
     }
 
     /**
-     * Handles the <tt>ActionEvent</tt> triggered when one user clicks on one of the buttons.
+     * Handles the <code>ActionEvent</code> triggered when one user clicks on one of the buttons.
      */
     private boolean onAcceptClicked()
     {

@@ -41,7 +41,7 @@ public class AvatarEvent extends EventObject
 
 	/**
 	 * Creates an event instance indicating that the specified protocol has changed its avatar to
-	 * <tt>newAvatar</tt>.
+	 * <code>newAvatar</code>.
 	 *
 	 * @param sourceOp
 	 *        the operation set that generated this event
@@ -79,9 +79,9 @@ public class AvatarEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>OperationSetAvatar</tt> instance that is the source of this event.
+	 * Returns the <code>OperationSetAvatar</code> instance that is the source of this event.
 	 *
-	 * @return the <tt>OperationSetAvatar</tt> instance that is the source of this event.
+	 * @return the <code>OperationSetAvatar</code> instance that is the source of this event.
 	 */
 	public OperationSetAvatar getSourceAvatarOperationSet()
 	{
@@ -91,7 +91,7 @@ public class AvatarEvent extends EventObject
 	/**
 	 * Returns a String representation of this AvatarEvent
 	 *
-	 * @return a <tt>String</tt> representation of this <tt>AvatarEvent</tt>.
+	 * @return a <code>String</code> representation of this <code>AvatarEvent</code>.
 	 */
 	@Override
 	public String toString()

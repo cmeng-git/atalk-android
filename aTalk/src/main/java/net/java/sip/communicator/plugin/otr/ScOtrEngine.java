@@ -107,14 +107,14 @@ public interface ScOtrEngine {
 	public abstract void refreshSession(OtrContact contact);
 
 	/**
-	 * Get the outgoing OTRv3 <tt>Session</tt>. This could be the 'master'
+	 * Get the outgoing OTRv3 <code>Session</code>. This could be the 'master'
 	 * session as well as a 'slave' session.
 	 * This method could also be safely used for OTRv2 sessions. In the case of
 	 * version 2 the master session itself will always be returned.
 	 *
 	 * @param contact the {@link OtrContact} for whom we want to get the
 	 * outgoing OTR session.
-	 * @return the <tt>Session</tt> that is currently transforming outgoing all
+	 * @return the <code>Session</code> that is currently transforming outgoing all
 	 * messages.
 	 */
 	public abstract Session getOutgoingSession(OtrContact contact);
@@ -143,7 +143,7 @@ public interface ScOtrEngine {
 	 * <p/>
 	 * When the client wishes to start sending OTRv3 encrypted messages to a
 	 * specific session of his buddy who is logged in multiple times, he can set
-	 * the outgoing instance of his buddy by specifying his <tt>InstanceTag</tt>.
+	 * the outgoing instance of his buddy by specifying his <code>InstanceTag</code>.
 	 *
 	 * @param contact the {@link OtrContact} to whom we want to set the outgoing
 	 * instance tag.
@@ -170,8 +170,8 @@ public interface ScOtrEngine {
 	 *
 	 * @param messageUID the messageUID which is to be determined whether it is
 	 * injected by the engine or not
-	 * @return <tt>true</tt> if the passed in messageUID is injected by the
-	 * engine; <tt>false</tt>, otherwise
+	 * @return <code>true</code> if the passed in messageUID is injected by the
+	 * engine; <code>false</code>, otherwise
 	 */
 	public abstract boolean isMessageUIDInjected(String messageUID);
 

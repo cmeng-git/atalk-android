@@ -135,9 +135,9 @@ public class ActionBarStatusFragment extends OSGiFragment
     }
 
     /**
-     * Creates the <tt>GlobalStatusMenu</tt>.
+     * Creates the <code>GlobalStatusMenu</code>.
      *
-     * @return the newly created <tt>GlobalStatusMenu</tt>
+     * @return the newly created <code>GlobalStatusMenu</code>
      */
     private GlobalStatusMenu createGlobalStatusMenu()
     {
@@ -192,7 +192,7 @@ public class ActionBarStatusFragment extends OSGiFragment
     }
 
     /**
-     * Publishes global status on separate thread to prevent <tt>NetworkOnMainThreadException</tt>.
+     * Publishes global status on separate thread to prevent <code>NetworkOnMainThreadException</code>.
      *
      * @param newStatus new global status to set.
      */

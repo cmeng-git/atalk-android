@@ -9,8 +9,8 @@ package net.java.sip.communicator.service.gui.event;
 import java.util.EventObject;
 
 /**
- * The <tt>MetaContactQueryStatusEvent</tt> is triggered each time a
- * <tt>MetaContactQuery</tt> changes its status. Possible statuses are:
+ * The <code>MetaContactQueryStatusEvent</code> is triggered each time a
+ * <code>MetaContactQuery</code> changes its status. Possible statuses are:
  * QUERY_COMPLETED, QUERY_CANCELED and QUERY_ERROR.
  *
  * @author Yana Stamcheva
@@ -38,8 +38,8 @@ public class MetaContactQueryStatusEvent extends EventObject
     private final int eventType;
 
     /**
-     * Creates a <tt>MetaContactQueryStatusEvent</tt> by specifying the source
-     * <tt>MetaContactQuery</tt> and the <tt>eventType</tt> indicating why initially this event occurred.
+     * Creates a <code>MetaContactQueryStatusEvent</code> by specifying the source
+     * <code>MetaContactQuery</code> and the <code>eventType</code> indicating why initially this event occurred.
      *
      * @param source the initiator of the event
      * @param eventType the type of the event. One of the QUERY_XXX constants defined in this class
@@ -51,9 +51,9 @@ public class MetaContactQueryStatusEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ContactQuery</tt> that triggered this event.
+     * Returns the <code>ContactQuery</code> that triggered this event.
      *
-     * @return the <tt>ContactQuery</tt> that triggered this event
+     * @return the <code>ContactQuery</code> that triggered this event
      */
     public MetaContactQuery getQuerySource()
     {

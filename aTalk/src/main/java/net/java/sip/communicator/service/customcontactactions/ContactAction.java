@@ -64,12 +64,12 @@ public interface ContactAction<T>
     public String getToolTipText();
 
     /**
-     * Indicates if this action is visible for the given <tt>actionSource</tt>.
+     * Indicates if this action is visible for the given <code>actionSource</code>.
      *
      * @param actionSource the action source for which we're verifying the
      * action.
-     * @return <tt>true</tt> if the action should be visible for the given
-     * <tt>actionSource</tt>, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the action should be visible for the given
+     * <code>actionSource</code>, <code>false</code> - otherwise
      */
     public boolean isVisible(T actionSource);
 }

@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import org.atalk.service.neomedia.DTMFTone;
 
 /**
- * An <tt>OperationSet</tt> that allows other modules to send DMF tones through this protocol
+ * An <code>OperationSet</code> that allows other modules to send DMF tones through this protocol
  * provider.
  *
  * @author JM HEITZ
@@ -32,29 +32,29 @@ public interface OperationSetDTMF extends OperationSet
 	public static final int DEFAULT_DTMF_TONE_VOLUME = 10;
 
 	/**
-	 * The name of the <tt>ConfigurationService</tt> <tt>int</tt> property which indicates the
+	 * The name of the <code>ConfigurationService</code> <code>int</code> property which indicates the
 	 * minimal duration for a DTMF tone. The default value is 70 ms.
 	 */
 	public static final String PROP_MINIMAL_RTP_DTMF_TONE_DURATION = "protocol.minimalRtpDtmfToneDuration";
 
 	/**
-	 * The name of the <tt>ConfigurationService</tt> <tt>int</tt> property which indicates the
+	 * The name of the <code>ConfigurationService</code> <code>int</code> property which indicates the
 	 * maximal duration for a DTMF tone (in ms). The default value is -1 to tell to stop DTMF tones
 	 * only following user will.
 	 */
 	public static final String PROP_MAXIMAL_RTP_DTMF_TONE_DURATION = "protocol.maximalRtpDtmfToneDuration";
 
 	/**
-	 * Sends the <tt>DTMFTone</tt> <tt>tone</tt> to <tt>callPeer</tt>.
+	 * Sends the <code>DTMFTone</code> <code>tone</code> to <code>callPeer</code>.
 	 *
 	 * @param callPeer
-	 *        the call peer to send <tt>tone</tt> to.
+	 *        the call peer to send <code>tone</code> to.
 	 * @param tone
-	 *        the DTMF tone to send to <tt>callPeer</tt>.
+	 *        the DTMF tone to send to <code>callPeer</code>.
 	 *
 	 * @throws OperationFailedException
 	 *         with code OPERATION_NOT_SUPPORTED if DTMF tones are not supported for
-	 *         <tt>callPeer</tt>.
+	 *         <code>callPeer</code>.
 	 *
 	 * @throws IllegalArgumentException
 	 *         in case the call peer does not belong to the underlying implementation.
@@ -66,7 +66,7 @@ public interface OperationSetDTMF extends OperationSet
 	 * Stop sending of the currently transmitting DTMF tone.
 	 *
 	 * @param callPeer
-	 *        the call peer to stop send <tt>tone</tt> to.
+	 *        the call peer to stop send <code>tone</code> to.
 	 */
 	public void stopSendingDTMF(CallPeer callPeer);
 }

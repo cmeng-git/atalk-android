@@ -20,12 +20,12 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * A server stored contact list is stored somewhere across the network and this interface allows GUI
  * and other plugins to use it in a way similar to the way they'd use a javax.swing.tree.TreeModel,
  * i.e. it would contain an initial number of members/children that is likely to change, dispatching
- * a series of events delivered through the <tt>SubscriptionListener</tt> and
- * <tt>ServerStoredGroupChangeListener</tt> interfaces.
+ * a series of events delivered through the <code>SubscriptionListener</code> and
+ * <code>ServerStoredGroupChangeListener</code> interfaces.
  *
- * The interfaces defines extended subscription methods that include an extra <tt>parentGroup</tt>
+ * The interfaces defines extended subscription methods that include an extra <code>parentGroup</code>
  * parameter. Simple subscribe and usubscribe operations defined by the parent
- * <tt>OperationSetPresence</tt> operation set, will still work, adding contacts to a default, root
+ * <code>OperationSetPresence</code> operation set, will still work, adding contacts to a default, root
  * group. to be used by GUI and other plugins the same way that they would use a
  *
  * @author Emil Ivov
@@ -49,7 +49,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * @param pps the owner of the contact to be added to RootGroup.
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced during
      * network communication
-     * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      */
     void subscribe(ProtocolProviderService pps, String contactIdentifier)
@@ -69,7 +69,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      *
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced during
      * network communication
-     * @throws IllegalArgumentException if <tt>contact</tt> or <tt>parent</tt> are not a contact known to the underlying
+     * @throws IllegalArgumentException if <code>contact</code> or <code>parent</code> are not a contact known to the underlying
      * protocol provider.
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a service.
      */
@@ -84,7 +84,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * @param contact the contact whose status updates we are unsubscribing from.
      * @throws OperationFailedException with code NETWORK_FAILURE if unsubscribing fails due to errors experienced during
      * network communication
-     * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a service.
      */
     void unsubscribe(Contact contact)
@@ -96,7 +96,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * @param groupName the name of the new group to create.
      * @param parent the group where the new group should be created
      * @throws OperationFailedException with code NETWORK_FAILURE if creating the group fails because of a network error.
-     * @throws IllegalArgumentException if <tt>parent</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>parent</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a service.
      */
     void createServerStoredContactGroup(ContactGroup parent, String groupName)
@@ -107,7 +107,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      *
      * @param group the group to remove.
      * @throws OperationFailedException with code NETWORK_FAILURE if deleting the group fails because of a network error.
-     * @throws IllegalArgumentException if <tt>parent</tt> is not a contact known to the underlying protocol provider.
+     * @throws IllegalArgumentException if <code>parent</code> is not a contact known to the underlying protocol provider.
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a service.
      */
     void removeServerStoredContactGroup(ContactGroup group)
@@ -115,7 +115,7 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
 
     /**
      * Renames the specified group from the server stored contact list. This method would return
-     * before the group has actually been renamed. A <tt>ServerStoredGroupEvent</tt> would be
+     * before the group has actually been renamed. A <code>ServerStoredGroupEvent</code> would be
      * dispatched once new name has been acknowledged by the server.
      *
      * @param group the group to rename.
@@ -124,10 +124,10 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
     void renameServerStoredContactGroup(ContactGroup group, String newName);
 
     /**
-     * Removes the specified contact from its current parent and places it under <tt>newParent</tt>.
+     * Removes the specified contact from its current parent and places it under <code>newParent</code>.
      *
-     * @param contactToMove the <tt>Contact</tt> to move
-     * @param newParent the <tt>ContactGroup</tt> where <tt>Contact</tt> would be placed.
+     * @param contactToMove the <code>Contact</code> to move
+     * @param newParent the <code>ContactGroup</code> where <code>Contact</code> would be placed.
      * @throws OperationFailedException when the operation didn't finished successfully.
      */
     void moveContactToGroup(Contact contactToMove, ContactGroup newParent)
@@ -156,8 +156,8 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
     void removeServerStoredGroupChangeListener(ServerStoredGroupListener listener);
 
     /**
-     * Creates and returns a unresolved contact from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>. The method will not try to establish a network connection and
+     * Creates and returns a unresolved contact from the specified <code>address</code> and
+     * <code>persistentData</code>. The method will not try to establish a network connection and
      * resolve the newly created Contact against the server. The protocol provider may will later
      * try and resolve the contact. When this happens the corresponding event would notify
      * interested subscription listeners.
@@ -166,15 +166,15 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * @param persistentData a String returned Contact's getPersistentData() method during a previous run and that
      * has been persistently stored locally.
      * @param parentGroup the group where the unresolved contact is supposed to belong to.
-     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>
+     * @return the unresolved <code>Contact</code> created from the specified <code>address</code> and
+     * <code>persistentData</code>
      */
     Contact createUnresolvedContact(String address, String persistentData, ContactGroup parentGroup);
 
     /**
-     * Creates and returns a unresolved contact group from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>. The method will not try to establish a network connection and
-     * resolve the newly created <tt>ContactGroup</tt> against the server or the contact itself. The
+     * Creates and returns a unresolved contact group from the specified <code>address</code> and
+     * <code>persistentData</code>. The method will not try to establish a network connection and
+     * resolve the newly created <code>ContactGroup</code> against the server or the contact itself. The
      * protocol provider will later resolve the contact group. When this happens the corresponding
      * event would notify interested subscription listeners.
      *
@@ -184,18 +184,18 @@ public interface OperationSetPersistentPresence extends OperationSetPresence
      * that has been persistently stored locally.
      * @param parentGroup the group under which the new group is to be created or null if this is group directly
      * underneath the root.
-     * @return the unresolved <tt>ContactGroup</tt> created from the specified <tt>uid</tt> and
-     * <tt>persistentData</tt>
+     * @return the unresolved <code>ContactGroup</code> created from the specified <code>uid</code> and
+     * <code>persistentData</code>
      */
     ContactGroup createUnresolvedContactGroup(String groupUID, String persistentData, ContactGroup parentGroup);
 
     /**
-     * Sets the display name for <tt>contact</tt> to be <tt>newName</tt>.
+     * Sets the display name for <code>contact</code> to be <code>newName</code>.
      *
      *
-     * @param contact the <tt>Contact</tt> that we are renaming
-     * @param newName a <tt>String</tt> containing the new display name for <tt>metaContact</tt>.
-     * @throws IllegalArgumentException if <tt>contact</tt> is not an instance that belongs
+     * @param contact the <code>Contact</code> that we are renaming
+     * @param newName a <code>String</code> containing the new display name for <code>metaContact</code>.
+     * @throws IllegalArgumentException if <code>contact</code> is not an instance that belongs
      * to the underlying implementation.
      */
     void setDisplayName(Contact contact, String newName)

@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * Represents an RTP translator which forwards RTP and RTCP traffic between multiple
- * <tt>MediaStream</tt>s.
+ * <code>MediaStream</code>s.
  *
  * @author Lyubomir Marinov
  */
@@ -29,28 +29,28 @@ public interface RTPTranslator
 	public StreamRTPManager findStreamRTPManagerByReceiveSSRC(int receiveSSRC);
 
 	/**
-	 * Returns a list of <tt>StreamRTPManager</tt>s currently attached to this
-	 * <tt>RTPTranslator</tt>. This is admittedly wrong, to expose the bare <tt>SSRCCache</tt> to
-	 * the use of of the <tt>StreamRTPManager</tt>. We should find a better way of exposing this
+	 * Returns a list of <code>StreamRTPManager</code>s currently attached to this
+	 * <code>RTPTranslator</code>. This is admittedly wrong, to expose the bare <code>SSRCCache</code> to
+	 * the use of of the <code>StreamRTPManager</code>. We should find a better way of exposing this
 	 * information. Currently it is necessary for RTCP termination.
 	 *
-	 * @return a list of <tt>StreamRTPManager</tt>s currently attached to this
-	 *         <tt>RTPTranslator</tt>.
+	 * @return a list of <code>StreamRTPManager</code>s currently attached to this
+	 *         <code>RTPTranslator</code>.
 	 */
 	public List<StreamRTPManager> getStreamRTPManagers();
 
 	/**
-	 * Provides access to the underlying <tt>SSRCCache</tt> that holds statistics information about
+	 * Provides access to the underlying <code>SSRCCache</code> that holds statistics information about
 	 * each SSRC that we receive.
 	 *
-	 * @return the underlying <tt>SSRCCache</tt> that holds statistics information about each SSRC
+	 * @return the underlying <code>SSRCCache</code> that holds statistics information about each SSRC
 	 *         that we receive.
 	 */
 	public SSRCCache getSSRCCache();
 
 	/**
-	 * Defines a packet filter which allows an observer of an <tt>RTPTranslator</tt> to disallow the
-	 * writing of specific packets into a specific destination identified by a <tt>MediaStream</tt>.
+	 * Defines a packet filter which allows an observer of an <code>RTPTranslator</code> to disallow the
+	 * writing of specific packets into a specific destination identified by a <code>MediaStream</code>.
 	 */
 	public interface WriteFilter
 	{
@@ -59,10 +59,10 @@ public interface RTPTranslator
 	}
 
 	/**
-	 * Adds a <tt>WriteFilter</tt> to this <tt>RTPTranslator</tt>.
+	 * Adds a <code>WriteFilter</code> to this <code>RTPTranslator</code>.
 	 *
 	 * @param writeFilter
-	 *        the <tt>WriteFilter</tt> to add to this <tt>RTPTranslator</tt>
+	 *        the <code>WriteFilter</code> to add to this <code>RTPTranslator</code>
 	 */
 	public void addWriteFilter(WriteFilter writeFilter);
 
@@ -73,10 +73,10 @@ public interface RTPTranslator
 	public void dispose();
 
 	/**
-	 * Removes a <tt>WriteFilter</tt> from this <tt>RTPTranslator</tt>.
+	 * Removes a <code>WriteFilter</code> from this <code>RTPTranslator</code>.
 	 *
 	 * @param writeFilter
-	 *        the <tt>WriteFilter</tt> to remove from this <tt>RTPTranslator</tt>
+	 *        the <code>WriteFilter</code> to remove from this <code>RTPTranslator</code>
 	 */
 	public void removeWriteFilter(WriteFilter writeFilter);
 }

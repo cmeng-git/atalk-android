@@ -191,10 +191,10 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Returns an avatar if one is already present or <tt>null</tt> in case it is not in which case
+     * Returns an avatar if one is already present or <code>null</code> in case it is not in which case
      * it the method also queues the contact for image updates.
      *
-     * @return the avatar of this contact or <tt>null</tt> if no avatar is currently available.
+     * @return the avatar of this contact or <code>null</code> if no avatar is currently available.
      */
     public byte[] getImage()
     {
@@ -255,7 +255,7 @@ public class ContactJabberImpl extends AbstractContact
      * Indicates whether some other object is "equal to" this one.
      *
      * @param obj the reference object with which to compare.
-     * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt> otherwise.
+     * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise.
      */
     @Override
     public boolean equals(Object obj)
@@ -311,7 +311,7 @@ public class ContactJabberImpl extends AbstractContact
      * Returns the status of the contact as per the last status update we've received for it. Note
      * that this method is not to perform any network operations and will simply return the status
      * received in the last status update message. If you want a reliable way of retrieving
-     * someone's status, you should use the <tt>queryContactStatus()</tt> method in <tt>OperationSetPresence</tt>.
+     * someone's status, you should use the <code>queryContactStatus()</code> method in <code>OperationSetPresence</code>.
      *
      * @return the PresenceStatus that we've received in the last status update pertaining to this contact.
      */
@@ -482,7 +482,7 @@ public class ContactJabberImpl extends AbstractContact
     /**
      * Indicates if this contact supports resources.
      *
-     * @return <tt>false</tt> to indicate that this contact doesn't support resources
+     * @return <code>false</code> to indicate that this contact doesn't support resources
      */
     @Override
     public boolean supportResources()
@@ -506,10 +506,10 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Finds the <tt>ContactResource</tt> corresponding to the given bareJid.
+     * Finds the <code>ContactResource</code> corresponding to the given bareJid.
      *
      * @param jid the fullJid for which we're looking for a resource
-     * @return the <tt>ContactResource</tt> corresponding to the given bareJid.
+     * @return the <code>ContactResource</code> corresponding to the given bareJid.
      */
     ContactResource getResourceFromJid(FullJid jid)
     {
@@ -525,9 +525,9 @@ public class ContactJabberImpl extends AbstractContact
     }
 
     /**
-     * Notifies all registered <tt>ContactResourceListener</tt>s that an event has occurred.
+     * Notifies all registered <code>ContactResourceListener</code>s that an event has occurred.
      *
-     * @param event the <tt>ContactResourceEvent</tt> to fire notification for
+     * @param event the <code>ContactResourceEvent</code> to fire notification for
      */
     public void fireContactResourceEvent(ContactResourceEvent event)
     {

@@ -19,15 +19,15 @@ import java.lang.reflect.UndeclaredThrowableException;
 public class LazyConfigurationForm implements ConfigurationForm
 {
     /**
-     * The <tt>ResourceManagementService</tt> used to obtain any resources.
+     * The <code>ResourceManagementService</code> used to obtain any resources.
      */
     private static ResourceManagementService resources;
 
     /**
-     * Returns an instance of the <tt>ResourceManagementService</tt>, which
+     * Returns an instance of the <code>ResourceManagementService</code>, which
      * could be used to obtain any resources.
      *
-     * @return an instance of the <tt>ResourceManagementService</tt>
+     * @return an instance of the <code>ResourceManagementService</code>
      */
     private static ResourceManagementService getResources()
     {
@@ -67,7 +67,7 @@ public class LazyConfigurationForm implements ConfigurationForm
     private final boolean isAdvanced;
 
     /**
-     * Creates an instance of <tt>LazyConfigurationForm</tt>.
+     * Creates an instance of <code>LazyConfigurationForm</code>.
      *
      * @param formClassName the class name of the configuration form
      * @param formClassLoader the class loader
@@ -80,7 +80,7 @@ public class LazyConfigurationForm implements ConfigurationForm
     }
 
     /**
-     * Creates an instance of <tt>LazyConfigurationForm</tt>.
+     * Creates an instance of <code>LazyConfigurationForm</code>.
      *
      * @param formClassName the class name of the configuration form
      * @param formClassLoader the class loader
@@ -95,7 +95,7 @@ public class LazyConfigurationForm implements ConfigurationForm
     }
 
     /**
-     * Creates an instance of <tt>LazyConfigurationForm</tt>.
+     * Creates an instance of <code>LazyConfigurationForm</code>.
      *
      * @param formClassName the class name of the configuration form
      * @param formClassLoader the class loader
@@ -214,7 +214,7 @@ public class LazyConfigurationForm implements ConfigurationForm
     /**
      * Indicates if the form is an advanced form.
      *
-     * @return <tt>true</tt> to indicate that this is an advanced form, otherwise returns <tt>false</tt>
+     * @return <code>true</code> to indicate that this is an advanced form, otherwise returns <code>false</code>
      */
     public boolean isAdvanced()
     {

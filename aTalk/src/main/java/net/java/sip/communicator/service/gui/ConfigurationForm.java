@@ -7,12 +7,12 @@
 package net.java.sip.communicator.service.gui;
 
 /**
- * The <tt>ConfigurationForm</tt> interface is meant to be implemented by all
+ * The <code>ConfigurationForm</code> interface is meant to be implemented by all
  * bundles that want to add their own specific configuration forms in the UI.
- * Each <tt>ConfigurationForm</tt> implementation could be added to the UI
+ * Each <code>ConfigurationForm</code> implementation could be added to the UI
  * by invoking the <code>ConfigurationDialog.addConfigurationForm</code> method.
  * <p>
- * The <tt>ConfigurationDialog</tt> for the current ui implementation could
+ * The <code>ConfigurationDialog</code> for the current ui implementation could
  * be obtained by invoking <code>UIService.getConfigurationDialog</code> method.
  *
  * @author Yana Stamcheva
@@ -82,8 +82,8 @@ public interface ConfigurationForm
 
     /**
      * Indicates if this is an advanced configuration form.
-     * @return <tt>true</tt> if this is an advanced configuration form,
-     * otherwise it returns <tt>false</tt>
+     * @return <code>true</code> if this is an advanced configuration form,
+     * otherwise it returns <code>false</code>
      */
     public boolean isAdvanced();
 }

@@ -6,7 +6,7 @@
 package org.jivesoftware.smackx.jitsimeet;
 
 import org.jivesoftware.smackx.AbstractExtensionElement;
-import org.jivesoftware.smackx.colibri.SourceExtension;
+import org.jivesoftware.smackx.jingle.SdpSource;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -14,7 +14,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Packet extension is used to signal owner of media SSRC in jitsi-meet. Owner attribute stores MUC
- * JID of the user to whom it belongs. This extension is inserted as a child of {@link SourceExtension}
+ * JID of the user to whom it belongs. This extension is inserted as a child of {@link SdpSource}
  * in 'session-initiate', 'source-add' and 'source-remove' Jingle IQs sent by the focus(Jicofo).
  *
  * @author Pawel Domas
@@ -23,38 +23,38 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public class SSRCInfoExtension extends AbstractExtensionElement
 {
     /**
-     * XML namespace of this packets extension.
-     */
-    public static final java.lang.String NAMESPACE = "http://jitsi.org/jitmeet";
-
-    /**
      * XML element name of this packets extension.
      */
     public static final String ELEMENT = "ssrc-info";
 
     /**
-     * Attribute stores owner JID of parent {@link SourceExtension}.
+     * XML namespace of this packets extension.
      */
-    public static final String OWNER_ATTR_NAME = "owner";
+    public static final java.lang.String NAMESPACE = "http://jitsi.org/jitmeet";
 
     /**
-     * Attribute stores the type of video SSRC. Can be {@link #CAMERA_VIDEO_TYPE} or
-     * {@link #SCREEN_VIDEO_TYPE}.
+     * Attribute stores owner JID of parent {@link SdpSource}.
      */
-    public static final String VIDEO_TYPE_ATTR_NAME = "video-type";
+    public static final String ATTR_OWNER = "owner";
+
+    /**
+     * Attribute stores the type of video SSRC. Can be {@link #ATTR_CAMERA} or
+     * {@link #ATTR_SCREEN}.
+     */
+    public static final String ATTR_VIDEO_TYPE = "video-type";
 
     /**
      * Camera video type constant. Inidcates that the user is sending his camera video.
      */
-    public static final String CAMERA_VIDEO_TYPE = "camera";
+    public static final String ATTR_CAMERA = "camera";
 
     /**
      * Screen video type constant. Indicates that the user is sharing his screen.
      */
-    public static final String SCREEN_VIDEO_TYPE = "screen";
+    public static final String ATTR_SCREEN = "screen";
 
     /**
-     * Creates new instance of <tt>SSRCInfoExtensionElement</tt>.
+     * Creates new instance of <code>SSRCInfoExtensionElement</code>.
      */
     public SSRCInfoExtension()
     {
@@ -62,48 +62,48 @@ public class SSRCInfoExtension extends AbstractExtensionElement
     }
 
     /**
-     * Returns the value of {@link #OWNER_ATTR_NAME}.
+     * Returns the value of {@link #ATTR_OWNER}.
      *
-     * @return MUC JID of SSRC owner stored by this instance or <tt>null</tt> if empty.
+     * @return MUC JID of SSRC owner stored by this instance or <code>null</code> if empty.
      */
     public Jid getOwner()
     {
         try {
-            return JidCreate.from(getAttributeAsString(OWNER_ATTR_NAME));
+            return JidCreate.from(getAttributeAsString(ATTR_OWNER));
         } catch (XmppStringprepException | IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid owner", e);
         }
     }
 
     /**
-     * Sets the value of {@link #OWNER_ATTR_NAME}.
+     * Sets the value of {@link #ATTR_OWNER}.
      *
      * @param owner MUC JID of SSRC owner to be stored in this packet extension.
      */
     public void setOwner(Jid owner)
     {
-        setAttribute(OWNER_ATTR_NAME, owner);
+        setAttribute(ATTR_OWNER, owner);
     }
 
     /**
-     * Returns the value of {@link #VIDEO_TYPE_ATTR_NAME}.
+     * Returns the value of {@link #ATTR_VIDEO_TYPE}.
      *
-     * @return {@link #CAMERA_VIDEO_TYPE}, {@link #SCREEN_VIDEO_TYPE} or <tt>null</tt> if not
+     * @return {@link #ATTR_CAMERA}, {@link #ATTR_SCREEN} or <code>null</code> if not
      * specified or if media SSRC is not a video.
      */
     public String getVideoType()
     {
-        return getAttributeAsString(VIDEO_TYPE_ATTR_NAME);
+        return getAttributeAsString(ATTR_VIDEO_TYPE);
     }
 
     /**
      * Sets the type of video SSRC.
      *
-     * @param videoType {@link #CAMERA_VIDEO_TYPE}, {@link #SCREEN_VIDEO_TYPE} or <tt>null</tt> if not
+     * @param videoType {@link #ATTR_CAMERA}, {@link #ATTR_SCREEN} or <code>null</code> if not
      * specified or if media SSRC is not a video.
      */
     public void setVideoType(String videoType)
     {
-        setAttribute(VIDEO_TYPE_ATTR_NAME, videoType);
+        setAttribute(ATTR_VIDEO_TYPE, videoType);
     }
 }

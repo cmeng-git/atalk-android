@@ -101,9 +101,9 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     private List<String> mChatRoomList;
 
     /**
-     * Constructs the <tt>ChatInviteDialog</tt>.
+     * Constructs the <code>ChatInviteDialog</code>.
      *
-     * @param mContext the <tt>ChatPanel</tt> corresponding to the <tt>ChatRoom</tt>, where the contact is invited.
+     * @param mContext the <code>ChatPanel</code> corresponding to the <code>ChatRoom</code>, where the contact is invited.
      */
     public ChatRoomBookmarksDialog(Context mContext)
     {

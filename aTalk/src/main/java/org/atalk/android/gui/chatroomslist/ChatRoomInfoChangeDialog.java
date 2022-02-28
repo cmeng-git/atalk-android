@@ -70,7 +70,7 @@ public class ChatRoomInfoChangeDialog extends OSGiFragment
     /**
      * Create chatRoom info change dialog
      *
-     * @param context the parent <tt>Context</tt>
+     * @param context the parent <code>Context</code>
      * @param chatRoomWrapper chatRoom wrapper
      */
     public void show(Context context, ChatRoomWrapper chatRoomWrapper)
@@ -95,7 +95,7 @@ public class ChatRoomInfoChangeDialog extends OSGiFragment
     }
 
     /**
-     * Implements <tt>DialogActivity.DialogListener</tt> interface and handles refresh stores process.
+     * Implements <code>DialogActivity.DialogListener</code> interface and handles refresh stores process.
      */
     public class DialogListenerImpl implements DialogActivity.DialogListener
     {

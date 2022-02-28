@@ -17,7 +17,7 @@ import java.util.Hashtable;
 public abstract class DatabaseConfigurationStore extends HashtableConfigurationStore<Hashtable>
 {
 	/**
-	 * Initializes a new <tt>DatabaseConfigurationStore</tt> instance.
+	 * Initializes a new <code>DatabaseConfigurationStore</code> instance.
 	 */
 	protected DatabaseConfigurationStore()
 	{
@@ -25,11 +25,11 @@ public abstract class DatabaseConfigurationStore extends HashtableConfigurationS
 	}
 
 	/**
-	 * Initializes a new <tt>DatabaseConfigurationStore</tt> instance with a specific runtime
-	 * <tt>HashTable</tt> storage.
+	 * Initializes a new <code>DatabaseConfigurationStore</code> instance with a specific runtime
+	 * <code>HashTable</code> storage.
 	 *
 	 * @param properties
-	 * 		the <tt>HashTable</tt> which is to become the runtime storage of the new instance
+	 * 		the <code>HashTable</code> which is to become the runtime storage of the new instance
 	 */
 	protected DatabaseConfigurationStore(Hashtable properties)
 	{
@@ -38,7 +38,7 @@ public abstract class DatabaseConfigurationStore extends HashtableConfigurationS
 
 	/**
 	 * Removes all property name-value associations currently present in this
-	 * <tt>ConfigurationStore</tt> instance and de-serializes new property name-value
+	 * <code>ConfigurationStore</code> instance and de-serializes new property name-value
 	 * associations from its underlying database (storage).
 	 *
 	 * @throws IOException
@@ -49,16 +49,16 @@ public abstract class DatabaseConfigurationStore extends HashtableConfigurationS
 
 	/**
 	 * Removes all property name-value associations currently present in this
-	 * <tt>ConfigurationStore</tt> and de-serializes new property name-value associations from a
-	 * specific <tt>File</tt> which presumably is in the format represented by this instance.
+	 * <code>ConfigurationStore</code> and de-serializes new property name-value associations from a
+	 * specific <code>File</code> which presumably is in the format represented by this instance.
 	 *
 	 * @param file
-	 * 		the <tt>File</tt> to be read and to deserialize new property name-value associations
+	 * 		the <code>File</code> to be read and to deserialize new property name-value associations
 	 * 		from into this instance
 	 * @throws IOException
-	 * 		if there is an input error while reading from the specified <tt>file</tt>
+	 * 		if there is an input error while reading from the specified <code>file</code>
 	 * @throws XMLException
-	 * 		if parsing the contents of the specified <tt>file</tt> fails
+	 * 		if parsing the contents of the specified <code>file</code> fails
 	 * @see ConfigurationStore#reloadConfiguration(File)
 	 */
 	public void reloadConfiguration(File file)
@@ -70,11 +70,11 @@ public abstract class DatabaseConfigurationStore extends HashtableConfigurationS
 
 	/**
 	 * Stores/serializes the property name-value associations currently present in this
-	 * <tt>ConfigurationStore</tt> instance into its underlying database (storage).
+	 * <code>ConfigurationStore</code> instance into its underlying database (storage).
 	 *
 	 * @throws IOException
 	 * 		if there is an output error while storing the properties managed by this
-	 * 		<tt>ConfigurationStore</tt>
+	 * 		<code>ConfigurationStore</code>
 	 * 		instance into its underlying database (storage)
 	 */
 	protected void storeConfiguration()
@@ -84,15 +84,15 @@ public abstract class DatabaseConfigurationStore extends HashtableConfigurationS
 
 	/**
 	 * Stores/serializes the property name-value associations currently present in this
-	 * <tt>ConfigurationStore</tt> into a specific <tt>OutputStream</tt> in the format
+	 * <code>ConfigurationStore</code> into a specific <code>OutputStream</code> in the format
 	 * represented by this instance.
 	 *
 	 * @param out
-	 * 		the <tt>OutputStream</tt> to receive the serialized form of the property name-value
-	 * 		associations currently present in this <tt>ConfigurationStore</tt>
+	 * 		the <code>OutputStream</code> to receive the serialized form of the property name-value
+	 * 		associations currently present in this <code>ConfigurationStore</code>
 	 * @throws IOException
 	 * 		if there is an output error while storing the properties managed by this
-	 * 		<tt>ConfigurationStore</tt> into the specified <tt>file</tt>
+	 * 		<code>ConfigurationStore</code> into the specified <code>file</code>
 	 * @see ConfigurationStore#storeConfiguration(OutputStream)
 	 */
 	public void storeConfiguration(OutputStream out)

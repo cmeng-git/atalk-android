@@ -22,11 +22,11 @@ import org.atalk.android.aTalkApp;
 public class AccountUtil
 {
     /**
-     * Returns {@link Drawable} representing default presence status for specified <tt>protocolName</tt>
+     * Returns {@link Drawable} representing default presence status for specified <code>protocolName</code>
      *
      * @param context {@link Context} of current {@link android.app.Activity}
      * @param protocolName the name of the protocol
-     * @return {@link Drawable} for default presence status or <tt>null</tt> otherwise
+     * @return {@link Drawable} for default presence status or <code>null</code> otherwise
      */
     static public Drawable getDefaultPresenceIcon(Context context, String protocolName)
     {

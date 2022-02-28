@@ -59,7 +59,7 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
      * Checks if the call satisfy the auto answer conditions.
      *
      * @param call The new incoming call to auto-answer if needed.
-     * @return <tt>true</tt> if the call satisfy the auto answer conditions. <tt>False</tt> otherwise.
+     * @return <code>true</code> if the call satisfy the auto answer conditions. <code>False</code> otherwise.
      */
     @Override
     protected boolean satisfyAutoAnswerConditions(Call call)
@@ -75,7 +75,7 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
      * @param call The new incoming call to auto-answer if needed.
      * @param directions The media type (audio / video) stream directions.
      * @param jingleSessionInit Jingle session-initiate is used to check if incoming call is via JingleMessage accept
-     * @return <tt>true</tt> if we have processed and no further processing is needed, <tt>false</tt> otherwise.
+     * @return <code>true</code> if we have processed and no further processing is needed, <code>false</code> otherwise.
      */
     public boolean autoAnswer(Call call, Map<MediaType, MediaDirection> directions, Jingle jingleSessionInit)
     {

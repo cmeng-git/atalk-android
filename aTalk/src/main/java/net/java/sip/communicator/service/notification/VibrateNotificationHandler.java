@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.notification;
 
 /**
- * The <tt>VibrateNotificationHandler</tt> interface is meant to be implemented by the
+ * The <code>VibrateNotificationHandler</code> interface is meant to be implemented by the
  * notification bundle in order to provide handling of vibrate actions.
  *
  * @author Pawel Domas
@@ -16,9 +16,9 @@ public interface VibrateNotificationHandler extends NotificationHandler
 {
 
     /**
-     * Perform vibration patter defined in given <tt>vibrateAction</tt>.
+     * Perform vibration patter defined in given <code>vibrateAction</code>.
      *
-     * @param vibrateAction the <tt>VibrateNotificationAction</tt> containing vibration pattern details.
+     * @param vibrateAction the <code>VibrateNotificationAction</code> containing vibration pattern details.
      */
     void vibrate(VibrateNotificationAction vibrateAction);
 

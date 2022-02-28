@@ -50,7 +50,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
      *
      * @param authority unused
      * @param reasonCode unused
-     * @return always <tt>null</tt>
+     * @return always <code>null</code>
      */
     public UserCredentials prepareLogin(SecurityAuthority authority, int reasonCode, String reason, Boolean isShowAlways)
     {
@@ -61,7 +61,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
     /**
      * Does nothing.
      *
-     * @return always <tt>true</tt>
+     * @return always <code>true</code>
      */
     public boolean loginPreparationSuccessful()
     {
@@ -74,7 +74,7 @@ class LoginByClientCertificateStrategy implements JabberLoginStrategy
     /**
      * Always true as the authentication occurs with the TLS client certificate.
      *
-     * @return always <tt>true</tt>
+     * @return always <code>true</code>
      */
     public boolean isTlsRequired()
     {

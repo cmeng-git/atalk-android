@@ -20,11 +20,11 @@ import java.awt.Dimension;
 import timber.log.Timber;
 
 /**
- * Layout that aligns remote video <tt>View</tt> by stretching it to max screen width or height.
+ * Layout that aligns remote video <code>View</code> by stretching it to max screen width or height.
  * It also controls whether call control buttons group should be auto hidden or stay visible all the time.
- * This layout will work only with <tt>VideoCallActivity</tt>.
+ * This layout will work only with <code>VideoCallActivity</code>.
  *
- * IMPORTANT: it can't be done from <tt>Activity</tt>, because just after the views are created,
+ * IMPORTANT: it can't be done from <code>Activity</code>, because just after the views are created,
  * we don't know their sizes yet(return 0 or invalid).
  *
  * @author Pawel Domas
@@ -70,7 +70,7 @@ public class RemoteVideoLayout extends LinearLayout
      *
      * @param videoSize received video stream size
      * @param requestLayout true to force relayout request
-     * @return <tt>false</tt> if no change is required for remoteVideoViewContainer dimension update
+     * @return <code>false</code> if no change is required for remoteVideoViewContainer dimension update
      * to playback the newly received video size:
      * @see AndroidDecoder#configureMediaCodec(MediaCodec, String)
      */

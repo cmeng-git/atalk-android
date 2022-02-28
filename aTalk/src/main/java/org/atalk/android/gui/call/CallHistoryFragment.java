@@ -279,9 +279,9 @@ public class CallHistoryFragment extends OSGiFragment
     }
 
     /**
-     * Adds the given <tt>addContactPresenceStatusListener</tt> to listen for contact presence status change.
+     * Adds the given <code>addContactPresenceStatusListener</code> to listen for contact presence status change.
      *
-     * @param pps the <tt>ProtocolProviderService</tt> for which we add the listener.
+     * @param pps the <code>ProtocolProviderService</code> for which we add the listener.
      */
     private void addContactStatusListener(ProtocolProviderService pps)
     {
@@ -361,7 +361,7 @@ public class CallHistoryFragment extends OSGiFragment
     }
 
     /**
-     * Adds all child contacts for the given <tt>group</tt>. Omit metaGroup of zero child.
+     * Adds all child contacts for the given <code>group</code>. Omit metaGroup of zero child.
      *
      * @param group the group, which child contacts to add
      */

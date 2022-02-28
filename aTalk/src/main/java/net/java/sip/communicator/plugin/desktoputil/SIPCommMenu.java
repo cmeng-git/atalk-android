@@ -11,7 +11,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 
 /**
- * The <tt>SIPCommMenu</tt> is very similar to a JComboBox. The main
+ * The <code>SIPCommMenu</code> is very similar to a JComboBox. The main
  * component here is a JLabel only with an icon. When user clicks on the icon a
  * popup menu is opened, containing a list of icon-text pairs from which the
  * user could choose one item. When user selects the desired item, the icon of

@@ -177,7 +177,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * Tries to get the {@link OperationSetPresence} for encapsulated {@link AccountID}
      *
      * @return the {@link OperationSetPresence} if the protocol is active and supports it or
-     * <tt>null</tt> otherwise
+     * <code>null</code> otherwise
      */
     OperationSetPresence getPresenceOpSet()
     {
@@ -193,7 +193,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      *
      * @return the {@link OperationSetAvatar} for encapsulated {@link AccountID} if it's supported
      * and active or
-     * <tt>null</tt> otherwise
+     * <code>null</code> otherwise
      */
     OperationSetAvatar getAvatarOpSet()
     {
@@ -241,7 +241,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
      * Sets the currently active {@link ProtocolProviderService} for encapsulated
      * {@link #mAccountID}.
      *
-     * @param protocolProvider if not <tt>null</tt> all listeners are registered otherwise listeners are unregistered
+     * @param protocolProvider if not <code>null</code> all listeners are registered otherwise listeners are unregistered
      * from current
      * {@link #protocolProvider}
      */
@@ -323,7 +323,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
     }
 
     /**
-     * Removes the given <tt>listener</tt> from observers list
+     * Removes the given <code>listener</code> from observers list
      *
      * @param listener the {@link EventListener} that doesn't want to be notified about the changes to this
      * {@link Account} anymore
@@ -413,9 +413,9 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
     }
 
     /**
-     * Returns <tt>true</tt> if this {@link Account} is enabled
+     * Returns <code>true</code> if this {@link Account} is enabled
      *
-     * @return <tt>true</tt> if this {@link Account} is enabled
+     * @return <code>true</code> if this {@link Account} is enabled
      */
     boolean isEnabled()
     {
@@ -454,7 +454,7 @@ public class Account implements ProviderPresenceStatusListener, RegistrationStat
     }
 
     /**
-     * Sets the avatar icon. If <tt>newAvatar</tt> is specified as <tt>null</tt> the default one
+     * Sets the avatar icon. If <code>newAvatar</code> is specified as <code>null</code> the default one
      * is set
      *
      * @param newAvatar an array of bytes with raw avatar image data

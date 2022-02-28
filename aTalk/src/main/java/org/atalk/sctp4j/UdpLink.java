@@ -31,7 +31,7 @@ import timber.log.Timber;
 public class UdpLink implements NetworkLink
 {
     /**
-     * <tt>SctpSocket</tt> instance that is used in this connection.
+     * <code>SctpSocket</code> instance that is used in this connection.
      */
     private final SctpSocket sctpSocket;
 
@@ -46,12 +46,12 @@ public class UdpLink implements NetworkLink
     private final int remotePort;
 
     /**
-     * Destination <tt>InetAddress</tt>.
+     * Destination <code>InetAddress</code>.
      */
     private final InetAddress remoteIp;
 
     /**
-     * Creates new instance of <tt>UdpConnection</tt>.
+     * Creates new instance of <code>UdpConnection</code>.
      *
      * @param sctpSocket SCTP socket instance used by this connection.
      * @param localIp local IP address.

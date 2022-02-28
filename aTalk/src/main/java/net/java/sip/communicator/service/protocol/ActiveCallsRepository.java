@@ -18,8 +18,8 @@ import timber.log.Timber;
  * methods for finding a call by its ID, peer session and others. This class is meant for use by
  * protocol implementations and cannot be accessed from other bundles.
  *
- * @param <T> <tt>Call</tt>
- * @param <U> <tt>OperationSetBasicTelephony</tt>
+ * @param <T> <code>Call</code>
+ * @param <U> <code>OperationSetBasicTelephony</code>
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
@@ -39,7 +39,7 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
     /**
      * Creates a new instance of this repository.
      *
-     * @param opSet a reference to the <tt>AbstractOperationSetBasicTelephony</tt> extension that created
+     * @param opSet a reference to the <code>AbstractOperationSetBasicTelephony</code> extension that created
      * us.
      */
     public ActiveCallsRepository(U opSet)
@@ -59,9 +59,9 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
     }
 
     /**
-     * If <tt>evt</tt> indicates that the call has been ended we remove it from the repository.
+     * If <code>evt</code> indicates that the call has been ended we remove it from the repository.
      *
-     * @param evt the <tt>CallChangeEvent</tt> instance containing the source calls and its old and new
+     * @param evt the <code>CallChangeEvent</code> instance containing the source calls and its old and new
      * state.
      */
     @Override
@@ -105,8 +105,8 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
     }
 
     /**
-     * Creates and dispatches a <tt>CallEvent</tt> notifying registered listeners that an event with
-     * id <tt>eventID</tt> has occurred on <tt>sourceCall</tt>.
+     * Creates and dispatches a <code>CallEvent</code> notifying registered listeners that an event with
+     * id <code>eventID</code> has occurred on <code>sourceCall</code>.
      *
      * @param eventID the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred.
@@ -117,18 +117,18 @@ public abstract class ActiveCallsRepository<T extends Call, U extends OperationS
     }
 
     /**
-     * Creates and dispatches a <tt>CallEvent</tt> notifying registered listeners that an event with
-     * id <tt>eventID</tt> has occurred on <tt>sourceCall</tt>.
+     * Creates and dispatches a <code>CallEvent</code> notifying registered listeners that an event with
+     * id <code>eventID</code> has occurred on <code>sourceCall</code>.
      * <p>
-     * TODO The method is ugly because it can be implemented if <tt>parentOperationSet</tt> is an
-     * <tt>AbstractOperationSetBasicTelephony</tt>. But after the move of the latter in the
-     * <tt>.service.protocol.media</tt> package, it is not visible here.
+     * TODO The method is ugly because it can be implemented if <code>parentOperationSet</code> is an
+     * <code>AbstractOperationSetBasicTelephony</code>. But after the move of the latter in the
+     * <code>.service.protocol.media</code> package, it is not visible here.
      * </p>
      *
      * @param eventID the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred
-     * @param cause the <tt>CallChangeEvent</tt>, if any, which is the cause that necessitated a new
-     * <tt>CallEvent</tt> to be fired
+     * @param cause the <code>CallChangeEvent</code>, if any, which is the cause that necessitated a new
+     * <code>CallEvent</code> to be fired
      */
     protected abstract void fireCallEvent(int eventID, Call sourceCall, CallChangeEvent cause);
 }

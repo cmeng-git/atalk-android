@@ -22,7 +22,7 @@ import java.util.*;
  * listeners.
  * <p>
  * Note that in order to be able to use this Filter, protocols should implement
- * <tt>OperationSetMessageFiltering</tt>.
+ * <code>OperationSetMessageFiltering</code>.
  * <p>
  * 
  * @author Keio Kraaner
@@ -34,7 +34,7 @@ public interface EventFilter
 	 *
 	 * @param msg
 	 *        The event that should be checked
-	 * @return <tt>true</tt> if the event was filtered out, otherwise <tt>false</tt>.
+	 * @return <code>true</code> if the event was filtered out, otherwise <code>false</code>.
 	 */
 	public boolean filterEvent(EventObject msg);
 }

@@ -31,7 +31,7 @@ import timber.log.Timber;
 /**
  * The dialog shows security information for ZRTP protocol. Allows user to verify/clear security authentication string.
  * It will be shown only if the call is secured (i.e. there is security control available).
- * Parent <tt>Activity</tt> should implement {@link SasVerificationListener} in order to receive SAS
+ * Parent <code>Activity</code> should implement {@link SasVerificationListener} in order to receive SAS
  * verification status updates performed by this dialog.
  *
  * @author Pawel Domas
@@ -89,7 +89,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Notifies the listener(if any) about the SAS verification update.
      *
-     * @param isVerified <tt>true</tt> if the SAS string has been verified by the user.
+     * @param isVerified <code>true</code> if the SAS string has been verified by the user.
      */
     private void notifySasVerified(boolean isVerified)
     {
@@ -208,7 +208,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     }
 
     /**
-     * Shows the toast on the screen with given <tt>text</tt>.
+     * Shows the toast on the screen with given <code>text</code>.
      *
      * @param text the message text that will be used.
      */
@@ -242,7 +242,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Updates audio security displays according to given status flag.
      *
-     * @param isSecure <tt>true</tt> if the audio is secure.
+     * @param isSecure <code>true</code> if the audio is secure.
      */
     private void updateAudioSecureStatus(boolean isSecure)
     {
@@ -256,7 +256,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Checks video stream security status.
      *
-     * @return <tt>true</tt> if the video is secure.
+     * @return <code>true</code> if the video is secure.
      */
     private boolean isVideoSecure()
     {
@@ -267,7 +267,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
     /**
      * Updates video security displays.
      *
-     * @param isSecure <tt>true</tt> if video stream is secured.
+     * @param isSecure <code>true</code> if video stream is secured.
      */
     private void updateVideoSecureStatus(boolean isSecure)
     {
@@ -402,7 +402,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
         /**
          * Called when SAS verification status is updated.
          *
-         * @param isVerified <tt>true</tt> if SAS is verified by the user.
+         * @param isVerified <code>true</code> if SAS is verified by the user.
          */
         void onSasVerificationChanged(boolean isVerified);
     }
@@ -411,7 +411,7 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
      * Creates new parametrized instance of {@link ZrtpInfoDialog}.
      *
      * @param callKey the call key managed by {@link CallManager}.
-     * @return parametrized instance of <tt>ZrtpInfoDialog</tt>.
+     * @return parametrized instance of <code>ZrtpInfoDialog</code>.
      */
     public static ZrtpInfoDialog newInstance(String callKey)
     {

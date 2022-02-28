@@ -89,17 +89,17 @@ public abstract class ChatSession
     public static final String[] chatHistoryFilter = {MessageHistoryService.class.getName()};
 
     /**
-     * The list of <tt>ChatContact</tt>s contained in this chat session.
+     * The list of <code>ChatContact</code>s contained in this chat session.
      */
     protected final List<ChatContact<?>> chatParticipants = new ArrayList<>();
 
     /**
-     * The list of <tt>ChatTransport</tt>s available in this session.
+     * The list of <code>ChatTransport</code>s available in this session.
      */
     protected final List<ChatTransport> chatTransports = new LinkedList<>();
 
     /**
-     * The list of all <tt>ChatSessionChangeListener</tt> registered to listen for transport modifications.
+     * The list of all <code>ChatSessionChangeListener</code> registered to listen for transport modifications.
      */
     private final List<ChatSessionChangeListener> chatTransportChangeListeners = new ArrayList<>();
 
@@ -177,10 +177,10 @@ public abstract class ChatSession
     public abstract ChatTransport getCurrentChatTransport();
 
     /**
-     * Returns a list of all <tt>ChatTransport</tt>s contained in this session supporting the given <tt>opSetClass</tt>.
+     * Returns a list of all <code>ChatTransport</code>s contained in this session supporting the given <code>opSetClass</code>.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ChatTransport</tt>s contained in this session supporting the given <tt>opSetClass</tt>
+     * @param opSetClass the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ChatTransport</code>s contained in this session supporting the given <code>opSetClass</code>
      */
     public List<ChatTransport> getTransportsForOperationSet(
             Class<? extends OperationSet> opSetClass)
@@ -195,9 +195,9 @@ public abstract class ChatSession
     }
 
     /**
-     * Returns the <tt>ChatPanel</tt> that provides the connection between this chat session and its UI.
+     * Returns the <code>ChatPanel</code> that provides the connection between this chat session and its UI.
      *
-     * @return The <tt>ChatSessionRenderer</tt>.
+     * @return The <code>ChatSessionRenderer</code>.
      */
     public abstract ChatPanel getChatSessionRenderer();
 
@@ -210,7 +210,7 @@ public abstract class ChatSession
 
     /**
      * Returns the entityBareJid of the chat. If this chat panel corresponds to a single
-     * chat it will return the entityBareJid of the <tt>MetaContact</tt>, otherwise it
+     * chat it will return the entityBareJid of the <code>MetaContact</code>, otherwise it
      * will return the entityBareJid of the chat room.
      *
      * @return the entityBareJid of the chat
@@ -317,15 +317,15 @@ public abstract class ChatSession
      * indicator to determine whether UI elements should be created for the user to represent the
      * contact list of the participants in this {@code ChatSession}.
      *
-     * @return <tt>true</tt> if this {@code ChatSession} supports a contact list of
-     * (multiple) participants; otherwise, <tt>false</tt>
+     * @return <code>true</code> if this {@code ChatSession} supports a contact list of
+     * (multiple) participants; otherwise, <code>false</code>
      */
     public abstract boolean isContactListSupported();
 
     /**
-     * Adds the given {@link ChatSessionChangeListener} to this <tt>ChatSession</tt>.
+     * Adds the given {@link ChatSessionChangeListener} to this <code>ChatSession</code>.
      *
-     * @param l the <tt>ChatSessionChangeListener</tt> to add
+     * @param l the <code>ChatSessionChangeListener</code> to add
      */
     public void addChatTransportChangeListener(ChatSessionChangeListener l)
     {
@@ -336,9 +336,9 @@ public abstract class ChatSession
     }
 
     /**
-     * Removes the given {@link ChatSessionChangeListener} to this <tt>ChatSession</tt>.
+     * Removes the given {@link ChatSessionChangeListener} to this <code>ChatSession</code>.
      *
-     * @param l the <tt>ChatSessionChangeListener</tt> to add
+     * @param l the <code>ChatSessionChangeListener</code> to add
      */
     public void removeChatTransportChangeListener(ChatSessionChangeListener l)
     {

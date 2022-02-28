@@ -16,8 +16,8 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * A listener that registers for <tt>AdHocChatRoomMessageEvent</tt>s issued by a particular
- * <tt>AdHocChatRoom</tt>.
+ * A listener that registers for <code>AdHocChatRoomMessageEvent</code>s issued by a particular
+ * <code>AdHocChatRoom</code>.
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
@@ -25,9 +25,9 @@ import java.util.EventListener;
 public interface AdHocChatRoomMessageListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>IMessage</tt> has been received.
+     * Called when a new incoming <code>IMessage</code> has been received.
      *
-     * @param evt the <tt>AdHocChatRoomMessageReceivedEvent</tt> containing the newly received
+     * @param evt the <code>AdHocChatRoomMessageReceivedEvent</code> containing the newly received
      * message, its sender and other details.
      */
     void messageReceived(AdHocChatRoomMessageReceivedEvent evt);
@@ -36,16 +36,16 @@ public interface AdHocChatRoomMessageListener extends EventListener
      * Called when the underlying implementation has received an indication that a message, sent
      * earlier has been successfully received by the destination.
      *
-     * @param evt the <tt>AdHocChatRoomMessageDeliveredEvent</tt> containing the id of the message
+     * @param evt the <code>AdHocChatRoomMessageDeliveredEvent</code> containing the id of the message
      * that has caused the event.
      */
     void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt);
 
     /**
      * Called to indicate that delivery of a message sent earlier to the chat room has failed.
-     * Reason code and phrase are contained by the <tt>MessageFailedEvent</tt>
+     * Reason code and phrase are contained by the <code>MessageFailedEvent</code>
      *
-     * @param evt the <tt>AdHocChatroomMessageDeliveryFailedEvent</tt> containing the ID of the
+     * @param evt the <code>AdHocChatroomMessageDeliveryFailedEvent</code> containing the ID of the
      * message whose delivery has failed.
      */
     void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt);

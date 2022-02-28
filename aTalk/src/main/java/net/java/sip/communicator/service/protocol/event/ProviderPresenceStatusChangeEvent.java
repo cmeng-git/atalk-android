@@ -33,7 +33,7 @@ public class ProviderPresenceStatusChangeEvent extends PropertyChangeEvent
 
     /**
      * Creates an event instance indicating a change of the property specified by
-     * <tt>eventType</tt> from <tt>oldValue</tt> to <tt>newValue</tt>.
+     * <code>eventType</code> from <code>oldValue</code> to <code>newValue</code>.
      *
      * @param source the provider that generated the event
      * @param oldValue the status the source provider was int before entering the new state.

@@ -57,7 +57,7 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 	 * Initialize and start file service
 	 *
 	 * @param bc
-	 *        the <tt>BundleContext</tt>
+	 *        the <code>BundleContext</code>
 	 * @throws Exception
 	 *         if initializing and starting file service fails
 	 */
@@ -118,7 +118,7 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 	 * Stops this bundle.
 	 *
 	 * @param bundleContext
-	 *        the <tt>BundleContext</tt>
+	 *        the <code>BundleContext</code>
 	 * @throws Exception
 	 *         if the stop operation goes wrong
 	 */
@@ -128,9 +128,9 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 	}
 
 	/**
-	 * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
+	 * Returns the <code>ResourceManagementService</code>, through which we will access all resources.
 	 *
-	 * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
+	 * @return the <code>ResourceManagementService</code>, through which we will access all resources.
 	 */
 	public static ResourceManagementService getResources()
 	{
@@ -141,9 +141,9 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 	}
 
 	/**
-	 * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+	 * Returns the <code>ConfigurationService</code> obtained from the bundle context.
 	 * 
-	 * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+	 * @return the <code>ConfigurationService</code> obtained from the bundle context
 	 */
 	public static ConfigurationService getConfigurationService()
 	{
@@ -154,9 +154,9 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 	}
 
 	/**
-	 * Returns the <tt>AlertUIService</tt> obtained from the bundle context.
+	 * Returns the <code>AlertUIService</code> obtained from the bundle context.
 	 * 
-	 * @return the <tt>AlertUIService</tt> obtained from the bundle context
+	 * @return the <code>AlertUIService</code> obtained from the bundle context
 	 */
 	public static AlertUIService getAlertUIService()
 	{
@@ -167,9 +167,9 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 	}
 
 	/**
-	 * Returns the <tt>UIService</tt> obtained from the bundle context.
+	 * Returns the <code>UIService</code> obtained from the bundle context.
 	 * 
-	 * @return the <tt>UIService</tt> obtained from the bundle context
+	 * @return the <code>UIService</code> obtained from the bundle context
 	 */
 	public static UIService getUIService()
 	{
@@ -180,11 +180,11 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 	}
 
 	/**
-	 * Implements the <tt>ServiceListener</tt> method. Verifies whether the passed event concerns a <tt>ProtocolProviderService</tt> and
+	 * Implements the <code>ServiceListener</code> method. Verifies whether the passed event concerns a <code>ProtocolProviderService</code> and
 	 * adds or removes a registration listener.
 	 *
 	 * @param event
-	 *        The <tt>ServiceEvent</tt> object.
+	 *        The <code>ServiceEvent</code> object.
 	 */
 	public void serviceChanged(ServiceEvent event)
 	{

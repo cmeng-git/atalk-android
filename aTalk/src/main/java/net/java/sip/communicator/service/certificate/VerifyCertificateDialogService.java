@@ -30,13 +30,13 @@ public interface VerifyCertificateDialogService
      *
      * @param certs the certificates list
      * @param title The title of the dialog; when null the resource
-     * <tt>service.gui.CERT_DIALOG_TITLE</tt> is loaded and used.
+     * <code>service.gui.CERT_DIALOG_TITLE</code> is loaded and used.
      * @param message A text that describes why the verification failed.
      */
     VerifyCertificateDialog createDialog(Certificate[] certs, String title, String message);
 
     /**
-     * The dialog implementers should return <tt>VerifyCertificateDialog</tt>.
+     * The dialog implementers should return <code>VerifyCertificateDialog</code>.
      */
     interface VerifyCertificateDialog
     {

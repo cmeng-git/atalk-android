@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**
- * Fragment displayed in <tt>VideoCallActivity</tt> when the call has ended.
+ * Fragment displayed in <code>VideoCallActivity</code> when the call has ended.
  *
  * @author Pawel Domas
  */
@@ -59,7 +59,7 @@ public class CallEnded extends OSGiFragment implements View.OnClickListener
     }
 
     /**
-     * Handles buttons action events. the <tt>ActionEvent</tt> that notified us
+     * Handles buttons action events. the <code>ActionEvent</code> that notified us
      */
     @Override
     public void onClick(View v)

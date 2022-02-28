@@ -70,9 +70,9 @@ public class RTCPFeedbackMessagePacket implements Payload
 	}
 
 	/**
-	 * Gets the feedback message type (FMT) of this <tt>RTCPFeedbackMessagePacket</tt>.
+	 * Gets the feedback message type (FMT) of this <code>RTCPFeedbackMessagePacket</code>.
 	 * 
-	 * @return the feedback message type (FMT) of this <tt>RTCPFeedbackMessagePacket</tt>
+	 * @return the feedback message type (FMT) of this <code>RTCPFeedbackMessagePacket</code>
 	 */
 	public int getFeedbackMessageType()
 	{
@@ -80,9 +80,9 @@ public class RTCPFeedbackMessagePacket implements Payload
 	}
 
 	/**
-	 * Gets the packet type (PT) of this <tt>RTCPFeedbackMessagePacket</tt>.
+	 * Gets the packet type (PT) of this <code>RTCPFeedbackMessagePacket</code>.
 	 *
-	 * @return the packet type (PT) of this <tt>RTCPFeedbackMessagePacket</tt>
+	 * @return the packet type (PT) of this <code>RTCPFeedbackMessagePacket</code>
 	 */
 	public int getPayloadType()
 	{
@@ -127,10 +127,10 @@ public class RTCPFeedbackMessagePacket implements Payload
 	}
 
 	/**
-	 * Sets the feedback message type (FMT) of this <tt>RTCPFeedbackMessagePacket</tt>.
+	 * Sets the feedback message type (FMT) of this <code>RTCPFeedbackMessagePacket</code>.
 	 *
 	 * @param fmt
-	 *        the feedback message type (FMT) to set on this <tt>RTCPFeedbackMessagePacket</tt>
+	 *        the feedback message type (FMT) to set on this <code>RTCPFeedbackMessagePacket</code>
 	 */
 	public void setFeedbackMessageType(int fmt)
 	{
@@ -138,10 +138,10 @@ public class RTCPFeedbackMessagePacket implements Payload
 	}
 
 	/**
-	 * Sets the packet type (PT) of this <tt>RTCPFeedbackMessagePacket</tt>.
+	 * Sets the packet type (PT) of this <code>RTCPFeedbackMessagePacket</code>.
 	 *
 	 * @param pt
-	 *        the packet type (PT) to set on this <tt>RTCPFeedbackMessagePacket</tt>
+	 *        the packet type (PT) to set on this <code>RTCPFeedbackMessagePacket</code>
 	 */
 	public void setPayloadType(int pt)
 	{
@@ -189,17 +189,17 @@ public class RTCPFeedbackMessagePacket implements Payload
 	}
 
 	/**
-	 * Writes a specific synchronization source identifier (SSRC) into a specific <tt>byte</tt>
+	 * Writes a specific synchronization source identifier (SSRC) into a specific <code>byte</code>
 	 * array starting at a specific offset.
 	 * 
 	 * @param ssrc
-	 *        the synchronization source identifier (SSRC) to write into <tt>buf</tt> starting at
-	 *        <tt>off</tt>
+	 *        the synchronization source identifier (SSRC) to write into <code>buf</code> starting at
+	 *        <code>off</code>
 	 * @param buf
-	 *        the <tt>byte</tt> array to write the specified <tt>ssrc</tt> into starting at
-	 *        <tt>off</tt>
+	 *        the <code>byte</code> array to write the specified <code>ssrc</code> into starting at
+	 *        <code>off</code>
 	 * @param off
-	 *        the offset in <tt>buf</tt> at which the writing of <tt>ssrc</tt> is to start
+	 *        the offset in <code>buf</code> at which the writing of <code>ssrc</code> is to start
 	 */
 	public static void writeSSRC(long ssrc, byte[] buf, int off)
 	{
@@ -211,10 +211,10 @@ public class RTCPFeedbackMessagePacket implements Payload
 
 	/**
 	 * Write the RTCP packet representation of this instance into a specific
-	 * <tt>OutputDataStream</tt>.
+	 * <code>OutputDataStream</code>.
 	 *
 	 * @param out
-	 *        the <tt>OutputDataStream</tt> into which the RTCP packet representation of this
+	 *        the <code>OutputDataStream</code> into which the RTCP packet representation of this
 	 *        instance is to be written
 	 */
 	public void writeTo(OutputDataStream out)

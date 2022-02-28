@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.protocol.AdHocChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 /**
- * The <tt>AdHocChatRoomWrapper</tt> is the representation of the <tt>AdHocChatRoom</tt> in the GUI. It stores the information for the
+ * The <code>AdHocChatRoomWrapper</code> is the representation of the <code>AdHocChatRoom</code> in the GUI. It stores the information for the
  * ad-hoc chat room even when the corresponding protocol provider is not connected.
  *
  * @author Valentin Martinet
@@ -25,7 +25,7 @@ public class AdHocChatRoomWrapper
 	private final String adHocChatRoomID;
 
 	/**
-	 * Creates a <tt>AdHocChatRoomWrapper</tt> by specifying the protocol provider, the identifier and the name of the ad-hoc chat room.
+	 * Creates a <code>AdHocChatRoomWrapper</code> by specifying the protocol provider, the identifier and the name of the ad-hoc chat room.
 	 *
 	 * @param parentProvider
 	 *        the protocol provider to which the corresponding ad-hoc chat room belongs
@@ -39,7 +39,7 @@ public class AdHocChatRoomWrapper
 	}
 
 	/**
-	 * Creates a <tt>ChatRoomWrapper</tt> by specifying the corresponding chat room.
+	 * Creates a <code>ChatRoomWrapper</code> by specifying the corresponding chat room.
 	 *
 	 * @param adHocChatRoom
 	 *        the chat room to which this wrapper corresponds.
@@ -52,9 +52,9 @@ public class AdHocChatRoomWrapper
 	}
 
 	/**
-	 * Returns the <tt>AdHocChatRoom</tt> that this wrapper represents.
+	 * Returns the <code>AdHocChatRoom</code> that this wrapper represents.
 	 *
-	 * @return the <tt>AdHocChatRoom</tt> that this wrapper represents.
+	 * @return the <code>AdHocChatRoom</code> that this wrapper represents.
 	 */
 	public AdHocChatRoom getAdHocChatRoom()
 	{
@@ -62,7 +62,7 @@ public class AdHocChatRoomWrapper
 	}
 
 	/**
-	 * Sets the <tt>AdHocChatRoom</tt> that this wrapper represents.
+	 * Sets the <code>AdHocChatRoom</code> that this wrapper represents.
 	 *
 	 * @param adHocChatRoom
 	 *        the ad-hoc chat room

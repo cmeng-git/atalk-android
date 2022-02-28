@@ -19,10 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Provides an abstract implementation of the basic functionality of <tt>ContactQuery</tt> and allows
+ * Provides an abstract implementation of the basic functionality of <code>ContactQuery</code> and allows
  * extenders to focus on the specifics of their implementation.
  *
- * @param <T> the very type of <tt>ContactSourceService</tt> which performs the <tt>ContactQuery</tt>
+ * @param <T> the very type of <code>ContactSourceService</code> which performs the <code>ContactQuery</code>
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
@@ -30,29 +30,29 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
         implements ContactQuery
 {
     /**
-     * The <tt>ContactSourceService</tt> which is performing this <tt>ContactQuery</tt>.
+     * The <code>ContactSourceService</code> which is performing this <code>ContactQuery</code>.
      */
     private final T contactSource;
 
     /**
-     * The <tt>List</tt> of <tt>ContactQueryListener</tt>s which are to be
-     * notified by this <tt>ContactQuery</tt> about changes in its status, the
-     * receipt of new <tt>ContactSource</tt>s via this <tt>ContactQuery</tt>, etc.
+     * The <code>List</code> of <code>ContactQueryListener</code>s which are to be
+     * notified by this <code>ContactQuery</code> about changes in its status, the
+     * receipt of new <code>ContactSource</code>s via this <code>ContactQuery</code>, etc.
      */
     private final List<ContactQueryListener> listeners = new LinkedList<>();
 
     /**
-     * The status of this <tt>ContactQuery</tt> which is one of the
-     * <tt>QUERY_XXX</tt> constants defined by the <tt>ContactQuery</tt> class.
+     * The status of this <code>ContactQuery</code> which is one of the
+     * <code>QUERY_XXX</code> constants defined by the <code>ContactQuery</code> class.
      */
     private int status = QUERY_IN_PROGRESS;
 
     /**
-     * Initializes a new <tt>AbstractContactQuery</tt> which is to be performed
-     * by a specific <tt>ContactSourceService</tt>. The status of the new
+     * Initializes a new <code>AbstractContactQuery</code> which is to be performed
+     * by a specific <code>ContactSourceService</code>. The status of the new
      * instance is {@link ContactQuery#QUERY_IN_PROGRESS}.
      *
-     * @param contactSource the <tt>ContactSourceService</tt> which is to perform the new <tt>AbstractContactQuery</tt>
+     * @param contactSource the <code>ContactSourceService</code> which is to perform the new <code>AbstractContactQuery</code>
      */
     protected AbstractContactQuery(T contactSource)
     {
@@ -60,12 +60,12 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Adds a <tt>ContactQueryListener</tt> to the list of listeners interested
-     * in notifications about this <tt>ContactQuery</tt> changing its status,
-     * the receipt of new <tt>SourceContact</tt>s via this <tt>ContactQuery</tt>, etc.
+     * Adds a <code>ContactQueryListener</code> to the list of listeners interested
+     * in notifications about this <code>ContactQuery</code> changing its status,
+     * the receipt of new <code>SourceContact</code>s via this <code>ContactQuery</code>, etc.
      *
-     * @param l the <tt>ContactQueryListener</tt> to be added to the list of
-     * listeners interested in the notifications raised by this <tt>ContactQuery</tt>
+     * @param l the <code>ContactQueryListener</code> to be added to the list of
+     * listeners interested in the notifications raised by this <code>ContactQuery</code>
      * @see ContactQuery#addContactQueryListener(ContactQueryListener)
      */
     public void addContactQueryListener(ContactQueryListener l)
@@ -81,7 +81,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Cancels this <tt>ContactQuery</tt>.
+     * Cancels this <code>ContactQuery</code>.
      *
      * @see ContactQuery#cancel()
      */
@@ -92,11 +92,11 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Notifies the <tt>ContactQueryListener</tt>s registered with this
-     * <tt>ContactQuery</tt> that a new <tt>SourceContact</tt> has been received.
+     * Notifies the <code>ContactQueryListener</code>s registered with this
+     * <code>ContactQuery</code> that a new <code>SourceContact</code> has been received.
      *
-     * @param contact the <tt>SourceContact</tt> which has been received and
-     * which the registered <tt>ContactQueryListener</tt>s are to be notified about
+     * @param contact the <code>SourceContact</code> which has been received and
+     * which the registered <code>ContactQueryListener</code>s are to be notified about
      * @param showMoreEnabled indicates whether show more label should be shown or not.
      */
     protected void fireContactReceived(SourceContact contact, boolean showMoreEnabled)
@@ -112,11 +112,11 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Notifies the <tt>ContactQueryListener</tt>s registered with this
-     * <tt>ContactQuery</tt> that a new <tt>SourceContact</tt> has been received.
+     * Notifies the <code>ContactQueryListener</code>s registered with this
+     * <code>ContactQuery</code> that a new <code>SourceContact</code> has been received.
      *
-     * @param contact the <tt>SourceContact</tt> which has been received and
-     * which the registered <tt>ContactQueryListener</tt>s are to be notified about
+     * @param contact the <code>SourceContact</code> which has been received and
+     * which the registered <code>ContactQueryListener</code>s are to be notified about
      */
     protected void fireContactReceived(SourceContact contact)
     {
@@ -124,11 +124,11 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Notifies the <tt>ContactQueryListener</tt>s registered with this
-     * <tt>ContactQuery</tt> that a <tt>SourceContact</tt> has been removed.
+     * Notifies the <code>ContactQueryListener</code>s registered with this
+     * <code>ContactQuery</code> that a <code>SourceContact</code> has been removed.
      *
-     * @param contact the <tt>SourceContact</tt> which has been removed and
-     * which the registered <tt>ContactQueryListener</tt>s are to be notified about
+     * @param contact the <code>SourceContact</code> which has been removed and
+     * which the registered <code>ContactQueryListener</code>s are to be notified about
      */
     protected void fireContactRemoved(SourceContact contact)
     {
@@ -143,11 +143,11 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Notifies the <tt>ContactQueryListener</tt>s registered with this
-     * <tt>ContactQuery</tt> that a <tt>SourceContact</tt> has been changed.
+     * Notifies the <code>ContactQueryListener</code>s registered with this
+     * <code>ContactQuery</code> that a <code>SourceContact</code> has been changed.
      *
-     * @param contact the <tt>SourceContact</tt> which has been changed and
-     * which the registered <tt>ContactQueryListener</tt>s are to be notified about
+     * @param contact the <code>SourceContact</code> which has been changed and
+     * which the registered <code>ContactQueryListener</code>s are to be notified about
      */
     protected void fireContactChanged(SourceContact contact)
     {
@@ -162,10 +162,10 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Notifies the <tt>ContactQueryListener</tt>s registered with this <tt>ContactQuery</tt> that its state has changed.
+     * Notifies the <code>ContactQueryListener</code>s registered with this <code>ContactQuery</code> that its state has changed.
      *
-     * @param eventType the type of the <tt>ContactQueryStatusEvent</tt> to be
-     * fired which can be one of the <tt>QUERY_XXX</tt> constants defined by <tt>ContactQueryStatusEvent</tt>
+     * @param eventType the type of the <code>ContactQueryStatusEvent</code> to be
+     * fired which can be one of the <code>QUERY_XXX</code> constants defined by <code>ContactQueryStatusEvent</code>
      */
     protected void fireQueryStatusChanged(int eventType)
     {
@@ -180,9 +180,9 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Gets the <tt>ContactSourceService</tt> which is performing this <tt>ContactQuery</tt>.
+     * Gets the <code>ContactSourceService</code> which is performing this <code>ContactQuery</code>.
      *
-     * @return the <tt>ContactSourceService</tt> which is performing this <tt>ContactQuery</tt>
+     * @return the <code>ContactSourceService</code> which is performing this <code>ContactQuery</code>
      * @see ContactQuery#getContactSource()
      */
     public T getContactSource()
@@ -191,11 +191,11 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Gets the status of this <tt>ContactQuery</tt> which can be one of the
-     * <tt>QUERY_XXX</tt> constants defined by <tt>ContactQuery</tt>.
+     * Gets the status of this <code>ContactQuery</code> which can be one of the
+     * <code>QUERY_XXX</code> constants defined by <code>ContactQuery</code>.
      *
-     * @return the status of this <tt>ContactQuery</tt> which can be one of the
-     * <tt>QUERY_XXX</tt> constants defined by <tt>ContactQuery</tt>
+     * @return the status of this <code>ContactQuery</code> which can be one of the
+     * <code>QUERY_XXX</code> constants defined by <code>ContactQuery</code>
      * @see ContactQuery#getStatus()
      */
     public int getStatus()
@@ -204,12 +204,12 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Removes a <tt>ContactQueryListener</tt> from the list of listeners
-     * interested in notifications about this <tt>ContactQuery</tt> changing its
-     * status, the receipt of new <tt>SourceContact</tt>s via this <tt>ContactQuery</tt>, etc.
+     * Removes a <code>ContactQueryListener</code> from the list of listeners
+     * interested in notifications about this <code>ContactQuery</code> changing its
+     * status, the receipt of new <code>SourceContact</code>s via this <code>ContactQuery</code>, etc.
      *
-     * @param l the <tt>ContactQueryListener</tt> to be removed from the list of
-     * listeners interested in notifications raised by this <tt>ContactQuery</tt>
+     * @param l the <code>ContactQueryListener</code> to be removed from the list of
+     * listeners interested in notifications raised by this <code>ContactQuery</code>
      * @see ContactQuery#removeContactQueryListener(ContactQueryListener)
      */
     public void removeContactQueryListener(ContactQueryListener l)
@@ -222,7 +222,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Sets the status of this <tt>ContactQuery</tt>.
+     * Sets the status of this <code>ContactQuery</code>.
      *
      * @param status {@link ContactQuery#QUERY_CANCELED},
      * {@link ContactQuery#QUERY_COMPLETED}, or

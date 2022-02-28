@@ -74,9 +74,9 @@ public class ContactlistActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>FileAccessService</tt> obtained from the bundle context.
+     * Returns the <code>FileAccessService</code> obtained from the bundle context.
      *
-     * @return the <tt>FileAccessService</tt> obtained from the bundle context
+     * @return the <code>FileAccessService</code> obtained from the bundle context
      */
     public static FileAccessService getFileAccessService()
     {
@@ -87,9 +87,9 @@ public class ContactlistActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * Returns the <code>ResourceManagementService</code>, through which we will access all resources.
      *
-     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
     public static ResourceManagementService getResources()
     {
@@ -100,9 +100,9 @@ public class ContactlistActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>AccountManager</tt> obtained from the bundle context.
+     * Returns the <code>AccountManager</code> obtained from the bundle context.
      *
-     * @return the <tt>AccountManager</tt> obtained from the bundle context
+     * @return the <code>AccountManager</code> obtained from the bundle context
      */
     public static AccountManager getAccountManager()
     {

@@ -27,7 +27,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * Android OTR activator which registers <tt>OtrActionHandler</tt> specific to this system.
+ * Android OTR activator which registers <code>OtrActionHandler</code> specific to this system.
  *
  * @author Eng Chong Meng
  */

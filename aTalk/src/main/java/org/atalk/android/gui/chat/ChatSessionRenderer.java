@@ -11,8 +11,8 @@ import javax.swing.Icon;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>ChatSessionRenderer</tt> is the connector between the
- * <tt>ChatSession</tt> and the <tt>ChatPanel</tt>, which represents the UI
+ * The <code>ChatSessionRenderer</code> is the connector between the
+ * <code>ChatSession</code> and the <code>ChatPanel</code>, which represents the UI
  * part of the chat.
  *
  * @author Yana Stamcheva
@@ -69,9 +69,9 @@ public interface ChatSessionRenderer
     void updateChatTransportStatus(ChatTransport chatTransport);
 
     /**
-     * Sets the given <tt>chatTransport</tt> to be the selected chat transport.
+     * Sets the given <code>chatTransport</code> to be the selected chat transport.
      *
-     * @param chatTransport the <tt>ChatTransport</tt> to select
+     * @param chatTransport the <code>ChatTransport</code> to select
      * @param isMessageOrFileTransferReceived Boolean telling us if this change
      * of the chat transport correspond to an effective switch to this new
      * transform (a mesaage received from this transport, or a file transfer
@@ -103,30 +103,30 @@ public interface ChatSessionRenderer
     void setChatIcon(Icon icon);
 
     /**
-     * Adds the given <tt>conferenceDescription</tt> to the list of chat 
+     * Adds the given <code>conferenceDescription</code> to the list of chat
      * conferences in this chat renderer.
      * @param conferenceDescription the conference to add.
      */
     void addChatConferenceCall(ConferenceDescription conferenceDescription);
 
     /**
-     * Removes the given <tt>conferenceDescription</tt> from the list of chat 
+     * Removes the given <code>conferenceDescription</code> from the list of chat
      * conferences in this chat panel chat.
      * @param conferenceDescription the conference to remove.
      */
     void removeChatConferenceCall(ConferenceDescription conferenceDescription);
     
     /**
-     * Sets the visibility of conferences panel to <tt>true</tt> or <tt>false</tt>
+     * Sets the visibility of conferences panel to <code>true</code> or <code>false</code>
      * 
-     * @param isVisible if <tt>true</tt> the panel is visible.
+     * @param isVisible if <code>true</code> the panel is visible.
      */
     void setConferencesPanelVisible(boolean isVisible);
     
     /**
-     * This method is called when the local user publishes a  <tt>ConferenceDescription</tt> instance.
+     * This method is called when the local user publishes a  <code>ConferenceDescription</code> instance.
      * 
-     * @param conferenceDescription the <tt>ConferenceDescription</tt> instance 
+     * @param conferenceDescription the <code>ConferenceDescription</code> instance
      * associated with the conference.
      */
     void chatConferenceDescriptionSent(ConferenceDescription conferenceDescription);

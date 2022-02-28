@@ -36,7 +36,7 @@ public class ResourceManagementActivator
     private static ConfigurationService configService;
 
     /**
-     * Creates new instance of <tt>ResourceManagementActivator</tt>
+     * Creates new instance of <code>ResourceManagementActivator</code>
      */
     public ResourceManagementActivator()
     {
@@ -74,9 +74,9 @@ public class ResourceManagementActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+     * Returns the <code>ConfigurationService</code> obtained from the bundle context.
      *
-     * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+     * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
     public static ConfigurationService getConfigService()
     {

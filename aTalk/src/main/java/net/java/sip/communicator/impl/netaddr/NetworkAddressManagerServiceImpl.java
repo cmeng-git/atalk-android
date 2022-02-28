@@ -119,7 +119,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
          * The reason why we cannot use it on Windows is because its socket implementation returns any address...
          */
 
-        String osVersion;
+//        String osVersion;
 //        if (OSUtils.IS_WINDOWS && !(osVersion = System.getProperty("os.version")).startsWith("4") /* 95/98/Me/NT */
 //                && !osVersion.startsWith("5.0")) /* 2000 */ {
 //            byte[] src = Win32LocalhostRetriever.getSourceForDestination(intendedDestination.getAddress());
@@ -159,11 +159,10 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
                 Timber.w(e, "Failed to get localhost");
             }
         }
-        if (localHost.isAnyLocalAddress()) {
+        if ((localHost != null) && localHost.isAnyLocalAddress()) {
             Timber.log(TimberLog.FINER, "Socket returned the ANY local address. Trying a workaround.");
             try {
-                // all that's inside the if is an ugly IPv6 hack (good ol' IPv6 - always causing
-                // more problems than it solves.)
+                // all that's inside the if is an ugly IPv6 hack (good ol' IPv6 - always causing more problems than it solves.)
                 if (intendedDestination instanceof Inet6Address) {
                     // return the first globally route-able ipv6 address we find on the machine (and hope it's a good one)
                     boolean done = false;
@@ -185,9 +184,8 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
                         }
                     }
                 }
-                else
                 // an IPv4 destination
-                {
+                else {
                     // Make sure we got an IPv4 address.
                     if (intendedDestination instanceof Inet4Address) {
                         // return the first non-loopback interface we find.
@@ -221,7 +219,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     /**
      * Returns the hardware address (i.e. MAC address) of the specified interface name.
      *
-     * @param iface the <tt>NetworkInterface</tt>
+     * @param iface the <code>NetworkInterface</code>
      * @return array of bytes representing the layer 2 address or null if interface does not exist
      */
     public byte[] getHardwareAddress(NetworkInterface iface)
@@ -310,8 +308,8 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
         }
         int currentlyTriedPort = NetworkUtils.getRandomPortNumber();
 
-        // we'll first try to bind to a random port. if this fails we'll try again (bindRetries
-        // times in all) until we find a free local port.
+        // we'll first try to bind to a random port. if this fails we'll try again
+        // (bindRetries times in all) until we find a free local port.
         for (int i = 0; i < bindRetries; i++) {
             try {
                 resultSocket = new DatagramSocket(currentlyTriedPort);
@@ -332,26 +330,24 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     }
 
     /**
-     * Creates a <tt>DatagramSocket</tt> and binds it to the specified <tt>localAddress</tt> and a
-     * port in the range specified by the <tt>minPort</tt> and <tt>maxPort</tt> parameters. We
-     * first try to bind the newly created socket on the <tt>preferredPort</tt> port number
-     * (unless it is outside the <tt>[minPort, maxPort]</tt> range in which case we first try the
-     * <tt>minPort</tt>) and then proceed incrementally upwards until we succeed or reach the bind
-     * retries limit. If we reach the <tt>maxPort</tt> port number before the bind retries limit,
-     * we will then start over again at <tt>minPort</tt> and keep going until we run out of retries.
+     * Creates a <code>DatagramSocket</code> and binds it to the specified <code>localAddress</code> and a
+     * port in the range specified by the <code>minPort</code> and <code>maxPort</code> parameters. We
+     * first try to bind the newly created socket on the <code>preferredPort</code> port number
+     * (unless it is outside the <code>[minPort, maxPort]</code> range in which case we first try the
+     * <code>minPort</code>) and then proceed incrementally upwards until we succeed or reach the bind
+     * retries limit. If we reach the <code>maxPort</code> port number before the bind retries limit,
+     * we will then start over again at <code>minPort</code> and keep going until we run out of retries.
      *
      * @param laddr the address that we'd like to bind the socket on.
      * @param preferredPort the port number that we should try to bind to first.
-     * @param minPort the port number where we should first try to bind before moving to the next one (i.e.
-     * <tt>minPort + 1</tt>
-     * )
-     * @param maxPort the maximum port number where we should try binding before giving up and throwing
-     * an exception.
-     * @return the newly created <tt>DatagramSocket</tt>.
-     * @throws IllegalArgumentException if either <tt>minPort</tt> or <tt>maxPort</tt> is not a valid port number or if
-     * <tt>minPort > maxPort</tt>.
+     * @param minPort the port number where we should first try to bind before moving to the next one
+     * (i.e. <code>minPort + 1</code>)
+     * @param maxPort the maximum port number where we should try binding before giving up and throwing an exception.
+     * @return the newly created <code>DatagramSocket</code>.
+     * @throws IllegalArgumentException if either <code>minPort</code> or <code>maxPort</code> is not a valid
+     * port number or if <code>minPort > maxPort</code>.
      * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
-     * @throws BindException if we couldn't find a free port between <tt>minPort</tt> and <tt>maxPort</tt> before
+     * @throws BindException if we couldn't find a free port between <code>minPort</code> and <code>maxPort</code> before
      * reaching the maximum allowed number of retries.
      */
     public DatagramSocket createDatagramSocket(InetAddress laddr, int preferredPort, int minPort, int maxPort)
@@ -394,8 +390,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     }
 
     /**
-     * Adds new <tt>NetworkConfigurationChangeListener</tt> which will be informed for network
-     * configuration changes.
+     * Adds new <code>NetworkConfigurationChangeListener</code> which will be informed for network configuration changes.
      *
      * @param listener the listener.
      */
@@ -408,7 +403,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     }
 
     /**
-     * Remove <tt>NetworkConfigurationChangeListener</tt>.
+     * Remove <code>NetworkConfigurationChangeListener</code>.
      *
      * @param listener the listener.
      */
@@ -430,7 +425,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     }
 
     /**
-     * Tries to discover a TURN or a STUN server for the specified <tt>domainName</tt>. The method
+     * Tries to discover a TURN or a STUN server for the specified <code>domainName</code>. The method
      * would first try to discover a TURN server and then fall back to STUN only. In both cases
      * we would only care about a UDP transport.
      *
@@ -440,7 +435,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
      * @param password the password that we'd like to try when connecting to a TURN server (we won't be using
      * credentials in case we only have a STUN server).
      * @return A {@link StunCandidateHarvester} corresponding to the TURN or STUN server we
-     * discovered or <tt>null</tt> if there were no such records for the specified <tt>domainName</tt>
+     * discovered or <code>null</code> if there were no such records for the specified <code>domainName</code>
      */
     public StunCandidateHarvester discoverStunServer(String domainName, byte[] userName, byte[] password)
     {
@@ -484,15 +479,15 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     }
 
     /**
-     * Creates an <tt>IceMediaStrean</tt> and adds to it an RTP and and RTCP component, which also
-     * implies running the currently installed harvesters so that they would.
+     * Creates an <code>IceMediaStrean</code> and adds to it an RTP and and RTCP component,
+     * which also implies running the currently installed harvesters so that they would.
      *
-     * @param rtpPort the port that we should try to bind the RTP component on (the RTCP one would
-     * automatically go to rtpPort + 1)
+     * @param rtpPort the port that we should try to bind the RTP component on
+     * (the RTCP one would automatically go to rtpPort + 1)
      * @param streamName the name of the stream to create
-     * @param agent the <tt>Agent</tt> that should create the stream.
-     * @return the newly created <tt>IceMediaStream</tt>.
-     * @throws IllegalArgumentException if <tt>rtpPort</tt> is not a valid port number.
+     * @param agent the <code>Agent</code> that should create the stream.
+     * @return the newly created <code>IceMediaStream</code>.
+     * @throws IllegalArgumentException if <code>rtpPort</code> is not a valid port number.
      * @throws IOException if an error occurs while the underlying resolver is using sockets.
      * @throws BindException if we couldn't find a free port between within the default number of retries.
      */

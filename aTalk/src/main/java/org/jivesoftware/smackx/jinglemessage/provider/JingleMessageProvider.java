@@ -23,7 +23,7 @@ import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
-import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
+import org.jivesoftware.smackx.jingle.RtpDescription;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public class JingleMessageProvider extends ExtensionElementProvider<JingleMessag
     public JingleMessage parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws XmlPullParserException, IOException, SmackParsingException
     {
-        RtpDescriptionExtension rtpDescriptionExtension = null;
+        RtpDescription rtpDescription = null;
         String elementName = null;
         String id = null;
 
@@ -52,10 +52,10 @@ public class JingleMessageProvider extends ExtensionElementProvider<JingleMessag
                 if (elementName.equals(JingleMessage.ACTION_PROPOSE)) {
                     id = parser.getAttributeValue(JingleMessage.ATTR_ID);
                 }
-                else if (elementName.equals(RtpDescriptionExtension.ELEMENT)) {
-                    ExtensionElementProvider provider = ProviderManager.getExtensionProvider(
-                            RtpDescriptionExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE);
-                    rtpDescriptionExtension = (RtpDescriptionExtension) provider.parse(parser);
+                else if (elementName.equals(RtpDescription.ELEMENT)) {
+                    ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(
+                            RtpDescription.ELEMENT, RtpDescription.NAMESPACE);
+                    rtpDescription = (RtpDescription) provider.parse(parser);
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
@@ -66,7 +66,7 @@ public class JingleMessageProvider extends ExtensionElementProvider<JingleMessag
         }
 
         JingleMessage jingleMessage = new JingleMessage(elementName, id);
-        jingleMessage.addDescriptionExtension(rtpDescriptionExtension);
+        jingleMessage.addDescriptionExtension(rtpDescription);
 
         return jingleMessage;
     }

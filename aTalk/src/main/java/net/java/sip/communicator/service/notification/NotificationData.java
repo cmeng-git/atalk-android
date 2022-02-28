@@ -16,22 +16,22 @@ import java.util.Map;
 public class NotificationData
 {
     /**
-     * The name/key of the <tt>NotificationData</tt> extra which is provided to
+     * The name/key of the <code>NotificationData</code> extra which is provided to
      * {@link CommandNotificationHandler#execute(CommandNotificationAction, Map)} i.e. a
-     * <tt>Map&lt;String,String&gt;</tt> which is known by the (argument) name <tt>cmdargs</tt>.
+     * <code>Map&lt;String,String&gt;</code> which is known by the (argument) name <code>cmdargs</code>.
      */
     public static final String COMMAND_NOTIFICATION_HANDLER_CMDARGS_EXTRA = "CommandNotificationHandler.cmdargs";
 
     /**
-     * The name/key of the <tt>NotificationData</tt> extra which is provided to
+     * The name/key of the <code>NotificationData</code> extra which is provided to
      * {@link PopupMessageNotificationHandler#popupMessage(PopupMessageNotificationAction, String, String, byte[], Object)}
-     * i.e. an <tt>Object</tt> which is known by the (argument) name <tt>tag</tt>.
+     * i.e. an <code>Object</code> which is known by the (argument) name <code>tag</code>.
      */
     public static final String POPUP_MESSAGE_HANDLER_TAG_EXTRA = "PopupMessageNotificationHandler.tag";
 
     /**
-     * The name/key of the <tt>NotificationData</tt> extra which is provided to {@link SoundNotificationHandler} i.e. a
-     * <tt>Callable&lt;Boolean&gt;</tt> which is known as the condition which determines whether looping sounds are to
+     * The name/key of the <code>NotificationData</code> extra which is provided to {@link SoundNotificationHandler} i.e. a
+     * <code>Callable&lt;Boolean&gt;</code> which is known as the condition which determines whether looping sounds are to
      * continue playing.
      */
     public static final String SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA = "SoundNotificationHandler.loopCondition";
@@ -50,7 +50,7 @@ public class NotificationData
 
     /**
      * The {@link NotificationHandler}-specific extras provided to this instance. The keys are among the
-     * <tt>XXX_EXTRA</tt> constants defined by the <tt>NotificationData</tt> class.
+     * <code>XXX_EXTRA</code> constants defined by the <code>NotificationData</code> class.
      */
     private final Map<String, Object> extras;
 
@@ -67,7 +67,7 @@ public class NotificationData
      * @param message the message to use if and where appropriate (e.g. with systray or log notification.)
      * @param icon the icon to show in the notification if and where appropriate
      * @param extras additional/extra {@link NotificationHandler}-specific data to be provided
-     * by the new instance to the various <tt>NotificationHandler</tt>
+     * by the new instance to the various <code>NotificationHandler</code>
      */
     NotificationData(String eventType, int msgType, String title, String message, byte[] icon, Map<String, Object> extras)
     {
@@ -102,8 +102,8 @@ public class NotificationData
     /**
      * Gets the {@link NotificationHandler}-specific extras provided to this instance.
      *
-     * @return the <tt>NotificationHandler</tt>-specific extras provided to this instance. The keys are among the
-     * <tt>XXX_EXTRA</tt> constants defined by the <tt>NotificationData</tt> class
+     * @return the <code>NotificationHandler</code>-specific extras provided to this instance. The keys are among the
+     * <code>XXX_EXTRA</code> constants defined by the <code>NotificationData</code> class
      */
     public Map<String, Object> getExtras()
     {
@@ -113,10 +113,10 @@ public class NotificationData
     /**
      * Gets the {@link NotificationHandler}-specific extra provided to this instance associated with a specific key.
      *
-     * @param key the key whose associated <tt>NotificationHandler</tt>-specific extra is to be returned. Well known keys
-     * are defined by the <tt>NotificationData</tt> class as the <tt>XXX_EXTRA</tt> constants.
-     * @return the <tt>NotificationHandler</tt>-specific extra provided to this instance associated with the specified
-     * <tt>key</tt>
+     * @param key the key whose associated <code>NotificationHandler</code>-specific extra is to be returned. Well known keys
+     * are defined by the <code>NotificationData</code> class as the <code>XXX_EXTRA</code> constants.
+     * @return the <code>NotificationHandler</code>-specific extra provided to this instance associated with the specified
+     * <code>key</code>
      */
     public Object getExtra(String key)
     {

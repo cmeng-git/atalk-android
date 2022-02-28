@@ -57,7 +57,7 @@ public class StunTurnDialogFragment extends DialogFragment
      * Creates new instance of {@link StunTurnDialogFragment}
      *
      * @param parentAdapter the parent adapter
-     * @param descriptor the descriptor to edit or <tt>null</tt> if new one shall be created
+     * @param descriptor the descriptor to edit or <code>null</code> if new one shall be created
      */
 
     public static StunTurnDialogFragment newInstance(StunServerAdapter parentAdapter, StunServerDescriptor descriptor)
@@ -150,9 +150,9 @@ public class StunTurnDialogFragment extends DialogFragment
 
     /**
      * Save the changes to the edited descriptor and notifies parent about the changes.
-     * Returns <tt>true</tt> if all fields are correct.
+     * Returns <code>true</code> if all fields are correct.
      *
-     * @return <tt>true</tt> if all field are correct and changes have been submitted to the parent adapter.
+     * @return <code>true</code> if all field are correct and changes have been submitted to the parent adapter.
      */
     boolean saveChanges()
     {

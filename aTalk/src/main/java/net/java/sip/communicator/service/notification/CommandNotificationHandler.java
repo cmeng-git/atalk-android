@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.notification;
 import java.util.*;
 
 /**
- * The <tt>CommandNotificationHandler</tt> interface is meant to be implemented by the notification bundle in order to
+ * The <code>CommandNotificationHandler</code> interface is meant to be implemented by the notification bundle in order to
  * provide handling of command actions.
  *
  * @author Yana Stamcheva

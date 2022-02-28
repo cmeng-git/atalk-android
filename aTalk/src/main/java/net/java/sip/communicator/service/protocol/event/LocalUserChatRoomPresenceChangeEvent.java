@@ -52,7 +52,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
     public static final String LOCAL_USER_DROPPED = "LocalUserDropped";
 
     /**
-     * The <tt>ChatRoom</tt> to which the change is related.
+     * The <code>ChatRoom</code> to which the change is related.
      */
     private ChatRoom chatRoom = null;
 
@@ -72,11 +72,11 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
     private String alternateAddress = null;
 
     /**
-     * Creates a <tt>ChatRoomLocalUserPresenceChangeEvent</tt> representing that a change in local
+     * Creates a <code>ChatRoomLocalUserPresenceChangeEvent</code> representing that a change in local
      * participant presence in the source chat room has occurred.
      *
-     * @param source the <tt>OperationSetMultiUserChat</tt>, which produced this event
-     * @param chatRoom the <tt>ChatRoom</tt> that this event is about
+     * @param source the <code>OperationSetMultiUserChat</code>, which produced this event
+     * @param chatRoom the <code>ChatRoom</code> that this event is about
      * @param eventType the type of this event.
      * @param reason the reason explaining why this event might have occurred
      */
@@ -87,11 +87,11 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>ChatRoomLocalUserPresenceChangeEvent</tt> representing that a change in local
+     * Creates a <code>ChatRoomLocalUserPresenceChangeEvent</code> representing that a change in local
      * participant presence in the source chat room has occurred.
      *
-     * @param source the <tt>OperationSetMultiUserChat</tt>, which produced this event
-     * @param chatRoom the <tt>ChatRoom</tt> that this event is about
+     * @param source the <code>OperationSetMultiUserChat</code>, which produced this event
+     * @param chatRoom the <code>ChatRoom</code> that this event is about
      * @param eventType the type of this event.
      * @param reason the reason explaining why this event might have occurred
      */
@@ -107,9 +107,9 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>OperationSetMultiUserChat</tt>, where this event has occurred.
+     * Returns the <code>OperationSetMultiUserChat</code>, where this event has occurred.
      *
-     * @return the <tt>OperationSetMultiUserChat</tt>, where this event has occurred
+     * @return the <code>OperationSetMultiUserChat</code>, where this event has occurred
      */
     public OperationSetMultiUserChat getMultiUserChatOpSet()
     {
@@ -117,9 +117,9 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ChatRoom</tt>, that this event is about.
+     * Returns the <code>ChatRoom</code>, that this event is about.
      *
-     * @return the <tt>ChatRoom</tt>, that this event is about
+     * @return the <code>ChatRoom</code>, that this event is about
      */
     public ChatRoom getChatRoom()
     {

@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.protocol.event;
 
 /**
- * The <tt>FileTransferStatusListener</tt> listens for <tt>FileTransferStatusChangeEvent</tt> in
+ * The <code>FileTransferStatusListener</code> listens for <code>FileTransferStatusChangeEvent</code> in
  * order to indicate a change in the current status of a file transfer.
  *
  * @author Yana Stamcheva

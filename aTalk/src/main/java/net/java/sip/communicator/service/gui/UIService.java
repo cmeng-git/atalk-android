@@ -28,16 +28,16 @@ import java.awt.Dimension;
 import java.util.*;
 
 /**
- * The <tt>UIService</tt> offers generic access to the graphical user interface
+ * The <code>UIService</code> offers generic access to the graphical user interface
  * for all modules that would like to interact with the user.
  * <p>
- * Through the <tt>UIService</tt> all modules can add their own components in
- * different menus, toolbars, etc. within the ui. Each <tt>UIService</tt>
+ * Through the <code>UIService</code> all modules can add their own components in
+ * different menus, toolbars, etc. within the ui. Each <code>UIService</code>
  * implementation should export its supported "pluggable" containers - a set of
- * <tt>Container</tt>s corresponding to different "places" in the application,
+ * <code>Container</code>s corresponding to different "places" in the application,
  * where a module can add a component.
  * <p>
- * The <tt>UIService</tt> provides also methods that would allow to other
+ * The <code>UIService</code> provides also methods that would allow to other
  * modules to control the visibility, size and position of the main application
  * window. Some of these methods are: setVisible, minimize, maximize, resize,
  * move, etc.
@@ -50,10 +50,10 @@ import java.util.*;
  * <p>
  * Certain components within the GUI, like "AddContact" window for example,
  * could be also shown from outside the UI bundle. To make one of these
- * component exportable, the <tt>UIService</tt> implementation should attach to
- * it an <tt>WindowID</tt>. A window then could be shown, by invoking
+ * component exportable, the <code>UIService</code> implementation should attach to
+ * it an <code>WindowID</code>. A window then could be shown, by invoking
  * <code>getExportedWindow(WindowID)</code> and then <code>show</code>. The
- * <tt>WindowID</tt> above should be obtained from
+ * <code>WindowID</code> above should be obtained from
  * <code>getSupportedExportedWindows</code>.
  *
  * @author Yana Stamcheva
@@ -177,14 +177,14 @@ public interface UIService
     boolean getExitOnMainWindowClose();
 
     /**
-     * Returns an exported window given by the <tt>WindowID</tt>. This could be
+     * Returns an exported window given by the <code>WindowID</code>. This could be
      * for example the "Add contact" window or any other window within the
-     * application. The <tt>windowID</tt> should be one of the WINDOW_XXX
-     * obtained by the <tt>getSupportedExportedWindows</tt> method.
+     * application. The <code>windowID</code> should be one of the WINDOW_XXX
+     * obtained by the <code>getSupportedExportedWindows</code> method.
      *
      * @param windowID One of the WINDOW_XXX WindowID-s.
      * @return the window to be shown.
-     * @throws IllegalArgumentException if the specified <tt>windowID</tt> is
+     * @throws IllegalArgumentException if the specified <code>windowID</code> is
      * not recognized by the implementation (note that
      * implementations MUST properly handle all WINDOW_XXX ID-s.
      */
@@ -192,15 +192,15 @@ public interface UIService
             throws IllegalArgumentException;
 
     /**
-     * Returns an exported window given by the <tt>WindowID</tt>. This could be
+     * Returns an exported window given by the <code>WindowID</code>. This could be
      * for example the "Add contact" window or any other window within the
-     * application. The <tt>windowID</tt> should be one of the WINDOW_XXX
-     * obtained by the <tt>getSupportedExportedWindows</tt> method.
+     * application. The <code>windowID</code> should be one of the WINDOW_XXX
+     * obtained by the <code>getSupportedExportedWindows</code> method.
      *
      * @param windowID One of the WINDOW_XXX WindowID-s.
      * @param params The parameters to be passed to the returned exported window.
      * @return the window to be shown.
-     * @throws IllegalArgumentException if the specified <tt>windowID</tt> is
+     * @throws IllegalArgumentException if the specified <code>windowID</code> is
      * not recognized by the implementation (note that
      * implementations MUST properly handle all WINDOW_XXX ID-s.
      */
@@ -218,28 +218,28 @@ public interface UIService
     PopupDialog getPopupDialog();
 
     /**
-     * Returns the <tt>Chat</tt> corresponding to the given <tt>Contact</tt>.
+     * Returns the <code>Chat</code> corresponding to the given <code>Contact</code>.
      *
-     * @param contact the <tt>Contact</tt> for which the searched chat is about.
-     * @return the <tt>Chat</tt> corresponding to the given <tt>Contact</tt>.
+     * @param contact the <code>Contact</code> for which the searched chat is about.
+     * @return the <code>Chat</code> corresponding to the given <code>Contact</code>.
      */
     Chat getChat(Contact contact);
 
     /**
-     * Returns the <tt>Chat</tt> corresponding to the given <tt>Contact</tt>.
+     * Returns the <code>Chat</code> corresponding to the given <code>Contact</code>.
      *
-     * @param contact the <tt>Contact</tt> for which the searched chat is about.
+     * @param contact the <code>Contact</code> for which the searched chat is about.
      * @param escapedMessageID the message ID of the message that should be
      * excluded from the history when the last one is loaded in the chat
-     * @return the <tt>Chat</tt> corresponding to the given <tt>Contact</tt>.
+     * @return the <code>Chat</code> corresponding to the given <code>Contact</code>.
      */
     Chat getChat(Contact contact, String escapedMessageID);
 
     /**
-     * Returns the <tt>Chat</tt> corresponding to the given <tt>ChatRoom</tt>.
+     * Returns the <code>Chat</code> corresponding to the given <code>ChatRoom</code>.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> for which the searched chat is about.
-     * @return the <tt>Chat</tt> corresponding to the given <tt>ChatRoom</tt>.
+     * @param chatRoom the <code>ChatRoom</code> for which the searched chat is about.
+     * @return the <code>Chat</code> corresponding to the given <code>ChatRoom</code>.
      */
     Chat getChat(ChatRoom chatRoom);
 
@@ -261,9 +261,9 @@ public interface UIService
     MetaContact getChatContact(Chat chat);
 
     /**
-     * Returns the selected <tt>Chat</tt>.
+     * Returns the selected <code>Chat</code>.
      *
-     * @return the selected <tt>Chat</tt>.
+     * @return the selected <code>Chat</code>.
      */
     Chat getCurrentChat();
 
@@ -286,24 +286,24 @@ public interface UIService
     void setCurrentPhoneNumber(String phoneNumber);
 
     /**
-     * Returns a default implementation of the <tt>SecurityAuthority</tt>
+     * Returns a default implementation of the <code>SecurityAuthority</code>
      * interface that can be used by non-UI components that would like to launch
      * the registration process for a protocol provider. Initially this method
      * was meant for use by the systray bundle and the protocol URI handlers.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> for which
+     * @param protocolProvider the <code>ProtocolProviderService</code> for which
      * the authentication window is about.
-     * @return a default implementation of the <tt>SecurityAuthority</tt>
+     * @return a default implementation of the <code>SecurityAuthority</code>
      * interface that can be used by non-UI components that would like
      * to launch the registration process for a protocol provider.
      */
     SecurityAuthority getDefaultSecurityAuthority(ProtocolProviderService protocolProvider);
 
     /**
-     * Returns an iterator over a set of windowID-s. Each <tt>WindowID</tt>
+     * Returns an iterator over a set of windowID-s. Each <code>WindowID</code>
      * points to a window in the current UI implementation. Each
-     * <tt>WindowID</tt> in the set is one of the constants in the
-     * <tt>ExportedWindow</tt> interface. The method is meant to be used by
+     * <code>WindowID</code> in the set is one of the constants in the
+     * <code>ExportedWindow</code> interface. The method is meant to be used by
      * bundles that would like to have access to some windows in the gui - for
      * example the "Add contact" window, the "Settings" window, the "Chat window", etc.
      *
@@ -313,13 +313,13 @@ public interface UIService
     Iterator<WindowID> getSupportedExportedWindows();
 
     /**
-     * Checks if a window with the given <tt>WindowID</tt> is contained in the
+     * Checks if a window with the given <code>WindowID</code> is contained in the
      * current UI implementation.
      *
-     * @param windowID one of the <tt>WindowID</tt>-s, defined in the
-     * <tt>ExportedWindow</tt> interface.
+     * @param windowID one of the <code>WindowID</code>-s, defined in the
+     * <code>ExportedWindow</code> interface.
      * @return <code>true</code> if the component with the given
-     * <tt>WindowID</tt> is contained in the current UI implementation,
+     * <code>WindowID</code> is contained in the current UI implementation,
      * <code>false</code> otherwise.
      */
     boolean isExportedWindowSupported(WindowID windowID);
@@ -339,12 +339,12 @@ public interface UIService
     Iterator<Container> getSupportedContainers();
 
     /**
-     * Checks if the container with the given <tt>Container</tt> is supported
+     * Checks if the container with the given <code>Container</code> is supported
      * from the current UI implementation.
      *
      * @param containderID One of the CONTAINER_XXX Container-s.
      * @return <code>true</code> if the container with the given
-     * <tt>Container</tt> is supported from the current UI
+     * <code>Container</code> is supported from the current UI
      * implementation, <code>false</code> otherwise.
      */
     boolean isContainerSupported(Container containderID);
@@ -359,28 +359,28 @@ public interface UIService
      * Mac OS X to have the Window-like menu bars.
      * </p>
      *
-     * @return <tt>true</tt> if the Mac OS X screen menu bar is being used by
+     * @return <code>true</code> if the Mac OS X screen menu bar is being used by
      * the UI for its main menu instead of the Windows-like menu bars at
-     * the top of the windows; otherwise, <tt>false</tt>
+     * the top of the windows; otherwise, <code>false</code>
      */
     boolean useMacOSXScreenMenuBar();
 
     /**
-     * Provides all currently instantiated <tt>Chats</tt>.
+     * Provides all currently instantiated <code>Chats</code>.
      *
-     * @return all active <tt>Chats</tt>.
+     * @return all active <code>Chats</code>.
      */
     Collection<Chat> getAllChats();
 
     /**
-     * Registers a <tt>NewChatListener</tt> to be informed when new <tt>Chats</tt> are created.
+     * Registers a <code>NewChatListener</code> to be informed when new <code>Chats</code> are created.
      *
      * @param listener listener to be registered
      */
     void addChatListener(ChatListener listener);
 
     /**
-     * Removes the registration of a <tt>NewChatListener</tt>.
+     * Removes the registration of a <code>NewChatListener</code>.
      *
      * @param listener listener to be unregistered
      */
@@ -393,26 +393,26 @@ public interface UIService
     void repaintUI();
 
     /**
-     * Creates a new <tt>Call</tt> with a specific set of participants.
+     * Creates a new <code>Call</code> with a specific set of participants.
      *
-     * @param participants an array of <tt>String</tt> values specifying the
-     * participants to be included into the newly created <tt>Call</tt>
+     * @param participants an array of <code>String</code> values specifying the
+     * participants to be included into the newly created <code>Call</code>
      */
     void createCall(String[] participants);
 
     /**
-     * Starts a new <tt>Chat</tt> with a specific set of participants.
+     * Starts a new <code>Chat</code> with a specific set of participants.
      *
-     * @param participants an array of <tt>String</tt> values specifying the
-     * participants to be included into the newly created <tt>Chat</tt>
+     * @param participants an array of <code>String</code> values specifying the
+     * participants to be included into the newly created <code>Chat</code>
      */
     void startChat(String[] participants);
 
     /**
-     * Starts a new <tt>Chat</tt> with a specific set of participants.
+     * Starts a new <code>Chat</code> with a specific set of participants.
      *
-     * @param participants an array of <tt>String</tt> values specifying the
-     * participants to be included into the newly created <tt>Chat</tt>
+     * @param participants an array of <code>String</code> values specifying the
+     * participants to be included into the newly created <code>Chat</code>
      * @param isSmsEnabled whether sms option should be enabled if possible
      */
     void startChat(String[] participants, boolean isSmsEnabled);
@@ -432,14 +432,14 @@ public interface UIService
     LoginManager getLoginManager();
 
     /**
-     * Opens a chat room window for the given <tt>ChatRoomWrapper</tt> instance.
+     * Opens a chat room window for the given <code>ChatRoomWrapper</code> instance.
      *
      * @param chatRoom the chat room associated with the chat room window
      */
     void openChatRoomWindow(ChatRoomWrapper chatRoom);
 
     /**
-     * Closes the chat room window for the given <tt>ChatRoomWrapper</tt>
+     * Closes the chat room window for the given <code>ChatRoomWrapper</code>
      * instance.
      *
      * @param chatRoom the chat room associated with the chat room window

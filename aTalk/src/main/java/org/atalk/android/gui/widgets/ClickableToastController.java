@@ -29,15 +29,15 @@ public class ClickableToastController extends LegacyClickableToastCtrl
 	private static final long HIDE_DURATION = 2000;
 
 	/**
-	 * The animator object used to animate toast <tt>View</tt> alpha property.
+	 * The animator object used to animate toast <code>View</code> alpha property.
 	 */
 	private ObjectAnimator toastAnimator;
 
 	/**
-	 * Creates new instance of <tt>ClickableToastController</tt>.
+	 * Creates new instance of <code>ClickableToastController</code>.
 	 *
 	 * @param toastView
-	 *        the <tt>View</tt> that will be animated. Must contain <tt>R.id.toast_msg</tt> <tt>TextView</tt>.
+	 *        the <code>View</code> that will be animated. Must contain <code>R.id.toast_msg</code> <code>TextView</code>.
 	 * @param clickListener
 	 *        the click listener that will be notified when the toast is clicked.
 	 */
@@ -46,15 +46,15 @@ public class ClickableToastController extends LegacyClickableToastCtrl
 	}
 
 	/**
-	 * Creates new instance of <tt>ClickableToastController</tt>.
+	 * Creates new instance of <code>ClickableToastController</code>.
 	 *
 	 * @param toastView
-	 *        the <tt>View</tt> that will be animated. Must contain <tt>R.id.toast_msg</tt> <tt>TextView</tt>.
+	 *        the <code>View</code> that will be animated. Must contain <code>R.id.toast_msg</code> <code>TextView</code>.
 	 * @param clickListener
 	 *        the click listener that will be notified when the toast is clicked.
 	 * @param toastButtonId
-	 *        the id of <tt>View</tt> contained in <tt>toastView
-	 * </tt> that will be used as a button.
+	 *        the id of <code>View</code> contained in <code>toastView
+	 * </code> that will be used as a button.
 	 */
 	public ClickableToastController(View toastView, View.OnClickListener clickListener, int toastButtonId) {
 		super(toastView, clickListener, toastButtonId);
@@ -69,7 +69,7 @@ public class ClickableToastController extends LegacyClickableToastCtrl
 	 * Shows the toast.
 	 *
 	 * @param immediate
-	 *        if <tt>true</tt> there wil be no animation.
+	 *        if <code>true</code> there wil be no animation.
 	 * @param message
 	 *        the toast text to use.
 	 */
@@ -88,7 +88,7 @@ public class ClickableToastController extends LegacyClickableToastCtrl
 	 * Hides the toast.
 	 *
 	 * @param immediate
-	 *        if <tt>true</tt> no animation will be used.
+	 *        if <code>true</code> no animation will be used.
 	 */
 	public void hideToast(boolean immediate)
 	{

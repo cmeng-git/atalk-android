@@ -44,15 +44,15 @@ public class OSGiService extends Service
     private static boolean serviceStarted;
 
     /**
-     * The very implementation of this Android <tt>Service</tt> which is split out of the class <tt>OSGiService</tt> so
-     * that the class <tt>OSGiService</tt> may remain in a <tt>service</tt> package and be treated as public from the
-     * Android point of view and the class <tt>OSGiServiceImpl</tt> may reside in an <tt>impl</tt> package and be
+     * The very implementation of this Android <code>Service</code> which is split out of the class <code>OSGiService</code> so
+     * that the class <code>OSGiService</code> may remain in a <code>service</code> package and be treated as public from the
+     * Android point of view and the class <code>OSGiServiceImpl</code> may reside in an <code>impl</code> package and be
      * recognized as internal from the aTalk point of view.
      */
     private final OSGiServiceImpl impl;
 
     /**
-     * Initializes a new <tt>OSGiService</tt> implementation.
+     * Initializes a new <code>OSGiService</code> implementation.
      */
     public OSGiService()
     {

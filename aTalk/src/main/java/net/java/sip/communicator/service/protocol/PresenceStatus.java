@@ -197,8 +197,8 @@ public class PresenceStatus implements Comparable<PresenceStatus>
      * considered equal if and only if both their connectivity coefficient and their name are equal.
      *
      * @param obj the reference object with which to compare.
-     * @return <tt>true</tt> if this presence status instance is equal to the <code>obj</code>
-     * argument; <tt>false</tt> otherwise.
+     * @return <code>true</code> if this presence status instance is equal to the <code>obj</code>
+     * argument; <code>false</code> otherwise.
      */
     @Override
     public boolean equals(Object obj)
@@ -212,7 +212,7 @@ public class PresenceStatus implements Comparable<PresenceStatus>
 
     /**
      * Returns a hash code value for the object. This method is supported for the benefit of
-     * hashtables such as those provided by <tt>java.util.Hashtable</tt>.
+     * hashtables such as those provided by <code>java.util.Hashtable</code>.
      *
      * @return a hash code value for this object (which is actually the result of the getStatusName().hashCode()).
      */

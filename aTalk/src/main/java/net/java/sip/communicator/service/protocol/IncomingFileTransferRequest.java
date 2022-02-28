@@ -67,7 +67,7 @@ public interface IncomingFileTransferRequest
      * Function called to accept and receive the file.
      *
      * @param file the file to accept
-     * @return the <tt>FileTransfer</tt> object managing the transfer
+     * @return the <code>FileTransfer</code> object managing the transfer
      */
     FileTransfer acceptFile(File file);
 

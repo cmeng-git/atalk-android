@@ -19,7 +19,7 @@ public interface ContactListListener extends EventListener
     /**
      * Indicates that a group has been selected.
      *
-     * @param evt the <tt>ContactListEvent</tt> that has been triggered from
+     * @param evt the <code>ContactListEvent</code> that has been triggered from
      * the user selection
      */
     public void groupClicked(ContactListEvent evt);
@@ -27,7 +27,7 @@ public interface ContactListListener extends EventListener
     /**
      * Indicates that a group has been selected.
      *
-     * @param evt the <tt>ContactListEvent</tt> that has been triggered from
+     * @param evt the <code>ContactListEvent</code> that has been triggered from
      * the user selection
      */
     public void groupSelected(ContactListEvent evt);
@@ -35,7 +35,7 @@ public interface ContactListListener extends EventListener
     /**
      * Indicates that a contact has been clicked.
      *
-     * @param evt the <tt>ContactListEvent</tt> that has been triggered from
+     * @param evt the <code>ContactListEvent</code> that has been triggered from
      * the user click
      */
     public void contactClicked(ContactListEvent evt);
@@ -43,7 +43,7 @@ public interface ContactListListener extends EventListener
     /**
      * Indicates that a contact has been selected.
      *
-     * @param evt the <tt>ContactListEvent</tt> that has been triggered from
+     * @param evt the <code>ContactListEvent</code> that has been triggered from
      * the user selection
      */
     public void contactSelected(ContactListEvent evt);

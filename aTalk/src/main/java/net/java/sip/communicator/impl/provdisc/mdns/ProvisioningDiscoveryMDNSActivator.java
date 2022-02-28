@@ -23,7 +23,7 @@ import org.osgi.framework.BundleContext;
 import timber.log.Timber;
 
 /**
- * Implements <tt>BundleActivator</tt> for the mDNS provisioning bundle.
+ * Implements <code>BundleActivator</code> for the mDNS provisioning bundle.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
@@ -40,7 +40,7 @@ public class ProvisioningDiscoveryMDNSActivator
     /**
      * Starts the mDNS provisioning service
      *
-     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi framework.
+     * @param bundleContext the <code>BundleContext</code> as provided by the OSGi framework.
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)
@@ -54,7 +54,7 @@ public class ProvisioningDiscoveryMDNSActivator
     /**
      * Stops the mDNS provisioning service.
      *
-     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi framework.
+     * @param bundleContext the <code>BundleContext</code> as provided by the OSGi framework.
      * @throws Exception if anything goes wrong
      */
     public void stop(BundleContext bundleContext)

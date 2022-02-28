@@ -31,7 +31,7 @@ import org.atalk.service.osgi.OSGiActivity;
 public class AuthorizationRequestedDialog extends OSGiActivity
 {
     /**
-     * Request id managed by <tt>AuthorizationHandlerImpl</tt>.
+     * Request id managed by <code>AuthorizationHandlerImpl</code>.
      */
     private static final String EXTRA_REQUEST_ID = "request_id";
 
@@ -103,7 +103,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
     /**
      * Updates select group spinner status based on add to contact list checkbox state.
      *
-     * @param isChecked <tt>true</tt> if "add to contacts" checkbox is checked.
+     * @param isChecked <code>true</code> if "add to contacts" checkbox is checked.
      */
     private void updateAddToContactsStatus(boolean isChecked)
     {
@@ -113,7 +113,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
     /**
      * Method fired when user accept the request.
      *
-     * @param v the button's <tt>View</tt>
+     * @param v the button's <code>View</code>
      */
     @SuppressWarnings("unused")
     public void onAcceptClicked(View v)
@@ -125,7 +125,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
     /**
      * Method fired when reject button is clicked.
      *
-     * @param v the button's <tt>View</tt>
+     * @param v the button's <code>View</code>
      */
     @SuppressWarnings("unused")
     public void onRejectClicked(View v)
@@ -137,7 +137,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
     /**
      * Method fired when ignore button is clicked.
      *
-     * @param v the button's <tt>View</tt>
+     * @param v the button's <code>View</code>
      */
     @SuppressWarnings("unused")
     public void onIgnoreClicked(View v)
@@ -165,7 +165,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
     }
 
     /**
-     * Shows <tt>AuthorizationRequestedDialog</tt> for the request with given <tt>id</tt>.
+     * Shows <code>AuthorizationRequestedDialog</code> for the request with given <code>id</code>.
      *
      * @param id request identifier for which new dialog will be displayed.
      */

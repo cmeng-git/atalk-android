@@ -27,7 +27,7 @@ public class AndroidImageUtil
      * Converts given array of bytes to {@link Bitmap}
      *
      * @param imageBlob array of bytes with raw image data
-     * @return {@link Bitmap} created from <tt>imageBlob</tt>
+     * @return {@link Bitmap} created from <code>imageBlob</code>
      */
     static public Bitmap bitmapFromBytes(byte[] imageBlob)
     {
@@ -41,7 +41,7 @@ public class AndroidImageUtil
      * Creates the {@link Drawable} from raw image data
      *
      * @param imageBlob the array of bytes containing raw image data
-     * @return the {@link Drawable} created from given <tt>imageBlob</tt>
+     * @return the {@link Drawable} created from given <code>imageBlob</code>
      */
     static public Drawable drawableFromBytes(byte[] imageBlob)
     {
@@ -53,13 +53,13 @@ public class AndroidImageUtil
     }
 
     /**
-     * Creates a <tt>Drawable</tt> from the given image byte array and scales it to the given
-     * <tt>width</tt> and <tt>height</tt>.
+     * Creates a <code>Drawable</code> from the given image byte array and scales it to the given
+     * <code>width</code> and <code>height</code>.
      *
      * @param imageBytes the raw image data
      * @param width the width to which to scale the image
      * @param height the height to which to scale the image
-     * @return the newly created <tt>Drawable</tt>
+     * @return the newly created <code>Drawable</code>
      */
     static public Drawable scaledDrawableFromBytes(byte[] imageBytes, int width, int height)
     {
@@ -71,13 +71,13 @@ public class AndroidImageUtil
     }
 
     /**
-     * Creates a <tt>Bitmap</tt> from the given image byte array and scales it to the given
-     * <tt>width</tt> and <tt>height</tt>.
+     * Creates a <code>Bitmap</code> from the given image byte array and scales it to the given
+     * <code>width</code> and <code>height</code>.
      *
      * @param imageBytes the raw image data
      * @param reqWidth the width to which to scale the image
      * @param reqHeight the height to which to scale the image
-     * @return the newly created <tt>Bitmap</tt>
+     * @return the newly created <code>Bitmap</code>
      */
     static public Bitmap scaledBitmapFromBytes(byte[] imageBytes, int reqWidth, int reqHeight)
     {
@@ -95,12 +95,12 @@ public class AndroidImageUtil
     }
 
     /**
-     * Calculates <tt>options.inSampleSize</tt> for requested width and height.
+     * Calculates <code>options.inSampleSize</code> for requested width and height.
      *
-     * @param options the <tt>Options</tt> object that contains image <tt>outWidth</tt> and <tt>outHeight</tt>.
+     * @param options the <code>Options</code> object that contains image <code>outWidth</code> and <code>outHeight</code>.
      * @param reqWidth requested width.
      * @param reqHeight requested height.
-     * @return <tt>options.inSampleSize</tt> for requested width and height.
+     * @return <code>options.inSampleSize</code> for requested width and height.
      */
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight)
     {
@@ -126,13 +126,13 @@ public class AndroidImageUtil
     }
 
     /**
-     * Decodes <tt>Bitmap</tt> identified by given <tt>resId</tt> scaled to requested width and height.
+     * Decodes <code>Bitmap</code> identified by given <code>resId</code> scaled to requested width and height.
      *
-     * @param res the <tt>Resources</tt> object.
+     * @param res the <code>Resources</code> object.
      * @param resId bitmap resource id.
      * @param reqWidth requested width.
      * @param reqHeight requested height.
-     * @return <tt>Bitmap</tt> identified by given <tt>resId</tt> scaled to requested width and
+     * @return <code>Bitmap</code> identified by given <code>resId</code> scaled to requested width and
      * height.
      */
     public static Bitmap scaledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight)
@@ -151,16 +151,16 @@ public class AndroidImageUtil
     }
 
     /**
-     * Reads <tt>Bitmap</tt> from given <tt>uri</tt> using <tt>ContentResolver</tt>. Output image is scaled
-     * to given <tt>reqWidth</tt> and <tt>reqHeight</tt>. Output size is not guaranteed to match exact
+     * Reads <code>Bitmap</code> from given <code>uri</code> using <code>ContentResolver</code>. Output image is scaled
+     * to given <code>reqWidth</code> and <code>reqHeight</code>. Output size is not guaranteed to match exact
      * given values, because only powers of 2 are used as scale factor. Algorithm tries to scale image down
      * as long as the output size stays larger than requested value.
      *
-     * @param ctx the context used to create <tt>ContentResolver</tt>.
-     * @param uri the <tt>Uri</tt> that points to the image.
+     * @param ctx the context used to create <code>ContentResolver</code>.
+     * @param uri the <code>Uri</code> that points to the image.
      * @param reqWidth requested width.
      * @param reqHeight requested height.
-     * @return <tt>Bitmap</tt> from given <tt>uri</tt> retrieved using <tt>ContentResolver</tt>
+     * @return <code>Bitmap</code> from given <code>uri</code> retrieved using <code>ContentResolver</code>
      * and down sampled as close as possible to match requested width and height.
      * @throws IOException
      */
@@ -195,11 +195,11 @@ public class AndroidImageUtil
     }
 
     /**
-     * Encodes given <tt>Bitmap</tt> to array of bytes using given compression <tt>quality</tt> in PNG format.
+     * Encodes given <code>Bitmap</code> to array of bytes using given compression <code>quality</code> in PNG format.
      *
      * @param bmp the bitmap to encode.
      * @param quality encoding quality in range 0-100.
-     * @return raw bitmap data PNG encoded using given <tt>quality</tt>.
+     * @return raw bitmap data PNG encoded using given <code>quality</code>.
      */
     public static byte[] convertToBytes(Bitmap bmp, int quality)
     {
@@ -221,11 +221,11 @@ public class AndroidImageUtil
     }
 
     /**
-     * Creates a <tt>Bitmap</tt> with rounded corners.
+     * Creates a <code>Bitmap</code> with rounded corners.
      *
      * @param bitmap the bitmap that will have it's corners rounded.
      * @param factor factor used to calculate corners radius based on width and height of the image.
-     * @return a <tt>Bitmap</tt> with rounded corners created from given <tt>bitmap</tt>.
+     * @return a <code>Bitmap</code> with rounded corners created from given <code>bitmap</code>.
      */
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, float factor)
     {
@@ -255,10 +255,10 @@ public class AndroidImageUtil
     }
 
     /**
-     * Creates <tt>BitmapDrawable</tt> with rounded corners from raw image data.
+     * Creates <code>BitmapDrawable</code> with rounded corners from raw image data.
      *
      * @param rawData raw bitmap data
-     * @return <tt>BitmapDrawable</tt> with rounded corners from raw image data.
+     * @return <code>BitmapDrawable</code> with rounded corners from raw image data.
      */
     public static BitmapDrawable roundedDrawableFromBytes(byte[] rawData)
     {

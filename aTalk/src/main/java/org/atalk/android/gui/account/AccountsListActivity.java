@@ -213,7 +213,7 @@ public class AccountsListActivity extends OSGiActivity
     /**
      * Starts the {@link AccountPreferenceActivity} for clicked {@link Account}
      *
-     * @param account the <tt>Account</tt> for which preference settings will be opened.
+     * @param account the <code>Account</code> for which preference settings will be opened.
      */
     private void startPreferenceActivity(Account account)
     {
@@ -224,7 +224,7 @@ public class AccountsListActivity extends OSGiActivity
     /**
      * Starts the {@link AccountInfoPresenceActivity} for clicked {@link Account}
      *
-     * @param account the <tt>Account</tt> for which settings will be opened.
+     * @param account the <code>Account</code> for which settings will be opened.
      */
     private void startPresenceActivity(Account account)
     {

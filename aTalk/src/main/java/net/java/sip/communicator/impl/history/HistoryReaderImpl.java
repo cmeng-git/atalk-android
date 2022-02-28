@@ -39,7 +39,7 @@ public class HistoryReaderImpl implements HistoryReader
 	private static String REGEXP_INSENSITIVE_START = "(?si)^.*";
 
 	/**
-	 * Creates an instance of <tt>HistoryReaderImpl</tt>.
+	 * Creates an instance of <code>HistoryReaderImpl</code>.
 	 * 
 	 * @param historyImpl
 	 *        the parent History implementation
@@ -49,7 +49,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches the history for all records with timestamp after <tt>startDate</tt>.
+	 * Searches the history for all records with timestamp after <code>startDate</code>.
 	 *
 	 * @param startDate
 	 *        the date after all records will be returned
@@ -64,7 +64,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches the history for all records with timestamp before <tt>endDate</tt>.
+	 * Searches the history for all records with timestamp before <code>endDate</code>.
 	 *
 	 * @param endDate
 	 *        the date before which all records will be returned
@@ -79,7 +79,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches the history for all records with timestamp between <tt>startDate</tt> and <tt>endDate</tt>.
+	 * Searches the history for all records with timestamp between <code>startDate</code> and <code>endDate</code>.
 	 *
 	 * @param startDate
 	 *        start of the interval in which we search
@@ -96,7 +96,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches the history for all records containing the <tt>keyword</tt>.
+	 * Searches the history for all records containing the <code>keyword</code>.
 	 *
 	 * @param keyword
 	 *        the keyword to search for
@@ -113,7 +113,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches the history for all records containing all <tt>keywords</tt>.
+	 * Searches the history for all records containing all <code>keywords</code>.
 	 *
 	 * @param keywords
 	 *        array of keywords we search for
@@ -130,8 +130,8 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches for all history records containing all <tt>keywords</tt>, with timestamp between <tt>startDate</tt> and
-	 * <tt>endDate</tt>.
+	 * Searches for all history records containing all <code>keywords</code>, with timestamp between <code>startDate</code> and
+	 * <code>endDate</code>.
 	 *
 	 * @param startDate
 	 *        start of the interval in which we search
@@ -152,7 +152,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Returns the last <tt>count</tt> messages. No progress firing as this method is supposed to be used in message
+	 * Returns the last <code>count</code> messages. No progress firing as this method is supposed to be used in message
 	 * windows and is supposed to be as quick as it can.
 	 *
 	 * @param count
@@ -167,7 +167,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Returns the supplied number of recent messages containing all <tt>keywords</tt>.
+	 * Returns the supplied number of recent messages containing all <code>keywords</code>.
 	 *
 	 * @param count
 	 *        messages count
@@ -245,7 +245,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches the history for all records containing the <tt>keyword</tt>.
+	 * Searches the history for all records containing the <code>keyword</code>.
 	 *
 	 * @param keyword
 	 *        the keyword to search for
@@ -264,7 +264,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches the history for all records containing all <tt>keywords</tt>.
+	 * Searches the history for all records containing all <code>keywords</code>.
 	 *
 	 * @param keywords
 	 *        array of keywords we search for
@@ -283,8 +283,8 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Searches for all history records containing all <tt>keywords</tt>, with timestamp between <tt>startDate</tt> and
-	 * <tt>endDate</tt>.
+	 * Searches for all history records containing all <code>keywords</code>, with timestamp between <code>startDate</code> and
+	 * <code>endDate</code>.
 	 *
 	 * @param startDate
 	 *        start of the interval in which we search
@@ -545,7 +545,7 @@ public class HistoryReaderImpl implements HistoryReader
 	}
 
 	/**
-	 * Evaluetes does <tt>timestamp</tt> is in the given time period.
+	 * Evaluetes does <code>timestamp</code> is in the given time period.
 	 *
 	 * @param timestamp
 	 *        Date

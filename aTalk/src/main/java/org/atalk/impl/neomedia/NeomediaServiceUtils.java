@@ -19,7 +19,7 @@ public class NeomediaServiceUtils
 	}
 
 	/**
-	 * Prevents the initialization of <tt>NeomediaServiceUtils</tt> instances.
+	 * Prevents the initialization of <code>NeomediaServiceUtils</code> instances.
 	 */
 	private NeomediaServiceUtils()
 	{

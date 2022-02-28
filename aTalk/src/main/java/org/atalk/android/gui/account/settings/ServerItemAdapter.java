@@ -47,7 +47,7 @@ abstract class ServerItemAdapter extends BaseAdapter
 
 	/**
 	 * Factory method should return a {@link DialogFragment} that will allow user to edit list item at specified
-	 * <tt>position</tt>.
+	 * <code>position</code>.
 	 *
 	 * @param position
 	 *        the position of item to edit

@@ -46,19 +46,19 @@ public interface WhiteboardObjectPolygon extends WhiteboardObject
 	public void setFill(boolean fill);
 
 	/**
-	 * Returns a list of all the <tt>WhiteboardPoint</tt> instances that this
-	 * <tt>WhiteboardObject</tt> is composed of.
+	 * Returns a list of all the <code>WhiteboardPoint</code> instances that this
+	 * <code>WhiteboardObject</code> is composed of.
 	 *
-	 * @return the list of <tt>WhiteboardPoint</tt>s composing this object.
+	 * @return the list of <code>WhiteboardPoint</code>s composing this object.
 	 */
 	public List<WhiteboardPoint> getPoints();
 
 	/**
-	 * Sets the list of <tt>WhiteboardPoint</tt> instances that this <tt>WhiteboardObject</tt> is
+	 * Sets the list of <code>WhiteboardPoint</code> instances that this <code>WhiteboardObject</code> is
 	 * composed of.
 	 *
 	 * @param points
-	 *        the list of <tt>WhiteboardPoint</tt> instances that this <tt>WhiteboardObject</tt> is
+	 *        the list of <code>WhiteboardPoint</code> instances that this <code>WhiteboardObject</code> is
 	 *        composed of.
 	 */
 	public void setPoints(List<WhiteboardPoint> points);
@@ -68,7 +68,7 @@ public interface WhiteboardObjectPolygon extends WhiteboardObject
 	 * standard RGB encoding: bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue.
 	 *
 	 * @param color
-	 *        the color that we'd like to set for the background of this <tt>WhiteboardObject</tt>
+	 *        the color that we'd like to set for the background of this <code>WhiteboardObject</code>
 	 *        (using standard RGB encoding).
 	 */
 	public void setBackgroundColor(int color);

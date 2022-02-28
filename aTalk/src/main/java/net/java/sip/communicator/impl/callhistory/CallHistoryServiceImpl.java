@@ -231,12 +231,12 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Returns all the calls made by all the contacts in the supplied <tt>metaContact</tt>
+     * Returns all the calls made by all the contacts in the supplied <code>metaContact</code>
      * on and after and include the given date.
      *
      * @param metaContact MetaContact which contacts participate in the returned calls
      * @param startDate Date the start date of the calls
-     * @return the <tt>CallHistoryQuery</tt>, corresponding to this find
+     * @return the <code>CallHistoryQuery</code>, corresponding to this find
      */
     public Collection<CallRecord> findByStartDate(MetaContact metaContact, Date startDate)
             throws RuntimeException
@@ -264,7 +264,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
      * Returns all the calls made after and include the given date
      *
      * @param startDate Date the start date of the calls
-     * @return the <tt>CallHistoryQuery</tt>, corresponding to this find
+     * @return the <code>CallHistoryQuery</code>, corresponding to this find
      */
     public Collection<CallRecord> findByStartDate(Date startDate)
     {
@@ -777,7 +777,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Adding <tt>CallHistoryRecordListener</tt> listener to the list.
+     * Adding <code>CallHistoryRecordListener</code> listener to the list.
      *
      * @param listener CallHistoryRecordListener
      */
@@ -789,7 +789,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Removing <tt>CallHistoryRecordListener</tt> listener
+     * Removing <code>CallHistoryRecordListener</code> listener
      *
      * @param listener CallHistoryRecordListener
      */
@@ -801,9 +801,9 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Fires the given event to all <tt>CallHistoryRecordListener</tt> listeners
+     * Fires the given event to all <code>CallHistoryRecordListener</code> listeners
      *
-     * @param event the <tt>CallHistoryRecordReceivedEvent</tt> event to be fired
+     * @param event the <code>CallHistoryRecordReceivedEvent</code> event to be fired
      */
     private void fireCallHistoryRecordReceivedEvent(CallHistoryPeerRecordEvent event)
     {
@@ -1128,7 +1128,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         /**
          * Indicates that a new call peer has joined the source call.
          *
-         * @param evt the <tt>CallPeerEvent</tt> containing the source call and call peer.
+         * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
          */
         public void callPeerAdded(CallPeerEvent evt)
         {
@@ -1138,7 +1138,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         /**
          * Indicates that a call peer has left the source call.
          *
-         * @param evt the <tt>CallPeerEvent</tt> containing the source call and call peer.
+         * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
          */
         public void callPeerRemoved(CallPeerEvent evt)
         {
@@ -1148,7 +1148,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         /**
          * A dummy implementation of this listener's callStateChanged() method.
          *
-         * @param evt the <tt>CallChangeEvent</tt> instance containing the source calls and its old and new state.
+         * @param evt the <code>CallChangeEvent</code> instance containing the source calls and its old and new state.
          */
         public void callStateChanged(CallChangeEvent evt)
         {
@@ -1188,10 +1188,10 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
     }
 
     /**
-     * Returns the <tt>ProtocolProviderService</tt> corresponding to the given account identifier.
+     * Returns the <code>ProtocolProviderService</code> corresponding to the given account identifier.
      *
      * @param accountUID the identifier of the account.
-     * @return the <tt>ProtocolProviderService</tt> corresponding to the given account identifier
+     * @return the <code>ProtocolProviderService</code> corresponding to the given account identifier
      */
     private static ProtocolProviderService getProtocolProvider(String accountUID)
     {

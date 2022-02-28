@@ -27,11 +27,11 @@ public interface LanguagePack
         = "DefaultLanguagePack";
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for the given
+     * Returns a <code>Map</code>, containing all [key, value] pairs for the given
      * locale.
      *
-     * @param locale The <tt>Locale</tt> we're looking for.
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for the given
+     * @param locale The <code>Locale</code> we're looking for.
+     * @return a <code>Map</code>, containing all [key, value] pairs for the given
      * locale.
      */
     public Map<String, String> getResources(Locale locale);

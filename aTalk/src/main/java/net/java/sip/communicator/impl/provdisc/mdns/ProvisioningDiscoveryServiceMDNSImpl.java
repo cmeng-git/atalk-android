@@ -68,7 +68,7 @@ public class ProvisioningDiscoveryServiceMDNSImpl
     /**
      * Launch a discovery for a provisioning URL. This method is synchronous and
      * may block for some time. Note that you don't have to call
-     * <tt>startDiscovery</tt> method prior to this one to retrieve URL.
+     * <code>startDiscovery</code> method prior to this one to retrieve URL.
      *
      * @return provisioning URL
      */
@@ -86,7 +86,7 @@ public class ProvisioningDiscoveryServiceMDNSImpl
      * Launch a mDNS discovery for a provisioning URL.
      *
      * This method is asynchronous, the response will be notified to any
-     * <tt>ProvisioningListener</tt> registered.
+     * <code>ProvisioningListener</code> registered.
      */
     @Override
     public void startDiscovery()

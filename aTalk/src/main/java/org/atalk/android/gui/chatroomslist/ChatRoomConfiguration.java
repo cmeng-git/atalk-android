@@ -88,10 +88,10 @@ public class ChatRoomConfiguration extends OSGiFragment
     private TextView mTitle;
 
     /**
-     * Constructs the <tt>ChatRoomConfiguration</tt>.
+     * Constructs the <code>ChatRoomConfiguration</code>.
      *
-     * @param mContext the <tt>ChatActivity</tt> corresponding to the <tt>Chat Session</tt>
-     * @param chatRoomWrapper user joined ChatRoomWrapper for the <tt>Chat Session</tt>
+     * @param mContext the <code>ChatActivity</code> corresponding to the <code>Chat Session</code>
+     * @param chatRoomWrapper user joined ChatRoomWrapper for the <code>Chat Session</code>
      */
     public static ChatRoomConfiguration getInstance(ChatRoomWrapper chatRoomWrapper, ChatRoomConfigListener crcListener)
     {

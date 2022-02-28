@@ -267,9 +267,9 @@ public class FileAccessServiceImpl implements FileAccessService
     }
 
     /**
-     * Gets the major version of the executing operating system as defined by the <tt>os.version</tt> system property.
+     * Gets the major version of the executing operating system as defined by the <code>os.version</code> system property.
      *
-     * @return the major version of the executing operating system as defined by the <tt>os.version</tt> system property
+     * @return the major version of the executing operating system as defined by the <code>os.version</code> system property
      */
     private static int getMajorOSVersion()
     {
@@ -301,8 +301,8 @@ public class FileAccessServiceImpl implements FileAccessService
 
     /**
      * Initializes this instance if it has not been initialized yet i.e. acts as a delayed constructor of this instance.
-     * Introduced because this <tt>FileAccessServiceImpl</tt> queries <tt>System</tt> properties that may not be set yet
-     * at construction time and, consequently, throws an <tt>IllegalStateException</tt> which could be avoided.
+     * Introduced because this <code>FileAccessServiceImpl</code> queries <code>System</code> properties that may not be set yet
+     * at construction time and, consequently, throws an <code>IllegalStateException</code> which could be avoided.
      */
     private synchronized void initialize()
     {

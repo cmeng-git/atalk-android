@@ -12,10 +12,11 @@ package net.java.sip.communicator.util.launchutils;
  *
  * @author Lubomir Marinov
  * @author Damian Minkov
+ * @author Eng Chong Meng
  */
 public class AEGetURLEventHandler
 {
-    private LaunchArgHandler launchArgHandler;
+    private final LaunchArgHandler launchArgHandler;
 
     /**
      * The interface for the used callback.
@@ -27,38 +28,25 @@ public class AEGetURLEventHandler
          *
          * @param url the URL
          */
-        void handleAEGetURLEvent (String url);
+        void handleAEGetURLEvent(String url);
     }
 
     AEGetURLEventHandler(LaunchArgHandler launchArgHandler)
     {
         this.launchArgHandler = launchArgHandler;
-
-        try
-        {
-            setAEGetURLListener (new IAEGetURLListener ()
+        try {
+            setAEGetURLListener(url -> new Thread()
             {
-                public void handleAEGetURLEvent (final String url)
+                @Override
+                public void run()
                 {
-                    new Thread()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            AEGetURLEventHandler.this.launchArgHandler.
-                                handleArgs(new String[]{url});
-                        }
-                    }.start();
+                    AEGetURLEventHandler.this.launchArgHandler.handleArgs(new String[]{url});
                 }
-            });
-        }
-        catch(Throwable err)
-        {
+            }.start());
+        } catch (Throwable err) {
             //we don't have logging here so dump to stderr
-            System.err.println(
-                    "Warning: Failed to register our command line argument"
-                        + " handler. We won't be able to handle command line"
-                        + " arguments.");
+            System.err.println("Warning: Failed to register our command line argument"
+                    + " handler. We won't be able to handle command line arguments.");
             err.printStackTrace();
 
         }
@@ -74,7 +62,7 @@ public class AEGetURLEventHandler
      * </p>
      *
      * @param listener the {@link IAEGetURLListener} to be set as the (global)
-     *                 listener for kAEGetURL AppleScript events
+     * listener for kAEGetURL AppleScript events
      */
-    private static native void setAEGetURLListener (IAEGetURLListener listener);
+    private static native void setAEGetURLListener(IAEGetURLListener listener);
 }

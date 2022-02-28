@@ -19,7 +19,7 @@ import net.java.sip.communicator.service.protocol.whiteboardobjects.WhiteboardOb
 import java.util.*;
 
 /**
- * A represenation of a <tt>WhiteboardSession</tt>.
+ * A represenation of a <code>WhiteboardSession</code>.
  *
  * @author Julien Waechter
  * @author Emil Ivov
@@ -44,7 +44,7 @@ public interface WhiteboardSession
 	/**
 	 * Returns the number of participants currently associated with this whiteboard session.
 	 *
-	 * @return an <tt>int</tt> indicating the number of participants currently associated with this
+	 * @return an <code>int</code> indicating the number of participants currently associated with this
 	 *         whiteboard.
 	 */
 	public int getWhiteboardParticipantsCount();
@@ -59,8 +59,8 @@ public interface WhiteboardSession
 	public void addWhiteboardChangeListener(WhiteboardChangeListener listener);
 
 	/**
-	 * Removes <tt>listener</tt> to this whiteboard so that it won't receive further
-	 * <tt>WhiteboardChangeEvent</tt>s.
+	 * Removes <code>listener</code> to this whiteboard so that it won't receive further
+	 * <code>WhiteboardChangeEvent</code>s.
 	 *
 	 * @param listener
 	 *        the listener to register
@@ -68,10 +68,10 @@ public interface WhiteboardSession
 	public void removeWhiteboardChangeListener(WhiteboardChangeListener listener);
 
 	/**
-	 * Returns a reference to the <tt>ProtocolProviderService</tt> instance that created this
+	 * Returns a reference to the <code>ProtocolProviderService</code> instance that created this
 	 * whiteboard.
 	 *
-	 * @return a reference to the <tt>ProtocolProviderService</tt> instance that created this
+	 * @return a reference to the <code>ProtocolProviderService</code> instance that created this
 	 *         whiteboard.
 	 */
 	public ProtocolProviderService getProtocolProvider();
@@ -128,23 +128,23 @@ public interface WhiteboardSession
 	public abstract void invite(String userAddress);
 
 	/**
-	 * Registers <tt>listener</tt> so that it would receive events every time a new WhiteboardObject
+	 * Registers <code>listener</code> so that it would receive events every time a new WhiteboardObject
 	 * is received on this whiteboard.
 	 *
 	 *
 	 * @param listener
-	 *        a <tt>WhiteboardObjectListener</tt> that would be notified every time a new
+	 *        a <code>WhiteboardObjectListener</code> that would be notified every time a new
 	 *        WhiteboardObject is received on this whiteboard.
 	 */
 	public abstract void addWhiteboardObjectListener(WhiteboardObjectListener listener);
 
 	/**
-	 * Removes <tt>listener</tt> so that it won't receive any further WhiteboardObject events from
+	 * Removes <code>listener</code> so that it won't receive any further WhiteboardObject events from
 	 * this room.
 	 *
 	 *
 	 * @param listener
-	 *        the <tt>WhiteboardObjectListener</tt> to remove from this room
+	 *        the <code>WhiteboardObjectListener</code> to remove from this room
 	 */
 	public abstract void removeWhiteboardObjectListener(WhiteboardObjectListener listener);
 
@@ -162,15 +162,15 @@ public interface WhiteboardSession
 	public abstract WhiteboardObject createWhiteboardObject(String name);
 
 	/**
-	 * Resolves <tt>obj</tt> with the other session participants. When called for the first time
-	 * with a specific <tt>WhiteboardObject</tt> instance it would appear on their whiteboards. If
-	 * <tt>obj</tt> has already been sent through this method previously, this method would result
+	 * Resolves <code>obj</code> with the other session participants. When called for the first time
+	 * with a specific <code>WhiteboardObject</code> instance it would appear on their whiteboards. If
+	 * <code>obj</code> has already been sent through this method previously, this method would result
 	 * in updating the way the object looks in other instances of this session (i.e. the method
 	 * should be used for both initially sending an object as well as sending changes made on an
 	 * object since the method was last called).
 	 *
 	 * @param obj
-	 *        the <tt>WhiteboardObject</tt> to send.
+	 *        the <code>WhiteboardObject</code> to send.
 	 * @throws OperationFailedException
 	 *         if sending the WhiteboardObject fails for some reason.
 	 */
@@ -178,10 +178,10 @@ public interface WhiteboardSession
 		throws OperationFailedException;
 
 	/**
-	 * Sends a <tt>WhiteboardObject</tt> to modify and modifies the local <tt>WhiteboardObject</tt>
+	 * Sends a <code>WhiteboardObject</code> to modify and modifies the local <code>WhiteboardObject</code>
 	 *
 	 * @param obj
-	 *        the <tt>WhiteboardObject</tt> to send and modify
+	 *        the <code>WhiteboardObject</code> to send and modify
 	 * @throws OperationFailedException
 	 *         if sending the WhiteboardObject fails for some reason.
 	 */
@@ -189,10 +189,10 @@ public interface WhiteboardSession
 		throws OperationFailedException;
 
 	/**
-	 * Sends a <tt>WhiteboardObject</tt> to delete and delete the local <tt>WhiteboardObject</tt>
+	 * Sends a <code>WhiteboardObject</code> to delete and delete the local <code>WhiteboardObject</code>
 	 *
 	 * @param obj
-	 *        the <tt>WhiteboardObject</tt> to send and delete
+	 *        the <code>WhiteboardObject</code> to send and delete
 	 * @throws OperationFailedException
 	 *         if sending the WhiteboardObject fails for some reason.
 	 */
@@ -200,20 +200,20 @@ public interface WhiteboardSession
 		throws OperationFailedException;
 
 	/**
-	 * Adds <tt>wbParticipant</tt> to the list of participants in this whiteboard. If the wb
+	 * Adds <code>wbParticipant</code> to the list of participants in this whiteboard. If the wb
 	 * participant is already included in the whiteboard, the method has no effect.
 	 *
 	 * @param wbParticipant
-	 *        the new <tt>WhiteboardParticipant</tt>
+	 *        the new <code>WhiteboardParticipant</code>
 	 */
 	public abstract void addWhiteboardParticipant(WhiteboardParticipant wbParticipant);
 
 	/**
-	 * Removes <tt>whiteboardParticipant</tt> from the list of participants in this whiteboard. The
+	 * Removes <code>whiteboardParticipant</code> from the list of participants in this whiteboard. The
 	 * method has no effect if there was no such participant in the whiteboard.
 	 *
 	 * @param wbParticipant
-	 *        the <tt>WhiteboardParticipant</tt> leaving the whiteboard;
+	 *        the <code>WhiteboardParticipant</code> leaving the whiteboard;
 	 */
 
 	public abstract void removeWhiteboardParticipant(WhiteboardParticipant wbParticipant);
@@ -221,7 +221,7 @@ public interface WhiteboardSession
 	/**
 	 * Returns the WhiteboardObjects in this whiteboard session.
 	 * 
-	 * @return an <tt>Vector</tt> of WhiteboardObjects associated with this whiteboard.
+	 * @return an <code>Vector</code> of WhiteboardObjects associated with this whiteboard.
 	 */
 	public Vector<WhiteboardObject> getWhiteboardObjects();
 
@@ -229,14 +229,14 @@ public interface WhiteboardSession
 	 * Sets the state of this whiteboard
 	 *
 	 * @param newState
-	 *        a reference to the <tt>WhiteboardState</tt> instance that the whiteboard is to enter.
+	 *        a reference to the <code>WhiteboardState</code> instance that the whiteboard is to enter.
 	 */
 	public void setState(WhiteboardSessionState newState);
 
 	/**
 	 * Returns the state that this whiteboard is currently in.
 	 *
-	 * @return a reference to the <tt>WhiteboardState</tt> instance that the whiteboard is currently
+	 * @return a reference to the <code>WhiteboardState</code> instance that the whiteboard is currently
 	 *         in.
 	 */
 	public WhiteboardSessionState getState();

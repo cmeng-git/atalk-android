@@ -33,11 +33,11 @@ public enum TransportProtocol {
 	TLS;
 
 	/**
-	 * Parses a <tt>String</tt> and returns the appropriate <tt>TransportProtocol</tt>.
+	 * Parses a <code>String</code> and returns the appropriate <code>TransportProtocol</code>.
 	 * 
 	 * @param transportProtocol
 	 *        string
-	 * @return appropriate <tt>TransportProtocol</tt>
+	 * @return appropriate <code>TransportProtocol</code>
 	 * @throws IllegalArgumentException
 	 *         if string is not a transport protocol valid name
 	 */

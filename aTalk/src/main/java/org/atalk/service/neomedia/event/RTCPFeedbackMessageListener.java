@@ -14,11 +14,11 @@ package org.atalk.service.neomedia.event;
 public interface RTCPFeedbackMessageListener
 {
 	/**
-	 * Notifies this <tt>RTCPFeedbackMessageListener</tt> that an RTCP feedback message has been
+	 * Notifies this <code>RTCPFeedbackMessageListener</code> that an RTCP feedback message has been
 	 * received
 	 *
 	 * @param event
-	 *        an <tt>RTCPFeedbackMessageEvent</tt> which specifies the details of the notification
+	 *        an <code>RTCPFeedbackMessageEvent</code> which specifies the details of the notification
 	 *        event such as the feedback message type and the payload type
 	 */
 	public void rtcpFeedbackMessageReceived(RTCPFeedbackMessageEvent event);

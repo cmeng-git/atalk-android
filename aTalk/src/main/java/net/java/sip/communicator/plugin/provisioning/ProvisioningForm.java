@@ -70,7 +70,7 @@ public class ProvisioningForm extends TransparentPanel {
 	private final JButton forgetPasswordButton = null;
 
 	/**
-	 * Creates an instance of the <tt>ProvisioningForm</tt>.
+	 * Creates an instance of the <code>ProvisioningForm</code>.
 	 */
 	public ProvisioningForm() {
 //		super(new BorderLayout());

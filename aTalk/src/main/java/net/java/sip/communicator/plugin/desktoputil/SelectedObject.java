@@ -10,7 +10,7 @@ import javax.swing.Icon;
 
 /**
  * A convenience class used to store combobox complex objects.
- * The <tt>SelectedObject</tt> is used for all account and status combo boxes
+ * The <code>SelectedObject</code> is used for all account and status combo boxes
  * throughout this gui implementation.
  *
  * @author Yana Stamcheva
@@ -23,7 +23,7 @@ public class SelectedObject {
 	private Object object;
 
 	/**
-	 * Creates an instance of <tt>SelectedObject</tt> by specifying the text,
+	 * Creates an instance of <code>SelectedObject</code> by specifying the text,
 	 * icon and object associated with it.
 	 *
 	 * @param text The text.
@@ -37,7 +37,7 @@ public class SelectedObject {
 	}
 
 	/**
-	 * Creates an instance of <tt>SelectedObject</tt> by specifying the
+	 * Creates an instance of <code>SelectedObject</code> by specifying the
 	 * icon and object associated with it.
 	 *
 	 * @param icon The icon.
@@ -49,27 +49,27 @@ public class SelectedObject {
 	}
 
 	/**
-	 * Returns the text of this <tt>SelectedObject</tt>.
+	 * Returns the text of this <code>SelectedObject</code>.
 	 *
-	 * @return the text of this <tt>SelectedObject</tt>.
+	 * @return the text of this <code>SelectedObject</code>.
 	 */
 	public String getText() {
 		return text;
 	}
 
 	/**
-	 * Returns the icon of this <tt>SelectedObject</tt>.
+	 * Returns the icon of this <code>SelectedObject</code>.
 	 *
-	 * @return the icon of this <tt>SelectedObject</tt>.
+	 * @return the icon of this <code>SelectedObject</code>.
 	 */
 	public Icon getIcon() {
 		return icon;
 	}
 
 	/**
-	 * Returns the real object behind this <tt>SelectedObject</tt>.
+	 * Returns the real object behind this <code>SelectedObject</code>.
 	 *
-	 * @return the real object behind this <tt>SelectedObject</tt>.
+	 * @return the real object behind this <code>SelectedObject</code>.
 	 */
 	public Object getObject() {
 		return object;

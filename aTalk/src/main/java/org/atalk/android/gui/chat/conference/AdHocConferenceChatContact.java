@@ -20,7 +20,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatContact;
 
 /**
- * The <tt>AdHocConferenceChatContact</tt> represents a <tt>ChatContact</tt> in an ad-hoc conference chat.
+ * The <code>AdHocConferenceChatContact</code> represents a <code>ChatContact</code> in an ad-hoc conference chat.
  *
  * @author Valentin Martinet
  * @author Lubomir Marinov
@@ -29,9 +29,9 @@ public class AdHocConferenceChatContact extends ChatContact<Contact>
 {
 
     /**
-     * Creates an instance of <tt>AdHocConferenceChatContact</tt> by passing to it the <tt>Contact</tt> for which it is created.
+     * Creates an instance of <code>AdHocConferenceChatContact</code> by passing to it the <code>Contact</code> for which it is created.
      *
-     * @param participant the <tt>Contact</tt> for which this <tt>AdHocConferenceChatContact</tt> is created.
+     * @param participant the <code>Contact</code> for which this <code>AdHocConferenceChatContact</code> is created.
      */
     public AdHocConferenceChatContact(Contact participant)
     {

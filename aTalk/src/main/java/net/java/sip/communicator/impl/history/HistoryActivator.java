@@ -28,7 +28,7 @@ public class HistoryActivator implements BundleActivator
 	 * Initialize and start history service
 	 *
 	 * @param bundleContext
-	 *        the <tt>BundleContext</tt>
+	 *        the <code>BundleContext</code>
 	 * @throws Exception
 	 *         if initializing and starting history service fails
 	 */
@@ -43,7 +43,7 @@ public class HistoryActivator implements BundleActivator
 	 * Stops this bundle.
 	 *
 	 * @param bundleContext
-	 *        the <tt>BundleContext</tt>
+	 *        the <code>BundleContext</code>
 	 * @throws Exception
 	 *         if the stop operation goes wrong
 	 */

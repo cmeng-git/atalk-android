@@ -35,8 +35,8 @@ import javax.swing.*;
 import java.util.*;
 
 /**
- * The <tt>SourceUIContact</tt> is the implementation of the UIContact for the
- * <tt>ExternalContactSource</tt>.
+ * The <code>SourceUIContact</code> is the implementation of the UIContact for the
+ * <code>ExternalContactSource</code>.
  *
  * @author Yana Stamcheva
  * @author Hristo Terezov
@@ -45,22 +45,22 @@ import java.util.*;
 public class SourceUIContact extends UIContactImpl
 {
     /**
-     * The corresponding <tt>SourceContact</tt>, on which this abstraction is based.
+     * The corresponding <code>SourceContact</code>, on which this abstraction is based.
      */
     private final SourceContact sourceContact;
 
     /**
-     * The corresponding <tt>ContactNode</tt> in the contact list component.
+     * The corresponding <code>ContactNode</code> in the contact list component.
      */
     private ContactNode contactNode;
 
     /**
-     * The parent <tt>UIGroup</tt>.
+     * The parent <code>UIGroup</code>.
      */
     // private ExternalContactSource.SourceUIGroup uiGroup;
 
     /**
-     * The search strings for this <tt>UIContact</tt>.
+     * The search strings for this <code>UIContact</code>.
      */
     private final List<String> searchStrings = new LinkedList<>();
 
@@ -71,11 +71,11 @@ public class SourceUIContact extends UIContactImpl
             = "gui.contactlist.contactsource.FILTER_CALL_DETAILS_TO_NUMBERS";
 
     /**
-     * Creates an instance of <tt>SourceUIContact</tt> by specifying the <tt>SourceContact</tt>,
-     * on which this abstraction is based and the parent <tt>UIGroup</tt>.
+     * Creates an instance of <code>SourceUIContact</code> by specifying the <code>SourceContact</code>,
+     * on which this abstraction is based and the parent <code>UIGroup</code>.
      *
-     * @param contact the <tt>SourceContact</tt>, on which this abstraction is based
-     * // @param parentGroup the parent <tt>UIGroup</tt>
+     * @param contact the <code>SourceContact</code>, on which this abstraction is based
+     * // @param parentGroup the parent <code>UIGroup</code>
      */
     public SourceUIContact(SourceContact contact)
     // , ExternalContactSource.SourceUIGroup parentGroup)
@@ -94,7 +94,7 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the display name of the underlying <tt>SourceContact</tt>.
+     * Returns the display name of the underlying <code>SourceContact</code>.
      *
      * @return the display name
      */
@@ -105,9 +105,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the parent <tt>UIGroup</tt>.
+     * Returns the parent <code>UIGroup</code>.
      *
-     * @return the parent <tt>UIGroup</tt>
+     * @return the parent <code>UIGroup</code>
      */
     @Override
     public UIGroup getParentGroup()
@@ -126,7 +126,7 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns -1 to indicate that the source index of the underlying <tt>SourceContact</tt> is
+     * Returns -1 to indicate that the source index of the underlying <code>SourceContact</code> is
      * unknown.
      *
      * @return -1
@@ -141,7 +141,7 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns null to indicate unknown status of the underlying <tt>SourceContact</tt>.
+     * Returns null to indicate unknown status of the underlying <code>SourceContact</code>.
      *
      * @return null
      */
@@ -156,9 +156,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Gets the avatar of a specific <tt>UIContact</tt> in the form of an <tt>ImageIcon</tt> value.
+     * Gets the avatar of a specific <code>UIContact</code> in the form of an <code>ImageIcon</code> value.
      *
-     * @return a byte array representing the avatar of this <tt>UIContact</tt>
+     * @return a byte array representing the avatar of this <code>UIContact</code>
      */
     @Override
     public byte[] getAvatar()
@@ -167,7 +167,7 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the image corresponding to the underlying <tt>SourceContact</tt>.
+     * Returns the image corresponding to the underlying <code>SourceContact</code>.
      *
      * @param isSelected indicates if the contact is currently selected in the contact list component
      * @param width the desired image width
@@ -182,12 +182,12 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the default <tt>ContactDetail</tt> to use for any operations depending to the given
-     * <tt>OperationSet</tt> class.
+     * Returns the default <code>ContactDetail</code> to use for any operations depending to the given
+     * <code>OperationSet</code> class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class we're interested in
-     * @return the default <tt>ContactDetail</tt> to use for any operations depending to the given
-     * <tt>OperationSet</tt> class
+     * @param opSetClass the <code>OperationSet</code> class we're interested in
+     * @return the default <code>ContactDetail</code> to use for any operations depending to the given
+     * <code>OperationSet</code> class
      */
     @Override
     public UIContactDetail getDefaultContactDetail(Class<? extends OperationSet> opSetClass)
@@ -199,9 +199,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the underlying <tt>SourceContact</tt> this abstraction is about.
+     * Returns the underlying <code>SourceContact</code> this abstraction is about.
      *
-     * @return the underlying <tt>SourceContact</tt>
+     * @return the underlying <code>SourceContact</code>
      */
     @Override
     public Object getDescriptor()
@@ -210,9 +210,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the display details for the underlying <tt>SourceContact</tt>.
+     * Returns the display details for the underlying <code>SourceContact</code>.
      *
-     * @return the display details for the underlying <tt>SourceContact</tt>
+     * @return the display details for the underlying <code>SourceContact</code>
      */
     @Override
     public String getDisplayDetails()
@@ -221,9 +221,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns a list of all contained <tt>UIContactDetail</tt>s.
+     * Returns a list of all contained <code>UIContactDetail</code>s.
      *
-     * @return a list of all contained <tt>UIContactDetail</tt>s
+     * @return a list of all contained <code>UIContactDetail</code>s
      */
     @Override
     public List<UIContactDetail> getContactDetails()
@@ -238,11 +238,11 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns a list of <tt>UIContactDetail</tt>s supporting the given <tt>OperationSet</tt>
+     * Returns a list of <code>UIContactDetail</code>s supporting the given <code>OperationSet</code>
      * class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class we're interested in
-     * @return a list of <tt>UIContactDetail</tt>s supporting the given <tt>OperationSet</tt> class
+     * @param opSetClass the <code>OperationSet</code> class we're interested in
+     * @return a list of <code>UIContactDetail</code>s supporting the given <code>OperationSet</code> class
      */
     @Override
     public List<UIContactDetail> getContactDetailsForOperationSet(Class<? extends OperationSet> opSetClass)
@@ -273,9 +273,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns an <tt>Iterator</tt> over a list of strings, which can be used to find this contact.
+     * Returns an <code>Iterator</code> over a list of strings, which can be used to find this contact.
      *
-     * @return an <tt>Iterator</tt> over a list of search strings
+     * @return an <code>Iterator</code> over a list of search strings
      */
     @Override
     public Iterator<String> getSearchStrings()
@@ -284,9 +284,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the corresponding <tt>ContactNode</tt> from the contact list component.
+     * Returns the corresponding <code>ContactNode</code> from the contact list component.
      *
-     * @return the corresponding <tt>ContactNode</tt>
+     * @return the corresponding <code>ContactNode</code>
      */
     @Override
     public ContactNode getContactNode()
@@ -295,9 +295,9 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Sets the corresponding <tt>ContactNode</tt>.
+     * Sets the corresponding <code>ContactNode</code>.
      *
-     * @param contactNode the corresponding <tt>ContactNode</tt>
+     * @param contactNode the corresponding <code>ContactNode</code>
      */
     @Override
     public void setContactNode(ContactNode contactNode)
@@ -309,19 +309,19 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * The implementation of the <tt>UIContactDetail</tt> interface for the external source
-     * <tt>ContactDetail</tt>s.
+     * The implementation of the <code>UIContactDetail</code> interface for the external source
+     * <code>ContactDetail</code>s.
      */
     protected static class SourceContactDetail extends UIContactDetailImpl
     {
         /**
-         * Creates an instance of <tt>SourceContactDetail</tt> by specifying the underlying
-         * <tt>detail</tt> and the <tt>OperationSet</tt> class for it.
+         * Creates an instance of <code>SourceContactDetail</code> by specifying the underlying
+         * <code>detail</code> and the <code>OperationSet</code> class for it.
          *
-         * @param detail the underlying <tt>ContactDetail</tt>
+         * @param detail the underlying <code>ContactDetail</code>
          * @param category detail category string
          * @param subCategories the detail list of sub-categories
-         * @param opSetClass the <tt>OperationSet</tt> class for the preferred protocol provider
+         * @param opSetClass the <code>OperationSet</code> class for the preferred protocol provider
          * @param sourceContact the source contact
          */
         public SourceContactDetail(ContactDetail detail, String category, Collection<String> subCategories,
@@ -342,8 +342,8 @@ public class SourceUIContact extends UIContactImpl
         }
 
         /**
-         * Creates an instance of <tt>SourceContactDetail</tt> by specifying the underlying
-         * <tt>detail</tt> and the <tt>OperationSet</tt> class for it.
+         * Creates an instance of <code>SourceContactDetail</code> by specifying the underlying
+         * <code>detail</code> and the <code>OperationSet</code> class for it.
          *
          * @param displayName the display name
          * @param sourceContact the source contact
@@ -366,11 +366,11 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the <tt>JPopupMenu</tt> opened on a right button click over this
-     * <tt>SourceUIContact</tt>.
+     * Returns the <code>JPopupMenu</code> opened on a right button click over this
+     * <code>SourceUIContact</code>.
      *
-     * @return the <tt>JPopupMenu</tt> opened on a right button click over this
-     * <tt>SourceUIContact</tt>
+     * @return the <code>JPopupMenu</code> opened on a right button click over this
+     * <code>SourceUIContact</code>
      */
     @Override
     public JPopupMenu getRightButtonMenu()
@@ -491,10 +491,10 @@ public class SourceUIContact extends UIContactImpl
     }
 
     /**
-     * Returns the internationalized category corresponding to the given <tt>ContactDetail
-     * .Category</tt>.
+     * Returns the internationalized category corresponding to the given <code>ContactDetail
+     * .Category</code>.
      *
-     * @param category the <tt>ContactDetail.SubCategory</tt>, for which we would like to obtain an
+     * @param category the <code>ContactDetail.SubCategory</code>, for which we would like to obtain an
      * internationalized label
      * @return the internationalized label corresponding to the given category
      */
@@ -531,7 +531,7 @@ public class SourceUIContact extends UIContactImpl
     /**
      * Returns a collection of internationalized string corresponding to the given subCategories.
      *
-     * @param subCategories an Iterator over a list of <tt>ContactDetail.SubCategory</tt>s
+     * @param subCategories an Iterator over a list of <code>ContactDetail.SubCategory</code>s
      * @return a collection of internationalized string corresponding to the given subCategories
      */
     protected Collection<String> getInternationalizedLabels(Collection<ContactDetail.SubCategory> subCategories)
@@ -547,7 +547,7 @@ public class SourceUIContact extends UIContactImpl
     /**
      * Returns the internationalized label corresponding to the given category.
      *
-     * @param subCategory the <tt>ContactDetail.SubCategory</tt>, for which we would like to obtain an
+     * @param subCategory the <code>ContactDetail.SubCategory</code>, for which we would like to obtain an
      * internationalized label
      * @return the internationalized label corresponding to the given category
      */
@@ -634,7 +634,7 @@ public class SourceUIContact extends UIContactImpl
     /**
      * Returns all custom action menu items for this contact.
      *
-     * @param initActions if <tt>true</tt> the actions will be reloaded.
+     * @param initActions if <code>true</code> the actions will be reloaded.
      * @return a list of all custom action menu items for this contact.
      */
     @Override

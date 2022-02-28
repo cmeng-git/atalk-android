@@ -44,22 +44,22 @@ public class ChatRoomLocalUserRoleChangeEvent extends EventObject
 	private ChatRoomMemberRole newRole = null;
 
 	/**
-	 * If <tt>true</tt> this is initial role set.
+	 * If <code>true</code> this is initial role set.
 	 */
 	private boolean isInitial = false;
 
 	/**
-	 * Creates a <tt>ChatRoomLocalUserRoleChangeEvent</tt> representing that a change in local
+	 * Creates a <code>ChatRoomLocalUserRoleChangeEvent</code> representing that a change in local
 	 * participant role in the source chat room has occured.
 	 *
 	 * @param sourceRoom
-	 *        the <tt>ChatRoom</tt> that produced the event
+	 *        the <code>ChatRoom</code> that produced the event
 	 * @param previousRole
 	 *        the previous role that local participant had
 	 * @param newRole
 	 *        the new role that local participant get
 	 * @param isInitial
-	 *        if <tt>true</tt> this is initial role set.
+	 *        if <code>true</code> this is initial role set.
 	 */
 	public ChatRoomLocalUserRoleChangeEvent(ChatRoom sourceRoom, ChatRoomMemberRole previousRole,
 		ChatRoomMemberRole newRole, boolean isInitial)
@@ -91,9 +91,9 @@ public class ChatRoomLocalUserRoleChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>ChatRoom</tt>, where this event occured.
+	 * Returns the <code>ChatRoom</code>, where this event occured.
 	 *
-	 * @return the <tt>ChatRoom</tt>, where this event occured
+	 * @return the <code>ChatRoom</code>, where this event occured
 	 */
 	public ChatRoom getSourceChatRoom()
 	{
@@ -101,9 +101,9 @@ public class ChatRoomLocalUserRoleChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns <tt>true</tt> if this is initial role set.
+	 * Returns <code>true</code> if this is initial role set.
 	 * 
-	 * @return <tt>true</tt> if this is initial role set.
+	 * @return <code>true</code> if this is initial role set.
 	 */
 	public boolean isInitial()
 	{

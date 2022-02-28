@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 /**
  * The query which creates source contacts and uses the values stored in
- * <tt>MessageSourceService</tt>.
+ * <code>MessageSourceService</code>.
  *
  * @author Damian Minkov
  */
@@ -32,8 +32,8 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Creates <tt>MessageSourceContact</tt> for all currently cached recent messages in the
-	 * <tt>MessageSourceService</tt>.
+	 * Creates <code>MessageSourceContact</code> for all currently cached recent messages in the
+	 * <code>MessageSourceService</code>.
 	 */
 	@Override
 	public void run()
@@ -42,13 +42,13 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Updates capabilities from <tt>EventObject</tt> for the found <tt>MessageSourceContact</tt>
-	 * equals to the <tt>Object</tt> supplied. Note that Object may not be
-	 * <tt>MessageSourceContact</tt>, but  its equals method can return true for message source
+	 * Updates capabilities from <code>EventObject</code> for the found <code>MessageSourceContact</code>
+	 * equals to the <code>Object</code> supplied. Note that Object may not be
+	 * <code>MessageSourceContact</code>, but  its equals method can return true for message source
 	 * contact instances.
 	 *
 	 * @param srcObj
-	 * 		used to search for <tt>MessageSourceContact</tt>
+	 * 		used to search for <code>MessageSourceContact</code>
 	 * @param eventObj
 	 * 		the values used for the update
 	 */
@@ -63,13 +63,13 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Updates capabilities from <tt>Contact</tt> for the found <tt>MessageSourceContact</tt>
-	 * equals to the <tt>Object</tt> supplied. Note that Object may not be
-	 * <tt>MessageSourceContact</tt>, but its equals method can return true for message source
+	 * Updates capabilities from <code>Contact</code> for the found <code>MessageSourceContact</code>
+	 * equals to the <code>Object</code> supplied. Note that Object may not be
+	 * <code>MessageSourceContact</code>, but its equals method can return true for message source
 	 * contact instances.
 	 *
 	 * @param srcObj
-	 * 		used to search for <tt>MessageSourceContact</tt>
+	 * 		used to search for <code>MessageSourceContact</code>
 	 * @param contact
 	 * 		the values used for the update
 	 */
@@ -84,15 +84,15 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Notifies the <tt>ContactQueryListener</tt>s registered with this <tt>ContactQuery</tt>
-	 * that a <tt>SourceContact</tt> has been changed. Note that Object may not be
-	 * <tt>MessageSourceContact</tt>, but its equals method can return true for message source
+	 * Notifies the <code>ContactQueryListener</code>s registered with this <code>ContactQuery</code>
+	 * that a <code>SourceContact</code> has been changed. Note that Object may not be
+	 * <code>MessageSourceContact</code>, but its equals method can return true for message source
 	 * contact instances.
 	 *
 	 * @param srcObj
-	 * 		the <tt>Object</tt> representing a recent message which has been changed and
-	 * 		corresponding <tt>SourceContact</tt> which the registered
-	 * 		<tt>ContactQueryListener</tt>s are to be notified about
+	 * 		the <code>Object</code> representing a recent message which has been changed and
+	 * 		corresponding <code>SourceContact</code> which the registered
+	 * 		<code>ContactQueryListener</code>s are to be notified about
 	 */
 	public void updateContact(Object srcObj, EventObject eventObject)
 	{
@@ -106,15 +106,15 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Notifies the <tt>ContactQueryListener</tt>s registered with this <tt>ContactQuery</tt>
-	 * that a <tt>SourceContact</tt> has been changed. Note that Object may not be
-	 * <tt>MessageSourceContact</tt>, but its equals method can return true for message source
+	 * Notifies the <code>ContactQueryListener</code>s registered with this <code>ContactQuery</code>
+	 * that a <code>SourceContact</code> has been changed. Note that Object may not be
+	 * <code>MessageSourceContact</code>, but its equals method can return true for message source
 	 * contact instances.
 	 *
 	 * @param srcObj
-	 * 		the <tt>Object</tt> representing a recent message which has been changed and
-	 * 		corresponding <tt>SourceContact</tt> which the registered
-	 * 		<tt>ContactQueryListener</tt>s are to be notified about
+	 * 		the <code>Object</code> representing a recent message which has been changed and
+	 * 		corresponding <code>SourceContact</code> which the registered
+	 * 		<code>ContactQueryListener</code>s are to be notified about
 	 */
 	public void fireContactChanged(Object srcObj)
 	{
@@ -127,15 +127,15 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Notifies the <tt>ContactQueryListener</tt>s registered with this <tt>ContactQuery</tt>
-	 * that a <tt>SourceContact</tt> has been changed. Note that Object may not be
-	 * <tt>MessageSourceContact</tt>, but its equals method can return true for message source
+	 * Notifies the <code>ContactQueryListener</code>s registered with this <code>ContactQuery</code>
+	 * that a <code>SourceContact</code> has been changed. Note that Object may not be
+	 * <code>MessageSourceContact</code>, but its equals method can return true for message source
 	 * contact instances.
 	 *
 	 * @param srcObj
-	 * 		the <tt>Object</tt> representing a recent message which has been changed and
-	 * 		corresponding <tt>SourceContact</tt> which the registered
-	 * 		<tt>ContactQueryListener</tt>s are to be notified about
+	 * 		the <code>Object</code> representing a recent message which has been changed and
+	 * 		corresponding <code>SourceContact</code> which the registered
+	 * 		<code>ContactQueryListener</code>s are to be notified about
 	 */
 	public void updateContactStatus(Object srcObj, PresenceStatus status)
 	{
@@ -149,15 +149,15 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Notifies the <tt>ContactQueryListener</tt>s registered with this <tt>ContactQuery</tt>
-	 * that a <tt>SourceContact</tt> has been changed. Note that Object may not be
-	 * <tt>MessageSourceContact</tt>, but its equals method can return true for message source
+	 * Notifies the <code>ContactQueryListener</code>s registered with this <code>ContactQuery</code>
+	 * that a <code>SourceContact</code> has been changed. Note that Object may not be
+	 * <code>MessageSourceContact</code>, but its equals method can return true for message source
 	 * contact instances.
 	 *
 	 * @param srcObj
-	 * 		the <tt>Object</tt> representing a recent message which has been changed and
-	 * 		corresponding <tt>SourceContact</tt> which the registered
-	 * 		<tt>ContactQueryListener</tt>s are to be notified about
+	 * 		the <code>Object</code> representing a recent message which has been changed and
+	 * 		corresponding <code>SourceContact</code> which the registered
+	 * 		<code>ContactQueryListener</code>s are to be notified about
 	 */
 	public void updateContactDisplayName(Object srcObj, String newName)
 	{
@@ -171,14 +171,14 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Notifies the <tt>ContactQueryListener</tt>s registered with this <tt>ContactQuery</tt>
-	 * that a <tt>SourceContact</tt> has been removed. Note that Object may not be
-	 * <tt>MessageSourceContact</tt>, but its equals method can return true for message source
+	 * Notifies the <code>ContactQueryListener</code>s registered with this <code>ContactQuery</code>
+	 * that a <code>SourceContact</code> has been removed. Note that Object may not be
+	 * <code>MessageSourceContact</code>, but its equals method can return true for message source
 	 * contact instances.
 	 *
 	 * @param srcObj
-	 * 		representing the message and its corresponding <tt>SourceContact</tt> which has been
-	 * 		removed and which the registered <tt>ContactQueryListener</tt>s are to be notified about
+	 * 		representing the message and its corresponding <code>SourceContact</code> which has been
+	 * 		removed and which the registered <code>ContactQueryListener</code>s are to be notified about
 	 */
 	public void fireContactRemoved(Object srcObj)
 	{
@@ -191,13 +191,13 @@ public class MessageSourceContactQuery extends AsyncContactQuery<MessageSourceSe
 	}
 
 	/**
-	 * Adds a specific <tt>SourceContact</tt> to the list of <tt>SourceContact</tt>s to be
-	 * returned by this <tt>ContactQuery</tt> in response to {@link #getQueryResults()}.
+	 * Adds a specific <code>SourceContact</code> to the list of <code>SourceContact</code>s to be
+	 * returned by this <code>ContactQuery</code> in response to {@link #getQueryResults()}.
 	 *
 	 * @param sourceContact
-	 * 		the <tt>SourceContact</tt> to be added to the <tt>queryResults</tt> of this
-	 * 		<tt>ContactQuery</tt>
-	 * @return <tt>true</tt> if the <tt>queryResults</tt> of this <tt>ContactQuery</tt> has
+	 * 		the <code>SourceContact</code> to be added to the <code>queryResults</code> of this
+	 * 		<code>ContactQuery</code>
+	 * @return <code>true</code> if the <code>queryResults</code> of this <code>ContactQuery</code> has
 	 * changed in response to the call
 	 */
 	public boolean addQueryResult(SourceContact sourceContact)

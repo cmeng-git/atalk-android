@@ -43,7 +43,7 @@ public class OTRv3OutgoingSessionSwitcher extends OSGiDialogFragment
         implements AdapterView.OnItemClickListener, View.OnClickListener
 {
     /**
-     * The <tt>Contact</tt> that belongs to OTR session handled by this instance.
+     * The <code>Contact</code> that belongs to OTR session handled by this instance.
      */
     private static OtrContact mOtrContact;
 
@@ -189,7 +189,7 @@ public class OTRv3OutgoingSessionSwitcher extends OSGiDialogFragment
     /**
      * Method fired when the ok button is clicked.
      *
-     * @param v ok button's <tt>View</tt>.
+     * @param v ok button's <code>View</code>.
      */
     @Override
     public void onClick(View v)

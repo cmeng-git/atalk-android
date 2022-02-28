@@ -15,7 +15,7 @@ import org.jivesoftware.smackx.xdata.form.Form;
 import java.util.*;
 
 /**
- * The Jabber protocol implementation of the <tt>ChatRoomConfigurationFormField</tt>. This
+ * The Jabber protocol implementation of the <code>ChatRoomConfigurationFormField</code>. This
  * implementation is based on the smack Form and FormField types.
  *
  * @author Yana Stamcheva
@@ -35,7 +35,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
     private FormField smackSubmitFormField;
 
     /**
-     * Creates an instance of <tt>ChatRoomConfigurationFormFieldJabberImpl</tt> by passing to it the
+     * Creates an instance of <code>ChatRoomConfigurationFormFieldJabberImpl</code> by passing to it the
      * smack form field and the smack submit form, which are the base of this implementation.
      *
      * @param formField the smack form field
@@ -109,7 +109,7 @@ public class ChatRoomConfigurationFormFieldJabberImpl implements ChatRoomConfigu
 
     /**
      * For each of the smack form field types returns the corresponding
-     * <tt>ChatRoomConfigurationFormField</tt> type.
+     * <code>ChatRoomConfigurationFormField</code> type.
      *
      * @return the type of the property
      */

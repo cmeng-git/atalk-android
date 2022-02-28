@@ -21,8 +21,8 @@ import net.java.sip.communicator.service.callhistory.CallRecord;
 import java.util.EventObject;
 
 /**
- * The <tt>CallRecordEvent</tt> indicates that a <tt>CallRecord</tt> has been
- * received as a result of a <tt>CallHistoryQuery</tt>.
+ * The <code>CallRecordEvent</code> indicates that a <code>CallRecord</code> has been
+ * received as a result of a <code>CallHistoryQuery</code>.
  *
  * @author Yana Stamcheva
  */
@@ -34,16 +34,16 @@ public class CallRecordEvent extends EventObject
     private static final long serialVersionUID = 0L;
 
     /**
-     * The <tt>CallRecord</tt> this event is about.
+     * The <code>CallRecord</code> this event is about.
      */
     private final CallRecord callRecord;
 
     /**
-     * Creates a <tt>CallRecordEvent</tt> by specifying the parent <tt>query</tt>
-     * and the <tt>callRecord</tt> this event is about.
+     * Creates a <code>CallRecordEvent</code> by specifying the parent <code>query</code>
+     * and the <code>callRecord</code> this event is about.
      *
      * @param query the source that triggered this event
-     * @param callRecord the <tt>CallRecord</tt> this event is about
+     * @param callRecord the <code>CallRecord</code> this event is about
      */
     public CallRecordEvent(CallHistoryQuery query,
             CallRecord callRecord)
@@ -54,9 +54,9 @@ public class CallRecordEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ContactQuery</tt> that triggered this event.
+     * Returns the <code>ContactQuery</code> that triggered this event.
      *
-     * @return the <tt>ContactQuery</tt> that triggered this event
+     * @return the <code>ContactQuery</code> that triggered this event
      */
     public CallHistoryQuery getQuerySource()
     {
@@ -64,9 +64,9 @@ public class CallRecordEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>CallRecord</tt>s this event is about.
+     * Returns the <code>CallRecord</code>s this event is about.
      *
-     * @return the <tt>CallRecord</tt>s this event is about
+     * @return the <code>CallRecord</code>s this event is about
      */
     public CallRecord getCallRecord()
     {

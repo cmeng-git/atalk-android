@@ -66,14 +66,14 @@ public class AdHocChatRoomParticipantPresenceChangeEvent extends EventObject
 	private final String reason;
 
 	/**
-	 * Creates an <tt>AdHocChatRoomParticipantPresenceChangeEvent</tt> representing that a change in
-	 * the presence of an <tt>Contact</tt> has occurred. Changes may include the participant being
+	 * Creates an <code>AdHocChatRoomParticipantPresenceChangeEvent</code> representing that a change in
+	 * the presence of an <code>Contact</code> has occurred. Changes may include the participant being
 	 * join, left, etc.
 	 *
 	 * @param sourceAdHocRoom
-	 *        the <tt>AdHocChatRoom</tt> that produced this event
+	 *        the <code>AdHocChatRoom</code> that produced this event
 	 * @param sourceParticipant
-	 *        the <tt>Contact</tt> that this event is about
+	 *        the <code>Contact</code> that this event is about
 	 * @param eventType
 	 *        the event type; one of the CONTACT_XXX constants
 	 * @param reason
@@ -91,7 +91,7 @@ public class AdHocChatRoomParticipantPresenceChangeEvent extends EventObject
 	/**
 	 * Returns the ad-hoc chat room that produced this event.
 	 *
-	 * @return the <tt>AdHocChatRoom</tt> that produced this event
+	 * @return the <code>AdHocChatRoom</code> that produced this event
 	 */
 	public AdHocChatRoom getAdHocChatRoom()
 	{
@@ -101,7 +101,7 @@ public class AdHocChatRoomParticipantPresenceChangeEvent extends EventObject
 	/**
 	 * Returns the participant that this event is about.
 	 *
-	 * @return the <tt>Contact</tt> that this event is about.
+	 * @return the <code>Contact</code> that this event is about.
 	 */
 	public Contact getParticipant()
 	{
@@ -123,9 +123,9 @@ public class AdHocChatRoomParticipantPresenceChangeEvent extends EventObject
 	 * Gets the indicator which determines whether this event has occurred with the well-known
 	 * reason of listing all users in a <code>ChatRoom</code>.
 	 *
-	 * @return <tt>true</tt> if this event has occurred with the well-known reason of listing all
+	 * @return <code>true</code> if this event has occurred with the well-known reason of listing all
 	 *         users in a <code>ChatRoom</code> i.e. {@link #getReason()} returns a value of
-	 *         {@link #REASON_USER_LIST}; otherwise, <tt>false</tt>
+	 *         {@link #REASON_USER_LIST}; otherwise, <code>false</code>
 	 */
 	public boolean isReasonUserList()
 	{

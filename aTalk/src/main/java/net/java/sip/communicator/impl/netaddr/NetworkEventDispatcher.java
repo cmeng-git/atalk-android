@@ -26,10 +26,10 @@ import timber.log.Timber;
 
 /**
  * The class implements a dispatch event thread. The thread will
- * fire event every time it is added through the <tt>fireChangeEvent()</tt>
+ * fire event every time it is added through the <code>fireChangeEvent()</code>
  * method and would then deliver it to a registered listener if any.
  * (No fire would be performed until we have a
- * <tt>NetworkConfigurationChangeListener</tt>). If the event has time set
+ * <code>NetworkConfigurationChangeListener</code>). If the event has time set
  * we used it as a delay before dispatching the event.
  * <p>
  *
@@ -59,7 +59,7 @@ public class NetworkEventDispatcher implements Runnable
     private Thread dispatcherThread = null;
 
     /**
-     * Adds new <tt>NetworkConfigurationChangeListener</tt> which will be informed for network configuration changes.
+     * Adds new <code>NetworkConfigurationChangeListener</code> which will be informed for network configuration changes.
      *
      * @param listener the listener.
      */
@@ -78,7 +78,7 @@ public class NetworkEventDispatcher implements Runnable
     }
 
     /**
-     * Remove <tt>NetworkConfigurationChangeListener</tt>.
+     * Remove <code>NetworkConfigurationChangeListener</code>.
      *
      * @param listener the listener.
      */
@@ -205,12 +205,12 @@ public class NetworkEventDispatcher implements Runnable
     }
 
     /**
-     * Returns <tt>true</tt> if this dispatcher is currently running and
-     * delivering events when available and <tt>false</tt>
+     * Returns <code>true</code> if this dispatcher is currently running and
+     * delivering events when available and <code>false</code>
      * otherwise.
      *
-     * @return <tt>true</tt> if this dispatcher is currently running and
-     * delivering events when available and <tt>false</tt> otherwise.
+     * @return <code>true</code> if this dispatcher is currently running and
+     * delivering events when available and <code>false</code> otherwise.
      */
     public boolean isRunning()
     {

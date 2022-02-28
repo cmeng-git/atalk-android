@@ -22,8 +22,8 @@ import org.atalk.service.osgi.OSGiFragment;
 
 /**
  * Fragment used to control call volume. Key events for volume up and down have to be captured by the parent
- * <tt>Activity</tt> and passed here, before they get to system audio service. The volume is increased using
- * <tt>AudioManager</tt> until it reaches maximum level, then we increase the Libjitsi volume gain.
+ * <code>Activity</code> and passed here, before they get to system audio service. The volume is increased using
+ * <code>AudioManager</code> until it reaches maximum level, then we increase the Libjitsi volume gain.
  * The opposite happens when volume is being decreased.
  *
  * @author Pawel Domas
@@ -42,7 +42,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     private VolumeControl volumeControl;
 
     /**
-     * The <tt>AudioManager</tt> used to control voice call stream volume.
+     * The <code>AudioManager</code> used to control voice call stream volume.
      */
     private AudioManager audioManager;
 
@@ -93,9 +93,9 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     }
 
     /**
-     * Returns current volume index for <tt>AudioManager.STREAM_VOICE_CALL</tt>.
+     * Returns current volume index for <code>AudioManager.STREAM_VOICE_CALL</code>.
      *
-     * @return current volume index for <tt>AudioManager.STREAM_VOICE_CALL</tt>.
+     * @return current volume index for <code>AudioManager.STREAM_VOICE_CALL</code>.
      */
     private int getAudioStreamVolume()
     {
@@ -103,7 +103,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     }
 
     /**
-     * Method should be called by the parent <tt>Activity</tt> when volume up key is pressed.
+     * Method should be called by the parent <code>Activity</code> when volume up key is pressed.
      */
     public void onKeyVolUp()
     {
@@ -125,7 +125,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     }
 
     /**
-     * Method should be called by the parent <tt>Activity</tt> when volume down key is pressed.
+     * Method should be called by the parent <code>Activity</code> when volume down key is pressed.
      */
     public void onKeyVolDown()
     {

@@ -10,7 +10,7 @@ import org.atalk.service.neomedia.event.DTMFListener;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 
 /**
- * Extends the <tt>MediaStream</tt> interface and adds methods specific to audio streaming.
+ * Extends the <code>MediaStream</code> interface and adds methods specific to audio streaming.
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
@@ -30,12 +30,12 @@ public interface AudioMediaStream extends MediaStream
 	 * sending DTMF tones to us.
 	 *
 	 * @param listener
-	 *        the <tt>DTMFListener</tt> that we'd like to register.
+	 *        the <code>DTMFListener</code> that we'd like to register.
 	 */
 	public void addDTMFListener(DTMFListener listener);
 
 	/**
-	 * Removes <tt>listener</tt> from the list of <tt>DTMFListener</tt>s registered to receive
+	 * Removes <code>listener</code> from the list of <code>DTMFListener</code>s registered to receive
 	 * events for incoming DTMF tones.
 	 *
 	 * @param listener
@@ -44,57 +44,57 @@ public interface AudioMediaStream extends MediaStream
 	public void removeDTMFListener(DTMFListener listener);
 
 	/**
-	 * Registers <tt>listener</tt> as the <tt>CsrcAudioLevelListener</tt> that will receive
+	 * Registers <code>listener</code> as the <code>CsrcAudioLevelListener</code> that will receive
 	 * notifications for changes in the levels of conference participants that the remote party
 	 * could be mixing.
 	 *
 	 * @param listener
-	 *        the <tt>CsrcAudioLevelListener</tt> that we'd like to register or <tt>null</tt> if
+	 *        the <code>CsrcAudioLevelListener</code> that we'd like to register or <code>null</code> if
 	 *        we'd like to stop receiving notifications.
 	 */
 	public void setCsrcAudioLevelListener(CsrcAudioLevelListener listener);
 
 	/**
-	 * Sets <tt>listener</tt> as the <tt>SimpleAudioLevelListener</tt> registered to receive
+	 * Sets <code>listener</code> as the <code>SimpleAudioLevelListener</code> registered to receive
 	 * notifications for changes in the levels of the audio that this stream is sending out.
 	 *
 	 * @param listener
-	 *        the <tt>SimpleAudioLevelListener</tt> that we'd like to register or <tt>null</tt> if
+	 *        the <code>SimpleAudioLevelListener</code> that we'd like to register or <code>null</code> if
 	 *        we want to stop local audio level measurements.
 	 */
 	public void setLocalUserAudioLevelListener(SimpleAudioLevelListener listener);
 
 	/**
-	 * Sets the <tt>VolumeControl</tt> which is to control the volume (level) of the audio received
-	 * in/by this <tt>AudioMediaStream</tt> and played back.
+	 * Sets the <code>VolumeControl</code> which is to control the volume (level) of the audio received
+	 * in/by this <code>AudioMediaStream</code> and played back.
 	 *
 	 * @param outputVolumeControl
-	 *        the <tt>VolumeControl</tt> which is to control the volume (level) of the audio
-	 *        received in this <tt>AudioMediaStream</tt> and played back
+	 *        the <code>VolumeControl</code> which is to control the volume (level) of the audio
+	 *        received in this <code>AudioMediaStream</code> and played back
 	 */
 	public void setOutputVolumeControl(VolumeControl outputVolumeControl);
 
 	/**
-	 * Sets <tt>listener</tt> as the <tt>SimpleAudioLevelListener</tt> registered to receive
+	 * Sets <code>listener</code> as the <code>SimpleAudioLevelListener</code> registered to receive
 	 * notifications for changes in the levels of the party that's at the other end of this stream.
 	 *
 	 * @param listener
-	 *        the <tt>SimpleAudioLevelListener</tt> that we'd like to register or <tt>null</tt> if
+	 *        the <code>SimpleAudioLevelListener</code> that we'd like to register or <code>null</code> if
 	 *        we want to stop stream audio level measurements.
 	 */
 	public void setStreamAudioLevelListener(SimpleAudioLevelListener listener);
 
 	/**
-	 * Starts sending the specified <tt>DTMFTone</tt> until the <tt>stopSendingDTMF()</tt> method is
+	 * Starts sending the specified <code>DTMFTone</code> until the <code>stopSendingDTMF()</code> method is
 	 * called (Excepts for INBAND DTMF, which stops by itself this is why where there is no need to
 	 * call the stopSendingDTMF). Callers should keep in mind the fact that calling this method
 	 * would most likely interrupt all audio transmission until the corresponding stop method is
 	 * called. Also, calling this method successively without invoking the corresponding stop method
-	 * between the calls will simply replace the <tt>DTMFTone</tt> from the first call with that
+	 * between the calls will simply replace the <code>DTMFTone</code> from the first call with that
 	 * from the second.
 	 *
 	 * @param tone
-	 *        the <tt>DTMFTone</tt> to start sending.
+	 *        the <code>DTMFTone</code> to start sending.
 	 * @param dtmfMethod
 	 *        The kind of DTMF used (RTP, SIP-INOF or INBAND).
 	 * @param minimalToneDuration
@@ -109,11 +109,11 @@ public interface AudioMediaStream extends MediaStream
 		int maximalToneDuration, int volume);
 
 	/**
-	 * Interrupts transmission of a <tt>DTMFTone</tt> started with the <tt>startSendingDTMF</tt>
+	 * Interrupts transmission of a <code>DTMFTone</code> started with the <code>startSendingDTMF</code>
 	 * method. This method has no effect if no tone is being currently sent.
 	 *
 	 * @param dtmfMethod
-	 *        the <tt>DTMFMethod</tt> to stop sending.
+	 *        the <code>DTMFMethod</code> to stop sending.
 	 */
 	public void stopSendingDTMF(DTMFMethod dtmfMethod);
 }

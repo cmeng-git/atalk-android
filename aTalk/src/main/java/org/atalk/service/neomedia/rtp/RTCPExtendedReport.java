@@ -12,7 +12,7 @@ import net.sf.fmj.media.rtp.*;
 
 /**
  * Represents an RTP Control Protocol Extended Report (RTCP XR) packet in the terms of FMJ i.e. as
- * an <tt>RTCPPacket</tt> sub-class.
+ * an <code>RTCPPacket</code> sub-class.
  *
  * @author Lyubomir Marinov
  */
@@ -31,7 +31,7 @@ public class RTCPExtendedReport extends RTCPPacket
 		public final short blockType;
 
 		/**
-		 * Initializes a new <tt>ReportBlock</tt> instance of a specific block type.
+		 * Initializes a new <code>ReportBlock</code> instance of a specific block type.
 		 *
 		 * @param blockType
 		 *        the block type/format of the new instance
@@ -42,30 +42,30 @@ public class RTCPExtendedReport extends RTCPPacket
 		}
 
 		/**
-		 * Serializes/writes the binary representation of this <tt>ReportBlock</tt> into a specific
-		 * <tt>DataOutputStream</tt>.
+		 * Serializes/writes the binary representation of this <code>ReportBlock</code> into a specific
+		 * <code>DataOutputStream</code>.
 		 *
 		 * @param dataoutputstream
-		 *        the <tt>DataOutputStream</tt> into which the binary representation of this
-		 *        <tt>ReportBlock</tt> is to be serialized/written.
+		 *        the <code>DataOutputStream</code> into which the binary representation of this
+		 *        <code>ReportBlock</code> is to be serialized/written.
 		 * @throws IOException
 		 *         if an input/output error occurs during the serialization/writing of the binary
-		 *         representation of this <tt>ReportBlock</tt>
+		 *         representation of this <code>ReportBlock</code>
 		 */
 		protected abstract void assemble(DataOutputStream dataoutputstream)
 			throws IOException;
 
 		/**
-		 * Computes the length in <tt>byte</tt>s of this <tt>ReportBlock</tt>, including the header
+		 * Computes the length in <code>byte</code>s of this <code>ReportBlock</code>, including the header
 		 * and any padding.
 		 * <p>
-		 * The implementation of <tt>ReportBlock</tt> returns the length in <tt>byte</tt>s of the
-		 * header of an extended report block i.e. <tt>4</tt>. The implementation is provided as a
+		 * The implementation of <code>ReportBlock</code> returns the length in <code>byte</code>s of the
+		 * header of an extended report block i.e. <code>4</code>. The implementation is provided as a
 		 * convenience because RFC 3611 defines that the type-specific block contents of an extended
 		 * report block may be zero bits long if the block type definition permits.
 		 * </p>
 		 *
-		 * @return the length in <tt>byte</tt>s of this <tt>ReportBlock</tt>, including the header
+		 * @return the length in <code>byte</code>s of this <code>ReportBlock</code>, including the header
 		 *         and any padding.
 		 */
 		public int calcLength()
@@ -188,11 +188,11 @@ public class RTCPExtendedReport extends RTCPPacket
 		/**
 		 * The implementation specific adjustment rate of a jitter buffer in adaptive mode. Defined
 		 * in terms of the approximate time taken to fully adjust to a step change in peak to peak
-		 * jitter from 30 ms to 100 ms such that: <tt>adjustment time = 2 * J * frame size (ms)<tt>
-		 * where <tt>J = adjustment rate (0-15)<tt>. The parameter is intended
+		 * jitter from 30 ms to 100 ms such that: <code>adjustment time = 2 * J * frame size (ms)<code>
+		 * where <code>J = adjustment rate (0-15)<code>. The parameter is intended
 		 * only to provide a guide to the degree of &quot;aggressiveness&quot;
 		 * of an adaptive jitter buffer and may be estimated. A value of
-		 * <tt>0</tt> indicates that the adjustment time is unknown for this implementation.
+		 * <code>0</code> indicates that the adjustment time is unknown for this implementation.
 		 */
 		private byte jitterBufferRate = 0;
 
@@ -239,7 +239,7 @@ public class RTCPExtendedReport extends RTCPPacket
 		private int sourceSSRC;
 
 		/**
-		 * Initializes a new <tt>VoIPMetricsReportBlock</tt> instance.
+		 * Initializes a new <code>VoIPMetricsReportBlock</code> instance.
 		 */
 		public VoIPMetricsReportBlock()
 		{
@@ -247,21 +247,21 @@ public class RTCPExtendedReport extends RTCPPacket
 		}
 
 		/**
-		 * Initializes a new <tt>VoIPMetricsReportBlock</tt> instance by deserializing/reading a
-		 * binary representation from a <tt>DataInputStream</tt>.
+		 * Initializes a new <code>VoIPMetricsReportBlock</code> instance by deserializing/reading a
+		 * binary representation from a <code>DataInputStream</code>.
 		 *
 		 * @param blockLength
 		 *        the length of the extended report block to read, including the header, in 32-bit
 		 *        words minus one
 		 * @param datainputstream
 		 *        the binary representation from which the new instance is to be initialized. The
-		 *        <tt>datainputstream</tt> is asumed to contain type-specific block contents without
+		 *        <code>datainputstream</code> is asumed to contain type-specific block contents without
 		 *        extended report block header i.e. no block type (BT), type-specific, and block
-		 *        length fields will be read from <tt>datainputstream</tt>.
+		 *        length fields will be read from <code>datainputstream</code>.
 		 * @throws IOException
 		 *         if an input/output error occurs while deserializing/reading the new instance from
-		 *         <tt>datainputstream</tt> or the binary representation does not parse into an
-		 *         <tt>VoIPMetricsReportBlock</tt> instance
+		 *         <code>datainputstream</code> or the binary representation does not parse into an
+		 *         <code>VoIPMetricsReportBlock</code> instance
 		 */
 		public VoIPMetricsReportBlock(int blockLength, DataInputStream datainputstream)
 			throws IOException
@@ -387,8 +387,8 @@ public class RTCPExtendedReport extends RTCPPacket
 		/**
 		 * {@inheritDoc}
 		 *
-		 * As defined by RFC 3611, a VoIP Metrics Report Block has a length in <tt>byte</tt>s equal
-		 * to <tt>36</tt>, including the extended report block header.
+		 * As defined by RFC 3611, a VoIP Metrics Report Block has a length in <code>byte</code>s equal
+		 * to <code>36</code>, including the extended report block header.
 		 */
 		@Override
 		public int calcLength()
@@ -652,11 +652,11 @@ public class RTCPExtendedReport extends RTCPPacket
 		 *        {@link #RESERVED_JITTER_BUFFER_ADAPTIVE}, or
 		 *        {@link #UNKNOWN_JITTER_BUFFER_ADAPTIVE}
 		 * @throws IllegalArgumentException
-		 *         if the specified <tt>jitterBufferAdapter</tt> is not one of the constants
-		 *         <tt>ADAPTIVE_JITTER_BUFFER_ADAPTIVE</tt>,
-		 *         <tt>NON_ADAPTIVE_JITTER_BUFFER_ADAPTIVE</tt>,
-		 *         <tt>RESERVED_JITTER_BUFFER_ADAPTIVE</tt>, and
-		 *         <tt>UNKNOWN_JITTER_BUFFER_ADAPTIVE</tt>
+		 *         if the specified <code>jitterBufferAdapter</code> is not one of the constants
+		 *         <code>ADAPTIVE_JITTER_BUFFER_ADAPTIVE</code>,
+		 *         <code>NON_ADAPTIVE_JITTER_BUFFER_ADAPTIVE</code>,
+		 *         <code>RESERVED_JITTER_BUFFER_ADAPTIVE</code>, and
+		 *         <code>UNKNOWN_JITTER_BUFFER_ADAPTIVE</code>
 		 */
 		public void setJitterBufferAdaptive(byte jitterBufferAdaptive)
 		{
@@ -731,11 +731,11 @@ public class RTCPExtendedReport extends RTCPPacket
 		 *        {@link #DISABLED_PACKET_LOSS_CONCEALMENT}, or
 		 *        {@link #UNSPECIFIED_PACKET_LOSS_CONCEALMENT}
 		 * @throws IllegalArgumentException
-		 *         if the specified <tt>packetLossConcealment</tt> is not one of the constants
-		 *         <tt>STANDARD_PACKET_LOSS_CONCEALMENT</tt>,
-		 *         <tt>ENHANCED_PACKET_LOSS_CONCEALMENT</tt>,
-		 *         <tt>DISABLED_PACKET_LOSS_CONCEALMENT</tt>, and
-		 *         <tt>UNSPECIFIED_PACKET_LOSS_CONCEALMENT</tt>
+		 *         if the specified <code>packetLossConcealment</code> is not one of the constants
+		 *         <code>STANDARD_PACKET_LOSS_CONCEALMENT</code>,
+		 *         <code>ENHANCED_PACKET_LOSS_CONCEALMENT</code>,
+		 *         <code>DISABLED_PACKET_LOSS_CONCEALMENT</code>, and
+		 *         <code>UNSPECIFIED_PACKET_LOSS_CONCEALMENT</code>
 		 */
 		public void setPacketLossConcealment(byte packetLossConcealment)
 		{
@@ -808,12 +808,12 @@ public class RTCPExtendedReport extends RTCPPacket
 	public static final String SDP_ATTRIBUTE = "rtcp-xr";
 
 	/**
-	 * The packet type (PT) constant <tt>207</tt> which identifies RTCP XR packets.
+	 * The packet type (PT) constant <code>207</code> which identifies RTCP XR packets.
 	 */
 	public static final int XR = 207;
 
 	/**
-	 * The list of zero or more extended report blocks carried by this <tt>RTCPExtendedReport</tt>.
+	 * The list of zero or more extended report blocks carried by this <code>RTCPExtendedReport</code>.
 	 */
 	private final List<ReportBlock> reportBlocks = new LinkedList<>();
 
@@ -823,13 +823,13 @@ public class RTCPExtendedReport extends RTCPPacket
 	private int ssrc;
 
 	/**
-	 * The <tt>System</tt> time in milliseconds at which this <tt>RTCPExtendedReport</tt> has been
+	 * The <code>System</code> time in milliseconds at which this <code>RTCPExtendedReport</code> has been
 	 * received or sent by the local endpoint.
 	 */
 	private long systemTimeStamp;
 
 	/**
-	 * Initializes a new <tt>RTCPExtendedReport</tt> instance.
+	 * Initializes a new <code>RTCPExtendedReport</code> instance.
 	 */
 	public RTCPExtendedReport()
 	{
@@ -837,20 +837,20 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Initializes a new <tt>RTCPExtendedReport</tT> instance by deserializing/reading a binary
-	 * representation from a <tt>byte</tt> array.
+	 * Initializes a new <code>RTCPExtendedReport</tT> instance by deserializing/reading a binary
+	 * representation from a <code>byte</code> array.
 	 *
 	 * @param buf
 	 *        the binary representation from which the new instance is to be initialized
 	 * @param off
-	 *        the offset in <tt>buf</tt> at which the binary representation starts
+	 *        the offset in <code>buf</code> at which the binary representation starts
 	 * @param len
-	 *        the number of <tt>byte</tt>s in <tt>buf</tt> starting at <tt>off</tt> which comprise
+	 *        the number of <code>byte</code>s in <code>buf</code> starting at <code>off</code> which comprise
 	 *        the binary representation
 	 * @throws IOException
 	 *         if an input/output error occurs while deserializing/reading the new instance from
-	 *         <tt>buf</tt> or the binary representation does not parse into an
-	 *         <tt>RTCPExtendedReport</tt> instance
+	 *         <code>buf</code> or the binary representation does not parse into an
+	 *         <code>RTCPExtendedReport</code> instance
 	 */
 	public RTCPExtendedReport(byte[] buf, int off, int len)
 		throws IOException
@@ -859,15 +859,15 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Initializes a new <tt>RTCPExtendedReport</tt> instance by deserializing/reading a binary
-	 * representation from a <tt>DataInputStream</tt>.
+	 * Initializes a new <code>RTCPExtendedReport</code> instance by deserializing/reading a binary
+	 * representation from a <code>DataInputStream</code>.
 	 *
 	 * @param datainputstream
 	 *        the binary representation from which the new instance is to be initialized.
 	 * @throws IOException
 	 *         if an input/output error occurs while deserializing/reading the new instance from
-	 *         <tt>datainputstream</tt> or the binary representation does not parse into an
-	 *         <tt>RTCPExtendedReport</tt> instance.
+	 *         <code>datainputstream</code> or the binary representation does not parse into an
+	 *         <code>RTCPExtendedReport</code> instance.
 	 */
 	public RTCPExtendedReport(DataInputStream datainputstream)
 		throws IOException
@@ -890,8 +890,8 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Initializes a new <tt>RTCPExtendedReport</tt> instance by deserializing/reading a binary
-	 * representation of part of the packet from a <tt>DataInputStream</tt>, and taking the values
+	 * Initializes a new <code>RTCPExtendedReport</code> instance by deserializing/reading a binary
+	 * representation of part of the packet from a <code>DataInputStream</code>, and taking the values
 	 * found in the first 4 bytes of the binary representation as arguments.
 	 *
 	 * @param b0
@@ -905,8 +905,8 @@ public class RTCPExtendedReport extends RTCPPacket
 	 *        the first 4 bytes.
 	 * @throws IOException
 	 *         if an input/output error occurs while deserializing/reading the new instance from
-	 *         <tt>datainputstream</tt> or the binary representation does not parse into an
-	 *         <tt>RTCPExtendedReport</tt> instance.
+	 *         <code>datainputstream</code> or the binary representation does not parse into an
+	 *         <code>RTCPExtendedReport</code> instance.
 	 */
 	public RTCPExtendedReport(int b0, int pt, int length, DataInputStream datainputstream)
 		throws IOException
@@ -917,8 +917,8 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Initializes a new <tt>RTCPExtendedReport</tt> instance by deserializing/reading a binary
-	 * representation of part of the packet from a <tt>DataInputStream</tt>, and taking the values
+	 * Initializes a new <code>RTCPExtendedReport</code> instance by deserializing/reading a binary
+	 * representation of part of the packet from a <code>DataInputStream</code>, and taking the values
 	 * normally found in the first 4 bytes of the binary representation as arguments.
 	 *
 	 * @param b0
@@ -932,8 +932,8 @@ public class RTCPExtendedReport extends RTCPPacket
 	 *        the first 4 bytes.
 	 * @throws IOException
 	 *         if an input/output error occurs while deserializing/reading the new instance from
-	 *         <tt>datainputstream</tt> or the binary representation does not parse into an
-	 *         <tt>RTCPExtendedReport</tt> instance.
+	 *         <code>datainputstream</code> or the binary representation does not parse into an
+	 *         <code>RTCPExtendedReport</code> instance.
 	 */
 	private void parse(int b0, int pt, int length, DataInputStream datainputstream)
 		throws IOException
@@ -994,10 +994,10 @@ public class RTCPExtendedReport extends RTCPPacket
 	 *
 	 * @param reportBlock
 	 *        the extended report block to add to this extended report
-	 * @return <tt>true</tt> if the list of extended report blocks carried by this extended report
-	 *         changed because of the method invocation; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if the list of extended report blocks carried by this extended report
+	 *         changed because of the method invocation; otherwise, <code>false</code>
 	 * @throws NullPointerException
-	 *         if <tt>reportBlock</tt> is <tt>null</tt>
+	 *         if <code>reportBlock</code> is <code>null</code>
 	 */
 	public boolean addReportBlock(ReportBlock reportBlock)
 	{
@@ -1046,9 +1046,9 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Gets the number of the extended report blocks carried by this <tt>RTCPExtendedReport</tt>.
+	 * Gets the number of the extended report blocks carried by this <code>RTCPExtendedReport</code>.
 	 *
-	 * @return the number of the extended report blocks carried by this <tt>RTCPExtendedReport</tt>
+	 * @return the number of the extended report blocks carried by this <code>RTCPExtendedReport</code>
 	 */
 	public int getReportBlockCount()
 	{
@@ -1056,9 +1056,9 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Gets a list of the extended report blocks carried by this <tt>RTCPExtendedReport</tt>.
+	 * Gets a list of the extended report blocks carried by this <code>RTCPExtendedReport</code>.
 	 *
-	 * @return a list of the extended repot blocks carried by this <tt>RTCPExtendedReport</tt>
+	 * @return a list of the extended repot blocks carried by this <code>RTCPExtendedReport</code>
 	 */
 	public List<ReportBlock> getReportBlocks()
 	{
@@ -1076,10 +1076,10 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Gets the <tt>System</tt> time in milliseconds at which this <tt>RTCPExtendedReport</tt> has
+	 * Gets the <code>System</code> time in milliseconds at which this <code>RTCPExtendedReport</code> has
 	 * been received or sent by the local endpoint.
 	 *
-	 * @return the <tt>System</tt> time in milliseconds at which this <tt>RTCPExtendedReport</tt>
+	 * @return the <code>System</code> time in milliseconds at which this <code>RTCPExtendedReport</code>
 	 *         has been received or sent by the local endpoint
 	 */
 	public long getSystemTimeStamp()
@@ -1092,8 +1092,8 @@ public class RTCPExtendedReport extends RTCPPacket
 	 *
 	 * @param reportBlock
 	 *        the extended report block to remove from this extended report
-	 * @return <tt>true</tt> if the list of extended report blocks carried by this extended report
-	 *         changed because of the method invocation; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if the list of extended report blocks carried by this extended report
+	 *         changed because of the method invocation; otherwise, <code>false</code>
 	 */
 	public boolean removeReportBlock(ReportBlock reportBlock)
 	{
@@ -1115,11 +1115,11 @@ public class RTCPExtendedReport extends RTCPPacket
 	}
 
 	/**
-	 * Sets the <tt>System</tt> time in milliseconds at which this <tt>RTCPExtendedReport</tt> has
+	 * Sets the <code>System</code> time in milliseconds at which this <code>RTCPExtendedReport</code> has
 	 * been received or sent by the local endpoint.
 	 *
 	 * @param systemTimeStamp
-	 *        the <tt>System</tt> time in milliseconds at which this <tt>RTCPExtendedReport</tt> has
+	 *        the <code>System</code> time in milliseconds at which this <code>RTCPExtendedReport</code> has
 	 *        been received or sent by the local endpoint
 	 */
 	public void setSystemTimeStamp(long systemTimeStamp)

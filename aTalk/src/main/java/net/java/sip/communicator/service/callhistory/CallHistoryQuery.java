@@ -20,7 +20,7 @@ import net.java.sip.communicator.service.callhistory.event.CallHistoryQueryListe
 import java.util.Collection;
 
 /**
- * The <tt>CallHistoryQuery</tt> corresponds to a query made to the <tt>CallHistoryService</tt>.
+ * The <code>CallHistoryQuery</code> corresponds to a query made to the <code>CallHistoryService</code>.
  * It allows to be canceled, to listen for changes in the results and to obtain initial results if available.
  *
  * @author Yana Stamcheva
@@ -44,7 +44,7 @@ public interface CallHistoryQuery
      * to determine, which and how many the initial results would be.
      * <p>
      * This method is meant to be used in order to return first fast initial results and then
-     * notify interested parties of additional results the <tt>CallHistoryQueryListener</tt>,
+     * notify interested parties of additional results the <code>CallHistoryQueryListener</code>,
      * which should improve user experience when waiting for results.
      *
      * @return a collection of the initial results for this query
@@ -52,16 +52,16 @@ public interface CallHistoryQuery
     public Collection<CallRecord> getCallRecords();
 
     /**
-     * Adds the given <tt>CallHistoryQueryListener</tt> to the list of listeners interested in query result changes.
+     * Adds the given <code>CallHistoryQueryListener</code> to the list of listeners interested in query result changes.
      *
-     * @param l the <tt>CallHistoryQueryListener</tt> to add
+     * @param l the <code>CallHistoryQueryListener</code> to add
      */
     public void addQueryListener(CallHistoryQueryListener l);
 
     /**
-     * Removes the given <tt>CallHistoryQueryListener</tt> from the list of listeners interested in query result changes.
+     * Removes the given <code>CallHistoryQueryListener</code> from the list of listeners interested in query result changes.
      *
-     * @param l the <tt>CallHistoryQueryListener</tt> to remove
+     * @param l the <code>CallHistoryQueryListener</code> to remove
      */
     public void removeQueryListener(CallHistoryQueryListener l);
 }

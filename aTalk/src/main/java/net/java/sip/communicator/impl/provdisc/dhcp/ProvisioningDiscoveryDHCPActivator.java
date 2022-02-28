@@ -23,7 +23,7 @@ import org.osgi.framework.*;
 import timber.log.Timber;
 
 /**
- * Implements <tt>BundleActivator</tt> for the DHCP provisioning bundle.
+ * Implements <code>BundleActivator</code> for the DHCP provisioning bundle.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
@@ -48,7 +48,7 @@ public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
     /**
      * Starts the DHCP provisioning service
      *
-     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi
+     * @param bundleContext the <code>BundleContext</code> as provided by the OSGi
      * framework.
      * @throws Exception if anything goes wrong
      */
@@ -64,7 +64,7 @@ public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
     /**
      * Stops the DHCP provisioning service.
      *
-     * @param bundleContext the <tt>BundleContext</tt> as provided by the OSGi
+     * @param bundleContext the <code>BundleContext</code> as provided by the OSGi
      * framework.
      * @throws Exception if anything goes wrong
      */

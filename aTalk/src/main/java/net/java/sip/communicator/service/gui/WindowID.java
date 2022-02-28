@@ -7,7 +7,7 @@
 package net.java.sip.communicator.service.gui;
 
 /**
- * The <tt>WindowID</tt> wraps a string which is meant to point to an
+ * The <code>WindowID</code> wraps a string which is meant to point to an
  * application dialog, like per example a "Configuration" dialog or
  * "Add contact" dialog.
  *

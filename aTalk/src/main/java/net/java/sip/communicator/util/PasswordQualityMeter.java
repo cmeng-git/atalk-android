@@ -27,7 +27,7 @@ public class PasswordQualityMeter
      * Assesses the strength of the password.
      *
      * @param pass the password to assess
-     * @return the score for this password between 0 and <tt>TOTAL_POINTS</tt>
+     * @return the score for this password between 0 and <code>TOTAL_POINTS</code>
      */
     public int assessPassword(String pass)
     {
@@ -133,7 +133,7 @@ public class PasswordQualityMeter
      *
      * @param str the string to search in
      * @param pattern the pattern to search for
-     * @return number of matches of <tt>patter</tt> in <tt>str</tt>
+     * @return number of matches of <code>patter</code> in <code>str</code>
      */
     private int countMatches(String str, String pattern)
     {
@@ -151,7 +151,7 @@ public class PasswordQualityMeter
      *
      * @param str the string to search in
      * @param pattern the pattern to search for
-     * @return true if <tt>pattern</tt> has been found in <tt>str</tt>.
+     * @return true if <code>pattern</code> has been found in <code>str</code>.
      */
     private boolean matches(String str, String pattern)
     {

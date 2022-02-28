@@ -6,7 +6,7 @@
 package org.atalk.util;
 
 /**
- * The <tt>MediaType</tt> enumeration contains a list of media types.
+ * The <code>MediaType</code> enumeration contains a list of media types.
  *
  * @see <a href="http://www.iana.org/assignments/sdp-parameters/sdp-parameters.xhtml#sdp-parameters-1">
  *     Session Description Protocol (SDP) Parameters, media</a>
@@ -63,14 +63,14 @@ public enum MediaType
     DATA("data");
 
     /**
-     * The name of this <tt>MediaType</tt>.
+     * The name of this <code>MediaType</code>.
      */
     private final String mediaTypeName;
 
     /**
-     * Creates a <tt>MediaType</tt> instance with the specified name.
+     * Creates a <code>MediaType</code> instance with the specified name.
      *
-     * @param mediaTypeName the name of the <tt>MediaType</tt> we'd like to create.
+     * @param mediaTypeName the name of the <code>MediaType</code> we'd like to create.
      */
     private MediaType(String mediaTypeName)
     {
@@ -90,12 +90,12 @@ public enum MediaType
     }
 
     /**
-     * Returns a <tt>MediaType</tt> value corresponding to the specified <tt>mediaTypeName</tt>
-     * or in other words <tt>AUDIO</tt>, <tt>MESSAGE</tt> or <tt>VIDEO</tt>.
+     * Returns a <code>MediaType</code> value corresponding to the specified <code>mediaTypeName</code>
+     * or in other words <code>AUDIO</code>, <code>MESSAGE</code> or <code>VIDEO</code>.
      *
      * @param mediaTypeName the name that we'd like to parse.
-     * @return a <tt>MediaType</tt> value corresponding to the specified <tt>mediaTypeName</tt>.
-     * @throws IllegalArgumentException in case <tt>mediaTypeName</tt> is not a valid or currently supported media type.
+     * @return a <code>MediaType</code> value corresponding to the specified <code>mediaTypeName</code>.
+     * @throws IllegalArgumentException in case <code>mediaTypeName</code> is not a valid or currently supported media type.
      */
     public static MediaType parseString(String mediaTypeName)
             throws IllegalArgumentException

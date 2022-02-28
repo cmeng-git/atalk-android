@@ -16,7 +16,7 @@ import org.osgi.framework.*;
 import timber.log.Timber;
 
 /**
- * The <tt>NotificationActivator</tt> is the activator of the notification bundle.
+ * The <code>NotificationActivator</code> is the activator of the notification bundle.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -47,9 +47,9 @@ public class NotificationWiringActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>NotificationService</tt> obtained from the bundle context.
+     * Returns the <code>NotificationService</code> obtained from the bundle context.
      *
-     * @return the <tt>NotificationService</tt> obtained from the bundle context
+     * @return the <code>NotificationService</code> obtained from the bundle context
      */
     public static NotificationService getNotificationService()
     {
@@ -57,9 +57,9 @@ public class NotificationWiringActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * Returns the <code>ResourceManagementService</code>, through which we will access all resources.
      *
-     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
     public static ResourceManagementService getResources()
     {
@@ -70,9 +70,9 @@ public class NotificationWiringActivator implements BundleActivator
     }
 
     /**
-     * Returns the current implementation of the <tt>UIService</tt>.
+     * Returns the current implementation of the <code>UIService</code>.
      *
-     * @return the current implementation of the <tt>UIService</tt>
+     * @return the current implementation of the <code>UIService</code>
      */
     public static UIService getUIService()
     {
@@ -83,9 +83,9 @@ public class NotificationWiringActivator implements BundleActivator
     }
 
     /**
-     * Returns an instance of the <tt>MediaService</tt> obtained from the bundle context.
+     * Returns an instance of the <code>MediaService</code> obtained from the bundle context.
      *
-     * @return an instance of the <tt>MediaService</tt> obtained from the bundle context
+     * @return an instance of the <code>MediaService</code> obtained from the bundle context
      */
     public static MediaService getMediaService()
     {

@@ -9,7 +9,7 @@ package org.atalk.util.dsi;
  * Represents an algorithm for the detection/identification of the active/dominant
  * speaker/participant/endpoint/stream in a multipoint conference.
  * <p>
- * Implementations of <tt>ActiveSpeakerDetector</tt> get notified about the (current) audio levels
+ * Implementations of <code>ActiveSpeakerDetector</code> get notified about the (current) audio levels
  * of multiple audio streams (identified by their synchronization source identifiers/SSRCs) via
  * calls to {@link #levelChanged(long, int)} and determine/identify which stream is dominant/active
  * (in terms of speech). When the active stream changes, listeners registered via
@@ -31,11 +31,11 @@ public interface ActiveSpeakerDetector
     public void addActiveSpeakerChangedListener(ActiveSpeakerChangedListener listener);
 
     /**
-     * Notifies this <tt>ActiveSpeakerDetector</tt> about the latest/current audio level of a
+     * Notifies this <code>ActiveSpeakerDetector</code> about the latest/current audio level of a
      * stream/speaker identified by a specific synchronization source identifier/SSRC.
      *
      * @param ssrc the SSRC of the stream/speaker
-     * @param level the latest/current audio level of the stream/speaker with the specified <tt>ssrc</tt>
+     * @param level the latest/current audio level of the stream/speaker with the specified <code>ssrc</code>
      */
     public void levelChanged(long ssrc, int level);
 

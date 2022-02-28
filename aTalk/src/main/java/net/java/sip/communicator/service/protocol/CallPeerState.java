@@ -223,11 +223,11 @@ public class CallPeerState
             aTalkApp.getResString(R.string.service_gui_REMOTELY_ON_HOLD_STATUS));
 
     /**
-     * Determines whether a specific <tt>CallPeerState</tt> value signal a call hold regardless of
+     * Determines whether a specific <code>CallPeerState</code> value signal a call hold regardless of
      * the issuer (which may be local and/or remote).
      *
-     * @param state the <tt>CallPeerState</tt> value to be checked whether it signals a call hold
-     * @return <tt>true</tt> if the specified <tt>state</tt> signals a call hold; <tt>false</tt>, otherwise
+     * @param state the <code>CallPeerState</code> value to be checked whether it signals a call hold
+     * @return <code>true</code> if the specified <code>state</code> signals a call hold; <code>false</code>, otherwise
      */
     public static boolean isOnHold(CallPeerState state)
     {

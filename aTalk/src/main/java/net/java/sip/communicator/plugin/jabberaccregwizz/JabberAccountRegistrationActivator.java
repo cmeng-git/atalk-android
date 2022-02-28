@@ -17,7 +17,7 @@ import org.osgi.framework.*;
 import java.util.Hashtable;
 
 /**
- * Registers the <tt>SIPAccountRegistrationWizard</tt> in the UI Service.
+ * Registers the <code>SIPAccountRegistrationWizard</code> in the UI Service.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -58,9 +58,9 @@ public class JabberAccountRegistrationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ProtocolProviderFactory</tt> for the Jabber protocol.
+     * Returns the <code>ProtocolProviderFactory</code> for the Jabber protocol.
      *
-     * @return the <tt>ProtocolProviderFactory</tt> for the Jabber protocol
+     * @return the <code>ProtocolProviderFactory</code> for the Jabber protocol
      */
     public static ProtocolProviderFactory getJabberProtocolProviderFactory()
     {
@@ -68,9 +68,9 @@ public class JabberAccountRegistrationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+     * Returns the <code>ConfigurationService</code> obtained from the bundle context.
      *
-     * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+     * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -82,9 +82,9 @@ public class JabberAccountRegistrationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>CertificateService</tt> obtained from the bundle context.
+     * Returns the <code>CertificateService</code> obtained from the bundle context.
      *
-     * @return the <tt>CertificateService</tt> obtained from the bundle context
+     * @return the <code>CertificateService</code> obtained from the bundle context
      */
     public static CertificateService getCertificateService()
     {

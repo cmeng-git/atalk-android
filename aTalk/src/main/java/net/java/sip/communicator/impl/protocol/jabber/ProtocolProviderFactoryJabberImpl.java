@@ -54,7 +54,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
 
     /**
      * Initializes and creates an account corresponding to the specified accountProperties and
-     * registers the resulting ProtocolProvider in the <tt>context</tt> BundleContext parameter.
+     * registers the resulting ProtocolProvider in the <code>context</code> BundleContext parameter.
      * This method has a persistent effect. Once created the resulting account will remain installed
      * until removed through the uninstall account method.
      *
@@ -104,7 +104,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
      *
      * @param userID the user ID
      * @param accountProperties the properties associated with the user ID
-     * @return new <tt>AccountID</tt>
+     * @return new <code>AccountID</code>
      */
     @Override
     protected AccountID createAccountID(String userID, Map<String, String> accountProperties)
@@ -129,7 +129,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
     /**
      * Modify an existing account.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> responsible of the account
+     * @param protocolProvider the <code>ProtocolProviderService</code> responsible of the account
      * @param accountProperties modified properties to be set
      */
     @Override

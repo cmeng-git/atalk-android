@@ -29,7 +29,7 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * The <tt>AndroidUtils</tt> class provides a set of utility methods allowing an easy way to show
+ * The <code>AndroidUtils</code> class provides a set of utility methods allowing an easy way to show
  * an alert dialog on android, show a general notification, etc.
  *
  * @author Yana Stamcheva
@@ -55,7 +55,7 @@ public class AndroidUtils
     /**
      * Clears the general notification.
      *
-     * @param appContext the <tt>Context</tt> that will be used to create new activity from notification <tt>Intent</tt>.
+     * @param appContext the <code>Context</code> that will be used to create new activity from notification <code>Intent</code>.
      */
     public static void clearGeneralNotification(Context appContext)
     {
@@ -70,10 +70,10 @@ public class AndroidUtils
     }
 
     /**
-     * Shows an alert dialog for the given context and a title given by <tt>titleId</tt> and
-     * message given by <tt>messageId</tt>.
+     * Shows an alert dialog for the given context and a title given by <code>titleId</code> and
+     * message given by <code>messageId</code>.
      *
-     * @param context the android <tt>Context</tt>
+     * @param context the android <code>Context</code>
      * @param notificationID the identifier of the notification to update
      * @param title the title of the message
      * @param message the message
@@ -118,11 +118,11 @@ public class AndroidUtils
     }
 
     /**
-     * Indicates if the service given by <tt>activityClass</tt> is currently running.
+     * Indicates if the service given by <code>activityClass</code> is currently running.
      *
      * @param context the Android context
      * @param activityClass the activity class to check
-     * @return <tt>true</tt> if the activity given by the class is running, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the activity given by the class is running, <code>false</code> - otherwise
      */
     public static boolean isActivityRunning(Context context, Class<?> activityClass)
     {
@@ -165,9 +165,9 @@ public class AndroidUtils
     }
 
     /**
-     * Returns <tt>true</tt> if we are currently running on tablet device.
+     * Returns <code>true</code> if we are currently running on tablet device.
      *
-     * @return <tt>true</tt> if we are currently running on tablet device.
+     * @return <code>true</code> if we are currently running on tablet device.
      */
     public static boolean isTablet()
     {
@@ -178,10 +178,10 @@ public class AndroidUtils
     }
 
     /**
-     * Returns <tt>true</tt> if this device supports at least given API level.
+     * Returns <code>true</code> if this device supports at least given API level.
      *
      * @param minApiLevel API level value to check
-     * @return <tt>true</tt> if this device supports at least given API level.
+     * @return <code>true</code> if this device supports at least given API level.
      */
     public static boolean hasAPI(int minApiLevel)
     {
@@ -189,9 +189,9 @@ public class AndroidUtils
     }
 
     /**
-     * Returns <tt>true</tt> if current <tt>Thread</tt> is UI thread.
+     * Returns <code>true</code> if current <code>Thread</code> is UI thread.
      *
-     * @return <tt>true</tt> if current <tt>Thread</tt> is UI thread.
+     * @return <code>true</code> if current <code>Thread</code> is UI thread.
      */
     public static boolean isUIThread()
     {

@@ -12,7 +12,7 @@ import net.java.sip.communicator.service.gui.AlertUIService;
 import org.atalk.android.gui.dialogs.DialogActivity;
 
 /**
- * The <tt>AlertUIServiceImpl</tt> provides an android implementation of the <tt>AlertUIService</tt>.
+ * The <code>AlertUIServiceImpl</code> provides an android implementation of the <code>AlertUIService</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -22,7 +22,7 @@ public class AlertUIServiceImpl implements AlertUIService
     private final Context androidContext;
 
     /**
-     * Creates an instance of <tt>AlertUIServiceImpl</tt>.
+     * Creates an instance of <code>AlertUIServiceImpl</code>.
      *
      * @param androidContext the android application context.
      */

@@ -9,7 +9,7 @@ package net.java.sip.communicator.service.gui.call;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>CallRenderer</tt> represents a renderer for a call. All user
+ * The <code>CallRenderer</code> represents a renderer for a call. All user
  * interfaces representing a call should implement this interface.
  *
  * @author Yana Stamcheva
@@ -20,17 +20,17 @@ public interface CallRenderer
     /**
      * Releases the resources acquired by this instance which require explicit
      * disposal (e.g. any listeners added to the depicted
-     * <tt>CallConference</tt>, the participating <tt>Call</tt>s, and their
-     * associated <tt>CallPeer</tt>s). Invoked by <tt>CallPanel</tt> when it
-     * determines that this <tt>CallRenderer</tt> is no longer necessary.
+     * <code>CallConference</code>, the participating <code>Call</code>s, and their
+     * associated <code>CallPeer</code>s). Invoked by <code>CallPanel</code> when it
+     * determines that this <code>CallRenderer</code> is no longer necessary.
      */
     void dispose();
 
     /**
-     * Returns the <tt>CallPeerRenderer</tt> corresponding to the given <tt>callPeer</tt>.
+     * Returns the <code>CallPeerRenderer</code> corresponding to the given <code>callPeer</code>.
      *
-     * @param callPeer the <tt>CallPeer</tt>, for which we're looking for a renderer
-     * @return the <tt>CallPeerRenderer</tt> corresponding to the given <tt>callPeer</tt>
+     * @param callPeer the <code>CallPeer</code>, for which we're looking for a renderer
+     * @return the <code>CallPeerRenderer</code> corresponding to the given <code>callPeer</code>
      */
     CallPeerRenderer getCallPeerRenderer(CallPeer callPeer);
 

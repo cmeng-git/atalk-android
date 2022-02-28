@@ -61,7 +61,7 @@ public class NetworkUtils
     private final static int IN6_ADDR_SIZE = 16;
 
     /**
-     * The size of the tokens in a <tt>String</tt> representation of IPv6
+     * The size of the tokens in a <code>String</code> representation of IPv6
      * addresses.
      */
     private final static int IN6_ADDR_TOKEN_SIZE = 2;
@@ -174,10 +174,10 @@ public class NetworkUtils
 
     /**
      * Returns array of SRV Record for the specified (service, proto and domain).
-     * or <tt>null</tt> if the specified domain is of unknown host or there are no SRV records for <tt>domain</tt>.
+     * or <code>null</code> if the specified domain is of unknown host or there are no SRV records for <code>domain</code>.
      *
      * @param service the service that we are trying to get a record for e.g. xmpp.
-     * @param proto the protocol that we'd like <tt>service</tt> on i.e. tcp or udp.
+     * @param proto the protocol that we'd like <code>service</code> on i.e. tcp or udp.
      * @param domain the name of the domain we'd like to resolve i.e. example.org.
      * @return an array of SRV containing records returned by the DNS server - address and port .
      * @throws IOException if an IO error occurs.
@@ -198,7 +198,7 @@ public class NetworkUtils
     /**
      * Not use : not implemented by miniDNS
      * Makes a NAPTR query and returns the result. The returned records are an array of [Order, Service(Transport)
-     * and Replacement (the srv to query for servers and ports)] this all for supplied <tt>domain</tt>.
+     * and Replacement (the srv to query for servers and ports)] this all for supplied <code>domain</code>.
      *
      * @param domain the name of the domain we'd like to resolve.
      * @return an array with the values or null if no records found.
@@ -305,17 +305,17 @@ public class NetworkUtils
     }
 
     /**
-     * Creates an InetAddress from the specified <tt>hostAddress</tt>. The point of using the method rather than
-     * creating the address by yourself is that it would first check whether the specified <tt>hostAddress</tt>
-     * is indeed a valid ip address. It this is the case, the method would create the <tt>InetAddress</tt> using
-     * the <tt>InetAddress.getByAddress()</tt> method so that no DNS resolution is attempted by the JRE. Otherwise
-     * it would simply use <tt>InetAddress.getByName()</tt> so that we would an <tt>InetAddress</tt> instance
+     * Creates an InetAddress from the specified <code>hostAddress</code>. The point of using the method rather than
+     * creating the address by yourself is that it would first check whether the specified <code>hostAddress</code>
+     * is indeed a valid ip address. It this is the case, the method would create the <code>InetAddress</code> using
+     * the <code>InetAddress.getByAddress()</code> method so that no DNS resolution is attempted by the JRE. Otherwise
+     * it would simply use <code>InetAddress.getByName()</code> so that we would an <code>InetAddress</code> instance
      * even at the cost of a potential DNS resolution.
      *
-     * @param hostAddress the <tt>String</tt> representation of the address
-     * that we would like to create an <tt>InetAddress</tt> instance for.
-     * @return an <tt>InetAddress</tt> instance corresponding to the specified <tt>hostAddress</tt>.
-     * @throws UnknownHostException if any of the <tt>InetAddress</tt> methods we are using throw an exception.
+     * @param hostAddress the <code>String</code> representation of the address
+     * that we would like to create an <code>InetAddress</code> instance for.
+     * @return an <code>InetAddress</code> instance corresponding to the specified <code>hostAddress</code>.
+     * @throws UnknownHostException if any of the <code>InetAddress</code> methods we are using throw an exception.
      * @throws IllegalArgumentException if the given hostAddress is not an ip4 or ip6 address.
      */
     public static InetAddress getInetAddress(String hostAddress)
@@ -352,7 +352,7 @@ public class NetworkUtils
      * ordered against the IPv4/IPv6 protocol priority
      *
      * @param domain the name of the domain we'd like to resolve.
-     * @param port the port number of the returned <tt>InetSocketAddress</tt>
+     * @param port the port number of the returned <code>InetSocketAddress</code>
      * @return an array of InetSocketAddress containing records returned by the DNS server - address and port .
      * @throws UnknownHostException if IP address is of illegal length
      * @throws IOException if an IO error occurs.
@@ -411,7 +411,7 @@ public class NetworkUtils
      * The records are ordered against the A record priority
      *
      * @param domain the name of the domain we'd like to resolve.
-     * @param port the port number of the returned <tt>InetSocketAddress</tt>
+     * @param port the port number of the returned <code>InetSocketAddress</code>
      * @return an array of InetSocketAddress containing records returned by the DNS server - address and port .
      */
     public static List<InetSocketAddress> getARecords(String domain, int port)
@@ -444,7 +444,7 @@ public class NetworkUtils
      * The records are ordered against the AAAA record priority
      *
      * @param domain the name of the domain we'd like to resolve.
-     * @param port the port number of the returned <tt>InetSocketAddress</tt>
+     * @param port the port number of the returned <code>InetSocketAddress</code>
      * @return an array of InetSocketAddress containing records returned by the DNS server - address and port .
      * @throws IOException if an IO error occurs.
      */
@@ -507,7 +507,7 @@ public class NetworkUtils
     }
 
     /**
-     * Checks whether <tt>address</tt> is a valid IP address string.
+     * Checks whether <code>address</code> is a valid IP address string.
      *
      * @param address the address that we'd like to check
      * @return true if address is an IPv4 or IPv6 address and false otherwise.
@@ -551,11 +551,11 @@ public class NetworkUtils
     }
 
     /**
-     * Determines whether <tt>port</tt> is a valid port number bindable by an
+     * Determines whether <code>port</code> is a valid port number bindable by an
      * application (i.e. an integer between 1024 and 65535).
      *
      * @param port the port number that we'd like verified.
-     * @return <tt>true</tt> if port is a valid and bindable port number and <tt>alse</tt> otherwise.
+     * @return <code>true</code> if port is a valid and bindable port number and <code>alse</code> otherwise.
      */
     public static boolean isValidPortNumber(int port)
     {
@@ -564,7 +564,7 @@ public class NetworkUtils
 
     /**
      * Returns an IPv4 address matching the one mapped in the IPv6
-     * <tt>addr</tt>. Both input and returned value are in network order.
+     * <code>addr</code>. Both input and returned value are in network order.
      *
      * @param addr a String representing an IPv4-Mapped address in textual format
      * @return a byte array numerically representing the IPv4 address
@@ -580,10 +580,10 @@ public class NetworkUtils
     }
 
     /**
-     * Utility method to check if the specified <tt>address</tt> is an IPv4 mapped IPv6 address.
+     * Utility method to check if the specified <code>address</code> is an IPv4 mapped IPv6 address.
      *
      * @param address the address that we'd like to determine as an IPv4 mapped one or not.
-     * @return <tt>true</tt> if address is an IPv4 mapped IPv6 address and <tt>false</tt> otherwise.
+     * @return <code>true</code> if address is an IPv4 mapped IPv6 address and <code>false</code> otherwise.
      */
     private static boolean isMappedIPv4Addr(byte[] address)
     {

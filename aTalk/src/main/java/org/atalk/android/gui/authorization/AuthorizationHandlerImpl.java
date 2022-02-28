@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Android implementation of <tt>AuthorizationHandler</tt>.
+ * Android implementation of <code>AuthorizationHandler</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -30,12 +30,12 @@ import java.util.Map;
 public class AuthorizationHandlerImpl implements AuthorizationHandler
 {
     /**
-     * The map of currently active <tt>AuthorizationRequestedHolder</tt>s.
+     * The map of currently active <code>AuthorizationRequestedHolder</code>s.
      */
     private static Map<Long, AuthorizationRequestedHolder> requestMap = new HashMap<>();
 
     /**
-     * Creates new instance of <tt>AuthorizationHandlerImpl</tt>.
+     * Creates new instance of <code>AuthorizationHandlerImpl</code>.
      */
     public AuthorizationHandlerImpl()
     {
@@ -44,10 +44,10 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
     }
 
     /**
-     * Returns the <tt>AuthorizationRequestedHolder</tt> for given request <tt>id</tt>.
+     * Returns the <code>AuthorizationRequestedHolder</code> for given request <code>id</code>.
      *
      * @param id the request identifier.
-     * @return the <tt>AuthorizationRequestedHolder</tt> for given request <tt>id</tt>.
+     * @return the <code>AuthorizationRequestedHolder</code> for given request <code>id</code>.
      */
     public static AuthorizationRequestedHolder getRequest(Long id)
     {
@@ -55,7 +55,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
     }
 
     /**
-     * Implements the <tt>AuthorizationHandler.processAuthorisationRequest</tt> method.
+     * Implements the <code>AuthorizationHandler.processAuthorisationRequest</code> method.
      *
      * Called by the protocol provider whenever someone would like to add us to their contact list.
      */
@@ -74,7 +74,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
     }
 
     /**
-     * Implements the <tt>AuthorizationHandler.createAuthorizationRequest</tt> method.
+     * Implements the <code>AuthorizationHandler.createAuthorizationRequest</code> method.
      *
      * The method is called when the user has tried to add a contact to the contact list and this
      * contact requires authorization.
@@ -101,7 +101,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
     }
 
     /**
-     * Implements the <tt>AuthorizationHandler.processAuthorizationResponse</tt> method.
+     * Implements the <code>AuthorizationHandler.processAuthorizationResponse</code> method.
      *
      * The method will be called whenever someone acts upon an authorization request that we
      * have previously sent.
@@ -130,8 +130,8 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
     }
 
     /**
-     * Class used to store request state and communicate between this <tt>AuthorizationHandlerImpl
-     * </tt> and dialog activities.
+     * Class used to store request state and communicate between this <code>AuthorizationHandlerImpl
+     * </code> and dialog activities.
      */
     static public class AuthorizationRequestedHolder
     {
@@ -157,7 +157,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
         public AuthorizationResponse.AuthorizationResponseCode responseCode;
 
         /**
-         * Creates new instance of <tt>AuthorizationRequestedHolder</tt>.
+         * Creates new instance of <code>AuthorizationRequestedHolder</code>.
          *
          * @param ID identifier assigned for the request
          * @param request the authorization request

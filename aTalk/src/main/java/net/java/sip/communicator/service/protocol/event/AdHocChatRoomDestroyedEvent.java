@@ -28,18 +28,18 @@ public class AdHocChatRoomDestroyedEvent
 	private AdHocChatRoom adHocChatRoom;
 
 	/**
-	 * The <tt>Contact</tt> who created the ad-hoc room.
+	 * The <code>Contact</code> who created the ad-hoc room.
 	 */
 	private Contact by;
 
 	/**
-	 * Initializes an <tt>AdHocChatRoomDestroyedEvent</tt> with the creator (<tt> by</tt>) and the
-	 * ad-hoc room <tt>adHocChatRoom</tt>.
+	 * Initializes an <code>AdHocChatRoomDestroyedEvent</code> with the creator (<code> by</code>) and the
+	 * ad-hoc room <code>adHocChatRoom</code>.
 	 *
 	 * @param adHocChatRoom
-	 *        the <tt>AdHocChatRoom</tt>
+	 *        the <code>AdHocChatRoom</code>
 	 * @param by
-	 *        the <tt>Contact</tt> who created this ad-hoc room
+	 *        the <code>Contact</code> who created this ad-hoc room
 	 */
 	public AdHocChatRoomDestroyedEvent(AdHocChatRoom adHocChatRoom, Contact by)
 	{
@@ -48,9 +48,9 @@ public class AdHocChatRoomDestroyedEvent
 	}
 
 	/**
-	 * Returns the <tt>Contact</tt> who created the room.
+	 * Returns the <code>Contact</code> who created the room.
 	 *
-	 * @return <tt>Contact</tt>
+	 * @return <code>Contact</code>
 	 */
 	public Contact getBy()
 	{
@@ -60,7 +60,7 @@ public class AdHocChatRoomDestroyedEvent
 	/**
 	 * Returns the ad-hoc room concerned by this event.
 	 *
-	 * @return <tt>AdHocChatRoom</tt>
+	 * @return <code>AdHocChatRoom</code>
 	 */
 	public AdHocChatRoom getAdHocDestroyedRoom()
 	{

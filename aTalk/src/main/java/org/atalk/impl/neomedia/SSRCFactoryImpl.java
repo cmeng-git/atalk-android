@@ -12,7 +12,7 @@ import org.atalk.service.neomedia.SSRCFactory;
 import java.util.*;
 
 /**
- * An <tt>SSRCFactory</tt> implementation which allows the first generated SSRC to be set by the
+ * An <code>SSRCFactory</code> implementation which allows the first generated SSRC to be set by the
  * user.
  *
  * @author Lyubomir Marinov
@@ -24,7 +24,7 @@ public class SSRCFactoryImpl implements SSRCFactory
 	private long initialLocalSSRC = -1;
 
 	/**
-	 * The <tt>Random</tt> instance used by this <tt>SSRCFactory</tt> to generate new
+	 * The <code>Random</code> instance used by this <code>SSRCFactory</code> to generate new
 	 * synchronization source (SSRC) identifiers.
 	 */
 	private final Random random = new Random();

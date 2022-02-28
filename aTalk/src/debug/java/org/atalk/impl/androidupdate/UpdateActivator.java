@@ -20,12 +20,12 @@ import org.osgi.framework.BundleContext;
 public class UpdateActivator extends SimpleServiceActivator<UpdateService>
 {
     /**
-     * <tt>BundleContext</tt> instance.
+     * <code>BundleContext</code> instance.
      */
     static BundleContext bundleContext;
 
     /**
-     * Creates new instance of <tt>UpdateActivator</tt>.
+     * Creates new instance of <code>UpdateActivator</code>.
      */
     public UpdateActivator()
     {
@@ -33,9 +33,9 @@ public class UpdateActivator extends SimpleServiceActivator<UpdateService>
     }
 
     /**
-     * Gets the <tt>ConfigurationService</tt> using current <tt>BundleContext</tt>.
+     * Gets the <code>ConfigurationService</code> using current <code>BundleContext</code>.
      *
-     * @return the <tt>ConfigurationService</tt>
+     * @return the <code>ConfigurationService</code>
      */
     public static ConfigurationService getConfiguration()
     {

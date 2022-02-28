@@ -53,7 +53,7 @@ import de.cketti.library.changelog.ChangeLog;
 import timber.log.Timber;
 
 /**
- * The main <tt>Activity</tt> for aTalk application with pager slider for both contact and chatRoom list windows.
+ * The main <code>Activity</code> for aTalk application with pager slider for both contact and chatRoom list windows.
  *
  * @author Eng Chong Meng
  */
@@ -152,9 +152,9 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     /**
-     * Called when new <tt>Intent</tt> is received(this <tt>Activity</tt> is launched in <tt>singleTask</tt> mode.
+     * Called when new <code>Intent</code> is received(this <code>Activity</code> is launched in <code>singleTask</code> mode.
      *
-     * @param intent new <tt>Intent</tt> data.
+     * @param intent new <code>Intent</code> data.
      */
     @Override
     protected void onNewIntent(Intent intent)
@@ -164,10 +164,10 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     /**
-     * Decides what should be displayed based on supplied <tt>Intent</tt> and instance state.
+     * Decides what should be displayed based on supplied <code>Intent</code> and instance state.
      *
-     * @param intent <tt>Activity</tt> <tt>Intent</tt>.
-     * @param instanceState <tt>Activity</tt> instance state.
+     * @param intent <code>Activity</code> <code>Intent</code>.
+     * @param instanceState <code>Activity</code> instance state.
      */
     private void handleIntent(Intent intent, Bundle instanceState)
     {

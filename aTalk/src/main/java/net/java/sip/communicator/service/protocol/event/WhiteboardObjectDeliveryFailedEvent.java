@@ -19,7 +19,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.whiteboardobjects.*;
 
 /**
- * <tt>WhiteboardObjectDeliveredEvent</tt>s are used to report that delivery of a whiteboardObject
+ * <code>WhiteboardObjectDeliveredEvent</code>s are used to report that delivery of a whiteboardObject
  * has failed.
  *
  * @author Julien Waechter
@@ -79,15 +79,15 @@ public class WhiteboardObjectDeliveryFailedEvent extends EventObject
 	private WhiteboardObject obj = null;
 
 	/**
-	 * Creates a <tt>WhiteboardObjectDeliveryFailedEvent</tt> indicating failure of delivery of the
-	 * <tt>obj</tt> WhiteboardObject to the specified <tt>to</tt> contact.
+	 * Creates a <code>WhiteboardObjectDeliveryFailedEvent</code> indicating failure of delivery of the
+	 * <code>obj</code> WhiteboardObject to the specified <code>to</code> contact.
 	 *
 	 * @param source
-	 *        the <tt>WhiteboardSession</tt> where the failure has occcurred.
+	 *        the <code>WhiteboardSession</code> where the failure has occcurred.
 	 * @param obj
-	 *        the <tt>WhiteboardObject</tt> the white-board object.
+	 *        the <code>WhiteboardObject</code> the white-board object.
 	 * @param to
-	 *        the <tt>Contact</tt> that this WhiteboardObject was sent to.
+	 *        the <code>Contact</code> that this WhiteboardObject was sent to.
 	 * @param errorCode
 	 *        an errorCode indicating the reason for the failure.
 	 * @param timestamp
@@ -104,10 +104,10 @@ public class WhiteboardObjectDeliveryFailedEvent extends EventObject
 	}
 
 	/**
-	 * Returns a reference to the <tt>Contact</tt> that the source (failed)
-	 * <tt>WhiteboardObject</tt> was sent to.
+	 * Returns a reference to the <code>Contact</code> that the source (failed)
+	 * <code>WhiteboardObject</code> was sent to.
 	 *
-	 * @return a reference to the <tt>Contact</tt> that the source failed <tt>WhiteboardObject</tt>
+	 * @return a reference to the <code>Contact</code> that the source failed <code>WhiteboardObject</code>
 	 *         was sent to.
 	 */
 	public Contact getDestinationContact()
@@ -141,7 +141,7 @@ public class WhiteboardObjectDeliveryFailedEvent extends EventObject
 	/**
 	 * Returns the WhiteboardObject that triggered this event
 	 *
-	 * @return the <tt>WhiteboardObject</tt> that triggered this event.
+	 * @return the <code>WhiteboardObject</code> that triggered this event.
 	 */
 	public WhiteboardObject getSourceWhiteboardObject()
 	{

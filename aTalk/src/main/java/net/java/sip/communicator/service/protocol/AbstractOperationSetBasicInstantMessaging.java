@@ -29,7 +29,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * Registers a MessageListener with this operation set so that it gets notifications of
      * successful message delivery, failure or reception of incoming messages..
      *
-     * @param listener the <tt>MessageListener</tt> to register.
+     * @param listener the <code>MessageListener</code> to register.
      */
     public void addMessageListener(MessageListener listener)
     {
@@ -41,10 +41,10 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     }
 
     /**
-     * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon
+     * Unregisters <code>listener</code> so that it won't receive any further notifications upon
      * successful message delivery, failure or reception of incoming messages..
      *
-     * @param listener the <tt>MessageListener</tt> to unregister.
+     * @param listener the <code>MessageListener</code> to unregister.
      */
     public void removeMessageListener(MessageListener listener)
     {
@@ -57,8 +57,8 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
-     * @param encType the MIME-type for <tt>content</tt>
-     * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
+     * @param encType the MIME-type for <code>content</code>
+     * @param subject a <code>String</code> subject or <code>null</code> for now subject.
      * @return the newly created message.
      */
     public IMessage createMessage(byte[] content, int encType, String subject)
@@ -88,7 +88,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * message to have the same UID as the message before correction.
      *
      * @param messageText the string content of the message.
-     * @param encType the mime and encryption type for the <tt>content</tt>
+     * @param encType the mime and encryption type for the <code>content</code>
      * @param messageUID the unique identifier of this message.
      * @return IMessage the newly created message
      */
@@ -105,7 +105,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     /**
      * Delivers the specified event to all registered message listeners.
      *
-     * @param evt the <tt>EventObject</tt> that we'd like delivered to all registered message listeners.
+     * @param evt the <code>EventObject</code> that we'd like delivered to all registered message listeners.
      */
     protected void fireMessageEvent(EventObject evt)
     {
@@ -273,7 +273,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param mimeType the mime type we want to check
      * @param contact contact which is checked for supported encType
-     * @return <tt>true</tt> if the contact supports it and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the contact supports it and <code>false</code> otherwise.
      */
     public boolean isContentTypeSupported(int mimeType, Contact contact)
     {
@@ -282,12 +282,12 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
     }
 
     /**
-     * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt>. Provides a
+     * Sends the <code>message</code> to the destination indicated by the <code>to</code>. Provides a
      * default implementation of this method.
      *
-     * @param to the <tt>Contact</tt> to send <tt>message</tt> to
+     * @param to the <code>Contact</code> to send <code>message</code> to
      * @param toResource the resource to which the message should be send
-     * @param message the <tt>IMessage</tt> to send.
+     * @param message the <code>IMessage</code> to send.
      */
     public void sendInstantMessage(Contact to, ContactResource toResource, IMessage message)
     {

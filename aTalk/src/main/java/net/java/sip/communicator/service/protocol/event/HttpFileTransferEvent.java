@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * The <tt>HttpFileTransferEvent</tt> indicates the creation of a file transfer.
+ * The <code>HttpFileTransferEvent</code> indicates the creation of a file transfer.
  *
  * @author Eng Chong Meng
  */
@@ -39,9 +39,9 @@ public class HttpFileTransferEvent extends FileTransferCreatedEvent
     private final Date timestamp;
 
     /**
-     * Creates a <tt>FileTransferCreatedEvent</tt> representing creation of a file transfer.
+     * Creates a <code>FileTransferCreatedEvent</code> representing creation of a file transfer.
      *
-     * @param fileTransfer the <tt>FileTransfer</tt> whose creation this event represents.
+     * @param fileTransfer the <code>FileTransfer</code> whose creation this event represents.
      * @param timestamp the timestamp indicating the exact date when the event occurred
      */
     public HttpFileTransferEvent(FileTransfer fileTransfer, Date timestamp)
@@ -53,7 +53,7 @@ public class HttpFileTransferEvent extends FileTransferCreatedEvent
     /**
      * Returns the file transfer that triggered this event.
      *
-     * @return the <tt>FileTransfer</tt> that triggered this event.
+     * @return the <code>FileTransfer</code> that triggered this event.
      */
     public FileTransfer getFileTransfer()
     {

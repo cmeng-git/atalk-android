@@ -23,9 +23,9 @@ import java.util.TimerTask;
 import timber.log.Timber;
 
 /**
- * The fragment is a controller which hides the given <tt>View</tt> after specified delay interval. To reset
- * and prevent from hiding for another period of call <tt>show</tt> method. This method will also instantly
- * display controlled <tt>View</tt> if it's currently hidden.
+ * The fragment is a controller which hides the given <code>View</code> after specified delay interval. To reset
+ * and prevent from hiding for another period of call <code>show</code> method. This method will also instantly
+ * display controlled <code>View</code> if it's currently hidden.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -33,12 +33,12 @@ import timber.log.Timber;
 public class AutoHideController extends OSGiFragment implements Animation.AnimationListener
 {
     /**
-     * Argument key for the identifier of <tt>View</tt> that will be auto hidden. It must exist in the parent
-     * <tt>Activity</tt> view hierarchy.
+     * Argument key for the identifier of <code>View</code> that will be auto hidden. It must exist in the parent
+     * <code>Activity</code> view hierarchy.
      */
     private static final String ARG_VIEW_ID = "view_id";
     /**
-     * Argument key for the delay interval, before the <tt>View</tt> will be hidden
+     * Argument key for the delay interval, before the <code>View</code> will be hidden
      */
     private static final String ARG_HIDE_TIMEOUT = "hide_timeout";
 
@@ -50,7 +50,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     private Animation outAnimation;
 
     /**
-     * Controlled <tt>View</tt>
+     * Controlled <code>View</code>
      */
     private View view;
 
@@ -60,7 +60,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     private Timer autoHideTimer;
 
     /**
-     * Hide <tt>View</tt> timeout
+     * Hide <code>View</code> timeout
      */
     private long hideTimeout;
 
@@ -141,7 +141,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     }
 
     /**
-     * Hides controlled <tt>View</tt>
+     * Hides controlled <code>View</code>
      */
     public void hide()
     {
@@ -155,7 +155,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     }
 
     /**
-     * Shows controlled <tt>View</tt> and/or resets hide delay timer.
+     * Shows controlled <code>View</code> and/or resets hide delay timer.
      */
     public void show()
     {
@@ -178,9 +178,9 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     }
 
     /**
-     * Returns <tt>true</tt> if controlled <tt>View</tt> is currently visible.
+     * Returns <code>true</code> if controlled <code>View</code> is currently visible.
      *
-     * @return <tt>true</tt> if controlled <tt>View</tt> is currently visible.
+     * @return <code>true</code> if controlled <code>View</code> is currently visible.
      */
     private boolean isViewVisible()
     {
@@ -225,7 +225,7 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
     }
 
     /**
-     * Hide <tt>View</tt> timer task class.
+     * Hide <code>View</code> timer task class.
      */
     class AutoHideTask extends TimerTask
     {
@@ -238,25 +238,25 @@ public class AutoHideController extends OSGiFragment implements Animation.Animat
 
     /**
      * Interface which can be used for listening to controlled view visibility state changes. Must be implemented by
-     * the parent <tt>Activity</tt>, which will be registered as a listener when this fragment is created.
+     * the parent <code>Activity</code>, which will be registered as a listener when this fragment is created.
      */
     public interface AutoHideListener
     {
         /**
-         * Fired when controlled <tt>View</tt> visibility is changed by this controller.
+         * Fired when controlled <code>View</code> visibility is changed by this controller.
          *
-         * @param source the source <tt>AutoHideController</tt> of the event.
-         * @param visibility controlled <tt>View</tt> visibility state.
+         * @param source the source <code>AutoHideController</code> of the event.
+         * @param visibility controlled <code>View</code> visibility state.
          */
         void onAutoHideStateChanged(AutoHideController source, int visibility);
     }
 
     /**
-     * Creates new parametrized instance of <tt>AutoHideController</tt>.
+     * Creates new parametrized instance of <code>AutoHideController</code>.
      *
-     * @param viewId identifier of the <tt>View</tt> that will be auto hidden
+     * @param viewId identifier of the <code>View</code> that will be auto hidden
      * @param hideTimeout auto hide delay in ms
-     * @return new parametrized instance of <tt>AutoHideController</tt>.
+     * @return new parametrized instance of <code>AutoHideController</code>.
      */
     public static AutoHideController getInstance(int viewId, long hideTimeout)
     {

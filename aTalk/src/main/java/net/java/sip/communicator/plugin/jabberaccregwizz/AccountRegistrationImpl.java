@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import timber.log.Timber;
 
 /**
- * The <tt>AccountRegistrationImpl</tt> is an implementation of the <tt>AccountRegistrationWizard</tt> for the
+ * The <code>AccountRegistrationImpl</code> is an implementation of the <code>AccountRegistrationWizard</code> for the
  * Jabber protocol. It should allow the user to create and configure a new Jabber account.
  *
  * The method signin() is also called from JabberPreferenceFragment#doCommitChanges, with isModification set to true
@@ -59,7 +59,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      * @param userName the account user name
      * @param password the password
      * @param accountProperties additional account parameters for setting up new account/modify e.g. server and port
-     * @return the <tt>ProtocolProviderService</tt> corresponding to the newly created account.
+     * @return the <code>ProtocolProviderService</code> corresponding to the newly created account.
      * @throws OperationFailedException problem signing in.
      */
     public ProtocolProviderService signin(String userName, String password, Map<String, String> accountProperties)
@@ -79,7 +79,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
      * @param userName the user identifier
      * @param password the password
      * @param accountProperties additional account parameters for setting up new account/modify e.g. server and port
-     * @return the <tt>ProtocolProviderService</tt> for the new account.
+     * @return the <code>ProtocolProviderService</code> for the new account.
      * @throws OperationFailedException if the operation didn't succeed
      */
     protected ProtocolProviderService installAccount(ProtocolProviderFactory providerFactory,
@@ -159,7 +159,7 @@ public class AccountRegistrationImpl extends AccountRegistrationWizard
     /**
      * Indicates if this wizard is for the preferred protocol. Currently on support XMPP, so always true
      *
-     * @return <tt>true</tt> if this wizard corresponds to the preferred protocol, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if this wizard corresponds to the preferred protocol, otherwise returns <code>false</code>
      */
     public boolean isPreferredProtocol()
     {

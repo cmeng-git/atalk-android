@@ -18,9 +18,9 @@ package net.java.sip.communicator.service.contactsource;
 import java.util.*;
 
 /**
- * The <tt>ContactReceivedEvent</tt> indicates that a
- * <tt>SourceContact</tt> has been received as a result of a
- * <tt>ContactQuery</tt>.
+ * The <code>ContactReceivedEvent</code> indicates that a
+ * <code>SourceContact</code> has been received as a result of a
+ * <code>ContactQuery</code>.
  * @author Yana Stamcheva
  */
 public class ContactReceivedEvent
@@ -42,8 +42,8 @@ public class ContactReceivedEvent
     private final boolean showMoreEnabled;
 
     /**
-     * Creates a <tt>ContactReceivedEvent</tt> by specifying the contact search
-     * source and the received <tt>searchContact</tt>.
+     * Creates a <code>ContactReceivedEvent</code> by specifying the contact search
+     * source and the received <code>searchContact</code>.
      * @param source the source that triggered this event
      * @param contact the received contact
      */
@@ -58,8 +58,8 @@ public class ContactReceivedEvent
     }
     
     /**
-     * Creates a <tt>ContactReceivedEvent</tt> by specifying the contact search
-     * source and the received <tt>searchContact</tt>.
+     * Creates a <code>ContactReceivedEvent</code> by specifying the contact search
+     * source and the received <code>searchContact</code>.
      * @param source the source that triggered this event
      * @param contact the received contact
      * @param showMoreEnabled indicates whether show more label should be shown 
@@ -77,8 +77,8 @@ public class ContactReceivedEvent
     }
 
     /**
-     * Returns the <tt>ContactQuery</tt> that triggered this event.
-     * @return the <tt>ContactQuery</tt> that triggered this event
+     * Returns the <code>ContactQuery</code> that triggered this event.
+     * @return the <code>ContactQuery</code> that triggered this event
      */
     public ContactQuery getQuerySource()
     {
@@ -95,10 +95,10 @@ public class ContactReceivedEvent
     }
     
     /**
-     * Returns <tt>true</tt> if show more label should be shown and 
-     * <tt>false</tt> if not.
-     * @return <tt>true</tt> if show more label should be shown and 
-     * <tt>false</tt> if not.
+     * Returns <code>true</code> if show more label should be shown and
+     * <code>false</code> if not.
+     * @return <code>true</code> if show more label should be shown and
+     * <code>false</code> if not.
      */
     public boolean isShowMoreEnabled()
     {

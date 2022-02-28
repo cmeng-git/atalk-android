@@ -18,12 +18,12 @@ import org.osgi.framework.BundleContext;
 public class VersionActivator extends SimpleServiceActivator<VersionService>
 {
     /**
-     * <tt>BundleContext</tt> instance.
+     * <code>BundleContext</code> instance.
      */
     public static BundleContext bundleContext;
 
     /**
-     * Creates a new instance of <tt>VersionActivator</tt>.
+     * Creates a new instance of <code>VersionActivator</code>.
      */
     public VersionActivator()
     {

@@ -70,7 +70,7 @@ public class ChatRoomDestroyDialog extends OSGiFragment
     /**
      * Create chatRoom destroy dialog
      *
-     * @param context the parent <tt>Context</tt>
+     * @param context the parent <code>Context</code>
      * @param chatRoomWrapper chatRoom wrapper
      * @param cPanel the chatPanel to send message
      */
@@ -92,7 +92,7 @@ public class ChatRoomDestroyDialog extends OSGiFragment
     }
 
     /**
-     * Implements <tt>DialogActivity.DialogListener</tt> interface and handles refresh stores process.
+     * Implements <code>DialogActivity.DialogListener</code> interface and handles refresh stores process.
      */
     public class DialogListenerImpl implements DialogActivity.DialogListener
     {

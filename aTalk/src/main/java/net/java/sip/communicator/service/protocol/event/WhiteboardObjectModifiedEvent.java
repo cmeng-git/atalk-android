@@ -19,7 +19,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.whiteboardobjects.*;
 
 /**
- * <tt>WhiteboardObjectModifiedEvent</tt>s indicate that a WhiteboardObject has been modified
+ * <code>WhiteboardObjectModifiedEvent</code>s indicate that a WhiteboardObject has been modified
  * remotely.
  *
  * @author Julien Waechter
@@ -48,15 +48,15 @@ public class WhiteboardObjectModifiedEvent extends EventObject
 	private WhiteboardObject obj;
 
 	/**
-	 * Creates a <tt>WhiteboardObjectModifiedEvent</tt> representing reception of the modified
-	 * <tt>source</tt> WhiteboardObject received from the specified <tt>from</tt> contact.
+	 * Creates a <code>WhiteboardObjectModifiedEvent</code> representing reception of the modified
+	 * <code>source</code> WhiteboardObject received from the specified <code>from</code> contact.
 	 *
 	 * @param source
-	 *        the <tt>WhiteboardSession</tt>
+	 *        the <code>WhiteboardSession</code>
 	 * @param obj
-	 *        the <tt>WhiteboardObject</tt> whose reception this event represents.
+	 *        the <code>WhiteboardObject</code> whose reception this event represents.
 	 * @param from
-	 *        the <tt>Contact</tt> that has sent this WhiteboardObject.
+	 *        the <code>Contact</code> that has sent this WhiteboardObject.
 	 * @param timestamp
 	 *        the exact date when the event ocurred.
 	 */
@@ -80,10 +80,10 @@ public class WhiteboardObjectModifiedEvent extends EventObject
 	}
 
 	/**
-	 * Returns a reference to the <tt>Contact</tt> that has send the <tt>WhiteboardObject</tt> whose
+	 * Returns a reference to the <code>Contact</code> that has send the <code>WhiteboardObject</code> whose
 	 * reception this event represents.
 	 *
-	 * @return a reference to the <tt>Contact</tt> that has send the <tt>WhiteboardObject</tt> whose
+	 * @return a reference to the <code>Contact</code> that has send the <code>WhiteboardObject</code> whose
 	 *         reception this event represents.
 	 */
 	public Contact getSourceContact()
@@ -94,7 +94,7 @@ public class WhiteboardObjectModifiedEvent extends EventObject
 	/**
 	 * Returns the WhiteboardObject that triggered this event
 	 *
-	 * @return the <tt>WhiteboardObject</tt> that triggered this event.
+	 * @return the <code>WhiteboardObject</code> that triggered this event.
 	 */
 	public WhiteboardObject getSourceWhiteboardObject()
 	{

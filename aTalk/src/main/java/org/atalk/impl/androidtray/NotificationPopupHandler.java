@@ -58,7 +58,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private static final Context mContext = aTalkApp.getGlobalContext();
 
     /**
-     * Map of currently displayed <tt>AndroidPopup</tt>s. Value is removed when
+     * Map of currently displayed <code>AndroidPopup</code>s. Value is removed when
      * corresponding notification is clicked or discarded.
      */
     private static final Map<Integer, AndroidPopup> notificationMap = new HashMap<>();
@@ -70,7 +70,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
 
 
     /**
-     * Creates new instance of <tt>NotificationPopupHandler</tt>. Registers as active chat listener.
+     * Creates new instance of <code>NotificationPopupHandler</code>. Registers as active chat listener.
      */
     public NotificationPopupHandler()
     {
@@ -296,7 +296,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     }
 
     /**
-     * Fires <tt>SystrayPopupMessageEvent</tt> for clicked notification.
+     * Fires <code>SystrayPopupMessageEvent</code> for clicked notification.
      *
      * @param notificationId the id of clicked notification.
      */
@@ -318,7 +318,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     }
 
     /**
-     * Fires <tt>SystrayPopupMessageEvent</tt> for clicked notification.
+     * Fires <code>SystrayPopupMessageEvent</code> for clicked notification.
      *
      * @param notificationId the id of clicked notification.
      */
@@ -379,7 +379,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     }
 
     /**
-     * Fires <tt>SystrayPopupMessageEvent</tt> for clicked notification with the specified action.
+     * Fires <code>SystrayPopupMessageEvent</code> for clicked notification with the specified action.
      *
      * @param notificationId the id of clicked notification.
      * @param action the action to be perform of clicked notification.
@@ -476,7 +476,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     }
 
     /**
-     * Removes notification for given <tt>notificationId</tt> and performs necessary cleanup.
+     * Removes notification for given <code>notificationId</code> and performs necessary cleanup.
      *
      * @param notificationId the id of notification to remove.
      */
@@ -558,9 +558,9 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     }
 
     /**
-     * Method called by <tt>AndroidPopup</tt> to signal the timeout.
+     * Method called by <code>AndroidPopup</code> to signal the timeout.
      *
-     * @param popup <tt>AndroidPopup</tt> on which timeout event has occurred.
+     * @param popup <code>AndroidPopup</code> on which timeout event has occurred.
      */
     public void onTimeout(AndroidPopup popup)
     {

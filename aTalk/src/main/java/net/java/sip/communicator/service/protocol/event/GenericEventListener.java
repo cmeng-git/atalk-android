@@ -22,7 +22,7 @@ package net.java.sip.communicator.service.protocol.event;
 public interface GenericEventListener
 {
 	/**
-	 * Indicates that an incoming <tt>GenericEvent</tt> has been received.
+	 * Indicates that an incoming <code>GenericEvent</code> has been received.
 	 *
 	 * @param event
 	 *        the incoming event.
@@ -30,10 +30,10 @@ public interface GenericEventListener
 	public void notificationReceived(GenericEvent event);
 
 	/**
-	 * Indicates that a <tt>GenericEvent</tt> we previously tried to send has not been delivered.
+	 * Indicates that a <code>GenericEvent</code> we previously tried to send has not been delivered.
 	 *
 	 * @param event
-	 *        the <tt>GenericEvent</tt> instance describing the event that we couldn't send.
+	 *        the <code>GenericEvent</code> instance describing the event that we couldn't send.
 	 */
 	public void notificationDeliveryFailed(GenericEvent event);
 

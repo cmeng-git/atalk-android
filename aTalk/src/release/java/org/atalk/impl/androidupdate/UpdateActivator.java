@@ -29,7 +29,7 @@ import org.osgi.framework.BundleContext;
 public class UpdateActivator extends SimpleServiceActivator<UpdateService>
 {
     /**
-     * Creates new instance of <tt>UpdateActivator</tt>.
+     * Creates new instance of <code>UpdateActivator</code>.
      */
     public UpdateActivator()
     {

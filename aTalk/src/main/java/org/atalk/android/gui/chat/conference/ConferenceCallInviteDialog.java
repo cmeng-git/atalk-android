@@ -62,7 +62,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     protected ExpandableListView contactListView;
 
     /**
-     * Stores last clicked <tt>MetaContact</tt>.
+     * Stores last clicked <code>MetaContact</code>.
      */
     public MetaContact clickedContact;
 
@@ -97,14 +97,14 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     private final boolean isJitsiVideobridge;
 
     /**
-     * Initializes a new <tt>ConferenceCallInviteDialog</tt> instance which is to invite
+     * Initializes a new <code>ConferenceCallInviteDialog</code> instance which is to invite
      * contacts/participants in a specific telephony conference.
      *
      * @param conference the telephony conference in which the new instance is to invite contacts/participants
      * @param preselectedProvider the preselected protocol provider
      * @param protocolProviders the protocol providers list
-     * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
-     * otherwise, <tt>false</tt>
+     * @param isJitsiVideobridge <code>true</code> if this dialog should create a conference through a Jitsi Videobridge;
+     * otherwise, <code>false</code>
      */
     public ConferenceCallInviteDialog(Context mContext, CallConference conference, ProtocolProviderService preselectedProvider,
             List<ProtocolProviderService> protocolProviders, final boolean isJitsiVideobridge)
@@ -121,7 +121,7 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     }
 
     /**
-     * Constructs the <tt>ConferenceCallInviteDialog</tt>.
+     * Constructs the <code>ConferenceCallInviteDialog</code>.
      */
     public ConferenceCallInviteDialog(Context mContext)
     {
@@ -129,10 +129,10 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     }
 
     /**
-     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying an already created
+     * Creates an instance of <code>ConferenceCallInviteDialog</code> by specifying an already created
      * conference. To use when inviting contacts to an existing conference is needed.
      *
-     * @param conference the existing <tt>CallConference</tt>
+     * @param conference the existing <code>CallConference</code>
      */
     public ConferenceCallInviteDialog(Context mContext, CallConference conference)
     {
@@ -140,10 +140,10 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     }
 
     /**
-     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying an already created
+     * Creates an instance of <code>ConferenceCallInviteDialog</code> by specifying an already created
      * conference. To use when inviting contacts to an existing conference is needed.
      *
-     * @param conference the existing <tt>CallConference</tt>
+     * @param conference the existing <code>CallConference</code>
      */
     public ConferenceCallInviteDialog(Context mContext, CallConference conference,
             ProtocolProviderService preselectedProtocolProvider, boolean isJitsiVideobridge)
@@ -152,12 +152,12 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     }
 
     /**
-     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying a preselected protocol
+     * Creates an instance of <code>ConferenceCallInviteDialog</code> by specifying a preselected protocol
      * provider to be used and if this is an invite for a video bridge conference.
      *
      * @param protocolProviders the protocol providers list
-     * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
-     * otherwise, <tt>false</tt>
+     * @param isJitsiVideobridge <code>true</code> if this dialog should create a conference through a Jitsi Videobridge;
+     * otherwise, <code>false</code>
      */
     public ConferenceCallInviteDialog(Context mContext,
             List<ProtocolProviderService> protocolProviders, boolean isJitsiVideobridge)
@@ -166,12 +166,12 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     }
 
     /**
-     * Creates an instance of <tt>ConferenceCallInviteDialog</tt> by specifying a preselected protocol
+     * Creates an instance of <code>ConferenceCallInviteDialog</code> by specifying a preselected protocol
      * provider to be used and if this is an invite for a video bridge conference.
      *
      * @param selectedConfProvider the preselected protocol provider
-     * @param isJitsiVideobridge <tt>true</tt> if this dialog should create a conference through a Jitsi Videobridge;
-     * otherwise, <tt>false</tt>
+     * @param isJitsiVideobridge <code>true</code> if this dialog should create a conference through a Jitsi Videobridge;
+     * otherwise, <code>false</code>
      */
     public ConferenceCallInviteDialog(Context mContext, ProtocolProviderService selectedConfProvider,
             boolean isJitsiVideobridge)
@@ -338,10 +338,10 @@ public class ConferenceCallInviteDialog extends Dialog implements OnChildClickLi
     }
 
     /**
-     * Initializes the account selector box with the given list of <tt>ProtocolProviderService</tt>
+     * Initializes the account selector box with the given list of <code>ProtocolProviderService</code>
      * -s.
      *
-     * @param protocolProviders the list of <tt>ProtocolProviderService</tt>-s we'd like to show in the account
+     * @param protocolProviders the list of <code>ProtocolProviderService</code>-s we'd like to show in the account
      * selector box
      */
     private void initAccountListData(List<ProtocolProviderService> protocolProviders)

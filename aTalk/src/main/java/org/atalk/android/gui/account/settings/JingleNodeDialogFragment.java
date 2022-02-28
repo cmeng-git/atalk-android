@@ -27,7 +27,7 @@ import androidx.fragment.app.DialogFragment;
 
 /**
  * The Jingle Node edit dialog. It used to edit or create new {@link JingleNodeDescriptor}.
- * It serves as a "create new" dialog when <tt>null</tt> is passed as a descriptor argument.
+ * It serves as a "create new" dialog when <code>null</code> is passed as a descriptor argument.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -52,7 +52,7 @@ public class JingleNodeDialogFragment extends DialogFragment
      * Creates new instance of {@link JingleNodeDialogFragment}
      *
      * @param listener parent {@link JingleNodeAdapter}
-     * @param descriptor the {@link JingleNodeDescriptor} to edit or <tt>null</tt> if a new node shall be created
+     * @param descriptor the {@link JingleNodeDescriptor} to edit or <code>null</code> if a new node shall be created
      */
     public static JingleNodeDialogFragment newInstance(JingleNodeAdapter listener, JingleNodeDescriptor descriptor)
     {
@@ -110,7 +110,7 @@ public class JingleNodeDialogFragment extends DialogFragment
     /**
      * Saves the changes if all data is correct
      *
-     * @return <tt>true</tt> if all data is correct and changes have been stored in descriptor
+     * @return <code>true</code> if all data is correct and changes have been stored in descriptor
      */
     boolean saveChanges()
     {

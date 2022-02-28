@@ -16,7 +16,7 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>WhiteboardChangeEvent</tt>s are triggerred whenever a change occurs in a Whiteboard.
+ * <code>WhiteboardChangeEvent</code>s are triggerred whenever a change occurs in a Whiteboard.
  * Dispatched events may be of one of the following types.
  * <p>
  * WHITEBOARD_STATE_CHANGE - indicates a change in the state of a Whiteboard.
@@ -81,7 +81,7 @@ public class WhiteboardChangeEvent extends java.beans.PropertyChangeEvent
 	/**
 	 * The Whiteboard on which the event has occurred.
 	 *
-	 * @return A reference to the <tt>Whiteboard</tt> on which the event has occurred.
+	 * @return A reference to the <code>Whiteboard</code> on which the event has occurred.
 	 */
 	public WhiteboardSession getSourceWhiteboard()
 	{

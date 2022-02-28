@@ -28,8 +28,8 @@ public class RTPConnectorUDPImpl extends AbstractRTPConnector
 	private DatagramSocket controlSocket;
 
 	/**
-	 * Initializes a new <tt>RTPConnectorUDPImpl</tt> which is to use a given pair of datagram
-	 * sockets for RTP and RTCP traffic specified in the form of a <tt>StreamConnector</tt>.
+	 * Initializes a new <code>RTPConnectorUDPImpl</code> which is to use a given pair of datagram
+	 * sockets for RTP and RTCP traffic specified in the form of a <code>StreamConnector</code>.
 	 *
 	 * @param connector
 	 *        the pair of datagram sockets for RTP and RTCP traffic the new instance is to use
@@ -64,9 +64,9 @@ public class RTPConnectorUDPImpl extends AbstractRTPConnector
 	}
 
 	/**
-	 * Creates the RTCP packet input stream to be used by <tt>RTPManager</tt>.
+	 * Creates the RTCP packet input stream to be used by <code>RTPManager</code>.
 	 *
-	 * @return a new RTCP packet input stream to be used by <tt>RTPManager</tt>
+	 * @return a new RTCP packet input stream to be used by <code>RTPManager</code>
 	 * @throws IOException
 	 *         if an error occurs during the creation of the RTCP packet input stream
 	 */
@@ -78,9 +78,9 @@ public class RTPConnectorUDPImpl extends AbstractRTPConnector
 	}
 
 	/**
-	 * Creates the RTCP packet output stream to be used by <tt>RTPManager</tt>.
+	 * Creates the RTCP packet output stream to be used by <code>RTPManager</code>.
 	 *
-	 * @return a new RTCP packet output stream to be used by <tt>RTPManager</tt>
+	 * @return a new RTCP packet output stream to be used by <code>RTPManager</code>
 	 * @throws IOException
 	 *         if an error occurs during the creation of the RTCP packet output stream
 	 */
@@ -92,9 +92,9 @@ public class RTPConnectorUDPImpl extends AbstractRTPConnector
 	}
 
 	/**
-	 * Creates the RTP packet input stream to be used by <tt>RTPManager</tt>.
+	 * Creates the RTP packet input stream to be used by <code>RTPManager</code>.
 	 *
-	 * @return a new RTP packet input stream to be used by <tt>RTPManager</tt>
+	 * @return a new RTP packet input stream to be used by <code>RTPManager</code>
 	 * @throws IOException
 	 *         if an error occurs during the creation of the RTP packet input stream
 	 */
@@ -106,9 +106,9 @@ public class RTPConnectorUDPImpl extends AbstractRTPConnector
 	}
 
 	/**
-	 * Creates the RTP packet output stream to be used by <tt>RTPManager</tt>.
+	 * Creates the RTP packet output stream to be used by <code>RTPManager</code>.
 	 *
-	 * @return a new RTP packet output stream to be used by <tt>RTPManager</tt>
+	 * @return a new RTP packet output stream to be used by <code>RTPManager</code>
 	 * @throws IOException
 	 *         if an error occurs during the creation of the RTP packet output stream
 	 */

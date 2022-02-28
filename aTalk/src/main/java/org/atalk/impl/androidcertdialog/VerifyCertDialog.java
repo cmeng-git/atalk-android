@@ -15,14 +15,14 @@ import org.atalk.android.aTalkApp;
 import java.security.cert.Certificate;
 
 /**
- * Implementation of <tt>VerifyCertificateDialog</tt>. Serves as dialog data model for GUI components.
+ * Implementation of <code>VerifyCertificateDialog</code>. Serves as dialog data model for GUI components.
  *
  * @author Pawel Domas
  */
 class VerifyCertDialog implements VerifyCertificateDialogService.VerifyCertificateDialog
 {
     /**
-     * Request id that can be used to retrieve this dialog from <tt>CertificateDialogServiceImpl</tt>.
+     * Request id that can be used to retrieve this dialog from <code>CertificateDialogServiceImpl</code>.
      */
     private final Long requestId;
 
@@ -57,7 +57,7 @@ class VerifyCertDialog implements VerifyCertificateDialogService.VerifyCertifica
     private boolean alwaysTrust = false;
 
     /**
-     * Creates new instance of <tt>VerifyCertDialog</tt>.
+     * Creates new instance of <code>VerifyCertDialog</code>.
      *
      * @param requestId the request identifier.
      * @param cert the certificate to be verified
@@ -158,7 +158,7 @@ class VerifyCertDialog implements VerifyCertificateDialogService.VerifyCertifica
     /**
      * Sets the trusted flag.
      *
-     * @param trusted <tt>true</tt> if subject certificate is trusted by the user.
+     * @param trusted <code>true</code> if subject certificate is trusted by the user.
      */
     public void setTrusted(boolean trusted)
     {
@@ -168,7 +168,7 @@ class VerifyCertDialog implements VerifyCertificateDialogService.VerifyCertifica
     /**
      * Sets always trusted flag.
      *
-     * @param alwaysTrust <tt>true</tt> if user decided to always trust subject certificate.
+     * @param alwaysTrust <code>true</code> if user decided to always trust subject certificate.
      */
     public void setAlwaysTrust(boolean alwaysTrust)
     {

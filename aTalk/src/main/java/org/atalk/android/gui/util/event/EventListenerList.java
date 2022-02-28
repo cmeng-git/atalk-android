@@ -25,7 +25,7 @@ public class EventListenerList<T>
     private ArrayList<EventListener<T>> listeners = new ArrayList<EventListener<T>>();
 
     /**
-     * Adds the <tt>listener</tt> to the list
+     * Adds the <code>listener</code> to the list
      *
      * @param listener the {@link EventListener} that will be added to the list
      */
@@ -36,7 +36,7 @@ public class EventListenerList<T>
     }
 
     /**
-     * Removes the <tt>listener</tt> from the list
+     * Removes the <code>listener</code> from the list
      *
      * @param listener the {@link EventListener} that will be removed from the list
      */

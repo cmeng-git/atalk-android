@@ -19,12 +19,12 @@ import java.awt.*;
 import javax.swing.JPanel;
 
 /**
- * Represents a <tt>LayoutManager</tt> which centers the first
- * <tt>Component</tt> within its <tt>Container</tt> and, if the preferred size
- * of the <tt>Component</tt> is larger than the size of the <tt>Container</tt>,
+ * Represents a <code>LayoutManager</code> which centers the first
+ * <code>Component</code> within its <code>Container</code> and, if the preferred size
+ * of the <code>Component</code> is larger than the size of the <code>Container</code>,
  * scales the former within the bounds of the latter while preserving the aspect
- * ratio. <tt>FitLayout</tt> is appropriate for <tt>Container</tt>s which
- * display a single image or video <tt>Component</tt> in its entirety for which
+ * ratio. <code>FitLayout</code> is appropriate for <code>Container</code>s which
+ * display a single image or video <code>Component</code> in its entirety for which
  * preserving the aspect ratio is important.
  *
  * @author Lyubomir Marinov
@@ -32,33 +32,33 @@ import javax.swing.JPanel;
 public class FitLayout implements LayoutManager
 {
 	/**
-	 * The default height and width to be used by <tt>FitLayout</tt> and its
+	 * The default height and width to be used by <code>FitLayout</code> and its
 	 * extenders in order to avoid falling back to zero height and/or width.
 	 * Introduced to mitigate issues arising from the fact that a
-	 * <tt>Component</tt> zero height and/or width.
+	 * <code>Component</code> zero height and/or width.
 	 */
 	protected static final int DEFAULT_HEIGHT_OR_WIDTH = 16;
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Does nothing because this <tt>LayoutManager</tt> lays out only the first
-	 * <tt>Component</tt> of the parent <tt>Container</tt> and thus doesn't need
-	 * any <tt>String</tt> associations.
+	 * Does nothing because this <code>LayoutManager</code> lays out only the first
+	 * <code>Component</code> of the parent <code>Container</code> and thus doesn't need
+	 * any <code>String</code> associations.
 	 */
 	public void addLayoutComponent(String name, Component comp)
 	{
 	}
 
 	/**
-	 * Gets the first <tt>Component</tt> of a specific <tt>Container</tt> if
-	 * there is such a <tt>Component</tt>.
+	 * Gets the first <code>Component</code> of a specific <code>Container</code> if
+	 * there is such a <code>Component</code>.
 	 *
 	 * @param parent
-	 * 		the <tt>Container</tt> to retrieve the first
-	 * 		<tt>Component</tt> of
-	 * @return the first <tt>Component</tt> of a specific <tt>Container</tt> if
-	 * there is such a <tt>Component</tt>; otherwise, <tt>null</tt>
+	 * 		the <code>Container</code> to retrieve the first
+	 * 		<code>Component</code> of
+	 * @return the first <code>Component</code> of a specific <code>Container</code> if
+	 * there is such a <code>Component</code>; otherwise, <code>null</code>
 	 */
 	protected Component getComponent(Container parent)
 	{
@@ -180,10 +180,10 @@ public class FitLayout implements LayoutManager
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Since this <tt>LayoutManager</tt> lays out only the first
-	 * <tt>Component</tt> of the specified parent <tt>Container</tt>, the
-	 * preferred size of the <tt>Container</tt> is the preferred size of the
-	 * mentioned <tt>Component</tt>.
+	 * Since this <code>LayoutManager</code> lays out only the first
+	 * <code>Component</code> of the specified parent <code>Container</code>, the
+	 * preferred size of the <code>Container</code> is the preferred size of the
+	 * mentioned <code>Component</code>.
 	 */
 	public Dimension preferredLayoutSize(Container parent)
 	{
@@ -196,9 +196,9 @@ public class FitLayout implements LayoutManager
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Does nothing because this <tt>LayoutManager</tt> lays out only the first
-	 * <tt>Component</tt> of the parent <tt>Container</tt> and thus doesn't need
-	 * any <tt>String</tt> associations.
+	 * Does nothing because this <code>LayoutManager</code> lays out only the first
+	 * <code>Component</code> of the parent <code>Container</code> and thus doesn't need
+	 * any <code>String</code> associations.
 	 */
 	public void removeLayoutComponent(Component comp)
 	{

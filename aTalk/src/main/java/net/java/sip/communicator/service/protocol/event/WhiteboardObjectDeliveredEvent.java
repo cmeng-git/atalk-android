@@ -19,7 +19,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.whiteboardobjects.*;
 
 /**
- * <tt>WhiteboardObjectDeliveredEvent</tt>s confirms successful delivery of a WhiteboardObject.
+ * <code>WhiteboardObjectDeliveredEvent</code>s confirms successful delivery of a WhiteboardObject.
  *
  * @author Julien Waechter
  * @author Emil Ivov
@@ -47,15 +47,15 @@ public class WhiteboardObjectDeliveredEvent extends EventObject
 	private WhiteboardObject obj;
 
 	/**
-	 * Creates a <tt>WhiteboardObjectDeliveredEvent</tt> representing delivery of the
-	 * <tt>source</tt> whiteboardObject to the specified <tt>to</tt> contact.
+	 * Creates a <code>WhiteboardObjectDeliveredEvent</code> representing delivery of the
+	 * <code>source</code> whiteboardObject to the specified <code>to</code> contact.
 	 *
 	 * @param source
-	 *        the <tt>WhiteboardSession</tt> whose delivery this event represents.
+	 *        the <code>WhiteboardSession</code> whose delivery this event represents.
 	 * @param obj
-	 *        the <tt>WhiteboardObject</tt>
+	 *        the <code>WhiteboardObject</code>
 	 * @param to
-	 *        the <tt>Contact</tt> that this whiteboardObject was sent to.
+	 *        the <code>Contact</code> that this whiteboardObject was sent to.
 	 * @param timestamp
 	 *        a date indicating the exact moment when the event ocurred
 	 */
@@ -69,10 +69,10 @@ public class WhiteboardObjectDeliveredEvent extends EventObject
 	}
 
 	/**
-	 * Returns a reference to the <tt>Contact</tt> that the source <tt>WhiteboardObject</tt> was
+	 * Returns a reference to the <code>Contact</code> that the source <code>WhiteboardObject</code> was
 	 * sent to.
 	 *
-	 * @return a reference to the <tt>Contact</tt> that has send the <tt>WhiteboardObject</tt> whose
+	 * @return a reference to the <code>Contact</code> that has send the <code>WhiteboardObject</code> whose
 	 *         reception this event represents.
 	 */
 	public Contact getDestinationContact()
@@ -83,7 +83,7 @@ public class WhiteboardObjectDeliveredEvent extends EventObject
 	/**
 	 * Returns the whiteboardObject that triggered this event
 	 *
-	 * @return the <tt>WhiteboardObject</tt> that triggered this event.
+	 * @return the <code>WhiteboardObject</code> that triggered this event.
 	 */
 	public WhiteboardObject getSourceWhiteboardObject()
 	{

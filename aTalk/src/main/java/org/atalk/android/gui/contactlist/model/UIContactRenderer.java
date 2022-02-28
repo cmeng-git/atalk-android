@@ -17,10 +17,10 @@ import android.graphics.drawable.Drawable;
 public interface UIContactRenderer
 {
     /**
-     * Return <tt>true</tt> if given contact is considered to be currently selected.
+     * Return <code>true</code> if given contact is considered to be currently selected.
      *
      * @param contactImpl contact instance.
-     * @return <tt>true</tt> if given contact is considered to be currently selected.
+     * @return <code>true</code> if given contact is considered to be currently selected.
      */
     boolean isSelected(Object contactImpl);
 
@@ -41,10 +41,10 @@ public interface UIContactRenderer
     String getStatusMessage(Object contactImpl);
 
     /**
-     * Returns <tt>true</tt> if given contact name should be displayed in bold.
+     * Returns <code>true</code> if given contact name should be displayed in bold.
      *
      * @param contactImpl contact instance.
-     * @return <tt>true</tt> if given contact name should be displayed in bold.
+     * @return <code>true</code> if given contact name should be displayed in bold.
      */
     boolean isDisplayBold(Object contactImpl);
 
@@ -65,20 +65,20 @@ public interface UIContactRenderer
     Drawable getStatusImage(Object contactImpl);
 
     /**
-     * Returns <tt>true</tt> if video call button should be displayed for given contact. That is if contact has valid
+     * Returns <code>true</code> if video call button should be displayed for given contact. That is if contact has valid
      * default address that can be used to make video calls.
      *
      * @param contactImpl contact instance.
-     * @return <tt>true</tt> if video call button should be displayed for given contact.
+     * @return <code>true</code> if video call button should be displayed for given contact.
      */
     boolean isShowVideoCallBtn(Object contactImpl);
 
     /**
-     * Returns <tt>true</tt> if call button should be displayed next to the contact. That means that it will returns
+     * Returns <code>true</code> if call button should be displayed next to the contact. That means that it will returns
      * valid default address that can be used to make audio calls.
      *
      * @param contactImpl contact instance.
-     * @return <tt>true</tt> if call button should be displayed next to the contact.
+     * @return <code>true</code> if call button should be displayed next to the contact.
      */
     boolean isShowCallBtn(Object contactImpl);
 

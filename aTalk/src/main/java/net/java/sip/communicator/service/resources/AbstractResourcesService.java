@@ -43,7 +43,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     private BundleContext bundleContext;
 
     /**
-     * Resources for currently loaded <tt>SettingsPack</tt>.
+     * Resources for currently loaded <code>SettingsPack</code>.
      */
     private Map<String, String> settingsResources;
 
@@ -53,7 +53,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     private ResourcePack settingsPack = null;
 
     /**
-     * Resources for currently loaded <tt>LanguagePack</tt>.
+     * Resources for currently loaded <code>LanguagePack</code>.
      */
     private Map<String, String> languageResources;
 
@@ -69,7 +69,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     private Locale languageLocale;
 
     /**
-     * Resources for currently loaded <tt>ImagePack</tt>.
+     * Resources for currently loaded <code>ImagePack</code>.
      */
     private Map<String, String> imageResources;
 
@@ -79,7 +79,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     private ImagePack imagePack = null;
 
     /**
-     * Resources for currently loaded <tt>ColorPack</tt>.
+     * Resources for currently loaded <code>ColorPack</code>.
      */
     private Map<String, String> colorResources;
 
@@ -89,7 +89,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     private ResourcePack colorPack = null;
 
     /**
-     * Resources for currently loaded <tt>SoundPack</tt>.
+     * Resources for currently loaded <code>SoundPack</code>.
      */
     private Map<String, String> soundResources;
 
@@ -99,12 +99,12 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     private ResourcePack soundPack = null;
 
     /**
-     * Currently loaded <tt>SkinPack</tt>.
+     * Currently loaded <code>SkinPack</code>.
      */
     private SkinPack skinPack = null;
 
     /**
-     * Creates an instance of <tt>AbstractResourcesService</tt>.
+     * Creates an instance of <code>AbstractResourcesService</code>.
      *
      * @param bundleContext the OSGi bundle context
      */
@@ -151,10 +151,10 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Handles all <tt>ServiceEvent</tt>s corresponding to <tt>ResourcePack</tt>
+     * Handles all <code>ServiceEvent</code>s corresponding to <code>ResourcePack</code>
      * being registered or unregistered.
      *
-     * @param event the <tt>ServiceEvent</tt> that notified us
+     * @param event the <code>ServiceEvent</code> that notified us
      */
     public void serviceChanged(ServiceEvent event)
     {
@@ -264,11 +264,11 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     protected abstract void onSkinPackChanged();
 
     /**
-     * Searches for the <tt>ResourcePack</tt> corresponding to the given <tt>className</tt> and <tt></tt>.
+     * Searches for the <code>ResourcePack</code> corresponding to the given <code>className</code> and <code></code>.
      *
      * @param clazz The name of the resource class.
      * @param typeName The name of the type we're looking for. For example: RESOURCE_NAME_DEFAULT_VALUE
-     * @return the <tt>ResourcePack</tt> corresponding to the given <tt>className</tt> and <tt></tt>.
+     * @return the <code>ResourcePack</code> corresponding to the given <code>className</code> and <code></code>.
      */
     protected <T extends ResourcePack> T getDefaultResourcePack(Class<T> clazz, String typeName)
     {
@@ -289,10 +289,10 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Returns the <tt>Map</tt> of (key, value) pairs contained in the given resource pack.
+     * Returns the <code>Map</code> of (key, value) pairs contained in the given resource pack.
      *
-     * @param resourcePack The <tt>ResourcePack</tt> from which we're obtaining the resources.
-     * @return the <tt>Map</tt> of (key, value) pairs contained in the given resource pack.
+     * @param resourcePack The <code>ResourcePack</code> from which we're obtaining the resources.
+     * @return the <code>Map</code> of (key, value) pairs contained in the given resource pack.
      */
     protected Map<String, String> getResources(ResourcePack resourcePack)
     {
@@ -310,13 +310,13 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Returns the string for given <tt>key</tt> for specified <tt>locale</tt>.
+     * Returns the string for given <code>key</code> for specified <code>locale</code>.
      * It's the real process of retrieving string for specified locale.
      * The result is used in other methods that operate on localized strings.
      *
      * @param key the key name for the string
      * @param locale the Locale of the string
-     * @return the resources string corresponding to the given <tt>key</tt> and <tt>locale</tt>
+     * @return the resources string corresponding to the given <code>key</code> and <code>locale</code>
      */
     protected String doGetI18String(String key, Locale locale)
     {
@@ -420,10 +420,10 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Returns the character after the first '&' in the internationalized string corresponding to <tt>key</tt>
+     * Returns the character after the first '&' in the internationalized string corresponding to <code>key</code>
      *
      * @param key The identifier of the string in the resources properties file.
-     * @return the character after the first '&' in the internationalized string corresponding to <tt>key</tt>.
+     * @return the character after the first '&' in the internationalized string corresponding to <code>key</code>.
      */
     public char getI18nMnemonic(String key)
     {
@@ -431,11 +431,11 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Returns the character after the first '&' in the internationalized string corresponding to <tt>key</tt>
+     * Returns the character after the first '&' in the internationalized string corresponding to <code>key</code>
      *
      * @param key The identifier of the string in the resources properties file.
      * @param locale The locale that we'd like to receive the result in.
-     * @return the character after the first '&' in the internationalized string corresponding to <tt>key</tt>.
+     * @return the character after the first '&' in the internationalized string corresponding to <code>key</code>.
      */
     public char getI18nMnemonic(String key, Locale locale)
     {
@@ -481,7 +481,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Returns an <tt>URL</tt> from a given identifier.
+     * Returns an <code>URL</code> from a given identifier.
      *
      * @param urlKey The identifier of the url.
      * @return The url for the given identifier.
@@ -582,7 +582,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Resources for currently loaded <tt>ColorPack</tt>.
+     * Resources for currently loaded <code>ColorPack</code>.
      *
      * @return the currently color resources
      */
@@ -592,7 +592,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
     }
 
     /**
-     * Currently loaded <tt>SkinPack</tt>.
+     * Currently loaded <code>SkinPack</code>.
      *
      * @return the currently loaded skin pack
      */

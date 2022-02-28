@@ -10,7 +10,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>FileTransferCreatedEvent</tt> indicates the creation of a file transfer.
+ * The <code>FileTransferCreatedEvent</code> indicates the creation of a file transfer.
  *
  * @author Yana Stamcheva
  */
@@ -27,10 +27,10 @@ public class FileTransferCreatedEvent extends EventObject
 	private final Date timestamp;
 
 	/**
-	 * Creates a <tt>FileTransferCreatedEvent</tt> representing creation of a file transfer.
+	 * Creates a <code>FileTransferCreatedEvent</code> representing creation of a file transfer.
 	 *
 	 * @param fileTransfer
-	 *        the <tt>FileTransfer</tt> whose creation this event represents.
+	 *        the <code>FileTransfer</code> whose creation this event represents.
 	 * @param timestamp
 	 *        the timestamp indicating the exact date when the event occurred
 	 */
@@ -43,7 +43,7 @@ public class FileTransferCreatedEvent extends EventObject
 	/**
 	 * Returns the file transfer that triggered this event.
 	 *
-	 * @return the <tt>FileTransfer</tt> that triggered this event.
+	 * @return the <code>FileTransfer</code> that triggered this event.
 	 */
 	public FileTransfer getFileTransfer()
 	{

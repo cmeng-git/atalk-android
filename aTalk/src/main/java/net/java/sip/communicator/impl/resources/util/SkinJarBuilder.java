@@ -29,10 +29,10 @@ public class SkinJarBuilder
 {
     /**
      * Creates bundle from zip file.
-     * @param srv <tt>ResourcePack</tt> containing class files and manifest
+     * @param srv <code>ResourcePack</code> containing class files and manifest
      *            for the SkinResourcePack.
      * @param zip Zip file with skin contents.
-     * @return Jar <tt>File</tt>.
+     * @return Jar <code>File</code>.
      * @throws Exception When something goes wrong.
      */
     public static File createBundleFromZip(File zip, ResourcePack srv)
@@ -62,7 +62,7 @@ public class SkinJarBuilder
      * Creates a copy of skinresources.jar in temp folder.
      *
      * @param unzippedBase Base dir where files should appear.
-     * @param srv <tt>ResourcePack</tt> containing class files and manifest
+     * @param srv <code>ResourcePack</code> containing class files and manifest
      *            for the SkinResourcePack.
      * @throws IOException Is thrown if the jar cannot be located or if a file
      * operation goes wrong.
@@ -106,8 +106,8 @@ public class SkinJarBuilder
 
     /**
      * Simple file copy operation.
-     * @param in <tt>InputStream</tt> for the source.
-     * @param out <tt>OutputStream</tt> for the destination file.
+     * @param in <code>InputStream</code> for the source.
+     * @param out <code>OutputStream</code> for the destination file.
      * @throws IOException Is thrown if the jar cannot be located or if a file
      * operation goes wrong.
      */
@@ -126,9 +126,9 @@ public class SkinJarBuilder
     }
 
     /**
-     * Unzips a specified <tt>File</tt> to temp folder.
+     * Unzips a specified <code>File</code> to temp folder.
      *
-     * @param zip ZIP <tt>File</tt> to be unzipped.
+     * @param zip ZIP <code>File</code> to be unzipped.
      * @return temporary directory with the content of the ZIP file.
      * @throws IOException Is thrown if a file operation goes wrong.
      */
@@ -207,7 +207,7 @@ public class SkinJarBuilder
      * Inserts files into ZIP file.
      *
      * @param tmpDir Folder which contains the data.
-     * @return <tt>File</tt> containing reference of the jar file.
+     * @return <code>File</code> containing reference of the jar file.
      * @throws IOException Is thrown if a file operation goes wrong.
      */
     private static File insertIntoZip(File tmpDir)
@@ -227,7 +227,7 @@ public class SkinJarBuilder
     /**
      * Zips the content of a folder.
      * @param dir2zip Path to the directory with the data to be stored.
-     * @param zos Opened <tt>ZipOutputStream</tt> in which will be information
+     * @param zos Opened <code>ZipOutputStream</code> in which will be information
      * stored.
      * @throws IOException Is thrown if a file operation goes wrong.
      */
@@ -242,7 +242,7 @@ public class SkinJarBuilder
      * Zips a file.
      * @param directory Path to the dir with the data to be stored.
      * @param base Base path for cutting paths into zip entries.
-     * @param zos Opened <tt>ZipOutputStream</tt> in which will be information
+     * @param zos Opened <code>ZipOutputStream</code> in which will be information
      * stored.
      * @throws IOException Is thrown if a file operation goes wrong.
      */
@@ -302,8 +302,8 @@ public class SkinJarBuilder
      * content.
      *
      * @param tmpDir Directory to be tested.
-     * @return <tt>true</tt> - if the directory contains valid skin, else
-     * <tt>false</tt>.
+     * @return <code>true</code> - if the directory contains valid skin, else
+     * <code>false</code>.
      */
     private static boolean test(File tmpDir)
     {

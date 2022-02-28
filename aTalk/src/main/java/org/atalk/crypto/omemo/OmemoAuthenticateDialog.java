@@ -74,7 +74,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
     private FingerprintListAdapter fpListAdapter;
 
     /**
-     * Creates parametrized <tt>Intent</tt> of buddy authenticate dialog.
+     * Creates parametrized <code>Intent</code> of buddy authenticate dialog.
      *
      * @param omemoManager the UUID of OTR session.
      * @return buddy authenticate dialog parametrized with given OTR session's UUID.
@@ -164,7 +164,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
     /**
      * Method fired when the ok button is clicked.
      *
-     * @param v ok button's <tt>View</tt>.
+     * @param v ok button's <code>View</code>.
      */
     public void onOkClicked(View v)
     {
@@ -199,7 +199,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
     /**
      * Method fired when the cancel button is clicked.
      *
-     * @param v the cancel button's <tt>View</tt>
+     * @param v the cancel button's <code>View</code>
      */
     public void onCancelClicked(View v)
     {
@@ -228,7 +228,7 @@ public class OmemoAuthenticateDialog extends OSGiActivity
     }
 
     /**
-     * Adapter displays fingerprints for given list of <tt>Contact</tt>s.
+     * Adapter displays fingerprints for given list of <code>Contact</code>s.
      */
     private class FingerprintListAdapter extends BaseAdapter
     {
@@ -238,9 +238,9 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         private final Map<OmemoDevice, String> buddyFPs;
 
         /**
-         * Creates a new instance of <tt>FingerprintListAdapter</tt>.
+         * Creates a new instance of <code>FingerprintListAdapter</code>.
          *
-         * @param linkedHashMap list of <tt>Contact</tt> for which OTR fingerprints will be displayed.
+         * @param linkedHashMap list of <code>Contact</code> for which OTR fingerprints will be displayed.
          */
         FingerprintListAdapter(Map<OmemoDevice, String> linkedHashMap)
         {

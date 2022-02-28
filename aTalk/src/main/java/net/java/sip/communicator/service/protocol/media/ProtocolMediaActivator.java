@@ -102,10 +102,10 @@ public class ProtocolMediaActivator implements BundleActivator
     }
 
     /**
-     * Returns a reference to a <tt>MediaService</tt> implementation currently registered in the
+     * Returns a reference to a <code>MediaService</code> implementation currently registered in the
      * bundle context or null if no such implementation was found.
      *
-     * @return a reference to a <tt>MediaService</tt> implementation currently registered in the
+     * @return a reference to a <code>MediaService</code> implementation currently registered in the
      * bundle context or null if no such implementation was found.
      */
     public static MediaService getMediaService()
@@ -120,7 +120,7 @@ public class ProtocolMediaActivator implements BundleActivator
      * Returns a reference to a NetworkAddressManagerService implementation currently registered in
      * the bundle context or null if no such implementation was found.
      *
-     * @return a currently valid implementation of the <tt>NetworkAddressManagerService</tt>
+     * @return a currently valid implementation of the <code>NetworkAddressManagerService</code>
      */
     public static NetworkAddressManagerService getNetworkAddressManagerService()
     {

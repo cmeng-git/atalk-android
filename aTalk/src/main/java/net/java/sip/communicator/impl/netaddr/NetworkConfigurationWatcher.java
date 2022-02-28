@@ -75,7 +75,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
     }
 
     /**
-     * Adds new <tt>NetworkConfigurationChangeListener</tt> which will be informed for network configuration changes.
+     * Adds new <code>NetworkConfigurationChangeListener</code> which will be informed for network configuration changes.
      *
      * @param listener the listener.
      */
@@ -162,7 +162,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
     }
 
     /**
-     * Remove <tt>NetworkConfigurationChangeListener</tt>.
+     * Remove <code>NetworkConfigurationChangeListener</code>.
      *
      * @param listener the listener.
      */
@@ -222,7 +222,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
      * This method gets called when a notification action for a particular event
      * type has been changed. We are interested in sleep and network changed events.
      *
-     * @param event the <tt>NotificationActionTypeEvent</tt>, which is
+     * @param event the <code>NotificationActionTypeEvent</code>, which is
      * dispatched when an action has been changed.
      */
     public void activityChanged(SystemActivityEvent event)

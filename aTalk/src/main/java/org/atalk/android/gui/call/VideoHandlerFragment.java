@@ -90,7 +90,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     public PreviewSurfaceProvider localPreviewSurface;
 
     /**
-     * <tt>OpenGlCtxProvider</tt> that provides Open GL context for local preview rendering. It is
+     * <code>OpenGlCtxProvider</code> that provides Open GL context for local preview rendering. It is
      * used in direct surface encoding mode.
      */
     public OpenGlCtxProvider mLocalPreviewGlCtxProvider;
@@ -103,7 +103,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     private VideoListener callPeerVideoListener;
 
     /**
-     * Stores the current local video state in case this <tt>Activity</tt> is hidden during call.
+     * Stores the current local video state in case this <code>Activity</code> is hidden during call.
      * Also use during screen rotation to re-init local video
      */
     public static boolean wasVideoEnabled = false;
@@ -151,7 +151,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     private VideoCallActivity mCallActivity;
 
     /**
-     * Create a new instance of <tt>VideoHandlerFragment</tt>.
+     * Create a new instance of <code>VideoHandlerFragment</code>.
      */
     public VideoHandlerFragment()
     {
@@ -441,7 +441,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Called when local video button is pressed.
      *
-     * @param callVideoButton local video button <tt>View</tt>.
+     * @param callVideoButton local video button <code>View</code>.
      */
     private void onLocalVideoButtonClicked(View callVideoButton)
     {
@@ -472,7 +472,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Checks local video status.
      *
-     * @return <tt>true</tt> if local video is enabled.
+     * @return <code>true</code> if local video is enabled.
      */
     public boolean isLocalVideoEnabled()
     {
@@ -498,7 +498,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Adds a video listener for the given call peer.
      *
-     * @param callPeer the <tt>CallPeer</tt> to which we add a video listener
+     * @param callPeer the <code>CallPeer</code> to which we add a video listener
      */
     private void addVideoListener(final CallPeer callPeer)
     {
@@ -537,7 +537,7 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * Handles a video event.
      *
      * @param callPeer the corresponding call peer
-     * @param event the <tt>VideoEvent</tt> that notified us
+     * @param event the <code>VideoEvent</code> that notified us
      */
     public void handleVideoEvent(CallPeer callPeer, final VideoEvent event)
     {
@@ -616,10 +616,10 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     /**
      * Handles the remote video event.
      *
-     * @param visualComponent the remote video <tt>Component</tt> if available or <tt>null</tt> otherwise.
+     * @param visualComponent the remote video <code>Component</code> if available or <code>null</code> otherwise.
      * visualComponent is null on video call initial setup and on remote video removed.
      * No null on the remote device rotated; need to re-init remote video on screen rotation
-     * @param scvEvent the <tt>SizeChangeVideoEvent</tt> event if was supplied.
+     * @param scvEvent the <code>SizeChangeVideoEvent</code> event if was supplied.
      */
     private void handleRemoteVideoEvent(final Component visualComponent, final SizeChangeVideoEvent scvEvent)
     {
@@ -670,9 +670,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
      * In android: the remote video view container size is fixed by aTalk to full screen; and user is
      * not allow to change. Hence remoteVideoView has higher priority over visualComponent
      *
-     * @param visualComponent remote video <tt>Component</tt>, <tt>null</tt> if not available
-     * @param remoteVideoView the remote video <tt>View</tt> if already created, or <tt>null</tt> otherwise
-     * @param scvEvent the <tt>SizeChangeVideoEvent</tt> if was supplied during event handling or <tt>null</tt> otherwise.
+     * @param visualComponent remote video <code>Component</code>, <code>null</code> if not available
+     * @param remoteVideoView the remote video <code>View</code> if already created, or <code>null</code> otherwise
+     * @param scvEvent the <code>SizeChangeVideoEvent</code> if was supplied during event handling or <code>null</code> otherwise.
      * @return selected preferred remote video size.
      */
     private Dimension selectRemotePreferredSize(Component visualComponent, View remoteVideoView,
@@ -710,10 +710,10 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     /**
-     * Align remote <tt>Video</tt> component if available.
+     * Align remote <code>Video</code> component if available.
      *
-     * @param remoteVideoView the remote video <tt>View</tt> if available or <tt>null</tt> otherwise.
-     * @param preferredSize preferred size of remote video <tt>View</tt>.
+     * @param remoteVideoView the remote video <code>View</code> if available or <code>null</code> otherwise.
+     * @param preferredSize preferred size of remote video <code>View</code>.
      */
     private void doAlignRemoteVideo(View remoteVideoView, Dimension preferredSize)
     {
@@ -769,9 +769,9 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     /**
-     * Returns <tt>true</tt> if local video is currently visible.
+     * Returns <code>true</code> if local video is currently visible.
      *
-     * @return <tt>true</tt> if local video is currently visible.
+     * @return <code>true</code> if local video is currently visible.
      */
     public boolean isLocalVideoVisible()
     {

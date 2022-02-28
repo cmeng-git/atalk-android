@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * A MetaContact is an abstraction used for merging multiple Contacts (most
- * often) belonging to different <tt>ProtocolProvider</tt>s.
+ * often) belonging to different <code>ProtocolProvider</code>s.
  * <p>
  * Instances of a MetaContact are read-only objects that cannot be modified
  * directly but only through the corresponding MetaContactListService.
@@ -38,16 +38,16 @@ import java.util.List;
 public interface MetaContact extends Comparable<MetaContact>
 {
     /**
-     * Returns the default protocol specific <tt>Contact</tt> to use when
-     * communicating with this <tt>MetaContact</tt>.
+     * Returns the default protocol specific <code>Contact</code> to use when
+     * communicating with this <code>MetaContact</code>.
      *
-     * @return the default <tt>Contact</tt> to use when communicating with this <tt>MetaContact</tt>
+     * @return the default <code>Contact</code> to use when communicating with this <code>MetaContact</code>
      */
     Contact getDefaultContact();
 
     /**
-     * Returns the default protocol specific <tt>Contact</tt> to use with this
-     * <tt>MetaContact</tt> for a precise operation (IM, call, ...).
+     * Returns the default protocol specific <code>Contact</code> to use with this
+     * <code>MetaContact</code> for a precise operation (IM, call, ...).
      *
      * @param operationSet the operation for which the default contact is needed
      * @return the default contact for the specified operation.
@@ -55,7 +55,7 @@ public interface MetaContact extends Comparable<MetaContact>
     Contact getDefaultContact(Class<? extends OperationSet> operationSet);
 
     /**
-     * Returns the first found protocol specific <tt>Contact</tt> of the <tt>MetaContact</tt>
+     * Returns the first found protocol specific <code>Contact</code> of the <code>MetaContact</code>
      * that support a precise operation (IM, call, ...).
      * Currently the main use is to display the call button for user access
      *
@@ -67,16 +67,16 @@ public interface MetaContact extends Comparable<MetaContact>
     boolean isFeatureSupported(String feature);
 
     /**
-     * Returns a <tt>java.util.Iterator</tt> with all protocol specific
-     * <tt>Contacts</tt> encapsulated by this <tt>MetaContact</tt>.
+     * Returns a <code>java.util.Iterator</code> with all protocol specific
+     * <code>Contacts</code> encapsulated by this <code>MetaContact</code>.
      * <p>
      * Note to implementors:  In order to prevent problems with concurrency, the
-     * <tt>Iterator</tt> returned by this method should not be over the actual
+     * <code>Iterator</code> returned by this method should not be over the actual
      * list of contacts but rather over a copy of that list.
      * <p>
      *
-     * @return a <tt>java.util.Iterator</tt> containing all protocol specific
-     * <tt>Contact</tt>s that were registered as subContacts for this <tt>MetaContact</tt>
+     * @return a <code>java.util.Iterator</code> containing all protocol specific
+     * <code>Contact</code>s that were registered as subContacts for this <code>MetaContact</code>
      */
     Iterator<Contact> getContacts();
 
@@ -87,27 +87,27 @@ public interface MetaContact extends Comparable<MetaContact>
      * @param contactAddress the address of the contact who we're looking for.
      * @param ownerProvider a reference to the ProtocolProviderService that
      * the contact we're looking for belongs to.
-     * @return a reference to a <tt>Contact</tt>, encapsulated by this
+     * @return a reference to a <code>Contact</code>, encapsulated by this
      * MetaContact, carrying the specified address and originating from the
      * specified ownerProvider or null if no such contact exists..
      */
     Contact getContact(String contactAddress, ProtocolProviderService ownerProvider);
 
     /**
-     * Returns <tt>true</tt> if the given <tt>protocolContact</tt> is contained
-     * in this <tt>MetaContact</tt>, otherwise - returns <tt>false</tt>.
+     * Returns <code>true</code> if the given <code>protocolContact</code> is contained
+     * in this <code>MetaContact</code>, otherwise - returns <code>false</code>.
      *
-     * @param protocolContact the <tt>Contact</tt> we're looking for
-     * @return <tt>true</tt> if the given <tt>protocolContact</tt> is contained
-     * in this <tt>MetaContact</tt>, otherwise - returns <tt>false</tt>
+     * @param protocolContact the <code>Contact</code> we're looking for
+     * @return <code>true</code> if the given <code>protocolContact</code> is contained
+     * in this <code>MetaContact</code>, otherwise - returns <code>false</code>
      */
     boolean containsContact(Contact protocolContact);
 
     /**
-     * Returns the number of protocol specific <tt>Contact</tt>s that this <tt>MetaContact</tt> contains.
+     * Returns the number of protocol specific <code>Contact</code>s that this <code>MetaContact</code> contains.
      *
      * @return an int indicating the number of protocol specific contacts merged
-     * in this <tt>MetaContact</tt>
+     * in this <code>MetaContact</code>
      */
     int getContactCount();
 
@@ -118,31 +118,31 @@ public interface MetaContact extends Comparable<MetaContact>
      * specified provider then an empty iterator is returned.
      * <p>
      * Note to implementors:  In order to prevent problems with concurrency, the
-     * <tt>Iterator</tt> returned by this method should not be over the actual
+     * <code>Iterator</code> returned by this method should not be over the actual
      * list of contacts but rather over a copy of that list.
      * <p>
      *
-     * @param provider a reference to the <tt>ProtocolProviderService</tt>
+     * @param provider a reference to the <code>ProtocolProviderService</code>
      * whose contacts we'd like to get.
-     * @return an <tt>Iterator</tt> over all contacts encapsulated in this
-     * <tt>MetaContact</tt> and originating from the specified provider.
+     * @return an <code>Iterator</code> over all contacts encapsulated in this
+     * <code>MetaContact</code> and originating from the specified provider.
      */
     Iterator<Contact> getContactsForProvider(ProtocolProviderService provider);
 
     /**
      * Returns all protocol specific Contacts, encapsulated by this MetaContact
-     * and supporting the given <tt>opSetClass</tt>. If none of the
+     * and supporting the given <code>opSetClass</code>. If none of the
      * contacts encapsulated by this MetaContact is supporting the specified
-     * <tt>OperationSet</tt> class then an empty list is returned.
+     * <code>OperationSet</code> class then an empty list is returned.
      * <p>
      * Note to implementors:  In order to prevent problems with concurrency, the
-     * <tt>List</tt> returned by this method should not be the actual list of
+     * <code>List</code> returned by this method should not be the actual list of
      * contacts but rather a copy of that list.
      * <p>
      *
      * @param opSetClass the operation for which the default contact is needed
-     * @return a <tt>List</tt> of all contacts encapsulated in this
-     * <tt>MetaContact</tt> and supporting the specified <tt>OperationSet</tt>
+     * @return a <code>List</code> of all contacts encapsulated in this
+     * <code>MetaContact</code> and supporting the specified <code>OperationSet</code>
      */
     List<Contact> getContactsForOperationSet(Class<? extends OperationSet> opSetClass);
 
@@ -155,7 +155,7 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns a String identifier (the actual contents is left to
-     * implementations) that uniquely represents this <tt>MetaContact</tt> in the containing <tt>MetaContactList</tt>
+     * implementations) that uniquely represents this <code>MetaContact</code> in the containing <code>MetaContactList</code>
      *
      * @return String
      */
@@ -177,7 +177,7 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns a characteristic display name that can be used when including
-     * this <tt>MetaContact</tt> in user interface.
+     * this <code>MetaContact</code> in user interface.
      *
      * @return a human readable String that represents this meta contact.
      */
@@ -185,7 +185,7 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns the avatar of this contact, that can be used when including this
-     * <tt>MetaContact</tt> in user interface.
+     * <code>MetaContact</code> in user interface.
      *
      * @return an avatar (e.g. user photo) of this contact.
      */
@@ -193,7 +193,7 @@ public interface MetaContact extends Comparable<MetaContact>
 
     /**
      * Returns the avatar of this contact, that can be used when including this
-     * <tt>MetaContact</tt> in user interface. The isLazy
+     * <code>MetaContact</code> in user interface. The isLazy
      * parameter would tell the implementation if it could return the locally
      * stored avatar or it should obtain the avatar right from the server.
      *
@@ -204,9 +204,9 @@ public interface MetaContact extends Comparable<MetaContact>
     byte[] getAvatar(boolean isLazy);
 
     /**
-     * Returns a String representation of this <tt>MetaContact</tt>.
+     * Returns a String representation of this <code>MetaContact</code>.
      *
-     * @return a String representation of this <tt>MetaContact</tt>.
+     * @return a String representation of this <code>MetaContact</code>.
      */
     String toString();
 
@@ -256,17 +256,17 @@ public interface MetaContact extends Comparable<MetaContact>
      * Gets the user data associated with this instance and a specific key.
      *
      * @param key the key of the user data associated with this instance to be retrieved
-     * @return an <tt>Object</tt> which represents the value associated with
-     * this instance and the specified <tt>key</tt>; <tt>null</tt> if no
-     * association with the specified <tt>key</tt> exists in this instance
+     * @return an <code>Object</code> which represents the value associated with
+     * this instance and the specified <code>key</code>; <code>null</code> if no
+     * association with the specified <code>key</code> exists in this instance
      */
     Object getData(Object key);
 
     /**
      * Sets a user-specific association in this instance in the form of a
-     * key-value pair. If the specified <tt>key</tt> is already associated in
+     * key-value pair. If the specified <code>key</code> is already associated in
      * this instance with a value, the existing value is overwritten with the
-     * specified <tt>value</tt>.
+     * specified <code>value</code>.
      * <p>
      * The user-defined association created by this method and stored in this
      * instance is not serialized by this instance and is thus only meant for runtime use.
@@ -277,7 +277,7 @@ public interface MetaContact extends Comparable<MetaContact>
      * </p>
      *
      * @param key the key to associate in this instance with the specified value
-     * @param value the value to be associated in this instance with the specified <tt>key</tt>
+     * @param value the value to be associated in this instance with the specified <code>key</code>
      */
     void setData(Object key, Object value);
 }

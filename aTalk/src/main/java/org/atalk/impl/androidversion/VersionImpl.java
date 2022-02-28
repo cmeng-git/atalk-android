@@ -37,7 +37,7 @@ public class VersionImpl extends AbstractVersion
     public static final boolean IS_NIGHTLY_BUILD = true;
 
     /**
-     * Creates new instance of <tt>VersionImpl</tt> with given major, minor and nightly build id
+     * Creates new instance of <code>VersionImpl</code> with given major, minor and nightly build id
      * parameters.
      *
      * @param major the major version number.

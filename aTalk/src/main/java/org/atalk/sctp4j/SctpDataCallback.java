@@ -23,7 +23,7 @@ package org.atalk.sctp4j;
 public interface SctpDataCallback
 {
 	/**
-	 * Callback fired by <tt>SctpSocket</tt> to notify about incoming data.
+	 * Callback fired by <code>SctpSocket</code> to notify about incoming data.
 	 *
 	 * @param data
 	 * 		buffer holding received data.

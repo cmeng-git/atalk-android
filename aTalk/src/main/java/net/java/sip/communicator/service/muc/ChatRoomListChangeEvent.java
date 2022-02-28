@@ -43,9 +43,9 @@ public class ChatRoomListChangeEvent extends EventObject
     public static final int CHAT_ROOM_CHANGED = 3;
 
     /**
-     * Creates a new <tt>ChatRoom</tt> event according to the specified parameters.
+     * Creates a new <code>ChatRoom</code> event according to the specified parameters.
      *
-     * @param source the <tt>ChatRoom</tt> instance that is added to the ChatRoomsList
+     * @param source the <code>ChatRoom</code> instance that is added to the ChatRoomsList
      * @param eventID one of the CHAT_ROOM_XXX static fields indicating the nature of the event.
      */
     public ChatRoomListChangeEvent(ChatRoomWrapper source, int eventID)
@@ -55,9 +55,9 @@ public class ChatRoomListChangeEvent extends EventObject
     }
 
     /**
-     * Returns the source <tt>ChatRoom</tt>.
+     * Returns the source <code>ChatRoom</code>.
      *
-     * @return the source <tt>ChatRoom</tt>.
+     * @return the source <code>ChatRoom</code>.
      */
     public ChatRoomWrapper getSourceChatRoom()
     {
@@ -65,9 +65,9 @@ public class ChatRoomListChangeEvent extends EventObject
     }
 
     /**
-     * Returns a String representation of this <tt>GuiChatRoomEvent</tt>.
+     * Returns a String representation of this <code>GuiChatRoomEvent</code>.
      *
-     * @return A String representation of this <tt>GuiChatRoomEvent</tt>.
+     * @return A String representation of this <code>GuiChatRoomEvent</code>.
      */
     @Override
     public String toString()

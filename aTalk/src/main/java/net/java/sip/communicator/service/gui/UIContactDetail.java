@@ -11,9 +11,9 @@ import net.java.sip.communicator.service.protocol.*;
 import java.util.*;
 
 /**
- * The <tt>UIContactDetail</tt> corresponds to a particular contact detail,
+ * The <code>UIContactDetail</code> corresponds to a particular contact detail,
  * phone number, IM identifier, email, etc. which has it's preferred mode of
- * transport <tt>ProtocolProviderService</tt>.
+ * transport <code>ProtocolProviderService</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -36,7 +36,7 @@ public abstract class UIContactDetail
     private final String displayName;
 
     /**
-     * The <tt>ProtocolProviderService</tt> corresponding to this detail.
+     * The <code>ProtocolProviderService</code> corresponding to this detail.
      */
     private Map<Class<? extends OperationSet>, ProtocolProviderService> preferredProviders;
 
@@ -61,8 +61,8 @@ public abstract class UIContactDetail
     private final Object descriptor;
 
     /**
-     * Creates a <tt>UIContactDetail</tt> by specifying the contact
-     * <tt>address</tt>, the <tt>displayName</tt> and <tt>preferredProvider</tt>.
+     * Creates a <code>UIContactDetail</code> by specifying the contact
+     * <code>address</code>, the <code>displayName</code> and <code>preferredProvider</code>.
      *
      * @param address the contact address
      * @param displayName the contact display name
@@ -83,8 +83,8 @@ public abstract class UIContactDetail
     }
 
     /**
-     * Creates a <tt>UIContactDetail</tt> by specifying the contact
-     * <tt>address</tt>, the <tt>displayName</tt> and <tt>preferredProvider</tt>.
+     * Creates a <code>UIContactDetail</code> by specifying the contact
+     * <code>address</code>, the <code>displayName</code> and <code>preferredProvider</code>.
      *
      * @param address the contact address
      * @param displayName the contact display name
@@ -160,9 +160,9 @@ public abstract class UIContactDetail
 
     /**
      * Returns the protocol provider preferred for contacting this detail for
-     * the given <tt>OperationSet</tt> class.
+     * the given <code>OperationSet</code> class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking for provider
+     * @param opSetClass the <code>OperationSet</code> class for which we're looking for provider
      * @return the protocol provider preferred for contacting this detail
      */
     public ProtocolProviderService getPreferredProtocolProvider(Class<? extends OperationSet> opSetClass)
@@ -175,7 +175,7 @@ public abstract class UIContactDetail
     /**
      * Adds a preferred protocol provider for a given OperationSet class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking for protocol
+     * @param opSetClass the <code>OperationSet</code> class for which we're looking for protocol
      * @param protocolProvider the preferred protocol provider to add
      */
     public void addPreferredProtocolProvider(
@@ -189,10 +189,10 @@ public abstract class UIContactDetail
 
     /**
      * Returns the name of the protocol preferred for contacting this detail for
-     * the given <tt>OperationSet</tt> class if no preferred protocol provider
+     * the given <code>OperationSet</code> class if no preferred protocol provider
      * is set.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking
+     * @param opSetClass the <code>OperationSet</code> class for which we're looking
      * for protocol
      * @return the name of the protocol preferred for contacting this detail
      */
@@ -206,7 +206,7 @@ public abstract class UIContactDetail
     /**
      * Adds a preferred protocol for a given OperationSet class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class for which we're looking for protocol
+     * @param opSetClass the <code>OperationSet</code> class for which we're looking for protocol
      * @param protocol the preferred protocol to add
      */
     public void addPreferredProtocol(Class<? extends OperationSet> opSetClass, String protocol)
@@ -248,10 +248,10 @@ public abstract class UIContactDetail
     }
 
     /**
-     * Returns the <tt>PresenceStatus</tt> of this <tt>ContactDetail</tt> or
+     * Returns the <code>PresenceStatus</code> of this <code>ContactDetail</code> or
      * null if the detail doesn't support presence.
      *
-     * @return the <tt>PresenceStatus</tt> of this <tt>ContactDetail</tt> or
+     * @return the <code>PresenceStatus</code> of this <code>ContactDetail</code> or
      * null if the detail doesn't support presence
      */
     public abstract PresenceStatus getPresenceStatus();

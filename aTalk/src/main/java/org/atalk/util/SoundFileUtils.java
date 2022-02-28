@@ -50,8 +50,8 @@ public class SoundFileUtils
     /**
      * Checks whether this file is a sound file.
      *
-     * @param f <tt>File</tt> to check
-     * @return <tt>true</tt> if it's a sound file, <tt>false</tt> otherwise
+     * @param f <code>File</code> to check
+     * @return <code>true</code> if it's a sound file, <code>false</code> otherwise
      */
     public static boolean isSoundFile(File f)
     {
@@ -75,13 +75,13 @@ public class SoundFileUtils
     /**
      * Checks whether this file is a sound file.
      *
-     * @param f <tt>File</tt> to check
+     * @param f <code>File</code> to check
      * @param soundFormats The sound formats to restrict the file name
      * extension. If soundFormats is null, then every sound format defined by
      * SoundFileUtils is correct.
-     * @return <tt>true</tt> if it's a sound file conforming to the format given
+     * @return <code>true</code> if it's a sound file conforming to the format given
      * in parameters (if soundFormats is null, then every sound format defined
-     * by SoundFileUtils is correct), <tt>false</tt> otherwise.
+     * by SoundFileUtils is correct), <code>false</code> otherwise.
      */
     public static boolean isSoundFile(File f, String[] soundFormats)
     {

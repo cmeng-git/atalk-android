@@ -92,8 +92,8 @@ public abstract class AbstractOperationSetMultiUserChat implements OperationSetM
     }
 
     /**
-     * Delivers a <tt>ChatRoomInvitationRejectedEvent</tt> to all registered
-     * <tt>ChatRoomInvitationRejectionListener</tt>s.
+     * Delivers a <code>ChatRoomInvitationRejectedEvent</code> to all registered
+     * <code>ChatRoomInvitationRejectionListener</code>s.
      *
      * @param sourceChatRoom the room that invitation refers to
      * @param invitee the name of the invitee that rejected the invitation
@@ -114,10 +114,10 @@ public abstract class AbstractOperationSetMultiUserChat implements OperationSetM
     }
 
     /**
-     * Delivers a <tt>LocalUserChatRoomPresenceChangeEvent</tt> to all registered
-     * <tt>LocalUserChatRoomPresenceListener</tt>s.
+     * Delivers a <code>LocalUserChatRoomPresenceChangeEvent</code> to all registered
+     * <code>LocalUserChatRoomPresenceListener</code>s.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> which has been joined, left, etc.
+     * @param chatRoom the <code>ChatRoom</code> which has been joined, left, etc.
      * @param eventType the type of this event; one of LOCAL_USER_JOINED, LOCAL_USER_LEFT, etc.
      * @param reason the reason
      */
@@ -127,10 +127,10 @@ public abstract class AbstractOperationSetMultiUserChat implements OperationSetM
     }
 
     /**
-     * Delivers a <tt>LocalUserChatRoomPresenceChangeEvent</tt> to all registered
-     * <tt>LocalUserChatRoomPresenceListener</tt>s.
+     * Delivers a <code>LocalUserChatRoomPresenceChangeEvent</code> to all registered
+     * <code>LocalUserChatRoomPresenceListener</code>s.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> which has been joined, left, etc.
+     * @param chatRoom the <code>ChatRoom</code> which has been joined, left, etc.
      * @param eventType the type of this event; one of LOCAL_USER_JOINED, LOCAL_USER_LEFT, etc.
      * @param reason the reason
      * @param alternateAddress address of the new room, if old is destroyed.

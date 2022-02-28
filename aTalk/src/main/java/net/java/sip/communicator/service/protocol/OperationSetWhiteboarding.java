@@ -17,21 +17,21 @@ import net.java.sip.communicator.service.protocol.event.*;
 public interface OperationSetWhiteboarding extends OperationSet
 {
 	/**
-	 * Returns a list of the <tt>WhiteboardSession</tt>s that we have joined and are currently
+	 * Returns a list of the <code>WhiteboardSession</code>s that we have joined and are currently
 	 * active in.
 	 *
-	 * @return a <tt>List</tt> of the <tt>WhiteboardSession</tt>s where the user has joined using a
+	 * @return a <code>List</code> of the <code>WhiteboardSession</code>s where the user has joined using a
 	 *         given connection.
 	 */
 	public List<WhiteboardSession> getCurrentlyJoinedWhiteboards();
 
 	/**
-	 * Returns a list of the <tt>WhiteboardSession</tt>s that <tt>WhiteboardParticipant</tt> has
+	 * Returns a list of the <code>WhiteboardSession</code>s that <code>WhiteboardParticipant</code> has
 	 * joined and is currently active in.
 	 *
 	 * @param participant
-	 *        the participant whose current <tt>WhiteboardSession</tt>s we will be querying.
-	 * @return a list of the <tt>WhiteboardSession</tt>s that <tt>WhiteboardParticipant</tt> has
+	 *        the participant whose current <code>WhiteboardSession</code>s we will be querying.
+	 * @return a list of the <code>WhiteboardSession</code>s that <code>WhiteboardParticipant</code> has
 	 *         joined and is currently active in.
 	 *
 	 * @throws OperationFailedException
@@ -43,14 +43,14 @@ public interface OperationSetWhiteboarding extends OperationSet
 		throws OperationFailedException, OperationNotSupportedException;
 
 	/**
-	 * Creates a <tt>WhiteboardSession</tt> with the name <tt>sessionName</tt> and according to the
-	 * specified <tt>sessionProperties</tt>. When the method returns the white-board session object,
+	 * Creates a <code>WhiteboardSession</code> with the name <code>sessionName</code> and according to the
+	 * specified <code>sessionProperties</code>. When the method returns the white-board session object,
 	 * the local user will not have joined it and thus will not receive messages on it until the
-	 * <tt>WhiteboardSession.join()</tt> method is called.
+	 * <code>WhiteboardSession.join()</code> method is called.
 	 * <p>
 	 * 
 	 * @param sessionName
-	 *        the name of the <tt>WhiteboardSession</tt> to create.
+	 *        the name of the <code>WhiteboardSession</code> to create.
 	 * @param sessionProperties
 	 *        properties specifying how the session should be created.
 	 * @throws OperationFailedException
@@ -59,20 +59,20 @@ public interface OperationSetWhiteboarding extends OperationSet
 	 * @throws OperationNotSupportedException
 	 *         if chat room creation is not supported by this server
 	 *
-	 * @return the newly created <tt>WhiteboardSession</tt> named <tt>sessionName</tt>.
+	 * @return the newly created <code>WhiteboardSession</code> named <code>sessionName</code>.
 	 */
 	public WhiteboardSession createWhiteboardSession(String sessionName,
 		Hashtable<Object, Object> sessionProperties)
 		throws OperationFailedException, OperationNotSupportedException;
 
 	/**
-	 * Returns a reference to a <tt>WhiteboardSession</tt> named <tt>sessionName</tt> or null if no
+	 * Returns a reference to a <code>WhiteboardSession</code> named <code>sessionName</code> or null if no
 	 * such session exists.
 	 * <p>
 	 * 
 	 * @param sessionName
-	 *        the name of the <tt>WhiteboardSession</tt> that we're looking for.
-	 * @return the <tt>WhiteboardSession</tt> named <tt>sessionName</tt> or null if no such session
+	 *        the name of the <code>WhiteboardSession</code> that we're looking for.
+	 * @return the <code>WhiteboardSession</code> named <code>sessionName</code> or null if no such session
 	 *         exists on the server that this provider is currently connected to.
 	 *
 	 * @throws OperationFailedException
@@ -103,7 +103,7 @@ public interface OperationSetWhiteboarding extends OperationSet
 	public void addInvitationListener(WhiteboardInvitationListener listener);
 
 	/**
-	 * Removes <tt>listener</tt> from the list of invitation listeners registered to receive
+	 * Removes <code>listener</code> from the list of invitation listeners registered to receive
 	 * invitation events.
 	 *
 	 * @param listener
@@ -130,11 +130,11 @@ public interface OperationSetWhiteboarding extends OperationSet
 	public void removeInvitationRejectionListener(WhiteboardInvitationRejectionListener listener);
 
 	/**
-	 * Returns true if <tt>contact</tt> supports white-board sessions.
+	 * Returns true if <code>contact</code> supports white-board sessions.
 	 *
 	 * @param contact
 	 *        reference to the contact whose support for white-boards we are currently querying.
-	 * @return a boolean indicating whether <tt>contact</tt> supports white-boards.
+	 * @return a boolean indicating whether <code>contact</code> supports white-boards.
 	 */
 	public boolean isWhiteboardingSupportedByContact(Contact contact);
 

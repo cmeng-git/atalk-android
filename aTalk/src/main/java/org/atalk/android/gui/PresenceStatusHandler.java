@@ -94,7 +94,7 @@ public class PresenceStatusHandler implements ServiceListener, RegistrationState
     }
 
     /**
-     * Updates presence status on given <tt>protocolProvider</tt> depending on its state.
+     * Updates presence status on given <code>protocolProvider</code> depending on its state.
      *
      * @param protocolProvider the protocol provider for which new status will be adjusted.
      */

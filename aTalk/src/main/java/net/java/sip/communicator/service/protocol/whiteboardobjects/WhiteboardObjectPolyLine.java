@@ -31,19 +31,19 @@ public interface WhiteboardObjectPolyLine extends WhiteboardObject
 	public static final String NAME = "WHITEBOARDOBJECTPOLYLINE";
 
 	/**
-	 * Returns a list of all the <tt>WhiteboardPoint</tt> instances that this
-	 * <tt>WhiteboardObject</tt> is composed of.
+	 * Returns a list of all the <code>WhiteboardPoint</code> instances that this
+	 * <code>WhiteboardObject</code> is composed of.
 	 *
-	 * @return the list of <tt>WhiteboardPoint</tt>s composing this object.
+	 * @return the list of <code>WhiteboardPoint</code>s composing this object.
 	 */
 	public List<WhiteboardPoint> getPoints();
 
 	/**
-	 * Sets the list of <tt>WhiteboardPoint</tt> instances that this <tt>WhiteboardObject</tt> is
+	 * Sets the list of <code>WhiteboardPoint</code> instances that this <code>WhiteboardObject</code> is
 	 * composed of.
 	 *
 	 * @param points
-	 *        the list of <tt>WhiteboardPoint</tt> instances that this <tt>WhiteboardObject</tt> is
+	 *        the list of <code>WhiteboardPoint</code> instances that this <code>WhiteboardObject</code> is
 	 *        composed of.
 	 */
 	public void setPoints(List<WhiteboardPoint> points);

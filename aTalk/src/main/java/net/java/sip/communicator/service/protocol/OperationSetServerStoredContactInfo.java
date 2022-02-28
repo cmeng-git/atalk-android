@@ -83,7 +83,7 @@ public interface OperationSetServerStoredContactInfo extends OperationSet
 	 *        the specified contact
 	 * @return a java.util.Iterator over all details existing for the specified contact. If there
 	 *         are missing in the local cache null value will be returned and they will be scheduled
-	 *         for retrieve. The <tt>listener</tt> will be used to inform that retrieve has
+	 *         for retrieve. The <code>listener</code> will be used to inform that retrieve has
 	 *         finished.
 	 */
 	public Iterator<GenericDetail> requestAllDetailsForContact(Contact contact,

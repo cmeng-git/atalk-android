@@ -23,7 +23,7 @@ import org.atalk.android.gui.util.AndroidImageUtil;
 import timber.log.Timber;
 
 /**
- * The <tt>ActionBarUtil</tt> provides utility methods for setting action bar avatar and display name.
+ * The <code>ActionBarUtil</code> provides utility methods for setting action bar avatar and display name.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -34,7 +34,7 @@ public class ActionBarUtil
     /**
      * Sets the action bar title for the given activity.
      *
-     * @param activity the <tt>Activity</tt>, for which we set the action bar title
+     * @param activity the <code>Activity</code>, for which we set the action bar title
      * @param title the title string to set
      */
     public static void setTitle(AppCompatActivity activity, CharSequence title)
@@ -55,7 +55,7 @@ public class ActionBarUtil
     /**
      * Sets the action bar subtitle for the given activity.
      *
-     * @param activity the <tt>Activity</tt>, for which we set the action bar subtitle
+     * @param activity the <code>Activity</code>, for which we set the action bar subtitle
      * @param subtitle the subtitle string to set
      */
     public static void setSubtitle(AppCompatActivity activity, String subtitle)
@@ -74,7 +74,7 @@ public class ActionBarUtil
     /**
      * Set the action bar status for the given activity.
      *
-     * @param activity the <tt>Activity</tt>, for which we get the action bar title
+     * @param activity the <code>Activity</code>, for which we get the action bar title
      * @param statusIcon display Icon per the user status
      */
     public static void setStatus(AppCompatActivity activity, byte[] statusIcon)
@@ -94,7 +94,7 @@ public class ActionBarUtil
     /**
      * Gets the action bar title for the given activity.
      *
-     * @param activity the <tt>Activity</tt>, for which we get the action bar title
+     * @param activity the <code>Activity</code>, for which we get the action bar title
      * @return the title string
      */
     public static String getStatus(AppCompatActivity activity)

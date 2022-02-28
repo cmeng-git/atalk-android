@@ -26,7 +26,7 @@ import org.atalk.android.aTalkApp;
 import java.util.*;
 
 /**
- * The <tt>CallHistoryContactSource</tt> is the contact source for the call history.
+ * The <code>CallHistoryContactSource</code> is the contact source for the call history.
  *
  * @author Yana Stamcheva
  * @author Hristo Terezov
@@ -45,7 +45,7 @@ public class CallHistoryContactSource implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>searchString</tt>.
+     * Creates query for the given <code>searchString</code>.
      *
      * @param queryString the string to search for
      * @return the created query
@@ -56,7 +56,7 @@ public class CallHistoryContactSource implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>searchString</tt>.
+     * Creates query for the given <code>searchString</code>.
      *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts
@@ -75,7 +75,7 @@ public class CallHistoryContactSource implements ContactSourceService
     }
 
     /**
-     * The <tt>CallHistoryContactQuery</tt> contains information about a current
+     * The <code>CallHistoryContactQuery</code> contains information about a current
      * query to the contact source.
      */
     private class CallHistoryContactQuery implements ContactQuery
@@ -91,8 +91,8 @@ public class CallHistoryContactSource implements ContactSourceService
         private final List<SourceContact> sourceContacts = new LinkedList<>();
 
         /**
-         * The underlying <tt>CallHistoryQuery</tt>, on which this
-         * <tt>ContactQuery</tt> is based.
+         * The underlying <code>CallHistoryQuery</code>, on which this
+         * <code>ContactQuery</code> is based.
          */
         private CallHistoryQuery callHistoryQuery;
 
@@ -112,7 +112,7 @@ public class CallHistoryContactSource implements ContactSourceService
         private boolean showMoreLabelAllowed = true;
 
         /**
-         * Creates an instance of <tt>CallHistoryContactQuery</tt> by specifying the list of call records results.
+         * Creates an instance of <code>CallHistoryContactQuery</code> by specifying the list of call records results.
          *
          * @param callRecords the list of call records, which are the result of this query
          */
@@ -168,8 +168,8 @@ public class CallHistoryContactSource implements ContactSourceService
         }
 
         /**
-         * Creates an instance of <tt>CallHistoryContactQuery</tt> based on the
-         * given <tt>callHistoryQuery</tt>.
+         * Creates an instance of <code>CallHistoryContactQuery</code> based on the
+         * given <code>callHistoryQuery</code>.
          *
          * @param callHistoryQuery the query used to track the call history
          */
@@ -179,10 +179,10 @@ public class CallHistoryContactSource implements ContactSourceService
         }
 
         /**
-         * Adds the given <tt>ContactQueryListener</tt> to the list of query
+         * Adds the given <code>ContactQueryListener</code> to the list of query
          * listeners.
          *
-         * @param l the <tt>ContactQueryListener</tt> to add
+         * @param l the <code>ContactQueryListener</code> to add
          */
         public void addContactQueryListener(ContactQueryListener l)
         {
@@ -214,10 +214,10 @@ public class CallHistoryContactSource implements ContactSourceService
         }
 
         /**
-         * Removes the given <tt>ContactQueryListener</tt> from the list of
+         * Removes the given <code>ContactQueryListener</code> from the list of
          * query listeners.
          *
-         * @param l the <tt>ContactQueryListener</tt> to remove
+         * @param l the <code>ContactQueryListener</code> to remove
          */
         public void removeContactQueryListener(ContactQueryListener l)
         {
@@ -237,10 +237,10 @@ public class CallHistoryContactSource implements ContactSourceService
         }
 
         /**
-         * Returns the <tt>ContactSourceService</tt>, where this query was first
+         * Returns the <code>ContactSourceService</code>, where this query was first
          * initiated.
          *
-         * @return the <tt>ContactSourceService</tt>, where this query was first
+         * @return the <code>ContactSourceService</code>, where this query was first
          * initiated
          */
         public ContactSourceService getContactSource()
@@ -249,10 +249,10 @@ public class CallHistoryContactSource implements ContactSourceService
         }
 
         /**
-         * Notifies all registered <tt>ContactQueryListener</tt>s that a new
+         * Notifies all registered <code>ContactQueryListener</code>s that a new
          * contact has been received.
          *
-         * @param contact the <tt>SourceContact</tt> this event is about
+         * @param contact the <code>SourceContact</code> this event is about
          */
         private void fireQueryEvent(SourceContact contact)
         {
@@ -268,7 +268,7 @@ public class CallHistoryContactSource implements ContactSourceService
         }
 
         /**
-         * Notifies all registered <tt>ContactQueryListener</tt>s that a new
+         * Notifies all registered <code>ContactQueryListener</code>s that a new
          * record has been received.
          *
          * @param newStatus the new status

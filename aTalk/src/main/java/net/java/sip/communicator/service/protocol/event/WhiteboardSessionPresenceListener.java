@@ -28,7 +28,7 @@ public interface WhiteboardSessionPresenceListener extends EventListener
      * Called to notify interested parties that a change in our presence in a white-board has
      * occured. Changes may include us being joined, left, dropped.
      *
-     * @param evt the <tt>WhiteboardSessionPresenceChangeEvent</tt> instance containing the session and
+     * @param evt the <code>WhiteboardSessionPresenceChangeEvent</code> instance containing the session and
      * the type, and reason of the change
      */
     void whiteboardSessionPresenceChanged(WhiteboardSessionPresenceChangeEvent evt);

@@ -14,9 +14,9 @@ import net.java.sip.communicator.service.protocol.event.*;
 
 
 /**
- * <tt>CallPeerAdapter</tt> implements common <tt>CallPeer</tt> related
+ * <code>CallPeerAdapter</code> implements common <code>CallPeer</code> related
  * listeners in order to facilitate the task of implementing
- * <tt>CallPeerRenderer</tt>.
+ * <code>CallPeerRenderer</code>.
  *
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
@@ -25,25 +25,25 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
     implements CallPeerSecurityListener, PropertyChangeListener
 {
     /**
-     * The <tt>CallPeer</tt> which is depicted by {@link #renderer}.
+     * The <code>CallPeer</code> which is depicted by {@link #renderer}.
      */
     private final CallPeer peer;
 
     /**
-     * The <tt>CallPeerRenderer</tt> which is facilitated by this instance.
+     * The <code>CallPeerRenderer</code> which is facilitated by this instance.
      */
     private final CallPeerRenderer renderer;
 
     /**
-     * Initializes a new <tt>CallPeerAdapter</tt> instance which is to listen to
-     * a specific <tt>CallPeer</tt> on behalf of a specific
-     * <tt>CallPeerRenderer</tt>. The new instance adds itself to the specified
-     * <tt>CallPeer</tt> as a listener for each of the implemented listener
+     * Initializes a new <code>CallPeerAdapter</code> instance which is to listen to
+     * a specific <code>CallPeer</code> on behalf of a specific
+     * <code>CallPeerRenderer</code>. The new instance adds itself to the specified
+     * <code>CallPeer</code> as a listener for each of the implemented listener
      * types.
      *
-     * @param peer the <tt>CallPeer</tt> which the new instance is to listen to
-     * on behalf of the specified <tt>renderer</tt>
-     * @param renderer the <tt>CallPeerRenderer</tt> which is to be facilitated
+     * @param peer the <code>CallPeer</code> which the new instance is to listen to
+     * on behalf of the specified <code>renderer</code>
+     * @param renderer the <code>CallPeerRenderer</code> which is to be facilitated
      * by the new instance
      */
     public CallPeerAdapter(CallPeer peer, CallPeerRenderer renderer)
@@ -58,7 +58,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
 
     /**
      * Removes the listeners implemented by this instance from the associated
-     * <tt>CallPeer</tt> and prepares it for garbage collection.
+     * <code>CallPeer</code> and prepares it for garbage collection.
      */
     public void dispose()
     {
@@ -157,7 +157,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
     /**
      * {@inheritDoc}
      *
-     * <tt>CallPeerAdapter</tt> does nothing.
+     * <code>CallPeerAdapter</code> does nothing.
      */
     public void securityMessageReceived(CallPeerSecurityMessageEvent event)
     {

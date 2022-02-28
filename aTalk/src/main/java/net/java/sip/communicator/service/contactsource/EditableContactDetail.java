@@ -16,7 +16,7 @@
 package net.java.sip.communicator.service.contactsource;
 
 /**
- * The <tt>EditableContactDetail</tt> is a <tt>ContactDetail</tt> that allows
+ * The <code>EditableContactDetail</code> is a <code>ContactDetail</code> that allows
  * editing.
  *
  * @see ContactDetail
@@ -32,7 +32,7 @@ public abstract class EditableContactDetail
     private EditableSourceContact sourceContact = null;
 
     /**
-     * Creates a <tt>ContactDetail</tt> by specifying the contact address,
+     * Creates a <code>ContactDetail</code> by specifying the contact address,
      * corresponding to this detail.
      * @param contactDetailValue the contact detail value corresponding to this
      * detail
@@ -43,15 +43,15 @@ public abstract class EditableContactDetail
     }
 
     /**
-     * Initializes a new <tt>ContactDetail</tt> instance which is to represent a
+     * Initializes a new <code>ContactDetail</code> instance which is to represent a
      * specific contact address and which is to be optionally labeled with a
      * specific set of labels.
      *
      * @param contactDetailValue the contact detail value to be represented by
-     * the new <tt>ContactDetail</tt> instance
+     * the new <code>ContactDetail</code> instance
      * @param category
      * @param subCategories the set of sub categories with which the new
-     * <tt>ContactDetail</tt> instance is to be labeled.
+     * <code>ContactDetail</code> instance is to be labeled.
      */
     public EditableContactDetail(
             String contactDetailValue,

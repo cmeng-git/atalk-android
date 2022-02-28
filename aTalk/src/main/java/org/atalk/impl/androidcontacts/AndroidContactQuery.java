@@ -72,7 +72,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
     // private CancellationSignal cancelSignal = new CancellationSignal();
 
     /**
-     * Creates new instance of <tt>AndroidContactQuery</tt>.
+     * Creates new instance of <code>AndroidContactQuery</code>.
      *
      * @param contactSource parent Android contact source.
      * @param queryString query string.
@@ -192,9 +192,9 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
     }
 
     /**
-     * Returns the list of <tt>SourceContact</tt>s returned by this query.
+     * Returns the list of <code>SourceContact</code>s returned by this query.
      *
-     * @return the list of <tt>SourceContact</tt>s returned by this query
+     * @return the list of <code>SourceContact</code>s returned by this query
      */
     @Override
     public List<SourceContact> getQueryResults()

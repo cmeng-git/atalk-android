@@ -6,7 +6,7 @@
 package org.atalk.service.neomedia;
 
 /**
- * The <tt>MediaUseCase</tt> enumeration contains a list of use-cases for media related. Typically
+ * The <code>MediaUseCase</code> enumeration contains a list of use-cases for media related. Typically
  * it can be used to differentiate a video call (video comes from webcam) and desktop session (video
  * comes from desktop).
  *
@@ -29,7 +29,7 @@ public enum MediaUseCase {
 	DESKTOP("desktop");
 
 	/**
-	 * Name of this <tt>MediaUseCase</tt>.
+	 * Name of this <code>MediaUseCase</code>.
 	 */
 	private final String mediaUseCase;
 
@@ -37,7 +37,7 @@ public enum MediaUseCase {
 	 * Constructor.
 	 *
 	 * @param mediaUseCase
-	 *        type of <tt>MediaUseCase</tt> we'd like to create
+	 *        type of <code>MediaUseCase</code> we'd like to create
 	 */
 	private MediaUseCase(String mediaUseCase)
 	{
@@ -45,9 +45,9 @@ public enum MediaUseCase {
 	}
 
 	/**
-	 * Returns the name of this <tt>MediaUseCase</tt>.
+	 * Returns the name of this <code>MediaUseCase</code>.
 	 *
-	 * @return the name of this <tt>MediaUseCase</tt>.
+	 * @return the name of this <code>MediaUseCase</code>.
 	 */
 	@Override
 	public String toString()
@@ -56,14 +56,14 @@ public enum MediaUseCase {
 	}
 
 	/**
-	 * Returns a <tt>MediaUseCase</tt> value corresponding to the specified <tt>mediaUseCase</tt>.
+	 * Returns a <code>MediaUseCase</code> value corresponding to the specified <code>mediaUseCase</code>.
 	 *
 	 * @param mediaUseCase
 	 *        the name that we'd like to parse.
-	 * @return a <tt>MediaUseCase</tt> value corresponding to the specified <tt>mediaUseCase</tt>.
+	 * @return a <code>MediaUseCase</code> value corresponding to the specified <code>mediaUseCase</code>.
 	 *
 	 * @throws IllegalArgumentException
-	 *         in case <tt>mediaUseCase</tt> is not a valid or currently supported media usecase.
+	 *         in case <code>mediaUseCase</code> is not a valid or currently supported media usecase.
 	 */
 	public static MediaUseCase parseString(String mediaUseCase)
 		throws IllegalArgumentException

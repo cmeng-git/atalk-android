@@ -6,15 +6,15 @@
 package net.java.sip.communicator.service.notification;
 
 /**
- * <tt>VibrateNotificationAction</tt> is meant to define haptic feedback notification using device's vibrator.<br/>
+ * <code>VibrateNotificationAction</code> is meant to define haptic feedback notification using device's vibrator.<br/>
  * <br/>
  *
- * Given array of <tt>long</tt> are the duration for which to turn on or off the vibrator in milliseconds.
+ * Given array of <code>long</code> are the duration for which to turn on or off the vibrator in milliseconds.
  * The first value indicates the number of milliseconds to wait before turning the vibrator on. The next value
  * indicates the number of milliseconds for which to keep the vibrator on before turning it off and so on.<br/>
  * <br/>
  *
- * The <tt>repeat</tt> parameter is an index into the pattern at which it will be looped until the
+ * The <code>repeat</code> parameter is an index into the pattern at which it will be looped until the
  * {@link VibrateNotificationHandler#cancel()} method is called.
  *
  * @author Pawel Domas
@@ -53,7 +53,7 @@ public class VibrateNotificationAction extends NotificationAction
     }
 
     /**
-     * Vibrate using given <tt>patter</tt> and optionally loop if the <tt>repeat</tt> index is not <tt>-1</tt>.
+     * Vibrate using given <code>patter</code> and optionally loop if the <code>repeat</code> index is not <code>-1</code>.
      *
      * @param descriptor the string identifier of this action.
      * @param patter the array containing vibrate pattern intervals.
@@ -89,9 +89,9 @@ public class VibrateNotificationAction extends NotificationAction
     }
 
     /**
-     * The index at which the pattern shall be looped during playback or <tt>-1</tt> to play it once.
+     * The index at which the pattern shall be looped during playback or <code>-1</code> to play it once.
      *
-     * @return the index at which the pattern will be looped or <tt>-1</tt> to play it once.
+     * @return the index at which the pattern will be looped or <code>-1</code> to play it once.
      */
     public int getRepeat()
     {

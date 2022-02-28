@@ -49,13 +49,13 @@ public class ChatRoomMemberRoleChangeEvent extends EventObject
 	private ChatRoomMemberRole newRole = null;
 
 	/**
-	 * Creates a <tt>ChatRoomMemberRoleChangeEvent</tt> representing that a change in member role in
+	 * Creates a <code>ChatRoomMemberRoleChangeEvent</code> representing that a change in member role in
 	 * the source chat room has occured.
 	 *
 	 * @param sourceRoom
-	 *        the <tt>ChatRoom</tt> that produced this event
+	 *        the <code>ChatRoom</code> that produced this event
 	 * @param sourceMember
-	 *        the <tt>ChatRoomMember</tt> that this event is about
+	 *        the <code>ChatRoomMember</code> that this event is about
 	 * @param previousRole
 	 *        the previous role that member had
 	 * @param newRole
@@ -93,7 +93,7 @@ public class ChatRoomMemberRoleChangeEvent extends EventObject
 	/**
 	 * Returns the chat room that produced this event.
 	 *
-	 * @return the <tt>ChatRoom</tt> that produced this event
+	 * @return the <code>ChatRoom</code> that produced this event
 	 */
 	public ChatRoom getSourceChatRoom()
 	{
@@ -103,7 +103,7 @@ public class ChatRoomMemberRoleChangeEvent extends EventObject
 	/**
 	 * Returns the member that this event is about.
 	 * 
-	 * @return the <tt>ChatRoomMember</tt> that this event is about
+	 * @return the <code>ChatRoomMember</code> that this event is about
 	 */
 	public ChatRoomMember getSourceMember()
 	{

@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This service provides the functionality to store history records. The records are called <tt>HistoryRecord</tt>s and
+ * This service provides the functionality to store history records. The records are called <code>HistoryRecord</code>s and
  * are grouped by ID.
  *
  * The ID may be used to set hierarchical structure. In a typical usage one may set the first string to be the userID,
@@ -67,8 +67,8 @@ public interface HistoryService
      * Enumerates existing histories.
      *
      * @param rawid the start of the HistoryID of all the histories that will be returned.
-     * @return list of histories which HistoryID starts with <tt>rawid</tt>.
-     * @throws IllegalArgumentException if the <tt>rawid</tt> contains ids which are missing in current history.
+     * @return list of histories which HistoryID starts with <code>rawid</code>.
+     * @throws IllegalArgumentException if the <code>rawid</code> contains ids which are missing in current history.
      */
     List<HistoryID> getExistingHistories(String[] rawid)
             throws IllegalArgumentException;

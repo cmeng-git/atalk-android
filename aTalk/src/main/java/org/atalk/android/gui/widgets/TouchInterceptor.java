@@ -19,10 +19,10 @@ import timber.log.Timber;
 /**
  * Modified version of class of the same name from android source of the music app. The widget displays a list of items.
  * User can set order of items by dragging them on the screen.<br/>
- * This <tt>View</tt> requires following XML attributes:<br/>
- * - <tt>itemHeight</tt> the height of list item<br/>
- * - <tt>itemExpandedHeight</tt> the height that will be set to expanded item(the one tha makes space for dragged item)<br/>
- * - <tt>dragRegionStartX</tt> and <tt>dragRegionEndX</tt> item can be grabbed when start x coordinate is between them
+ * This <code>View</code> requires following XML attributes:<br/>
+ * - <code>itemHeight</code> the height of list item<br/>
+ * - <code>itemExpandedHeight</code> the height that will be set to expanded item(the one tha makes space for dragged item)<br/>
+ * - <code>dragRegionStartX</code> and <code>dragRegionEndX</code> item can be grabbed when start x coordinate is between them
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -90,7 +90,7 @@ public class TouchInterceptor extends ListView
      */
     private Rect tempRect = new Rect();
     /**
-     * The background of dragged <tt>View</tt>
+     * The background of dragged <code>View</code>
      */
     private Bitmap dragBitmap;
     /**
@@ -119,10 +119,10 @@ public class TouchInterceptor extends ListView
     private int dragRegionEndX;
 
     /**
-     * Creates new instance of {@link TouchInterceptor}. The attribute set must contain:</br> - <tt>itemHeight</tt> the
+     * Creates new instance of {@link TouchInterceptor}. The attribute set must contain:</br> - <code>itemHeight</code> the
      * height of list item<br/>
-     * - <tt>itemExpandedHeight</tt> the height that will be set to expanded item<br/>
-     * - <tt>dragRegionStartX</tt> and <tt>dragRegionEndX</tt> item can be grabbed when start x coordinate is between
+     * - <code>itemExpandedHeight</code> the height that will be set to expanded item<br/>
+     * - <code>dragRegionStartX</code> and <code>dragRegionEndX</code> item can be grabbed when start x coordinate is between
      * them
      *
      * @param context the {@link android.content.Context}

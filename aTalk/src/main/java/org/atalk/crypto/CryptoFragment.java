@@ -73,7 +73,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Fragment when added to <tt>Activity</tt> will display the padlock allowing user to select
+ * Fragment when added to <code>Activity</code> will display the padlock allowing user to select
  * various type of encryption options. Only currently active chat is handled by this fragment.
  *
  * @author Eng Chong Meng
@@ -137,12 +137,12 @@ public class CryptoFragment extends OSGiFragment
 
     /**
      * isOmemoMode flag prevents otr from changing status when transition from otr to omemo when
-     * <tt>true</tt>; otr listener is async event triggered.
+     * <code>true</code>; otr listener is async event triggered.
      */
     private boolean isOmemoMode = false;
 
     /**
-     * Creates a new instance of <tt>OtrFragment</tt>.
+     * Creates a new instance of <code>OtrFragment</code>.
      */
     public CryptoFragment()
     {
@@ -438,7 +438,7 @@ public class CryptoFragment extends OSGiFragment
      * Check to see if all muc recipients are verified or trusted
      *
      * @param multiUserChat MultiUserChat
-     * @return return <tt>true</tt> if all muc recipients are verified or trusted. Otherwise <tt>false</tt>
+     * @return return <code>true</code> if all muc recipients are verified or trusted. Otherwise <code>false</code>
      */
 
     private boolean isAllTrusted(MultiUserChat multiUserChat)
@@ -476,7 +476,7 @@ public class CryptoFragment extends OSGiFragment
      * participant and request fingerPrint verification is undecided. Hence ensuring that the next sent message
      * is properly received by the new member.
      *
-     * @param evt the <tt>ChatRoomMemberPresenceChangeEvent</tt> instance containing the source chat
+     * @param evt the <code>ChatRoomMemberPresenceChangeEvent</code> instance containing the source chat
      */
     @Override
     public void memberPresenceChanged(ChatRoomMemberPresenceChangeEvent evt)
@@ -608,7 +608,7 @@ public class CryptoFragment extends OSGiFragment
     /**
      * Event trigger when user slide the chatFragment
      *
-     * @param chatId id of current chat session or <tt>null</tt> if there is no chat currently
+     * @param chatId id of current chat session or <code>null</code> if there is no chat currently
      */
     @Override
     public void onCurrentChatChanged(String chatId)
@@ -619,11 +619,11 @@ public class CryptoFragment extends OSGiFragment
     /**
      * Triggered from onCreateOption() or onCurrentChatChanged()
      * <p>
-     * Sets current <tt>ChatPanel</tt> identified by given <tt>chatSessionKey</tt>.
+     * Sets current <code>ChatPanel</code> identified by given <code>chatSessionKey</code>.
      * Init Crypto choice to last selected or encryption_none if new
      * Set currentOtrContact as appropriate if OTR is supported
      *
-     * @param chatSessionId chat session key managed by <tt>ChatSessionManager</tt>
+     * @param chatSessionId chat session key managed by <code>ChatSessionManager</code>
      */
     private void setCurrentChatSession(String chatSessionId)
     {
@@ -652,10 +652,10 @@ public class CryptoFragment extends OSGiFragment
     }
 
     /**
-     * Sets the current <tt>otrContact</tt> and updates status and OTR MenuItem.
+     * Sets the current <code>otrContact</code> and updates status and OTR MenuItem.
      * // cmeng: Assume support only single remote resource login - current implementation
      *
-     * @param contact new <tt>contact</tt> to be used.
+     * @param contact new <code>contact</code> to be used.
      */
     private void setCurrentContact(Contact contact, String chatSessionId)
     {

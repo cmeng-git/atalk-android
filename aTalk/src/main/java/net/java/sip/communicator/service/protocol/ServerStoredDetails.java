@@ -106,7 +106,7 @@ public class ServerStoredDetails
          * Compares two GenericDetails according their DetailDisplayName and Value
          *
          * @param obj Object expected GenericDetail otherwise return false
-         * @return <tt>true</tt> if this object has the same display name and value as <tt>obj</tt>
+         * @return <code>true</code> if this object has the same display name and value as <code>obj</code>
          * and false otherwise
          */
         @Override
@@ -466,7 +466,7 @@ public class ServerStoredDetails
          * Compares two URLDetails according their name and URLs
          *
          * @param obj Object expected URLDetail otherwise return false
-         * @return <tt>true</tt> if this object has the same name and URL value as <tt>obj</tt> and
+         * @return <code>true</code> if this object has the same name and URL value as <code>obj</code> and
          * false otherwise
          */
         @Override
@@ -539,7 +539,7 @@ public class ServerStoredDetails
          * their getBytes() methods.
          *
          * @param obj Object expected BinaryDetail otherwise return false
-         * @return <tt>true</tt> if this object has the same display name and value as <tt>obj</tt>
+         * @return <code>true</code> if this object has the same display name and value as <code>obj</code>
          * and false otherwise
          */
         @Override
@@ -723,7 +723,7 @@ public class ServerStoredDetails
          * Compares two BirthDateDetails according to their Calender's year, month and day.
          *
          * @param obj Object expected BirthDateDetail otherwise return false
-         * @return <tt>true</tt> if this object has the same value as <tt>obj</tt> and false otherwise
+         * @return <code>true</code> if this object has the same value as <code>obj</code> and false otherwise
          */
         @Override
         public boolean equals(Object obj)

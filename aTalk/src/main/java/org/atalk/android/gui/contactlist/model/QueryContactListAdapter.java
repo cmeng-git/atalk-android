@@ -56,7 +56,7 @@ public class QueryContactListAdapter extends BaseContactListAdapter
     private final List<ContactQuery> queries = new ArrayList<>();
 
     /**
-     * Creates new instance of <tt>QueryContactListAdapter</tt>.
+     * Creates new instance of <code>QueryContactListAdapter</code>.
      *
      * @param fragment parent fragment.
      * @param contactListModel meta contact list model used as a base data model

@@ -80,7 +80,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     /**
      * Creates the contact list adapter.
      *
-     * @param clFragment the parent <tt>ContactListFragment</tt>
+     * @param clFragment the parent <code>ContactListFragment</code>
      * @param mainContactList call buttons and other options are only enable when it is the main Contact List view
      */
     public BaseContactListAdapter(ContactListFragment clFragment, boolean mainContactList)
@@ -98,25 +98,25 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     public abstract void initModelData();
 
     /**
-     * Filter the contact list with given <tt>queryString</tt>
+     * Filter the contact list with given <code>queryString</code>
      *
      * @param queryString the query string we want to match.
      */
     public abstract void filterData(String queryString);
 
     /**
-     * Returns the <tt>UIContactRenderer</tt> for contacts of group at given <tt>groupIndex</tt>.
+     * Returns the <code>UIContactRenderer</code> for contacts of group at given <code>groupIndex</code>.
      *
      * @param groupIndex index of the contact group.
-     * @return the <tt>UIContactRenderer</tt> for contact of group at given <tt>groupIndex</tt>.
+     * @return the <code>UIContactRenderer</code> for contact of group at given <code>groupIndex</code>.
      */
     protected abstract UIContactRenderer getContactRenderer(int groupIndex);
 
     /**
-     * Returns the <tt>UIGroupRenderer</tt> for group at given <tt>groupPosition</tt>.
+     * Returns the <code>UIGroupRenderer</code> for group at given <code>groupPosition</code>.
      *
      * @param groupPosition index of the contact group.
-     * @return the <tt>UIContactRenderer</tt> for group at given <tt>groupPosition</tt>.
+     * @return the <code>UIContactRenderer</code> for group at given <code>groupPosition</code>.
      */
     protected abstract UIGroupRenderer getGroupRenderer(int groupPosition);
 
@@ -236,11 +236,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the flat list index for the given <tt>groupIndex</tt> and <tt>contactIndex</tt>.
+     * Returns the flat list index for the given <code>groupIndex</code> and <code>contactIndex</code>.
      *
      * @param groupIndex the index of the group
      * @param contactIndex the index of the contact
-     * @return an int representing the flat list index for the given <tt>groupIndex</tt> and <tt>contactIndex</tt>
+     * @return an int representing the flat list index for the given <code>groupIndex</code> and <code>contactIndex</code>
      */
     public int getListIndex(int groupIndex, int contactIndex)
     {
@@ -260,11 +260,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the identifier of the child contained on the given <tt>groupPosition</tt> and <tt>childPosition</tt>.
+     * Returns the identifier of the child contained on the given <code>groupPosition</code> and <code>childPosition</code>.
      *
      * @param groupPosition the index of the group
      * @param childPosition the index of the child
-     * @return the identifier of the child contained on the given <tt>groupPosition</tt> and <tt>childPosition</tt>
+     * @return the identifier of the child contained on the given <code>groupPosition</code> and <code>childPosition</code>
      */
     @Override
     public long getChildId(int groupPosition, int childPosition)
@@ -273,7 +273,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the child view for the given <tt>groupPosition</tt>, <tt>childPosition</tt>.
+     * Returns the child view for the given <code>groupPosition</code>, <code>childPosition</code>.
      *
      * @param groupPosition the group position of the desired view
      * @param childPosition the child position of the desired view
@@ -395,7 +395,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the group view for the given <tt>groupPosition</tt>.
+     * Returns the group view for the given <code>groupPosition</code>.
      *
      * @param groupPosition the group position of the desired view
      * @param isExpanded indicates if the view is currently expanded
@@ -436,7 +436,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the identifier of the group given by <tt>groupPosition</tt>.
+     * Returns the identifier of the group given by <code>groupPosition</code>.
      *
      * @param groupPosition the index of the group, which identifier we're looking for
      */

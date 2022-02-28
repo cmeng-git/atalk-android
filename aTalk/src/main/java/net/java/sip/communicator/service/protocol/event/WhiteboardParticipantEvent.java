@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>WhiteboardParticipantEvent</tt>s indicate that a participant in a whiteboard session has
+ * <code>WhiteboardParticipantEvent</code>s indicate that a participant in a whiteboard session has
  * either left or entered the session.
  *
  * @author Julien Waechter
@@ -55,8 +55,8 @@ public class WhiteboardParticipantEvent extends EventObject
 
 	/**
 	 * Creates a whiteboard participant event instance indicating that an event with id
-	 * <tt>eventID</tt> has happened to <tt>sourceWhiteboardParticipant</tt> in
-	 * <tt>sourceWhiteboard</tt>
+	 * <code>eventID</code> has happened to <code>sourceWhiteboardParticipant</code> in
+	 * <code>sourceWhiteboard</code>
 	 *
 	 * @param sourceWhiteboardParticipant
 	 *        the whiteboard participant that this event is about.
@@ -86,7 +86,7 @@ public class WhiteboardParticipantEvent extends EventObject
 	/**
 	 * Returns the whiteboard session that produced this event.
 	 *
-	 * @return a reference to the <tt>WhiteboardSession</tt> that produced this event.
+	 * @return a reference to the <code>WhiteboardSession</code> that produced this event.
 	 */
 	public WhiteboardSession getSourceWhiteboard()
 	{
@@ -96,7 +96,7 @@ public class WhiteboardParticipantEvent extends EventObject
 	/**
 	 * Returns the whiteboard participant that this event is about.
 	 *
-	 * @return a reference to the <tt>WhiteboardParticipant</tt> instance that triggered this event.
+	 * @return a reference to the <code>WhiteboardParticipant</code> instance that triggered this event.
 	 */
 	public WhiteboardParticipant getSourceWhiteboardParticipant()
 	{
@@ -104,9 +104,9 @@ public class WhiteboardParticipantEvent extends EventObject
 	}
 
 	/**
-	 * Returns a String representation of this <tt>WhiteboardParticipantEvent</tt>.
+	 * Returns a String representation of this <code>WhiteboardParticipantEvent</code>.
 	 *
-	 * @return a String representation of this <tt>WhiteboardParticipantEvent</tt>.
+	 * @return a String representation of this <code>WhiteboardParticipantEvent</code>.
 	 */
 	@Override
 	public String toString()

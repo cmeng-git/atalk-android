@@ -17,30 +17,30 @@ import java.util.EventListener;
 public interface ScFileTransferListener extends EventListener
 {
     /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been received.
+     * Called when a new <code>IncomingFileTransferRequest</code> has been received.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the newly received request and other details.
+     * @param event the <code>FileTransferRequestEvent</code> containing the newly received request and other details.
      */
     void fileTransferRequestReceived(FileTransferRequestEvent event);
 
     /**
-     * Called when a <tt>FileTransferCreatedEvent</tt> has been received.
+     * Called when a <code>FileTransferCreatedEvent</code> has been received.
      *
-     * @param event the <tt>FileTransferCreatedEvent</tt> containing the newly received file transfer and other details.
+     * @param event the <code>FileTransferCreatedEvent</code> containing the newly received file transfer and other details.
      */
     void fileTransferCreated(FileTransferCreatedEvent event);
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been rejected.
+     * Called when an <code>IncomingFileTransferRequest</code> has been rejected.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
      */
     void fileTransferRequestRejected(FileTransferRequestEvent event);
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who sent it.
+     * Called when an <code>IncomingFileTransferRequest</code> has been canceled from the contact who sent it.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
+     * @param event the <code>FileTransferRequestEvent</code> containing the request which was canceled.
      */
     void fileTransferRequestCanceled(FileTransferRequestEvent event);
 }

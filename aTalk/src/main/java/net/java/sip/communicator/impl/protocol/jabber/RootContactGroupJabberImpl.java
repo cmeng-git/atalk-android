@@ -58,9 +58,9 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the number, which is always 0, of <tt>Contact</tt> members of this <tt>ContactGroup</tt>
+     * Returns the number, which is always 0, of <code>Contact</code> members of this <code>ContactGroup</code>
      *
-     * @return an int indicating the number of <tt>Contact</tt>s, members of this <tt>ContactGroup</tt>.
+     * @return an int indicating the number of <code>Contact</code>s, members of this <code>ContactGroup</code>.
      */
     public int countContacts()
     {
@@ -98,9 +98,9 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns an Iterator over all contacts, member of this <tt>ContactGroup</tt>.
+     * Returns an Iterator over all contacts, member of this <code>ContactGroup</code>.
      *
-     * @return a java.util.Iterator over all contacts inside this <tt>ContactGroup</tt>
+     * @return a java.util.Iterator over all contacts inside this <code>ContactGroup</code>
      */
     public Iterator<Contact> contacts()
     {
@@ -108,10 +108,10 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the <tt>Contact</tt> with the specified address or identifier.
+     * Returns the <code>Contact</code> with the specified address or identifier.
      *
-     * @param id the address or identifier of the <tt>Contact</tt> we are looking for.
-     * @return the <tt>Contact</tt> with the specified id or address.
+     * @param id the address or identifier of the <code>Contact</code> we are looking for.
+     * @return the <code>Contact</code> with the specified id or address.
      */
     public Contact getContact(String id)
     {
@@ -126,7 +126,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * Returns the contact encapsulating with the specified name or null if no such contact was found.
      *
      * @param id the id for the contact we're looking for.
-     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified jid or null if no such contact existed.
+     * @return the <code>ContactJabberImpl</code> corresponding to the specified jid or null if no such contact existed.
      */
     public ContactJabberImpl findContact(Jid id)
     {
@@ -134,7 +134,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the name of this group which is always <tt>ROOT_PROTO_GROUP_UID</tt>.
+     * Returns the name of this group which is always <code>ROOT_PROTO_GROUP_UID</code>.
      *
      * @return a String containing the name of this group.
      */
@@ -156,8 +156,8 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     /**
      * Returns the subgroup with the specified index.
      *
-     * @param index the index of the <tt>ContactGroup</tt> to retrieve.
-     * @return the <tt>ContactGroup</tt> with the specified index.
+     * @param index the index of the <code>ContactGroup</code> to retrieve.
+     * @return the <code>ContactGroup</code> with the specified index.
      */
     public ContactGroup getGroup(int index)
     {
@@ -167,8 +167,8 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     /**
      * Returns the subgroup with the specified name.
      *
-     * @param groupName the name of the <tt>ContactGroup</tt> to retrieve.
-     * @return the <tt>ContactGroup</tt> with the specified index.
+     * @param groupName the name of the <code>ContactGroup</code> to retrieve.
+     * @return the <code>ContactGroup</code> with the specified index.
      */
     public ContactGroup getGroup(String groupName)
     {
@@ -183,9 +183,9 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns an iterator over the sub groups that this <tt>ContactGroup</tt> contains.
+     * Returns an iterator over the sub groups that this <code>ContactGroup</code> contains.
      *
-     * @return a java.util.Iterator over the <tt>ContactGroup</tt> children of this group (i.e. subgroups).
+     * @return a java.util.Iterator over the <code>ContactGroup</code> children of this group (i.e. subgroups).
      */
     public Iterator<ContactGroup> subgroups()
     {
@@ -193,7 +193,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the number of subgroups contained by this <tt>RootContactGroupImpl</tt>.
+     * Returns the number of subgroups contained by this <code>RootContactGroupImpl</code>.
      *
      * @return an int indicating the number of subgroups that this ContactGroup contains.
      */
@@ -312,7 +312,7 @@ public class RootContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns a <tt>String</tt> that uniquely represents the group. In this we use the name of the
+     * Returns a <code>String</code> that uniquely represents the group. In this we use the name of the
      * group as an identifier. This may cause problems though, in case the name is changed by some
      * other application between consecutive runs of the sip-communicator.
      *

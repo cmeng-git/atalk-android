@@ -6,26 +6,26 @@
 package net.java.sip.communicator.service.notification;
 
 /**
- * An implementation of the <tt>LogMessageNotificationHandler</tt> interface.
+ * An implementation of the <code>LogMessageNotificationHandler</code> interface.
  *
  * @author Yana Stamcheva
  */
 public class LogMessageNotificationAction extends NotificationAction
 {
 	/**
-	 * Indicates that this log is of type trace. If this <tt>logType</tt> is set the messages would be logged as trace
+	 * Indicates that this log is of type trace. If this <code>logType</code> is set the messages would be logged as trace
 	 * logs.
 	 */
 	public static final String TRACE_LOG_TYPE = "TraceLog";
 
 	/**
-	 * Indicates that this log is of type info. If this <tt>logType</tt> is set the messages would be logged as info
+	 * Indicates that this log is of type info. If this <code>logType</code> is set the messages would be logged as info
 	 * logs.
 	 */
 	public static final String INFO_LOG_TYPE = "InfoLog";
 
 	/**
-	 * Indicates that this log is of type error. If this <tt>logType</tt> is set the messages would be logged as error
+	 * Indicates that this log is of type error. If this <code>logType</code> is set the messages would be logged as error
 	 * logs.
 	 */
 	public static final String ERROR_LOG_TYPE = "ErrorLog";
@@ -33,7 +33,7 @@ public class LogMessageNotificationAction extends NotificationAction
 	private String logType;
 
 	/**
-	 * Creates an instance of <tt>LogMessageNotificationHandlerImpl</tt> by specifying the log type.
+	 * Creates an instance of <code>LogMessageNotificationHandlerImpl</code> by specifying the log type.
 	 *
 	 * @param logType
 	 *        the type of the log

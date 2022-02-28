@@ -19,7 +19,7 @@ import java.util.Iterator;
 import timber.log.Timber;
 
 /**
- * Represents the Jabber protocol icon. Implements the <tt>ProtocolIcon</tt> interface in order to
+ * Represents the Jabber protocol icon. Implements the <code>ProtocolIcon</code> interface in order to
  * provide a Jabber icon image in two different sizes.
  *
  * @author Yana Stamcheva
@@ -63,7 +63,7 @@ public class ProtocolIconJabberImpl implements ProtocolIcon
     }
 
     /**
-     * Implements the <tt>ProtocolIcon.getSupportedSizes()</tt> method. Returns an iterator to a set
+     * Implements the <code>ProtocolIcon.getSupportedSizes()</code> method. Returns an iterator to a set
      * containing the supported icon sizes.
      *
      * @return an iterator to a set containing the supported icon sizes
@@ -146,9 +146,9 @@ public class ProtocolIconJabberImpl implements ProtocolIcon
     }
 
     /**
-     * Get the <tt>ResourceMaangementService</tt> registered.
+     * Get the <code>ResourceMaangementService</code> registered.
      *
-     * @return <tt>ResourceManagementService</tt> registered
+     * @return <code>ResourceManagementService</code> registered
      */
     public static ResourceManagementService getResources()
     {

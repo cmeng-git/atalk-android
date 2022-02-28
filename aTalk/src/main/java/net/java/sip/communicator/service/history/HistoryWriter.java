@@ -78,10 +78,10 @@ public interface HistoryWriter
             throws IOException;
 
     /**
-     * Updates history record using given <tt>HistoryRecordUpdater</tt> instance to find which is the record to be
+     * Updates history record using given <code>HistoryRecordUpdater</code> instance to find which is the record to be
      * updated and to get the new values for the fields
      *
-     * @param updater the <tt>HistoryRecordUpdater</tt> instance.
+     * @param updater the <code>HistoryRecordUpdater</code> instance.
      */
     void updateRecord(HistoryRecordUpdater updater)
             throws IOException;
@@ -101,7 +101,7 @@ public interface HistoryWriter
         /**
          * Checks if the history record should be updated or not
          *
-         * @return <tt>true<tt> if the record should be updated.
+         * @return <code>true<code> if the record should be updated.
          */
         boolean isMatching();
 

@@ -77,7 +77,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     private int mIndex = -1;
 
     /**
-     * Constructs the <tt>Bosh-Proxy Dialog</tt>.
+     * Constructs the <code>Bosh-Proxy Dialog</code>.
      *
      * @param context the Context
      * @param jbrReg the JabberAccountRegistration
@@ -292,7 +292,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     /**
      * Fired when user clicks the dialog's confirm button.
      *
-     * @param dialog source <tt>DialogActivity</tt>.
+     * @param dialog source <code>DialogActivity</code>.
      */
     public boolean onConfirmClicked(DialogActivity dialog)
     {
@@ -302,7 +302,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
     /**
      * Fired when user dismisses the dialog.
      *
-     * @param dialog source <tt>DialogActivity</tt>
+     * @param dialog source <code>DialogActivity</code>
      */
     public void onDialogCancelled(DialogActivity dialog)
     {

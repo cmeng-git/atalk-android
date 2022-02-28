@@ -147,7 +147,7 @@ public class SubscriptionEvent extends EventObject
 	/**
 	 * Returns a String representation of this ContactPresenceStatusChangeEvent
 	 *
-	 * @return A a String representation of this <tt>SubscriptionEvent</tt>.
+	 * @return A a String representation of this <code>SubscriptionEvent</code>.
 	 */
 	@Override
 	public String toString()

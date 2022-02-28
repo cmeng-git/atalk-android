@@ -8,7 +8,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 import java.util.*;
 
 /**
- * An abstract class with a default implementation of some of the methods of the <tt>ChatRoom</tt> interface.
+ * An abstract class with a default implementation of some of the methods of the <code>ChatRoom</code> interface.
  *
  * @author Boris Grozev
  * @author Eng Chong Meng
@@ -16,12 +16,12 @@ import java.util.*;
 public abstract class AbstractChatRoom implements ChatRoom
 {
     /**
-     * The list of listeners to be notified when a member of the chat room publishes a <tt>ConferenceDescription</tt>
+     * The list of listeners to be notified when a member of the chat room publishes a <code>ConferenceDescription</code>
      */
     protected final List<ChatRoomConferencePublishedListener> conferencePublishedListeners = new ArrayList<>();
 
     /**
-     * The list of all <tt>ConferenceDescription</tt> that were announced and are not yet processed.
+     * The list of all <code>ConferenceDescription</code> that were announced and are not yet processed.
      */
     protected final Map<Resourcepart, ConferenceDescription> cachedConferenceDescriptions = new HashMap();
 
@@ -46,8 +46,8 @@ public abstract class AbstractChatRoom implements ChatRoom
     }
 
     /**
-     * Returns cached <tt>ConferenceDescription</tt> instances.
-     * @return the cached <tt>ConferenceDescription</tt> instances.
+     * Returns cached <code>ConferenceDescription</code> instances.
+     * @return the cached <code>ConferenceDescription</code> instances.
      */
     public Map<String, ConferenceDescription> getCachedConferenceDescriptions()
     {
@@ -61,8 +61,8 @@ public abstract class AbstractChatRoom implements ChatRoom
     }
 
     /**
-     * Returns the number of cached <tt>ConferenceDescription</tt> instances.
-     * @return the number of cached <tt>ConferenceDescription</tt> instances.
+     * Returns the number of cached <code>ConferenceDescription</code> instances.
+     * @return the number of cached <code>ConferenceDescription</code> instances.
      */
     public synchronized int getCachedConferenceDescriptionSize()
     {
@@ -70,12 +70,12 @@ public abstract class AbstractChatRoom implements ChatRoom
     }
 
     /**
-     * Creates the corresponding <tt>ChatRoomConferencePublishedEvent</tt> and
-     * notifies all <tt>ChatRoomConferencePublishedListener</tt>s that
-     * <tt>member</tt> has published a conference description.
+     * Creates the corresponding <code>ChatRoomConferencePublishedEvent</code> and
+     * notifies all <code>ChatRoomConferencePublishedListener</code>s that
+     * <code>member</code> has published a conference description.
      *
-     * @param member the <tt>ChatRoomMember</tt> that published <tt>cd</tt>.
-     * @param cd the <tt>ConferenceDescription</tt> that was published.
+     * @param member the <code>ChatRoomMember</code> that published <code>cd</code>.
+     * @param cd the <code>ConferenceDescription</code> that was published.
      * @param eventType the type of the event.
      */
     protected void fireConferencePublishedEvent(ChatRoomMember member, ConferenceDescription cd, int eventType)
@@ -91,11 +91,11 @@ public abstract class AbstractChatRoom implements ChatRoom
     }
 
     /**
-     * Processes the <tt>ConferenceDescription</tt> instance and adds/removes it to the list of conferences.
+     * Processes the <code>ConferenceDescription</code> instance and adds/removes it to the list of conferences.
      *
-     * @param cd the <tt>ConferenceDescription</tt> instance to process.
-     * @param participantNick the name of the participant that sent the <tt>ConferenceDescription</tt>.
-     * @return <tt>true</tt> on success and <tt>false</tt> if fail.
+     * @param cd the <code>ConferenceDescription</code> instance to process.
+     * @param participantNick the name of the participant that sent the <code>ConferenceDescription</code>.
+     * @return <code>true</code> on success and <code>false</code> if fail.
      */
     protected boolean processConferenceDescription(ConferenceDescription cd, Resourcepart participantNick)
     {

@@ -21,7 +21,7 @@ import javax.swing.JLabel;
 import java.util.*;
 
 /**
- * Implements the <tt>LayoutManager</tt> which lays out the local and remote videos in a video <tt>Call</tt>.
+ * Implements the <code>LayoutManager</code> which lays out the local and remote videos in a video <code>Call</code>.
  *
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
@@ -50,7 +50,7 @@ public class VideoLayout extends FitLayout
     public static final String EAST_REMOTE = "EAST_REMOTE";
 
     /**
-     * The horizontal gap between the <tt>Component</tt> being laid out by <tt>VideoLayout</tt>.
+     * The horizontal gap between the <code>Component</code> being laid out by <code>VideoLayout</code>.
      */
     private static final int HGAP = 10;
 
@@ -95,16 +95,16 @@ public class VideoLayout extends FitLayout
     private float remoteAlignmentX = Component.CENTER_ALIGNMENT;
 
     /**
-     * The list of <tt>Component</tt>s depicting remote videos.
+     * The list of <code>Component</code>s depicting remote videos.
      */
     private final List<Component> remotes = new LinkedList<Component>();
 
     /**
-     * Creates an instance of <tt>VideoLayout</tt> by also indicating if this
+     * Creates an instance of <code>VideoLayout</code> by also indicating if this
      * video layout is dedicated to a conference interface.
      *
-     * @param conference <tt>true</tt> if the new instance will be dedicated to
-     * a conference; otherwise, <tt>false</tt>
+     * @param conference <code>true</code> if the new instance will be dedicated to
+     * a conference; otherwise, <code>false</code>
      */
     public VideoLayout(boolean conference)
     {
@@ -144,19 +144,19 @@ public class VideoLayout extends FitLayout
     }
 
     /**
-     * Determines whether the aspect ratio of a specific <tt>Dimension</tt> is
-     * to be considered equal to the aspect ratio of specific <tt>width</tt> and
-     * <tt>height</tt>.
+     * Determines whether the aspect ratio of a specific <code>Dimension</code> is
+     * to be considered equal to the aspect ratio of specific <code>width</code> and
+     * <code>height</code>.
      *
-     * @param size the <tt>Dimension</tt> whose aspect ratio is to be compared
-     * to the aspect ratio of <tt>width</tt> and <tt>height</tt>
-     * @param width the width which defines in combination with <tt>height</tt>
-     * the aspect ratio to be compared to the aspect ratio of <tt>size</tt>
-     * @param height the height which defines in combination with <tt>width</tt>
-     * the aspect ratio to be compared to the aspect ratio of <tt>size</tt>
-     * @return <tt>true</tt> if the aspect ratio of <tt>size</tt> is to be
-     * considered equal to the aspect ratio of <tt>width</tt> and
-     * <tt>height</tt>; otherwise, <tt>false</tt>
+     * @param size the <code>Dimension</code> whose aspect ratio is to be compared
+     * to the aspect ratio of <code>width</code> and <code>height</code>
+     * @param width the width which defines in combination with <code>height</code>
+     * the aspect ratio to be compared to the aspect ratio of <code>size</code>
+     * @param height the height which defines in combination with <code>width</code>
+     * the aspect ratio to be compared to the aspect ratio of <code>size</code>
+     * @return <code>true</code> if the aspect ratio of <code>size</code> is to be
+     * considered equal to the aspect ratio of <code>width</code> and
+     * <code>height</code>; otherwise, <code>false</code>
      */
     public static boolean areAspectRatiosEqual(Dimension size, int width, int height)
     {
@@ -172,11 +172,11 @@ public class VideoLayout extends FitLayout
     }
 
     /**
-     * Determines how may columns to use for the grid display of specific remote visual/video <tt>Component</tt>s.
+     * Determines how may columns to use for the grid display of specific remote visual/video <code>Component</code>s.
      *
-     * @param remotes the remote visual/video <tt>Component</tt>s to be displayed in a grid
+     * @param remotes the remote visual/video <code>Component</code>s to be displayed in a grid
      * @return the number of columns to use for the grid display of the
-     * specified remote visual/video <tt>Component</tt>s
+     * specified remote visual/video <code>Component</code>s
      */
     private int calculateColumnCount(List<Component> remotes)
     {
@@ -235,10 +235,10 @@ public class VideoLayout extends FitLayout
     }
 
     /**
-     * Lays out the specified <tt>Container</tt> (i.e. the <tt>Component</tt>s
-     * it contains) in accord with the logic implemented by this <tt>LayoutManager</tt>.
+     * Lays out the specified <code>Container</code> (i.e. the <code>Component</code>s
+     * it contains) in accord with the logic implemented by this <code>LayoutManager</code>.
      *
-     * @param parent the <tt>Container</tt> to lay out
+     * @param parent the <code>Container</code> to lay out
      */
     @Override
     public void layoutContainer(Container parent)

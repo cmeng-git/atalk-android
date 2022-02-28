@@ -94,7 +94,7 @@ public interface WhiteboardObjectRect extends WhiteboardObject
 	 * standard RGB encoding: bits 24-31 are alpha, 16-23 are red, 8-15 are green, 0-7 are blue.
 	 *
 	 * @param color
-	 *        the color that we'd like to set for the background of this <tt>WhiteboardObject</tt>
+	 *        the color that we'd like to set for the background of this <code>WhiteboardObject</code>
 	 *        (using standard RGB encoding).
 	 */
 	public void setBackgroundColor(int color);

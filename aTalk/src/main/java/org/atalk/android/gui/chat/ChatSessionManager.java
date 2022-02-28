@@ -28,7 +28,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The <tt>ChatSessionManager</tt> managing active chat sessions.
+ * The <code>ChatSessionManager</code> managing active chat sessions.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -71,7 +71,7 @@ public class ChatSessionManager
     private static final List<ChatLinkClickedListener> chatLinkListeners = new ArrayList<>();
 
     /**
-     * The currently selected chat identifier. It's equal to chat's <tt>MetaContact</tt> UID in
+     * The currently selected chat identifier. It's equal to chat's <code>MetaContact</code> UID in
      * the childContact table.
      */
     private static String currentChatId;
@@ -84,7 +84,7 @@ public class ChatSessionManager
     /**
      * Adds an active chat.
      *
-     * @param chatPanel the <tt>ChatPanel</tt> corresponding to the active chat
+     * @param chatPanel the <code>ChatPanel</code> corresponding to the active chat
      * @return the active chat identifier
      */
 
@@ -99,7 +99,7 @@ public class ChatSessionManager
     /**
      * Removes an active chat.
      *
-     * @param chatPanel the <tt>ChatPanel</tt> corresponding to the active chat to remove
+     * @param chatPanel the <code>ChatPanel</code> corresponding to the active chat to remove
      */
     public synchronized static void removeActiveChat(ChatPanel chatPanel)
     {
@@ -123,10 +123,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Returns the <tt>ChatPanel</tt> corresponding to the given chat identifier.
+     * Returns the <code>ChatPanel</code> corresponding to the given chat identifier.
      *
      * @param chatKey the chat identifier
-     * @return the <tt>ChatPanel</tt> corresponding to the given chat identifier
+     * @return the <code>ChatPanel</code> corresponding to the given chat identifier
      */
     public synchronized static ChatPanel getActiveChat(String chatKey)
     {
@@ -134,10 +134,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Returns the <tt>ChatPanel</tt> corresponding to the given <tt>MetaContact</tt>.
+     * Returns the <code>ChatPanel</code> corresponding to the given <code>MetaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt> corresponding to the <tt>ChatPanel</tt> we're looking for
-     * @return the <tt>ChatPanel</tt> corresponding to the given chat identifier
+     * @param metaContact the <code>MetaContact</code> corresponding to the <code>ChatPanel</code> we're looking for
+     * @return the <code>ChatPanel</code> corresponding to the given chat identifier
      */
     public synchronized static ChatPanel getActiveChat(MetaContact metaContact)
     {
@@ -202,9 +202,9 @@ public class ChatSessionManager
     }
 
     /**
-     * Returns currently active <tt>ChatPanel</tt>.
+     * Returns currently active <code>ChatPanel</code>.
      *
-     * @return currently active <tt>ChatPanel</tt>.
+     * @return currently active <code>ChatPanel</code>.
      */
     public synchronized static ChatPanel getCurrentChatPanel()
     {
@@ -254,9 +254,9 @@ public class ChatSessionManager
     }
 
     /**
-     * Adds <tt>ChatLinkClickedListener</tt>.
+     * Adds <code>ChatLinkClickedListener</code>.
      *
-     * @param chatLinkClickedListener the <tt>ChatLinkClickedListener</tt> to add.
+     * @param chatLinkClickedListener the <code>ChatLinkClickedListener</code> to add.
      */
     public synchronized static void addChatLinkListener(ChatLinkClickedListener chatLinkClickedListener)
     {
@@ -265,9 +265,9 @@ public class ChatSessionManager
     }
 
     /**
-     * Removes given <tt>ChatLinkClickedListener</tt>.
+     * Removes given <code>ChatLinkClickedListener</code>.
      *
-     * @param chatLinkClickedListener the <tt>ChatLinkClickedListener</tt> to remove.
+     * @param chatLinkClickedListener the <code>ChatLinkClickedListener</code> to remove.
      */
     public synchronized static void removeChatLinkListener(ChatLinkClickedListener chatLinkClickedListener)
     {
@@ -275,9 +275,9 @@ public class ChatSessionManager
     }
 
     /**
-     * Notifies currently registers <tt>ChatLinkClickedListener</tt> when the link is clicked.
+     * Notifies currently registers <code>ChatLinkClickedListener</code> when the link is clicked.
      *
-     * @param uri clicked link <tt>URI</tt>
+     * @param uri clicked link <code>URI</code>
      */
     public synchronized static void notifyChatLinkClicked(URI uri)
     {
@@ -287,10 +287,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Creates the <tt>Intent</tt> for starting new chat with given <tt>MetaContact</tt>.
+     * Creates the <code>Intent</code> for starting new chat with given <code>MetaContact</code>.
      *
      * @param descriptor the contact we want to start new chat with.
-     * @return the <tt>Intent</tt> for starting new chat with given <tt>MetaContact</tt>.
+     * @return the <code>Intent</code> for starting new chat with given <code>MetaContact</code>.
      */
     public static Intent getChatIntent(Object descriptor)
     {
@@ -344,7 +344,7 @@ public class ChatSessionManager
     }
 
     /**
-     * Removes all active chat sessions for the given <tt>protocolProvider</tt>.
+     * Removes all active chat sessions for the given <code>protocolProvider</code>.
      *
      * @param protocolProvider protocol provider for which all chat sessions to be removed.
      */
@@ -368,7 +368,7 @@ public class ChatSessionManager
         /**
          * Fired when currently visible chat session changes
          *
-         * @param chatId id of current chat session or <tt>null</tt> if there is no chat currently
+         * @param chatId id of current chat session or <code>null</code> if there is no chat currently
          * displayed.
          */
         void onCurrentChatChanged(String chatId);
@@ -377,7 +377,7 @@ public class ChatSessionManager
     // ###########################################################
 
     /**
-     * Finds the chat for given <tt>Contact</tt>.
+     * Finds the chat for given <code>Contact</code>.
      *
      * @param contact the contact for which active chat will be returned.
      * @return active chat for given contact.
@@ -405,8 +405,8 @@ public class ChatSessionManager
     }
 
     /**
-     * Return the <tt>ChatPanel</tt> for the given chatId if exists; Otherwise create and return
-     * new and saves it in the list of created <tt>ChatPanel</tt> by the called routine.
+     * Return the <code>ChatPanel</code> for the given chatId if exists; Otherwise create and return
+     * new and saves it in the list of created <code>ChatPanel</code> by the called routine.
      *
      * @param chatId A string identifier that uniquely represents the caller in the containing chat
      * session database
@@ -450,14 +450,14 @@ public class ChatSessionManager
     // ############### Multi-User Chat Methods ############################
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoomWrapper</tt> and
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoomWrapper</code> and
      * optionally creates it if it does not exist yet. Must be executed on the event dispatch thread.
      *
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a new <tt>ChatPanel</tt> for the specified
-     * <tt>ChatRoomWrapper</tt> if no such <tt>ChatPanel</tt> exists already; otherwise, <tt>false</tt>
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoomWrapper</tt> or
-     * <tt>null</tt> if no such <tt>ChatPanel</tt> exists and <tt>create</tt> is <tt>false</tt>
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a new <code>ChatPanel</code> for the specified
+     * <code>ChatRoomWrapper</code> if no such <code>ChatPanel</code> exists already; otherwise, <code>false</code>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoomWrapper</code> or
+     * <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(ChatRoomWrapper chatRoomWrapper, boolean create)
     {
@@ -465,14 +465,14 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoomWrapper</tt> and
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoomWrapper</code> and
      * optionally creates it if it does not exist yet.
      *
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a new <tt>ChatPanel</tt> for the specified
-     * <tt>ChatRoomWrapper</tt> if no such <tt>ChatPanel</tt> exists already; otherwise, <tt>false</tt>
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoomWrapper</tt> or
-     * <tt>null</tt> if no such <tt>ChatPanel</tt> exists and <tt>create</tt> is <tt>false</tt>
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a new <code>ChatPanel</code> for the specified
+     * <code>ChatRoomWrapper</code> if no such <code>ChatPanel</code> exists already; otherwise, <code>false</code>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoomWrapper</code> or
+     * <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
      */
     private static ChatPanel getMultiChatInternal(ChatRoomWrapper chatRoomWrapper, boolean create)
     {
@@ -486,14 +486,14 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoomWrapper</tt>
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoomWrapper</code>
      * and optionally creates it if it does not exist yet. Must be executed on the event dispatch thread.
      *
-     * @param chatRoomWrapper the <tt>AdHocChatRoomWrapper</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a new <tt>ChatPanel</tt> for the specified
-     * <tt>AdHocChatRoomWrapper</tt> if no such <tt>ChatPanel</tt> exists already; otherwise, <tt>false</tt>
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoomWrapper</tt>
-     * or <tt>null</tt> if no such <tt>ChatPanel</tt> exists and <tt>create</tt> is <tt>false</tt>
+     * @param chatRoomWrapper the <code>AdHocChatRoomWrapper</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a new <code>ChatPanel</code> for the specified
+     * <code>AdHocChatRoomWrapper</code> if no such <code>ChatPanel</code> exists already; otherwise, <code>false</code>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoomWrapper</code>
+     * or <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(AdHocChatRoomWrapper chatRoomWrapper, boolean create)
     {
@@ -501,14 +501,14 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoomWrapper</tt>
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoomWrapper</code>
      * and optionally creates it if it does not exist yet.
      *
-     * @param chatRoomWrapper the <tt>AdHocChatRoomWrapper</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a new <tt>ChatPanel</tt> for the specified
-     * <tt>AdHocChatRoomWrapper</tt> if no such <tt>ChatPanel</tt> exists already; otherwise, <tt>false</tt>
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoomWrapper</tt>
-     * or <tt>null</tt> if no such <tt>ChatPanel</tt> exists and <tt>create</tt> is <tt>false</tt>
+     * @param chatRoomWrapper the <code>AdHocChatRoomWrapper</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a new <code>ChatPanel</code> for the specified
+     * <code>AdHocChatRoomWrapper</code> if no such <code>ChatPanel</code> exists already; otherwise, <code>false</code>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoomWrapper</code>
+     * or <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
      */
     private static ChatPanel getMultiChatInternal(AdHocChatRoomWrapper chatRoomWrapper, boolean create)
     {
@@ -522,16 +522,16 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoom</tt> and optionally
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code> and optionally
      * creates it if it does not exist.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a <tt>ChatPanel</tt> corresponding to the specified
-     * <tt>ChatRoom</tt> if such <tt>ChatPanel</tt> does not exist yet
+     * @param chatRoom the <code>ChatRoom</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
+     * <code>ChatRoom</code> if such <code>ChatPanel</code> does not exist yet
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoom</tt>;
-     * <tt>null</tt> if there is no such <tt>ChatPanel</tt> and <tt>create</tt> is <tt>false</tt>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code>;
+     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
     private static ChatPanel getMultiChatInternal(ChatRoom chatRoom, boolean create, String escapedMessageID)
     {
@@ -549,16 +549,16 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoom</tt> and optionally
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code> and optionally
      * creates it if it does not exist. Must be executed on the event dispatch thread.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a <tt>ChatPanel</tt> corresponding to the specified
-     * <tt>ChatRoom</tt> if such <tt>ChatPanel</tt> does not exist yet
+     * @param chatRoom the <code>ChatRoom</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
+     * <code>ChatRoom</code> if such <code>ChatPanel</code> does not exist yet
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoom</tt>;
-     * <tt>null</tt> if there is no such <tt>ChatPanel</tt> and <tt>create</tt> is <tt>false</tt>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code>;
+     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(ChatRoom chatRoom, boolean create, String escapedMessageID)
     {
@@ -566,14 +566,14 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoom</tt> and optionally
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code> and optionally
      * creates it if it does not exist.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a <tt>ChatPanel</tt> corresponding to the specified
-     * <tt>ChatRoom</tt> if such <tt>ChatPanel</tt> does not exist yet
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>ChatRoom</tt>;
-     * <tt>null</tt> if there is no such <tt>ChatPanel</tt> and <tt>create</tt> is <tt>false</tt>
+     * @param chatRoom the <code>ChatRoom</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
+     * <code>ChatRoom</code> if such <code>ChatPanel</code> does not exist yet
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code>;
+     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(ChatRoom chatRoom, boolean create)
     {
@@ -581,16 +581,16 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoom</tt> and
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code> and
      * optionally creates it if it does not exist. Must be executed on the event dispatch thread.
      *
-     * @param adHocChatRoom the <tt>AdHocChatRoom</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a <tt>ChatPanel</tt> corresponding to the specified
-     * <tt>AdHocChatRoom</tt> if such <tt>ChatPanel</tt> does not exist yet
+     * @param adHocChatRoom the <code>AdHocChatRoom</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
+     * <code>AdHocChatRoom</code> if such <code>ChatPanel</code> does not exist yet
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoom</tt>;
-     * <tt>null</tt> if there is no such <tt>ChatPanel</tt> and <tt>create</tt> is <tt>false</tt>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code>;
+     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
     private static ChatPanel getMultiChatInternal(AdHocChatRoom adHocChatRoom, boolean create, String escapedMessageID)
     {
@@ -618,16 +618,16 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoom</tt> and
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code> and
      * optionally creates it if it does not exist. Must be executed on the event dispatch thread.
      *
-     * @param adHocChatRoom the <tt>AdHocChatRoom</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a <tt>ChatPanel</tt> corresponding to the specified
-     * <tt>AdHocChatRoom</tt> if such <tt>ChatPanel</tt> does not exist yet
+     * @param adHocChatRoom the <code>AdHocChatRoom</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
+     * <code>AdHocChatRoom</code> if such <code>ChatPanel</code> does not exist yet
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoom</tt>;
-     * <tt>null</tt> if there is no such <tt>ChatPanel</tt> and <tt>create</tt> is <tt>false</tt>
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code>;
+     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create, String escapedMessageID)
     {
@@ -635,14 +635,14 @@ public class ChatSessionManager
     }
 
     /**
-     * Gets the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoom</tt> and
+     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code> and
      * optionally creates it if it does not exist.
      *
-     * @param adHocChatRoom the <tt>AdHocChatRoom</tt> to get the corresponding <tt>ChatPanel</tt> of
-     * @param create <tt>true</tt> to create a <tt>ChatPanel</tt> corresponding to the specified
-     * <tt>AdHocChatRoom</tt> if such <tt>ChatPanel</tt> does not exist yet
-     * @return the <tt>ChatPanel</tt> corresponding to the specified <tt>AdHocChatRoom</tt>;
-     * <tt>null</tt> if there is no such <tt>ChatPanel</tt> and <tt>create</tt> is <tt>false</tt>
+     * @param adHocChatRoom the <code>AdHocChatRoom</code> to get the corresponding <code>ChatPanel</code> of
+     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
+     * <code>AdHocChatRoom</code> if such <code>ChatPanel</code> does not exist yet
+     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code>;
+     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create)
     {
@@ -652,12 +652,12 @@ public class ChatSessionManager
     // ==============================================
 
     /**
-     * Gets the default <tt>Contact</tt> of the specified <tt>MetaContact</tt> if it is online;
-     * otherwise, gets one of its <tt>Contact</tt>s which supports offline messaging.
+     * Gets the default <code>Contact</code> of the specified <code>MetaContact</code> if it is online;
+     * otherwise, gets one of its <code>Contact</code>s which supports offline messaging.
      *
-     * @param metaContact the <tt>MetaContact</tt> to get the default <tt>Contact</tt> of
-     * @return the default <tt>Contact</tt> of the specified <tt>MetaContact</tt> if it is online;
-     * otherwise, gets one of its <tt>Contact</tt>s which supports offline messaging
+     * @param metaContact the <code>MetaContact</code> to get the default <code>Contact</code> of
+     * @return the default <code>Contact</code> of the specified <code>MetaContact</code> if it is online;
+     * otherwise, gets one of its <code>Contact</code>s which supports offline messaging
      */
     private static Contact getDefaultContact(MetaContact metaContact)
     {
@@ -692,15 +692,15 @@ public class ChatSessionManager
     }
 
     /**
-     * Creates a <tt>ChatPanel</tt> for the given contact and saves it in the list of created <tt>ChatPanel</tt>s.
+     * Creates a <code>ChatPanel</code> for the given contact and saves it in the list of created <code>ChatPanel</code>s.
      *
-     * @param metaContact the <tt>MetaContact</tt> to create a <tt>ChatPanel</tt> for
+     * @param metaContact the <code>MetaContact</code> to create a <code>ChatPanel</code> for
      *
      * // @param protocolContact
-     * the <tt>Contact</tt> (respectively its <tt>ChatTransport</tt>) to be selected in the newly created <tt>ChatPanel</tt>;
-     * <tt>null</tt> to select the default <tt>Contact</tt> of <tt>metaContact</tt> if it is
-     * online or one of its <tt>Contact</tt>s which supports offline messaging
-     * // @param contactResource the <tt>ContactResource</tt>, to be selected in the newly created <tt>ChatPanel</tt>
+     * the <code>Contact</code> (respectively its <code>ChatTransport</code>) to be selected in the newly created <code>ChatPanel</code>;
+     * <code>null</code> to select the default <code>Contact</code> of <code>metaContact</code> if it is
+     * online or one of its <code>Contact</code>s which supports offline messaging
+     * // @param contactResource the <code>ContactResource</code>, to be selected in the newly created <code>ChatPanel</code>
      * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(MetaContact metaContact)
@@ -732,10 +732,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Creates a <tt>ChatPanel</tt> for the given <tt>ChatRoom</tt> and saves it in the list of
-     * created <tt>ChatPanel</tt>s.
+     * Creates a <code>ChatPanel</code> for the given <code>ChatRoom</code> and saves it in the list of
+     * created <code>ChatPanel</code>s.
      *
-     * @param chatRoomWrapper the <tt>ChatRoom</tt>, for which the chat will be created
+     * @param chatRoomWrapper the <code>ChatRoom</code>, for which the chat will be created
      * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(ChatRoomWrapper chatRoomWrapper)
@@ -744,10 +744,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Creates a <tt>ChatPanel</tt> for the given <tt>ChatRoom</tt> and saves it in the list of
-     * created <tt>ChatPanel</tt>s.
+     * Creates a <code>ChatPanel</code> for the given <code>ChatRoom</code> and saves it in the list of
+     * created <code>ChatPanel</code>s.
      *
-     * @param chatRoomWrapper the <tt>ChatRoom</tt>, for which the chat will be created
+     * @param chatRoomWrapper the <code>ChatRoom</code>, for which the chat will be created
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat.
      * @return The {@code ChatPanel} newly created.
@@ -764,10 +764,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Creates a <tt>ChatPanel</tt> for the given <tt>AdHocChatRoom</tt> and saves it in the list
-     * of created <tt>ChatPanel</tt>s.
+     * Creates a <code>ChatPanel</code> for the given <code>AdHocChatRoom</code> and saves it in the list
+     * of created <code>ChatPanel</code>s.
      *
-     * @param chatRoomWrapper the <tt>AdHocChatRoom</tt>, for which the chat will be created
+     * @param chatRoomWrapper the <code>AdHocChatRoom</code>, for which the chat will be created
      * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(AdHocChatRoomWrapper chatRoomWrapper)
@@ -776,10 +776,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Creates a <tt>ChatPanel</tt> for the given <tt>AdHocChatRoom</tt> and saves it in the list
-     * of created <tt>ChatPanel</tt>s.
+     * Creates a <code>ChatPanel</code> for the given <code>AdHocChatRoom</code> and saves it in the list
+     * of created <code>ChatPanel</code>s.
      *
-     * @param chatRoomWrapper the <tt>AdHocChatRoom</tt>, for which the chat will be created
+     * @param chatRoomWrapper the <code>AdHocChatRoom</code>, for which the chat will be created
      * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
      * one is loaded in the chat.
      * @return The {@code ChatPanel} newly created.
@@ -796,10 +796,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Finds the <tt>ChatPanel</tt> corresponding to the given chat descriptor.
+     * Finds the <code>ChatPanel</code> corresponding to the given chat descriptor.
      *
      * @param descriptor the chat descriptor.
-     * @return the <tt>ChatPanel</tt> corresponding to the given chat descriptor if any; otherwise, <tt>null</tt>
+     * @return the <code>ChatPanel</code> corresponding to the given chat descriptor if any; otherwise, <code>null</code>
      */
     private static ChatPanel findChatPanelForDescriptor(Object descriptor)
     {
@@ -811,9 +811,9 @@ public class ChatSessionManager
     }
 
     /**
-     * Notifies the <tt>ChatListener</tt>s registered with this instance that a specific <tt>Chat</tt> has been closed.
+     * Notifies the <code>ChatListener</code>s registered with this instance that a specific <code>Chat</code> has been closed.
      *
-     * @param chat the <tt>Chat</tt> which has been closed and which the <tt>ChatListener</tt>s
+     * @param chat the <code>Chat</code> which has been closed and which the <code>ChatListener</code>s
      * registered with this instance are to be notified about
      */
     private static void fireChatClosed(Chat chat)
@@ -824,10 +824,10 @@ public class ChatSessionManager
     }
 
     /**
-     * Notifies the <tt>ChatListener</tt>s registered with this instance that a specific
-     * <tt>Chat</tt> has been created.
+     * Notifies the <code>ChatListener</code>s registered with this instance that a specific
+     * <code>Chat</code> has been created.
      *
-     * @param chat the <tt>Chat</tt> which has been created and which the <tt>ChatListener</tt>s
+     * @param chat the <code>Chat</code> which has been created and which the <code>ChatListener</code>s
      * registered with this instance are to be notified about
      */
     private static void fireChatCreated(Chat chat)
@@ -881,7 +881,7 @@ public class ChatSessionManager
         /**
          * Constructs.
          *
-         * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to use for creating a panel.
+         * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to use for creating a panel.
          */
         private CreateChatRoomWrapperRunner(ChatRoomWrapper chatRoomWrapper)
         {
@@ -911,7 +911,7 @@ public class ChatSessionManager
         /**
          * Constructs.
          *
-         * @param chatRoomWrapper the <tt>AdHocChatRoom</tt>, for which the chat will be created.
+         * @param chatRoomWrapper the <code>AdHocChatRoom</code>, for which the chat will be created.
          */
         private CreateAdHocChatRoomWrapperRunner(AdHocChatRoomWrapper chatRoomWrapper)
         {
@@ -942,7 +942,7 @@ public class ChatSessionManager
         /**
          * Constructs.
          *
-         * @param chatRoom the <tt>ChatRoom</tt> used to create the corresponding <tt>ChatPanel</tt>.
+         * @param chatRoom the <code>ChatRoom</code> used to create the corresponding <code>ChatPanel</code>.
          */
         private CreateChatRoomRunner(ChatRoom chatRoom, String escapedMessageID)
         {
@@ -974,7 +974,7 @@ public class ChatSessionManager
         /**
          * Constructs.
          *
-         * @param adHocChatRoom the <tt>AdHocChatRoom</tt> used to create the corresponding <tt>ChatPanel</tt>.
+         * @param adHocChatRoom the <code>AdHocChatRoom</code> used to create the corresponding <code>ChatPanel</code>.
          */
         private CreateAdHocChatRoomRunner(AdHocChatRoom adHocChatRoom, String escapedMessageID)
         {

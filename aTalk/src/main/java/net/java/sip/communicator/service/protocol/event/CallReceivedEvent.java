@@ -25,7 +25,7 @@ public class CallReceivedEvent extends EventObject
 	 * Constructor.
 	 *
 	 * @param call
-	 *        the <tt>Call</tt> received
+	 *        the <code>Call</code> received
 	 */
 	public CallReceivedEvent(Call call)
 	{
@@ -35,7 +35,7 @@ public class CallReceivedEvent extends EventObject
 	/**
 	 * Returns the received call.
 	 *
-	 * @return received <tt>Call</tt>
+	 * @return received <code>Call</code>
 	 */
 	public Call getCall()
 	{

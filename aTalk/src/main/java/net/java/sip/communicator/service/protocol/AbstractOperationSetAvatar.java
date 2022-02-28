@@ -47,7 +47,7 @@ public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderServi
     private final OperationSetServerStoredAccountInfo accountInfoOpSet;
 
     /**
-     * The list of listeners interested in <tt>AvatarEvent</tt>s.
+     * The list of listeners interested in <code>AvatarEvent</code>s.
      */
     private final List<AvatarListener> avatarListeners = new ArrayList<>();
 

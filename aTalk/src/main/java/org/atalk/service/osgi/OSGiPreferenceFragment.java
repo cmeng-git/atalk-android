@@ -66,7 +66,7 @@ public class OSGiPreferenceFragment extends PreferenceFragmentCompat implements 
     }
 
     /**
-     * Fired when OSGI is started and the <tt>bundleContext</tt> is available.
+     * Fired when OSGI is started and the <code>bundleContext</code> is available.
      *
      * @param bundleContext the OSGI bundle context.
      */
@@ -80,7 +80,7 @@ public class OSGiPreferenceFragment extends PreferenceFragmentCompat implements 
     }
 
     /**
-     * Method fired when OSGI context is attached, but after the <tt>View</tt> is created.
+     * Method fired when OSGI context is attached, but after the <code>View</code> is created.
      */
     protected void onOSGiConnected()
     {
@@ -88,7 +88,7 @@ public class OSGiPreferenceFragment extends PreferenceFragmentCompat implements 
     }
 
     /**
-     * Fired when parent <tt>OSGiActivity</tt> is being stopped or this fragment is being detached.
+     * Fired when parent <code>OSGiActivity</code> is being stopped or this fragment is being detached.
      *
      * @param bundleContext the OSGI bundle context.
      */

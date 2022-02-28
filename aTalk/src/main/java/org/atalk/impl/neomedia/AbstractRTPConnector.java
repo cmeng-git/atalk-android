@@ -17,8 +17,8 @@ import javax.media.rtp.SessionAddress;
 import timber.log.Timber;
 
 /**
- * Provides a base/default implementation of <tt>RTPConnector</tt> which has factory methods for its
- * control and data input and output streams and has an associated <tt>StreamConnector</tt>.
+ * Provides a base/default implementation of <code>RTPConnector</code> which has factory methods for its
+ * control and data input and output streams and has an associated <code>StreamConnector</code>.
  *
  * @author Bing SU (nova.su@gmail.com)
  * @author Lyubomir Marinov
@@ -29,33 +29,33 @@ public abstract class AbstractRTPConnector implements RTPConnector
 {
     /**
      * The pair of datagram sockets for RTP and RTCP traffic that this instance uses in the form of
-     * a <tt>StreamConnector</tt>.
+     * a <code>StreamConnector</code>.
      */
     protected final StreamConnector connector;
 
     /**
-     * RTCP packet input stream used by <tt>RTPManager</tt>.
+     * RTCP packet input stream used by <code>RTPManager</code>.
      */
     private RTPConnectorInputStream<?> controlInputStream;
 
     /**
-     * RTCP packet output stream used by <tt>RTPManager</tt>.
+     * RTCP packet output stream used by <code>RTPManager</code>.
      */
     private RTPConnectorOutputStream controlOutputStream;
 
     /**
-     * RTP packet input stream used by <tt>RTPManager</tt>.
+     * RTP packet input stream used by <code>RTPManager</code>.
      */
     private RTPConnectorInputStream<?> dataInputStream;
 
     /**
-     * RTP packet output stream used by <tt>RTPManager</tt>.
+     * RTP packet output stream used by <code>RTPManager</code>.
      */
     private RTPConnectorOutputStream dataOutputStream;
 
     /**
-     * Initializes a new <tt>AbstractRTPConnector</tt> which is to use a given pair of datagram
-     * sockets for RTP and RTCP traffic specified in the form of a <tt>StreamConnector</tt>.
+     * Initializes a new <code>AbstractRTPConnector</code> which is to use a given pair of datagram
+     * sockets for RTP and RTCP traffic specified in the form of a <code>StreamConnector</code>.
      *
      * @param connector the pair of datagram sockets for RTP and RTCP traffic the new instance is to use
      */
@@ -88,7 +88,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Closes all sockets, stream, and the <tt>StreamConnector</tt> that this <tt>RTPConnector</tt>
+     * Closes all sockets, stream, and the <code>StreamConnector</code> that this <code>RTPConnector</code>
      * is using.
      */
     public void close()
@@ -114,46 +114,46 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Creates the RTCP packet input stream to be used by <tt>RTPManager</tt>.
+     * Creates the RTCP packet input stream to be used by <code>RTPManager</code>.
      *
-     * @return a new RTCP packet input stream to be used by <tt>RTPManager</tt>
+     * @return a new RTCP packet input stream to be used by <code>RTPManager</code>
      * @throws IOException if an error occurs during the creation of the RTCP packet input stream
      */
     protected abstract RTPConnectorInputStream<?> createControlInputStream()
             throws IOException;
 
     /**
-     * Creates the RTCP packet output stream to be used by <tt>RTPManager</tt>.
+     * Creates the RTCP packet output stream to be used by <code>RTPManager</code>.
      *
-     * @return a new RTCP packet output stream to be used by <tt>RTPManager</tt>
+     * @return a new RTCP packet output stream to be used by <code>RTPManager</code>
      * @throws IOException if an error occurs during the creation of the RTCP packet output stream
      */
     protected abstract RTPConnectorOutputStream createControlOutputStream()
             throws IOException;
 
     /**
-     * Creates the RTP packet input stream to be used by <tt>RTPManager</tt>.
+     * Creates the RTP packet input stream to be used by <code>RTPManager</code>.
      *
-     * @return a new RTP packet input stream to be used by <tt>RTPManager</tt>
+     * @return a new RTP packet input stream to be used by <code>RTPManager</code>
      * @throws IOException if an error occurs during the creation of the RTP packet input stream
      */
     protected abstract RTPConnectorInputStream<?> createDataInputStream()
             throws IOException;
 
     /**
-     * Creates the RTP packet output stream to be used by <tt>RTPManager</tt>.
+     * Creates the RTP packet output stream to be used by <code>RTPManager</code>.
      *
-     * @return a new RTP packet output stream to be used by <tt>RTPManager</tt>
+     * @return a new RTP packet output stream to be used by <code>RTPManager</code>
      * @throws IOException if an error occurs during the creation of the RTP packet output stream
      */
     protected abstract RTPConnectorOutputStream createDataOutputStream()
             throws IOException;
 
     /**
-     * Gets the <tt>StreamConnector</tt> which represents the pair of datagram sockets for RTP and
+     * Gets the <code>StreamConnector</code> which represents the pair of datagram sockets for RTP and
      * RTCP traffic used by this instance.
      *
-     * @return the <tt>StreamConnector</tt> which represents the pair of datagram sockets for RTP
+     * @return the <code>StreamConnector</code> which represents the pair of datagram sockets for RTP
      * and RTCP traffic used by this instance
      */
     public final StreamConnector getConnector()
@@ -174,14 +174,14 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Gets the <tt>PushSourceStream</tt> which gives access to the RTCP data received from the
+     * Gets the <code>PushSourceStream</code> which gives access to the RTCP data received from the
      * remote targets and optionally creates it if it does not exist yet.
      *
-     * @param create <tt>true</tt> to create the <tt>PushSourceStream</tt> which gives access to the RTCP
-     * data received from the remote targets if it does not exist yet; otherwise, <tt>false</tt>
-     * @return the <tt>PushBufferStream</tt> which gives access to the RTCP data received from the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
-     * @throws IOException if creating the <tt>PushSourceStream</tt> fails
+     * @param create <code>true</code> to create the <code>PushSourceStream</code> which gives access to the RTCP
+     * data received from the remote targets if it does not exist yet; otherwise, <code>false</code>
+     * @return the <code>PushBufferStream</code> which gives access to the RTCP data received from the
+     * remote targets; <code>null</code> if it does not exist yet and <code>create</code> is <code>false</code>
+     * @throws IOException if creating the <code>PushSourceStream</code> fails
      */
     protected RTPConnectorInputStream<?> getControlInputStream(boolean create)
             throws IOException
@@ -204,14 +204,14 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Gets the <tt>OutputDataStream</tt> which is used to write RTCP data to be sent to from the
+     * Gets the <code>OutputDataStream</code> which is used to write RTCP data to be sent to from the
      * remote targets and optionally creates it if it does not exist yet.
      *
-     * @param create <tt>true</tt> to create the <tt>OutputDataStream</tt> which is to be used to write
-     * RTCP data to be sent to the remote targets if it does not exist yet; otherwise, <tt>false</tt>
-     * @return the <tt>OutputDataStream</tt> which is used to write RTCP data to be sent to the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
-     * @throws IOException if creating the <tt>OutputDataStream</tt> fails
+     * @param create <code>true</code> to create the <code>OutputDataStream</code> which is to be used to write
+     * RTCP data to be sent to the remote targets if it does not exist yet; otherwise, <code>false</code>
+     * @return the <code>OutputDataStream</code> which is used to write RTCP data to be sent to the
+     * remote targets; <code>null</code> if it does not exist yet and <code>create</code> is <code>false</code>
+     * @throws IOException if creating the <code>OutputDataStream</code> fails
      */
     protected RTPConnectorOutputStream getControlOutputStream(boolean create)
             throws IOException
@@ -234,14 +234,14 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Gets the <tt>PushSourceStream</tt> which gives access to the RTP data received from the
+     * Gets the <code>PushSourceStream</code> which gives access to the RTP data received from the
      * remote targets and optionally creates it if it does not exist yet.
      *
-     * @param create <tt>true</tt> to create the <tt>PushSourceStream</tt> which gives access to the RTP
-     * data received from the remote targets if it does not exist yet; otherwise, <tt>false</tt>
-     * @return the <tt>PushBufferStream</tt> which gives access to the RTP data received from the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
-     * @throws IOException if creating the <tt>PushSourceStream</tt> fails
+     * @param create <code>true</code> to create the <code>PushSourceStream</code> which gives access to the RTP
+     * data received from the remote targets if it does not exist yet; otherwise, <code>false</code>
+     * @return the <code>PushBufferStream</code> which gives access to the RTP data received from the
+     * remote targets; <code>null</code> if it does not exist yet and <code>create</code> is <code>false</code>
+     * @throws IOException if creating the <code>PushSourceStream</code> fails
      */
     protected RTPConnectorInputStream<?> getDataInputStream(boolean create)
             throws IOException
@@ -264,14 +264,14 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Gets the <tt>OutputDataStream</tt> which is used to write RTP data to be sent to from the
+     * Gets the <code>OutputDataStream</code> which is used to write RTP data to be sent to from the
      * remote targets and optionally creates it if it does not exist yet.
      *
-     * @param create <tt>true</tt> to create the <tt>OutputDataStream</tt> which is to be used to write RTP
-     * data to be sent to the remote targets if it does not exist yet; otherwise, <tt>false</tt>
-     * @return the <tt>OutputDataStream</tt> which is used to write RTP data to be sent to the
-     * remote targets; <tt>null</tt> if it does not exist yet and <tt>create</tt> is <tt>false</tt>
-     * @throws IOException if creating the <tt>OutputDataStream</tt> fails
+     * @param create <code>true</code> to create the <code>OutputDataStream</code> which is to be used to write RTP
+     * data to be sent to the remote targets if it does not exist yet; otherwise, <code>false</code>
+     * @return the <code>OutputDataStream</code> which is used to write RTP data to be sent to the
+     * remote targets; <code>null</code> if it does not exist yet and <code>create</code> is <code>false</code>
+     * @throws IOException if creating the <code>OutputDataStream</code> fails
      */
     public RTPConnectorOutputStream getDataOutputStream(boolean create)
             throws IOException
@@ -282,7 +282,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Provides a dummy implementation to {@link RTPConnector#getReceiveBufferSize()} that always returns <tt>-1</tt>.
+     * Provides a dummy implementation to {@link RTPConnector#getReceiveBufferSize()} that always returns <code>-1</code>.
      */
     public int getReceiveBufferSize()
     {
@@ -292,7 +292,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
 
     /**
      * Provides a dummy implementation to {@link RTPConnector#getRTCPBandwidthFraction()} that
-     * always returns <tt>-1</tt>.
+     * always returns <code>-1</code>.
      */
     public double getRTCPBandwidthFraction()
     {
@@ -302,7 +302,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
 
     /**
      * Provides a dummy implementation to {@link RTPConnector#getRTCPSenderBandwidthFraction()} that
-     * always returns <tt>-1</tt>.
+     * always returns <code>-1</code>.
      */
     public double getRTCPSenderBandwidthFraction()
     {
@@ -311,7 +311,7 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Provides a dummy implementation to {@link RTPConnector#getSendBufferSize()} that always returns <tt>-1</tt>.
+     * Provides a dummy implementation to {@link RTPConnector#getSendBufferSize()} that always returns <code>-1</code>.
      */
     public int getSendBufferSize()
     {
@@ -369,15 +369,15 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
-     * Configures this <tt>AbstractRTPConnector</tt> to allow RTP in the specified direction. That
-     * is, enables/disables the input and output data streams according to <tt>direction</tt>.
+     * Configures this <code>AbstractRTPConnector</code> to allow RTP in the specified direction. That
+     * is, enables/disables the input and output data streams according to <code>direction</code>.
      *
      * Note that the control (RTCP) streams are not affected (they are always kept enabled).
      *
-     * @param direction Specifies how to configure the data streams of this <tt>AbstractRTPConnector</tt>. The
-     * input stream will be enabled or disabled depending on whether <tt>direction</tt>
+     * @param direction Specifies how to configure the data streams of this <code>AbstractRTPConnector</code>. The
+     * input stream will be enabled or disabled depending on whether <code>direction</code>
      * allows receiving. The output stream will be enabled or disabled depending on whether
-     * <tt>direction</tt> allows sending.
+     * <code>direction</code> allows sending.
      */
     public void setDirection(MediaDirection direction)
     {

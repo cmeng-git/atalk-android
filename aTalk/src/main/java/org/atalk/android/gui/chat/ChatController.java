@@ -48,7 +48,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 /**
- * Class is used to separate the logic of send message editing process from <tt>ChatFragment</tt>.
+ * Class is used to separate the logic of send message editing process from <code>ChatFragment</code>.
  * It handles last messages correction, editing, sending messages and chat state notifications.
  * It also restores edit state when the chat fragment is scrolled in view again.
  *
@@ -87,7 +87,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     private View audioBtn;
     /**
-     * Message <tt>EditText</tt>.
+     * Message <code>EditText</code>.
      */
     private ContentEditText msgEdit;
     /**
@@ -147,10 +147,10 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     private float downX;
 
     /**
-     * Creates new instance of <tt>ChatController</tt>.
+     * Creates new instance of <code>ChatController</code>.
      *
-     * @param activity the parent <tt>Activity</tt>.
-     * @param fragment the parent <tt>ChatFragment</tt>.
+     * @param activity the parent <code>Activity</code>.
+     * @param fragment the parent <code>ChatFragment</code>.
      */
     public ChatController(Activity activity, ChatFragment fragment)
     {
@@ -161,7 +161,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Method called by the <tt>ChatFragment</tt> when it is displayed to the user and its <tt>View</tt> is created.
+     * Method called by the <code>ChatFragment</code> when it is displayed to the user and its <code>View</code> is created.
      */
     public void onShow()
     {
@@ -275,7 +275,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Method called by <tt>ChatFragment</tt> when it's no longer displayed to the user.
+     * Method called by <code>ChatFragment</code> when it's no longer displayed to the user.
      * This happens when user scroll pagerAdapter, and the chat window is out of view
      */
     public void onHide()
@@ -880,7 +880,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Method called by <tt>ChatFragment</tt> and <tt>ChatController</tt>. when user touches the
+     * Method called by <code>ChatFragment</code> and <code>ChatController</code>. when user touches the
      * display. Re-init chat state to active when user return to chat session
      */
     public void onTouchAction()
@@ -895,7 +895,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Method called by <tt>ChatFragment</tt> when user closes the chat window.
+     * Method called by <code>ChatFragment</code> when user closes the chat window.
      * Update that user is no longer in this chat session and end state ctrl thread
      */
     public void onChatCloseAction()
@@ -946,7 +946,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * The thread lowers chat state from composing to inactive state. When
-     * <tt>refreshChatState</tt> is called checks for eventual chat state refreshComposing.
+     * <code>refreshChatState</code> is called checks for eventual chat state refreshComposing.
      */
     class ChatStateControl extends Thread
     {

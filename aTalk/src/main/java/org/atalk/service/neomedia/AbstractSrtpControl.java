@@ -21,7 +21,7 @@ public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
     private final SrtpControlType srtpControlType;
 
     /**
-     * The <tt>SrtpListener</tt> listening to security events (to be) fired by this <tt>SrtpControl</tt> instance.
+     * The <code>SrtpListener</code> listening to security events (to be) fired by this <code>SrtpControl</code> instance.
      */
     private SrtpListener srtpListener;
 
@@ -34,9 +34,9 @@ public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
     private final Set<Object> users = new HashSet<>();
 
     /**
-     * Initializes a new <tt>AbstractSrtpControl</tt> instance with a specific <tt>SrtpControlType</tt>.
+     * Initializes a new <code>AbstractSrtpControl</code> instance with a specific <code>SrtpControlType</code>.
      *
-     * @param srtpControlType the <tt>SrtpControlType</tt> of the new instance
+     * @param srtpControlType the <code>SrtpControlType</code> of the new instance
      */
     protected AbstractSrtpControl(SrtpControlType srtpControlType)
     {
@@ -49,7 +49,7 @@ public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
     /**
      * {@inheritDoc}
      *
-     * The implementation of <tt>AbstractSrtpControl</tt> cleans up its associated <tt>TransformEngine</tt> (if any).
+     * The implementation of <code>AbstractSrtpControl</code> cleans up its associated <code>TransformEngine</code> (if any).
      */
     @Override
     public void cleanup(Object user)
@@ -61,11 +61,11 @@ public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
     }
 
     /**
-     * Initializes a new <tt>TransformEngine</tt> instance to be associated with
-     * and used by this <tt>SrtpControl</tt> instance.
+     * Initializes a new <code>TransformEngine</code> instance to be associated with
+     * and used by this <code>SrtpControl</code> instance.
      *
-     * @return a new <tt>TransformEngine</tt> instance to be associated with and
-     * used by this <tt>SrtpControl</tt> instance
+     * @return a new <code>TransformEngine</code> instance to be associated with and
+     * used by this <code>SrtpControl</code> instance
      */
     protected abstract T createTransformEngine();
 
@@ -111,7 +111,7 @@ public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
     /**
      * {@inheritDoc}
      *
-     * The implementation of <tt>AbstractSrtpControl</tt> does nothing because support for
+     * The implementation of <code>AbstractSrtpControl</code> does nothing because support for
      * multistream mode is the exception rather than the norm.
      */
     public void setMasterSession(boolean masterSession)
@@ -121,7 +121,7 @@ public abstract class AbstractSrtpControl<T extends SrtpControl.TransformEngine>
     /**
      * {@inheritDoc}
      *
-     * The implementation of <tt>AbstractSrtpControl</tt> does nothing because support for
+     * The implementation of <code>AbstractSrtpControl</code> does nothing because support for
      * multistream mode is the exception rather than the norm.
      */
     public void setMultistream(SrtpControl master)

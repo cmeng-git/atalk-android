@@ -19,12 +19,13 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.jxmpp.jid.DomainBareJid;
 
 import java.util.Iterator;
 
 /**
- * Class used to obtain UI specific data for <tt>MetaContact</tt> instances.
+ * Class used to obtain UI specific data for <code>MetaContact</code> instances.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -72,7 +73,9 @@ public class MetaContactRenderer implements UIContactRenderer
     @Override
     public boolean isShowVideoCallBtn(Object contactImpl)
     {
-        return isShowButton((MetaContact) contactImpl, OperationSetVideoTelephony.class);
+        // Disable video call option if there is no camera support on the device
+        return isShowButton((MetaContact) contactImpl, OperationSetVideoTelephony.class)
+                && (AndroidCamera.getCameras().length != 0);
     }
 
     @Override
@@ -108,10 +111,10 @@ public class MetaContactRenderer implements UIContactRenderer
     }
 
     /**
-     * Returns the display details for the underlying <tt>MetaContact</tt>.
+     * Returns the display details for the underlying <code>MetaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt>, which details we're looking for
-     * @return the display details for the underlying <tt>MetaContact</tt>
+     * @param metaContact the <code>MetaContact</code>, which details we're looking for
+     * @return the display details for the underlying <code>MetaContact</code>
      */
     private static String getDisplayDetails(MetaContact metaContact)
     {
@@ -150,10 +153,10 @@ public class MetaContactRenderer implements UIContactRenderer
     }
 
     /**
-     * Returns the avatar <tt>Drawable</tt> for the given <tt>MetaContact</tt>.
+     * Returns the avatar <code>Drawable</code> for the given <code>MetaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt>, which status drawable we're looking for
-     * @return a <tt>BitmapDrawable</tt> object representing the status of the given <tt>MetaContact</tt>
+     * @param metaContact the <code>MetaContact</code>, which status drawable we're looking for
+     * @return a <code>BitmapDrawable</code> object representing the status of the given <code>MetaContact</code>
      */
     public static BitmapDrawable getAvatarDrawable(MetaContact metaContact)
     {
@@ -161,10 +164,10 @@ public class MetaContactRenderer implements UIContactRenderer
     }
 
     /**
-     * Returns avatar <tt>BitmapDrawable</tt> with rounded corners. Bitmap will be cached in app global drawable cache.
+     * Returns avatar <code>BitmapDrawable</code> with rounded corners. Bitmap will be cached in app global drawable cache.
      *
      * @param avatar raw avatar image data.
-     * @return avatar <tt>BitmapDrawable</tt> with rounded corners
+     * @return avatar <code>BitmapDrawable</code> with rounded corners
      */
     public static BitmapDrawable getCachedAvatarFromBytes(byte[] avatar)
     {
@@ -186,10 +189,10 @@ public class MetaContactRenderer implements UIContactRenderer
     }
 
     /**
-     * Returns the status <tt>Drawable</tt> for the given <tt>MetaContact</tt>.
+     * Returns the status <code>Drawable</code> for the given <code>MetaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt>, which status drawable we're looking for
-     * @return a <tt>Drawable</tt> object representing the status of the given <tt>MetaContact</tt>
+     * @param metaContact the <code>MetaContact</code>, which status drawable we're looking for
+     * @return a <code>Drawable</code> object representing the status of the given <code>MetaContact</code>
      */
     public static Drawable getStatusDrawable(MetaContact metaContact)
     {
@@ -202,9 +205,9 @@ public class MetaContactRenderer implements UIContactRenderer
     }
 
     /**
-     * Returns the array of bytes representing the status image of the given <tt>MetaContact</tt>.
+     * Returns the array of bytes representing the status image of the given <code>MetaContact</code>.
      *
-     * @return the array of bytes representing the status image of the given <tt>MetaContact</tt>
+     * @return the array of bytes representing the status image of the given <code>MetaContact</code>
      */
     private static byte[] getStatusImage(MetaContact metaContact)
     {

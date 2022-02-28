@@ -52,7 +52,7 @@ import javax.media.protocol.DataSource;
 import timber.log.Timber;
 
 /**
- * Implements <tt>MediaService</tt> for JMF.
+ * Implements <code>MediaService</code> for JMF.
  *
  * @author Lyubomir Marinov
  * @author Dmitri Melnikov
@@ -62,24 +62,24 @@ import timber.log.Timber;
 public class MediaServiceImpl extends PropertyChangeNotifier implements MediaService
 {
     /**
-     * The name of the <tt>boolean</tt> <tt>ConfigurationService</tt> property which indicates
-     * whether the detection of audio <tt>CaptureDevice</tt>s is to be disabled. The default value
-     * is <tt>false</tt> i.e. the audio <tt>CaptureDevice</tt>s are detected.
+     * The name of the <code>boolean</code> <code>ConfigurationService</code> property which indicates
+     * whether the detection of audio <code>CaptureDevice</code>s is to be disabled. The default value
+     * is <code>false</code> i.e. the audio <code>CaptureDevice</code>s are detected.
      */
     public static final String DISABLE_AUDIO_SUPPORT_PNAME = "media.DISABLE_AUDIO_SUPPORT";
 
     /**
-     * The name of the <tt>boolean</tt> <tt>ConfigurationService</tt> property which indicates
+     * The name of the <code>boolean</code> <code>ConfigurationService</code> property which indicates
      * whether the method {@link DeviceConfiguration#setAudioSystem(AudioSystem, boolean)} is to be
      * considered disabled for the user i.e. the user is not presented with user interface which
-     * allows selecting a particular <tt>AudioSystem</tt>.
+     * allows selecting a particular <code>AudioSystem</code>.
      */
     public static final String DISABLE_SET_AUDIO_SYSTEM_PNAME = "neomedia.audiosystem.DISABLED";
 
     /**
-     * The name of the <tt>boolean</tt> <tt>ConfigurationService</tt> property which indicates
-     * whether the detection of video <tt>CaptureDevice</tt>s is to be disabled. The default value
-     * is <tt>false</tt> i.e. the video <tt>CaptureDevice</tt>s are detected.
+     * The name of the <code>boolean</code> <code>ConfigurationService</code> property which indicates
+     * whether the detection of video <code>CaptureDevice</code>s is to be disabled. The default value
+     * is <code>false</code> i.e. the video <code>CaptureDevice</code>s are detected.
      */
     public static final String DISABLE_VIDEO_SUPPORT_PNAME = "media.DISABLE_VIDEO_SUPPORT";
 
@@ -90,32 +90,32 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             = "neomedia.dynamicPayloadTypePreferences";
 
     /**
-     * The value of the <tt>devices</tt> property of <tt>MediaServiceImpl</tt> when no
-     * <tt>MediaDevice</tt>s are available. Explicitly defined in order to reduce unnecessary allocations.
+     * The value of the <code>devices</code> property of <code>MediaServiceImpl</code> when no
+     * <code>MediaDevice</code>s are available. Explicitly defined in order to reduce unnecessary allocations.
      */
     private static final List<MediaDevice> EMPTY_DEVICES = Collections.emptyList();
 
     /**
-     * The name of the <tt>System</tt> boolean property which specifies whether the committing of
-     * the JMF/FMJ <tt>Registry</tt> is to be disabled.
+     * The name of the <code>System</code> boolean property which specifies whether the committing of
+     * the JMF/FMJ <code>Registry</code> is to be disabled.
      */
     private static final String JMF_REGISTRY_DISABLE_COMMIT = "JmfRegistry.disableCommit";
 
     /**
-     * The name of the <tt>System</tt> boolean property which specifies whether the loading of the
-     * JMF/FMJ <tt>Registry</tt> is to be disabled.
+     * The name of the <code>System</code> boolean property which specifies whether the loading of the
+     * JMF/FMJ <code>Registry</code> is to be disabled.
      */
     private static final String JMF_REGISTRY_DISABLE_LOAD = "JmfRegistry.disableLoad";
 
     /**
-     * The indicator which determines whether the loading of the JMF/FMJ <tt>Registry</tt> is disabled.
+     * The indicator which determines whether the loading of the JMF/FMJ <code>Registry</code> is disabled.
      */
     private static boolean jmfRegistryDisableLoad;
 
     /**
      * The indicator which determined whether {@link #postInitializeOnce(MediaServiceImpl)} has
      * been executed in order to perform one-time initialization after initializing the first
-     * instance of <tt>MediaServiceImpl</tt>.
+     * instance of <code>MediaServiceImpl</code>.
      */
     private static boolean postInitializeOnce;
 
@@ -131,18 +131,18 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     private static final String rtpCname = UUID.randomUUID().toString();
 
     /**
-     * The <tt>CaptureDevice</tt> user choices such as the default audio and video capture devices.
+     * The <code>CaptureDevice</code> user choices such as the default audio and video capture devices.
      */
     private final DeviceConfiguration deviceConfiguration = new DeviceConfiguration();
 
     /**
-     * The <tt>PropertyChangeListener</tt> which listens to {@link #deviceConfiguration}.
+     * The <code>PropertyChangeListener</code> which listens to {@link #deviceConfiguration}.
      */
     private final PropertyChangeListener deviceConfigurationPropertyChangeListener
             = event -> deviceConfigurationPropertyChange(event);
 
     /**
-     * The list of audio <tt>MediaDevice</tt>s reported by this instance when its
+     * The list of audio <code>MediaDevice</code>s reported by this instance when its
      * {@link MediaService#getDevices(MediaType, MediaUseCase)} method is called with an argument
      * {@link MediaType#AUDIO}.
      */
@@ -154,25 +154,25 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     private final EncodingConfiguration currentEncodingConfiguration;
 
     /**
-     * The <tt>MediaFormatFactory</tt> through which <tt>MediaFormat</tt> instances may be created
-     * for the purposes of working with the <tt>MediaStream</tt>s created by this <tt>MediaService</tt>.
+     * The <code>MediaFormatFactory</code> through which <code>MediaFormat</code> instances may be created
+     * for the purposes of working with the <code>MediaStream</code>s created by this <code>MediaService</code>.
      */
     private MediaFormatFactory formatFactory;
 
     /**
-     * The one and only <tt>MediaDevice</tt> instance with <tt>MediaDirection</tt> not allowing
-     * sending and <tt>MediaType</tt> equal to <tt>AUDIO</tt>.
+     * The one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not allowing
+     * sending and <code>MediaType</code> equal to <code>AUDIO</code>.
      */
     private MediaDevice nonSendAudioDevice;
 
     /**
-     * The one and only <tt>MediaDevice</tt> instance with <tt>MediaDirection</tt> not allowing
-     * sending and <tt>MediaType</tt> equal to <tt>VIDEO</tt>.
+     * The one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not allowing
+     * sending and <code>MediaType</code> equal to <code>VIDEO</code>.
      */
     private MediaDevice nonSendVideoDevice;
 
     /**
-     * The list of video <tt>MediaDevice</tt>s reported by this instance when its
+     * The list of video <code>MediaDevice</code>s reported by this instance when its
      * {@link MediaService#getDevices(MediaType, MediaUseCase)} method is called with an argument
      * {@link MediaType#VIDEO}.
      */
@@ -208,7 +208,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Initializes a new <tt>MediaServiceImpl</tt> instance.
+     * Initializes a new <code>MediaServiceImpl</code> instance.
      */
     public MediaServiceImpl()
     {
@@ -231,13 +231,13 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Create a <tt>MediaStream</tt> which will use a specific <tt>MediaDevice</tt> for capture and
-     * playback of media. The new instance will not have a <tt>StreamConnector</tt> at the time of
-     * its construction, and a <tt>StreamConnector</tt> will be specified later on in order to
+     * Create a <code>MediaStream</code> which will use a specific <code>MediaDevice</code> for capture and
+     * playback of media. The new instance will not have a <code>StreamConnector</code> at the time of
+     * its construction, and a <code>StreamConnector</code> will be specified later on in order to
      * enable the new instance to send and receive media.
      *
-     * @param device the <tt>MediaDevice</tt> to be used by the new instance for capture and playback of media
-     * @return a newly-created <tt>MediaStream</tt> which will use the specified <tt>device</tt>
+     * @param device the <code>MediaDevice</code> to be used by the new instance for capture and playback of media
+     * @return a newly-created <code>MediaStream</code> which will use the specified <code>device</code>
      * for capture and playback of media
      * @see MediaService#createMediaStream(MediaDevice)
      */
@@ -250,7 +250,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * {@inheritDoc}
      *
      * Implements {@link MediaService#createMediaStream(MediaType)}. Initializes a new
-     * <tt>AudioMediaStreamImpl</tt> or <tt>VideoMediaStreamImpl</tt> in accord with <tt>mediaType</tt>
+     * <code>AudioMediaStreamImpl</code> or <code>VideoMediaStreamImpl</code> in accord with <code>mediaType</code>
      */
     public MediaStream createMediaStream(MediaType mediaType)
     {
@@ -258,14 +258,14 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Creates a new <tt>MediaStream</tt> instance which will use the specified <tt>MediaDevice</tt>
-     * for both capture and playback of media exchanged via the specified <tt>StreamConnector</tt>.
+     * Creates a new <code>MediaStream</code> instance which will use the specified <code>MediaDevice</code>
+     * for both capture and playback of media exchanged via the specified <code>StreamConnector</code>.
      *
-     * @param connector the <tt>StreamConnector</tt> that the new <tt>MediaStream</tt> instance is to use for
+     * @param connector the <code>StreamConnector</code> that the new <code>MediaStream</code> instance is to use for
      * sending and receiving media
-     * @param device the <tt>MediaDevice</tt> that the new <tt>MediaStream</tt> instance is to use for both
-     * capture and playback of media exchanged via the specified <tt>connector</tt>
-     * @return a new <tt>MediaStream</tt> instance
+     * @param device the <code>MediaDevice</code> that the new <code>MediaStream</code> instance is to use for both
+     * capture and playback of media exchanged via the specified <code>connector</code>
+     * @return a new <code>MediaStream</code> instance
      * @see MediaService#createMediaStream(StreamConnector, MediaDevice)
      */
     public MediaStream createMediaStream(StreamConnector connector, MediaDevice device)
@@ -282,15 +282,15 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Creates a new <tt>MediaStream</tt> instance which will use the specified <tt>MediaDevice</tt>
-     * for both capture and playback of media exchanged via the specified <tt>StreamConnector</tt>.
+     * Creates a new <code>MediaStream</code> instance which will use the specified <code>MediaDevice</code>
+     * for both capture and playback of media exchanged via the specified <code>StreamConnector</code>.
      *
-     * @param connector the <tt>StreamConnector</tt> that the new <tt>MediaStream</tt> instance is to use for
+     * @param connector the <code>StreamConnector</code> that the new <code>MediaStream</code> instance is to use for
      * sending and receiving media
-     * @param device the <tt>MediaDevice</tt> that the new <tt>MediaStream</tt> instance is to use for both
-     * capture and playback of media exchanged via the specified <tt>connector</tt>
+     * @param device the <code>MediaDevice</code> that the new <code>MediaStream</code> instance is to use for both
+     * capture and playback of media exchanged via the specified <code>connector</code>
      * @param srtpControl a control which is already created, used to control the SRTP operations.
-     * @return a new <tt>MediaStream</tt> instance
+     * @return a new <code>MediaStream</code> instance
      * @see MediaService#createMediaStream(StreamConnector, MediaDevice)
      */
     public MediaStream createMediaStream(StreamConnector connector, MediaDevice device, SrtpControl srtpControl)
@@ -307,19 +307,19 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Initializes a new <tt>MediaStream</tt> instance. The method is the actual implementation to
-     * which the public <tt>createMediaStream</tt> methods of <tt>MediaServiceImpl</tt> delegate.
+     * Initializes a new <code>MediaStream</code> instance. The method is the actual implementation to
+     * which the public <code>createMediaStream</code> methods of <code>MediaServiceImpl</code> delegate.
      *
-     * @param mediaType the <tt>MediaType</tt> of the new <tt>MediaStream</tt> instance to be initialized. If
-     * <tt>null</tt>, <tt>device</tt> must be non- <tt>null</tt> and its
-     * {@link MediaDevice#getMediaType()} will be used to determine the <tt>MediaType</tt> of
-     * the new instance. If non-<tt>null</tt>, <tt>device</tt> may be <tt>null</tt>. If non-
-     * <tt>null</tt> and <tt>device</tt> is non- <tt>null</tt>, the <tt>MediaType</tt> of
-     * <tt>device</tt> must be (equal to) <tt>mediaType</tt>.
-     * @param connector the <tt>StreamConnector</tt> to be used by the new instance if non-<tt>null</tt>
-     * @param device the <tt>MediaDevice</tt> to be used by the instance if non- <tt>null</tt>
-     * @param srtpControl the <tt>SrtpControl</tt> to be used by the new instance if non- <tt>null</tt>
-     * @return a new <tt>MediaStream</tt> instance
+     * @param mediaType the <code>MediaType</code> of the new <code>MediaStream</code> instance to be initialized. If
+     * <code>null</code>, <code>device</code> must be non- <code>null</code> and its
+     * {@link MediaDevice#getMediaType()} will be used to determine the <code>MediaType</code> of
+     * the new instance. If non-<code>null</code>, <code>device</code> may be <code>null</code>. If non-
+     * <code>null</code> and <code>device</code> is non- <code>null</code>, the <code>MediaType</code> of
+     * <code>device</code> must be (equal to) <code>mediaType</code>.
+     * @param connector the <code>StreamConnector</code> to be used by the new instance if non-<code>null</code>
+     * @param device the <code>MediaDevice</code> to be used by the instance if non- <code>null</code>
+     * @param srtpControl the <code>SrtpControl</code> to be used by the new instance if non- <code>null</code>
+     * @return a new <code>MediaStream</code> instance
      */
     private MediaStream createMediaStream(MediaType mediaType, StreamConnector connector,
             MediaDevice device, SrtpControl srtpControl)
@@ -345,17 +345,17 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Creates a new <tt>MediaDevice</tt> which uses a specific <tt>MediaDevice</tt> to capture and
+     * Creates a new <code>MediaDevice</code> which uses a specific <code>MediaDevice</code> to capture and
      * play back media and performs mixing of the captured media and the media played back by any
-     * other users of the returned <tt>MediaDevice</tt>. For the <tt>AUDIO</tt> <tt>MediaType</tt>,
-     * the returned device is commonly referred to as an audio mixer. The <tt>MediaType</tt> of the
-     * returned <tt>MediaDevice</tt> is the same as the <tt>MediaType</tt> of the specified <tt>device</tt>.
+     * other users of the returned <code>MediaDevice</code>. For the <code>AUDIO</code> <code>MediaType</code>,
+     * the returned device is commonly referred to as an audio mixer. The <code>MediaType</code> of the
+     * returned <code>MediaDevice</code> is the same as the <code>MediaType</code> of the specified <code>device</code>.
      *
-     * @param device the <tt>MediaDevice</tt> which is to be used by the returned <tt>MediaDevice</tt> to
+     * @param device the <code>MediaDevice</code> which is to be used by the returned <code>MediaDevice</code> to
      * actually capture and play back media
-     * @return a new <tt>MediaDevice</tt> instance which uses <tt>device</tt> to capture and play
+     * @return a new <code>MediaDevice</code> instance which uses <code>device</code> to capture and play
      * back media and performs mixing of the captured media and the media played back by any
-     * other users of the returned <tt>MediaDevice</tt> instance
+     * other users of the returned <code>MediaDevice</code> instance
      * @see MediaService#createMixer(MediaDevice)
      */
     public MediaDevice createMixer(MediaDevice device)
@@ -375,13 +375,13 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the default <tt>MediaDevice</tt> for the specified <tt>MediaType</tt>.
+     * Gets the default <code>MediaDevice</code> for the specified <code>MediaType</code>.
      *
-     * @param mediaType a <tt>MediaType</tt> value indicating the type of media to be handled by the
-     * <tt>MediaDevice</tt> to be obtained
-     * @param useCase the <tt>MediaUseCase</tt> to obtain the <tt>MediaDevice</tt> list for
-     * @return the default <tt>MediaDevice</tt> for the specified <tt>mediaType</tt> if such a
-     * <tt>MediaDevice</tt> exists; otherwise, <tt>null</tt>
+     * @param mediaType a <code>MediaType</code> value indicating the type of media to be handled by the
+     * <code>MediaDevice</code> to be obtained
+     * @param useCase the <code>MediaUseCase</code> to obtain the <code>MediaDevice</code> list for
+     * @return the default <code>MediaDevice</code> for the specified <code>mediaType</code> if such a
+     * <code>MediaDevice</code> exists; otherwise, <code>null</code>
      * @see MediaService#getDefaultDevice(MediaType, MediaUseCase)
      */
     public MediaDevice getDefaultDevice(MediaType mediaType, MediaUseCase useCase)
@@ -429,9 +429,9 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the <tt>CaptureDevice</tt> user choices such as the default audio and video capture devices.
+     * Gets the <code>CaptureDevice</code> user choices such as the default audio and video capture devices.
      *
-     * @return the <tt>CaptureDevice</tt> user choices such as the default audio and video capture devices.
+     * @return the <code>CaptureDevice</code> user choices such as the default audio and video capture devices.
      */
     public DeviceConfiguration getDeviceConfiguration()
     {
@@ -439,17 +439,17 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets a list of the <tt>MediaDevice</tt>s known to this <tt>MediaService</tt> and handling
-     * the specified <tt>MediaType</tt>.
+     * Gets a list of the <code>MediaDevice</code>s known to this <code>MediaService</code> and handling
+     * the specified <code>MediaType</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> to obtain the <tt>MediaDevice</tt> list for
-     * @param useCase the <tt>MediaUseCase</tt> to obtain the <tt>MediaDevice</tt> list for
-     * @return a new <tt>List</tt> of <tt>MediaDevice</tt>s known to this <tt>MediaService</tt> and
-     * handling the specified <tt>MediaType</tt>. The returned <tt>List</tt> is a copy of the
+     * @param mediaType the <code>MediaType</code> to obtain the <code>MediaDevice</code> list for
+     * @param useCase the <code>MediaUseCase</code> to obtain the <code>MediaDevice</code> list for
+     * @return a new <code>List</code> of <code>MediaDevice</code>s known to this <code>MediaService</code> and
+     * handling the specified <code>MediaType</code>. The returned <code>List</code> is a copy of the
      * internal storage and, consequently, modifications to it do not affect this instance.
-     * Despite the fact that a new <tt>List</tt> instance is returned by each call to this
-     * method, the <tt>MediaDevice</tt> instances are the same if they are still known to this
-     * <tt>MediaService</tt> to be available.
+     * Despite the fact that a new <code>List</code> instance is returned by each call to this
+     * method, the <code>MediaDevice</code> instances are the same if they are still known to this
+     * <code>MediaService</code> to be available.
      * @see MediaService#getDevices(MediaType, MediaUseCase)
      */
     public List<MediaDevice> getDevices(MediaType mediaType, MediaUseCase useCase)
@@ -567,11 +567,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the <tt>MediaFormatFactory</tt> through which <tt>MediaFormat</tt> instances may be
-     * created for the purposes of working with the <tt>MediaStream</tt>s created by this <tt>MediaService</tt>.
+     * Gets the <code>MediaFormatFactory</code> through which <code>MediaFormat</code> instances may be
+     * created for the purposes of working with the <code>MediaStream</code>s created by this <code>MediaService</code>.
      *
-     * @return the <tt>MediaFormatFactory</tt> through which <tt>MediaFormat</tt> instances may be
-     * created for the purposes of working with the <tt>MediaStream</tt>s created by this <tt>MediaService</tt>
+     * @return the <code>MediaFormatFactory</code> through which <code>MediaFormat</code> instances may be
+     * created for the purposes of working with the <code>MediaStream</code>s created by this <code>MediaService</code>
      * @see MediaService#getFormatFactory()
      */
     public MediaFormatFactory getFormatFactory()
@@ -582,11 +582,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the one and only <tt>MediaDevice</tt> instance with <tt>MediaDirection</tt> not
-     * allowing sending and <tt>MediaType</tt> equal to <tt>AUDIO</tt>.
+     * Gets the one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not
+     * allowing sending and <code>MediaType</code> equal to <code>AUDIO</code>.
      *
-     * @return the one and only <tt>MediaDevice</tt> instance with <tt>MediaDirection</tt> not
-     * allowing sending and <tt>MediaType</tt> equal to <tt>AUDIO</tt>
+     * @return the one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not
+     * allowing sending and <code>MediaType</code> equal to <code>AUDIO</code>
      */
     private MediaDevice getNonSendAudioDevice()
     {
@@ -596,11 +596,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the one and only <tt>MediaDevice</tt> instance with <tt>MediaDirection</tt> not
-     * allowing sending and <tt>MediaType</tt> equal to <tt>VIDEO</tt>.
+     * Gets the one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not
+     * allowing sending and <code>MediaType</code> equal to <code>VIDEO</code>.
      *
-     * @return the one and only <tt>MediaDevice</tt> instance with <tt>MediaDirection</tt> not
-     * allowing sending and <tt>MediaType</tt> equal to <tt>VIDEO</tt>
+     * @return the one and only <code>MediaDevice</code> instance with <code>MediaDirection</code> not
+     * allowing sending and <code>MediaType</code> equal to <code>VIDEO</code>
      */
     private MediaDevice getNonSendVideoDevice()
     {
@@ -627,9 +627,9 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the <tt>VolumeControl</tt> which controls the volume level of audio output/playback.
+     * Gets the <code>VolumeControl</code> which controls the volume level of audio output/playback.
      *
-     * @return the <tt>VolumeControl</tt> which controls the volume level of audio output/playback
+     * @return the <code>VolumeControl</code> which controls the volume level of audio output/playback
      * @see MediaService#getOutputVolumeControl()
      */
     public VolumeControl getOutputVolumeControl()
@@ -641,9 +641,9 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the <tt>VolumeControl</tt> which controls the volume level of audio input/capture.
+     * Gets the <code>VolumeControl</code> which controls the volume level of audio input/capture.
      *
-     * @return the <tt>VolumeControl</tt> which controls the volume level of audio input/capture
+     * @return the <code>VolumeControl</code> which controls the volume level of audio input/capture
      * @see MediaService#getInputVolumeControl()
      */
     public VolumeControl getInputVolumeControl()
@@ -695,12 +695,12 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Creates a new <tt>Recorder</tt> instance that can be used to record a call which captures
-     * and plays back media using a specific <tt>MediaDevice</tt>.
+     * Creates a new <code>Recorder</code> instance that can be used to record a call which captures
+     * and plays back media using a specific <code>MediaDevice</code>.
      *
-     * @param device the <tt>MediaDevice</tt> which is used for media capture and playback by the call to be recorded
-     * @return a new <tt>Recorder</tt> instance that can be used to record a call which captures
-     * and plays back media using the specified <tt>MediaDevice</tt>
+     * @param device the <code>MediaDevice</code> which is used for media capture and playback by the call to be recorded
+     * @return a new <code>Recorder</code> instance that can be used to record a call which captures
+     * and plays back media using the specified <code>MediaDevice</code>
      * @see MediaService#createRecorder(MediaDevice)
      */
     public Recorder createRecorder(MediaDevice device)
@@ -977,13 +977,13 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Get a <tt>MediaDevice</tt> for a part of desktop streaming/sharing.
+     * Get a <code>MediaDevice</code> for a part of desktop streaming/sharing.
      *
      * @param width width of the part
      * @param height height of the part
      * @param x origin of the x coordinate (relative to the full desktop)
      * @param y origin of the y coordinate (relative to the full desktop)
-     * @return <tt>MediaDevice</tt> representing the part of desktop or null if problem
+     * @return <code>MediaDevice</code> representing the part of desktop or null if problem
      */
     public MediaDevice getMediaDeviceForPartialDesktopStreaming(int width, int height, int x, int y)
     {
@@ -1048,10 +1048,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * If the <tt>MediaDevice</tt> corresponds to partial desktop streaming device.
+     * If the <code>MediaDevice</code> corresponds to partial desktop streaming device.
      *
-     * @param mediaDevice <tt>MediaDevice</tt>
-     * @return true if <tt>MediaDevice</tt> is a partial desktop streaming device, false otherwise
+     * @param mediaDevice <code>MediaDevice</code>
+     * @return true if <code>MediaDevice</code> is a partial desktop streaming device, false otherwise
      */
     public boolean isPartialStreaming(MediaDevice mediaDevice)
     {
@@ -1110,11 +1110,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
 
     /**
      * Those interested in Recorder events add listener through MediaService. This way they don't
-     * need to have access to the Recorder instance. Adds a new <tt>Recorder.Listener</tt> to the
-     * list of listeners interested in notifications from a <tt>Recorder</tt>.
+     * need to have access to the Recorder instance. Adds a new <code>Recorder.Listener</code> to the
+     * list of listeners interested in notifications from a <code>Recorder</code>.
      *
-     * @param listener the new <tt>Recorder.Listener</tt> to be added to the list of listeners interested in
-     * notifications from <tt>Recorder</tt>s.
+     * @param listener the new <code>Recorder.Listener</code> to be added to the list of listeners interested in
+     * notifications from <code>Recorder</code>s.
      */
     public void addRecorderListener(Recorder.Listener listener)
     {
@@ -1125,11 +1125,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Removes an existing <tt>Recorder.Listener</tt> from the list of listeners interested in
-     * notifications from <tt>Recorder</tt>s.
+     * Removes an existing <code>Recorder.Listener</code> from the list of listeners interested in
+     * notifications from <code>Recorder</code>s.
      *
-     * @param listener the existing <tt>Listener</tt> to be removed from the list of listeners interested in
-     * notifications from <tt>Recorder</tt>s
+     * @param listener the existing <code>Listener</code> to be removed from the list of listeners interested in
+     * notifications from <code>Recorder</code>s
      */
     public void removeRecorderListener(Recorder.Listener listener)
     {
@@ -1139,9 +1139,9 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gives access to currently registered <tt>Recorder.Listener</tt>s.
+     * Gives access to currently registered <code>Recorder.Listener</code>s.
      *
-     * @return currently registered <tt>Recorder.Listener</tt>s.
+     * @return currently registered <code>Recorder.Listener</code>s.
      */
     public Iterator<Recorder.Listener> getRecorderListeners()
     {
@@ -1151,7 +1151,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     /**
      * Notifies this instance that the value of a property of {@link #deviceConfiguration} has changed.
      *
-     * @param event a <tt>PropertyChangeEvent</tt> which specifies the name of the property which had its
+     * @param event a <code>PropertyChangeEvent</code> which specifies the name of the property which had its
      * value changed and the old and the new values of that property
      */
     private void deviceConfigurationPropertyChange(PropertyChangeEvent event)
@@ -1180,11 +1180,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Initializes a new <tt>RTPTranslator</tt> which is to forward RTP and RTCP traffic between
-     * multiple <tt>MediaStream</tt>s.
+     * Initializes a new <code>RTPTranslator</code> which is to forward RTP and RTCP traffic between
+     * multiple <code>MediaStream</code>s.
      *
-     * @return a new <tt>RTPTranslator</tt> which is to forward RTP and RTCP traffic between
-     * multiple <tt>MediaStream</tt>s
+     * @return a new <code>RTPTranslator</code> which is to forward RTP and RTCP traffic between
+     * multiple <code>MediaStream</code>s
      * @see MediaService#createRTPTranslator()
      */
     public RTPTranslator createRTPTranslator()
@@ -1193,11 +1193,11 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Gets the indicator which determines whether the loading of the JMF/FMJ <tt>Registry</tt> has
+     * Gets the indicator which determines whether the loading of the JMF/FMJ <code>Registry</code> has
      * been disabled.
      *
-     * @return <tt>true</tt> if the loading of the JMF/FMJ <tt>Registry</tt> has been disabled;
-     * otherwise, <tt>false</tt>
+     * @return <code>true</code> if the loading of the JMF/FMJ <code>Registry</code> has been disabled;
+     * otherwise, <code>false</code>
      */
     public static boolean isJmfRegistryDisableLoad()
     {
@@ -1206,9 +1206,9 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
 
     /**
      * Performs one-time initialization after initializing the first instance of
-     * <tt>MediaServiceImpl</tt>.
+     * <code>MediaServiceImpl</code>.
      *
-     * @param mediaServiceImpl the <tt>MediaServiceImpl</tt> instance which has caused the need to perform the
+     * @param mediaServiceImpl the <code>MediaServiceImpl</code> instance which has caused the need to perform the
      * one-time initialization
      */
     private static void postInitializeOnce(MediaServiceImpl mediaServiceImpl)
@@ -1299,13 +1299,13 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
     }
 
     /**
-     * Determines whether the support for a specific <tt>MediaType</tt> is enabled. The
-     * <tt>ConfigurationService</tt> and <tt>System</tt> properties
+     * Determines whether the support for a specific <code>MediaType</code> is enabled. The
+     * <code>ConfigurationService</code> and <code>System</code> properties
      * {@link #DISABLE_AUDIO_SUPPORT_PNAME} and {@link #DISABLE_VIDEO_SUPPORT_PNAME} allow
      * disabling the support for, respectively, {@link MediaType#AUDIO} and {@link MediaType#VIDEO}.
      *
-     * @param mediaType the <tt>MediaType</tt> to be determined whether the support for it is enabled
-     * @return <tt>true</tt> if the support for the specified <tt>mediaType</tt> is enabled; otherwise, <tt>false</tt>
+     * @param mediaType the <code>MediaType</code> to be determined whether the support for it is enabled
+     * @return <code>true</code> if the support for the specified <code>mediaType</code> is enabled; otherwise, <code>false</code>
      */
     public static boolean isMediaTypeSupportEnabled(MediaType mediaType)
     {

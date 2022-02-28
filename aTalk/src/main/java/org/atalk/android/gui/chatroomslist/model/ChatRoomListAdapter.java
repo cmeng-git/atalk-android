@@ -68,12 +68,12 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     private LinkedList<TreeSet<ChatRoomWrapper>> mCrWrapperList;
 
     /**
-     * The <tt>MUCService</tt>, which is the back end of this chatRoom list adapter.
+     * The <code>MUCService</code>, which is the back end of this chatRoom list adapter.
      */
     private MUCServiceImpl mucService;
 
     /**
-     * <tt>ChatRoomRenderer</tt> instance used by this adapter.
+     * <code>ChatRoomRenderer</code> instance used by this adapter.
      */
     private ChatRoomRenderer chatRoomRenderer;
 
@@ -154,7 +154,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Returns the mCrpWrapperGroup at the given <tt>groupPosition</tt>.
+     * Returns the mCrpWrapperGroup at the given <code>groupPosition</code>.
      *
      * @param groupPosition the index of the mCrpWrapperGroup
      */
@@ -178,10 +178,10 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Finds mCrpWrapperGroup index for given <tt>ChatRoomProviderWrapper</tt>.
+     * Finds mCrpWrapperGroup index for given <code>ChatRoomProviderWrapper</code>.
      *
      * @param group the mCrpWrapperGroup for which we need the index.
-     * @return index of given <tt>ChatRoomProviderWrapper</tt> or -1 if not found
+     * @return index of given <code>ChatRoomProviderWrapper</code> or -1 if not found
      */
     public int getGroupIndex(ChatRoomProviderWrapper group)
     {
@@ -189,11 +189,11 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Finds <tt>ChatRoomWrapper</tt> index in <tt>ChatRoomProviderWrapper</tt> identified by given <tt>groupIndex</tt>.
+     * Finds <code>ChatRoomWrapper</code> index in <code>ChatRoomProviderWrapper</code> identified by given <code>groupIndex</code>.
      *
      * @param groupIndex index of mCrpWrapperGroup we want to search.
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to find inside the mCrpWrapperGroup.
-     * @return index of <tt>ChatRoomWrapper</tt> inside mCrpWrapperGroup identified by given mCrpWrapperGroup index.
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to find inside the mCrpWrapperGroup.
+     * @return index of <code>ChatRoomWrapper</code> inside mCrpWrapperGroup identified by given mCrpWrapperGroup index.
      */
     public int getChildIndex(int groupIndex, ChatRoomWrapper chatRoomWrapper)
     {
@@ -201,7 +201,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Returns the count of children contained in the mCrpWrapperGroup given by the <tt>groupPosition</tt>.
+     * Returns the count of children contained in the mCrpWrapperGroup given by the <code>groupPosition</code>.
      *
      * @param groupPosition the index of the mCrpWrapperGroup, which children we would like to count
      */
@@ -248,7 +248,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Adds all child mCrWrapperList for all the given <tt>mCrpWrapperGroup</tt>. Skip adding group of zero child.
+     * Adds all child mCrWrapperList for all the given <code>mCrpWrapperGroup</code>. Skip adding group of zero child.
      *
      * @param providers the providers mCrpWrapperGroup, which child mCrWrapperList to add
      */
@@ -275,7 +275,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Adds all child mCrWrapperList for all the given <tt>mCrpWrapper</tt> and update it with bookmark info
+     * Adds all child mCrWrapperList for all the given <code>mCrpWrapper</code> and update it with bookmark info
      *
      * @param crpWrapper the crpWrapper provider, which child mCrWrapperList to fetch
      */
@@ -332,10 +332,10 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Adds the given <tt>crpWrapper</tt> to both the originalCrpWrapperGroup and
+     * Adds the given <code>crpWrapper</code> to both the originalCrpWrapperGroup and
      * mCrpWrapperGroup only if no existing crpWrapper is found in current lists
      *
-     * @param crpWrapper the <tt>ChatRoomProviderWrapper</tt> to add
+     * @param crpWrapper the <code>ChatRoomProviderWrapper</code> to add
      */
     private void addGroup(ChatRoomProviderWrapper crpWrapper)
     {
@@ -351,9 +351,9 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Remove an existing <tt>crpWrapper</tt> from both the originalCrpWrapperGroup and mCrpWrapperGroup if exist
+     * Remove an existing <code>crpWrapper</code> from both the originalCrpWrapperGroup and mCrpWrapperGroup if exist
      *
-     * @param crpWrapper the <tt>chatRoomProviderWrapper</tt> to be removed
+     * @param crpWrapper the <code>chatRoomProviderWrapper</code> to be removed
      */
     private void removeGroup(ChatRoomProviderWrapper crpWrapper)
     {
@@ -371,10 +371,10 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Adds the given child crWrapper to the <tt>crpWrapperGroup</tt>.
+     * Adds the given child crWrapper to the <code>crpWrapperGroup</code>.
      *
      * @param crpWrapperGroup the parent ChatRoomProviderWrapper Group of the child ChatRoomWrapper to add
-     * @param crWrapper the <tt>ChatRoomWrapper</tt> to add
+     * @param crWrapper the <code>ChatRoomWrapper</code> to add
      */
     private void addChatRoom(ChatRoomProviderWrapper crpWrapperGroup, ChatRoomWrapper crWrapper)
     {
@@ -408,7 +408,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     /**
      * Removes all the ChatRoomProviderWrappers and ChatRoomWrappers for the given providers.
      *
-     * @param providers the <tt>ChatRoomProviderWrapper</tt>, which content we'd like to remove
+     * @param providers the <code>ChatRoomProviderWrapper</code>, which content we'd like to remove
      */
     private void removeChatRooms(List<ChatRoomProviderWrapper> providers)
     {
@@ -425,11 +425,11 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Remove the given <tt>ChatRoomWrapper</tt> from both the original and the filtered list of
+     * Remove the given <code>ChatRoomWrapper</code> from both the original and the filtered list of
      * this adapter. Also remove the group with zero element
      *
-     * @param crpWrapper the parent <tt>ChatRoomProviderWrapper</tt> of the ChatRoomWrapper to remove
-     * @param crWrapper the <tt>ChatRoomWrapper</tt> to remove
+     * @param crpWrapper the parent <code>ChatRoomProviderWrapper</code> of the ChatRoomWrapper to remove
+     * @param crWrapper the <code>ChatRoomWrapper</code> to remove
      */
     private void removeChatRoom(ChatRoomProviderWrapper crpWrapper, ChatRoomWrapper crWrapper)
     {
@@ -459,11 +459,11 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Returns the chatRoom with the given <tt>groupPosition</tt> and <tt>childPosition</tt>.
+     * Returns the chatRoom with the given <code>groupPosition</code> and <code>childPosition</code>.
      *
      * @param groupPosition the index of the mCrpWrapperGroup
      * @param childPosition the index of the child
-     * @return the chatRoom with the given <tt>groupPosition</tt> and <tt>childPosition</tt>
+     * @return the chatRoom with the given <code>groupPosition</code> and <code>childPosition</code>
      */
     @Override
     public Object getChild(int groupPosition, int childPosition)
@@ -500,7 +500,7 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Filters list data to match the given <tt>query</tt>.
+     * Filters list data to match the given <code>query</code>.
      *
      * @param query the query we'd like to match
      */
@@ -554,15 +554,15 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Checks if the given <tt>chatRoomWrapper</tt> is matching the given <tt>query</tt>.
-     * A <tt>ChatRoomWrapper</tt> would be matching the filter if one of the following is true:<br>
+     * Checks if the given <code>chatRoomWrapper</code> is matching the given <code>query</code>.
+     * A <code>ChatRoomWrapper</code> would be matching the filter if one of the following is true:<br>
      * - it is online or user chooses show offline mCrWrapperList
      * - its chatRoom ID or Name matches the filter string
      *
-     * @param chatRoomWrapper the <tt>chatRoomWrapper</tt> to check
+     * @param chatRoomWrapper the <code>chatRoomWrapper</code> to check
      * @param query the query string i.e. chatRoomID to check for matches. A null always return true
-     * @return <tt>true</tt> to indicate that the given <tt>chatRoomWrapper</tt> is matching the
-     * current filter, otherwise returns <tt>false</tt>
+     * @return <code>true</code> to indicate that the given <code>chatRoomWrapper</code> is matching the
+     * current filter, otherwise returns <code>false</code>
      */
     private boolean isMatching(ChatRoomWrapper chatRoomWrapper, String query)
     {
@@ -575,14 +575,14 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Checks if the given <tt>chatRoomProviderWrapper</tt> is matching the current filter.
+     * Checks if the given <code>chatRoomProviderWrapper</code> is matching the current filter.
      * A chatRoomProviderWrapper is matching the current filter only if its protocolProvider
      * matching the current filter.
      *
-     * @param chatRoomProviderWrapper the <tt>ChatRoomProviderWrapper</tt> to check
+     * @param chatRoomProviderWrapper the <code>ChatRoomProviderWrapper</code> to check
      * @param query the query string i.e. accountUuid to check for matches. A null will always return true
-     * @return <tt>true</tt> to indicate that the given <tt>metaGroup</tt> is matching the current
-     * filter, otherwise returns <tt>false</tt>
+     * @return <code>true</code> to indicate that the given <code>metaGroup</code> is matching the current
+     * filter, otherwise returns <code>false</code>
      */
     public boolean isMatching(ChatRoomProviderWrapper chatRoomProviderWrapper, String query)
     {
@@ -595,11 +595,11 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     }
 
     /**
-     * Checks if given <tt>ChatRoomWrapper</tt> is considered to be selected. That is if the chat
-     * session with given <tt>ChatRoomWrapper</tt> is the one currently visible.
+     * Checks if given <code>ChatRoomWrapper</code> is considered to be selected. That is if the chat
+     * session with given <code>ChatRoomWrapper</code> is the one currently visible.
      *
-     * @param chatId the <tt>ChatID</tt> to check.
-     * @return <tt>true</tt> if given <tt>ChatRoomWrapper</tt> is considered to be selected.
+     * @param chatId the <code>ChatID</code> to check.
+     * @return <code>true</code> if given <code>ChatRoomWrapper</code> is considered to be selected.
      */
     public static boolean isChatRoomWrapperSelected(String chatId)
     {

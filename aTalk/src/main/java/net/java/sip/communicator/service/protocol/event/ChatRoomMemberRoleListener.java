@@ -18,7 +18,7 @@ import java.util.EventListener;
 /**
  * A listener that will be notified of changes in the role of a chat participant in a particular
  * chat room. Changes may include participant being granted any of the roles defined in
- * <tt>ChatRoomMemberRole</tt>.
+ * <code>ChatRoomMemberRole</code>.
  *
  * @author Emil Ivov
  * @author Stephane Remy
@@ -31,7 +31,7 @@ public interface ChatRoomMemberRoleListener extends EventListener
      * Called to notify interested parties that a change in the role of a chat room member has
      * occurred.
      *
-     * @param evt the <tt>ChatRoomMemberRoleChangeEvent</tt> instance containing the source chat room
+     * @param evt the <code>ChatRoomMemberRoleChangeEvent</code> instance containing the source chat room
      * and role old and new state.
      */
     void memberRoleChanged(ChatRoomMemberRoleChangeEvent evt);

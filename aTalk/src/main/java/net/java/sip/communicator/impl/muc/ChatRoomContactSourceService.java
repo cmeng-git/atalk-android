@@ -41,7 +41,7 @@ public class ChatRoomContactSourceService implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>queryString</tt>.
+     * Creates query for the given <code>queryString</code>.
      *
      * @param queryString the string to search for
      * @return the created query
@@ -53,7 +53,7 @@ public class ChatRoomContactSourceService implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>queryString</tt>.
+     * Creates query for the given <code>queryString</code>.
      *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts

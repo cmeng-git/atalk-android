@@ -16,7 +16,7 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * A listener that registers for <tt>ChatRoomMessageEvent</tt>s issued by a particular <tt>ChatRoom</tt>.
+ * A listener that registers for <code>ChatRoomMessageEvent</code>s issued by a particular <code>ChatRoom</code>.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -24,9 +24,9 @@ import java.util.EventListener;
 public interface ChatRoomMessageListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>IMessage</tt> has been received.
+     * Called when a new incoming <code>IMessage</code> has been received.
      *
-     * @param evt the <tt>ChatRoomMessageReceivedEvent</tt> containing the newly received message, its
+     * @param evt the <code>ChatRoomMessageReceivedEvent</code> containing the newly received message, its
      * sender and other details.
      */
     void messageReceived(ChatRoomMessageReceivedEvent evt);
@@ -35,16 +35,16 @@ public interface ChatRoomMessageListener extends EventListener
      * Called when the underlying implementation has received an indication that a message, sent
      * earlier has been successfully received by the destination.
      *
-     * @param evt the <tt>ChatRoomMessageDeliveredEvent</tt> containing the id of the message that
+     * @param evt the <code>ChatRoomMessageDeliveredEvent</code> containing the id of the message that
      * has caused the event.
      */
     void messageDelivered(ChatRoomMessageDeliveredEvent evt);
 
     /**
      * Called to indicate that delivery of a message sent earlier to the chat room has failed.
-     * Reason code and phrase are contained by the <tt>MessageFailedEvent</tt>
+     * Reason code and phrase are contained by the <code>MessageFailedEvent</code>
      *
-     * @param evt the <tt>ChatRoomMessageDeliveryFailedEvent</tt> containing the ID of the message
+     * @param evt the <code>ChatRoomMessageDeliveryFailedEvent</code> containing the ID of the message
      * whose delivery has failed.
      */
     void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt);

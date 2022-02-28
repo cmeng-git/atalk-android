@@ -9,7 +9,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
- * The <tt>MediaStreamTarget</tt> contains a pair of host:port couples indicating data (RTP) and control (RTCP) locations.
+ * The <code>MediaStreamTarget</code> contains a pair of host:port couples indicating data (RTP) and control (RTCP) locations.
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
@@ -27,11 +27,11 @@ public class MediaStreamTarget
     private final InetSocketAddress rtcpTarget;
 
     /**
-     * Initializes a new <tt>MediaStreamTarget</tt> instance with specific RTP and RTCP
-     * <tt>InetSocketAddress<tt>es.
+     * Initializes a new <code>MediaStreamTarget</code> instance with specific RTP and RTCP
+     * <code>InetSocketAddress<code>es.
      *
-     * @param rtpTarget the <tt>InetSocketAddress</tt> that the new instance is to indicate as a data/RTP address.
-     * @param rtcpTarget the <tt>InetSocketAddress</tt> that the new instance is to indicate as a control/RTCP address.
+     * @param rtpTarget the <code>InetSocketAddress</code> that the new instance is to indicate as a data/RTP address.
+     * @param rtcpTarget the <code>InetSocketAddress</code> that the new instance is to indicate as a control/RTCP address.
      */
     public MediaStreamTarget(InetSocketAddress rtpTarget, InetSocketAddress rtcpTarget)
     {
@@ -40,13 +40,13 @@ public class MediaStreamTarget
     }
 
     /**
-     * Initializes a new <tt>MediaStreamTarget</tt> instance with specific RTP and RTCP
-     * <tt>InetAddress</tt>es and ports.
+     * Initializes a new <code>MediaStreamTarget</code> instance with specific RTP and RTCP
+     * <code>InetAddress</code>es and ports.
      *
-     * @param rtpAddr the <tt>InetAddress</tt> that the new instance is to indicate as the IP address of a
+     * @param rtpAddr the <code>InetAddress</code> that the new instance is to indicate as the IP address of a
      * data/RTP address
      * @param rtpPort the port that the new instance is to indicate as the port of a data/RTP address
-     * @param rtcpAddr the <tt>InetAddress</tt> that the new instance is to indicate as the IP address of a
+     * @param rtcpAddr the <code>InetAddress</code> that the new instance is to indicate as the IP address of a
      * control/RTCP address
      * @param rtcpPort the port that the new instance is to indicate as the port of a control/RTCP address
      */
@@ -56,11 +56,11 @@ public class MediaStreamTarget
     }
 
     /**
-     * Determines whether two specific <tt>InetSocketAddress</tt> instances are equal.
+     * Determines whether two specific <code>InetSocketAddress</code> instances are equal.
      *
-     * @param addr1 one of the <tt>InetSocketAddress</tt> instances to be compared
-     * @param addr2 the other <tt>InetSocketAddress</tt> instance to be compared
-     * @return <tt>true</tt> if <tt>addr1</tt> is equal to <tt>addr2</tt>; otherwise, <tt>false</tt>
+     * @param addr1 one of the <code>InetSocketAddress</code> instances to be compared
+     * @param addr2 the other <code>InetSocketAddress</code> instance to be compared
+     * @return <code>true</code> if <code>addr1</code> is equal to <code>addr2</code>; otherwise, <code>false</code>
      */
     public static boolean addressesAreEqual(InetSocketAddress addr1, InetSocketAddress addr2)
     {
@@ -68,11 +68,11 @@ public class MediaStreamTarget
     }
 
     /**
-     * Determines whether this <tt>MediaStreamTarget</tt> is equal to a specific <tt>Object</tt>.
+     * Determines whether this <code>MediaStreamTarget</code> is equal to a specific <code>Object</code>.
      *
-     * @param obj the <tt>Object</tt> to be compared to this <tt>MediaStreamTarget</tt>
-     * @return <tt>true</tt> if this <tt>MediaStreamTarget</tt> is equal to the specified
-     * <tt>obj</tt>; otherwise, <tt>false</tt>
+     * @param obj the <code>Object</code> to be compared to this <code>MediaStreamTarget</code>
+     * @return <code>true</code> if this <code>MediaStreamTarget</code> is equal to the specified
+     * <code>obj</code>; otherwise, <code>false</code>
      */
     @Override
     public boolean equals(Object obj)
@@ -90,10 +90,10 @@ public class MediaStreamTarget
     }
 
     /**
-     * Returns the <tt>InetSocketAddress</tt> that this <tt>MediaTarget</tt> is pointing to for all
+     * Returns the <code>InetSocketAddress</code> that this <code>MediaTarget</code> is pointing to for all
      * media (RTP) traffic.
      *
-     * @return the <tt>InetSocketAddress</tt> that this <tt>MediaTarget</tt> is pointing to for all
+     * @return the <code>InetSocketAddress</code> that this <code>MediaTarget</code> is pointing to for all
      * media (RTP) traffic.
      */
     public InetSocketAddress getDataAddress()
@@ -102,10 +102,10 @@ public class MediaStreamTarget
     }
 
     /**
-     * Returns the <tt>InetSocketAddress</tt> that this <tt>MediaTarget</tt> is pointing to for all
+     * Returns the <code>InetSocketAddress</code> that this <code>MediaTarget</code> is pointing to for all
      * media (RTP) traffic.
      *
-     * @return the <tt>InetSocketAddress</tt> that this <tt>MediaTarget</tt> is pointing to for all
+     * @return the <code>InetSocketAddress</code> that this <code>MediaTarget</code> is pointing to for all
      * media (RTP) traffic.
      */
     public InetSocketAddress getControlAddress()
@@ -114,9 +114,9 @@ public class MediaStreamTarget
     }
 
     /**
-     * Returns a hash code for this <tt>MediaStreamTarget</tt> instance which is suitable for use in hash tables.
+     * Returns a hash code for this <code>MediaStreamTarget</code> instance which is suitable for use in hash tables.
      *
-     * @return a hash code for this <tt>MediaStreamTarget</tt> instance which is suitable for use in hash tables
+     * @return a hash code for this <code>MediaStreamTarget</code> instance which is suitable for use in hash tables
      */
     @Override
     public int hashCode()
@@ -136,11 +136,11 @@ public class MediaStreamTarget
     }
 
     /**
-     * Returns a human-readable representation of this <tt>MediaStreamTarget</tt> instance in the
-     * form of a <tt>String</tt> value.
+     * Returns a human-readable representation of this <code>MediaStreamTarget</code> instance in the
+     * form of a <code>String</code> value.
      *
-     * @return a <tt>String</tt> value which gives a human-readable representation of this
-     * <tt>MediaStreamTarget</tt> instance
+     * @return a <code>String</code> value which gives a human-readable representation of this
+     * <code>MediaStreamTarget</code> instance
      */
     @Override
     public String toString()

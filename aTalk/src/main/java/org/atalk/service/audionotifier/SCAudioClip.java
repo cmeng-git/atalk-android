@@ -18,7 +18,7 @@ public interface SCAudioClip
 {
     /**
      * Starts playing this audio once only. The method behaves as if {@link #play(int, Callable)}
-     * was invoked with a negative <tt>loopInterval</tt> and/or <tt>null</tt> <tt>loopCondition</tt>.
+     * was invoked with a negative <code>loopInterval</code> and/or <code>null</code> <code>loopCondition</code>.
      */
     void play();
 
@@ -26,10 +26,10 @@ public interface SCAudioClip
      * Starts playing this audio. Optionally, the playback is looped.
      *
      * @param loopInterval the interval of time in milliseconds between consecutive plays of this audio. If
-     * negative, this audio is played once only and <tt>loopCondition</tt> is ignored.
-     * @param loopCondition a <tt>Callable</tt> which is called at the beginning of each iteration of looped
+     * negative, this audio is played once only and <code>loopCondition</code> is ignored.
+     * @param loopCondition a <code>Callable</code> which is called at the beginning of each iteration of looped
      * playback of this audio except the first one to determine whether to continue the loop.
-     * If <tt>loopInterval</tt> is negative or <tt>loopCondition</tt> is <tt>null</tt>,
+     * If <code>loopInterval</code> is negative or <code>loopCondition</code> is <code>null</code>,
      * this audio is played once only.
      */
     void play(int loopInterval, Callable<Boolean> loopCondition);
@@ -40,10 +40,10 @@ public interface SCAudioClip
     void stop();
 
     /**
-     * Determines whether this audio is started i.e. a <tt>play</tt> method was invoked and no
-     * subsequent <tt>stop</tt> has been invoked yet.
+     * Determines whether this audio is started i.e. a <code>play</code> method was invoked and no
+     * subsequent <code>stop</code> has been invoked yet.
      *
-     * @return <tt>true</tt> if this audio is started; otherwise, <tt>false</tt>
+     * @return <code>true</code> if this audio is started; otherwise, <code>false</code>
      */
     boolean isStarted();
 }

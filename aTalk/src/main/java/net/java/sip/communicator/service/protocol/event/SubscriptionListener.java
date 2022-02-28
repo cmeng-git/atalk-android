@@ -74,7 +74,7 @@ public interface SubscriptionListener extends EventListener
     /**
      * Indicates that the source contact has had one of its properties changed.
      *
-     * @param evt the <tt>ContactPropertyChangeEvent</tt> containing the source contact and the old and
+     * @param evt the <code>ContactPropertyChangeEvent</code> containing the source contact and the old and
      * new values of the changed property.
      */
     void contactModified(ContactPropertyChangeEvent evt);

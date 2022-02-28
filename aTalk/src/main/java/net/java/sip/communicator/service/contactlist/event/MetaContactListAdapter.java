@@ -44,21 +44,21 @@ public class MetaContactListAdapter implements MetaContactListListener
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> instance has been
-     * added to the list of protocol specific buddies in this <tt>MetaContact</tt>
+     * Indicates that a protocol specific <code>Contact</code> instance has been
+     * added to the list of protocol specific buddies in this <code>MetaContact</code>
      *
-     * @param evt a reference to the corresponding <tt>ProtoContactEvent</tt>
+     * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
      */
     public void protoContactAdded(ProtoContactEvent evt)
     {
     }
 
     /**
-     * Indicates that one of the protocol specific <tt>Contact</tt> instances
-     * encapsulated by this <tt>MetaContact</tt> has been modified in some way.
-     * The event added to the list of protocol specific buddies in this <tt>MetaContact</tt>
+     * Indicates that one of the protocol specific <code>Contact</code> instances
+     * encapsulated by this <code>MetaContact</code> has been modified in some way.
+     * The event added to the list of protocol specific buddies in this <code>MetaContact</code>
      *
-     * @param evt a reference to the corresponding <tt>ProtoContactEvent</tt>
+     * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
      */
     public void protoContactModified(ProtoContactEvent evt)
     {
@@ -69,20 +69,20 @@ public class MetaContactListAdapter implements MetaContactListListener
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> instance has been
-     * removed from the list of protocol specific buddies in this <tt>MetaContact</tt>
+     * Indicates that a protocol specific <code>Contact</code> instance has been
+     * removed from the list of protocol specific buddies in this <code>MetaContact</code>
      *
-     * @param evt a reference to the corresponding <tt>ProtoContactEvent</tt>
+     * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
      */
     public void protoContactRemoved(ProtoContactEvent evt)
     {
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> instance has been
-     * moved from within one <tt>MetaContact</tt> to another.
+     * Indicates that a protocol specific <code>Contact</code> instance has been
+     * moved from within one <code>MetaContact</code> to another.
      *
-     * @param evt a reference to the <tt>ProtoContactMovedEvent</tt> instance.
+     * @param evt a reference to the <code>ProtoContactMovedEvent</code> instance.
      */
     public void protoContactMoved(ProtoContactEvent evt)
     {
@@ -139,7 +139,7 @@ public class MetaContactListAdapter implements MetaContactListListener
      * Indicates that the order under which the child contacts were ordered
      * inside the source group has changed.
      *
-     * @param evt the <tt>MetaContactGroupEvent</tt> containing details of this event.
+     * @param evt the <code>MetaContactGroupEvent</code> containing details of this event.
      */
     public void childContactsReordered(MetaContactGroupEvent evt)
     {
@@ -156,9 +156,9 @@ public class MetaContactListAdapter implements MetaContactListListener
     }
 
     /**
-     * Indicates that a new avatar is available for a <tt>MetaContact</tt>.
+     * Indicates that a new avatar is available for a <code>MetaContact</code>.
      *
-     * @param evt the <tt>MetaContactAvatarUpdateEvent</tt> containing details of this event
+     * @param evt the <code>MetaContactAvatarUpdateEvent</code> containing details of this event
      */
     public void metaContactAvatarUpdated(MetaContactAvatarUpdateEvent evt)
     {

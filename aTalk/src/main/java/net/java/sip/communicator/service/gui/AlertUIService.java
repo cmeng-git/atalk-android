@@ -7,7 +7,7 @@
 package net.java.sip.communicator.service.gui;
 
 /**
- * The <tt>AlertUIService</tt> is a service that allows to show error messages and warnings.
+ * The <code>AlertUIService</code> is a service that allows to show error messages and warnings.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng

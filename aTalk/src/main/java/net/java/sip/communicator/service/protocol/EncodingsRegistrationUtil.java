@@ -62,7 +62,7 @@ public class EncodingsRegistrationUtil implements Serializable
     }
 
     /**
-     * Set the override encodings setting to <tt>override</tt>
+     * Set the override encodings setting to <code>override</code>
      *
      * @param override The value to set the override encoding settings to.
      */
@@ -72,10 +72,10 @@ public class EncodingsRegistrationUtil implements Serializable
     }
 
     /**
-     * Loads encoding properties from given <tt>accountID</tt> into this encodings registration object.
+     * Loads encoding properties from given <code>accountID</code> into this encodings registration object.
      *
-     * @param accountID the <tt>AccountID</tt> to be loaded.
-     * @param mediaService the <tt>MediaService</tt> that will be used to create <tt>EncodingConfiguration</tt>.
+     * @param accountID the <code>AccountID</code> to be loaded.
+     * @param mediaService the <code>MediaService</code> that will be used to create <code>EncodingConfiguration</code>.
      */
     public void loadAccount(AccountID accountID, MediaService mediaService)
     {
@@ -93,7 +93,7 @@ public class EncodingsRegistrationUtil implements Serializable
     }
 
     /**
-     * Stores encoding configuration properties in given <tt>propertiesMap</tt>.
+     * Stores encoding configuration properties in given <code>propertiesMap</code>.
      *
      * @param propertiesMap the properties map that will be used.
      */
@@ -104,11 +104,11 @@ public class EncodingsRegistrationUtil implements Serializable
     }
 
     /**
-     * Creates new instance of <tt>EncodingConfiguration</tt> reflecting this object's encoding configuration state.
+     * Creates new instance of <code>EncodingConfiguration</code> reflecting this object's encoding configuration state.
      *
-     * @param mediaService the <tt>MediaService</tt> that will be used to create new instance of
-     * <tt>EncodingConfiguration</tt>.
-     * @return <tt>EncodingConfiguration</tt> reflecting this object's encoding configuration state.
+     * @param mediaService the <code>MediaService</code> that will be used to create new instance of
+     * <code>EncodingConfiguration</code>.
+     * @return <code>EncodingConfiguration</code> reflecting this object's encoding configuration state.
      */
     public EncodingConfiguration createEncodingConfig(MediaService mediaService)
     {

@@ -42,9 +42,9 @@ public interface CertificateService
     /**
      * Property that is being applied to the system properties for PKIX TrustManager Support
      *
-     * <tt>com.sun.net.ssl.checkRevocation</tt> and
-     * <tt>com.sun.security.enableCRLDP</tt>
-     * <tt>ocsp.enable</tt>
+     * <code>com.sun.net.ssl.checkRevocation</code> and
+     * <code>com.sun.security.enableCRLDP</code>
+     * <code>ocsp.enable</code>
      */
     String SECURITY_SSL_CHECK_REVOCATION = "com.sun.net.ssl.checkRevocation";
     String SECURITY_CRLDP_ENABLE = "com.sun.security.enableCRLDP";
@@ -67,28 +67,28 @@ public interface CertificateService
     String PNAME_CLIENTAUTH_CERTCONFIG_BASE = "cert.clientauth";
 
     /**
-     * Property that is being applied to the system property <tt>javax.net.ssl.trustStoreType</tt>
+     * Property that is being applied to the system property <code>javax.net.ssl.trustStoreType</code>
      */
     String PNAME_TRUSTSTORE_TYPE = "cert.truststore.type";
 
     /**
-     * Property that is being applied to the system property <tt>javax.net.ssl.trustStore</tt>
+     * Property that is being applied to the system property <code>javax.net.ssl.trustStore</code>
      */
     String PNAME_TRUSTSTORE_FILE = "cert.truststore.file";
 
     /**
-     * Property that is being applied to the system property <tt>javax.net.ssl.trustStorePassword</tt>
+     * Property that is being applied to the system property <code>javax.net.ssl.trustStorePassword</code>
      */
     String PNAME_TRUSTSTORE_PASSWORD = "cert.truststore.password";
 
     /**
      * Property that is being applied to the system properties
-     * <tt>com.sun.net.ssl.checkRevocation</tt> and <tt>com.sun.security.enableCRLDP</tt>
+     * <code>com.sun.net.ssl.checkRevocation</code> and <code>com.sun.security.enableCRLDP</code>
      */
     String PNAME_REVOCATION_CHECK_ENABLED = "cert.revocation.enabled";
 
     /**
-     * Property that is being applied to the Security property <tt>ocsp.enable</tt>
+     * Property that is being applied to the Security property <code>ocsp.enable</code>
      */
     String PNAME_OCSP_ENABLED = "cert.ocsp.enabled";
 
@@ -195,12 +195,12 @@ public interface CertificateService
 
     /**
      * Creates a trustManager that validates the certificate based on the JRE default check and
-     * asks the user when the JRE check fails. When <tt>null</tt> is passed as the
-     * <tt>identityToTest</tt> then no check is performed whether the certificate is valid for a
+     * asks the user when the JRE check fails. When <code>null</code> is passed as the
+     * <code>identityToTest</code> then no check is performed whether the certificate is valid for a
      * specific server or client. The passed identities are checked by applying a behavior
      * similar to the on regular browsers use.
      *
-     * @param identitiesToTest when not <tt>null</tt>, the values are assumed to be hostNames for invocations of
+     * @param identitiesToTest when not <code>null</code>, the values are assumed to be hostNames for invocations of
      * checkServerTrusted and e-mail addresses for invocations of checkClientTrusted
      * @return TrustManager to use in an SSLContext
      * @throws GeneralSecurityException a general security-related exception
@@ -209,7 +209,7 @@ public interface CertificateService
             throws GeneralSecurityException;
 
     /**
-     * @param identityToTest when not <tt>null</tt>, the value is assumed to be a hostname for invocations of
+     * @param identityToTest when not <code>null</code>, the value is assumed to be a hostname for invocations of
      * checkServerTrusted and an e-mail address for invocations of checkClientTrusted
      * @return TrustManager to use in an SSLContext
      * @throws GeneralSecurityException a general security-related exception
@@ -231,8 +231,8 @@ public interface CertificateService
 
     /**
      * Creates a trustManager that validates the certificate based on the JRE default check and
-     * asks the user when the JRE check fails. When <tt>null</tt> is passed as the
-     * <tt>identityToTest</tt> then no check is performed whether the certificate is valid for a
+     * asks the user when the JRE check fails. When <code>null</code> is passed as the
+     * <code>identityToTest</code> then no check is performed whether the certificate is valid for a
      * specific server or client.
      *
      * @param identitiesToTest The identities to match against the supplied verifiers.

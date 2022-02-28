@@ -56,7 +56,7 @@ import java.util.Iterator;
 import timber.log.Timber;
 
 /**
- * The <tt>VideoCallActivity</tt> corresponds the call screen.
+ * The <code>VideoCallActivity</code> corresponds the call screen.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -113,7 +113,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private Call call;
 
     /**
-     * The {@link CallConference} instance depicted by this <tt>CallPanel</tt>.
+     * The {@link CallConference} instance depicted by this <code>CallPanel</code>.
      */
     private CallConference callConference;
 
@@ -144,7 +144,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private CallVolumeCtrlFragment volControl;
 
     /**
-     * Instance holds call state to be displayed in <tt>CallEnded</tt> fragment. Call objects will
+     * Instance holds call state to be displayed in <code>CallEnded</code> fragment. Call objects will
      * be no longer available after the call has ended.
      */
     static CallStateHolder callState = new CallStateHolder();
@@ -281,7 +281,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Reinitialize the <tt>Activity</tt> to reflect current call status.
+     * Reinitialize the <code>Activity</code> to reflect current call status.
      */
     @Override
     protected void onResume()
@@ -329,7 +329,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Called when this <tt>Activity</tt> is paused(hidden). Releases all listeners and leaves the
+     * Called when this <code>Activity</code> is paused(hidden). Releases all listeners and leaves the
      * in call notification if the call is in progress.
      */
     @Override
@@ -436,7 +436,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Handle buttons action events- the <tt>ActionEvent</tt> that notified us
+     * Handle buttons action events- the <code>ActionEvent</code> that notified us
      */
     @Override
     public void onClick(View v)
@@ -486,7 +486,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Handle buttons longPress action events - the <tt>ActionEvent</tt> that notified us
+     * Handle buttons longPress action events - the <code>ActionEvent</code> that notified us
      */
     @Override
     public boolean onLongClick(View v)
@@ -528,9 +528,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Returns <tt>true</tt> if call is currently muted.
+     * Returns <code>true</code> if call is currently muted.
      *
-     * @return <tt>true</tt> if call is currently muted.
+     * @return <code>true</code> if call is currently muted.
      */
     private boolean isMuted()
     {
@@ -671,9 +671,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Returns <tt>CallVolumeCtrlFragment</tt> if it exists or <tt>null</tt> otherwise.
+     * Returns <code>CallVolumeCtrlFragment</code> if it exists or <code>null</code> otherwise.
      *
-     * @return <tt>CallVolumeCtrlFragment</tt> if it exists or <tt>null</tt> otherwise.
+     * @return <code>CallVolumeCtrlFragment</code> if it exists or <code>null</code> otherwise.
      */
     public CallVolumeCtrlFragment getVolCtrlFragment()
     {
@@ -876,15 +876,15 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Invoked by {@link CallChangeListener} to notify this instance about an <tt>EventObject</tt>
-     * related to the <tt>CallConference</tt> depicted by this <tt>CallPanel</tt>, the
-     * <tt>Call</tt>s participating in it, the <tt>CallPeer</tt>s associated with them, the
-     * <tt>ConferenceMember</tt>s participating in any telephony conferences organized by them,
+     * Invoked by {@link CallChangeListener} to notify this instance about an <code>EventObject</code>
+     * related to the <code>CallConference</code> depicted by this <code>CallPanel</code>, the
+     * <code>Call</code>s participating in it, the <code>CallPeer</code>s associated with them, the
+     * <code>ConferenceMember</code>s participating in any telephony conferences organized by them,
      * etc. In other words, notifies this instance about any change which may cause an update to
-     * be required so that this view i.e. <tt>CallPanel</tt> depicts the current state of its
+     * be required so that this view i.e. <code>CallPanel</code> depicts the current state of its
      * model i.e. {@link #callConference}.
      *
-     * @param ev the <tt>EventObject</tt> this instance is being notified about.
+     * @param ev the <code>EventObject</code> this instance is being notified about.
      */
     private void onCallConferenceEventObject(EventObject ev)
     {
@@ -924,9 +924,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Gets the <tt>CallTimerFragment</tt>.
+     * Gets the <code>CallTimerFragment</code>.
      *
-     * @return the <tt>CallTimerFragment</tt>.
+     * @return the <code>CallTimerFragment</code>.
      */
     private CallTimerFragment getCallTimerFragment()
     {
@@ -987,7 +987,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Removes given <tt>callPeer</tt> from UI.
+     * Removes given <code>callPeer</code> from UI.
      *
      * @param callPeer the {@link CallPeer} to be removed from UI.
      */
@@ -1060,8 +1060,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Updates padlock status text, icon and it's background color.
      *
-     * @param isSecure <tt>true</tt> if the call is secured.
-     * @param isVerified <tt>true</tt> if zrtp SAS string is verified.
+     * @param isSecure <code>true</code> if the call is secured.
+     * @param isVerified <code>true</code> if zrtp SAS string is verified.
      */
     @SuppressLint("ResourceAsColor")
     private void doUpdatePadlockStatus(boolean isSecure, boolean isVerified)
@@ -1100,7 +1100,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     /**
      * Updates padlock icon based on security status.
      *
-     * @param isSecure <tt>true</tt> if the call is secure.
+     * @param isSecure <code>true</code> if the call is secure.
      */
     private void setPadlockSecure(boolean isSecure)
     {
@@ -1190,11 +1190,11 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Creates new video call intent for given <tt>callIdentifier</tt>.
+     * Creates new video call intent for given <code>callIdentifier</code>.
      *
-     * @param parent the parent <tt>Context</tt> that will be used to start new <tt>Activity</tt>.
+     * @param parent the parent <code>Context</code> that will be used to start new <code>Activity</code>.
      * @param callIdentifier the call ID managed by {@link CallManager}.
-     * @return new video call <tt>Intent</tt> parametrized with given <tt>callIdentifier</tt>.
+     * @return new video call <code>Intent</code> parametrized with given <code>callIdentifier</code>.
      */
     static public Intent createVideoCallIntent(Context parent, String callIdentifier)
     {

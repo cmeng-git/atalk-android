@@ -20,7 +20,7 @@ import net.java.sip.communicator.service.gui.UIContact;
 import org.atalk.android.gui.AndroidGUIActivator;
 
 /**
- * The <tt>UIContactImpl</tt> class extends the <tt>UIContact</tt> in order to add some more
+ * The <code>UIContactImpl</code> class extends the <code>UIContact</code> in order to add some more
  * methods specific the UI implementation.
  *
  * @author Yana Stamcheva
@@ -33,19 +33,19 @@ public abstract class UIContactImpl extends UIContact
 	private static final String FILTER_DOMAIN_IN_TIP_ADDRESSES = "gui.contactlist.FILTER_DOMAIN_IN_TIP_ADDRESSES";
 
 	/**
-	 * Returns the corresponding <tt>ContactNode</tt>. The <tt>ContactNode</tt> is the real node
+	 * Returns the corresponding <code>ContactNode</code>. The <code>ContactNode</code> is the real node
 	 * that is stored in the contact list component data model.
 	 *
-	 * @return the corresponding <tt>ContactNode</tt>
+	 * @return the corresponding <code>ContactNode</code>
 	 */
 	public abstract ContactNode getContactNode();
 
 	/**
-	 * Sets the given <tt>contactNode</tt>. The <tt>ContactNode</tt> is the real node that is
+	 * Sets the given <code>contactNode</code>. The <code>ContactNode</code> is the real node that is
 	 * stored in the contact list component data model.
 	 *
 	 * @param contactNode
-	 * 		the <tt>ContactNode</tt> that corresponds to this <tt>UIGroup</tt>
+	 * 		the <code>ContactNode</code> that corresponds to this <code>UIGroup</code>
 	 */
 	public abstract void setContactNode(ContactNode contactNode);
 
@@ -57,7 +57,7 @@ public abstract class UIContactImpl extends UIContact
 	public abstract byte[] getStatusIcon();
 
 	/**
-	 * Gets the avatar of a specific <tt>UIContact</tt> in the form of an <tt>ImageIcon</tt> value.
+	 * Gets the avatar of a specific <code>UIContact</code> in the form of an <code>ImageIcon</code> value.
 	 *
 	 * @param isSelected
 	 * 		indicates if the contact is selected
@@ -65,15 +65,15 @@ public abstract class UIContactImpl extends UIContact
 	 * 		the desired icon width
 	 * @param height
 	 * 		the desired icon height
-	 * @return an <tt>ImageIcon</tt> which represents the avatar of the specified
-	 * <tt>MetaContact</tt>
+	 * @return an <code>ImageIcon</code> which represents the avatar of the specified
+	 * <code>MetaContact</code>
 	 */
 	public abstract Drawable getScaledAvatar(boolean isSelected, int width, int height);
 
 	/**
-	 * Gets the avatar of a specific <tt>UIContact</tt> in the form of an <tt>ImageIcon</tt> value.
+	 * Gets the avatar of a specific <code>UIContact</code> in the form of an <code>ImageIcon</code> value.
 	 *
-	 * @return a byte array representing the avatar of this <tt>UIContact</tt>
+	 * @return a byte array representing the avatar of this <code>UIContact</code>
 	 */
 	public byte[] getAvatar()
 	{
@@ -81,9 +81,9 @@ public abstract class UIContactImpl extends UIContact
 	}
 
 	/**
-	 * Returns the display name of this <tt>UIContact</tt>.
+	 * Returns the display name of this <code>UIContact</code>.
 	 *
-	 * @return the display name of this <tt>UIContact</tt>
+	 * @return the display name of this <code>UIContact</code>
 	 */
 	@Override
 	public abstract String getDisplayName();

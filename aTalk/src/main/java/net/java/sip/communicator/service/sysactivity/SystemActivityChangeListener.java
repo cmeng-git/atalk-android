@@ -20,7 +20,7 @@ import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
 import java.util.EventListener;
 
 /**
- * The <tt>SystemActivityChangeListener</tt> is notified any time an event
+ * The <code>SystemActivityChangeListener</code> is notified any time an event
  * in the operating system occurs.
  *
  * @author Damian Minkov
@@ -33,7 +33,7 @@ public interface SystemActivityChangeListener extends EventListener
      * type has been changed (for example the corresponding descriptor has
      * changed).
      *
-     * @param event the <tt>NotificationActionTypeEvent</tt>, which is
+     * @param event the <code>NotificationActionTypeEvent</code>, which is
      * dispatched when an action has been changed.
      */
     void activityChanged(SystemActivityEvent event);

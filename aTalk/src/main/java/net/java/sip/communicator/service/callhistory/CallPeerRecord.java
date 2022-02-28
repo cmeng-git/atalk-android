@@ -60,7 +60,7 @@ public class CallPeerRecord
     protected String secondaryPeerAddress = null;
 
     /**
-     * The state of <tt>CallPeer</tt>.
+     * The state of <code>CallPeer</code>.
      */
     protected CallPeerState state = CallPeerState.UNKNOWN;
 
@@ -140,7 +140,7 @@ public class CallPeerRecord
     }
 
     /**
-     * Sets secondary address to the <tt>CallPeerRecord</tt>
+     * Sets secondary address to the <code>CallPeerRecord</code>
      *
      * @param address the address to be set.
      */
@@ -150,9 +150,9 @@ public class CallPeerRecord
     }
 
     /**
-     * Returns the secondary address to the <tt>CallPeerRecord</tt>
+     * Returns the secondary address to the <code>CallPeerRecord</code>
      *
-     * @return the secondary address to the <tt>CallPeerRecord</tt>
+     * @return the secondary address to the <code>CallPeerRecord</code>
      */
     public String getPeerSecondaryAddress()
     {

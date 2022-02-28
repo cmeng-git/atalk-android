@@ -37,7 +37,7 @@ public interface OperationSetTelephonyPark extends OperationSet
 	 * @param parkSlot
 	 *        the parking slot where to park the call.
 	 * @param peer
-	 *        the <tt>CallPeer</tt> to be parked to the specified parking slot.
+	 *        the <code>CallPeer</code> to be parked to the specified parking slot.
 	 * @throws OperationFailedException
 	 *         if parking the specified call to the specified park slot fails
 	 */

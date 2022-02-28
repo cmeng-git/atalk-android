@@ -17,26 +17,26 @@ public interface OperationSetPersistentPresencePermissions extends OperationSet
 	/**
 	 * Is the whole contact list for the current provider readonly.
 	 * 
-	 * @return <tt>true</tt> if the whole contact list is readonly, otherwise <tt>false</tt>.
+	 * @return <code>true</code> if the whole contact list is readonly, otherwise <code>false</code>.
 	 */
 	public boolean isReadOnly();
 
 	/**
-	 * Checks whether the <tt>contact</tt> can be edited, removed, moved. If the parent group is
+	 * Checks whether the <code>contact</code> can be edited, removed, moved. If the parent group is
 	 * readonly.
 	 * 
 	 * @param contact
 	 *        the contact to check.
-	 * @return <tt>true</tt> if the contact is readonly, otherwise <tt>false</tt>.
+	 * @return <code>true</code> if the contact is readonly, otherwise <code>false</code>.
 	 */
 	public boolean isReadOnly(Contact contact);
 
 	/**
-	 * Checks whether the <tt>group</tt> is readonly.
+	 * Checks whether the <code>group</code> is readonly.
 	 * 
 	 * @param group
 	 *        the group to check.
-	 * @return <tt>true</tt> if the group is readonly, otherwise <tt>false</tt>.
+	 * @return <code>true</code> if the group is readonly, otherwise <code>false</code>.
 	 */
 	public boolean isReadOnly(ContactGroup group);
 }

@@ -67,7 +67,7 @@ public class KeyStoreType
 
     /**
      * Flag that indicates if the keystore supports passwords.
-     * @return <tt>true</tt> if the keystore supports passwords, <tt>false</tt>
+     * @return <code>true</code> if the keystore supports passwords, <code>false</code>
      *         otherwise.
      */
     public boolean hasKeyStorePassword()

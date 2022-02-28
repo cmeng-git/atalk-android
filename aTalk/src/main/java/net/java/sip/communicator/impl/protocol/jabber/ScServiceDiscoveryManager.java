@@ -54,12 +54,12 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
     /**
      * The cache for storing service discoInfo without nodeVer e.g, proxy.atalk.org, conference.atalk.org.
-     * Used only if {@link #cacheNonCaps} is <tt>true</tt>.
+     * Used only if {@link #cacheNonCaps} is <code>true</code>.
      */
     private static final LruCache<Jid, DiscoverInfo> nonCapsCache = new LruCache<>(10000);
 
     /**
-     * The <tt>EntityCapsManager</tt> used by this instance to handle entity capabilities.
+     * The <code>EntityCapsManager</code> used by this instance to handle entity capabilities.
      */
     private final EntityCapsManager mEntityCapsManager;
 
@@ -92,13 +92,13 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     private final List<DiscoverInfo.Identity> identities;
 
     /**
-     * The list of <tt>UserCapsNodeListener</tt>s interested in events notifying about
-     * possible changes in the list of user caps nodes of this <tt>EntityCapsManager</tt>.
+     * The list of <code>UserCapsNodeListener</code>s interested in events notifying about
+     * possible changes in the list of user caps nodes of this <code>EntityCapsManager</code>.
      */
     private final List<UserCapsNodeListener> userCapsNodeListeners = new LinkedList<>();
 
     /**
-     * An empty array of <tt>UserCapsNodeListener</tt> elements explicitly defined
+     * An empty array of <code>UserCapsNodeListener</code> elements explicitly defined
      * in order to reduce unnecessary allocations.
      */
     private static final UserCapsNodeListener[] NO_USER_CAPS_NODE_LISTENERS = new UserCapsNodeListener[0];
@@ -120,16 +120,16 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     private static File entityStoreDirectory;
 
     /**
-     * Creates a new <tt>ScServiceDiscoveryManager</tt> wrapping the default discovery manager of
-     * the specified <tt>connection</tt>.
+     * Creates a new <code>ScServiceDiscoveryManager</code> wrapping the default discovery manager of
+     * the specified <code>connection</code>.
      *
      * @param parentProvider the parent provider that creates discovery manager.
      * @param connection Smack connection object that will be used by this instance to handle XMPPTCP connection.
-     * @param featuresToRemove an array of <tt>String</tt>s representing the features to be removed from the
-     * <tt>ServiceDiscoveryManager</tt> of the specified <tt>connection</tt> which is to be
+     * @param featuresToRemove an array of <code>String</code>s representing the features to be removed from the
+     * <code>ServiceDiscoveryManager</code> of the specified <code>connection</code> which is to be
      * wrapped by the new instance
-     * @param featuresToAdd an array of <tt>String</tt>s representing the features to be added to the new instance
-     * and to the <tt>ServiceDiscoveryManager</tt> of the specified <tt>connection</tt> which
+     * @param featuresToAdd an array of <code>String</code>s representing the features to be added to the new instance
+     * and to the <code>ServiceDiscoveryManager</code> of the specified <code>connection</code> which
      * is to be wrapped by the new instance
      */
     public ScServiceDiscoveryManager(ProtocolProviderServiceJabberImpl parentProvider, XMPPConnection connection,
@@ -198,8 +198,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     /**
-     * Returns <tt>true</tt> if the specified feature is registered in our
-     * {@link ServiceDiscoveryManager} and <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the specified feature is registered in our
+     * {@link ServiceDiscoveryManager} and <code>false</code> otherwise.
      *
      * @param feature the feature to look for.
      * @return a boolean indicating if the specified featured is registered or not.
@@ -228,9 +228,9 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      * NodeInformationProvider implementation for getNode....()
      *
      * Returns a list of the Items {@link org.jivesoftware.smackx.disco.packet.DiscoverItems.Item}
-     * defined in the node or in other words <tt>null</tt> since we don't support any.
+     * defined in the node or in other words <code>null</code> since we don't support any.
      *
-     * @return always <tt>null</tt> since we don't support items.
+     * @return always <code>null</code> since we don't support items.
      */
     @Override
     public List<DiscoverItems.Item> getNodeItems()
@@ -410,13 +410,13 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     /**
-     * Returns <tt>true</tt> if <tt>jid</tt> supports the specified <tt>feature</tt> and
-     * <tt>false</tt> otherwise. The method may check the information locally if we've already
-     * cached this <tt>jid</tt>'s disco info, or retrieve it from the network.
+     * Returns <code>true</code> if <code>jid</code> supports the specified <code>feature</code> and
+     * <code>false</code> otherwise. The method may check the information locally if we've already
+     * cached this <code>jid</code>'s disco info, or retrieve it from the network.
      *
      * @param jid the jabber ID we'd like to test for support
      * @param feature the URN feature we are interested in
-     * @return true if <tt>jid</tt> is discovered to support <tt>feature</tt> and <tt>false</tt> otherwise.
+     * @return true if <code>jid</code> is discovered to support <code>feature</code> and <code>false</code> otherwise.
      */
     public boolean supportsFeature(Jid jid, String feature)
     {
@@ -487,12 +487,12 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     // =========================================================
 
     /**
-     * Adds a specific <tt>UserCapsNodeListener</tt> to the list of <tt>UserCapsNodeListener</tt>s
+     * Adds a specific <code>UserCapsNodeListener</code> to the list of <code>UserCapsNodeListener</code>s
      * interested in events notifying about changes in the list of user caps nodes of the
-     * <tt>EntityCapsManager</tt>.
+     * <code>EntityCapsManager</code>.
      *
-     * @param listener the <tt>UserCapsNodeListener</tt> which is interested in events notifying about
-     * changes in the list of user caps nodes of this <tt>EntityCapsManager</tt>
+     * @param listener the <code>UserCapsNodeListener</code> which is interested in events notifying about
+     * changes in the list of user caps nodes of this <code>EntityCapsManager</code>
      */
     public void addUserCapsNodeListener(UserCapsNodeListener listener)
     {
@@ -506,12 +506,12 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     /**
-     * Removes a specific <tt>UserCapsNodeListener</tt> from the list of
-     * <tt>UserCapsNodeListener</tt>s interested in events notifying about changes in the list of
-     * user caps nodes of this <tt>EntityCapsManager</tt>.
+     * Removes a specific <code>UserCapsNodeListener</code> from the list of
+     * <code>UserCapsNodeListener</code>s interested in events notifying about changes in the list of
+     * user caps nodes of this <code>EntityCapsManager</code>.
      *
-     * @param listener the <tt>UserCapsNodeListener</tt> which is no longer interested in events notifying
-     * about changes in the list of user caps nodes of this <tt>EntityCapsManager</tt>
+     * @param listener the <code>UserCapsNodeListener</code> which is no longer interested in events notifying
+     * about changes in the list of user caps nodes of this <code>EntityCapsManager</code>
      */
     public void removeUserCapsNodeListener(UserCapsNodeListener listener)
     {
@@ -550,7 +550,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
          * Handles incoming presence packets with CapsExtension and alert listeners that the specific user caps
          * node may have changed.
          *
-         * @param stanza the incoming presence <tt>Packet</tt> to be handled
+         * @param stanza the incoming presence <code>Packet</code> to be handled
          * @see StanzaListener#processStanza(Stanza)
          */
         public void processStanza(Stanza stanza)

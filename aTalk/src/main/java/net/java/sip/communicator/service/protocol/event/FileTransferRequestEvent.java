@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * The <tt>FileTransferRequestEvent</tt> indicates the reception of a file transfer request.
+ * The <code>FileTransferRequestEvent</code> indicates the reception of a file transfer request.
  *
  * @author Nicolas Riegel
  * @author Yana Stamcheva
@@ -35,11 +35,11 @@ public class FileTransferRequestEvent extends EventObject
     private final Date timestamp;
 
     /**
-     * Creates a <tt>FileTransferRequestEvent</tt> representing reception of an incoming file
+     * Creates a <code>FileTransferRequestEvent</code> representing reception of an incoming file
      * transfer request.
      *
      * @param fileTransferOpSet the operation set, where this event initially occurred
-     * @param request the <tt>IncomingFileTransferRequest</tt> whose reception this event represents.
+     * @param request the <code>IncomingFileTransferRequest</code> whose reception this event represents.
      * @param timestamp the timestamp indicating the exact date when the event occurred
      */
     public FileTransferRequestEvent(OperationSetFileTransfer fileTransferOpSet,
@@ -52,9 +52,9 @@ public class FileTransferRequestEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>OperationSetFileTransfer</tt>, where this event initially occurred.
+     * Returns the <code>OperationSetFileTransfer</code>, where this event initially occurred.
      *
-     * @return the <tt>OperationSetFileTransfer</tt>, where this event initially occurred
+     * @return the <code>OperationSetFileTransfer</code>, where this event initially occurred
      */
     public OperationSetFileTransfer getFileTransferOperationSet()
     {
@@ -64,7 +64,7 @@ public class FileTransferRequestEvent extends EventObject
     /**
      * Returns the incoming file transfer request that triggered this event.
      *
-     * @return the <tt>IncomingFileTransferRequest</tt> that triggered this event.
+     * @return the <code>IncomingFileTransferRequest</code> that triggered this event.
      */
     public IncomingFileTransferRequest getRequest()
     {

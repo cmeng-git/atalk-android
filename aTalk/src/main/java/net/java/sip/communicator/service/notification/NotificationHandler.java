@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.notification;
 
 /**
- * The <tt>NotificationActionHandler</tt> is the parent interface of all specific notification handlers used for
+ * The <code>NotificationActionHandler</code> is the parent interface of all specific notification handlers used for
  * handling different action types. This interface is used in the NotificationService in all methods dealing with action
  * handlers.
  *

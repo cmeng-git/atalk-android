@@ -61,7 +61,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     private BundleContext bundleContext = null;
 
     /**
-     * The <tt>HistoryService</tt> reference.
+     * The <code>HistoryService</code> reference.
      */
     private HistoryService historyService = null;
 
@@ -242,9 +242,9 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been rejected.
+     * Called when a new <code>IncomingFileTransferRequest</code> has been rejected.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
      * @see FileReceiveConversation#fileTransferRequestRejected(FileTransferRequestEvent)
      */
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
@@ -253,9 +253,9 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been cancel by the sender.
+     * Called when a new <code>IncomingFileTransferRequest</code> has been cancel by the sender.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
      * @see FileReceiveConversation#fileTransferRequestCanceled(FileTransferRequestEvent)
      */
     public void fileTransferRequestCanceled(FileTransferRequestEvent event)

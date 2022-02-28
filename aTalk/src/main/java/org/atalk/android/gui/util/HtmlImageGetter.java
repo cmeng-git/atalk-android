@@ -15,13 +15,13 @@ import org.atalk.android.aTalkApp;
 import timber.log.Timber;
 
 /**
- * Utility class that implements <tt>Html.ImageGetter</tt> interface and can be used to display images in
- * <tt>TextView</tt> through the HTML syntax.<br/>
+ * Utility class that implements <code>Html.ImageGetter</code> interface and can be used to display images in
+ * <code>TextView</code> through the HTML syntax.<br/>
  * Source image URI should be formatted as follows:<br/>
  * <br/>
  * atalk.resource://{Integer drawable id}, example: atalk.resource://2130837599 <br/>
  * <br/>
- * This format is used by Android <tt>ResourceManagementService</tt> to return image URLs.
+ * This format is used by Android <code>ResourceManagementService</code> to return image URLs.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

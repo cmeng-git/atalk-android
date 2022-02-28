@@ -9,20 +9,20 @@ import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.service.neomedia.StreamConnectorDelegate;
 
 /**
- * Implements a <tt>StreamConnector</tt> which allows sharing a specific <tt>StreamConnector</tt>
- * instance among multiple <tt>TransportManager</tt>s for the purposes of the Jitsi Videobridge.
+ * Implements a <code>StreamConnector</code> which allows sharing a specific <code>StreamConnector</code>
+ * instance among multiple <code>TransportManager</code>s for the purposes of the Jitsi Videobridge.
  *
  * @author Lyubomir Marinov
  */
 public class ColibriStreamConnector extends StreamConnectorDelegate<StreamConnector>
 {
     /**
-     * Initializes a new <tt>ColibriStreamConnector</tt> instance which is to share a specific
-     * <tt>StreamConnector</tt> instance among multiple <tt>TransportManager</tt>s for the purposes
+     * Initializes a new <code>ColibriStreamConnector</code> instance which is to share a specific
+     * <code>StreamConnector</code> instance among multiple <code>TransportManager</code>s for the purposes
      * of the Jitsi Videobridge.
      *
-     * @param streamConnector the <tt>StreamConnector</tt> instance to be shared by the new instance among multiple
-     * <tt>TransportManager</tt>s for the purposes of the Jitsi Videobridge
+     * @param streamConnector the <code>StreamConnector</code> instance to be shared by the new instance among multiple
+     * <code>TransportManager</code>s for the purposes of the Jitsi Videobridge
      */
     public ColibriStreamConnector(StreamConnector streamConnector)
     {
@@ -33,8 +33,8 @@ public class ColibriStreamConnector extends StreamConnectorDelegate<StreamConnec
      * {@inheritDoc}
      *
      * Overrides {@link StreamConnectorDelegate#close()} in order to prevent the closing of the
-     * <tt>StreamConnector</tt> wrapped by this instance because the latter is shared and it is not
-     * clear whether no <tt>TransportManager</tt> is using it.
+     * <code>StreamConnector</code> wrapped by this instance because the latter is shared and it is not
+     * clear whether no <code>TransportManager</code> is using it.
      */
     @Override
     public void close()
@@ -48,7 +48,7 @@ public class ColibriStreamConnector extends StreamConnectorDelegate<StreamConnec
     /**
      * {@inheritDoc}
      *
-     * Invokes {@link #close()} on this instance when it is clear that no <tt>TransportManager</tt>
+     * Invokes {@link #close()} on this instance when it is clear that no <code>TransportManager</code>
      * is using it in order to release the resources allocated by this instance throughout its life
      * time (that need explicit disposal).
      */

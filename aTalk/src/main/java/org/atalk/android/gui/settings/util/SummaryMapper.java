@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * The class can be used to set {@link Preference} value as its summary text. Optionally the empty string can be
- * provided that will be used when value is <tt>null</tt> or empty <tt>String</tt>. To make it work it has to be
+ * provided that will be used when value is <code>null</code> or empty <code>String</code>. To make it work it has to be
  * registered to the {@link SharedPreferences} instance containing preferences we want to handle.
  * Single instance can map multiple {@link Preference} at one time.
  *
@@ -43,7 +43,7 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
      * Includes the {@link Preference} into summary mapping.
      *
      * @param pref the {@link Preference} to be included
-     * @param empty optional empty String that will be set when the <tt>Preference</tt> value is <tt>null</tt> or empty
+     * @param empty optional empty String that will be set when the <code>Preference</code> value is <code>null</code> or empty
      * @param converter optional {@link SummaryConverter}
      * @see SummaryMapper
      */
@@ -62,7 +62,7 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
     }
 
     /**
-     * Triggers summary update on all registered <tt>Preference</tt>s.
+     * Triggers summary update on all registered <code>Preference</code>s.
      */
     public void updatePreferences()
     {
@@ -84,7 +84,7 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
     /**
      * Sets the summary basing on actual {@link Preference} value
      *
-     * @param sharedPrefs the {@link SharedPreferences} that manages the <tt>preference</tt>
+     * @param sharedPrefs the {@link SharedPreferences} that manages the <code>preference</code>
      * @param preference Android Preference
      */
     private void setSummary(SharedPreferences sharedPrefs, Preference preference)
@@ -123,9 +123,9 @@ public class SummaryMapper implements SharedPreferences.OnSharedPreferenceChange
     public interface SummaryConverter
     {
         /**
-         * The method shall return summary text for given <tt>input</tt> value.
+         * The method shall return summary text for given <code>input</code> value.
          *
-         * @param input {@link Preference} value as a <tt>String</tt>
+         * @param input {@link Preference} value as a <code>String</code>
          * @return output summary value
          */
         String convertToSummary(String input);

@@ -18,8 +18,8 @@ package net.java.sip.communicator.service.contactsource;
 import java.util.*;
 
 /**
- * The <tt>ContactQueryStatusEvent</tt> is triggered each time a
- * <tt>ContactQuery</tt> changes its status. Possible statuses are:
+ * The <code>ContactQueryStatusEvent</code> is triggered each time a
+ * <code>ContactQuery</code> changes its status. Possible statuses are:
  * QUERY_COMPLETED, QUERY_CANCELED and QUERY_ERROR.
  *
  * @author Yana Stamcheva
@@ -53,8 +53,8 @@ public class ContactQueryStatusEvent
     private final int eventType;
 
     /**
-     * Creates a <tt>ContactQueryStatusEvent</tt> by specifying the source
-     * <tt>ContactQuery</tt> and the <tt>eventType</tt> indicating why initially
+     * Creates a <code>ContactQueryStatusEvent</code> by specifying the source
+     * <code>ContactQuery</code> and the <code>eventType</code> indicating why initially
      * this event occurred.
      * @param source the initiator of the event
      * @param eventType the type of the event. One of the QUERY_XXX constants
@@ -69,8 +69,8 @@ public class ContactQueryStatusEvent
     }
 
     /**
-     * Returns the <tt>ContactQuery</tt> that triggered this event.
-     * @return the <tt>ContactQuery</tt> that triggered this event
+     * Returns the <code>ContactQuery</code> that triggered this event.
+     * @return the <code>ContactQuery</code> that triggered this event
      */
     public ContactQuery getQuerySource()
     {

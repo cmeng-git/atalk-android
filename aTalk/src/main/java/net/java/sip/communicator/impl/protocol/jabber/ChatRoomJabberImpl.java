@@ -63,8 +63,8 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-import org.jivesoftware.smackx.condesc.ConferenceDescriptionExtension;
-import org.jivesoftware.smackx.condesc.TransportExtension;
+import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
+import org.jivesoftware.smackx.confdesc.TransportExtension;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
@@ -73,7 +73,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Implements chat rooms for jabber. The class encapsulates instances of the jive software <tt>MultiUserChat</tt>.
+ * Implements chat rooms for jabber. The class encapsulates instances of the jive software <code>MultiUserChat</code>.
  *
  * @author Emil Ivov
  * @author Yana Stamcheva
@@ -167,23 +167,23 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private ChatRoomMemberRole mUserRole = null;
 
     /**
-     * The conference which we have announced in the room in our last sent <tt>Presence</tt> update.
+     * The conference which we have announced in the room in our last sent <code>Presence</code> update.
      */
     private ConferenceDescription publishedConference = null;
 
     /**
-     * The <tt>ConferenceAnnouncementPacketExtension</tt> corresponding to <tt>publishedConference</tt> which we
-     * add to all our presence updates. This MUST be kept in sync with <tt>publishedConference</tt>
+     * The <code>ConferenceAnnouncementPacketExtension</code> corresponding to <code>publishedConference</code> which we
+     * add to all our presence updates. This MUST be kept in sync with <code>publishedConference</code>
      */
     private ConferenceDescriptionExtension publishedConferenceExt = null;
 
     /**
-     * The last <tt>Presence</tt> packet we sent to the MUC.
+     * The last <code>Presence</code> packet we sent to the MUC.
      */
     private Presence lastPresenceSent = null;
 
     /**
-     * All <presence/>'s reason will default to REASON_USER_LIST until user own <tt>Presence</tt> has been received.
+     * All <presence/>'s reason will default to REASON_USER_LIST until user own <code>Presence</code> has been received.
      *
      * @see ChatRoomMemberPresenceChangeEvent#REASON_USER_LIST
      */
@@ -351,11 +351,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Adds <tt>listener</tt> to the list of listeners registered to receive events upon
+     * Adds <code>listener</code> to the list of listeners registered to receive events upon
      * modification of chat room properties such as its subject for example.
      *
-     * @param listener the <tt>ChatRoomChangeListener</tt> that is to be registered for
-     * <tt>ChatRoomChangeEvent</tt>-s.
+     * @param listener the <code>ChatRoomChangeListener</code> that is to be registered for
+     * <code>ChatRoomChangeEvent</code>-s.
      */
     public void addPropertyChangeListener(ChatRoomPropertyChangeListener listener)
     {
@@ -366,9 +366,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Removes <tt>listener</tt> from the list of listeners current registered for chat room modification events.
+     * Removes <code>listener</code> from the list of listeners current registered for chat room modification events.
      *
-     * @param listener the <tt>ChatRoomChangeListener</tt> to remove.
+     * @param listener the <code>ChatRoomChangeListener</code> to remove.
      */
     public void removePropertyChangeListener(ChatRoomPropertyChangeListener listener)
     {
@@ -378,11 +378,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Adds the given <tt>listener</tt> to the list of listeners registered to receive events upon
+     * Adds the given <code>listener</code> to the list of listeners registered to receive events upon
      * modification of chat room member properties such as its mNickname being changed for example.
      *
-     * @param listener the <tt>ChatRoomMemberPropertyChangeListener</tt> that is to be registered for
-     * <tt>ChatRoomMemberPropertyChangeEvent</tt>s.
+     * @param listener the <code>ChatRoomMemberPropertyChangeListener</code> that is to be registered for
+     * <code>ChatRoomMemberPropertyChangeEvent</code>s.
      */
     public void addMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener)
     {
@@ -393,10 +393,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Removes the given <tt>listener</tt> from the list of listeners currently registered for chat
+     * Removes the given <code>listener</code> from the list of listeners currently registered for chat
      * room member property change events.
      *
-     * @param listener the <tt>ChatRoomMemberPropertyChangeListener</tt> to remove.
+     * @param listener the <code>ChatRoomMemberPropertyChangeListener</code> to remove.
      */
     public void removeMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener)
     {
@@ -406,10 +406,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Registers <tt>listener</tt> so that it would receive events every time a new message is
+     * Registers <code>listener</code> so that it would receive events every time a new message is
      * received on this chat room.
      *
-     * @param listener a <tt>MessageListener</tt> that would be notified every time a new message is received
+     * @param listener a <code>MessageListener</code> that would be notified every time a new message is received
      * on this chat room.
      */
     public void addMessageListener(ChatRoomMessageListener listener)
@@ -421,9 +421,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Removes <tt>listener</tt> so that it won't receive any further message events from this room.
+     * Removes <code>listener</code> so that it won't receive any further message events from this room.
      *
-     * @param listener the <tt>MessageListener</tt> to remove from this room
+     * @param listener the <code>MessageListener</code> to remove from this room
      */
     public void removeMessageListener(ChatRoomMessageListener listener)
     {
@@ -460,7 +460,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Adds a <tt>CallJabberImpl</tt> instance to the list of conference calls associated with the room.
+     * Adds a <code>CallJabberImpl</code> instance to the list of conference calls associated with the room.
      *
      * @param call the call to add
      */
@@ -471,7 +471,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Removes a <tt>CallJabberImpl</tt> instance from the list of conference calls associated with the room.
+     * Removes a <code>CallJabberImpl</code> instance from the list of conference calls associated with the room.
      *
      * @param call the call to remove.
      */
@@ -485,7 +485,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param content message content value
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
+     * @param subject a <code>String</code> subject or <code>null</code> for now subject.
      * @return the newly created message.
      */
     public IMessage createMessage(String content, int encType, String subject)
@@ -506,9 +506,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns a <tt>List</tt> of <tt>Member</tt>s corresponding to all members currently participating in this room.
+     * Returns a <code>List</code> of <code>Member</code>s corresponding to all members currently participating in this room.
      *
-     * @return a <tt>List</tt> of <tt>Member</tt> corresponding to all room members.
+     * @return a <code>List</code> of <code>Member</code> corresponding to all room members.
      */
     public List<ChatRoomMember> getMembers()
     {
@@ -520,7 +520,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Returns the number of participants that are currently in this chat room.
      *
-     * @return int the number of <tt>Contact</tt>s, currently participating in this room.
+     * @return int the number of <code>Contact</code>s, currently participating in this room.
      */
     public int getMembersCount()
     {
@@ -528,9 +528,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns the name of this <tt>ChatRoom</tt>.
+     * Returns the name of this <code>ChatRoom</code>.
      *
-     * @return a <tt>String</tt> containing the name of this <tt>ChatRoom</tt>.
+     * @return a <code>String</code> containing the name of this <code>ChatRoom</code>.
      */
     public String getName()
     {
@@ -538,9 +538,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns the EntityBareJid of this <tt>ChatRoom</tt>.
+     * Returns the EntityBareJid of this <code>ChatRoom</code>.
      *
-     * @return a <tt>EntityBareJid</tt> containing the identifier of this <tt>ChatRoom</tt>.
+     * @return a <code>EntityBareJid</code> containing the identifier of this <code>ChatRoom</code>.
      */
     public EntityBareJid getIdentifier()
     {
@@ -548,7 +548,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns the local user's nickname in the context of this chat room or <tt>null</tt> if not currently joined.
+     * Returns the local user's nickname in the context of this chat room or <code>null</code> if not currently joined.
      *
      * @return the nickname currently being used by the local user in the context of the local chat room.
      */
@@ -589,10 +589,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns the last known room subject/theme or <tt>null</tt> if the user hasn't joined the
+     * Returns the last known room subject/theme or <code>null</code> if the user hasn't joined the
      * room or the room does not have a subject yet.
      *
-     * @return the room subject or <tt>null</tt> if the user hasn't joined the room or the room
+     * @return the room subject or <code>null</code> if the user hasn't joined the room or the room
      * does not have a subject yet.
      */
     public String getSubject()
@@ -804,9 +804,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     //    }
 
     /**
-     * Returns that <tt>ChatRoomJabberRole</tt> instance corresponding to the <tt>smackRole</tt> string.
+     * Returns that <code>ChatRoomJabberRole</code> instance corresponding to the <code>smackRole</code> string.
      *
-     * @param mucRole the smack mRole as returned by <tt>Occupant.getRole()</tt>.
+     * @param mucRole the smack mRole as returned by <code>Occupant.getRole()</code>.
      * @return ChatRoomMemberRole
      */
     public static ChatRoomMemberRole smackRoleToScRole(MUCRole mucRole, MUCAffiliation affiliation)
@@ -832,10 +832,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns the <tt>ChatRoomMember</tt> corresponding to the given smack participant.
+     * Returns the <code>ChatRoomMember</code> corresponding to the given smack participant.
      *
      * @param participant the EntityFullJid participant (e.g. sc-testroom@conference.voipgw.fr/userNick)
-     * @return the <tt>ChatRoomMember</tt> corresponding to the given smack participant
+     * @return the <code>ChatRoomMember</code> corresponding to the given smack participant
      */
     public ChatRoomMemberJabberImpl findMemberFromParticipant(Jid participant)
     {
@@ -859,7 +859,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param reason the reason for destroying.
      * @param roomName the chat Room Name (e.g. sc-testroom@conference.voipgw.fr)
-     * @return <tt>true</tt> if the room is destroyed.
+     * @return <code>true</code> if the room is destroyed.
      */
     public boolean destroy(String reason, EntityBareJid roomName)
             throws XMPPException
@@ -965,9 +965,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Construct the <tt>message</tt> for the required ENCODE mode for sending.
+     * Construct the <code>message</code> for the required ENCODE mode for sending.
      *
-     * @param message the <tt>IMessage</tt> to send.
+     * @param message the <code>IMessage</code> to send.
      * @throws OperationFailedException if sending the message fails for some reason.
      */
     public void sendMessage(IMessage message)
@@ -1003,7 +1003,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Sends the <tt>message</tt> with the json-message extension to the destination indicated by the <tt>to</tt> contact.
+     * Sends the <code>message</code> with the json-message extension to the destination indicated by the <code>to</code> contact.
      *
      * @param json the json message to be sent.
      * @throws OperationFailedException if sending the message fails for some reason.
@@ -1017,7 +1017,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Sends the <tt>message</tt> to the destination <tt>multiUserChat</tt> chatRoom.
+     * Sends the <code>message</code> to the destination <code>multiUserChat</code> chatRoom.
      *
      * @param messageBuilder the {@link Message} to be sent.
      * @throws OperationFailedException if sending the message fails for some reason.
@@ -1147,7 +1147,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Returns a reference to the mProvider that created this room.
      *
-     * @return a reference to the <tt>ProtocolProviderService</tt> instance that created this room.
+     * @return a reference to the <code>ProtocolProviderService</code> instance that created this room.
      */
     public ProtocolProviderService getParentProvider()
     {
@@ -1156,7 +1156,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Returns the local user's role in the context of this chat room if currently joined.
-     * Else retrieve from the value in DB that was previously saved, or <tt>null</tt> if none
+     * Else retrieve from the value in DB that was previously saved, or <code>null</code> if none
      *
      * Always save a copy of the userRole retrieved online in DB for later use
      *
@@ -1198,7 +1198,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Sets the new mRole for the local user in the context of this chatRoom.
      *
      * @param role the new mRole to be set for the local user
-     * @param isInitial if <tt>true</tt> this is initial mRole set.
+     * @param isInitial if <code>true</code> this is initial mRole set.
      */
     private void setLocalUserRole(ChatRoomMemberRole role, boolean isInitial)
     {
@@ -1211,7 +1211,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Instances of this class should be registered as <tt>ParticipantStatusListener</tt> in smack
+     * Instances of this class should be registered as <code>ParticipantStatusListener</code> in smack
      * and translates events .
      */
     private class MemberListener implements ParticipantStatusListener
@@ -1599,7 +1599,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Bans a user from the room. An admin or owner of the room can ban users from a room.
      *
-     * @param member the <tt>ChatRoomMember</tt> to be banned.
+     * @param member the <code>ChatRoomMember</code> to be banned.
      * @param reason the reason why the user was banned.
      * @throws OperationFailedException if an error occurs while banning a user. In particular, an error can occur if a
      * moderator or a user with an affiliation of "owner" or "admin" was tried to be banned
@@ -1633,7 +1633,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Kicks a participant from the room.
      *
-     * @param member the <tt>ChatRoomMember</tt> to kick from the room
+     * @param member the <code>ChatRoomMember</code> to kick from the room
      * @param reason the reason why the participant is being kicked from the room
      * @throws OperationFailedException if an error occurs while kicking the participant. In particular, an error can occur
      * if a moderator or a user with an affiliation of "owner" or "admin" was intended to be kicked;
@@ -1673,10 +1673,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Creates the corresponding ChatRoomMemberPresenceChangeEvent and notifies all
-     * <tt>ChatRoomMemberPresenceListener</tt>s that a ChatRoomMember has joined or left this
-     * <tt>ChatRoom</tt>.
+     * <code>ChatRoomMemberPresenceListener</code>s that a ChatRoomMember has joined or left this
+     * <code>ChatRoom</code>.
      *
-     * @param member the <tt>ChatRoomMember</tt> that this
+     * @param member the <code>ChatRoomMember</code> that this
      * @param eventID the identifier of the event
      * @param eventReason the reason of the event
      */
@@ -1698,10 +1698,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Creates the corresponding ChatRoomMemberPresenceChangeEvent and notifies all
-     * <tt>ChatRoomMemberPresenceListener</tt>s that a ChatRoomMember has joined or left this <tt>ChatRoom</tt>.
+     * <code>ChatRoomMemberPresenceListener</code>s that a ChatRoomMember has joined or left this <code>ChatRoom</code>.
      *
-     * @param member the <tt>ChatRoomMember</tt> that changed its presence status
-     * @param actor the <tt>ChatRoomMember</tt> that participated as an actor in this event
+     * @param member the <code>ChatRoomMember</code> that changed its presence status
+     * @param actor the <code>ChatRoomMember</code> that participated as an actor in this event
      * @param eventID the identifier of the event
      * @param eventReason the reason of this event
      */
@@ -1722,9 +1722,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Creates the corresponding ChatRoomMemberRoleChangeEvent and notifies all
-     * <tt>ChatRoomMemberRoleListener</tt>s that a ChatRoomMember has changed its mRole in this <tt>ChatRoom</tt>.
+     * <code>ChatRoomMemberRoleListener</code>s that a ChatRoomMember has changed its mRole in this <code>ChatRoom</code>.
      *
-     * @param member the <tt>ChatRoomMember</tt> that has changed its mRole
+     * @param member the <code>ChatRoomMember</code> that has changed its mRole
      * @param previousRole the previous mRole that member had
      * @param newRole the new mRole the member get
      */
@@ -1746,7 +1746,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Delivers the specified event to all registered message listeners.
      *
-     * @param evt the <tt>EventObject</tt> that we'd like delivered to all registered message listeners.
+     * @param evt the <code>EventObject</code> that we'd like delivered to all registered message listeners.
      */
     void fireMessageEvent(EventObject evt)
     {
@@ -1773,13 +1773,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Publishes a conference to the room by sending a <tt>Presence</tt> IQ which contains a
-     * <tt>ConferenceDescriptionExtensionElement</tt>
+     * Publishes a conference to the room by sending a <code>Presence</code> IQ which contains a
+     * <code>ConferenceDescriptionExtensionElement</code>
      *
      * @param cd the description of the conference to announce
      * @param name the name of the conference
-     * @return the <tt>ConferenceDescription</tt> that was announced (e.g. <tt>cd</tt> on
-     * success or <tt>null</tt> on failure)
+     * @return the <code>ConferenceDescription</code> that was announced (e.g. <code>cd</code> on
+     * success or <code>null</code> on failure)
      */
     @Override
     public ConferenceDescription publishConference(ConferenceDescription cd, String name)
@@ -1828,11 +1828,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Sets <tt>ext</tt> as the only <tt>ExtensionElement</tt> that belongs to given <tt>namespace</tt> of the <tt>packet</tt>.
+     * Sets <code>ext</code> as the only <code>ExtensionElement</code> that belongs to given <code>namespace</code> of the <code>packet</code>.
      *
-     * @param packet the <tt>Packet<tt> to be modified.
-     * @param extension the <tt>ConferenceDescriptionPacketExtension<tt> to set, or <tt>null</tt> to not set one.
-     * @param namespace the namespace of <tt>ExtensionElement</tt>.
+     * @param packet the <code>Packet<code> to be modified.
+     * @param extension the <code>ConferenceDescriptionPacketExtension<code> to set, or <code>null</code> to not set one.
+     * @param namespace the namespace of <code>ExtensionElement</code>.
      * @param matchElementName if {@code true} only extensions matching both the element name and namespace will be matched
      * and removed. Otherwise, only the namespace will be matched.
      */
@@ -1862,12 +1862,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
 
     /**
-     * Sets <tt>ext</tt> as the only <tt>ExtensionElement</tt> that belongs to given <tt>namespace</tt>
-     * of the <tt>packet</tt>.
+     * Sets <code>ext</code> as the only <code>ExtensionElement</code> that belongs to given <code>namespace</code>
+     * of the <code>packet</code>.
      *
-     * @param packet the <tt>Packet<tt> to be modified.
-     * @param extension the <tt>ConferenceDescriptionPacketExtension<tt> to set, or <tt>null</tt> to not set one.
-     * @param namespace the namespace of <tt>ExtensionElement</tt>.
+     * @param packet the <code>Packet<code> to be modified.
+     * @param extension the <code>ConferenceDescriptionPacketExtension<code> to set, or <code>null</code> to not set one.
+     * @param namespace the namespace of <code>ExtensionElement</code>.
      */
     private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace)
     {
@@ -1892,9 +1892,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Adds given <tt>ExtensionElement</tt> to the MUC presence and publishes it immediately.
+     * Adds given <code>ExtensionElement</code> to the MUC presence and publishes it immediately.
      *
-     * @param extension the <tt>ExtensionElement</tt> to be included in MUC presence.
+     * @param extension the <code>ExtensionElement</code> to be included in MUC presence.
      */
     public void sendPresenceExtension(ExtensionElement extension)
     {
@@ -1909,9 +1909,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Removes given <tt>PacketExtension</tt> from the MUC presence and publishes it immediately.
+     * Removes given <code>PacketExtension</code> from the MUC presence and publishes it immediately.
      *
-     * @param extension the <tt>PacketExtension</tt> to be removed from the MUC presence.
+     * @param extension the <code>PacketExtension</code> to be removed from the MUC presence.
      */
     public void removePresenceExtension(ExtensionElement extension)
     {
@@ -2342,12 +2342,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Creates the corresponding ChatRoomLocalUserRoleChangeEvent and notifies all
-     * <tt>ChatRoomLocalUserRoleListener</tt>s that local user's mRole has been changed in this
-     * <tt>ChatRoom</tt>.
+     * <code>ChatRoomLocalUserRoleListener</code>s that local user's mRole has been changed in this
+     * <code>ChatRoom</code>.
      *
      * @param previousRole the previous mRole that local user had
      * @param newRole the new mRole the local user gets
-     * @param isInitial if <tt>true</tt> this is initial mRole set.
+     * @param isInitial if <code>true</code> this is initial mRole set.
      */
     private void fireLocalUserRoleEvent(ChatRoomMemberRole previousRole, ChatRoomMemberRole newRole, boolean isInitial)
     {
@@ -2367,7 +2367,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Delivers the specified event to all registered property change listeners.
      *
-     * @param evt the <tt>PropertyChangeEvent</tt> that we'd like delivered to all registered property
+     * @param evt the <code>PropertyChangeEvent</code> that we'd like delivered to all registered property
      * change listeners.
      */
     private void firePropertyChangeEvent(PropertyChangeEvent evt)
@@ -2390,7 +2390,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Delivers the specified event to all registered property change listeners.
      *
-     * @param evt the <tt>ChatRoomMemberPropertyChangeEvent</tt> that we'd like deliver to all
+     * @param evt the <code>ChatRoomMemberPropertyChangeEvent</code> that we'd like deliver to all
      * registered member property change listeners.
      */
     private void fireMemberPropertyChangeEvent(ChatRoomMemberPropertyChangeEvent evt)
@@ -2420,11 +2420,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns the <tt>ChatRoomConfigurationForm</tt> containing all configuration properties for
+     * Returns the <code>ChatRoomConfigurationForm</code> containing all configuration properties for
      * this chat room. If the user doesn't have permissions to see and change chat room
-     * configuration an <tt>OperationFailedException</tt> is thrown.
+     * configuration an <code>OperationFailedException</code> is thrown.
      *
-     * @return the <tt>ChatRoomConfigurationForm</tt> containing all configuration properties for this chat room
+     * @return the <code>ChatRoomConfigurationForm</code> containing all configuration properties for this chat room
      * @throws OperationFailedException if the user doesn't have permissions to see and change chat room configuration
      */
     public ChatRoomConfigurationForm getConfigurationForm()
@@ -2691,16 +2691,16 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * The <tt>StanzaInterceptor</tt> we use to make sure that our outgoing <tt>Presence</tt>
-     * packets contain the correct <tt>ConferenceAnnouncementPacketExtension</tt>.
+     * The <code>StanzaInterceptor</code> we use to make sure that our outgoing <code>Presence</code>
+     * packets contain the correct <code>ConferenceAnnouncementPacketExtension</code>.
      */
     private class PresenceInterceptor implements PresenceListener
     {
         /**
          * {@inheritDoc}
          *
-         * Adds <tt>this.publishedConferenceExt</tt> as the only
-         * <tt>ConferenceAnnouncementPacketExtension</tt> of <tt>packet</tt>.
+         * Adds <code>this.publishedConferenceExt</code> as the only
+         * <code>ConferenceAnnouncementPacketExtension</code> of <code>packet</code>.
          */
         @Override
         public void processPresence(Presence presence)
@@ -2731,7 +2731,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
 
         /**
-         * Processes a <tt>Presence</tt> packet addressed to our own occupant JID.
+         * Processes a <code>Presence</code> packet addressed to our own occupant JID.
          * with either MUCUser extension or MUCInitialPresence extension (error)
          *
          * @param presence the packet to process.
@@ -2799,7 +2799,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
 
         /**
-         * Process a <tt>Presence</tt> packet sent by one of the other room occupants.
+         * Process a <code>Presence</code> packet sent by one of the other room occupants.
          */
         private void processOtherPresence(Presence presence)
         {

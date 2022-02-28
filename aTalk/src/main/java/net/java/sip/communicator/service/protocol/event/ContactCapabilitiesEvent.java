@@ -22,8 +22,8 @@ import java.util.EventObject;
 import java.util.Map;
 
 /**
- * Represents an event/<tt>EventObject</tt> fired by <tt>OperationSetClientCapabilities</tt> in order
- * to notify about changes in the list of the <tt>OperationSet</tt> capabilities of a <tt>Contact</tt>.
+ * Represents an event/<code>EventObject</code> fired by <code>OperationSetClientCapabilities</code> in order
+ * to notify about changes in the list of the <code>OperationSet</code> capabilities of a <code>Contact</code>.
  *
  * @author Lubomir Marinov
  * @author Yana Stamcheva
@@ -42,15 +42,15 @@ public class ContactCapabilitiesEvent extends EventObject
     private final Jid contactJid;
 
     /**
-     * The new set of supported <tt>OperationSet</tt>s.
+     * The new set of supported <code>OperationSet</code>s.
      */
     private final Map<String, ? extends OperationSet> opSets;
 
     /**
-     * Initializes a new <tt>ContactCapabilitiesEvent</tt> instance which is to notify about a
-     * specific change in the list of <tt>OperationSet</tt> capabilities of a specific <tt>Contact</tt>.
+     * Initializes a new <code>ContactCapabilitiesEvent</code> instance which is to notify about a
+     * specific change in the list of <code>OperationSet</code> capabilities of a specific <code>Contact</code>.
      *
-     * @param sourceContact the <tt>Contact</tt> which is to be considered the source/cause of the new event
+     * @param sourceContact the <code>Contact</code> which is to be considered the source/cause of the new event
      * @param jid the full Jid of contact
      * @param opSets the new set of operation sets this event is about
      */
@@ -63,8 +63,8 @@ public class ContactCapabilitiesEvent extends EventObject
     }
 
     /**
-     * Gets the contact Jid which indicates the specifics of the change in the list of <tt>OperationSet</tt>
-     * capabilities of the associated <tt>sourceContact</tt> and the details it carries.
+     * Gets the contact Jid which indicates the specifics of the change in the list of <code>OperationSet</code>
+     * capabilities of the associated <code>sourceContact</code> and the details it carries.
      *
      * @return the the fullJid of the contact
      */
@@ -74,10 +74,10 @@ public class ContactCapabilitiesEvent extends EventObject
     }
 
     /**
-     * Gets the <tt>Contact</tt> which is the source/cause of this event i.e. which has changed its
-     * list of <tt>OperationSet</tt> capabilities.
+     * Gets the <code>Contact</code> which is the source/cause of this event i.e. which has changed its
+     * list of <code>OperationSet</code> capabilities.
      *
-     * @return the <tt>Contact</tt> which is the source/cause of this event
+     * @return the <code>Contact</code> which is the source/cause of this event
      */
     public Contact getSourceContact()
     {
@@ -85,9 +85,9 @@ public class ContactCapabilitiesEvent extends EventObject
     }
 
     /**
-     * Returns the new set of <tt>OperationSet</tt>-s this event is about
+     * Returns the new set of <code>OperationSet</code>-s this event is about
      *
-     * @return the new set of <tt>OperationSet</tt>-s
+     * @return the new set of <code>OperationSet</code>-s
      */
     public Map<String, ? extends OperationSet> getOperationSets()
     {

@@ -12,7 +12,7 @@ import org.atalk.android.aTalkApp;
 import java.util.UUID;
 
 /**
- * Android <tt>OtrActionHandler</tt> implementation.
+ * Android <code>OtrActionHandler</code> implementation.
  *
  * @author Pawel Domas
  */

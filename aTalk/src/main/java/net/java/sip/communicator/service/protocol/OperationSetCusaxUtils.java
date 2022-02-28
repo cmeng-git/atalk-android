@@ -6,21 +6,21 @@
 package net.java.sip.communicator.service.protocol;
 
 /**
- * The <tt>OperationSetCusaxUtils</tt> provides utility methods related to a CUSAX implementation.
+ * The <code>OperationSetCusaxUtils</code> provides utility methods related to a CUSAX implementation.
  *
  * @author Yana Stamcheva
  */
 public interface OperationSetCusaxUtils extends OperationSet
 {
 	/**
-	 * Checks if the given <tt>detailAddress</tt> exists in the given <tt>contact</tt> details.
+	 * Checks if the given <code>detailAddress</code> exists in the given <code>contact</code> details.
 	 *
 	 * @param contact
-	 *        the <tt>Contact</tt>, which details to check
+	 *        the <code>Contact</code>, which details to check
 	 * @param detailAddress
 	 *        the detail address we're looking for
-	 * @return <tt>true</tt> if the given <tt>detailAdress</tt> exists in the details of the given
-	 *         <tt>contact</tt>
+	 * @return <code>true</code> if the given <code>detailAdress</code> exists in the details of the given
+	 *         <code>contact</code>
 	 */
 	public boolean doesDetailBelong(Contact contact, String detailAddress);
 

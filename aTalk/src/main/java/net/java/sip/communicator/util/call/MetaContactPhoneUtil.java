@@ -18,7 +18,7 @@ import java.util.*;
 
 /**
  * Utility class used to check if there is a telephony service, video calls and
- * desktop sharing enabled for a protocol specific <tt>MetaContact</tt>.
+ * desktop sharing enabled for a protocol specific <code>MetaContact</code>.
  *
  * @author Damian Minkov
  * @author Yana Stamcheva
@@ -62,10 +62,10 @@ public class MetaContactPhoneUtil
     private boolean routingForDesktopEnabled = false;
 
     /**
-     * Obtains the util for <tt>metaContact</tt>
+     * Obtains the util for <code>metaContact</code>
      *
      * @param metaContact the metaContact.
-     * @return ContactPhoneUtil for the <tt>metaContact</tt>.
+     * @return ContactPhoneUtil for the <code>metaContact</code>.
      */
     public static MetaContactPhoneUtil getPhoneUtil(MetaContact metaContact)
     {
@@ -73,7 +73,7 @@ public class MetaContactPhoneUtil
     }
 
     /**
-     * Creates utility instance for <tt>metaContact</tt>.
+     * Creates utility instance for <code>metaContact</code>.
      *
      * @param metaContact the metaContact checked in the utility.
      */
@@ -105,13 +105,13 @@ public class MetaContactPhoneUtil
     }
 
     /**
-     * Returns list of video phones for <tt>contact</tt>, localized.
+     * Returns list of video phones for <code>contact</code>, localized.
      * Return null if we have stopped searching and a listener is available
      * and will be used to inform for results.
      *
      * @param contact the contact to check for video phones.
-     * @param listener the <tt>DetailsResponseListener</tt> to listen for result details
-     * @return list of video phones for <tt>contact</tt>, localized.
+     * @param listener the <code>DetailsResponseListener</code> to listen for result details
+     * @return list of video phones for <code>contact</code>, localized.
      */
     public List<String> getVideoPhones(Contact contact, DetailsResponseListener listener)
     {
@@ -141,12 +141,12 @@ public class MetaContactPhoneUtil
     }
 
     /**
-     * List of phones for contact, localized if <tt>localized</tt> is <tt>true</tt>, and not otherwise.
+     * List of phones for contact, localized if <code>localized</code> is <code>true</code>, and not otherwise.
      * Return null if we have stopped searching and a listener is available
      * and will be used to inform for results.
      *
      * @param contact the contact to check for video phones.
-     * @param listener the <tt>DetailsResponseListener</tt> to listen for result details
+     * @param listener the <code>DetailsResponseListener</code> to listen for result details
      * @param localized whether to localize the phones, put a description text.
      * @return list of phones for contact.
      */
@@ -173,7 +173,7 @@ public class MetaContactPhoneUtil
     /**
      * Is video called is enabled for metaContact. If any of the child contacts has video enabled.
      *
-     * @param listener the <tt>DetailsResponseListener</tt> to listen for result details
+     * @param listener the <code>DetailsResponseListener</code> to listen for result details
      * @return is video called is enabled for metaContact.
      */
     public boolean isVideoCallEnabled(DetailsResponseListener listener)
@@ -226,7 +226,7 @@ public class MetaContactPhoneUtil
     /**
      * Is desktop sharing enabled for metaContact. If any of the child contacts has desktop sharing enabled.
      *
-     * @param listener the <tt>DetailsResponseListener</tt> to listen for result details
+     * @param listener the <code>DetailsResponseListener</code> to listen for result details
      * @return is desktop share is enabled for metaContact.
      */
     public boolean isDesktopSharingEnabled(DetailsResponseListener listener)
@@ -279,7 +279,7 @@ public class MetaContactPhoneUtil
     /**
      * Is call enabled for metaContact. If any of the child contacts has call enabled.
      *
-     * @param listener the <tt>DetailsResponseListener</tt> to listen for result details
+     * @param listener the <code>DetailsResponseListener</code> to listen for result details
      * @return is call enabled for metaContact.
      */
     public boolean isCallEnabled(DetailsResponseListener listener)
@@ -290,7 +290,7 @@ public class MetaContactPhoneUtil
     /**
      * Is call enabled for metaContact. If any of the child contacts has call enabled.
      *
-     * @param listener the <tt>DetailsResponseListener</tt> to listen for result details
+     * @param listener the <code>DetailsResponseListener</code> to listen for result details
      * @param checkForTelephonyOpSet whether we should check for registered
      * telephony operation sets that can be used to dial out, can be used
      * in plugins dialing out using methods outside the provider.
@@ -350,7 +350,7 @@ public class MetaContactPhoneUtil
 
     /**
      * Checking all contacts for the metaContact.
-     * Return <tt>false</tt> if there are listeners added for a contact
+     * Return <code>false</code> if there are listeners added for a contact
      * and we need to stop executions cause listener will be used to be informed for result.
      *
      * @return whether to continue or listeners present and will be informed for result.
@@ -362,10 +362,10 @@ public class MetaContactPhoneUtil
 
     /**
      * Checking all contacts for the metaContact.
-     * Return <tt>false</tt> if there are listeners added for a contact
+     * Return <code>false</code> if there are listeners added for a contact
      * and we need to stop executions cause listener will be used to be informed for result.
      *
-     * @param l the <tt>DetailsResponseListener</tt> to listen for further details
+     * @param l the <code>DetailsResponseListener</code> to listen for further details
      * @return whether to continue or listeners present and will be informed for result.
      */
     private boolean checkMetaContactPhones(DetailsResponseListener l)
@@ -386,10 +386,10 @@ public class MetaContactPhoneUtil
 
     /**
      * Checking all contacts for the metaContact.
-     * Return <tt>false</tt> if there are listeners added for a contact
+     * Return <code>false</code> if there are listeners added for a contact
      * and we need to stop executions cause listener will be used to be informed for result.
      *
-     * @param l the <tt>DetailsResponseListener</tt> to listen for further details
+     * @param l the <code>DetailsResponseListener</code> to listen for further details
      * @return whether to continue or listeners present and will be informed for result.
      */
     private boolean checkMetaContactVideoPhones(DetailsResponseListener l)
@@ -410,7 +410,7 @@ public class MetaContactPhoneUtil
 
     /**
      * Checking contact for phones.
-     * Return <tt>false</tt> if there are listeners added for the contact
+     * Return <code>false</code> if there are listeners added for the contact
      * and we need to stop executions cause listener will be used to be informed for result.
      *
      * @return whether to continue or listeners present and will be informed for result.
@@ -432,12 +432,12 @@ public class MetaContactPhoneUtil
     }
 
     /**
-     * Returns <tt>true</tt> if <tt>Contact</tt> supports the specified <tt>OperationSet</tt>, <tt>false</tt> otherwise.
+     * Returns <code>true</code> if <code>Contact</code> supports the specified <code>OperationSet</code>, <code>false</code> otherwise.
      *
      * @param contact contact to check
-     * @param opSet <tt>OperationSet</tt> to search for
-     * @return Returns <tt>true</tt> if <tt>Contact</tt> supports the specified
-     * <tt>OperationSet</tt>, <tt>false</tt> otherwise.
+     * @param opSet <code>OperationSet</code> to search for
+     * @return Returns <code>true</code> if <code>Contact</code> supports the specified
+     * <code>OperationSet</code>, <code>false</code> otherwise.
      */
     private boolean hasContactCapabilities(Contact contact, Class<? extends OperationSet> opSet)
     {

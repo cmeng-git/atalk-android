@@ -39,7 +39,7 @@ import java.util.Date;
 import timber.log.Timber;
 
 /**
- * The <tt>ReceiveFileConversationComponent</tt> is the component shown in the conversation area
+ * The <code>ReceiveFileConversationComponent</code> is the component shown in the conversation area
  * of the chat window to display a incoming file transfer.
  *
  * @author Eng Chong Meng
@@ -58,11 +58,11 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Creates a <tt>ReceiveFileConversationComponent</tt>.
+     * Creates a <code>ReceiveFileConversationComponent</code>.
      *
      * @param cPanel the chat panel
-     * @param opSet the <tt>OperationSetFileTransfer</tt>
-     * @param request the <tt>IncomingFileTransferRequest</tt> associated with this component
+     * @param opSet the <code>OperationSetFileTransfer</code>
+     * @param request the <code>IncomingFileTransferRequest</code> associated with this component
      * @param date the received file date
      */
     // Constructor used by ChatFragment to start handle ReceiveFileTransferRequest
@@ -301,9 +301,9 @@ public class FileReceiveConversation extends FileTransferConversation
 
     /* ========== ScFileTransferListener class method implementation ========== */
     /**
-     * Called when a new <tt>IncomingFileTransferRequest</tt> has been received. Too late to handle here.
+     * Called when a new <code>IncomingFileTransferRequest</code> has been received. Too late to handle here.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the newly received request and other details.
+     * @param event the <code>FileTransferRequestEvent</code> containing the newly received request and other details.
      * @see FileTransferActivator#fileTransferRequestReceived(FileTransferRequestEvent)
      * @see FileHistoryServiceImpl#fileTransferRequestReceived(FileTransferRequestEvent)
      */
@@ -314,9 +314,9 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Called when a <tt>FileTransferCreatedEvent</tt> has been received from sendFile.
+     * Called when a <code>FileTransferCreatedEvent</code> has been received from sendFile.
      *
-     * @param event the <tt>FileTransferCreatedEvent</tt> containing the newly received
+     * @param event the <code>FileTransferCreatedEvent</code> containing the newly received
      * file transfer and other details.
      * @see FileHistoryServiceImpl#fileTransferCreated(FileTransferCreatedEvent)
      */
@@ -327,9 +327,9 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been rejected.
+     * Called when an <code>IncomingFileTransferRequest</code> has been rejected.
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the received request which was rejected.
+     * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
      */
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
@@ -348,10 +348,10 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Called when an <tt>IncomingFileTransferRequest</tt> has been canceled from the contact who send it.
+     * Called when an <code>IncomingFileTransferRequest</code> has been canceled from the contact who send it.
      * Note: This is not a standard XMPP FileTransfer protocol - aTalk yet to implemented this
      *
-     * @param event the <tt>FileTransferRequestEvent</tt> containing the request which was canceled.
+     * @param event the <code>FileTransferRequestEvent</code> containing the request which was canceled.
      */
     public void fileTransferRequestCanceled(FileTransferRequestEvent event)
     {

@@ -100,7 +100,7 @@ public abstract class CollectionAdapter<T> extends BaseAdapter
      * Convenience method for retrieving {@link T} instances
      *
      * @param i the index of {@link T} that will be retrieved
-     * @return the {@link T} object located at <tt>i</tt> position
+     * @return the {@link T} object located at <code>i</code> position
      */
     protected T getObject(int i)
     {
@@ -108,7 +108,7 @@ public abstract class CollectionAdapter<T> extends BaseAdapter
     }
 
     /**
-     * Adds <tt>object</tt> to the adapter
+     * Adds <code>object</code> to the adapter
      *
      * @param object instance of {@link T} that will be added to this adapter
      */
@@ -132,7 +132,7 @@ public abstract class CollectionAdapter<T> extends BaseAdapter
     }
 
     /**
-     * Removes the <tt>object</tt> from this adapter
+     * Removes the <code>object</code> from this adapter
      *
      * @param object instance of {@link T} that will be removed from the adapter
      */
@@ -174,11 +174,11 @@ public abstract class CollectionAdapter<T> extends BaseAdapter
     /**
      * Convenience method for creating new {@link View}s for each adapter's object
      *
-     * @param isDropDown <tt>true</tt> if the <tt>View</tt> should be created for drop down spinner item
+     * @param isDropDown <code>true</code> if the <code>View</code> should be created for drop down spinner item
      * @param item the item for which a new View shall be created
      * @param parent {@link ViewGroup} parent View
      * @param inflater the {@link LayoutInflater} for creating new Views
-     * @return a {@link View} for given <tt>item</tt>
+     * @return a {@link View} for given <code>item</code>
      */
     protected abstract View getView(boolean isDropDown, T item, ViewGroup parent, LayoutInflater inflater);
 

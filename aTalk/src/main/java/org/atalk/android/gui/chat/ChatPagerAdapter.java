@@ -30,20 +30,20 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     private final List<String> chats;
 
     /**
-     * Parent <tt>ChatActivity</tt>.
+     * Parent <code>ChatActivity</code>.
      */
     private final ChatActivity parent;
 
     /**
-     * Remembers currently displayed <tt>ChatFragment</tt>.
+     * Remembers currently displayed <code>ChatFragment</code>.
      */
     private ChatFragment mPrimaryItem;
 
     /**
-     * Creates an instance of <tt>ChatPagerAdapter</tt> by specifying the parent
-     * <tt>ChatActivity</tt> and its <tt>FragmentManager</tt>.
+     * Creates an instance of <code>ChatPagerAdapter</code> by specifying the parent
+     * <code>ChatActivity</code> and its <code>FragmentManager</code>.
      *
-     * @param fm the parent <tt>FragmentManager</tt>
+     * @param fm the parent <code>FragmentManager</code>
      */
     public ChatPagerAdapter(FragmentManager fm, ChatActivity parent)
     {
@@ -82,12 +82,12 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Returns index of the <tt>ChatPanel</tt> in this adapter identified by given
-     * <tt>sessionId</tt>.
+     * Returns index of the <code>ChatPanel</code> in this adapter identified by given
+     * <code>sessionId</code>.
      *
      * @param sessionId chat session identifier.
-     * @return index of the <tt>ChatPanel</tt> in this adapter identified by given
-     * <tt>sessionId</tt>.
+     * @return index of the <code>ChatPanel</code> in this adapter identified by given
+     * <code>sessionId</code>.
      */
     public int getChatIdx(String sessionId)
     {
@@ -115,7 +115,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Removes all <tt>ChatFragment</tt>s from this pager.
+     * Removes all <code>ChatFragment</code>s from this pager.
      */
     public void removeAllChatSessions()
     {
@@ -126,10 +126,10 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Returns the position of the given <tt>object</tt> in this pager.
+     * Returns the position of the given <code>object</code> in this pager.
      * cmeng - Seem this is not call by PagerAdapter at all
      *
-     * @return the position of the given <tt>object</tt> in this pager
+     * @return the position of the given <code>object</code> in this pager
      */
     @Override
     public int getItemPosition(Object object)
@@ -143,9 +143,9 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Returns the <tt>Fragment</tt> at the given position in this pager.
+     * Returns the <code>Fragment</code> at the given position in this pager.
      *
-     * @return the <tt>Fragment</tt> at the given position in this pager
+     * @return the <code>Fragment</code> at the given position in this pager
      */
     @Override
     public Fragment getItem(int pos)
@@ -154,11 +154,11 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Instantiate the <tt>ChatFragment</tt> in the given container, at the given position.
+     * Instantiate the <code>ChatFragment</code> in the given container, at the given position.
      *
-     * @param container the parent <tt>ViewGroup</tt>
-     * @param position the position in the <tt>ViewGroup</tt>
-     * @return the created <tt>ChatFragment</tt>
+     * @param container the parent <code>ViewGroup</code>
+     * @param position the position in the <code>ViewGroup</code>
+     * @return the created <code>ChatFragment</code>
      */
     @Override
     public Object instantiateItem(ViewGroup container, final int position)
@@ -167,9 +167,9 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Returns the count of contained <tt>ChatFragment</tt>s.
+     * Returns the count of contained <code>ChatFragment</code>s.
      *
-     * @return the count of contained <tt>ChatFragment</tt>s
+     * @return the count of contained <code>ChatFragment</code>s
      */
     @Override
     public int getCount()

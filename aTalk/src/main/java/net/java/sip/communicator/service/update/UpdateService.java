@@ -26,15 +26,15 @@ public interface UpdateService
     /**
      * Checks for updates.
      *
-     * @param notifyAboutNewestVersion <tt>true</tt> if the user is to be
-     * notified if they have the newest version already; otherwise, <tt>false</tt>
+     * @param notifyAboutNewestVersion <code>true</code> if the user is to be
+     * notified if they have the newest version already; otherwise, <code>false</code>
      */
     void checkForUpdates(boolean notifyAboutNewestVersion);
 
     /**
      * Determines whether we are currently running the latest version.
      *
-     * @return <tt>true</tt> if we are currently running the latest version; otherwise, <tt>false</tt>
+     * @return <code>true</code> if we are currently running the latest version; otherwise, <code>false</code>
      */
     boolean isLatestVersion();
 

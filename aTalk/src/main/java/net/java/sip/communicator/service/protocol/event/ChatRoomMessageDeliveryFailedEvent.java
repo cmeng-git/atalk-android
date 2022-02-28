@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.*;
 import java.util.EventObject;
 
 /**
- * <tt>ChatRoomMessageDeliveredEvent</tt>s confirm successful delivery of an instant message.
+ * <code>ChatRoomMessageDeliveredEvent</code>s confirm successful delivery of an instant message.
  *
  * @author Emil Ivov
  * @author Yana Stamcheva
@@ -44,20 +44,20 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     private final long timestamp;
 
     /**
-     * The received <tt>IMessage</tt>.
+     * The received <code>IMessage</code>.
      */
     private final IMessage message;
 
     /**
-     * Creates a <tt>ChatRoomMessageDeliveryFailedEvent</tt> indicating failure of delivery of a
-     * message to the specified <tt>ChatRoomMember</tt> in the specified <tt>ChatRoom</tt>.
+     * Creates a <code>ChatRoomMessageDeliveryFailedEvent</code> indicating failure of delivery of a
+     * message to the specified <code>ChatRoomMember</code> in the specified <code>ChatRoom</code>.
      *
-     * @param source the <tt>ChatRoom</tt> in which the message was sent
-     * @param to the <tt>ChatRoomMember</tt> that this message was sent to.
+     * @param source the <code>ChatRoom</code> in which the message was sent
+     * @param to the <code>ChatRoomMember</code> that this message was sent to.
      * @param errorCode an errorCode indicating the reason of the failure.
      * @param timestamp the exact timestamp when it was determined that delivery had failed.
      * @param reason a human readable message indicating the reason for the failure or null if the reason is unknown.
-     * @param message the received <tt>IMessage</tt>.
+     * @param message the received <code>IMessage</code>.
      */
     public ChatRoomMessageDeliveryFailedEvent(ChatRoom source, ChatRoomMember to, int errorCode, long timestamp,
             String reason, IMessage message)
@@ -71,10 +71,10 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>ChatRoomMember</tt> that the source (failed) <tt>IMessage</tt>
+     * Returns a reference to the <code>ChatRoomMember</code> that the source (failed) <code>IMessage</code>
      * was sent to.
      *
-     * @return a reference to the <tt>ChatRoomMember</tt> that the source failed <tt>IMessage</tt>
+     * @return a reference to the <code>ChatRoomMember</code> that the source failed <code>IMessage</code>
      * was sent to.
      */
     public ChatRoomMember getDestinationChatRoomMember()
@@ -85,7 +85,7 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>IMessage</tt> that triggered this event.
+     * @return the <code>IMessage</code> that triggered this event.
      */
     public IMessage getMessage()
     {
@@ -124,9 +124,9 @@ public class ChatRoomMessageDeliveryFailedEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ChatRoom</tt> that triggered this event.
+     * Returns the <code>ChatRoom</code> that triggered this event.
      *
-     * @return the <tt>ChatRoom</tt> that triggered this event.
+     * @return the <code>ChatRoom</code> that triggered this event.
      */
     public ChatRoom getSourceChatRoom()
     {

@@ -13,7 +13,7 @@ import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 import java.util.Date;
 
 /**
- * The <tt>ChatMessage</tt> interface is used to display a chat message.
+ * The <code>ChatMessage</code> interface is used to display a chat message.
  *
  * @author Eng Chong Meng
  */
@@ -286,28 +286,28 @@ public interface ChatMessage
     String getMessageDir();
 
     /**
-     * Returns the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
+     * Returns the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      *
-     * @return the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
+     * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      */
     String getCorrectedMessageUID();
 
     /**
-     * Indicates if given <tt>nextMsg</tt> is a consecutive message or if the <tt>nextMsg</tt>
+     * Indicates if given <code>nextMsg</code> is a consecutive message or if the <code>nextMsg</code>
      * is a replacement for this message.
      *
      * @param nextMsg the next message to check
-     * @return <tt>true</tt> if the given message is a consecutive or replacement message, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the given message is a consecutive or replacement message, <code>false</code> - otherwise
      */
     boolean isConsecutiveMessage(ChatMessage nextMsg);
 
     /**
      * Merges given message. If given message is consecutive to this one, then their contents will be merged.
-     * If given message is a replacement message for <tt>this</tt> one, then the replacement will be returned.
+     * If given message is a replacement message for <code>this</code> one, then the replacement will be returned.
      *
-     * @param consecutiveMessage the next message to merge with <tt>this</tt> instance
-     * (it must be consecutive in terms of <tt>isConsecutiveMessage</tt> method).
-     * @return merge operation result that should be used instead of this <tt>ChatMessage</tt> instance.
+     * @param consecutiveMessage the next message to merge with <code>this</code> instance
+     * (it must be consecutive in terms of <code>isConsecutiveMessage</code> method).
+     * @return merge operation result that should be used instead of this <code>ChatMessage</code> instance.
      */
     ChatMessage mergeMessage(ChatMessage consecutiveMessage);
 

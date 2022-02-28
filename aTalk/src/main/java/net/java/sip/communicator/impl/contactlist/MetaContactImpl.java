@@ -95,7 +95,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
     /**
      * A flag that tells us whether or not we have already tried to restore
-     * an avatar from cache. We need this to know whether a <tt>null</tt> cached
+     * an avatar from cache. We need this to know whether a <code>null</code> cached
      * avatar implies that there is no locally stored avatar or that we simply
      * haven't tried to retrieve it. This should allow us to only interrogate
      * the file system if haven't done so before.
@@ -143,9 +143,9 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Returns the number of protocol specific <tt>Contact</tt>s that this <tt>MetaContact</tt> contains.
+     * Returns the number of protocol specific <code>Contact</code>s that this <code>MetaContact</code> contains.
      *
-     * @return an int indicating the number of protocol specific contacts merged in this <tt>MetaContact</tt>
+     * @return an int indicating the number of protocol specific contacts merged in this <code>MetaContact</code>
      */
     public int getContactCount()
     {
@@ -155,11 +155,11 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Returns a Contact, encapsulated by this MetaContact and coming from the specified ProtocolProviderService.
      *
-     * In order to prevent problems with concurrency, the <tt>Iterator</tt>
+     * In order to prevent problems with concurrency, the <code>Iterator</code>
      * returned by this method is not be over the actual list of contacts but over a copy of that list.
      *
-     * @param provider a reference to the <tt>ProtocolProviderService</tt> that we'd like to get a <tt>Contact</tt> for.
-     * @return a <tt>Contact</tt> encapsulated in this <tt>MetaContact</tt> nd originating from the specified provider.
+     * @param provider a reference to the <code>ProtocolProviderService</code> that we'd like to get a <code>Contact</code> for.
+     * @return a <code>Contact</code> encapsulated in this <code>MetaContact</code> nd originating from the specified provider.
      */
     public Iterator<Contact> getContactsForProvider(ProtocolProviderService provider)
     {
@@ -173,12 +173,12 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
     /**
      * Returns all protocol specific Contacts, encapsulated by this MetaContact and supporting the
-     * given <tt>opSetClass</tt>. If none of the contacts encapsulated by this MetaContact is
-     * supporting the specified <tt>OperationSet</tt> class then an empty iterator is returned.
+     * given <code>opSetClass</code>. If none of the contacts encapsulated by this MetaContact is
+     * supporting the specified <code>OperationSet</code> class then an empty iterator is returned.
      *
      * @param opSetClass the operation for which the default contact is needed
-     * @return a <tt>List</tt> over all contacts encapsulated in this <tt>MetaContact</tt> and
-     * supporting the specified <tt>OperationSet</tt>
+     * @return a <code>List</code> over all contacts encapsulated in this <code>MetaContact</code> and
+     * supporting the specified <code>OperationSet</code>
      */
     public List<Contact> getContactsForOperationSet(Class<? extends OperationSet> opSetClass)
     {
@@ -203,10 +203,10 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Determines if the given <tt>feature</tt> is supported by this metaContact for all presence contact.
+     * Determines if the given <code>feature</code> is supported by this metaContact for all presence contact.
      *
      * @param feature the feature to check for
-     * @return <tt>true</tt> if the required feature is supported; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the required feature is supported; otherwise, <code>false</code>
      */
     public boolean isFeatureSupported(String feature)
     {
@@ -233,12 +233,12 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Returns contacts, encapsulated by this MetaContact and belonging to the specified protocol ContactGroup.
      *
-     * In order to prevent problems with concurrency, the <tt>Iterator</tt> returned by
+     * In order to prevent problems with concurrency, the <code>Iterator</code> returned by
      * this method is not be over the actual list of contacts but over a copy of that list.
      *
      * @param parentProtoGroup
-     * @return an Iterator over all <tt>Contact</tt>s encapsulated in this
-     * <tt>MetaContact</tt> and belonging to the specified proto ContactGroup.
+     * @return an Iterator over all <code>Contact</code>s encapsulated in this
+     * <code>MetaContact</code> and belonging to the specified proto ContactGroup.
      */
     public Iterator<Contact> getContactsForContactGroup(ContactGroup parentProtoGroup)
     {
@@ -257,7 +257,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * @param contactAddress the address of the contact who we're looking for.
      * @param ownerProvider a reference to the ProtocolProviderService that the contact we're looking for belongs
      * to.
-     * @return a reference to a <tt>Contact</tt>, encapsulated by this MetaContact, carrying
+     * @return a reference to a <code>Contact</code>, encapsulated by this MetaContact, carrying
      * the specified address and originating from the specified ownerProvider or null if no such contact exists..
      */
     public Contact getContact(String contactAddress, ProtocolProviderService ownerProvider)
@@ -274,12 +274,12 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Returns a contact encapsulated by this meta contact, having the specified
      * contactAddress and coming from a provider with a matching
-     * <tt>accountID</tt>. The method returns null if no such contact exists.
+     * <code>accountID</code>. The method returns null if no such contact exists.
      *
      * @param contactAddress the address of the contact who we're looking for.
      * @param accountID the identifier of the provider that the contact we're looking for must belong to.
-     * @return a reference to a <tt>Contact</tt>, encapsulated by this MetaContact, carrying the
-     * specified address and originating from the ownerProvider carrying <tt>accountID</tt>.
+     * @return a reference to a <code>Contact</code>, encapsulated by this MetaContact, carrying the
+     * specified address and originating from the ownerProvider carrying <code>accountID</code>.
      */
     public Contact getContact(String contactAddress, String accountID)
     {
@@ -292,12 +292,12 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Returns <tt>true</tt> if the given <tt>protocolContact</tt> is contained in
-     * this <tt>MetaContact</tt>, otherwise - returns <tt>false</tt>.
+     * Returns <code>true</code> if the given <code>protocolContact</code> is contained in
+     * this <code>MetaContact</code>, otherwise - returns <code>false</code>.
      *
-     * @param protocolContact the <tt>Contact</tt> we're looking for
-     * @return <tt>true</tt> if the given <tt>protocolContact</tt> is contained in
-     * this <tt>MetaContact</tt>, otherwise - returns <tt>false</tt>
+     * @param protocolContact the <code>Contact</code> we're looking for
+     * @return <code>true</code> if the given <code>protocolContact</code> is contained in
+     * this <code>MetaContact</code>, otherwise - returns <code>false</code>
      */
     public boolean containsContact(Contact protocolContact)
     {
@@ -305,14 +305,14 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Returns a <tt>java.util.Iterator</tt> over all protocol specific <tt>Contacts</tt>
-     * encapsulated by this <tt>MetaContact</tt>.
+     * Returns a <code>java.util.Iterator</code> over all protocol specific <code>Contacts</code>
+     * encapsulated by this <code>MetaContact</code>.
      *
-     * In order to prevent problems with concurrency, the <tt>Iterator</tt> returned by
+     * In order to prevent problems with concurrency, the <code>Iterator</code> returned by
      * this method is not over the actual list of contacts but over a copy of that list.
      *
-     * @return a <tt>java.util.Iterator</tt> over all protocol specific <tt>Contact</tt>s
-     * that were registered as subContacts for this <tt>MetaContact</tt>
+     * @return a <code>java.util.Iterator</code> over all protocol specific <code>Contact</code>s
+     * that were registered as subContacts for this <code>MetaContact</code>
      */
     public Iterator<Contact> getContacts()
     {
@@ -323,7 +323,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * Currently simply returns the most connected protocol contact. We should add
      * the possibility to choose it also according to pre-configured preferences.
      *
-     * @return the default <tt>Contact</tt> to use when communicating with this <tt>MetaContact</tt>
+     * @return the default <code>Contact</code> to use when communicating with this <code>MetaContact</code>
      */
     public Contact getDefaultContact()
     {
@@ -455,7 +455,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
     /**
      * Returns a String identifier (the actual contents is left to implementations) this
-     * <tt>MetaContact</tt> in that uniquely represents the containing <tt>MetaContactList</tt>
+     * <code>MetaContact</code> in that uniquely represents the containing <code>MetaContactList</code>
      *
      * @return a String uniquely identifying this meta contact.
      */
@@ -528,7 +528,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
     /**
      * Returns a characteristic display name that can be used when including
-     * this <tt>MetaContact</tt> in user interface.
+     * this <code>MetaContact</code> in user interface.
      *
      * @return a human readable String that represents this meta contact.
      */
@@ -538,7 +538,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Determines if display name was changed for this <tt>MetaContact</tt> in user interface.
+     * Determines if display name was changed for this <code>MetaContact</code> in user interface.
      *
      * @return whether display name was changed by user.
      */
@@ -548,7 +548,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Changes that display name was changed for this <tt>MetaContact</tt> in user interface.
+     * Changes that display name was changed for this <code>MetaContact</code> in user interface.
      *
      * @param value control whether display name is user defined
      */
@@ -558,13 +558,13 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Queries a specific protocol <tt>Contact</tt> for its avatar. Beware that this method
+     * Queries a specific protocol <code>Contact</code> for its avatar. Beware that this method
      * could cause multiple network operations. Use with caution.
      *
-     * @param contact the protocol <tt>Contact</tt> to query for its avatar
-     * @return an array of <tt>byte</tt>s representing the avatar returned by the
-     * specified <tt>Contact</tt> or <tt>null</tt> if the
-     * specified <tt>Contact</tt> did not or failed to return an avatar
+     * @param contact the protocol <code>Contact</code> to query for its avatar
+     * @return an array of <code>byte</code>s representing the avatar returned by the
+     * specified <code>Contact</code> or <code>null</code> if the
+     * specified <code>Contact</code> did not or failed to return an avatar
      */
     private byte[] queryProtoContactAvatar(Contact contact)
     {
@@ -581,7 +581,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
     /**
      * Returns the avatar of this contact, that can be used when including this
-     * <tt>MetaContact</tt> in user interface. The isLazy parameter would tell
+     * <code>MetaContact</code> in user interface. The isLazy parameter would tell
      * the implementation if it could return the locally stored avatar or it
      * should obtain the avatar right from the server.
      *
@@ -643,7 +643,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Returns an avatar that can be used when presenting this <tt>MetaContact</tt> in user interface.
+     * Returns an avatar that can be used when presenting this <code>MetaContact</code> in user interface.
      * The method would also make sure that we try the network for new versions of avatars.
      *
      * @return an avatar (e.g. user photo) of this contact.
@@ -656,7 +656,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Sets a name that can be used when displaying this contact in user interface components.
      *
-     * @param displayName a human readable String representing this <tt>MetaContact</tt>
+     * @param displayName a human readable String representing this <code>MetaContact</code>
      */
     void setDisplayName(String displayName)
     {
@@ -796,7 +796,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * Removes all proto contacts that belong to the specified provider.
      *
      * @param provider the provider whose contacts we want removed.
-     * @return true if this <tt>MetaContact</tt> was modified and false otherwise.
+     * @return true if this <code>MetaContact</code> was modified and false otherwise.
      */
     boolean removeContactsForProvider(ProtocolProviderService provider)
     {
@@ -822,7 +822,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      * Removes all proto contacts that belong to the specified protocol group.
      *
      * @param protoGroup the group whose children we want removed.
-     * @return true if this <tt>MetaContact</tt> was modified and false otherwise.
+     * @return true if this <code>MetaContact</code> was modified and false otherwise.
      */
     boolean removeContactsForGroup(ContactGroup protoGroup)
     {
@@ -844,13 +844,13 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Sets <tt>parentGroup</tt> as a parent of this meta contact. Do not call this method with a
+     * Sets <code>parentGroup</code> as a parent of this meta contact. Do not call this method with a
      * null argument even if a group is removing this contact from itself as this could lead to
      * race conditions (imagine another group setting itself as the new parent and you
      * removing it). Use unsetParentGroup instead.
      *
-     * @param parentGroup the <tt>MetaContactGroupImpl</tt> that is currently a parent of this meta contact.
-     * @throws NullPointerException if <tt>parentGroup</tt> is null.
+     * @param parentGroup the <code>MetaContactGroupImpl</code> that is currently a parent of this meta contact.
+     * @throws NullPointerException if <code>parentGroup</code> is null.
      */
     void setParentGroup(MetaContactGroupImpl parentGroup)
     {
@@ -867,10 +867,10 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * If <tt>parentGroup</tt> was the parent of this meta contact then it sets it to null. Call
+     * If <code>parentGroup</code> was the parent of this meta contact then it sets it to null. Call
      * this method when removing this contact from a meta contact group.
      *
-     * @param parentGrp the <tt>MetaContactGroupImpl</tt> that we don't want considered as a parent of this
+     * @param parentGrp the <code>MetaContactGroupImpl</code> that we don't want considered as a parent of this
      * contact any more.
      */
     void unsetParentGroup(MetaContactGroupImpl parentGrp)
@@ -999,7 +999,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      *
      * @param name the name of the details we are searching for
      * @return a JSONArray which represent the details with the specified
-     * <tt>name</tt>
+     * <code>name</code>
      */
     public JSONArray getDetails(String name)
     {
@@ -1013,11 +1013,11 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Fires a new <tt>MetaContactModifiedEvent</tt> which is to notify about a modification with
-     * a specific name of this <tt>MetaContact</tt> which has caused a property value change from a specific
-     * <tt>oldValue</tt> to a specific <tt>newValue</tt>.
+     * Fires a new <code>MetaContactModifiedEvent</code> which is to notify about a modification with
+     * a specific name of this <code>MetaContact</code> which has caused a property value change from a specific
+     * <code>oldValue</code> to a specific <code>newValue</code>.
      *
-     * @param modificationName the name of the modification which has caused a new <tt>MetaContactModifiedEvent</tt>
+     * @param modificationName the name of the modification which has caused a new <code>MetaContactModifiedEvent</code>
      * to be fired
      * @param oldValue the value of the property before the modification
      * @param newValue the value of the property after the modification
@@ -1032,7 +1032,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     }
 
     /**
-     * Stores avatar bytes in the given <tt>Contact</tt>.
+     * Stores avatar bytes in the given <code>Contact</code>.
      *
      * @param protoContact The contact in which we store the avatar.
      * @param avatarBytes The avatar image bytes.
@@ -1050,7 +1050,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Updates the capabilities for the given contact.
      *
-     * @param contact the <tt>Contact</tt>, which capabilities have changed
+     * @param contact the <code>Contact</code>, which capabilities have changed
      * @param opSets the new updated set of operation sets
      */
     public void updateCapabilities(Contact contact, Jid jid, Map<String, ? extends OperationSet> opSets)
@@ -1075,7 +1075,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Remove capabilities for the given contacts.
      *
-     * @param contact the <tt>Contact</tt>, which capabilities we remove
+     * @param contact the <code>Contact</code>, which capabilities we remove
      * @param opSets the new updated set of operation sets
      */
     private void removeCapabilities(Contact contact, Map<String, ? extends OperationSet> opSets)
@@ -1103,7 +1103,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Adds the capabilities of the given contact.
      *
-     * @param contact the <tt>Contact</tt>, which capabilities we add
+     * @param contact the <code>Contact</code>, which capabilities we add
      * @param opSets the map of operation sets supported by the contact
      */
     private void addCapabilities(Contact contact, Map<String, ? extends OperationSet> opSets)
@@ -1129,7 +1129,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Remove capabilities for the given contacts based on FullJid
      *
-     * @param jid the FullJid of the <tt>Contact</tt>, whom capabilities we remove. Null applies to all resources
+     * @param jid the FullJid of the <code>Contact</code>, whom capabilities we remove. Null applies to all resources
      * @param opSets the new updated set of operation sets.
      */
     private void removeCapabilities(Jid jid, Map<String, ? extends OperationSet> opSets)
@@ -1161,7 +1161,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * Adds the capabilities of the given contact based on FullJid
      *
-     * @param jid the FullJid of the <tt>Contact</tt>, whom capabilities we remove. Null applies to all resources
+     * @param jid the FullJid of the <code>Contact</code>, whom capabilities we remove. Null applies to all resources
      * @param opSets the map of operation sets supported by the contact.
      */
     private void addCapabilities(Jid jid, Map<String, ? extends OperationSet> opSets)

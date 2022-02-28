@@ -85,7 +85,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
     /**
      * Creates a jabber chat room member with the specified containing chat room parent.
      *
-     * @param chatRoom the room that this <tt>ChatRoomMemberJabberImpl</tt> is a member of.
+     * @param chatRoom the room that this <code>ChatRoomMemberJabberImpl</code> is a member of.
      * @param nickName the nick name that the member is using to participate in the chat room
      * @param jabberJid the jabber id, if available, of the member or null otherwise.
      */
@@ -113,7 +113,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
     /**
      * Returns the chat room that this member is participating in.
      *
-     * @return the <tt>ChatRoom</tt> instance that this member belongs to.
+     * @return the <code>ChatRoom</code> instance that this member belongs to.
      */
     public ChatRoom getChatRoom()
     {
@@ -171,7 +171,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
     /**
      * Returns the protocol provider instance that this member has originated in.
      *
-     * @return the <tt>ProtocolProviderService</tt> instance that created this member and its
+     * @return the <code>ProtocolProviderService</code> instance that created this member and its
      * containing cht room
      */
     public ProtocolProviderService getProtocolProvider()
@@ -182,7 +182,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
     /**
      * Returns the role of this chat room member in its containing room.
      *
-     * @return a <tt>ChatRoomMemberRole</tt> instance indicating the role the this member in its
+     * @return a <code>ChatRoomMemberRole</code> instance indicating the role the this member in its
      * containing chat room.
      */
     public ChatRoomMemberRole getRole()

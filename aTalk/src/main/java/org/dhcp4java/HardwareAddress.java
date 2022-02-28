@@ -115,7 +115,7 @@ public class HardwareAddress implements Serializable {
 	/**
 	 * Parse the MAC address in hex format, split by ':'.
 	 * 
-	 * <p>E.g. <tt>0:c0:c3:49:2b:57</tt>.
+	 * <p>E.g. <code>0:c0:c3:49:2b:57</code>.
 	 * 
 	 * @param macStr
 	 * @return the newly created HardwareAddress object

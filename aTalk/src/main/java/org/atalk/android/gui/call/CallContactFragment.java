@@ -35,7 +35,7 @@ import java.util.Collection;
 import timber.log.Timber;
 
 /**
- * Tha <tt>CallContactFragment</tt> encapsulated GUI used to make a call.
+ * Tha <code>CallContactFragment</code> encapsulated GUI used to make a call.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -140,7 +140,7 @@ public class CallContactFragment extends OSGiFragment
     }
 
     /**
-     * Creates new call to given <tt>destination</tt> using selected <tt>provider</tt>.
+     * Creates new call to given <code>destination</code> using selected <code>provider</code>.
      *
      * @param destination target callee name.
      * @param provider the provider that will be used to make a call.
@@ -194,10 +194,10 @@ public class CallContactFragment extends OSGiFragment
     }
 
     /**
-     * Creates new parametrized instance of <tt>CallContactFragment</tt>.
+     * Creates new parametrized instance of <code>CallContactFragment</code>.
      *
      * @param phoneNumber optional phone number that will be filled.
-     * @return new parameterized instance of <tt>CallContactFragment</tt>.
+     * @return new parameterized instance of <code>CallContactFragment</code>.
      */
     public static CallContactFragment newInstance(String phoneNumber)
     {

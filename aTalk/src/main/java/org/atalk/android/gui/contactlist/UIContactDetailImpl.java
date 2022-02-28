@@ -18,7 +18,7 @@ import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>UIContactDetail</tt> implementation
+ * The <code>UIContactDetail</code> implementation
  *
  * @author Yana Stamcheva
  */
@@ -30,8 +30,8 @@ public class UIContactDetailImpl extends UIContactDetail
 	private byte[] statusIcon;
 
 	/**
-	 * Creates a <tt>UIContactDetailImpl</tt> by specifying the contact <tt>address</tt>, the <tt>displayName</tt> and
-	 * <tt>preferredProvider</tt>.
+	 * Creates a <code>UIContactDetailImpl</code> by specifying the contact <code>address</code>, the <code>displayName</code> and
+	 * <code>preferredProvider</code>.
 	 *
 	 * @param address
 	 *        the contact address
@@ -50,8 +50,8 @@ public class UIContactDetailImpl extends UIContactDetail
 	}
 
 	/**
-	 * Creates a <tt>UIContactDetailImpl</tt> by specifying the contact <tt>address</tt>, the <tt>displayName</tt> and
-	 * <tt>preferredProvider</tt>.
+	 * Creates a <code>UIContactDetailImpl</code> by specifying the contact <code>address</code>, the <code>displayName</code> and
+	 * <code>preferredProvider</code>.
 	 * 
 	 * @param address
 	 *        the contact address

@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.SecurityAuthority;
 
 /**
- * The <tt>LoginRenderer</tt> is the renderer of all login related operations.
+ * The <code>LoginRenderer</code> is the renderer of all login related operations.
  *
  * @author Yana Stamcheva
  */
@@ -45,7 +45,7 @@ public interface LoginRenderer {
 	/**
 	 * Indicates that the given protocol provider is now connected.
 	 *
-	 * @param protocolProvider the <tt>ProtocolProviderService</tt> that is connected
+	 * @param protocolProvider the <code>ProtocolProviderService</code> that is connected
 	 * @param date the date on which the event occured
 	 */
 	public void protocolProviderConnected(ProtocolProviderService protocolProvider, long date);
@@ -53,28 +53,28 @@ public interface LoginRenderer {
 	/**
 	 * Indicates that a protocol provider connection has failed.
 	 *
-	 * @param protocolProvider the <tt>ProtocolProviderService</tt>, which connection failed
-	 * @param loginManagerCallback the <tt>LoginManager</tt> implementation, which is
+	 * @param protocolProvider the <code>ProtocolProviderService</code>, which connection failed
+	 * @param loginManagerCallback the <code>LoginManager</code> implementation, which is
 	 * managing the process
 	 */
 	public void protocolProviderConnectionFailed(ProtocolProviderService protocolProvider,
 			LoginManager loginManagerCallback);
 
 	/**
-	 * Returns the <tt>SecurityAuthority</tt> implementation related to this login renderer.
+	 * Returns the <code>SecurityAuthority</code> implementation related to this login renderer.
 	 *
-	 * @param protocolProvider the specific <tt>ProtocolProviderService</tt>, for which we're
+	 * @param protocolProvider the specific <code>ProtocolProviderService</code>, for which we're
 	 * obtaining a security authority
-	 * @return the <tt>SecurityAuthority</tt> implementation related to this login renderer
+	 * @return the <code>SecurityAuthority</code> implementation related to this login renderer
 	 */
 	public SecurityAuthority getSecurityAuthorityImpl(ProtocolProviderService protocolProvider);
 
 	/**
-	 * Indicates if the given <tt>protocolProvider</tt> related user interface is already rendered.
+	 * Indicates if the given <code>protocolProvider</code> related user interface is already rendered.
 	 *
-	 * @param protocolProvider the <tt>ProtocolProviderService</tt>, which related user interface
+	 * @param protocolProvider the <code>ProtocolProviderService</code>, which related user interface
 	 * we're looking for
-	 * @return <tt>true</tt> if the given <tt>protocolProvider</tt> related user interface is
+	 * @return <code>true</code> if the given <code>protocolProvider</code> related user interface is
 	 * already rendered
 	 */
 	public boolean containsProtocolProviderUI(ProtocolProviderService protocolProvider);

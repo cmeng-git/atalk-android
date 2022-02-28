@@ -31,10 +31,10 @@ import timber.log.Timber;
  *
  * The {@link View}s for each row are created from the layout resource id given in constructor.
  * This view should contain: <br/>
- * - <tt>R.id.accountName</tt> for the account name text ({@link TextView}) <br/>
- * - <tt>R.id.accountProtoIcon</tt> for the protocol icon of type ({@link ImageView}) <br/>
- * - <tt>R.id.accountStatusIcon</tt> for the presence status icon ({@link ImageView}) <br/>
- * - <tt>R.id.accountStatus</tt> for the presence status name ({@link TextView}) <br/>
+ * - <code>R.id.accountName</code> for the account name text ({@link TextView}) <br/>
+ * - <code>R.id.accountProtoIcon</code> for the protocol icon of type ({@link ImageView}) <br/>
+ * - <code>R.id.accountStatusIcon</code> for the presence status icon ({@link ImageView}) <br/>
+ * - <code>R.id.accountStatus</code> for the presence status name ({@link TextView}) <br/>
  * It implements {@link EventListener} to refresh the list on any changes to the {@link Account}.
  *
  * @author Pawel Domas
@@ -196,10 +196,10 @@ public class AccountsListAdapter extends CollectionAdapter<Account>
     }
 
     /**
-     * Check if given <tt>account</tt> exists on the list
+     * Check if given <code>account</code> exists on the list
      *
      * @param account {@link AccountID} that has to be found on the list
-     * @return <tt>true</tt> if account is on the list
+     * @return <code>true</code> if account is on the list
      */
     private Account findAccountID(AccountID account)
     {

@@ -18,7 +18,7 @@ import java.text.*;
 import org.atalk.service.neomedia.device.MediaDevice;
 
 /**
- * Represents an <tt>OperationSet</tt> giving access to desktop streaming specific functionality.
+ * Represents an <code>OperationSet</code> giving access to desktop streaming specific functionality.
  *
  * @author Sebastien Vincent
  * @author Yana Stamcheva
@@ -39,7 +39,7 @@ public interface OperationSetDesktopStreaming extends OperationSetVideoTelephony
 	 * @throws OperationFailedException
 	 *         with the corresponding code if we fail to create the video call.
 	 * @throws ParseException
-	 *         if <tt>callee</tt> is not a valid address string.
+	 *         if <code>callee</code> is not a valid address string.
 	 */
 	public Call createVideoCall(String uri, MediaDevice mediaDevice)
 		throws OperationFailedException, ParseException;
@@ -63,17 +63,17 @@ public interface OperationSetDesktopStreaming extends OperationSetVideoTelephony
 
 	/**
 	 * Sets the indicator which determines whether the streaming of local video in a specific
-	 * <tt>Call</tt> is allowed. The setting does not reflect the availability of actual video
+	 * <code>Call</code> is allowed. The setting does not reflect the availability of actual video
 	 * capture devices, it just expresses the desire of the user to have the local video streamed in
 	 * the case the system is actually able to do so.
 	 *
 	 * @param call
-	 *        the <tt>Call</tt> to allow/disallow the streaming of local video for
+	 *        the <code>Call</code> to allow/disallow the streaming of local video for
 	 * @param mediaDevice
 	 *        the media device to use for the desktop streaming
 	 * @param allowed
-	 *        <tt>true</tt> to allow the streaming of local video for the specified <tt>Call</tt>;
-	 *        <tt>false</tt> to disallow it
+	 *        <code>true</code> to allow the streaming of local video for the specified <code>Call</code>;
+	 *        <code>false</code> to disallow it
 	 *
 	 * @throws OperationFailedException
 	 *         if initializing local video fails.
@@ -85,7 +85,7 @@ public interface OperationSetDesktopStreaming extends OperationSetVideoTelephony
 	 * If the streaming is partial (not the full desktop).
 	 *
 	 * @param call
-	 *        the <tt>Call</tt> whose video transmission properties we are interested in.
+	 *        the <code>Call</code> whose video transmission properties we are interested in.
 	 * @return true if streaming is partial, false otherwise
 	 */
 	public boolean isPartialStreaming(Call call);
@@ -94,7 +94,7 @@ public interface OperationSetDesktopStreaming extends OperationSetVideoTelephony
 	 * Move origin of a partial desktop streaming.
 	 *
 	 * @param call
-	 *        the <tt>Call</tt> whose video transmission properties we are interested in.
+	 *        the <code>Call</code> whose video transmission properties we are interested in.
 	 * @param x
 	 *        new x coordinate origin
 	 * @param y

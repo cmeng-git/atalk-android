@@ -89,12 +89,12 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
     private final String reason;
 
     /**
-     * Creates a <tt>ChatRoomMemberPresenceChangeEvent</tt> representing that a change in the
-     * presence of a <tt>ChatRoomMember</tt> has occurred. Changes may include the participant being
+     * Creates a <code>ChatRoomMemberPresenceChangeEvent</code> representing that a change in the
+     * presence of a <code>ChatRoomMember</code> has occurred. Changes may include the participant being
      * kicked, join, left, etc.
      *
-     * @param sourceRoom the <tt>ChatRoom</tt> that produced this event
-     * @param sourceMember the <tt>ChatRoomMember</tt> that this event is about
+     * @param sourceRoom the <code>ChatRoom</code> that produced this event
+     * @param sourceMember the <code>ChatRoomMember</code> that this event is about
      * @param eventType the event type; one of the MEMBER_XXX constants
      * @param reason the reason explaining why this event might have occurred
      */
@@ -105,15 +105,15 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>ChatRoomMemberPresenceChangeEvent</tt> representing that a change in the
-     * presence of a <tt>ChatRoomMember</tt> has occurred. Changes may include the participant being
+     * Creates a <code>ChatRoomMemberPresenceChangeEvent</code> representing that a change in the
+     * presence of a <code>ChatRoomMember</code> has occurred. Changes may include the participant being
      * kicked, join, left, etc.
      *
-     * @param sourceRoom the <tt>ChatRoom</tt> that produced this event
-     * @param sourceMember the <tt>ChatRoomMember</tt> who this event is about
+     * @param sourceRoom the <code>ChatRoom</code> that produced this event
+     * @param sourceMember the <code>ChatRoomMember</code> who this event is about
      * @param actor the ChatRoom Member who participated as an actor in the new event. For
-     * example, in the case of a <tt>MEMBER_KICKED</tt> event the <tt>actor</tt> is the
-     * moderator (e.g. user@host.org) who kicked the <tt>sourceMember</tt>.
+     * example, in the case of a <code>MEMBER_KICKED</code> event the <code>actor</code> is the
+     * moderator (e.g. user@host.org) who kicked the <code>sourceMember</code>.
      * @param eventType the event type; one of the MEMBER_XXX constants
      * @param reason the reason explaining why this event might have occurred
      */
@@ -130,7 +130,7 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
     /**
      * Returns the chat room that produced this event.
      *
-     * @return the <tt>ChatRoom</tt> that produced this event
+     * @return the <code>ChatRoom</code> that produced this event
      */
     public ChatRoom getChatRoom()
     {
@@ -140,7 +140,7 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
     /**
      * Returns the chat room member that this event is about.
      *
-     * @return the <tt>ChatRoomMember</tt> that this event is about.
+     * @return the <code>ChatRoomMember</code> that this event is about.
      */
     public ChatRoomMember getChatRoomMember()
     {
@@ -162,9 +162,9 @@ public class ChatRoomMemberPresenceChangeEvent extends EventObject
      * Gets the indicator which determines whether this event has occurred with the well-known
      * reason of listing all users in a <code>ChatRoom</code>.
      *
-     * @return <tt>true</tt> if this event has occurred with the well-known reason of listing all
+     * @return <code>true</code> if this event has occurred with the well-known reason of listing all
      * users in a <code>ChatRoom</code> i.e. {@link #getReason()} returns a value of
-     * {@link #REASON_USER_LIST}; otherwise, <tt>false</tt>
+     * {@link #REASON_USER_LIST}; otherwise, <code>false</code>
      */
     public boolean isReasonUserList()
     {

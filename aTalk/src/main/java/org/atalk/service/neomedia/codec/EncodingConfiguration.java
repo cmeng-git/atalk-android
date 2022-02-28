@@ -24,7 +24,7 @@ import timber.log.Timber;
 public abstract class EncodingConfiguration
 {
     /**
-     * The <tt>Comparator</tt> which sorts the sets according to the settings in <tt>encodingPreferences</tt>.
+     * The <code>Comparator</code> which sorts the sets according to the settings in <code>encodingPreferences</code>.
      */
     private final Comparator<MediaFormat> encodingComparator = this::compareEncodingPreferences;
 
@@ -37,18 +37,18 @@ public abstract class EncodingConfiguration
     protected final Map<String, Integer> encodingPreferences = new HashMap<>();
 
     /**
-     * The cache of supported <tt>AudioMediaFormat</tt>s ordered by decreasing priority.
+     * The cache of supported <code>AudioMediaFormat</code>s ordered by decreasing priority.
      */
     private Set<MediaFormat> supportedAudioEncodings;
 
     /**
-     * The cache of supported <tt>VideoMediaFormat</tt>s ordered by decreasing priority.
+     * The cache of supported <code>VideoMediaFormat</code>s ordered by decreasing priority.
      */
     private Set<MediaFormat> supportedVideoEncodings;
 
     /**
      * Updates the codecs in the supported sets according to the preferences in encodingPreferences.
-     * If the preference value is <tt>0</tt>, the codec is disabled.
+     * If the preference value is <code>0</code>, the codec is disabled.
      */
     private void updateSupportedEncodings()
     {
@@ -60,12 +60,12 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Gets the <tt>Set</tt> of enabled available <tt>MediaFormat</tt>s with the specified
-     * <tt>MediaType</tt> sorted in decreasing priority.
+     * Gets the <code>Set</code> of enabled available <code>MediaFormat</code>s with the specified
+     * <code>MediaType</code> sorted in decreasing priority.
      *
-     * @param type the <tt>MediaType</tt> of the <tt>MediaFormat</tt>s to get
-     * @return a <tt>Set</tt> of enabled available <tt>MediaFormat</tt>s with the specified
-     * <tt>MediaType</tt> sorted in decreasing priority
+     * @param type the <code>MediaType</code> of the <code>MediaFormat</code>s to get
+     * @return a <code>Set</code> of enabled available <code>MediaFormat</code>s with the specified
+     * <code>MediaType</code> sorted in decreasing priority
      */
     private Set<MediaFormat> updateSupportedEncodings(MediaType type)
     {
@@ -79,7 +79,7 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Sets <tt>pref</tt> as the preference associated with <tt>encoding</tt>. Use this method for
+     * Sets <code>pref</code> as the preference associated with <code>encoding</code>. Use this method for
      * both audio and video encodings and don't worry if preferences are equal since we rarely need
      * to compare prefs of video encodings to those of audio encodings.
      *
@@ -90,12 +90,12 @@ public abstract class EncodingConfiguration
     protected abstract void setEncodingPreference(String encoding, double clockRate, int pref);
 
     /**
-     * Sets <tt>priority</tt> as the preference associated with <tt>encoding</tt>. Use this method
+     * Sets <code>priority</code> as the preference associated with <code>encoding</code>. Use this method
      * for both audio and video encodings and don't worry if the preferences are equal since we
      * rarely need to compare the preferences of video encodings to those of audio encodings.
      *
-     * @param encoding the <tt>MediaFormat</tt> specifying the encoding to set the priority of
-     * @param priority a positive <tt>int</tt> indicating the priority of <tt>encoding</tt> to set
+     * @param encoding the <code>MediaFormat</code> specifying the encoding to set the priority of
+     * @param priority a positive <code>int</code> indicating the priority of <code>encoding</code> to set
      */
     public void setPriority(MediaFormat encoding, int priority)
     {
@@ -112,9 +112,9 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Get the priority for a <tt>MediaFormat</tt>.
+     * Get the priority for a <code>MediaFormat</code>.
      *
-     * @param encoding the <tt>MediaFormat</tt>
+     * @param encoding the <code>MediaFormat</code>
      * @return the priority
      */
     public int getPriority(MediaFormat encoding)
@@ -128,22 +128,22 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Returns all the available encodings for a specific <tt>MediaType</tt>. This includes disabled
+     * Returns all the available encodings for a specific <code>MediaType</code>. This includes disabled
      * ones (ones with priority 0).
      *
-     * @param type the <tt>MediaType</tt> we would like to know the available encodings of
-     * @return array of <tt>MediaFormat</tt> supported for the <tt>MediaType</tt>
+     * @param type the <code>MediaType</code> we would like to know the available encodings of
+     * @return array of <code>MediaFormat</code> supported for the <code>MediaType</code>
      */
     public abstract MediaFormat[] getAllEncodings(MediaType type);
 
     /**
-     * Returns the supported <tt>MediaFormat</tt>s i.e. the enabled available <tt>MediaFormat</tt>s,
-     * sorted in decreasing priority. Returns only the formats of type <tt>type</tt>.
+     * Returns the supported <code>MediaFormat</code>s i.e. the enabled available <code>MediaFormat</code>s,
+     * sorted in decreasing priority. Returns only the formats of type <code>type</code>.
      *
-     * @param type the <tt>MediaType</tt> of the supported <tt>MediaFormat</tt>s to get
-     * @return an array of the supported <tt>MediaFormat</tt>s i.e. the enabled available
-     * <tt>MediaFormat</tt>s sorted in decreasing priority. Returns only the formats of type
-     * <tt>type</tt>.
+     * @param type the <code>MediaType</code> of the supported <code>MediaFormat</code>s to get
+     * @return an array of the supported <code>MediaFormat</code>s i.e. the enabled available
+     * <code>MediaFormat</code>s sorted in decreasing priority. Returns only the formats of type
+     * <code>type</code>.
      */
     public MediaFormat[] getEnabledEncodings(MediaType type)
     {
@@ -180,11 +180,11 @@ public abstract class EncodingConfiguration
 
     /**
      * Gets the key in {@link #encodingPreferences} which is associated with the priority of a
-     * specific <tt>MediaFormat</tt>.
+     * specific <code>MediaFormat</code>.
      *
-     * @param encoding the <tt>MediaFormat</tt> to get the key in {@link #encodingPreferences} of
+     * @param encoding the <code>MediaFormat</code> to get the key in {@link #encodingPreferences} of
      * @return the key in {@link #encodingPreferences} which is associated with the priority of the
-     * specified <tt>encoding</tt>
+     * specified <code>encoding</code>
      */
     protected String getEncodingPreferenceKey(MediaFormat encoding)
     {
@@ -192,12 +192,12 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Stores the format preferences in this instance in the given <tt>Map</tt>, using
-     * <tt>prefix</tt> as a prefix to the key. Entries in the format (prefix+formatName,
-     * formatPriority) will be added to <tt>properties</tt>, one for each available format. Note
-     * that a "." is not automatically added to <tt>prefix</tt>.
+     * Stores the format preferences in this instance in the given <code>Map</code>, using
+     * <code>prefix</code> as a prefix to the key. Entries in the format (prefix+formatName,
+     * formatPriority) will be added to <code>properties</code>, one for each available format. Note
+     * that a "." is not automatically added to <code>prefix</code>.
      *
-     * @param properties The <tt>Map</tt> where entries will be added.
+     * @param properties The <code>Map</code> where entries will be added.
      * @param prefix The prefix to use.
      */
     public void storeProperties(Map<String, String> properties, String prefix)
@@ -211,11 +211,11 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Stores the format preferences in this instance in the given <tt>Map</tt>. Entries in the
-     * format (formatName, formatPriority) will be added to <tt>properties</tt>, one for each
+     * Stores the format preferences in this instance in the given <code>Map</code>. Entries in the
+     * format (formatName, formatPriority) will be added to <code>properties</code>, one for each
      * available format.
      *
-     * @param properties The <tt>Map</tt> where entries will be added.
+     * @param properties The <code>Map</code> where entries will be added.
      */
     public void storeProperties(Map<String, String> properties)
     {
@@ -223,10 +223,10 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Parses a <tt>Map<String, String></tt> and updates the format preferences according to it.
+     * Parses a <code>Map<String, String></code> and updates the format preferences according to it.
      * Does not use a prefix.
      *
-     * @param properties The <tt>Map</tt> to parse.
+     * @param properties The <code>Map</code> to parse.
      * @see EncodingConfiguration#loadProperties(java.util.Map, String)
      */
     public void loadProperties(Map<String, String> properties)
@@ -235,12 +235,12 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Parses a <tt>Map<String, String></tt> and updates the format preferences according to it. For
-     * each entry, if it's key does not begin with <tt>prefix</tt>, its ignored. If the key begins
-     * with <tt>prefix</tt>, look for an encoding name after the last ".", and interpret the key
+     * Parses a <code>Map<String, String></code> and updates the format preferences according to it. For
+     * each entry, if it's key does not begin with <code>prefix</code>, its ignored. If the key begins
+     * with <code>prefix</code>, look for an encoding name after the last ".", and interpret the key
      * value as preference.
      *
-     * @param properties The <tt>Map</tt> to parse.
+     * @param properties The <code>Map</code> to parse.
      * @param prefix The prefix to use.
      */
     public void loadProperties(Map<String, String> properties, String prefix)
@@ -297,9 +297,9 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Load the preferences stored in <tt>encodingConfiguration</tt>
+     * Load the preferences stored in <code>encodingConfiguration</code>
      *
-     * @param encodingConfiguration the <tt>EncodingConfiguration</tt> to load preferences from.
+     * @param encodingConfiguration the <code>EncodingConfiguration</code> to load preferences from.
      */
     public void loadEncodingConfiguration(EncodingConfiguration encodingConfiguration)
     {
@@ -309,10 +309,10 @@ public abstract class EncodingConfiguration
     }
 
     /**
-     * Returns <tt>true</tt> if there is at least one enabled format for media type <tt>type</tt>.
+     * Returns <code>true</code> if there is at least one enabled format for media type <code>type</code>.
      *
      * @param mediaType The media type, MediaType.AUDIO or MediaType.VIDEO
-     * @return <tt>true</tt> if there is at least one enabled format for media type <tt>type</tt>.
+     * @return <code>true</code> if there is at least one enabled format for media type <code>type</code>.
      */
     public boolean hasEnabledFormat(MediaType mediaType)
     {

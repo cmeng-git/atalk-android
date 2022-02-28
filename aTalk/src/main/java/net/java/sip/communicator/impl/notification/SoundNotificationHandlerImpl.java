@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 import timber.log.Timber;
 
 /**
- * An implementation of the <tt>SoundNotificationHandler</tt> interface.
+ * An implementation of the <code>SoundNotificationHandler</code> interface.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -28,7 +28,7 @@ import timber.log.Timber;
 public class SoundNotificationHandlerImpl implements SoundNotificationHandler
 {
     /**
-     * The indicator which determines whether this <tt>SoundNotificationHandler</tt> is currently muted
+     * The indicator which determines whether this <code>SoundNotificationHandler</code> is currently muted
      * i.e. the sounds are off.
      */
     private boolean mute;
@@ -59,7 +59,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     }
 
     /**
-     * Plays the sound given by the containing <tt>soundFileDescriptor</tt>. The sound is played in loop if the
+     * Plays the sound given by the containing <code>soundFileDescriptor</code>. The sound is played in loop if the
      * loopInterval is defined.
      *
      * @param action The action to act upon.
@@ -136,7 +136,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     }
 
     /**
-     * Plays the sound given by the containing <tt>soundFileDescriptor</tt>. The sound is played in loop if the
+     * Plays the sound given by the containing <code>soundFileDescriptor</code>. The sound is played in loop if the
      * loopInterval is defined.
      *
      * @param action The action to act upon.
@@ -242,7 +242,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
         private Object toolkit = null;
 
         /**
-         * Initializes a new <tt>PCSpeakerClip</tt> instance.
+         * Initializes a new <code>PCSpeakerClip</code> instance.
          */
         public PCSpeakerClip()
         {
@@ -262,7 +262,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
         /**
          * Beeps the PC speaker.
          *
-         * @return <tt>true</tt> if the playback was successful; otherwise, <tt>false</tt>
+         * @return <code>true</code> if the playback was successful; otherwise, <code>false</code>
          */
         @Override
         protected boolean runOnceInPlayThread()
@@ -282,7 +282,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     }
 
     /**
-     * Enumerates the types of devices on which <tt>SCAudioClip</tt>s may be played back.
+     * Enumerates the types of devices on which <code>SCAudioClip</code>s may be played back.
      */
     private static enum SCAudioClipDevice
     {

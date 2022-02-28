@@ -15,12 +15,12 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Provides a default implementation for most of the <tt>CallPeer</tt> methods with the purpose of
+ * Provides a default implementation for most of the <code>CallPeer</code> methods with the purpose of
  * only leaving custom protocol development to clients using the PhoneUI service.
  *
- * @param <T> the call extension class like for example <tt>CallSipImpl</tt> or <tt>CallJabberImpl</tt>
- * @param <U> the provider extension class like for example <tt>ProtocolProviderServiceSipImpl</tt> or
- * <tt>ProtocolProviderServiceJabberImpl</tt>
+ * @param <T> the call extension class like for example <code>CallSipImpl</code> or <code>CallJabberImpl</code>
+ * @param <U> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
+ * <code>ProtocolProviderServiceJabberImpl</code>
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
@@ -30,7 +30,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
         extends PropertyChangeNotifier implements CallPeer
 {
     /**
-     * The constant which describes an empty set of <tt>ConferenceMember</tt>s (and which can be
+     * The constant which describes an empty set of <code>ConferenceMember</code>s (and which can be
      * used to reduce allocations).
      */
     public static final ConferenceMember[] NO_CONFERENCE_MEMBERS = new ConferenceMember[0];
@@ -41,7 +41,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     private long callDurationStartTime = CALL_DURATION_START_TIME_UNKNOWN;
 
     /**
-     * The list of <tt>CallPeerConferenceListener</tt>s interested in and to be notified about
+     * The list of <code>CallPeerConferenceListener</code>s interested in and to be notified about
      * changes in conference-related information such as this peer acting or not acting as a
      * conference focus and conference membership details.
      */
@@ -59,14 +59,14 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
 
     /**
      * The indicator which determines whether this peer is acting as a conference focus and thus may
-     * provide information about <tt>ConferenceMember</tt> such as {@link #getConferenceMembers()}
+     * provide information about <code>ConferenceMember</code> such as {@link #getConferenceMembers()}
      * and {@link #getConferenceMemberCount()}.
      */
     private boolean conferenceFocus;
 
     /**
-     * The list of <tt>ConferenceMember</tt>s currently known to and managed in a conference by this
-     * <tt>CallPeer</tt>. It is implemented as a copy-on-write storage in order to optimize the
+     * The list of <code>ConferenceMember</code>s currently known to and managed in a conference by this
+     * <code>CallPeer</code>. It is implemented as a copy-on-write storage in order to optimize the
      * implementation of {@link #getConferenceMembers()} which is used more often than
      * {@link #addConferenceMember(ConferenceMember)} and
      * {@link #removeConferenceMember(ConferenceMember)}.
@@ -74,7 +74,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     private List<ConferenceMember> conferenceMembers;
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #conferenceMembers} and
+     * The <code>Object</code> which synchronizes the access to {@link #conferenceMembers} and
      * {@link #unmodifiableConferenceMembers}.
      */
     private final Object conferenceMembersSyncRoot = new Object();
@@ -100,7 +100,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     private String alternativeIMPPAddress;
 
     /**
-     * An unmodifiable view of {@link #conferenceMembers}. The list of <tt>ConferenceMember</tt>s
+     * An unmodifiable view of {@link #conferenceMembers}. The list of <code>ConferenceMember</code>s
      * participating in the conference managed by this instance is implemented as a copy-on-write
      * storage in order to optimize the implementation of {@link #getConferenceMembers()} which is
      * used more often than {@link #addConferenceMember(ConferenceMember)} and
@@ -109,7 +109,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     private List<ConferenceMember> unmodifiableConferenceMembers;
 
     /**
-     * Initializes a new <tt>AbstractCallPeer</tt> instance.
+     * Initializes a new <code>AbstractCallPeer</code> instance.
      */
     protected AbstractCallPeer()
     {
@@ -118,9 +118,9 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Returns an alternative IMPP address corresponding to this <tt>CallPeer</tt>.
+     * Returns an alternative IMPP address corresponding to this <code>CallPeer</code>.
      *
-     * @return a string representing an alternative IMPP address corresponding to this <tt>CallPeer</tt>
+     * @return a string representing an alternative IMPP address corresponding to this <code>CallPeer</code>
      */
     public String getAlternativeIMPPAddress()
     {
@@ -128,9 +128,9 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Returns an alternative IMPP address corresponding to this <tt>CallPeer</tt>.
+     * Returns an alternative IMPP address corresponding to this <code>CallPeer</code>.
      *
-     * @param address an alternative IMPP address corresponding to this <tt>CallPeer</tt>
+     * @param address an alternative IMPP address corresponding to this <code>CallPeer</code>
      */
     public void setAlternativeIMPPAddress(String address)
     {
@@ -138,11 +138,11 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Implements <tt>CallPeer#addCallPeerConferenceListener(
-     * CallPeerConferenceListener)</tt>. In the fashion of the addition of the other listeners, does
-     * not throw an exception on attempting to add a <tt>null</tt> listeners and just ignores the call.
+     * Implements <code>CallPeer#addCallPeerConferenceListener(
+     * CallPeerConferenceListener)</code>. In the fashion of the addition of the other listeners, does
+     * not throw an exception on attempting to add a <code>null</code> listeners and just ignores the call.
      *
-     * @param listener the <tt>CallPeerConferenceListener</tt> to add
+     * @param listener the <code>CallPeerConferenceListener</code> to add
      */
     public void addCallPeerConferenceListener(CallPeerConferenceListener listener)
     {
@@ -154,7 +154,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Registers the <tt>listener</tt> to the list of listeners that would be receiving CallPeerEvents.
+     * Registers the <code>listener</code> to the list of listeners that would be receiving CallPeerEvents.
      *
      * @param listener a listener instance to register with this peer.
      */
@@ -169,7 +169,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Registers the <tt>listener</tt> to the list of listeners that would be receiving CallPeerSecurityEvents.
+     * Registers the <code>listener</code> to the list of listeners that would be receiving CallPeerSecurityEvents.
      *
      * @param listener a listener instance to register with this peer.
      */
@@ -184,13 +184,13 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Adds a specific <tt>ConferenceMember</tt> to the list of <tt>ConferenceMember</tt>s reported
+     * Adds a specific <code>ConferenceMember</code> to the list of <code>ConferenceMember</code>s reported
      * by this peer through {@link #getConferenceMembers()} and {@link #getConferenceMemberCount()}
-     * and fires <tt>CallPeerConferenceEvent#CONFERENCE_MEMBER_ADDED</tt> to the currently
-     * registered <tt>CallPeerConferenceListener</tt>s.
+     * and fires <code>CallPeerConferenceEvent#CONFERENCE_MEMBER_ADDED</code> to the currently
+     * registered <code>CallPeerConferenceListener</code>s.
      *
-     * @param conferenceMember a <tt>ConferenceMember</tt> to be added to the list of <tt>ConferenceMember</tt>
-     * reported by this peer. If the specified <tt>ConferenceMember</tt> is already contained
+     * @param conferenceMember a <code>ConferenceMember</code> to be added to the list of <code>ConferenceMember</code>
+     * reported by this peer. If the specified <code>ConferenceMember</code> is already contained
      * in the list, it is not added again and no event is fired.
      */
     public void addConferenceMember(ConferenceMember conferenceMember)
@@ -218,8 +218,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Fires <tt>CallPeerConferenceEvent#CONFERENCE_MEMBER_ERROR_RECEIVED</tt> to the currently
-     * registered <tt>CallPeerConferenceListener</tt>s.
+     * Fires <code>CallPeerConferenceEvent#CONFERENCE_MEMBER_ERROR_RECEIVED</code> to the currently
+     * registered <code>CallPeerConferenceListener</code>s.
      *
      * @param errorMessage error message that can be displayed.
      */
@@ -235,14 +235,14 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Finds the first <tt>ConferenceMember</tt> whose <tt>audioSsrc</tt> is equals to a specific
-     * value. The method is meant for very frequent use so it iterates over the <tt>List</tt> of
-     * <tt>ConferenceMember</tt>s without creating an <tt>Iterator</tt>.
+     * Finds the first <code>ConferenceMember</code> whose <code>audioSsrc</code> is equals to a specific
+     * value. The method is meant for very frequent use so it iterates over the <code>List</code> of
+     * <code>ConferenceMember</code>s without creating an <code>Iterator</code>.
      *
      * @param ssrc the SSRC identifier of the audio RTP streams transmitted by the
-     * <tt>ConferenceMember</tt> that we are looking for.
-     * @return the first <tt>ConferenceMember</tt> whose <tt>audioSsrc</tt> is equal to
-     * <tt>ssrc</tt> or <tt>null</tt> if no such <tt>ConferenceMember</tt> was found
+     * <code>ConferenceMember</code> that we are looking for.
+     * @return the first <code>ConferenceMember</code> whose <code>audioSsrc</code> is equal to
+     * <code>ssrc</code> or <code>null</code> if no such <code>ConferenceMember</code> was found
      */
     protected ConferenceMember findConferenceMember(long ssrc)
     {
@@ -256,8 +256,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerChangeEvent</tt> using this call peer as source, setting it to be of
-     * type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and <tt>newValue</tt>,
+     * Constructs a <code>CallPeerChangeEvent</code> using this call peer as source, setting it to be of
+     * type <code>eventType</code> and the corresponding <code>oldValue</code> and <code>newValue</code>,
      *
      * @param eventType the type of the event to create and dispatch.
      * @param oldValue the value of the source property before it changed.
@@ -269,8 +269,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerChangeEvent</tt> using this call peer as source, setting it to be of
-     * type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and <tt>newValue</tt>.
+     * Constructs a <code>CallPeerChangeEvent</code> using this call peer as source, setting it to be of
+     * type <code>eventType</code> and the corresponding <code>oldValue</code> and <code>newValue</code>.
      *
      * @param eventType the type of the event to create and dispatch.
      * @param oldValue the value of the source property before it changed.
@@ -284,8 +284,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerChangeEvent</tt> using this call peer as source, setting it to be of
-     * type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and <tt>newValue</tt>.
+     * Constructs a <code>CallPeerChangeEvent</code> using this call peer as source, setting it to be of
+     * type <code>eventType</code> and the corresponding <code>oldValue</code> and <code>newValue</code>.
      *
      * @param eventType the type of the event to create and dispatch.
      * @param oldValue the value of the source property before it changed.
@@ -330,10 +330,10 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Fires a specific <tt>CallPeerConferenceEvent</tt> to the <tt>CallPeerConferenceListener</tt>s
+     * Fires a specific <code>CallPeerConferenceEvent</code> to the <code>CallPeerConferenceListener</code>s
      * interested in changes in the conference-related information provided by this peer.
      *
-     * @param conferenceEvent a <tt>CallPeerConferenceEvent</tt> to be fired and carrying the event data
+     * @param conferenceEvent a <code>CallPeerConferenceEvent</code> to be fired and carrying the event data
      */
     protected void fireCallPeerConferenceEvent(CallPeerConferenceEvent conferenceEvent)
     {
@@ -382,8 +382,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerSecurityStatusEvent</tt> using this call peer as source, setting it
-     * to be of type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and <tt>newValue</tt>.
+     * Constructs a <code>CallPeerSecurityStatusEvent</code> using this call peer as source, setting it
+     * to be of type <code>eventType</code> and the corresponding <code>oldValue</code> and <code>newValue</code>.
      *
      * @param messageType the type of the message
      * @param i18nMessage message
@@ -408,8 +408,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerSecurityStatusEvent</tt> using this call peer as source, setting it
-     * to be of type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and <tt>newValue</tt>.
+     * Constructs a <code>CallPeerSecurityStatusEvent</code> using this call peer as source, setting it
+     * to be of type <code>eventType</code> and the corresponding <code>oldValue</code> and <code>newValue</code>.
      *
      * @param evt the event object with details to pass on to the consumers
      */
@@ -430,8 +430,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerSecurityStatusEvent</tt> using this call peer as source, setting it
-     * to be of type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and <tt>newValue</tt>.
+     * Constructs a <code>CallPeerSecurityStatusEvent</code> using this call peer as source, setting it
+     * to be of type <code>eventType</code> and the corresponding <code>oldValue</code> and <code>newValue</code>.
      *
      * @param evt the event object with details to pass on to the consumers
      */
@@ -452,8 +452,8 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerSecurityStatusEvent</tt> using this call peer as source, setting it
-     * to be of type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and <tt>newValue</tt>.
+     * Constructs a <code>CallPeerSecurityStatusEvent</code> using this call peer as source, setting it
+     * to be of type <code>eventType</code> and the corresponding <code>oldValue</code> and <code>newValue</code>.
      *
      * @param evt the event object with details to pass on to the consumers
      */
@@ -474,9 +474,9 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Constructs a <tt>CallPeerSecurityStatusEvent</tt> using this call peer as source, setting it
-     * to be of type <tt>eventType</tt> and the corresponding <tt>oldValue</tt> and
-     * <tt>newValue</tt>.
+     * Constructs a <code>CallPeerSecurityStatusEvent</code> using this call peer as source, setting it
+     * to be of type <code>eventType</code> and the corresponding <code>oldValue</code> and
+     * <code>newValue</code>.
      *
      * @param evt the event object with details to pass on to the consumers
      */
@@ -505,11 +505,11 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     public abstract T getCall();
 
     /**
-     * Gets the time at which this <tt>CallPeer</tt> transitioned into a state (likely
-     * {@link CallPeerState#CONNECTED}) marking the start of the duration of the participation in a <tt>Call</tt>.
+     * Gets the time at which this <code>CallPeer</code> transitioned into a state (likely
+     * {@link CallPeerState#CONNECTED}) marking the start of the duration of the participation in a <code>Call</code>.
      *
-     * @return the time at which this <tt>CallPeer</tt> transitioned into a state marking the start
-     * of the duration of the participation in a <tt>Call</tt> or
+     * @return the time at which this <code>CallPeer</code> transitioned into a state marking the start
+     * of the duration of the participation in a <code>Call</code> or
      * {@link CallPeer#CALL_DURATION_START_TIME_UNKNOWN} if such a transition has not been performed
      */
     public long getCallDurationStartTime()
@@ -519,10 +519,10 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
 
     /**
      * Returns a URL pointing ta a location with call control information for this peer or
-     * <tt>null</tt> if no such URL is available for this call peer.
+     * <code>null</code> if no such URL is available for this call peer.
      *
      * @return a URL link to a location with call information or a call control web interface
-     * related to this peer or <tt>null</tt> if no such URL is available.
+     * related to this peer or <code>null</code> if no such URL is available.
      */
     public URL getCallInfoURL()
     {
@@ -551,9 +551,9 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Returns the currently used security settings of this <tt>CallPeer</tt>.
+     * Returns the currently used security settings of this <code>CallPeer</code>.
      *
-     * @return the <tt>CallPeerSecurityStatusEvent</tt> that contains the current security settings.
+     * @return the <code>CallPeerSecurityStatusEvent</code> that contains the current security settings.
      */
     public CallPeerSecurityStatusEvent getCurrentSecuritySettings()
     {
@@ -580,7 +580,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     /**
      * Determines whether this call peer is currently a conference focus.
      *
-     * @return <tt>true</tt> if this peer is a conference focus and <tt>false</tt> otherwise.
+     * @return <code>true</code> if this peer is a conference focus and <code>false</code> otherwise.
      */
     public boolean isConferenceFocus()
     {
@@ -590,11 +590,11 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     /**
      * Determines whether the audio stream (if any) being sent to this peer is mute.
      * <p>
-     * The default implementation returns <tt>false</tt>.
+     * The default implementation returns <code>false</code>.
      * </p>
      *
-     * @return <tt>true</tt> if an audio stream is being sent to this peer and it is currently mute;
-     * <tt>false</tt>, otherwise
+     * @return <code>true</code> if an audio stream is being sent to this peer and it is currently mute;
+     * <code>false</code>, otherwise
      */
     public boolean isMute()
     {
@@ -602,9 +602,9 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Implements <tt>CallPeer#removeCallPeerConferenceListener(CallPeerConferenceListener)</tt>.
+     * Implements <code>CallPeer#removeCallPeerConferenceListener(CallPeerConferenceListener)</code>.
      *
-     * @param listener the <tt>CallPeerConferenceListener</tt> to remove
+     * @param listener the <code>CallPeerConferenceListener</code> to remove
      */
     public void removeCallPeerConferenceListener(CallPeerConferenceListener listener)
     {
@@ -643,14 +643,14 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     }
 
     /**
-     * Removes a specific <tt>ConferenceMember</tt> from the list of <tt>ConferenceMember</tt>s
+     * Removes a specific <code>ConferenceMember</code> from the list of <code>ConferenceMember</code>s
      * reported by this peer through {@link #getConferenceMembers()} and
      * {@link #getConferenceMemberCount()} if it is contained and fires
-     * <tt>CallPeerConferenceEvent#CONFERENCE_MEMBER_REMOVED</tt> to the currently registered
-     * <tt>CallPeerConferenceListener</tt>s.
+     * <code>CallPeerConferenceEvent#CONFERENCE_MEMBER_REMOVED</code> to the currently registered
+     * <code>CallPeerConferenceListener</code>s.
      *
-     * @param conferenceMember a <tt>ConferenceMember</tt> to be removed from the list of <tt>ConferenceMember</tt>
-     * reported by this peer. If the specified <tt>ConferenceMember</tt> is no contained in the list, no event is fired.
+     * @param conferenceMember a <code>ConferenceMember</code> to be removed from the list of <code>ConferenceMember</code>
+     * reported by this peer. If the specified <code>ConferenceMember</code> is no contained in the list, no event is fired.
      */
     public void removeConferenceMember(ConferenceMember conferenceMember)
     {
@@ -677,7 +677,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
     /**
      * Specifies whether this peer is a conference focus.
      *
-     * @param conferenceFocus <tt>true</tt> if this peer is to become a conference focus and <tt>false</tt> otherwise.
+     * @param conferenceFocus <code>true</code> if this peer is to become a conference focus and <code>false</code> otherwise.
      */
     public void setConferenceFocus(boolean conferenceFocus)
     {

@@ -18,7 +18,7 @@ import net.java.sip.communicator.service.protocol.*;
 import java.util.*;
 
 /**
- * Dispatched to notify interested parties that a <tt>ChatRoomMember</tt> has published a conference
+ * Dispatched to notify interested parties that a <code>ChatRoomMember</code> has published a conference
  * description.
  *
  * @author Boris Grozev
@@ -26,23 +26,23 @@ import java.util.*;
 public class ChatRoomConferencePublishedEvent extends EventObject
 {
 	/**
-	 * The <tt>ChatRoom</tt> which is the source of this event.
+	 * The <code>ChatRoom</code> which is the source of this event.
 	 */
 	private final ChatRoom chatRoom;
 
 	/**
-	 * The <tt>ChatRoomMember</tt> who published a <tt>ConferenceDescription</tt>
+	 * The <code>ChatRoomMember</code> who published a <code>ConferenceDescription</code>
 	 */
 	private final ChatRoomMember member;
 
 	/**
-	 * The <tt>ConferenceDescription</tt> that was published.
+	 * The <code>ConferenceDescription</code> that was published.
 	 */
 	private final ConferenceDescription conferenceDescription;
 
 	/**
-	 * The type of the event. It can be <tt>CONFERENCE_DESCRIPTION_SENT</tt> or
-	 * <tt>CONFERENCE_DESCRIPTION_RECEIVED</tt>.
+	 * The type of the event. It can be <code>CONFERENCE_DESCRIPTION_SENT</code> or
+	 * <code>CONFERENCE_DESCRIPTION_RECEIVED</code>.
 	 */
 	private final int eventType;
 
@@ -60,11 +60,11 @@ public class ChatRoomConferencePublishedEvent extends EventObject
 	 * Creates a new instance.
 	 * 
 	 * @param chatRoom
-	 *        The <tt>ChatRoom</tt> which is the source of this event.
+	 *        The <code>ChatRoom</code> which is the source of this event.
 	 * @param member
-	 *        The <tt>ChatRoomMember</tt> who published a <tt>ConferenceDescription</tt>
+	 *        The <code>ChatRoomMember</code> who published a <code>ConferenceDescription</code>
 	 * @param conferenceDescription
-	 *        The <tt>ConferenceDescription</tt> that was published.
+	 *        The <code>ConferenceDescription</code> that was published.
 	 */
 	public ChatRoomConferencePublishedEvent(int eventType, ChatRoom chatRoom,
 		ChatRoomMember member, ConferenceDescription conferenceDescription)
@@ -78,9 +78,9 @@ public class ChatRoomConferencePublishedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>ChatRoom</tt> which is the source of this event.
+	 * Returns the <code>ChatRoom</code> which is the source of this event.
 	 * 
-	 * @return the <tt>ChatRoom</tt> which is the source of this event.
+	 * @return the <code>ChatRoom</code> which is the source of this event.
 	 */
 	public ChatRoom getChatRoom()
 	{
@@ -88,9 +88,9 @@ public class ChatRoomConferencePublishedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>ChatRoomMember</tt> who published a <tt>ConferenceDescription</tt>
+	 * Returns the <code>ChatRoomMember</code> who published a <code>ConferenceDescription</code>
 	 * 
-	 * @return the <tt>ChatRoomMember</tt> who published a <tt>ConferenceDescription</tt>
+	 * @return the <code>ChatRoomMember</code> who published a <code>ConferenceDescription</code>
 	 */
 	public ChatRoomMember getMember()
 	{
@@ -98,9 +98,9 @@ public class ChatRoomConferencePublishedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>ConferenceDescription</tt> that was published.
+	 * Returns the <code>ConferenceDescription</code> that was published.
 	 * 
-	 * @return the <tt>ConferenceDescription</tt> that was published.
+	 * @return the <code>ConferenceDescription</code> that was published.
 	 */
 	public ConferenceDescription getConferenceDescription()
 	{

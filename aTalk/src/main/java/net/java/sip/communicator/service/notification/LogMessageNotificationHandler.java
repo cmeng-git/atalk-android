@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.notification;
 
 /**
- * The <tt>LogMessageNotificationHandler</tt> interface is meant to be implemented by the notification bundle in order
+ * The <code>LogMessageNotificationHandler</code> interface is meant to be implemented by the notification bundle in order
  * to provide handling of log actions.
  *
  * @author Yana Stamcheva

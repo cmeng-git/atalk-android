@@ -61,7 +61,7 @@ import timber.log.Timber;
  *
  * The main panel that allows users to view and edit their account information.
  * Different instances of this class are created for every registered
- * <tt>ProtocolProviderService</tt>.
+ * <code>ProtocolProviderService</code>.
  * Currently, supported account details are first/middle/last names, nickname,
  * street/city/region/country address, postal code, birth date, gender,
  * organization name, job title, about me, home/work email, home/work phone.
@@ -118,13 +118,13 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     private boolean hasStatusChanges = false;
 
     /**
-     * Mapping between all supported by this plugin <tt>ServerStoredDetails</tt> and their
-     * respective <tt>EditText</tt> that are used for modifying the details.
+     * Mapping between all supported by this plugin <code>ServerStoredDetails</code> and their
+     * respective <code>EditText</code> that are used for modifying the details.
      */
     private final Map<Class<? extends GenericDetail>, EditText> detailToTextField = new HashMap<>();
 
     /**
-     * The <tt>ProtocolProviderService</tt> that this panel is associated with.
+     * The <code>ProtocolProviderService</code> that this panel is associated with.
      */
     ProtocolProviderService protocolProvider;
 
@@ -326,9 +326,9 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     /**
-     * Initialized the main panel that contains all <tt>ServerStoredDetails</tt> and update
-     * mapping between supported <tt>ServerStoredDetails</tt> and their respective
-     * <tt>EditText</tt> that are used for modifying the details.
+     * Initialized the main panel that contains all <code>ServerStoredDetails</code> and update
+     * mapping between supported <code>ServerStoredDetails</code> and their respective
+     * <code>EditText</code> that are used for modifying the details.
      */
     private void initSummaryPanel()
     {
@@ -520,7 +520,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Fired when user clicks the dialog's confirm button.
      *
-     * @param dialog source <tt>DialogActivity</tt>.
+     * @param dialog source <code>DialogActivity</code>.
      */
     public boolean onConfirmClicked(DialogActivity dialog)
     {
@@ -530,7 +530,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Fired when user dismisses the dialog.
      *
-     * @param dialog source <tt>DialogActivity</tt>
+     * @param dialog source <code>DialogActivity</code>
      */
     public void onDialogCancelled(DialogActivity dialog)
     {
@@ -579,8 +579,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     /**
-     * Loads all <tt>ServerStoredDetails</tt> which are currently supported by
-     * this plugin. Note that some <tt>OperationSetServerStoredAccountInfo</tt>
+     * Loads all <code>ServerStoredDetails</code> which are currently supported by
+     * this plugin. Note that some <code>OperationSetServerStoredAccountInfo</code>
      * implementations may support details that are not supported by this plugin.
      * In this case they will not be loaded.
      */
@@ -652,8 +652,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     /**
-     * Loads a single <tt>GenericDetail</tt> obtained from the
-     * <tt>OperationSetServerStoredAccountInfo</tt> into this plugin.
+     * Loads a single <code>GenericDetail</code> obtained from the
+     * <code>OperationSetServerStoredAccountInfo</code> into this plugin.
      *
      * If VcardTemp contains <photo/>, it will be converted to XEP-0084 avatarData &
      * avatarMetadata, and remove it from VCardTemp.
@@ -769,8 +769,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     /**
-     * Attempts to upload all <tt>ServerStoredDetails</tt> on the server using
-     * <tt>OperationSetServerStoredAccountInfo</tt>
+     * Attempts to upload all <code>ServerStoredDetails</code> on the server using
+     * <code>OperationSetServerStoredAccountInfo</code>
      */
     private void SubmitChangesAction()
     {
@@ -1082,7 +1082,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
     /**
      * A helper method to decide whether to add new
-     * <tt>ServerStoredDetails</tt> or to replace an old one.
+     * <code>ServerStoredDetails</code> or to replace an old one.
      *
      * @param oldDetail the detail to be replaced.
      * @param newDetail the replacement.

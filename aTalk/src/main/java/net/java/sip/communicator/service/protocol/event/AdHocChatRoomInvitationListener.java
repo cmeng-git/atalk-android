@@ -22,11 +22,11 @@ package net.java.sip.communicator.service.protocol.event;
 public interface AdHocChatRoomInvitationListener
 {
 	/**
-	 * Called when we receive an invitation to join an existing <tt>AdHocChatRoom</tt>.
+	 * Called when we receive an invitation to join an existing <code>AdHocChatRoom</code>.
 	 * <p>
 	 * 
 	 * @param evt
-	 *        the <tt>AdHocChatRoomInvitationReceivedEvent</tt> that contains the newly received
+	 *        the <code>AdHocChatRoomInvitationReceivedEvent</code> that contains the newly received
 	 *        invitation and its source provider.
 	 */
 	public abstract void invitationReceived(AdHocChatRoomInvitationReceivedEvent evt);

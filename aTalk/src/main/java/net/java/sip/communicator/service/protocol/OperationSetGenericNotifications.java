@@ -53,24 +53,24 @@ public interface OperationSetGenericNotifications extends OperationSet
 	public void notifyForEvent(String jid, String eventName, String eventValue, String source);
 
 	/**
-	 * Registers a <tt>GenericEventListener</tt> with this operation set so that it gets
+	 * Registers a <code>GenericEventListener</code> with this operation set so that it gets
 	 * notifications for new event notifications.
 	 *
 	 * @param eventName
 	 *        register the listener for certain event name.
 	 * @param listener
-	 *        the <tt>GenericEventListener</tt> to register.
+	 *        the <code>GenericEventListener</code> to register.
 	 */
 	public void addGenericEventListener(String eventName, GenericEventListener listener);
 
 	/**
-	 * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon new
+	 * Unregisters <code>listener</code> so that it won't receive any further notifications upon new
 	 * event notifications.
 	 *
 	 * @param eventName
 	 *        unregister the listener for certain event name.
 	 * @param listener
-	 *        the <tt>GenericEventListener</tt> to unregister.
+	 *        the <code>GenericEventListener</code> to unregister.
 	 */
 	public void removeGenericEventListener(String eventName, GenericEventListener listener);
 }

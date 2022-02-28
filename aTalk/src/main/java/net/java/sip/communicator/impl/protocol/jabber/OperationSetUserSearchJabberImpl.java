@@ -44,12 +44,12 @@ import timber.log.Timber;
 public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch, RegistrationStateChangeListener
 {
     /**
-     * The <tt>UserSearchManager</tt> instance which actually implements the user search.
+     * The <code>UserSearchManager</code> instance which actually implements the user search.
      */
     private UserSearchManager searchManager = null;
 
     /**
-     * The <tt>ProtocolProviderService</tt> instance.
+     * The <code>ProtocolProviderService</code> instance.
      */
     private ProtocolProviderServiceJabberImpl provider;
 
@@ -69,7 +69,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     private UserSearch userSearchForm = null;
 
     /**
-     * A list of <tt>UserSearchProviderListener</tt> listeners which will be notified when the
+     * A list of <code>UserSearchProviderListener</code> listeners which will be notified when the
      * provider user search feature is enabled or disabled.
      */
     private List<UserSearchProviderListener> listeners = new ArrayList<>();
@@ -80,7 +80,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     private static final String USER_SEARCH_SERVICE_NAME = "USER_SEARCH_SERVICE_NAME";
 
     /**
-     * Constructs new <tt>OperationSetUserSearchJabberImpl</tt> instance.
+     * Constructs new <code>OperationSetUserSearchJabberImpl</code> instance.
      *
      * @param provider the provider associated with the operation set.
      */
@@ -102,7 +102,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     /**
-     * Sets the <tt>userSearchEnabled</tt> property and fires <tt>UserSearchProviderEvent</tt> event.
+     * Sets the <code>userSearchEnabled</code> property and fires <code>UserSearchProviderEvent</code> event.
      *
      * @param isEnabled the value to be set.
      */
@@ -115,7 +115,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     /**
-     * Fires <tt>UserSearchProviderEvent</tt> event.
+     * Fires <code>UserSearchProviderEvent</code> event.
      *
      * @param event the event to be fired.
      */
@@ -173,7 +173,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     /**
-     * Creates the <tt>UserSearchManager</tt> instance.
+     * Creates the <code>UserSearchManager</code> instance.
      */
     public void createSearchManager()
     {
@@ -183,7 +183,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     /**
-     * Releases the <tt>UserSearchManager</tt> instance.
+     * Releases the <code>UserSearchManager</code> instance.
      */
     public void removeSearchManager()
     {
@@ -238,7 +238,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     /**
-     * Adds <tt>UserSearchProviderListener</tt> instance to the list of listeners.
+     * Adds <code>UserSearchProviderListener</code> instance to the list of listeners.
      *
      * @param l the listener to be added
      */
@@ -251,7 +251,7 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     /**
-     * Removes <tt>UserSearchProviderListener</tt> instance from the list of listeners.
+     * Removes <code>UserSearchProviderListener</code> instance from the list of listeners.
      *
      * @param l the listener to be removed
      */
@@ -263,9 +263,9 @@ public class OperationSetUserSearchJabberImpl implements OperationSetUserSearch,
     }
 
     /**
-     * Returns <tt>true</tt> if the user search service is enabled.
+     * Returns <code>true</code> if the user search service is enabled.
      *
-     * @return <tt>true</tt> if the user search service is enabled.
+     * @return <code>true</code> if the user search service is enabled.
      */
     public boolean isEnabled()
     {

@@ -60,7 +60,7 @@ public class DHCPProvisioningDiscover implements Runnable
     private byte option = (byte) 224;
 
     /**
-     * List of <tt>ProvisioningListener</tt> that will be notified when a provisioning URL is retrieved.
+     * List of <code>ProvisioningListener</code> that will be notified when a provisioning URL is retrieved.
      */
     private List<DiscoveryListener> listeners = new ArrayList<>();
 
@@ -195,7 +195,7 @@ public class DHCPProvisioningDiscover implements Runnable
     }
 
     /**
-     * Thread entry point. It runs <tt>discoverProvisioningURL</tt> in a separate thread.
+     * Thread entry point. It runs <code>discoverProvisioningURL</code> in a separate thread.
      */
     public void run()
     {
@@ -212,9 +212,9 @@ public class DHCPProvisioningDiscover implements Runnable
     }
 
     /**
-     * Add a listener that will be notified when the <tt>discoverProvisioningURL</tt> has finished.
+     * Add a listener that will be notified when the <code>discoverProvisioningURL</code> has finished.
      *
-     * @param listener <tt>ProvisioningListener</tt> to add
+     * @param listener <code>ProvisioningListener</code> to add
      */
     public void addDiscoveryListener(DiscoveryListener listener)
     {
@@ -224,9 +224,9 @@ public class DHCPProvisioningDiscover implements Runnable
     }
 
     /**
-     * Add a listener that will be notified when the <tt>discoverProvisioningURL</tt> has finished.
+     * Add a listener that will be notified when the <code>discoverProvisioningURL</code> has finished.
      *
-     * @param listener <tt>ProvisioningListener</tt> to add
+     * @param listener <code>ProvisioningListener</code> to add
      */
     public void removeDiscoveryListener(DiscoveryListener listener)
     {

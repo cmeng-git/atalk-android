@@ -18,8 +18,8 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The <tt>JabberStatusEnum</tt> gives access to presence states for the Sip protocol. All status
- * icons corresponding to presence states are located with the help of the <tt>imagePath</tt> parameter
+ * The <code>JabberStatusEnum</code> gives access to presence states for the Sip protocol. All status
+ * icons corresponding to presence states are located with the help of the <code>imagePath</code> parameter
  *
  * @author Emil Ivov
  * @author Yana Stamcheva
@@ -128,7 +128,7 @@ public class JabberStatusEnum
     private static final Map<String, JabberStatusEnum> existingEnums = new Hashtable<>();
 
     /**
-     * Returns an instance of JabberStatusEnum for the specified <tt>iconPath</tt> or creates a new
+     * Returns an instance of JabberStatusEnum for the specified <code>iconPath</code> or creates a new
      * one if it doesn't already exist.
      *
      * @param iconPath the location containing the status icons that should be used by this enumeration.
@@ -146,7 +146,7 @@ public class JabberStatusEnum
     }
 
     /**
-     * Creates a new instance of JabberStatusEnum using <tt>iconPath</tt> as the root path where it
+     * Creates a new instance of JabberStatusEnum using <code>iconPath</code> as the root path where it
      * should be reading status icons from.
      *
      * @param iconPath the location containing the status icons that should be used by this enumeration.
@@ -222,7 +222,7 @@ public class JabberStatusEnum
     /**
      * Returns an iterator over all status instances supported by the sip provider.
      *
-     * @return an <tt>Iterator</tt> over all status instances supported by the sip provider.
+     * @return an <code>Iterator</code> over all status instances supported by the sip provider.
      */
     public List<PresenceStatus> getSupportedStatusSet()
     {
@@ -232,7 +232,7 @@ public class JabberStatusEnum
     /**
      * Get all status name as array.
      *
-     * @return array of <tt>String</tt> representing the different status name
+     * @return array of <code>String</code> representing the different status name
      */
     public static String[] getStatusNames()
     {
@@ -300,13 +300,13 @@ public class JabberStatusEnum
     }
 
     /**
-     * An implementation of <tt>PresenceStatus</tt> that enumerates all states that a Jabber contact
+     * An implementation of <code>PresenceStatus</code> that enumerates all states that a Jabber contact
      * can currently have.
      */
     private static class JabberPresenceStatus extends PresenceStatus
     {
         /**
-         * Creates an instance of <tt>JabberPresenceStatus</tt> with the specified parameters.
+         * Creates an instance of <code>JabberPresenceStatus</code> with the specified parameters.
          *
          * @param status the connectivity level of the new presence status instance
          * @param statusName the name of the presence status.

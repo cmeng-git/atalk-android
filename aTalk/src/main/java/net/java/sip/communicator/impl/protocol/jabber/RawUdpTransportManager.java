@@ -5,15 +5,14 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.atalk.util.MediaType;
-import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-
-import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.jingle.*;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 
@@ -28,17 +27,18 @@ import java.util.*;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Hristo Terezov
+ * @author Eng Chong Meng
  */
 public class RawUdpTransportManager extends TransportManagerJabberImpl
 {
     /**
-     * The list of <tt>JingleContent</tt>s which represents the local counterpart of the
+     * The list of <code>JingleContent</code>s which represents the local counterpart of the
      * negotiation between the local and the remote peers.
      */
     private List<JingleContent> local;
 
     /**
-     * The collection of <tt>JingleContent</tt>s which represents the remote counterpart of
+     * The collection of <code>JingleContent</code>s which represents the remote counterpart of
      * the negotiation between the local and the remote peers.
      */
     private final List<Iterable<JingleContent>> remotes = new LinkedList<>();
@@ -64,51 +64,42 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
     }
 
     /**
-     * Creates a raw UDP transport element according to a specific <tt>StreamConnector</tt>.
+     * Creates a raw UDP transport element according to a specific <code>StreamConnector</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which uses the specified
-     * <tt>connector</tt> or <tt>channel</tt>
-     * @param connector the <tt>StreamConnector</tt> to be described within the transport element
-     * @return a {@link RawUdpTransportExtension} containing the RTP and RTCP candidates of
-     * the specified <tt>connector</tt>
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which uses the specified
+     * <code>connector</code> or <code>channel</code>
+     * @param connector the <code>StreamConnector</code> to be described within the transport element
+     * @return a {@link RawUdpTransport} containing the RTP and RTCP candidates of the specified <code>connector</code>
      */
-    private RawUdpTransportExtension createTransport(MediaType mediaType, StreamConnector connector)
+    private RawUdpTransport createTransport(MediaType mediaType, StreamConnector connector)
     {
-        RawUdpTransportExtension ourTransport = new RawUdpTransportExtension();
+        RawUdpTransport.Builder tpBuilder = RawUdpTransport.builder();
         int generation = getCurrentGeneration();
 
         // create and add candidates that correspond to the stream connector
-        // RTP
-        CandidateExtension rtpCand = new CandidateExtension();
-
-        rtpCand.setComponent(CandidateExtension.RTP_COMPONENT_ID);
-        rtpCand.setGeneration(generation);
-        rtpCand.setID(getNextID());
-        rtpCand.setType(CandidateType.host);
-
+        //=== RTP ===/
         DatagramSocket dataSocket = connector.getDataSocket();
+        IceUdpTransportCandidate.Builder tcpBuilder = IceUdpTransportCandidate.builder();
+        tcpBuilder.setComponent(IceUdpTransportCandidate.RTP_COMPONENT_ID)
+                .setGeneration(generation)
+                .setID(getNextID())
+                .setType(CandidateType.host)
+                .setIP(dataSocket.getLocalAddress().getHostAddress())
+                .setPort(dataSocket.getLocalPort());
+        tpBuilder.addChildElement(tcpBuilder.build());
 
-        rtpCand.setIP(dataSocket.getLocalAddress().getHostAddress());
-        rtpCand.setPort(dataSocket.getLocalPort());
-
-        ourTransport.addCandidate(rtpCand);
-
-        // RTCP
-        CandidateExtension rtcpCand = new CandidateExtension();
-
-        rtcpCand.setComponent(CandidateExtension.RTCP_COMPONENT_ID);
-        rtcpCand.setGeneration(generation);
-        rtcpCand.setID(getNextID());
-        rtcpCand.setType(CandidateType.host);
-
+        //=== RTCP ===/
         DatagramSocket controlSocket = connector.getControlSocket();
+        IceUdpTransportCandidate.Builder rtcpBuilder = IceUdpTransportCandidate.builder()
+                .setComponent(IceUdpTransportCandidate.RTCP_COMPONENT_ID)
+                .setGeneration(generation)
+                .setID(getNextID())
+                .setType(CandidateType.host)
+                .setIP(controlSocket.getLocalAddress().getHostAddress())
+                .setPort(controlSocket.getLocalPort());
+        tpBuilder.addChildElement(rtcpBuilder.build());
 
-        rtcpCand.setIP(controlSocket.getLocalAddress().getHostAddress());
-        rtcpCand.setPort(controlSocket.getLocalPort());
-
-        ourTransport.addCandidate(rtcpCand);
-
-        return ourTransport;
+        return tpBuilder.build();
     }
 
     /**
@@ -116,18 +107,18 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      */
     protected ExtensionElement createTransportPacketExtension()
     {
-        return new RawUdpTransportExtension();
+        return new RawUdpTransport();
     }
 
     /**
      * Implements {@link TransportManagerJabberImpl#getStreamTarget(MediaType)}. Gets the
-     * <tt>MediaStreamTarget</tt> to be used as the <tt>target</tt> of the <tt>MediaStream</tt> with
-     * a specific <tt>MediaType</tt>.
+     * <code>MediaStreamTarget</code> to be used as the <code>target</code> of the <code>MediaStream</code> with
+     * a specific <code>MediaType</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which is to have its
-     * <tt>target</tt> set to the returned <tt>MediaStreamTarget</tt>
-     * @return the <tt>MediaStreamTarget</tt> to be used as the <tt>target</tt> of the
-     * <tt>MediaStream</tt> with the specified <tt>MediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which is to have its
+     * <code>target</code> set to the returned <code>MediaStreamTarget</code>
+     * @return the <code>MediaStreamTarget</code> to be used as the <code>target</code> of the
+     * <code>MediaStream</code> with the specified <code>MediaType</code>
      * @see TransportManagerJabberImpl#getStreamTarget(MediaType)
      */
     @Override
@@ -141,8 +132,8 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
 
             for (Iterable<JingleContent> remote : remotes) {
                 for (JingleContent content : remote) {
-                    RtpDescriptionExtension rtpDescription
-                        = content.getFirstChildOfType(RtpDescriptionExtension.class);
+                    RtpDescription rtpDescription
+                            = content.getFirstChildElement(RtpDescription.class);
 
                     if (media.equals(rtpDescription.getMedia())) {
                         streamTarget = JingleUtils.extractDefaultTarget(content);
@@ -152,7 +143,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
             }
         }
         else {
-            IceUdpTransportExtension transport = channel.getTransport();
+            IceUdpTransport transport = channel.getTransport();
 
             if (transport != null)
                 streamTarget = JingleUtils.extractDefaultTarget(transport);
@@ -180,9 +171,9 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
 
     /**
      * Implements {@link TransportManagerJabberImpl#getXmlNamespace()}. Gets the XML namespace of
-     * the Jingle transport implemented by this <tt>TransportManagerJabberImpl</tt>.
+     * the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>.
      *
-     * @return the XML namespace of the Jingle transport implemented by this <tt>TransportManagerJabberImpl</tt>
+     * @return the XML namespace of the Jingle transport implemented by this <code>TransportManagerJabberImpl</code>
      * @see TransportManagerJabberImpl#getXmlNamespace()
      */
     @Override
@@ -193,11 +184,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
 
     /**
      * Removes a content with a specific name from the transport-related part of the session
-     * represented by this <tt>TransportManagerJabberImpl</tt> which may have been reported through
-     * previous calls to the <tt>startCandidateHarvest</tt> and <tt>startConnectivityEstablishment</tt> methods.
+     * represented by this <code>TransportManagerJabberImpl</code> which may have been reported through
+     * previous calls to the <code>startCandidateHarvest</code> and <code>startConnectivityEstablishment</code> methods.
      *
      * @param name the name of the content to be removed from the transport-related part of the session
-     * represented by this <tt>TransportManagerJabberImpl</tt>
+     * represented by this <code>TransportManagerJabberImpl</code>
      * @see TransportManagerJabberImpl#removeContent(String)
      */
     @Override
@@ -250,11 +241,11 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * use in case we need to know what transports our peer is using.
      * @param ourAnswer the content descriptions that we should be adding our transport lists to (although not
      * necessarily in this very instance).
-     * @param transportInfoSender the <tt>TransportInfoSender</tt> to be used by this
-     * <tt>TransportManagerJabberImpl</tt> to send <tt>transport-info</tt> <tt>Jingle</tt>s
-     * from the local peer to the remote peer if this <tt>TransportManagerJabberImpl</tt>
-     * wishes to utilize <tt>transport-info</tt>. Local candidate addresses sent by this
-     * <tt>TransportManagerJabberImpl</tt> in <tt>transport-info</tt> are expected to not be
+     * @param transportInfoSender the <code>TransportInfoSender</code> to be used by this
+     * <code>TransportManagerJabberImpl</code> to send <code>transport-info</code> <code>Jingle</code>s
+     * from the local peer to the remote peer if this <code>TransportManagerJabberImpl</code>
+     * wishes to utilize <code>transport-info</code>. Local candidate addresses sent by this
+     * <code>TransportManagerJabberImpl</code> in <code>transport-info</code> are expected to not be
      * included in the result of {@link #wrapupCandidateHarvest()}.
      * @throws OperationFailedException if we fail to allocate a port number.
      * @see TransportManagerJabberImpl#startCandidateHarvest(List, List, TransportInfoSender)
@@ -273,14 +264,14 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      * negotiation between the local and the remote peer for subsequent calls to
      * {@link #getStreamTarget(MediaType)}.
      *
-     * @param remote the collection of <tt>JingleContent</tt>s which represents the remote
+     * @param remote the collection of <code>JingleContent</code>s which represents the remote
      * counterpart of the negotiation between the local and the remote peer
-     * @return <tt>true</tt> because <tt>RawUdpTransportManager</tt> does not perform connectivity checks
+     * @return <code>true</code> because <code>RawUdpTransportManager</code> does not perform connectivity checks
      * @see TransportManagerJabberImpl#startConnectivityEstablishment(Iterable)
      */
     @Override
     public boolean startConnectivityEstablishment(Iterable<JingleContent> remote)
-        throws OperationFailedException
+            throws OperationFailedException
     {
         if ((remote != null) && !remotes.contains(remote)) {
             /*

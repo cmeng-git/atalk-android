@@ -18,9 +18,9 @@ package net.java.sip.communicator.service.contactsource;
 import java.util.*;
 
 /**
- * The <tt>ContactRemovedEvent</tt> indicates that a
- * <tt>SourceContact</tt> has been removed from the result of a
- * <tt>ContactQuery</tt>.
+ * The <code>ContactRemovedEvent</code> indicates that a
+ * <code>SourceContact</code> has been removed from the result of a
+ * <code>ContactQuery</code>.
  * @author Yana Stamcheva
  */
 public class ContactRemovedEvent
@@ -37,8 +37,8 @@ public class ContactRemovedEvent
     private final SourceContact contact;
 
     /**
-     * Creates a <tt>ContactRemovedEvent</tt> by specifying the contact search
-     * source and the removed <tt>searchContact</tt>.
+     * Creates a <code>ContactRemovedEvent</code> by specifying the contact search
+     * source and the removed <code>searchContact</code>.
      * @param source the source that triggered this event
      * @param contact the removed contact
      */
@@ -51,8 +51,8 @@ public class ContactRemovedEvent
     }
 
     /**
-     * Returns the <tt>ContactQuery</tt> that triggered this event.
-     * @return the <tt>ContactQuery</tt> that triggered this event
+     * Returns the <code>ContactQuery</code> that triggered this event.
+     * @return the <code>ContactQuery</code> that triggered this event
      */
     public ContactQuery getQuerySource()
     {

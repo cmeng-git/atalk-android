@@ -172,7 +172,7 @@ public class SystemActivityNotificationsServiceImpl
     }
 
     /**
-     * Registers a listener that would be notified for idle of the system for <tt>idleTime</tt>.
+     * Registers a listener that would be notified for idle of the system for <code>idleTime</code>.
      *
      * @param idleTime the time in milliseconds after which we will consider system to be idle. This doesn't count
      * when system seems idle as monitor is off or screensaver is on, or desktop is locked.
@@ -381,7 +381,7 @@ public class SystemActivityNotificationsServiceImpl
     /**
      * Delivers the specified event to all registered listeners.
      *
-     * @param evt the <tt>SystemActivityEvent</tt> that we'd like delivered to all registered message listeners.
+     * @param evt the <code>SystemActivityEvent</code> that we'd like delivered to all registered message listeners.
      */
     protected void fireSystemActivityEvent(SystemActivityEvent evt)
     {

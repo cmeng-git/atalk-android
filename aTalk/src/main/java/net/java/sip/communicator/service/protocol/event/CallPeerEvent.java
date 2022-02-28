@@ -48,8 +48,8 @@ public class CallPeerEvent extends EventObject
 	private final boolean delayed;
 
 	/**
-	 * Creates a call peer event instance indicating that an event with id <tt>eventID</tt> has
-	 * happened to <tt>sourceCallPeer</tt> in <tt>sourceCall</tt>
+	 * Creates a call peer event instance indicating that an event with id <code>eventID</code> has
+	 * happened to <code>sourceCallPeer</code> in <code>sourceCall</code>
 	 * 
 	 * @param sourceCallPeer
 	 *        the call peer that this event is about.
@@ -64,8 +64,8 @@ public class CallPeerEvent extends EventObject
 	}
 
 	/**
-	 * Creates a call peer event instance indicating that an event with id <tt>eventID</tt> has
-	 * happened to <tt>sourceCallPeer</tt> in <tt>sourceCall</tt>
+	 * Creates a call peer event instance indicating that an event with id <code>eventID</code> has
+	 * happened to <code>sourceCallPeer</code> in <code>sourceCall</code>
 	 * 
 	 * @param sourceCallPeer
 	 *        the call peer that this event is about.
@@ -74,7 +74,7 @@ public class CallPeerEvent extends EventObject
 	 * @param eventID
 	 *        one of the CALL_PEER_XXX member ints indicating the type of this event.
 	 * @param delayed
-	 *        initial value for <tt>delayed</tt> property. If the value is true adding/removing peer
+	 *        initial value for <code>delayed</code> property. If the value is true adding/removing peer
 	 *        from GUI will be delayed.
 	 */
 	public CallPeerEvent(CallPeer sourceCallPeer, Call sourceCall, int eventID, boolean delayed)
@@ -108,7 +108,7 @@ public class CallPeerEvent extends EventObject
 	/**
 	 * Returns the call that the source call peer is associated with.
 	 *
-	 * @return a reference to the <tt>Call</tt> that the source call peer is associated with.
+	 * @return a reference to the <code>Call</code> that the source call peer is associated with.
 	 */
 	public Call getSourceCall()
 	{
@@ -118,7 +118,7 @@ public class CallPeerEvent extends EventObject
 	/**
 	 * Returns the source call peer (the one that this event is about).
 	 *
-	 * @return a reference to the source <tt>CallPeer</tt> instance.
+	 * @return a reference to the source <code>CallPeer</code> instance.
 	 */
 	public CallPeer getSourceCallPeer()
 	{
@@ -126,9 +126,9 @@ public class CallPeerEvent extends EventObject
 	}
 
 	/**
-	 * Returns a String representation of this <tt>CallPeerEvent</tt>.
+	 * Returns a String representation of this <code>CallPeerEvent</code>.
 	 *
-	 * @return a String representation of this <tt>CallPeerEvent</tt>.
+	 * @return a String representation of this <code>CallPeerEvent</code>.
 	 */
 	@Override
 	public String toString()

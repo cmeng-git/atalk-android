@@ -35,7 +35,7 @@ public class VersionServiceImpl extends AbstractVersionService
     private final String CURRENT_VERSION_NAME;
 
     /**
-     * Creates a new instance of <tt>VersionServiceImpl</tt> and parses current version from
+     * Creates a new instance of <code>VersionServiceImpl</code> and parses current version from
      * android:versionName attribute from PackageInfo.
      */
     public VersionServiceImpl()
@@ -65,10 +65,10 @@ public class VersionServiceImpl extends AbstractVersionService
     }
 
     /**
-     * Returns a <tt>Version</tt> object containing version details of the Jitsi version that
+     * Returns a <code>Version</code> object containing version details of the Jitsi version that
      * we're currently running.
      *
-     * @return a <tt>Version</tt> object containing version details of the Jitsi version that
+     * @return a <code>Version</code> object containing version details of the Jitsi version that
      * we're currently running.
      */
     public Version getCurrentVersion()

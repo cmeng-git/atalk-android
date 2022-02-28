@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>WhiteboardInvitationRejectedEvent</tt>s indicates the reception of a rejection of an
+ * <code>WhiteboardInvitationRejectedEvent</code>s indicates the reception of a rejection of an
  * invitation.
  *
  * @author Yana Stamcheva
@@ -31,7 +31,7 @@ public class WhiteboardInvitationRejectedEvent extends EventObject
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * The <tt>WhiteboardSession</tt> for which the initial invitation was.
+	 * The <code>WhiteboardSession</code> for which the initial invitation was.
 	 */
 	private WhiteboardSession whiteboardSession;
 
@@ -51,13 +51,13 @@ public class WhiteboardInvitationRejectedEvent extends EventObject
 	private Date timestamp;
 
 	/**
-	 * Creates a <tt>WhiteboardInvitationRejectedEvent</tt> representing the rejection of an
-	 * invitation, rejected by the given <tt>invitee</tt>.
+	 * Creates a <code>WhiteboardInvitationRejectedEvent</code> representing the rejection of an
+	 * invitation, rejected by the given <code>invitee</code>.
 	 *
 	 * @param source
-	 *        the <tt>OperationSetWhiteboarding</tt> that dispatches this event
+	 *        the <code>OperationSetWhiteboarding</code> that dispatches this event
 	 * @param session
-	 *        the <tt>WhiteboardSession</tt> for which the initial invitation was
+	 *        the <code>WhiteboardSession</code> for which the initial invitation was
 	 * @param invitee
 	 *        the name of the invitee that rejected the invitation
 	 * @param reason
@@ -87,9 +87,9 @@ public class WhiteboardInvitationRejectedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>WhiteboardSession</tt> for which the initial invitation was.
+	 * Returns the <code>WhiteboardSession</code> for which the initial invitation was.
 	 *
-	 * @return the <tt>WhiteboardSession</tt> for which the initial invitation was
+	 * @return the <code>WhiteboardSession</code> for which the initial invitation was
 	 */
 	public WhiteboardSession getWhiteboardSession()
 	{
@@ -107,9 +107,9 @@ public class WhiteboardInvitationRejectedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the reason for which the <tt>ChatRoomInvitation</tt> is rejected.
+	 * Returns the reason for which the <code>ChatRoomInvitation</code> is rejected.
 	 *
-	 * @return the reason for which the <tt>ChatRoomInvitation</tt> is rejected.
+	 * @return the reason for which the <code>ChatRoomInvitation</code> is rejected.
 	 */
 	public String getReason()
 	{

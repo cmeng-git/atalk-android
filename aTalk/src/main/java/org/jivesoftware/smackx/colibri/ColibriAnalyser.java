@@ -6,7 +6,7 @@
 package org.jivesoftware.smackx.colibri;
 
 import org.jivesoftware.smackx.jingle.element.JingleContent;
-import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
+import org.jivesoftware.smackx.jingle.JingleUtils;
 
 import org.atalk.util.MediaType;
 

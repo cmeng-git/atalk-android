@@ -16,8 +16,8 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * A listener that will be notified when a <tt>ChatRoomMember</tt> publishes a
- * <tt>ConferenceDescription</tt> in a <tt>ChatRoom</tt>.
+ * A listener that will be notified when a <code>ChatRoomMember</code> publishes a
+ * <code>ConferenceDescription</code> in a <code>ChatRoom</code>.
  *
  * @author Boris Grozev
  * @author Eng Chong Meng
@@ -25,10 +25,10 @@ import java.util.EventListener;
 public interface ChatRoomConferencePublishedListener extends EventListener
 {
     /**
-     * Called to notify interested parties that <tt>ChatRoomMember</tt> in a <tt>ChatRoom</tt> has
-     * published a <tt>ConferenceDescription</tt>.
+     * Called to notify interested parties that <code>ChatRoomMember</code> in a <code>ChatRoom</code> has
+     * published a <code>ConferenceDescription</code>.
      *
-     * @param evt the <tt>ChatRoomMemberPresenceChangeEvent</tt> instance containing the source chat
+     * @param evt the <code>ChatRoomMemberPresenceChangeEvent</code> instance containing the source chat
      * room and type, and reason of the presence change
      */
     void conferencePublished(ChatRoomConferencePublishedEvent evt);

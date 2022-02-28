@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.protocol.AbstractOperationSetAvatar;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
 
 /**
- * A simple implementation of the <tt>OperationSetAvatar</tt> interface for the jabber protocol.
+ * A simple implementation of the <code>OperationSetAvatar</code> interface for the jabber protocol.
  *
  * Actually there isn't any maximum size for the jabber protocol but GoogleTalk fix it a 96x96.
  *
@@ -20,10 +20,10 @@ public class OperationSetAvatarJabberImpl extends
 {
 
     /**
-     * Creates a new instances of <tt>OperationSetAvatarJabberImpl</tt>.
+     * Creates a new instances of <code>OperationSetAvatarJabberImpl</code>.
      *
-     * @param parentProvider a reference to the <tt>ProtocolProviderServiceJabberImpl</tt> instance that created us.
-     * @param accountInfoOpSet a reference to the <tt>OperationSetServerStoredAccountInfo</tt>.
+     * @param parentProvider a reference to the <code>ProtocolProviderServiceJabberImpl</code> instance that created us.
+     * @param accountInfoOpSet a reference to the <code>OperationSetServerStoredAccountInfo</code>.
      */
     public OperationSetAvatarJabberImpl(ProtocolProviderServiceJabberImpl parentProvider,
             OperationSetServerStoredAccountInfo accountInfoOpSet)

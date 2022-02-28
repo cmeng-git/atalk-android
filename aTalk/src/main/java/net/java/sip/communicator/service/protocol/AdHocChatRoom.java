@@ -18,7 +18,7 @@ import java.util.List;
  * interface describes the main methods used by some protocols for multi user chat, without useless
  * methods (such as kicking a participant) which aren't supported by these protocols (MSN, ICQ etc.).
  * <p>
- * <tt>AdHocChatRoom</tt> acts like a simplified <tt>ChatRoom</tt>.
+ * <code>AdHocChatRoom</code> acts like a simplified <code>ChatRoom</code>.
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
@@ -26,18 +26,18 @@ import java.util.List;
 public interface AdHocChatRoom
 {
     /**
-     * Returns the name of this <tt>AdHocChatRoom</tt>. The name can't be changed until the
-     * <tt>AdHocChatRoom</tt> is ended.
+     * Returns the name of this <code>AdHocChatRoom</code>. The name can't be changed until the
+     * <code>AdHocChatRoom</code> is ended.
      *
-     * @return a <tt>String</tt> containing the name
+     * @return a <code>String</code> containing the name
      */
     String getName();
 
     /**
-     * Returns the identifier of this <tt>AdHocChatRoom</tt>. The identifier of the ad-hoc chat
+     * Returns the identifier of this <code>AdHocChatRoom</code>. The identifier of the ad-hoc chat
      * room would have the following syntax: [adHocChatRoomName]@[adHocChatRoomServer]@[accountID]
      *
-     * @return a <tt>String</tt> containing the identifier of this <tt>AdHocChatRoom</tt>.
+     * @return a <code>String</code> containing the identifier of this <code>AdHocChatRoom</code>.
      */
     String getIdentifier();
 
@@ -57,47 +57,47 @@ public interface AdHocChatRoom
     void removeParticipantPresenceListener(AdHocChatRoomParticipantPresenceListener listener);
 
     /**
-     * Registers <tt>listener</tt> so that it would receive events every time a new message is
+     * Registers <code>listener</code> so that it would receive events every time a new message is
      * received on this ad-hoc chat room.
      *
-     * @param listener a <tt>MessageListener</tt> that would be notified every time a new message is received
+     * @param listener a <code>MessageListener</code> that would be notified every time a new message is received
      * on this ad-hoc chat room.
      */
     void addMessageListener(AdHocChatRoomMessageListener listener);
 
     /**
-     * Removes <tt>listener</tt> so that it won't receive any further message events from this
+     * Removes <code>listener</code> so that it won't receive any further message events from this
      * ad-hoc room.
      *
-     * @param listener the <tt>MessageListener</tt> to remove from this ad-hoc room
+     * @param listener the <code>MessageListener</code> to remove from this ad-hoc room
      */
     void removeMessageListener(AdHocChatRoomMessageListener listener);
 
     /**
-     * Invites another <tt>Contact</tt> to this ad-hoc chat room.
+     * Invites another <code>Contact</code> to this ad-hoc chat room.
      *
-     * @param userAddress the address of the <tt>Contact</tt> of the user to invite to the ad-hoc room.
+     * @param userAddress the address of the <code>Contact</code> of the user to invite to the ad-hoc room.
      * @param reason a reason, subject, or welcome message that would tell users why they are being invited.
      */
     void invite(EntityBareJid userAddress, String reason);
 
     /**
-     * Returns a <tt>List</tt> of <tt>Contact</tt>s corresponding to all participants currently
+     * Returns a <code>List</code> of <code>Contact</code>s corresponding to all participants currently
      * participating in this room.
      *
-     * @return a <tt>List</tt> of <tt>Contact</tt>s instances corresponding to all room members.
+     * @return a <code>List</code> of <code>Contact</code>s instances corresponding to all room members.
      */
     List<Contact> getParticipants();
 
     /**
      * Returns the number of participants that are currently in this ad-hoc chat room.
      *
-     * @return int the number of <tt>Contact</tt>s, currently participating in this ad-hoc room.
+     * @return int the number of <code>Contact</code>s, currently participating in this ad-hoc room.
      */
     int getParticipantsCount();
 
     /**
-     * Create a <tt>IMessage</tt> instance for sending a simple text messages with default
+     * Create a <code>IMessage</code> instance for sending a simple text messages with default
      * (text/plain) content type and encoding.
      *
      * @param messageText the string content of the message.
@@ -110,15 +110,15 @@ public interface AdHocChatRoom
      *
      * @param content content value
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
+     * @param subject a <code>String</code> subject or <code>null</code> for now subject.
      * @return the newly created message.
      */
     IMessage createMessage(String content, int encType, String subject);
 
     /**
-     * Sends the <tt>IMessage</tt> to this ad-hoc chat room.
+     * Sends the <code>IMessage</code> to this ad-hoc chat room.
      *
-     * @param message the <tt>IMessage</tt> to send.
+     * @param message the <code>IMessage</code> to send.
      */
     void sendMessage(IMessage message);
 
@@ -127,7 +127,7 @@ public interface AdHocChatRoom
     /**
      * Returns a reference to the provider that created this room.
      *
-     * @return a reference to the <tt>ProtocolProviderService</tt> instance that created this ad-hoc room.
+     * @return a reference to the <code>ProtocolProviderService</code> instance that created this ad-hoc room.
      */
     ProtocolProviderService getParentProvider();
 

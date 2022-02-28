@@ -24,7 +24,7 @@ package org.dhcp4java;
  * <p>The DHCP datagram may be too big, too small, or contain garbage data that makes
  * it impossible to parse correctly.
  * 
- * <p>It inherits from <tt>IllegalArgumentException</tt> and <tt>RuntimeException</tt>
+ * <p>It inherits from <code>IllegalArgumentException</code> and <code>RuntimeException</code>
  * so it doesn't need to be explicitly caught.
  * 
  * @author Stephan Hadinger
@@ -34,13 +34,13 @@ public class DHCPBadPacketException extends IllegalArgumentException {
 	private static final long serialVersionUID = 1L;
 	
     /**
-     * Constructs an <tt>DHCPBadPacketException</tt> with no detail message.
+     * Constructs an <code>DHCPBadPacketException</code> with no detail message.
      */
     public DHCPBadPacketException() {
     	// empty constructor
     }
     /**
-     * Constructs an <tt>DHCPBadPacketException</tt> with the specified detail message.
+     * Constructs an <code>DHCPBadPacketException</code> with the specified detail message.
      * 
      * @param message the detail message.
      */
@@ -50,14 +50,14 @@ public class DHCPBadPacketException extends IllegalArgumentException {
     /**
      * Constructs a new exception with the specified detail message and cause.
      * 
-     * <p>Note that the detail message associated with <tt>cause</tt> is <i>not</i>
+     * <p>Note that the detail message associated with <code>cause</code> is <i>not</i>
      * automatically incorporated in this exception's detail message.
      * 
      * @param message the detail message (which is saved for later retrieval 
-     * 			by the <tt>Throwable.getMessage()</tt> method).
+     * 			by the <code>Throwable.getMessage()</code> method).
      * @param cause the cause (which is saved for later retrieval by the 
-     * 			<tt>Throwable.getCause()</tt> method).
-     * 			(A <tt>null</tt> value is permitted, and indicates that the cause 
+     * 			<code>Throwable.getCause()</code> method).
+     * 			(A <code>null</code> value is permitted, and indicates that the cause
      * 			is nonexistent or unknown.)
      */
     public DHCPBadPacketException(String message, Throwable cause) {
@@ -65,12 +65,12 @@ public class DHCPBadPacketException extends IllegalArgumentException {
     }
     /**
      * Constructs a new exception with the specified cause and a detail message 
-     * of <tt>(cause==null ? null : cause.toString())</tt>
+     * of <code>(cause==null ? null : cause.toString())</code>
      * (which typically contains the class and detail message of cause). 
      * 
      * @param cause the cause (which is saved for later retrieval by the 
-     * 			<tt>Throwable.getCause()</tt> method).
-     * 			(A <tt>null</tt> value is permitted, and indicates that the cause 
+     * 			<code>Throwable.getCause()</code> method).
+     * 			(A <code>null</code> value is permitted, and indicates that the cause
      * 			is nonexistent or unknown.)
      */
     public DHCPBadPacketException(Throwable cause) {

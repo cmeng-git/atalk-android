@@ -19,7 +19,7 @@ import androidx.fragment.app.DialogFragment;
 
 /**
  * List model for STUN servers. Is used to edit STUN servers preferences of Jabber account. It's also responsible for
- * creating list row <tt>View</tt>s and implements {@link ServerItemAdapter#createItemEditDialogFragment(int)} to
+ * creating list row <code>View</code>s and implements {@link ServerItemAdapter#createItemEditDialogFragment(int)} to
  * provide item edit dialog.
  *
  * @author Pawel Domas

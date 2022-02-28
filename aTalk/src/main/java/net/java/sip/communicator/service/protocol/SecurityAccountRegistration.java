@@ -16,7 +16,7 @@ import java.security.SecureRandom;
 import java.util.*;
 
 /**
- * The <tt>SecurityAccountRegistration</tt> is used to determine security options for different
+ * The <code>SecurityAccountRegistration</code> is used to determine security options for different
  * registration protocol (Jabber, SIP). Useful to the SecurityPanel.
  *
  * @author Vincent Lucas
@@ -322,14 +322,14 @@ public abstract class SecurityAccountRegistration implements Serializable
 
     /**
      * Loads the list of enabled and disabled encryption protocols with their priority into array of
-     * <tt>String</tt> and array of <tt>Boolean</tt>. The protocols are positioned in the array by
-     * the priority and the <tt>Boolean</tt> array holds the enabled flag on the corresponding index.
+     * <code>String</code> and array of <code>Boolean</code>. The protocols are positioned in the array by
+     * the priority and the <code>Boolean</code> array holds the enabled flag on the corresponding index.
      *
      * @param encryptionProtocols The map of encryption protocols with their priority available for this account.
      * @param encryptionProtocolStatus The map of encryption protocol statuses.
-     * @return <tt>Object[]</tt> array holding:<br/>
-     * - at [0] <tt>String[]</tt> the list of extracted protocol names<br/>
-     * - at [1] <tt>boolean[]</tt> the list of of protocol status flags
+     * @return <code>Object[]</code> array holding:<br/>
+     * - at [0] <code>String[]</code> the list of extracted protocol names<br/>
+     * - at [1] <code>boolean[]</code> the list of of protocol status flags
      */
     public static Object[] loadEncryptionProtocols(Map<String, Integer> encryptionProtocols,
             Map<String, Boolean> encryptionProtocolStatus)
@@ -375,10 +375,10 @@ public abstract class SecurityAccountRegistration implements Serializable
     }
 
     /**
-     * Checks if a specific <tt>protocol</tt> is on the list of supported (encryption) protocols.
+     * Checks if a specific <code>protocol</code> is on the list of supported (encryption) protocols.
      *
      * @param protocol the protocol name
-     * @return <tt>true</tt> if <tt>protocol</tt> is supported; <tt>false</tt>, otherwise
+     * @return <code>true</code> if <code>protocol</code> is supported; <code>false</code>, otherwise
      */
     private static boolean isExistingEncryptionProtocol(String protocol)
     {

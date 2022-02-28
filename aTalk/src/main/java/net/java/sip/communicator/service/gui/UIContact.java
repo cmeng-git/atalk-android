@@ -24,7 +24,7 @@ import javax.swing.JMenuItem;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>UIContact</tt> represents the user interface contact contained in the contact list component.
+ * The <code>UIContact</code> represents the user interface contact contained in the contact list component.
  *
  * @author Yana Stamcheva
  */
@@ -60,7 +60,7 @@ public abstract class UIContact
 
     /**
      * Creates a tool tip for this contact. If such tooltip is
-     * provided it would be shown on mouse over over this <tt>UIContact</tt>.
+     * provided it would be shown on mouse over over this <code>UIContact</code>.
      *
      * @return the tool tip for this contact descriptor
      */
@@ -81,45 +81,45 @@ public abstract class UIContact
     public abstract UIGroup getParentGroup();
 
     /**
-     * Sets the given <tt>UIGroup</tt> to be the parent group of this <tt>UIContact</tt>.
+     * Sets the given <code>UIGroup</code> to be the parent group of this <code>UIContact</code>.
      *
-     * @param parentGroup the parent <tt>UIGroup</tt> of this contact
+     * @param parentGroup the parent <code>UIGroup</code> of this contact
      */
     public abstract void setParentGroup(UIGroup parentGroup);
 
     /**
-     * Returns an <tt>Iterator</tt> over a list of the search strings of this contact.
+     * Returns an <code>Iterator</code> over a list of the search strings of this contact.
      *
-     * @return an <tt>Iterator</tt> over a list of the search strings of this contact
+     * @return an <code>Iterator</code> over a list of the search strings of this contact
      */
     public abstract Iterator<String> getSearchStrings();
 
     /**
-     * Returns the default <tt>ContactDetail</tt> to use for any operations
-     * depending to the given <tt>OperationSet</tt> class.
+     * Returns the default <code>ContactDetail</code> to use for any operations
+     * depending to the given <code>OperationSet</code> class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class we're interested in
-     * @return the default <tt>ContactDetail</tt> to use for any operations
-     * depending to the given <tt>OperationSet</tt> class
+     * @param opSetClass the <code>OperationSet</code> class we're interested in
+     * @return the default <code>ContactDetail</code> to use for any operations
+     * depending to the given <code>OperationSet</code> class
      */
     public abstract UIContactDetail getDefaultContactDetail(
         Class<? extends OperationSet> opSetClass);
 
     /**
-     * Returns a list of all <tt>UIContactDetail</tt>s corresponding to the
-     * given <tt>OperationSet</tt> class.
+     * Returns a list of all <code>UIContactDetail</code>s corresponding to the
+     * given <code>OperationSet</code> class.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>UIContactDetail</tt>s corresponding to the
-     * given <tt>OperationSet</tt> class
+     * @param opSetClass the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>UIContactDetail</code>s corresponding to the
+     * given <code>OperationSet</code> class
      */
     public abstract List<UIContactDetail> getContactDetailsForOperationSet(
         Class<? extends OperationSet> opSetClass);
 
     /**
-     * Returns a list of all <tt>UIContactDetail</tt>s within this <tt>UIContact</tt>.
+     * Returns a list of all <code>UIContactDetail</code>s within this <code>UIContact</code>.
      *
-     * @return a list of all <tt>UIContactDetail</tt>s within this <tt>UIContact</tt>
+     * @return a list of all <code>UIContactDetail</code>s within this <code>UIContact</code>
      */
     public abstract List<UIContactDetail> getContactDetails();
 
@@ -143,7 +143,7 @@ public abstract class UIContact
     /**
      * Returns all custom action menu items for this contact.
      * 
-     * @param initActions if <tt>true</tt> the actions will be reloaded.
+     * @param initActions if <code>true</code> the actions will be reloaded.
      * @return a list of all custom action menu items for this contact.
      */
     public Collection<JMenuItem> getContactCustomActionMenuItems(

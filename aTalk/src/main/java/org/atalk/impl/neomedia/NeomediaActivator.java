@@ -30,7 +30,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Implements <tt>BundleActivator</tt> for the neomedia bundle.
+ * Implements <code>BundleActivator</code> for the neomedia bundle.
  *
  * @author Martin Andre
  * @author Emil Ivov
@@ -71,19 +71,19 @@ public class NeomediaActivator implements BundleActivator
     private static final String DEVICE_CONFIGURATION_HAS_CHANGED = "DeviceConfigurationChanged";
 
     /**
-     * The context in which the one and only <tt>NeomediaActivator</tt> instance has started executing.
+     * The context in which the one and only <code>NeomediaActivator</code> instance has started executing.
      */
     private static BundleContext bundleContext;
 
     /**
-     * The <tt>ConfigurationService</tt> registered in {@link #bundleContext} and used by the
-     * <tt>NeomediaActivator</tt> instance to read and write configuration properties.
+     * The <code>ConfigurationService</code> registered in {@link #bundleContext} and used by the
+     * <code>NeomediaActivator</code> instance to read and write configuration properties.
      */
     private static ConfigurationService configurationService;
 
     /**
-     * The <tt>FileAccessService</tt> registered in {@link #bundleContext} and used by the
-     * <tt>NeomediaActivator</tt> instance to safely access files.
+     * The <code>FileAccessService</code> registered in {@link #bundleContext} and used by the
+     * <code>NeomediaActivator</code> instance to safely access files.
      */
     private static FileAccessService fileAccessService;
 
@@ -93,13 +93,13 @@ public class NeomediaActivator implements BundleActivator
     private static NotificationService notificationService;
 
     /**
-     * The one and only <tt>MediaServiceImpl</tt> instance registered in {@link #bundleContext} by
-     * the <tt>NeomediaActivator</tt> instance.
+     * The one and only <code>MediaServiceImpl</code> instance registered in {@link #bundleContext} by
+     * the <code>NeomediaActivator</code> instance.
      */
     private static MediaServiceImpl mediaServiceImpl;
 
     /**
-     * The <tt>ResourceManagementService</tt> registered in {@link #bundleContext} and representing
+     * The <code>ResourceManagementService</code> registered in {@link #bundleContext} and representing
      * the resources such as internationalized and localized text and images used by the neomedia bundle.
      */
     private static ResourceManagementService resources;
@@ -278,9 +278,9 @@ public class NeomediaActivator implements BundleActivator
     }
 
     /**
-     * Gets the <tt>MediaService</tt> implementation instance registered by the neomedia bundle.
+     * Gets the <code>MediaService</code> implementation instance registered by the neomedia bundle.
      *
-     * @return the <tt>MediaService</tt> implementation instance registered by the neomedia bundle
+     * @return the <code>MediaService</code> implementation instance registered by the neomedia bundle
      */
     public static MediaServiceImpl getMediaServiceImpl()
     {
@@ -293,10 +293,10 @@ public class NeomediaActivator implements BundleActivator
     // }
 
     /**
-     * Gets the <tt>ResourceManagementService</tt> instance which represents the resources such as
+     * Gets the <code>ResourceManagementService</code> instance which represents the resources such as
      * internationalized and localized text and images used by the neomedia bundle.
      *
-     * @return the <tt>ResourceManagementService</tt> instance which represents the resources such
+     * @return the <code>ResourceManagementService</code> instance which represents the resources such
      * as internationalized and localized text and images used by the neomedia bundle
      */
     public static ResourceManagementService getResources()
@@ -308,9 +308,9 @@ public class NeomediaActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>NotificationService</tt> obtained from the bundle context.
+     * Returns the <code>NotificationService</code> obtained from the bundle context.
      *
-     * @return The <tt>NotificationService</tt> obtained from the bundle context.
+     * @return The <code>NotificationService</code> obtained from the bundle context.
      */
     public static NotificationService getNotificationService()
     {

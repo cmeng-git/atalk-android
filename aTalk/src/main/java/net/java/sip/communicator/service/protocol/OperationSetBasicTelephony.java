@@ -17,8 +17,8 @@ import java.util.Iterator;
  * Note that video is not considered as a part of a supplementary operation set and if included in
  * the service should be available behind the basic telephony set.
  *
- * @param <T> the provider extension class like for example <tt>ProtocolProviderServiceSipImpl</tt> or
- * <tt>ProtocolProviderServiceJabberImpl</tt>
+ * @param <T> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
+ * <code>ProtocolProviderServiceJabberImpl</code>
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -114,61 +114,61 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
     void removeCallListener(CallListener listener);
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her <tt>String</tt> URI.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>String</code> URI.
      *
-     * @param uri the address of the callee who we should invite to a new <tt>Call</tt>
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @param uri the address of the callee who we should invite to a new <code>Call</code>
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
-     * @throws ParseException if <tt>callee</tt> is not a valid SIP address <tt>String</tt>
+     * @throws ParseException if <code>callee</code> is not a valid SIP address <code>String</code>
      */
     Call createCall(String uri)
             throws OperationFailedException, ParseException;
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her <tt>Contact</tt>.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>Contact</code>.
      *
      * @param callee the address of the callee who we should invite to a new call
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      */
     Call createCall(Contact callee)
             throws OperationFailedException;
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her <tt>String</tt> URI.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>String</code> URI.
      *
-     * @param uri the address of the callee who we should invite to a new <tt>Call</tt>
-     * @param conference the <tt>CallConference</tt> in which the newly-created <tt>Call</tt> is to participate
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @param uri the address of the callee who we should invite to a new <code>Call</code>
+     * @param conference the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
-     * @throws ParseException if <tt>callee</tt> is not a valid SIP address <tt>String</tt>
+     * @throws ParseException if <code>callee</code> is not a valid SIP address <code>String</code>
      */
     Call createCall(String uri, CallConference conference)
             throws OperationFailedException, ParseException;
 
     /**
-     * Creates a new <tt>Call</tt> and invites a specific <tt>CallPeer</tt> to it given by her <tt>Contact</tt>.
+     * Creates a new <code>Call</code> and invites a specific <code>CallPeer</code> to it given by her <code>Contact</code>.
      *
      * @param callee the address of the callee who we should invite to a new call
-     * @param conference the <tt>CallConference</tt> in which the newly-created <tt>Call</tt> is to participate
-     * @return a newly created <tt>Call</tt>. The specified <tt>callee</tt> is available in the
-     * <tt>Call</tt> as a <tt>CallPeer</tt>
+     * @param conference the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+     * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
+     * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
      */
     Call createCall(Contact callee, CallConference conference)
             throws OperationFailedException;
 
     /**
-     * Creates a new <tt>Call</tt> and sends an invite to the conference described in <tt>cd</tt>. A
-     * <tt>CallPeer</tt> corresponding the <tt>cd</tt> will be created and added to the returned <tt>Call</tt>
+     * Creates a new <code>Call</code> and sends an invite to the conference described in <code>cd</code>. A
+     * <code>CallPeer</code> corresponding the <code>cd</code> will be created and added to the returned <code>Call</code>
      *
      * @param cd the conference to send an invite to
      * @param chatRoom the chat room associated with the call.
-     * @return a newly created <tt>Call</tt>, to which a <tt>CallPeer</tt> corresponding to
-     * <tt>cd</tt> has been added.
+     * @return a newly created <code>Call</code>, to which a <code>CallPeer</code> corresponding to
+     * <code>cd</code> has been added.
      */
     Call createCall(ConferenceDescription cd, ChatRoom chatRoom)
             throws OperationFailedException;
@@ -212,7 +212,7 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
             throws OperationFailedException;
 
     /**
-     * Ends the call with the specified <tt>peer</tt>.
+     * Ends the call with the specified <code>peer</code>.
      *
      * @param peer the peer that we'd like to hang up on.
      * @param reasonCode indicates if the hangup is following to a call failure or simply a disconnect indicate
@@ -232,34 +232,34 @@ public interface OperationSetBasicTelephony<T extends ProtocolProviderService> e
     Iterator<? extends Call> getActiveCalls();
 
     /**
-     * Sets the mute state of the <tt>Call</tt>.
+     * Sets the mute state of the <code>Call</code>.
      * <p>
      * Muting audio streams sent from the call is implementation specific and one of the possible
      * approaches to it is sending silence.
      * </p>
      *
-     * @param call the <tt>Call</tt> whos mute state is set
-     * @param mute <tt>true</tt> to mute the call streams being sent to <tt>peers</tt>; otherwise, <tt>false</tt>
+     * @param call the <code>Call</code> whos mute state is set
+     * @param mute <code>true</code> to mute the call streams being sent to <code>peers</code>; otherwise, <code>false</code>
      */
     void setMute(Call call, boolean mute);
 
     /**
      * Returns the protocol provider that this operation set belongs to.
      *
-     * @return a reference to the <tt>ProtocolProviderService</tt> that created this operation set.
+     * @return a reference to the <code>ProtocolProviderService</code> that created this operation set.
      */
     T getProtocolProvider();
 
     /**
-     * Creates a new <tt>Recorder</tt> which is to record the specified <tt>Call</tt> (into a file
-     * which is to be specified when starting the returned <tt>Recorder</tt>).
+     * Creates a new <code>Recorder</code> which is to record the specified <code>Call</code> (into a file
+     * which is to be specified when starting the returned <code>Recorder</code>).
      *
-     * @param call the <tt>Call</tt> which is to be recorded by the returned <tt>Recorder</tt> when the
+     * @param call the <code>Call</code> which is to be recorded by the returned <code>Recorder</code> when the
      * latter is started
-     * @return a new <tt>Recorder</tt> which is to record the specified <tt>call</tt> (into a file
-     * which is to be specified when starting the returned <tt>Recorder</tt>)
-     * @throws OperationFailedException if anything goes wrong while creating the new <tt>Recorder</tt>
-     * for the specified <tt>call</tt>
+     * @return a new <code>Recorder</code> which is to record the specified <code>call</code> (into a file
+     * which is to be specified when starting the returned <code>Recorder</code>)
+     * @throws OperationFailedException if anything goes wrong while creating the new <code>Recorder</code>
+     * for the specified <code>call</code>
      */
     Recorder createRecorder(Call call)
             throws OperationFailedException;

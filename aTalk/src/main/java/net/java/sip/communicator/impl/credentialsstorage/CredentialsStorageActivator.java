@@ -55,7 +55,7 @@ public class CredentialsStorageActivator implements BundleActivator
     /**
      * Starts the credentials storage service
      *
-     * @param bundleContext the <tt>BundleContext</tt> as provided from the OSGi framework
+     * @param bundleContext the <code>BundleContext</code> as provided from the OSGi framework
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)

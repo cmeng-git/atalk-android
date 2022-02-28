@@ -12,7 +12,7 @@ package net.java.sip.communicator.service.protocol;
  * This class provides easy access to the content and key fields of an instant IMessage. Content
  * types are represented using MIME types. [IETF RFC 2045-2048].
  * <p>
- * Messages are created through the <tt>OperationSetBasicInstanceMessaging</tt> operation set.
+ * Messages are created through the <code>OperationSetBasicInstanceMessaging</code> operation set.
  * <p>
  * All messages have message ids that allow the underlying implementation to notify the user of
  * their successful delivery.

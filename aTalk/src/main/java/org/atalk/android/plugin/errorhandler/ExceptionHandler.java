@@ -17,18 +17,18 @@ import java.io.File;
 import timber.log.Timber;
 
 /**
- * The <tt>ExceptionHandler</tt> is used to catch unhandled exceptions which occur on the UI
- * <tt>Thread</tt>. Those exceptions normally cause current <tt>Activity</tt> to freeze and the
+ * The <code>ExceptionHandler</code> is used to catch unhandled exceptions which occur on the UI
+ * <code>Thread</code>. Those exceptions normally cause current <code>Activity</code> to freeze and the
  * process usually must be killed after the Application Not Responding dialog is displayed. This
  * handler kills Jitsi process at the moment when the exception occurs, so that user don't have
- * to wait for ANR dialog. It also marks in <tt>SharedPreferences</tt> that such crash has
+ * to wait for ANR dialog. It also marks in <code>SharedPreferences</code> that such crash has
  * occurred. Next time the Jitsi is started it will ask the user if he wants to send the logs.<br/>
  * <p>
  * Usually system restarts Jitsi and it's service automatically after the process was killed.
- * That's because the service was still bound to some <tt>Activities</tt> at the moment when the
+ * That's because the service was still bound to some <code>Activities</code> at the moment when the
  * exception occurred.<br/>
  * <p>
- * The handler is bound to the <tt>Thread</tt> in every <tt>OSGiActivity</tt>.
+ * The handler is bound to the <code>Thread</code> in every <code>OSGiActivity</code>.
  *
  * @author Pawel Domas
  */
@@ -40,10 +40,10 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	private final Thread.UncaughtExceptionHandler parent;
 
 	/**
-	 * Creates new instance of <tt>ExceptionHandler</tt> bound to given <tt>Thread</tt>.
+	 * Creates new instance of <code>ExceptionHandler</code> bound to given <code>Thread</code>.
 	 *
 	 * @param t
-	 * 		the <tt>Thread</tt> which will be handled.
+	 * 		the <code>Thread</code> which will be handled.
 	 */
 	private ExceptionHandler(Thread t)
 	{
@@ -52,7 +52,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	}
 
 	/**
-	 * Checks and attaches the <tt>ExceptionHandler</tt> if it hasn't been bound already.
+	 * Checks and attaches the <code>ExceptionHandler</code> if it hasn't been bound already.
 	 */
 	public static void checkAndAttachExceptionHandler()
 	{
@@ -65,7 +65,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	}
 
 	/**
-	 * Marks the crash in <tt>SharedPreferences</tt> and kills the process.
+	 * Marks the crash in <code>SharedPreferences</code> and kills the process.
 	 * Storage: /data/data/org.atalk.android/files/log/atalk-crash-logcat.txt
 	 * <p>
 	 * {@inheritDoc}
@@ -94,9 +94,9 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	}
 
 	/**
-	 * Returns <tt>SharedPreferences</tt> used to mark the crash event.
+	 * Returns <code>SharedPreferences</code> used to mark the crash event.
 	 *
-	 * @return <tt>SharedPreferences</tt> used to mark the crash event.
+	 * @return <code>SharedPreferences</code> used to mark the crash event.
 	 */
 	private static SharedPreferences getStorage()
 	{
@@ -104,7 +104,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	}
 
 	/**
-	 * Marks that the crash has occurred in <tt>SharedPreferences</tt>.
+	 * Marks that the crash has occurred in <code>SharedPreferences</code>.
 	 */
 	private static void markCrashedEvent()
 	{
@@ -112,9 +112,9 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	}
 
 	/**
-	 * Returns <tt>true</tt> if Jitsi crash was detected.
+	 * Returns <code>true</code> if Jitsi crash was detected.
 	 *
-	 * @return <tt>true</tt> if Jitsi crash was detected.
+	 * @return <code>true</code> if Jitsi crash was detected.
 	 */
 	public static boolean hasCrashed()
 	{

@@ -18,7 +18,7 @@ package net.java.sip.communicator.service.customcontactactions;
 import java.util.*;
 
 /**
- * The <tt>CustomContactActionsService</tt> can be used to define a set of
+ * The <code>CustomContactActionsService</code> can be used to define a set of
  * custom actions for a contact list entry.
  *
  * @author Damian Minkov
@@ -35,14 +35,14 @@ public interface CustomContactActionsService<T>
     /**
      * Returns all custom actions defined by this service.
      *
-     * @return an iterator over a list of <tt>ContactAction</tt>s
+     * @return an iterator over a list of <code>ContactAction</code>s
      */
     public Iterator<ContactAction<T>> getCustomContactActions();
     
     /**
      * Returns all custom actions menu items defined by this service.
      *
-     * @return an iterator over a list of <tt>ContactActionMenuItem</tt>s
+     * @return an iterator over a list of <code>ContactActionMenuItem</code>s
      */
     public Iterator<ContactActionMenuItem<T>> getCustomContactActionsMenuItems();
 }

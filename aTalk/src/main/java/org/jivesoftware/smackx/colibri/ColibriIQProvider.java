@@ -12,18 +12,19 @@ import org.jivesoftware.smack.provider.*;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.jingle.*;
-import org.jxmpp.jid.parts.Localpart;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
+import org.jivesoftware.smackx.DefaultXmlElementProvider;
+import org.jivesoftware.smackx.jingle.*;
 import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
+import org.jxmpp.jid.parts.Localpart;
 
 import java.io.IOException;
 
 import timber.log.Timber;
 
 /**
- * Implements an <tt>org.jivesoftware.smack.provider.IQProvider</tt> for the Jitsi Videobridge
- * extension <tt>ColibriConferenceIQ</tt>.
+ * Implements an <code>org.jivesoftware.smack.provider.IQProvider</code> for the Jitsi Videobridge
+ * extension <code>ColibriConferenceIQ</code>.
  *
  * @author Lyubomir Marinov
  * @author Boris Grozev
@@ -32,49 +33,40 @@ import timber.log.Timber;
 public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 {
     /**
-     * Initializes a new <tt>ColibriIQProvider</tt> instance.
+     * Initializes a new <code>ColibriIQProvider</code> instance; only for those no defined in JingleProvider.
      */
     public ColibriIQProvider()
     {
         ProviderManager.addExtensionProvider(
-                PayloadTypeExtension.ELEMENT, ColibriConferenceIQ.NAMESPACE,
-                new DefaultExtensionElementProvider<>(PayloadTypeExtension.class));
+                PayloadType.ELEMENT, ColibriConferenceIQ.NAMESPACE,
+                new DefaultXmlElementProvider<>(PayloadType.class, ColibriConferenceIQ.NAMESPACE));
 
         ProviderManager.addExtensionProvider(
-                RtcpFbExtension.ELEMENT, RtcpFbExtension.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RtcpFbExtension.class));
+                RtpHeader.ELEMENT, ColibriConferenceIQ.NAMESPACE,
+                new DefaultXmlElementProvider<>(RtpHeader.class, ColibriConferenceIQ.NAMESPACE));
 
         ProviderManager.addExtensionProvider(
-                RTPHdrExtExtension.ELEMENT, ColibriConferenceIQ.NAMESPACE,
-                new DefaultExtensionElementProvider<>(RTPHdrExtExtension.class));
+                SdpSource.ELEMENT, SdpSource.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpSource.class));
 
         ProviderManager.addExtensionProvider(
-                SourceExtension.ELEMENT, SourceExtension.NAMESPACE,
-                new DefaultExtensionElementProvider<>(SourceExtension.class));
+                SdpSourceGroup.ELEMENT, SdpSourceGroup.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpSourceGroup.class));
 
         ProviderManager.addExtensionProvider(
-                SourceGroupExtension.ELEMENT, SourceGroupExtension.NAMESPACE,
-                new DefaultExtensionElementProvider<>(SourceGroupExtension.class));
+                SdpSourceRidGroup.ELEMENT, SdpSourceRidGroup.NAMESPACE,
+                new DefaultXmlElementProvider<>(SdpSourceRidGroup.class));
 
         ProviderManager.addExtensionProvider(
-                SourceRidGroupExtension.ELEMENT, SourceRidGroupExtension.NAMESPACE,
-                new DefaultExtensionElementProvider<>(SourceRidGroupExtension.class));
-
-        ExtensionElementProvider<ParameterExtension> parameterPacketExtension
-                = new DefaultExtensionElementProvider<>(ParameterExtension.class);
-
-        ProviderManager.addExtensionProvider(
-                ParameterExtension.ELEMENT, ColibriConferenceIQ.NAMESPACE, parameterPacketExtension);
-
-        ProviderManager.addExtensionProvider(
-                ParameterExtension.ELEMENT, SourceExtension.NAMESPACE, parameterPacketExtension);
+                ParameterElement.ELEMENT, ColibriConferenceIQ.NAMESPACE,
+                new DefaultXmlElementProvider<>(ParameterElement.class, ColibriConferenceIQ.NAMESPACE));
 
         // Shutdown IQ
         ProviderManager.addIQProvider(ShutdownIQ.GRACEFUL_ELEMENT, ShutdownIQ.NAMESPACE, this);
         ProviderManager.addIQProvider(ShutdownIQ.FORCE_ELEMENT, ShutdownIQ.NAMESPACE, this);
 
         // Shutdown extension
-        ExtensionElementProvider shutdownProvider
+        ExtensionElementProvider<?> shutdownProvider
                 = new DefaultExtensionElementProvider<>(ColibriConferenceIQ.GracefulShutdown.class);
         ProviderManager.addExtensionProvider(
                 ColibriConferenceIQ.GracefulShutdown.ELEMENT, ColibriConferenceIQ.GracefulShutdown.NAMESPACE,
@@ -84,13 +76,13 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
         ProviderManager.addIQProvider(ColibriStatsIQ.ELEMENT, ColibriStatsIQ.NAMESPACE, this);
 
         // ColibriStatsExtensionElement
-        ExtensionElementProvider statsProvider
+        ExtensionElementProvider<?> statsProvider
                 = new DefaultExtensionElementProvider<>(ColibriStatsExtension.class);
         ProviderManager.addExtensionProvider(
                 ColibriStatsExtension.ELEMENT, ColibriStatsExtension.NAMESPACE, statsProvider);
 
         // ColibriStatsExtensionElement.Stat
-        ExtensionElementProvider statProvider
+        ExtensionElementProvider<?> statProvider
                 = new DefaultExtensionElementProvider<>(ColibriStatsExtension.Stat.class);
         ProviderManager.addExtensionProvider(
                 ColibriStatsExtension.Stat.ELEMENT, ColibriStatsExtension.NAMESPACE, statProvider);
@@ -103,8 +95,8 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 
     private void addChildExtension(ColibriConferenceIQ.Channel channel, ExtensionElement childExtension)
     {
-        if (childExtension instanceof PayloadTypeExtension) {
-            PayloadTypeExtension payloadType = (PayloadTypeExtension) childExtension;
+        if (childExtension instanceof PayloadType) {
+            PayloadType payloadType = (PayloadType) childExtension;
             if ("opus".equals(payloadType.getName()) && (payloadType.getChannels() != 2)) {
                 /*
                  * We only have a Format for opus with 2 channels, because it MUST be advertised
@@ -112,22 +104,25 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                  * with agents who advertise it with 1 channel.
                  */
                 payloadType.setChannels(2);
+//                payloadType = ((PayloadType.Builder) payloadType.getBuilder(payloadType.getNamespace()))
+//                        .setChannels(2)
+//                        .build();
             }
             channel.addPayloadType(payloadType);
         }
-        else if (childExtension instanceof IceUdpTransportExtension) {
-            IceUdpTransportExtension transport = (IceUdpTransportExtension) childExtension;
+        else if (childExtension instanceof IceUdpTransport) {
+            IceUdpTransport transport = (IceUdpTransport) childExtension;
             channel.setTransport(transport);
         }
-        else if (childExtension instanceof SourceExtension) {
-            channel.addSource((SourceExtension) childExtension);
+        else if (childExtension instanceof SdpSource) {
+            channel.addSource((SdpSource) childExtension);
         }
-        else if (childExtension instanceof SourceGroupExtension) {
-            SourceGroupExtension sourceGroup = (SourceGroupExtension) childExtension;
+        else if (childExtension instanceof SdpSourceGroup) {
+            SdpSourceGroup sourceGroup = (SdpSourceGroup) childExtension;
             channel.addSourceGroup(sourceGroup);
         }
-        else if (childExtension instanceof RTPHdrExtExtension) {
-            RTPHdrExtExtension rtpHdrExtPacketExtension = (RTPHdrExtExtension) childExtension;
+        else if (childExtension instanceof RtpHeader) {
+            RtpHeader rtpHdrExtPacketExtension = (RtpHeader) childExtension;
             channel.addRtpHeaderExtension(rtpHdrExtPacketExtension);
         }
         else {
@@ -137,8 +132,8 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
 
     private void addChildExtension(ColibriConferenceIQ.ChannelBundle bundle, ExtensionElement childExtension)
     {
-        if (childExtension instanceof IceUdpTransportExtension) {
-            IceUdpTransportExtension transport = (IceUdpTransportExtension) childExtension;
+        if (childExtension instanceof IceUdpTransport) {
+            IceUdpTransport transport = (IceUdpTransport) childExtension;
             bundle.setTransport(transport);
         }
     }
@@ -146,8 +141,8 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
     private void addChildExtension(ColibriConferenceIQ.SctpConnection sctpConnection,
             ExtensionElement childExtension)
     {
-        if (childExtension instanceof IceUdpTransportExtension) {
-            IceUdpTransportExtension transport = (IceUdpTransportExtension) childExtension;
+        if (childExtension instanceof IceUdpTransport) {
+            IceUdpTransport transport = (IceUdpTransport) childExtension;
             sctpConnection.setTransport(transport);
         }
     }
@@ -155,7 +150,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
     private ExtensionElement parseExtension(XmlPullParser parser, String name, String namespace)
             throws XmlPullParserException, IOException, SmackParsingException
     {
-        ExtensionElementProvider extensionProvider = ProviderManager.getExtensionProvider(name, namespace);
+        ExtensionElementProvider<?> extensionProvider = ProviderManager.getExtensionProvider(name, namespace);
         ExtensionElement extension;
         if (extensionProvider == null) {
             /*
@@ -166,17 +161,17 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
             extension = null;
         }
         else {
-            extension = (ExtensionElement) extensionProvider.parse(parser);
+            extension = extensionProvider.parse(parser);
         }
         return extension;
     }
 
     /**
-     * Parses an IQ sub-document and creates an <tt>org.jivesoftware.smack.packet.IQ</tt> instance.
+     * Parses an IQ sub-document and creates an <code>org.jivesoftware.smack.packet.IQ</code> instance.
      *
-     * @param parser an <tt>XmlPullParser</tt> which specifies the IQ sub-document to be parsed into a new
-     * <tt>IQ</tt> instance
-     * @return a new <tt>IQ</tt> instance parsed from the specified IQ sub-document
+     * @param parser an <code>XmlPullParser</code> which specifies the IQ sub-document to be parsed into a new
+     * <code>IQ</code> instance
+     * @return a new <code>IQ</code> instance parsed from the specified IQ sub-document
      */
     // Compatibility with legacy Jitsi and Jitsi Videobridge
     @SuppressWarnings("deprecation")
@@ -244,7 +239,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             conferenceEndpoint = null;
                         }
                         else if (ColibriConferenceIQ.Channel.SSRC_ELEMENT.equals(name)) {
-                            String s =  (ssrc == null) ? null :  ssrc.toString().trim();
+                            String s = (ssrc == null) ? null : ssrc.toString().trim();
                             if (StringUtils.isNotEmpty(s)) {
                                 int i;
 
@@ -499,12 +494,12 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                             String peName = null;
                             String peNamespace = null;
 
-                            if (IceUdpTransportExtension.ELEMENT.equals(name)
-                                    && IceUdpTransportExtension.NAMESPACE.equals(parser.getNamespace())) {
+                            if (IceUdpTransport.ELEMENT.equals(name)
+                                    && IceUdpTransport.NAMESPACE.equals(parser.getNamespace())) {
                                 peName = name;
-                                peNamespace = IceUdpTransportExtension.NAMESPACE;
+                                peNamespace = IceUdpTransport.NAMESPACE;
                             }
-                            else if (PayloadTypeExtension.ELEMENT.equals(name)) {
+                            else if (PayloadType.ELEMENT.equals(name)) {
                                 /*
                                  * The channel element of the Jitsi Videobridge protocol reuses the
                                  * payload-type element defined in XEP-0167: Jingle RTP Sessions.
@@ -512,8 +507,8 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                                 peName = name;
                                 peNamespace = namespace;
                             }
-                            else if (RtcpFbExtension.ELEMENT.equals(name)
-                                    && RtcpFbExtension.NAMESPACE.equals(parser.getNamespace())) {
+                            else if (RtcpFb.ELEMENT.equals(name)
+                                    && RtcpFb.NAMESPACE.equals(parser.getNamespace())) {
                                 /*
                                  * The channel element of the Jitsi Videobridge protocol reuses the
                                  * payload-type element defined in XEP-0167: Jingle RTP Sessions.
@@ -521,7 +516,7 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                                 peName = name;
                                 peNamespace = namespace;
                             }
-                            else if (RTPHdrExtExtension.ELEMENT.equals(name)) {
+                            else if (RtpHeader.ELEMENT.equals(name)) {
                                 /*
                                  * The channel element of the Jitsi Videobridge protocol reuses the
                                  * rtp-hdrext element defined in XEP-0167: Jingle RTP Sessions.
@@ -529,25 +524,25 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
                                 peName = name;
                                 peNamespace = namespace;
                             }
-                            else if (RawUdpTransportExtension.ELEMENT.equals(name)
-                                    && RawUdpTransportExtension.NAMESPACE.equals(parser.getNamespace())) {
+                            else if (RawUdpTransport.ELEMENT.equals(name)
+                                    && RawUdpTransport.NAMESPACE.equals(parser.getNamespace())) {
                                 peName = name;
-                                peNamespace = RawUdpTransportExtension.NAMESPACE;
+                                peNamespace = RawUdpTransport.NAMESPACE;
                             }
-                            else if (SourceExtension.ELEMENT.equals(name)
-                                    && SourceExtension.NAMESPACE.equals(parser.getNamespace())) {
+                            else if (SdpSource.ELEMENT.equals(name)
+                                    && SdpSource.NAMESPACE.equals(parser.getNamespace())) {
                                 peName = name;
-                                peNamespace = SourceExtension.NAMESPACE;
+                                peNamespace = SdpSource.NAMESPACE;
                             }
-                            else if (SourceGroupExtension.ELEMENT.equals(name)
-                                    && SourceGroupExtension.NAMESPACE.equals(parser.getNamespace())) {
+                            else if (SdpSourceGroup.ELEMENT.equals(name)
+                                    && SdpSourceGroup.NAMESPACE.equals(parser.getNamespace())) {
                                 peName = name;
-                                peNamespace = SourceGroupExtension.NAMESPACE;
+                                peNamespace = SdpSourceGroup.NAMESPACE;
                             }
-                            else if (SourceRidGroupExtension.ELEMENT.equals(name)
-                                    && SourceRidGroupExtension.NAMESPACE.equals(parser.getNamespace())) {
+                            else if (SdpSourceRidGroup.ELEMENT.equals(name)
+                                    && SdpSourceRidGroup.NAMESPACE.equals(parser.getNamespace())) {
                                 peName = name;
-                                peNamespace = SourceRidGroupExtension.NAMESPACE;
+                                peNamespace = SdpSourceRidGroup.NAMESPACE;
                             }
                             if (peName == null) {
                                 throwAway(parser, name);
@@ -642,12 +637,12 @@ public class ColibriIQProvider extends IQProvider<ColibriConferenceIQ>
     }
 
     /**
-     * Parses using a specific <tt>XmlPullParser</tt> and ignores XML content presuming that the
-     * specified <tt>parser</tt> is currently at the start tag of an element with a specific name
+     * Parses using a specific <code>XmlPullParser</code> and ignores XML content presuming that the
+     * specified <code>parser</code> is currently at the start tag of an element with a specific name
      * and throwing away until the end tag with the specified name is encountered.
      *
-     * @param parser the <tt>XmlPullParser</tt> which parses the XML content
-     * @param name the name of the element at the start tag of which the specified <tt>parser</tt> is
+     * @param parser the <code>XmlPullParser</code> which parses the XML content
+     * @param name the name of the element at the start tag of which the specified <code>parser</code> is
      * presumed to currently be and until the end tag of which XML content is to be thrown away
      * @throws IOException, XmlPullParserException if an errors occurs while parsing the XML content
      */

@@ -27,7 +27,7 @@ public abstract class CallChangeAdapter implements CallChangeListener
 	 * A dummy implementation of this listener's callPeerAdded() method.
 	 *
 	 * @param evt
-	 *        the <tt>CallPeerEvent</tt> containing the source call and call peer.
+	 *        the <code>CallPeerEvent</code> containing the source call and call peer.
 	 */
 	public void callPeerAdded(CallPeerEvent evt)
 	{
@@ -37,7 +37,7 @@ public abstract class CallChangeAdapter implements CallChangeListener
 	 * A dummy implementation of this listener's callPeerRemoved() method.
 	 *
 	 * @param evt
-	 *        the <tt>CallPeerEvent</tt> containing the source call and call peer.
+	 *        the <code>CallPeerEvent</code> containing the source call and call peer.
 	 */
 	public void callPeerRemoved(CallPeerEvent evt)
 	{
@@ -47,7 +47,7 @@ public abstract class CallChangeAdapter implements CallChangeListener
 	 * A dummy implementation of this listener's callStateChanged() method.
 	 *
 	 * @param evt
-	 *        the <tt>CallChangeEvent</tt> instance containing the source calls and its old and new
+	 *        the <code>CallChangeEvent</code> instance containing the source calls and its old and new
 	 *        state.
 	 */
 	public void callStateChanged(CallChangeEvent evt)

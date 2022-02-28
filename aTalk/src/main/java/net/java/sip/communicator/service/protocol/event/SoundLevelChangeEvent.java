@@ -16,16 +16,16 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.*;
 
 /**
- * <tt>SoundLevelChangeEvent</tt>s are triggered whenever a change occurs in the sound level of the
- * audio stream coming from a certain <tt>CallPeer</tt>.
+ * <code>SoundLevelChangeEvent</code>s are triggered whenever a change occurs in the sound level of the
+ * audio stream coming from a certain <code>CallPeer</code>.
  * <p>
- * In the case of a <tt>CallPeer</tt>, which is also a conference focus and is participating in the
- * conference as a <tt>ConferenceMember</tt> the level would be the aggregated level of all
- * <tt>ConferenceMember</tt>s levels including the one corresponding to the peer itself.
+ * In the case of a <code>CallPeer</code>, which is also a conference focus and is participating in the
+ * conference as a <code>ConferenceMember</code> the level would be the aggregated level of all
+ * <code>ConferenceMember</code>s levels including the one corresponding to the peer itself.
  * <p>
- * In the case of a <tt>CallPeer</tt>, which is also a conference focus, but is NOT participating in
- * the conference as a <tt>ConferenceMember</tt> (server) the level would be the aggregated level of
- * all attached <tt>ConferenceMember</tt>s.
+ * In the case of a <code>CallPeer</code>, which is also a conference focus, but is NOT participating in
+ * the conference as a <code>ConferenceMember</code> (server) the level would be the aggregated level of
+ * all attached <code>ConferenceMember</code>s.
  *
  * @author Yana Stamcheva
  */
@@ -38,25 +38,25 @@ public class SoundLevelChangeEvent extends EventObject
 
 	/**
 	 * The maximum level that can be reported for a participant. Level values should be distributed
-	 * among <tt>MAX_LEVEL</tt> and {@link #MIN_LEVEL} in a way that would appear uniform to users.
+	 * among <code>MAX_LEVEL</code> and {@link #MIN_LEVEL} in a way that would appear uniform to users.
 	 * <p>
 	 * <b>Warning</b>: The value should be equal to
-	 * <tt>net.java.sip.communicator.service.neomedia.event.SimpleAudioLevelListener#MAX_VALUE</tt>
-	 * because we do not currently perform a conversion from the <tt>SimpleAudioLevelListener</tt>
-	 * range to the <tt>SoundLevelChangeEvent</tt> range when we fire the event.
+	 * <code>net.java.sip.communicator.service.neomedia.event.SimpleAudioLevelListener#MAX_VALUE</code>
+	 * because we do not currently perform a conversion from the <code>SimpleAudioLevelListener</code>
+	 * range to the <code>SoundLevelChangeEvent</code> range when we fire the event.
 	 * </p>
 	 */
 	public static final int MAX_LEVEL = 127;
 
 	/**
 	 * The maximum (zero) level that can be reported for a participant. Level values should be
-	 * distributed among {@link #MAX_LEVEL} and <tt>MIN_LEVEL</tt> in a way that would appear
+	 * distributed among {@link #MAX_LEVEL} and <code>MIN_LEVEL</code> in a way that would appear
 	 * uniform to users.
 	 * <p>
 	 * <b>Warning</b>: The value should be equal to
-	 * <tt>net.java.sip.communicator.service.neomedia.event.SimpleAudioLevelListener#MIN_VALUE</tt>
-	 * because we do not currently perform a conversion from the <tt>SimpleAudioLevelListener</tt>
-	 * range to the <tt>SoundLevelChangeEvent</tt> range when we fire the event.
+	 * <code>net.java.sip.communicator.service.neomedia.event.SimpleAudioLevelListener#MIN_VALUE</code>
+	 * because we do not currently perform a conversion from the <code>SimpleAudioLevelListener</code>
+	 * range to the <code>SoundLevelChangeEvent</code> range when we fire the event.
 	 * </p>
 	 */
 	public static final int MIN_LEVEL = 0;
@@ -67,7 +67,7 @@ public class SoundLevelChangeEvent extends EventObject
 	private final int level;
 
 	/**
-	 * Creates an <tt>StreamSoundLevelEvent</tt> for the given <tt>callPeer</tt> by indicating the
+	 * Creates an <code>StreamSoundLevelEvent</code> for the given <code>callPeer</code> by indicating the
 	 * current sound level of the audio stream.
 	 *
 	 * @param source

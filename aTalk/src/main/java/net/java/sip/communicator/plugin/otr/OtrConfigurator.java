@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * A class that gets/sets the OTR configuration values. Introduced to assure our
- * configuration is properly written when <tt>XMLConfigurationStore</tt> is
+ * configuration is properly written when <code>XMLConfigurationStore</code> is
  * used. Can be seen as a proxy between the {@link ConfigurationService} and the
  * OTR Plugin.
  *
@@ -63,7 +63,7 @@ public class OtrConfigurator {
 	 * proxy).
 	 *
 	 * @param id of the property that is being queried.
-	 * @return the <tt>byte[]</tt> value of the property with the specified name.
+	 * @return the <code>byte[]</code> value of the property with the specified name.
 	 */
 	public byte[] getPropertyBytes(String id) {
 		String value = OtrActivator.configService.getString(getID(id));
@@ -77,7 +77,7 @@ public class OtrConfigurator {
 	 * @param id of the property that is being queried.
 	 * @param defaultValue the value to be returned if the specified property
 	 * name is not associated with a value.
-	 * @return the <tt>Boolean</tt> value of the property with the specified name.
+	 * @return the <code>Boolean</code> value of the property with the specified name.
 	 */
 	public boolean getPropertyBoolean(String id, boolean defaultValue) {
 		return OtrActivator.configService.getBoolean(getID(id), defaultValue);
@@ -123,14 +123,14 @@ public class OtrConfigurator {
 	 * @param id the name of the property to change.
 	 * @param defaultValue the value to be returned if the specified property
 	 * name is not associated with a value.
-	 * @return the <tt>int</tt> value of the property
+	 * @return the <code>int</code> value of the property
 	 */
 	public int  getPropertyInt(String id, int defaultValue) {
 		return OtrActivator.configService.getInt(getID(id), defaultValue);
 	}
 
 	/**
-	 * Appends <tt>value</tt> to the old value of the property with the
+	 * Appends <code>value</code> to the old value of the property with the
 	 * specified name. The two values will be comma separated.
 	 *
 	 * @param id the name of the property to append to

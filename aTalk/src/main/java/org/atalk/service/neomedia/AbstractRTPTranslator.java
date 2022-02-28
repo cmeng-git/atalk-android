@@ -14,18 +14,18 @@ package org.atalk.service.neomedia;
 public abstract class AbstractRTPTranslator implements RTPTranslator
 {
 	/**
-	 * An empty array with element type <tt>WriteFilter</tt>. Explicitly defined in order to reduce
+	 * An empty array with element type <code>WriteFilter</code>. Explicitly defined in order to reduce
 	 * unnecessary allocations and the consequent effects of the garbage collector.
 	 */
 	private static final WriteFilter[] NO_WRITE_FILTERS = new WriteFilter[0];
 
 	/**
-	 * The <tt>WriteFilter</tt>s added to this <tt>RTPTranslator</tt>.
+	 * The <code>WriteFilter</code>s added to this <code>RTPTranslator</code>.
 	 */
 	private WriteFilter[] writeFilters = NO_WRITE_FILTERS;
 
 	/**
-	 * The <tt>Object</tt> which synchronizes the access to {@link #writeFilters}.
+	 * The <code>Object</code> which synchronizes the access to {@link #writeFilters}.
 	 */
 	private final Object writeFiltersSyncRoot = new Object();
 
@@ -55,9 +55,9 @@ public abstract class AbstractRTPTranslator implements RTPTranslator
 	}
 
 	/**
-	 * Gets the <tt>WriteFilter</tt>s added to this <tt>RTPTranslator</tt>.
+	 * Gets the <code>WriteFilter</code>s added to this <code>RTPTranslator</code>.
 	 *
-	 * @return the <tt>WriteFilter</tt>s added to this <tt>RTPTranslator</tt>
+	 * @return the <code>WriteFilter</code>s added to this <code>RTPTranslator</code>
 	 */
 	protected WriteFilter[] getWriteFilters()
 	{
@@ -102,18 +102,18 @@ public abstract class AbstractRTPTranslator implements RTPTranslator
 	}
 
 	/**
-	 * Notifies this <tt>RTPTranslator</tt> that a <tt>buffer</tt> from a <tt>source</tt> will be
-	 * written into a <tt>destination</tt>.
+	 * Notifies this <code>RTPTranslator</code> that a <code>buffer</code> from a <code>source</code> will be
+	 * written into a <code>destination</code>.
 	 *
 	 * @param source
-	 *        the source of <tt>buffer</tt>
+	 *        the source of <code>buffer</code>
 	 * @param pkt
-	 *        the packet from <tt>source</tt> which is to be written into <tt>destination</tt>
+	 *        the packet from <code>source</code> which is to be written into <code>destination</code>
 	 * @param destination
-	 *        the destination into which <tt>buffer</tt> is to be written
+	 *        the destination into which <code>buffer</code> is to be written
 	 * @param data
-	 *        <tt>true</tt> for data/RTP or <tt>false</tt> for control/RTCP
-	 * @return <tt>true</tt> if the writing is to continue or <tt>false</tt> if the writing is to
+	 *        <code>true</code> for data/RTP or <code>false</code> for control/RTCP
+	 * @return <code>true</code> if the writing is to continue or <code>false</code> if the writing is to
 	 *         abort
 	 */
     protected boolean willWrite(MediaStream source, RawPacket pkt,
@@ -145,17 +145,17 @@ public abstract class AbstractRTPTranslator implements RTPTranslator
 	}
 
 	/**
-	 * Invokes a specific <tt>WriteFilter</tt>.
+	 * Invokes a specific <code>WriteFilter</code>.
 	 *
 	 * @param source
-	 *        the source of <tt>buffer</tt>
+	 *        the source of <code>buffer</code>
 	 * @param pkt
-	 *        the packet from <tt>source</tt> which is to be written into <tt>destination</tt>
+	 *        the packet from <code>source</code> which is to be written into <code>destination</code>
 	 * @param destination
-	 *        the destination into which <tt>buffer</tt> is to be written
+	 *        the destination into which <code>buffer</code> is to be written
 	 * @param data
-	 *        <tt>true</tt> for data/RTP or <tt>false</tt> for control/RTCP
-	 * @return <tt>true</tt> if the writing is to continue or <tt>false</tt> if the writing is to
+	 *        <code>true</code> for data/RTP or <code>false</code> for control/RTCP
+	 * @return <code>true</code> if the writing is to continue or <code>false</code> if the writing is to
 	 *         abort
 	 */
 	protected boolean willWrite(WriteFilter writeFilter, MediaStream source,

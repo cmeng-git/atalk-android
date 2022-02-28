@@ -49,7 +49,7 @@ public interface OperationSetTelephonyBLF extends OperationSet
 	 *        to try to pick up.
 	 *
 	 * @throws OperationFailedException
-	 *         if <tt>line</tt> address is not valid.
+	 *         if <code>line</code> address is not valid.
 	 */
 	public void pickup(Line line)
 		throws OperationFailedException;

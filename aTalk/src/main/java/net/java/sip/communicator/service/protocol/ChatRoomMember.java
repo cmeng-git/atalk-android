@@ -7,7 +7,7 @@ package net.java.sip.communicator.service.protocol;
 
 /**
  * This interface represents chat room participants. Instances are retrieved through implementations
- * of the <tt>ChatRoom</tt> interface and offer methods that allow querying member properties, such
+ * of the <code>ChatRoom</code> interface and offer methods that allow querying member properties, such
  * as, moderation permissions, associated chat room and other.
  *
  * @author Emil Ivov
@@ -19,14 +19,14 @@ public interface ChatRoomMember
     /**
      * Returns the chat room that this member is participating in.
      *
-     * @return the <tt>ChatRoom</tt> instance that this member belongs to.
+     * @return the <code>ChatRoom</code> instance that this member belongs to.
      */
     ChatRoom getChatRoom();
 
     /**
      * Returns the protocol provider instance that this member has originated in.
      *
-     * @return the <tt>ProtocolProviderService</tt> instance that created this member and its
+     * @return the <code>ProtocolProviderService</code> instance that created this member and its
      * containing cht room
      */
     ProtocolProviderService getProtocolProvider();
@@ -69,7 +69,7 @@ public interface ChatRoomMember
     /**
      * Returns the role of this chat room member in its containing room.
      *
-     * @return a <tt>ChatRoomMemberRole</tt> instance indicating the role the this member in its
+     * @return a <code>ChatRoomMemberRole</code> instance indicating the role the this member in its
      * containing chat room.
      */
     ChatRoomMemberRole getRole();
@@ -77,7 +77,7 @@ public interface ChatRoomMember
     /**
      * Sets the role of this chat room member in its containing room.
      *
-     * @param role <tt>ChatRoomMemberRole</tt> instance indicating the role to set for this member in its
+     * @param role <code>ChatRoomMemberRole</code> instance indicating the role to set for this member in its
      * containing chat room.
      */
     void setRole(ChatRoomMemberRole role);

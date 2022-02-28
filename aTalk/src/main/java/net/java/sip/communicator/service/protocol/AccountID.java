@@ -38,7 +38,7 @@ import timber.log.Timber;
  * and letting people (using the protocol provider service) believe that they are the ones who are
  * supposed to instantiate the AccountID class.
  *
- * Every instance of the <tt>ProtocolProviderService</tt>, created through the
+ * Every instance of the <code>ProtocolProviderService</code>, created through the
  * ProtocolProviderFactory is assigned an AccountID instance, that uniquely represents it and whose
  * string representation (obtained through the getAccountUniqueID() method) can be used for
  * identification of persistently stored account details.
@@ -199,14 +199,14 @@ public class AccountID
      * with the account that is different from the name of the effective protocol).
      *
      * Note: The logic of the SIP protocol implementation at the time of this writing modifies
-     * <tt>accountProperties</tt> to contain the default protocol name if an override hasn't been
+     * <code>accountProperties</code> to contain the default protocol name if an override hasn't been
      * defined. Since the desire is to enable all account registration wizards to override the
-     * protocol name, the current implementation places the specified <tt>defaultProtocolName</tt>
+     * protocol name, the current implementation places the specified <code>defaultProtocolName</code>
      * in a similar fashion.
      *
      * @param accountProperties a Map containing any other protocol and implementation specific
      * account initialization properties
-     * @param defaultProtocolName the protocol name to be used in case <tt>accountProperties</tt>
+     * @param defaultProtocolName the protocol name to be used in case <code>accountProperties</code>
      * doesn't provide an overriding value
      * @return the protocol name
      */
@@ -315,7 +315,7 @@ public class AccountID
     /**
      * Gets the ProtocolProviderService for mAccountID
      *
-     * @return the ProtocolProviderService if currently registered for the AccountID or <tt>null</tt> otherwise
+     * @return the ProtocolProviderService if currently registered for the AccountID or <code>null</code> otherwise
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -358,18 +358,18 @@ public class AccountID
 
     /**
      * Gets the value of a specific property as a signed decimal integer. If the specified property
-     * key is associated with a value in this <tt>AccountID</tt>, the string representation of the
+     * key is associated with a value in this <code>AccountID</code>, the string representation of the
      * value is parsed into a signed decimal integer according to the rules of
      * {@link Integer#parseInt(String)}. If parsing the value as a signed decimal integer fails or
-     * there is no value associated with the specified property key, <tt>defaultValue</tt> is returned.
+     * there is no value associated with the specified property key, <code>defaultValue</code> is returned.
      *
      * @param key the key of the property to get the value of as a signed decimal integer
      * @param defaultValue the value to be returned if parsing the value of the specified property key as a
      * signed decimal integer fails or there is no value associated with the specified
-     * property key in this <tt>AccountID</tt>
-     * @return the value of the property with the specified key in this <tt>AccountID</tt> as a
-     * signed decimal integer; <tt>defaultValue</tt> if parsing the value of the specified
-     * property key fails or no value is associated in this <tt>AccountID</tt> with the
+     * property key in this <code>AccountID</code>
+     * @return the value of the property with the specified key in this <code>AccountID</code> as a
+     * signed decimal integer; <code>defaultValue</code> if parsing the value of the specified
+     * property key fails or no value is associated in this <code>AccountID</code> with the
      * specified property name
      */
     public int getAccountPropertyInt(Object key, int defaultValue)
@@ -403,7 +403,7 @@ public class AccountID
      * Returns the account property string corresponding to the given key.
      *
      * @param key the key, corresponding to the property string we're looking for
-     * @param defValue the default value returned when given <tt>key</tt> is not present
+     * @param defValue the default value returned when given <code>key</code> is not present
      * @return the account property string corresponding to the given key
      */
     public String getAccountPropertyString(Object key, String defValue)
@@ -483,7 +483,7 @@ public class AccountID
 
     /**
      * Returns a hash code value for the object. This method is supported for the benefit of
-     * HashTables such as those provided by <tt>java.util.Hashtable</tt>.
+     * HashTables such as those provided by <code>java.util.Hashtable</code>.
      *
      * @return a hash code value for this object.
      * @see java.lang.Object#equals(java.lang.Object)
@@ -499,7 +499,7 @@ public class AccountID
      * Indicates whether some other object is "equal to" this account id.
      *
      * @param obj the reference object with which to compare.
-     * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt>
+     * @return <code>true</code> if this object is the same as the obj argument; <code>false</code>
      * otherwise.
      * @see #hashCode()
      * @see java.util.Hashtable
@@ -551,7 +551,7 @@ public class AccountID
     /**
      * Indicates if this account is currently enabled.
      *
-     * @return <tt>true</tt> if this account is enabled, <tt>false</tt> - otherwise.
+     * @return <code>true</code> if this account is enabled, <code>false</code> - otherwise.
      */
     public boolean isEnabled()
     {
@@ -665,8 +665,8 @@ public class AccountID
     /**
      * Determines whether sending of keep alive packets is enabled.
      *
-     * @return <tt>true</tt> if keep alive packets are to be sent for this account and
-     * <tt>false</tt> otherwise.
+     * @return <code>true</code> if keep alive packets are to be sent for this account and
+     * <code>false</code> otherwise.
      */
     public boolean isKeepAliveEnable()
     {
@@ -677,7 +677,7 @@ public class AccountID
      * Specifies whether SIP Communicator should send keep alive packets to keep this account
      * registered.
      *
-     * @param isKeepAliveEnable <tt>true</tt> if we are to send keep alive packets and <tt>false</tt> otherwise.
+     * @param isKeepAliveEnable <code>true</code> if we are to send keep alive packets and <code>false</code> otherwise.
      */
     public void setKeepAliveOption(boolean isKeepAliveEnable)
     {
@@ -687,7 +687,7 @@ public class AccountID
     /**
      * Determines whether ping interval auto optimization is enabled.
      *
-     * @return <tt>true</tt> if ping interval optimization for this account is enabled and <tt>false</tt> otherwise.
+     * @return <code>true</code> if ping interval optimization for this account is enabled and <code>false</code> otherwise.
      */
     public boolean isPingAutoTuneEnable()
     {
@@ -697,7 +697,7 @@ public class AccountID
     /**
      * Specifies whether protocol provide should perform auto ping optimization for this account registered.
      *
-     * @param isPingAutoEnable <tt>true</tt> if allow to perform ping auto optimization, <tt>false</tt> otherwise.
+     * @param isPingAutoEnable <code>true</code> if allow to perform ping auto optimization, <code>false</code> otherwise.
      */
     public void setPingAutoTuneOption(boolean isPingAutoEnable)
     {
@@ -726,9 +726,9 @@ public class AccountID
     }
 
     /**
-     * Returns <tt>true</tt> if server was overridden.
+     * Returns <code>true</code> if server was overridden.
      *
-     * @return <tt>true</tt> if server was overridden.
+     * @return <code>true</code> if server was overridden.
      */
     public boolean isServerOverridden()
     {
@@ -736,7 +736,7 @@ public class AccountID
     }
 
     /**
-     * Sets <tt>isServerOverridden</tt> property.
+     * Sets <code>isServerOverridden</code> property.
      *
      * @param isServerOverridden indicates if the server is overridden
      */
@@ -788,7 +788,7 @@ public class AccountID
     /**
      * Indicates if proxy should be used for this account if Type != NONE.
      *
-     * @return <tt>true</tt> if (Type != NONE) for this account, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if (Type != NONE) for this account, otherwise returns <code>false</code>
      */
     public boolean isUseProxy()
     {
@@ -798,9 +798,9 @@ public class AccountID
     }
 
     /**
-     * Sets the <tt>useProxy</tt> property.
+     * Sets the <code>useProxy</code> property.
      *
-     * @param isUseProxy <tt>true</tt> to indicate that Proxy should be used for this account, <tt>false</tt> - otherwise.
+     * @param isUseProxy <code>true</code> to indicate that Proxy should be used for this account, <code>false</code> - otherwise.
      */
     public void setUseProxy(boolean isUseProxy)
     {
@@ -908,9 +908,9 @@ public class AccountID
     }
 
     /**
-     * Returns <tt>true</tt> if the account requires IB Registration with the server
+     * Returns <code>true</code> if the account requires IB Registration with the server
      *
-     * @return <tt>true</tt> if account requires IB Registration with the server
+     * @return <code>true</code> if account requires IB Registration with the server
      */
     public boolean isIbRegistration()
     {
@@ -918,7 +918,7 @@ public class AccountID
     }
 
     /**
-     * Sets <tt>IBR_REGISTRATION</tt> property.
+     * Sets <code>IBR_REGISTRATION</code> property.
      *
      * @param ibRegistration indicates if the account wants to perform an IBR registration with the server
      */
@@ -1034,7 +1034,7 @@ public class AccountID
     /**
      * Checks if the account is hidden.
      *
-     * @return <tt>true</tt> if this account is hidden or <tt>false</tt> otherwise.
+     * @return <code>true</code> if this account is hidden or <code>false</code> otherwise.
      */
     public boolean isHidden()
     {
@@ -1044,7 +1044,7 @@ public class AccountID
     /**
      * Checks if the account config is hidden.
      *
-     * @return <tt>true</tt> if the account config is hidden or <tt>false</tt> otherwise.
+     * @return <code>true</code> if the account config is hidden or <code>false</code> otherwise.
      */
     public boolean isConfigHidden()
     {
@@ -1054,7 +1054,7 @@ public class AccountID
     /**
      * Checks if the account status menu is hidden.
      *
-     * @return <tt>true</tt> if the account status menu is hidden or <tt>false</tt> otherwise.
+     * @return <code>true</code> if the account status menu is hidden or <code>false</code> otherwise.
      */
     public boolean isStatusMenuHidden()
     {
@@ -1064,7 +1064,7 @@ public class AccountID
     /**
      * Checks if the account is marked as readonly.
      *
-     * @return <tt>true</tt> if the account is marked as readonly or <tt>false</tt> otherwise.
+     * @return <code>true</code> if the account is marked as readonly or <code>false</code> otherwise.
      */
     public boolean isReadOnly()
     {
@@ -1072,10 +1072,10 @@ public class AccountID
     }
 
     /**
-     * Returns the first <tt>ProtocolProviderService</tt> implementation corresponding to the
+     * Returns the first <code>ProtocolProviderService</code> implementation corresponding to the
      * preferred protocol
      *
-     * @return the <tt>ProtocolProviderService</tt> corresponding to the preferred protocol
+     * @return the <code>ProtocolProviderService</code> corresponding to the preferred protocol
      */
     public boolean isPreferredProvider()
     {
@@ -1167,7 +1167,7 @@ public class AccountID
     /**
      * Determines whether this account's provider is supposed to auto discover STUN and TURN servers.
      *
-     * @return <tt>true</tt> if this provider would need to discover STUN/TURN servers
+     * @return <code>true</code> if this provider would need to discover STUN/TURN servers
      * otherwise false if serverOverride is enabled; serviceDomain is likely not reachable.
      */
     public boolean isStunServerDiscoveryEnabled()
@@ -1178,7 +1178,7 @@ public class AccountID
     /**
      * Determines whether this account's provider uses UPnP (if available).
      *
-     * @return <tt>true</tt> if this provider would use UPnP (if available), <tt>false</tt>
+     * @return <code>true</code> if this provider would use UPnP (if available), <code>false</code>
      * otherwise
      */
     public boolean isUPNPEnabled()
@@ -1190,7 +1190,7 @@ public class AccountID
      * Determines whether this account's provider uses the default STUN server provided by Jitsi
      * (stun.jitsi.net) if there is no other STUN/TURN server discovered/configured.
      *
-     * @return <tt>true</tt> if this provider would use the default STUN server, <tt>false</tt>
+     * @return <code>true</code> if this provider would use the default STUN server, <code>false</code>
      * otherwise
      */
     public boolean isUseDefaultStunServer()
@@ -1262,11 +1262,11 @@ public class AccountID
     }
 
     /**
-     * Returns a <tt>java.util.Map</tt> of <tt>String</tt>s containing the all property names that
-     * have the specified prefix and <tt>Boolean</tt> containing the value for each property
-     * selected. Depending on the value of the <tt>exactPrefixMatch</tt> parameter the method will
+     * Returns a <code>java.util.Map</code> of <code>String</code>s containing the all property names that
+     * have the specified prefix and <code>Boolean</code> containing the value for each property
+     * selected. Depending on the value of the <code>exactPrefixMatch</code> parameter the method will
      * (when false) or will not (when exactPrefixMatch is true) include property names that have
-     * prefixes longer than the specified <tt>prefix</tt> param.
+     * prefixes longer than the specified <code>prefix</code> param.
      *
      * Example:
      * Imagine a configuration service instance containing 2 properties only:<br>
@@ -1283,10 +1283,10 @@ public class AccountID
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with prefixes
+     * is an exact match of the the <code>prefix</code> param or whether properties with prefixes
      * that contain it but are longer than it are also accepted.
      * @param defaultValue the default value if the key is not set.
-     * @return a <tt>java.util.Map</tt> containing all property name String-s matching the specified
+     * @return a <code>java.util.Map</code> containing all property name String-s matching the specified
      * conditions and the corresponding values as Boolean.
      */
     public Map<String, Boolean> getBooleanPropertiesByPrefix(String prefix,
@@ -1302,11 +1302,11 @@ public class AccountID
     }
 
     /**
-     * Returns a <tt>java.util.Map</tt> of <tt>String</tt>s containing the all property names that
-     * have the specified prefix and <tt>Integer</tt> containing the value for each property
-     * selected. Depending on the value of the <tt>exactPrefixMatch</tt> parameter the method will
+     * Returns a <code>java.util.Map</code> of <code>String</code>s containing the all property names that
+     * have the specified prefix and <code>Integer</code> containing the value for each property
+     * selected. Depending on the value of the <code>exactPrefixMatch</code> parameter the method will
      * (when false) or will not (when exactPrefixMatch is true) include property names that have
-     * prefixes longer than the specified <tt>prefix</tt> param.
+     * prefixes longer than the specified <code>prefix</code> param.
      *
      * Example:
      * Imagine a configuration service instance containing 2 properties only:<br>
@@ -1323,9 +1323,9 @@ public class AccountID
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with prefixes
+     * is an exact match of the the <code>prefix</code> param or whether properties with prefixes
      * that contain it but are longer than it are also accepted.
-     * @return a <tt>java.util.Map</tt> containing all property name String-s matching the specified
+     * @return a <code>java.util.Map</code> containing all property name String-s matching the specified
      * conditions and the corresponding values as Integer.
      */
     public Map<String, Integer> getIntegerPropertiesByPrefix(String prefix, boolean exactPrefixMatch)
@@ -1340,10 +1340,10 @@ public class AccountID
     }
 
     /**
-     * Returns a <tt>java.util.List</tt> of <tt>String</tt>s containing the all property names that
-     * have the specified prefix. Depending on the value of the <tt>exactPrefixMatch</tt> parameter
+     * Returns a <code>java.util.List</code> of <code>String</code>s containing the all property names that
+     * have the specified prefix. Depending on the value of the <code>exactPrefixMatch</code> parameter
      * the method will (when false) or will not (when exactPrefixMatch is true) include property
-     * names that have prefixes longer than the specified <tt>prefix</tt> param.
+     * names that have prefixes longer than the specified <code>prefix</code> param.
      *
      * Example:
      * Imagine a configuration service instance containing 2 properties only:<br>
@@ -1360,9 +1360,9 @@ public class AccountID
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with prefixes
+     * is an exact match of the the <code>prefix</code> param or whether properties with prefixes
      * that contain it but are longer than it are also accepted.
-     * @return a <tt>java.util.List</tt>containing all property name String-s matching the
+     * @return a <code>java.util.List</code>containing all property name String-s matching the
      * specified conditions.
      */
     public List<String> getPropertyNamesByPrefix(String prefix, boolean exactPrefixMatch)
@@ -1386,7 +1386,7 @@ public class AccountID
     }
 
     /**
-     * Sets the property a new value, but only if it's not <tt>null</tt> or the property is removed
+     * Sets the property a new value, but only if it's not <code>null</code> or the property is removed
      * from the map.
      *
      * @param key the property key
@@ -1403,7 +1403,7 @@ public class AccountID
     }
 
     /**
-     * Puts the new property value if it's not <tt>null</tt> nor empty.
+     * Puts the new property value if it's not <code>null</code> nor empty.
      *
      * @param key the property key
      * @param value the property value
@@ -1414,12 +1414,12 @@ public class AccountID
     }
 
     /**
-     * Puts the new property value if it's not <tt>null</tt> nor empty. If <tt>trim</tt> parameter
-     * is set to <tt>true</tt> the string will be trimmed, before checked for emptiness.
+     * Puts the new property value if it's not <code>null</code> nor empty. If <code>trim</code> parameter
+     * is set to <code>true</code> the string will be trimmed, before checked for emptiness.
      *
      * @param key the property key
      * @param value the property value
-     * @param trim <tt>true</tt> if the value will be trimmed, before <tt>isEmpty()</tt> is called.
+     * @param trim <code>true</code> if the value will be trimmed, before <code>isEmpty()</code> is called.
      */
     public void setOrRemoveIfEmpty(String key, String value, boolean trim)
     {
@@ -1432,7 +1432,7 @@ public class AccountID
     }
 
     /**
-     * Stores configuration properties held by this object into given <tt>accountProperties</tt>
+     * Stores configuration properties held by this object into given <code>accountProperties</code>
      * map.
      *
      * @param protocolIconPath the path to the protocol icon is used
@@ -1455,10 +1455,10 @@ public class AccountID
     }
 
     /**
-     * Gets default property value for given <tt>key</tt>.
+     * Gets default property value for given <code>key</code>.
      *
      * @param key the property key
-     * @return default property value for given<tt>key</tt>
+     * @return default property value for given<code>key</code>
      */
     protected String getDefaultString(String key)
     {
@@ -1466,10 +1466,10 @@ public class AccountID
     }
 
     /**
-     * Gets default property value for given <tt>key</tt>.
+     * Gets default property value for given <code>key</code>.
      *
      * @param key the property key
-     * @return default property value for given<tt>key</tt>
+     * @return default property value for given<code>key</code>
      */
     public static String getDefaultStr(String key)
     {
@@ -1477,7 +1477,7 @@ public class AccountID
     }
 
     /**
-     * Copies all properties from <tt>input</tt> map to <tt>output</tt> map overwritten any value in output.
+     * Copies all properties from <code>input</code> map to <code>output</code> map overwritten any value in output.
      *
      * @param input source properties map
      * @param output destination properties map

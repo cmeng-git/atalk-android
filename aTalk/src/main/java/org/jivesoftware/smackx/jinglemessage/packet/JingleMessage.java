@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jinglemessage.packet;
 
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
+import org.jivesoftware.smackx.jingle.RtpDescription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 /**
- * Implements <tt>ExtensionElement</tt> for the <tt>fingerprint</tt> element defined by
+ * Implements <code>ExtensionElement</code> for the <code>fingerprint</code> element defined by
  * XEP-0353: Jingle Message Initiation 0.3 (2017-09-11)
  *
  * For more information see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353</a>
@@ -48,11 +48,11 @@ public class JingleMessage implements ExtensionElement
 
     public static QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    private List<RtpDescriptionExtension> rtpDescriptionExtensions = null;
+    private List<RtpDescription> rtpDescriptions = null;
 
     private String action;
-    private String id;
-    private List<String> media = new ArrayList<>();
+    private final String id;
+    private final List<String> media = new ArrayList<>();
 
     /**
      * Creates a new instance of jingleMessage.
@@ -73,11 +73,11 @@ public class JingleMessage implements ExtensionElement
         this(extElement.getElementName(), extElement.getAttributeValue(ATTR_ID));
         if (ACTION_PROPOSE.equals(action)) {
             List<StandardExtensionElement> elements
-                    = extElement.getElements(RtpDescriptionExtension.ELEMENT, RtpDescriptionExtension.NAMESPACE);
+                    = extElement.getElements(RtpDescription.ELEMENT, RtpDescription.NAMESPACE);
             media.clear();
             if (elements != null) {
                 for (StandardExtensionElement element : elements) {
-                    media.add(element.getAttributeValue(RtpDescriptionExtension.MEDIA_ATTR_NAME));
+                    media.add(element.getAttributeValue(RtpDescription.ATTR_MEDIA));
                 }
             }
         }
@@ -114,21 +114,21 @@ public class JingleMessage implements ExtensionElement
     }
 
     /**
-     * Returns the jingle message RtpDescriptionExtension
+     * Returns the jingle message RtpDescription
      *
-     * @return the jingle message RtpDescriptionExtension.
+     * @return the jingle message RtpDescription.
      */
-    public List<RtpDescriptionExtension> getDescriptionExt()
+    public List<RtpDescription> getDescriptionExt()
     {
-        return rtpDescriptionExtensions;
+        return rtpDescriptions;
     }
 
-    public void addDescriptionExtension(RtpDescriptionExtension extElement)
+    public void addDescriptionExtension(RtpDescription extElement)
     {
-        if (rtpDescriptionExtensions == null) {
-            rtpDescriptionExtensions = new ArrayList<>();
+        if (rtpDescriptions == null) {
+            rtpDescriptions = new ArrayList<>();
         }
-        rtpDescriptionExtensions.add(extElement);
+        rtpDescriptions.add(extElement);
     }
 
     @Override
@@ -148,12 +148,12 @@ public class JingleMessage implements ExtensionElement
     {
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.attribute(ATTR_ID, id);
-        if (rtpDescriptionExtensions == null) {
+        if (rtpDescriptions == null) {
             xml.closeEmptyElement();
         }
         else {
             xml.rightAngleBracket();
-            for (RtpDescriptionExtension extension : rtpDescriptionExtensions) {
+            for (RtpDescription extension : rtpDescriptions) {
                 xml.append(extension);
             }
             xml.closeElement(ELEMENT);

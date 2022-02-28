@@ -16,8 +16,8 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * Represents a listener of changes in the capabilities of a <tt>Contact</tt> as known by an
- * associated protocol provider delivered in the form of <tt>ContactCapabilitiesEvent</tt>s.
+ * Represents a listener of changes in the capabilities of a <code>Contact</code> as known by an
+ * associated protocol provider delivered in the form of <code>ContactCapabilitiesEvent</code>s.
  *
  * @author Lubomir Marinov
  * @author Eng Chong Meng
@@ -25,11 +25,11 @@ import java.util.EventListener;
 public interface ContactCapabilitiesListener extends EventListener
 {
     /**
-     * Notifies this listener that the list of the <tt>OperationSet</tt> capabilities of a
-     * <tt>Contact</tt> has changed.
+     * Notifies this listener that the list of the <code>OperationSet</code> capabilities of a
+     * <code>Contact</code> has changed.
      *
-     * @param event a <tt>ContactCapabilitiesEvent</tt> which specifies the
-     * <tt>Contact</tt> whose list of <tt>OperationSet</tt> capabilities has changed
+     * @param event a <code>ContactCapabilitiesEvent</code> which specifies the
+     * <code>Contact</code> whose list of <code>OperationSet</code> capabilities has changed
      */
     void supportedOperationSetsChanged(ContactCapabilitiesEvent event);
 }

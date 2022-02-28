@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.contactsource.*;
 import net.java.sip.communicator.service.gui.event.*;
 
 /**
- * The <tt>FilterQuery</tt> gives information about a current filtering.
+ * The <code>FilterQuery</code> gives information about a current filtering.
  *
  * @author Yana Stamcheva
  */
@@ -27,34 +27,34 @@ public abstract class FilterQuery
     private FilterQueryListener filterQueryListener;
 
     /**
-     * Adds the given <tt>contactQuery</tt> to the list of filterQueries.
-     * @param contactQuery the <tt>ContactQuery</tt> to add
+     * Adds the given <code>contactQuery</code> to the list of filterQueries.
+     * @param contactQuery the <code>ContactQuery</code> to add
      */
     public abstract void addContactQuery(Object contactQuery);
 
     /**
-     * Sets the <tt>isSucceeded</tt> property.
+     * Sets the <code>isSucceeded</code> property.
      * @param isSucceeded indicates if this query has succeeded
      */
     public abstract void setSucceeded(boolean isSucceeded);
 
     /**
      * Indicates if this query has succeeded.
-     * @return <tt>true</tt> if this query has succeeded, <tt>false</tt> -
+     * @return <code>true</code> if this query has succeeded, <code>false</code> -
      * otherwise
      */
     public abstract boolean isSucceeded();
 
     /**
      * Indicates if this query is canceled.
-     * @return <tt>true</tt> if this query is canceled, <tt>false</tt> otherwise
+     * @return <code>true</code> if this query is canceled, <code>false</code> otherwise
      */
     public abstract boolean isCanceled();
 
     /**
      * Indicates if this query is canceled.
      *
-     * @return <tt>true</tt> if this query is canceled, <tt>false</tt> otherwise
+     * @return <code>true</code> if this query is canceled, <code>false</code> otherwise
      */
     public abstract boolean isRunning();
 
@@ -70,8 +70,8 @@ public abstract class FilterQuery
     public abstract void close();
 
     /**
-     * Sets the given <tt>FilterQueryListener</tt>.
-     * @param l the <tt>FilterQueryListener</tt> to set
+     * Sets the given <code>FilterQueryListener</code>.
+     * @param l the <code>FilterQueryListener</code> to set
      */
     public void setQueryListener(FilterQueryListener l)
     {
@@ -81,7 +81,7 @@ public abstract class FilterQuery
     /**
      * Removes the given query from this filter query, updates the related data
      * and notifies interested parties if this was the last query to process.
-     * @param query the <tt>ContactQuery</tt> to remove.
+     * @param query the <code>ContactQuery</code> to remove.
      */
     public abstract void removeQuery(ContactQuery query);
 
@@ -89,8 +89,8 @@ public abstract class FilterQuery
      * Verifies if the given query is contained in this filter query.
      *
      * @param query the query we're looking for
-     * @return <tt>true</tt> if the given <tt>query</tt> is contained in this
-     * filter query, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the given <code>query</code> is contained in this
+     * filter query, <code>false</code> - otherwise
      */
     public abstract boolean containsQuery(Object query);
 

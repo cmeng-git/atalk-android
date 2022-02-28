@@ -81,7 +81,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The <tt>ChatActivity</tt> is a singleTask activity containing chat related interface.
+ * The <code>ChatActivity</code> is a singleTask activity containing chat related interface.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -562,7 +562,7 @@ public class ChatActivity extends OSGiActivity
     @Override
     public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
     {
-        setupChatRoomOptionItem();
+        runOnUiThread(this::setupChatRoomOptionItem);
     }
 
     /**
@@ -1060,7 +1060,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     /**
-     * Opens the given file through the <tt>DesktopService</tt>.
+     * Opens the given file through the <code>DesktopService</code>.
      * TargetSdkVersion 24 (or higher) and you’re passing a file:/// URI outside your package domain
      * through an Intent, then what you’ll get FileUriExposedException
      *

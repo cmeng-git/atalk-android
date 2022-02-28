@@ -27,7 +27,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Represents an implementation of <tt>AccountManager</tt> which loads the accounts in a separate thread.
+ * Represents an implementation of <code>AccountManager</code> which loads the accounts in a separate thread.
  *
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
@@ -36,36 +36,36 @@ import timber.log.Timber;
 public class AccountManager
 {
     /**
-     * The delay in milliseconds the background <tt>Thread</tt> loading the stored accounts should wait
-     * before dying so that it doesn't get recreated for each <tt>ProtocolProviderFactory</tt> registration.
+     * The delay in milliseconds the background <code>Thread</code> loading the stored accounts should wait
+     * before dying so that it doesn't get recreated for each <code>ProtocolProviderFactory</code> registration.
      */
     private static final long LOAD_STORED_ACCOUNTS_TIMEOUT = 30000;
 
     /**
-     * The <tt>BundleContext</tt> this service is registered in.
+     * The <code>BundleContext</code> this service is registered in.
      */
     private final BundleContext bundleContext;
 
     private final ConfigurationService configurationService;
 
     /**
-     * The <tt>AccountManagerListener</tt>s currently interested in the events fired by this manager.
+     * The <code>AccountManagerListener</code>s currently interested in the events fired by this manager.
      */
     private final List<AccountManagerListener> listeners = new LinkedList<>();
 
     /**
-     * The queue of <tt>ProtocolProviderFactory</tt> services awaiting their stored accounts to be loaded.
+     * The queue of <code>ProtocolProviderFactory</code> services awaiting their stored accounts to be loaded.
      */
     private final Queue<ProtocolProviderFactory> loadStoredAccountsQueue = new LinkedList<>();
 
     /**
-     * The <tt>Thread</tt> loading the stored accounts of the <tt>ProtocolProviderFactory</tt>
+     * The <code>Thread</code> loading the stored accounts of the <code>ProtocolProviderFactory</code>
      * services waiting in {@link #loadStoredAccountsQueue}.
      */
     private Thread loadStoredAccountsThread;
 
     /**
-     * The list of <tt>AccountID</tt>s, corresponding to all stored accounts.
+     * The list of <code>AccountID</code>s, corresponding to all stored accounts.
      */
     private final Vector<AccountID> storedAccounts = new Vector<>();
 
@@ -75,10 +75,10 @@ public class AccountManager
     private final DatabaseBackend databaseBackend;
 
     /**
-     * Initializes a new <tt>AccountManagerImpl</tt> instance loaded in a specific
-     * <tt>BundleContext</tt> (in which the caller will usually later register it).
+     * Initializes a new <code>AccountManagerImpl</code> instance loaded in a specific
+     * <code>BundleContext</code> (in which the caller will usually later register it).
      *
-     * @param bundleContext the <tt>BundleContext</tt> in which the new instance is loaded (and in which the
+     * @param bundleContext the <code>BundleContext</code> in which the new instance is loaded (and in which the
      * caller will usually later register it as a service)
      */
     public AccountManager(BundleContext bundleContext)
@@ -94,7 +94,7 @@ public class AccountManager
     /**
      * Implements AccountManager#addListener(AccountManagerListener).
      *
-     * @param listener the <tt>AccountManagerListener</tt> to add
+     * @param listener the <code>AccountManagerListener</code> to add
      */
     public void addListener(AccountManagerListener listener)
     {
@@ -105,9 +105,9 @@ public class AccountManager
     }
 
     /**
-     * Loads all the accounts stored for a specific <tt>ProtocolProviderFactory</tt>.
+     * Loads all the accounts stored for a specific <code>ProtocolProviderFactory</code>.
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt> to load the stored accounts of
+     * @param factory the <code>ProtocolProviderFactory</code> to load the stored accounts of
      */
     private void doLoadStoredAccounts(ProtocolProviderFactory factory)
     {
@@ -143,9 +143,9 @@ public class AccountManager
 
     /**
      * Notifies the registered {@link #listeners} that the stored accounts of a specific
-     * <tt>ProtocolProviderFactory</tt> have just been loaded.
+     * <code>ProtocolProviderFactory</code> have just been loaded.
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt> which had its stored accounts just loaded
+     * @param factory the <code>ProtocolProviderFactory</code> which had its stored accounts just loaded
      */
     private void fireStoredAccountsLoaded(ProtocolProviderFactory factory)
     {
@@ -166,10 +166,10 @@ public class AccountManager
     }
 
     /**
-     * Returns the package name of the <tt>factory</tt>.
+     * Returns the package name of the <code>factory</code>.
      *
      * @param factory the factory which package will be returned.
-     * @return the package name of the <tt>factory</tt>.
+     * @return the package name of the <code>factory</code>.
      */
     public String getFactoryImplPackageName(ProtocolProviderFactory factory)
     {
@@ -178,12 +178,12 @@ public class AccountManager
     }
 
     /**
-     * Check for stored accounts for the supplied <tt>protocolName</tt>.
+     * Check for stored accounts for the supplied <code>protocolName</code>.
      *
      * @param protocolName the protocol name to check for
      * @param includeHidden whether to include hidden providers
-     * @return <tt>true</tt> if there is any account stored in configuration service with
-     * <tt>protocolName</tt>, <tt>false</tt> otherwise.
+     * @return <code>true</code> if there is any account stored in configuration service with
+     * <code>protocolName</code>, <code>false</code> otherwise.
      */
     public boolean hasStoredAccounts(String protocolName, boolean includeHidden)
     {
@@ -191,13 +191,13 @@ public class AccountManager
     }
 
     /**
-     * Checks whether a stored account with <tt>userID</tt> is stored in configuration.
+     * Checks whether a stored account with <code>userID</code> is stored in configuration.
      *
      * @param protocolName the protocol name
      * @param includeHidden whether to check hidden providers
      * @param userID the user id to check.
-     * @return <tt>true</tt> if there is any account stored in configuration service with
-     * <tt>protocolName</tt> and <tt>userID</tt>, <tt>false</tt> otherwise.
+     * @return <code>true</code> if there is any account stored in configuration service with
+     * <code>protocolName</code> and <code>userID</code>, <code>false</code> otherwise.
      */
     public boolean hasStoredAccount(String protocolName, boolean includeHidden, String userID)
     {
@@ -244,11 +244,11 @@ public class AccountManager
     }
 
     /**
-     * Searches for stored account with <tt>uid</tt> in stored configuration. The <tt>uid</tt> is
-     * the one generated when creating accounts with prefix <tt>ACCOUNT_UID_PREFIX</tt>.
+     * Searches for stored account with <code>uid</code> in stored configuration. The <code>uid</code> is
+     * the one generated when creating accounts with prefix <code>ACCOUNT_UID_PREFIX</code>.
      *
-     * @return <tt>AccountID</tt> if there is any account stored in configuration service with
-     * <tt>uid</tt>, <tt>null</tt> otherwise.
+     * @return <code>AccountID</code> if there is any account stored in configuration service with
+     * <code>uid</code>, <code>null</code> otherwise.
      */
     public AccountID findAccountID(String uid)
     {
@@ -282,11 +282,11 @@ public class AccountManager
     }
 
     /**
-     * Loads the accounts stored for a specific <tt>ProtocolProviderFactory</tt> and notifies
-     * the registered {@link #listeners} that the stored accounts of the specified <tt>factory</tt>
+     * Loads the accounts stored for a specific <code>ProtocolProviderFactory</code> and notifies
+     * the registered {@link #listeners} that the stored accounts of the specified <code>factory</code>
      * have just been loaded
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt> to load the stored accounts of
+     * @param factory the <code>ProtocolProviderFactory</code> to load the stored accounts of
      */
 
     private void loadStoredAccounts(ProtocolProviderFactory factory)
@@ -296,11 +296,11 @@ public class AccountManager
     }
 
     /**
-     * Notifies this manager that a specific <tt>ProtocolProviderFactory</tt> has been
-     * registered as a service. The current implementation queues the specified <tt>factory</tt>
+     * Notifies this manager that a specific <code>ProtocolProviderFactory</code> has been
+     * registered as a service. The current implementation queues the specified <code>factory</code>
      * to have its stored accounts as soon as possible.
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt> which has been registered as a service.
+     * @param factory the <code>ProtocolProviderFactory</code> which has been registered as a service.
      */
     private void protocolProviderFactoryRegistered(ProtocolProviderFactory factory)
     {
@@ -308,10 +308,10 @@ public class AccountManager
     }
 
     /**
-     * Queues a specific <tt>ProtocolProviderFactory</tt> to have its stored accounts loaded as
+     * Queues a specific <code>ProtocolProviderFactory</code> to have its stored accounts loaded as
      * soon as possible.
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt> to be queued for loading its stored accounts as
+     * @param factory the <code>ProtocolProviderFactory</code> to be queued for loading its stored accounts as
      * soon as possible
      */
     private void queueLoadStoredAccounts(ProtocolProviderFactory factory)
@@ -339,7 +339,7 @@ public class AccountManager
     /**
      * Implements AccountManager#removeListener(AccountManagerListener).
      *
-     * @param listener the <tt>AccountManagerListener</tt> to remove
+     * @param listener the <code>AccountManagerListener</code> to remove
      */
     public void removeListener(AccountManagerListener listener)
     {
@@ -350,7 +350,7 @@ public class AccountManager
 
     /**
      * Running in {@link #loadStoredAccountsThread}, loads the stored accounts of the
-     * <tt>ProtocolProviderFactory</tt> services waiting in {@link #loadStoredAccountsQueue}
+     * <code>ProtocolProviderFactory</code> services waiting in {@link #loadStoredAccountsQueue}
      */
     private void runInLoadStoredAccountsThread()
     {
@@ -426,10 +426,10 @@ public class AccountManager
 
     /**
      * Notifies this manager that an OSGi service has changed. The current implementation tracks
-     * the registrations of <tt>ProtocolProviderFactory</tt> services in order to queue them for
+     * the registrations of <code>ProtocolProviderFactory</code> services in order to queue them for
      * loading their stored accounts.
      *
-     * @param serviceEvent the <tt>ServiceEvent</tt> containing the event data
+     * @param serviceEvent the <code>ServiceEvent</code> containing the event data
      */
     private void serviceChanged(ServiceEvent serviceEvent)
     {
@@ -443,11 +443,11 @@ public class AccountManager
     }
 
     /**
-     * Stores an account represented in the form of an <tt>AccountID</tt> created by a specific
-     * <tt>ProtocolProviderFactory</tt>.
+     * Stores an account represented in the form of an <code>AccountID</code> created by a specific
+     * <code>ProtocolProviderFactory</code>.
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt> which created the account to be stored
-     * @param accountID the account in the form of <tt>AccountID</tt> to be stored
+     * @param factory the <code>ProtocolProviderFactory</code> which created the account to be stored
+     * @param accountID the account in the form of <code>AccountID</code> to be stored
      * @throws OperationFailedException if anything goes wrong while storing the account
      */
     public void storeAccount(ProtocolProviderFactory factory, AccountID accountID)
@@ -518,7 +518,7 @@ public class AccountManager
     /**
      * Modify accountID table with the new AccountID parameters e.g. user changes the userID
      *
-     * @param accountID the account in the form of <tt>AccountID</tt> to be modified
+     * @param accountID the account in the form of <code>AccountID</code> to be modified
      */
     public void modifyAccountId(AccountID accountID)
     {
@@ -530,7 +530,7 @@ public class AccountManager
      *
      * @param factory account's protocol provider factory
      * @param accountUID account for which the prefix will be returned
-     * @return configuration prefix for given <tt>accountID</tt> if exists or <tt>null</tt> otherwise
+     * @return configuration prefix for given <code>accountID</code> if exists or <code>null</code> otherwise
      */
     public String getStoredAccountUUID(ProtocolProviderFactory factory, String accountUID)
     {
@@ -543,10 +543,10 @@ public class AccountManager
     }
 
     /**
-     * Removes the account with <tt>accountID</tt> from the set of accounts that are persistently
+     * Removes the account with <code>accountID</code> from the set of accounts that are persistently
      * stored inside the configuration service.
      *
-     * @param factory the <tt>ProtocolProviderFactory</tt> which created the account to be stored
+     * @param factory the <code>ProtocolProviderFactory</code> which created the account to be stored
      * @param accountID the AccountID of the account to remove.
      * @return true if an account has been removed and false otherwise.
      */
@@ -607,14 +607,14 @@ public class AccountManager
     }
 
     /**
-     * Returns an <tt>Iterator</tt> over a list of all stored <tt>AccountID</tt>s. The list of
+     * Returns an <code>Iterator</code> over a list of all stored <code>AccountID</code>s. The list of
      * stored accounts include all registered accounts and all disabled accounts. In other words in
      * this list we could find accounts that aren't loaded.
      * <p>
      * In order to check if an account is already loaded please use the #isAccountLoaded(AccountID
      * accountID) method. To load an account use the #loadAccount(AccountID accountID) method.
      *
-     * @return an <tt>Iterator</tt> over a list of all stored <tt>AccountID</tt>s
+     * @return an <code>Iterator</code> over a list of all stored <code>AccountID</code>s
      */
     public Collection<AccountID> getStoredAccounts()
     {
@@ -624,13 +624,13 @@ public class AccountManager
     }
 
     /**
-     * Loads the account corresponding to the given <tt>AccountID</tt>. An account is loaded when
-     * its <tt>ProtocolProviderService</tt> is registered in the bundle context. This method is
-     * meant to load the account through the corresponding <tt>ProtocolProviderFactory</tt> .
+     * Loads the account corresponding to the given <code>AccountID</code>. An account is loaded when
+     * its <code>ProtocolProviderService</code> is registered in the bundle context. This method is
+     * meant to load the account through the corresponding <code>ProtocolProviderFactory</code> .
      *
      * @param accountID the identifier of the account to load
      * @throws OperationFailedException if anything goes wrong while loading the account corresponding to the specified
-     * <tt>accountID</tt>
+     * <code>accountID</code>
      */
     public void loadAccount(AccountID accountID)
             throws OperationFailedException
@@ -659,13 +659,13 @@ public class AccountManager
     }
 
     /**
-     * Unloads the account corresponding to the given <tt>AccountID</tt>. An account is unloaded
-     * when its <tt>ProtocolProviderService</tt> is unregistered in the bundle context. This method
-     * is meant to unload the account through the corresponding <tt>ProtocolProviderFactory</tt>.
+     * Unloads the account corresponding to the given <code>AccountID</code>. An account is unloaded
+     * when its <code>ProtocolProviderService</code> is unregistered in the bundle context. This method
+     * is meant to unload the account through the corresponding <code>ProtocolProviderFactory</code>.
      *
      * @param accountID the identifier of the account to load
      * @throws OperationFailedException if anything goes wrong while unloading the account corresponding
-     * to the specified <tt>accountID</tt>
+     * to the specified <code>accountID</code>
      */
     public void unloadAccount(AccountID accountID)
             throws OperationFailedException
@@ -708,14 +708,14 @@ public class AccountManager
     }
 
     /**
-     * Checks if the account corresponding to the given <tt>accountID</tt> is loaded. An account is
-     * loaded if its <tt>ProtocolProviderService</tt> is registered in the bundle context. By
+     * Checks if the account corresponding to the given <code>accountID</code> is loaded. An account is
+     * loaded if its <code>ProtocolProviderService</code> is registered in the bundle context. By
      * default all accounts are loaded. However the user could manually unload an account, which
      * would be unregistered from the bundle context, but would remain in the configuration file.
      *
      * @param accountID the identifier of the account to load
-     * @return <tt>true</tt> to indicate that the account with the given <tt>accountID</tt> is
-     * loaded, <tt>false</tt> - otherwise
+     * @return <code>true</code> to indicate that the account with the given <code>accountID</code> is
+     * loaded, <code>false</code> - otherwise
      */
     public boolean isAccountLoaded(AccountID accountID)
     {

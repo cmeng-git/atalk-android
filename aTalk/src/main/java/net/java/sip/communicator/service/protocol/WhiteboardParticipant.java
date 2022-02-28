@@ -26,14 +26,14 @@ public interface WhiteboardParticipant
 	/**
 	 * Returns the chat room that this member is participating in.
 	 *
-	 * @return the <tt>WhiteboardSession</tt> instance that this member belongs to.
+	 * @return the <code>WhiteboardSession</code> instance that this member belongs to.
 	 */
 	public WhiteboardSession getWhiteboardSession();
 
 	/**
 	 * Returns the protocol provider instance that this member has originated in.
 	 *
-	 * @return the <tt>ProtocolProviderService</tt> instance that created this member and its
+	 * @return the <code>ProtocolProviderService</code> instance that created this member and its
 	 *         containing cht room
 	 */
 	public ProtocolProviderService getProtocolProvider();

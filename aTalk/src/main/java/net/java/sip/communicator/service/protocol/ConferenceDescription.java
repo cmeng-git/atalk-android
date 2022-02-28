@@ -53,15 +53,15 @@ public class ConferenceDescription
 	private Set<String> transports = new HashSet<String>();
 
 	/**
-	 * Creates a new instance with the specified <tt>uri</tt>, <tt>callId</tt> and <tt>password</tt>
+	 * Creates a new instance with the specified <code>uri</code>, <code>callId</code> and <code>password</code>
 	 * .
 	 * 
 	 * @param uri
-	 *        the <tt>uri</tt> to set.
+	 *        the <code>uri</code> to set.
 	 * @param callId
-	 *        the <tt>callId</tt> to set.
+	 *        the <code>callId</code> to set.
 	 * @param password
-	 *        the <tt>auth</tt> to set.
+	 *        the <code>auth</code> to set.
 	 */
 	public ConferenceDescription(String uri, String callId, String password)
 	{
@@ -71,12 +71,12 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Creates a new instance with the specified <tt>uri</tt> and <tt>callId</tt>
+	 * Creates a new instance with the specified <code>uri</code> and <code>callId</code>
 	 * 
 	 * @param uri
-	 *        the <tt>uri</tt> to set.
+	 *        the <code>uri</code> to set.
 	 * @param callId
-	 *        the <tt>callId</tt> to set.
+	 *        the <code>callId</code> to set.
 	 */
 	public ConferenceDescription(String uri, String callId)
 	{
@@ -84,10 +84,10 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Creates a new instance with the specified <tt>uri</tt>.
+	 * Creates a new instance with the specified <code>uri</code>.
 	 * 
 	 * @param uri
-	 *        the <tt>uri</tt> to set.
+	 *        the <code>uri</code> to set.
 	 */
 	public ConferenceDescription(String uri)
 	{
@@ -124,9 +124,9 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Gets the uri of this <tt>ConferenceDescription</tt>.
+	 * Gets the uri of this <code>ConferenceDescription</code>.
 	 * 
-	 * @return the uri of this <tt>ConferenceDescription</tt>.
+	 * @return the uri of this <code>ConferenceDescription</code>.
 	 */
 	public String getUri()
 	{
@@ -134,7 +134,7 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Sets the uri of this <tt>ConferenceDescription</tt>.
+	 * Sets the uri of this <code>ConferenceDescription</code>.
 	 * 
 	 * @param uri
 	 *        the value to set
@@ -145,9 +145,9 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Gets the subject of this <tt>ConferenceDescription</tt>.
+	 * Gets the subject of this <code>ConferenceDescription</code>.
 	 * 
-	 * @return the subject of this <tt>ConferenceDescription</tt>.
+	 * @return the subject of this <code>ConferenceDescription</code>.
 	 */
 	public String getSubject()
 	{
@@ -155,7 +155,7 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Sets the subject of this <tt>ConferenceDescription</tt>.
+	 * Sets the subject of this <code>ConferenceDescription</code>.
 	 * 
 	 * @param subject
 	 *        the value to set
@@ -166,9 +166,9 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Gets the call ID of this <tt>ConferenceDescription</tt>
+	 * Gets the call ID of this <code>ConferenceDescription</code>
 	 * 
-	 * @return the call ID of this <tt>ConferenceDescription</tt>
+	 * @return the call ID of this <code>ConferenceDescription</code>
 	 */
 	public String getCallId()
 	{
@@ -176,7 +176,7 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Sets the call ID of this <tt>ConferenceDescription</tt>.
+	 * Sets the call ID of this <code>ConferenceDescription</code>.
 	 * 
 	 * @param callId
 	 *        the value to set
@@ -187,9 +187,9 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Gets the password of this <tt>ConferenceDescription</tt>
+	 * Gets the password of this <code>ConferenceDescription</code>
 	 * 
-	 * @return the password of this <tt>ConferenceDescription</tt>
+	 * @return the password of this <code>ConferenceDescription</code>
 	 */
 	public String getPassword()
 	{
@@ -197,7 +197,7 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Sets the auth of this <tt>ConferenceDescription</tt>.
+	 * Sets the auth of this <code>ConferenceDescription</code>.
 	 * 
 	 * @param password
 	 *        the value to set
@@ -210,7 +210,7 @@ public class ConferenceDescription
 	/**
 	 * Checks if the conference is available.
 	 * 
-	 * @return <tt>true</tt> iff the conference is available.
+	 * @return <code>true</code> iff the conference is available.
 	 */
 	public boolean isAvailable()
 	{
@@ -218,7 +218,7 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Sets the availability of this <tt>ConferenceDescription</tt>.
+	 * Sets the availability of this <code>ConferenceDescription</code>.
 	 * 
 	 * @param available
 	 *        the value to set
@@ -229,10 +229,10 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Adds a <tt>Transport</tt> to the set of <tt>Transport</tt>s supported by the conference.
+	 * Adds a <code>Transport</code> to the set of <code>Transport</code>s supported by the conference.
 	 * 
 	 * @param transport
-	 *        the <tt>Transport</tt> to add.
+	 *        the <code>Transport</code> to add.
 	 */
 	public void addTransport(String transport)
 	{
@@ -240,13 +240,13 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Checks whether <tt>transport</tt> is supported by this <tt>ConferenceDescription</tt>. If the
-	 * set of transports for this <tt>ConferenceDescription</tt> is empty, always returns true.
+	 * Checks whether <code>transport</code> is supported by this <code>ConferenceDescription</code>. If the
+	 * set of transports for this <code>ConferenceDescription</code> is empty, always returns true.
 	 * 
 	 * @param transport
-	 *        the <tt>Transport</tt> to check.
-	 * @return <tt>true</tt> if <tt>transport</tt> is supported by this
-	 *         <tt>ConferenceDescription</tt>
+	 *        the <code>Transport</code> to check.
+	 * @return <code>true</code> if <code>transport</code> is supported by this
+	 *         <code>ConferenceDescription</code>
 	 */
 	public boolean supportsTransport(String transport)
 	{
@@ -259,9 +259,9 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Returns the transports supported by this <tt>ConferenceDescription</tt>
+	 * Returns the transports supported by this <code>ConferenceDescription</code>
 	 * 
-	 * @return the supported by this <tt>ConferenceDescription</tt>
+	 * @return the supported by this <code>ConferenceDescription</code>
 	 */
 	public Set<String> getSupportedTransports()
 	{
@@ -278,15 +278,15 @@ public class ConferenceDescription
 	}
 
 	/**
-	 * Checks if two <tt>ConferenceDescription</tt> instances have the same call id, URI and
+	 * Checks if two <code>ConferenceDescription</code> instances have the same call id, URI and
 	 * supported transports.
 	 * 
 	 * @param cd1
-	 *        the first <tt>ConferenceDescription</tt> instance.
+	 *        the first <code>ConferenceDescription</code> instance.
 	 * @param cd2
-	 *        the second <tt>ConferenceDescription</tt> instance.
-	 * @return <tt>true</tt> if the <tt>ConferenceDescription</tt> instances have the same call id,
-	 *         URI and supported transports. Otherwise <tt>false</tt> is returned.
+	 *        the second <code>ConferenceDescription</code> instance.
+	 * @return <code>true</code> if the <code>ConferenceDescription</code> instances have the same call id,
+	 *         URI and supported transports. Otherwise <code>false</code> is returned.
 	 */
 	public boolean compareConferenceDescription(ConferenceDescription cd)
 	{

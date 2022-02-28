@@ -22,7 +22,7 @@ import net.java.sip.communicator.util.DataObject;
 import java.util.*;
 
 /**
- * Implements a generic <tt>SourceContact</tt> for the purposes of the support
+ * Implements a generic <code>SourceContact</code> for the purposes of the support
  * for the OS-specific Address Book.
  *
  * @author Lyubomir Marinov
@@ -31,17 +31,17 @@ public class GenericSourceContact extends DataObject
         implements SourceContact
 {
     /**
-     * The <tt>ContactDetail</tt>s of this <tt>SourceContact</tt>.
+     * The <code>ContactDetail</code>s of this <code>SourceContact</code>.
      */
     protected final List<ContactDetail> contactDetails;
 
     /**
-     * The <tt>ContactSourceService</tt> which has created this <tt>SourceContact</tt>.
+     * The <code>ContactSourceService</code> which has created this <code>SourceContact</code>.
      */
     private final ContactSourceService contactSource;
 
     /**
-     * The display name of this <tt>SourceContact</tt>.
+     * The display name of this <code>SourceContact</code>.
      */
     private String displayName;
 
@@ -56,7 +56,7 @@ public class GenericSourceContact extends DataObject
     private PresenceStatus presenceStatus;
 
     /**
-     * The image/avatar of this <tt>SourceContact</tt>
+     * The image/avatar of this <code>SourceContact</code>
      */
     private byte[] image;
 
@@ -66,11 +66,11 @@ public class GenericSourceContact extends DataObject
     private String contactAddress = null;
 
     /**
-     * Initializes a new <tt>AddrBookSourceContact</tt> instance.
+     * Initializes a new <code>AddrBookSourceContact</code> instance.
      *
-     * @param contactSource the <tt>ContactSourceService</tt> which is creating the new instance
+     * @param contactSource the <code>ContactSourceService</code> which is creating the new instance
      * @param displayName the display name of the new instance
-     * @param contactDetails the <tt>ContactDetail</tt>s of the new instance
+     * @param contactDetails the <code>ContactDetail</code>s of the new instance
      */
     public GenericSourceContact(
             ContactSourceService contactSource,
@@ -93,9 +93,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Gets the <tt>ContactDetail</tt>s of this <tt>SourceContact</tt>.
+     * Gets the <code>ContactDetail</code>s of this <code>SourceContact</code>.
      *
-     * @return the <tt>ContactDetail</tt>s of this <tt>SourceContact</tt>
+     * @return the <code>ContactDetail</code>s of this <code>SourceContact</code>
      * @see SourceContact#getContactDetails()
      */
     public List<ContactDetail> getContactDetails()
@@ -104,13 +104,13 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Gets the <tt>ContactDetail</tt>s of this <tt>SourceContact</tt> which
-     * support a specific <tt>OperationSet</tt>.
+     * Gets the <code>ContactDetail</code>s of this <code>SourceContact</code> which
+     * support a specific <code>OperationSet</code>.
      *
-     * @param operationSet the <tt>OperationSet</tt> the supporting
-     * <tt>ContactDetail</tt>s of which are to be returned
-     * @return the <tt>ContactDetail</tt>s of this <tt>SourceContact</tt> which support the specified
-     * <tt>operationSet</tt>
+     * @param operationSet the <code>OperationSet</code> the supporting
+     * <code>ContactDetail</code>s of which are to be returned
+     * @return the <code>ContactDetail</code>s of this <code>SourceContact</code> which support the specified
+     * <code>operationSet</code>
      * @see SourceContact#getContactDetails(Class)
      */
     public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet)
@@ -126,10 +126,10 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given category.
+     * Returns a list of all <code>ContactDetail</code>s corresponding to the given category.
      *
-     * @param category the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given category
+     * @param category the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ContactDetail</code>s corresponding to the given category
      */
     public List<ContactDetail> getContactDetails(ContactDetail.Category category)
     {
@@ -145,9 +145,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Gets the <tt>ContactSourceService</tt> which has created this <tt>SourceContact</tt>.
+     * Gets the <code>ContactSourceService</code> which has created this <code>SourceContact</code>.
      *
-     * @return the <tt>ContactSourceService</tt> which has created this <tt>SourceContact</tt>
+     * @return the <code>ContactSourceService</code> which has created this <code>SourceContact</code>
      * @see SourceContact#getContactSource()
      */
     public ContactSourceService getContactSource()
@@ -156,9 +156,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Gets the display details of this <tt>SourceContact</tt>.
+     * Gets the display details of this <code>SourceContact</code>.
      *
-     * @return the display details of this <tt>SourceContact</tt>
+     * @return the display details of this <code>SourceContact</code>
      * @see SourceContact#getDisplayDetails()
      */
     public String getDisplayDetails()
@@ -177,9 +177,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Sets the display details of this <tt>SourceContact</tt>.
+     * Sets the display details of this <code>SourceContact</code>.
      *
-     * @param displayDetails the display details of this <tt>SourceContact</tt>
+     * @param displayDetails the display details of this <code>SourceContact</code>
      */
     public String setDisplayDetails(String displayDetails)
     {
@@ -187,9 +187,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Gets the display name of this <tt>SourceContact</tt>.
+     * Gets the display name of this <code>SourceContact</code>.
      *
-     * @return the display name of this <tt>SourceContact</tt>
+     * @return the display name of this <code>SourceContact</code>
      * @see SourceContact#getDisplayName()
      */
     public String getDisplayName()
@@ -198,9 +198,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Sets the display name of this <tt>SourceContact</tt>.
+     * Sets the display name of this <code>SourceContact</code>.
      *
-     * @param displayName The display name of this <tt>SourceContact</tt>
+     * @param displayName The display name of this <code>SourceContact</code>
      */
     public void setDisplayName(String displayName)
     {
@@ -208,9 +208,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Gets the image/avatar of this <tt>SourceContact</tt>.
+     * Gets the image/avatar of this <code>SourceContact</code>.
      *
-     * @return the image/avatar of this <tt>SourceContact</tt>
+     * @return the image/avatar of this <code>SourceContact</code>
      * @see SourceContact#getImage()
      */
     public byte[] getImage()
@@ -219,10 +219,10 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Gets the preferred <tt>ContactDetail</tt> for a specific <tt>OperationSet</tt>.
+     * Gets the preferred <code>ContactDetail</code> for a specific <code>OperationSet</code>.
      *
-     * @param operationSet the <tt>OperationSet</tt> to get the preferred <tt>ContactDetail</tt> for
-     * @return the preferred <tt>ContactDetail</tt> for the specified <tt>operationSet</tt>
+     * @param operationSet the <code>OperationSet</code> to get the preferred <code>ContactDetail</code> for
+     * @return the preferred <code>ContactDetail</code> for the specified <code>operationSet</code>
      * @see SourceContact#getPreferredContactDetail(Class)
      */
     public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)
@@ -232,9 +232,9 @@ public class GenericSourceContact extends DataObject
     }
 
     /**
-     * Sets the image/avatar of this <tt>SourceContact</tt>.
+     * Sets the image/avatar of this <code>SourceContact</code>.
      *
-     * @param image the image/avatar to be set on this <tt>SourceContact</tt>
+     * @param image the image/avatar to be set on this <code>SourceContact</code>
      */
     public void setImage(byte[] image)
     {

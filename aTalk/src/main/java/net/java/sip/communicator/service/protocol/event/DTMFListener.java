@@ -24,9 +24,9 @@ import java.util.EventListener;
 public interface DTMFListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>DTMFTone</tt> has been received.
+     * Called when a new incoming <code>DTMFTone</code> has been received.
      *
-     * @param evt the <tt>DTMFReceivedEvent</tt> containing the newly received tone.
+     * @param evt the <code>DTMFReceivedEvent</code> containing the newly received tone.
      */
     void toneReceived(DTMFReceivedEvent evt);
 }

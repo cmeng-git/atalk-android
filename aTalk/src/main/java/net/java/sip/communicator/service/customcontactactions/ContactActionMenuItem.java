@@ -52,12 +52,12 @@ public interface ContactActionMenuItem<T>
     String getText(T actionSource);
 
     /**
-     * Indicates if this action is visible for the given <tt>actionSource</tt>.
+     * Indicates if this action is visible for the given <code>actionSource</code>.
      *
      * @param actionSource the action source for which we're verifying the
      * action.
-     * @return <tt>true</tt> if the action should be visible for the given
-     * <tt>actionSource</tt>, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the action should be visible for the given
+     * <code>actionSource</code>, <code>false</code> - otherwise
      */
     boolean isVisible(T actionSource);
     
@@ -68,22 +68,22 @@ public interface ContactActionMenuItem<T>
     char getMnemonics();
     
     /**
-     * Returns <tt>true</tt> if the item should be enabled and <tt>false</tt>
+     * Returns <code>true</code> if the item should be enabled and <code>false</code>
      *  - not.
      *  
      * @param actionSource the action source for which we're verifying the
      * action.
-     * @return <tt>true</tt> if the item should be enabled and <tt>false</tt>
+     * @return <code>true</code> if the item should be enabled and <code>false</code>
      *  - not.
      */
     boolean isEnabled(T actionSource);
     
     /**
-     * Returns <tt>true</tt> if the item should be a check box and 
-     * <tt>false</tt> if not
+     * Returns <code>true</code> if the item should be a check box and
+     * <code>false</code> if not
      * 
-     * @return <tt>true</tt> if the item should be a check box and 
-     * <tt>false</tt> if not
+     * @return <code>true</code> if the item should be a check box and
+     * <code>false</code> if not
      */
     boolean isCheckBox();
 

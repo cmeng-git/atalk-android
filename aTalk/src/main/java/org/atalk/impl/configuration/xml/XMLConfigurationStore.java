@@ -73,11 +73,11 @@ public class XMLConfigurationStore implements ConfigurationStore
     }
 
     /**
-     * Creates a new runtime XML document which is to contain the properties managed by this <tt>ConfigurationStore</tt>
+     * Creates a new runtime XML document which is to contain the properties managed by this <code>ConfigurationStore</code>
      * .
      *
-     * @return a new runtime XML <tt>Document</tt> which is to contain the properties managed by
-     * this <tt>ConfigurationStore</tt>
+     * @return a new runtime XML <code>Document</code> which is to contain the properties managed by
+     * this <code>ConfigurationStore</code>
      */
     private Document createPropertiesDocument()
     {
@@ -101,9 +101,9 @@ public class XMLConfigurationStore implements ConfigurationStore
      * {@code ConfigurationStore} of a property with a specific name.
      *
      * @param propertyName the name of the property to get the value of
-     * @return the value in this <tt>ConfigurationStore</tt> of the property with the specified
-     * name; <tt>null</tt> if the property with the specified name does not have an association
-     * with a value in this <tt>ConfigurationStore</tt>
+     * @return the value in this <code>ConfigurationStore</code> of the property with the specified
+     * name; <code>null</code> if the property with the specified name does not have an association
+     * with a value in this <code>ConfigurationStore</code>
      * @see ConfigurationStore#getProperty(String)
      */
     public Object getProperty(String propertyName)
@@ -120,10 +120,10 @@ public class XMLConfigurationStore implements ConfigurationStore
 
     /**
      * Implements {ConfigurationStore#getPropertyNames(String)}. Gets the names of the properties
-     * which have values associated in this <tt>ConfigurationStore</tt>.
+     * which have values associated in this <code>ConfigurationStore</code>.
      *
-     * @return an array of <tt>String</tt>s which specify the names of the properties that have
-     * values associated in this <tt>ConfigurationStore</tt>; an empty array if this instance
+     * @return an array of <code>String</code>s which specify the names of the properties that have
+     * values associated in this <code>ConfigurationStore</code>; an empty array if this instance
      * contains no property values
      * @see ConfigurationStore#getPropertyNames(String)
      */
@@ -138,7 +138,7 @@ public class XMLConfigurationStore implements ConfigurationStore
      * name stands for a system property.
      *
      * @param propertyName the name of a property which is to be determined whether it is a system property
-     * @return <tt>true</tt> if the specified name stands for a system property; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the specified name stands for a system property; <code>false</code>, otherwise
      * @see ConfigurationStore#isSystemProperty(String)
      */
     public boolean isSystemProperty(String propertyName)
@@ -240,9 +240,9 @@ public class XMLConfigurationStore implements ConfigurationStore
     }
 
     /**
-     * Creates new entries in the XML <tt>doc</tt> for every element in the <tt>newProperties</tt> table.
+     * Creates new entries in the XML <code>doc</code> for every element in the <code>newProperties</code> table.
      *
-     * @param doc the XML <tt>Document</tt> where the new entries should be created
+     * @param doc the XML <code>Document</code> where the new entries should be created
      * @param newProperties the table containing the properties that are to be introduced in the document.
      */
     private void processNewProperties(Document doc, Map<String, Object> newProperties)
@@ -258,11 +258,11 @@ public class XMLConfigurationStore implements ConfigurationStore
     }
 
     /**
-     * Creates an entry in the XML <tt>doc</tt> for the specified key value pair.
+     * Creates an entry in the XML <code>doc</code> for the specified key value pair.
      *
-     * @param doc the XML <tt>document</tt> to update.
-     * @param key the value of the <tt>name</tt> attribute for the new entry
-     * @param value the value of the <tt>value</tt> attribute for the new entry
+     * @param doc the XML <code>document</code> to update.
+     * @param key the value of the <code>name</code> attribute for the new entry
+     * @param value the value of the <code>value</code> attribute for the new entry
      * @param isSystem specifies whether this is a system property (system attribute will be set to true).
      */
     private void processNewProperty(Document doc, String key, String value, boolean isSystem)
@@ -291,14 +291,14 @@ public class XMLConfigurationStore implements ConfigurationStore
 
     /**
      * Implements {@link ConfigurationStore#reloadConfiguration(File)}. Removes all property
-     * name-value associations currently present in this <tt>ConfigurationStore</tt> and
-     * de-serializes new property name-value associations from a specific <tt>File</tt> which
+     * name-value associations currently present in this <code>ConfigurationStore</code> and
+     * de-serializes new property name-value associations from a specific <code>File</code> which
      * presumably is in the format represented by this instance.
      *
-     * @param file the <tt>File</tt> to be read and to deserialize new property name-value associations
+     * @param file the <code>File</code> to be read and to deserialize new property name-value associations
      * from into this instance
-     * @throws IOException if there is an input error while reading from the specified <tt>file</tt>
-     * @throws XMLException if parsing the contents of the specified <tt>file</tt> fails
+     * @throws IOException if there is an input error while reading from the specified <code>file</code>
+     * @throws XMLException if parsing the contents of the specified <code>file</code> fails
      * @see ConfigurationStore#reloadConfiguration(File)
      */
     public void reloadConfiguration(File file)
@@ -311,11 +311,11 @@ public class XMLConfigurationStore implements ConfigurationStore
 
     /**
      * Implements {@link ConfigurationStore#removeProperty(String)}. Removes the value association
-     * in this <tt>ConfigurationStore</tt> of the property with a specific name. If the property
-     * with the specified name is not associated with a value in this <tt>ConfigurationStore</tt>, does nothing.
+     * in this <code>ConfigurationStore</code> of the property with a specific name. If the property
+     * with the specified name is not associated with a value in this <code>ConfigurationStore</code>, does nothing.
      *
      * @param propertyName the name of the property which is to have its value association in this
-     * <tt>ConfigurationStore</tt> removed
+     * <code>ConfigurationStore</code> removed
      * @see ConfigurationStore#removeProperty(String)
      */
     public void removeProperty(String propertyName)
@@ -328,12 +328,12 @@ public class XMLConfigurationStore implements ConfigurationStore
     /**
      * Implements {@link ConfigurationStore#setNonSystemProperty(String, Object)}. Sets the value
      * of a non-system property with a specific name to a specific value in this
-     * <tt>ConfigurationStore</tt>.
+     * <code>ConfigurationStore</code>.
      *
      * @param propertyName the name of the non-system property to be set to the specified value in this
-     * <tt>ConfigurationStore</tt>
+     * <code>ConfigurationStore</code>
      * @param property the value to be assigned to the non-system property with the specified name in this
-     * <tt>ConfigurationStore</tt>
+     * <code>ConfigurationStore</code>
      * @see ConfigurationStore#setNonSystemProperty(String, Object)
      */
     public void setNonSystemProperty(String propertyName, Object property)
@@ -343,9 +343,9 @@ public class XMLConfigurationStore implements ConfigurationStore
 
     /**
      * Implements {@link ConfigurationStore#setSystemProperty(String)}. Sets a property with a
-     * specific name to be considered a system property by the <tt>ConfigurationStore</tt>.
+     * specific name to be considered a system property by the <code>ConfigurationStore</code>.
      *
-     * @param propertyName the name of the property to be set as a system property in this <tt>ConfigurationStore</tt>
+     * @param propertyName the name of the property to be set as a system property in this <code>ConfigurationStore</code>
      * @see ConfigurationStore#setSystemProperty(String)
      */
     public void setSystemProperty(String propertyName)
@@ -355,11 +355,11 @@ public class XMLConfigurationStore implements ConfigurationStore
 
     /**
      * Implements {@link ConfigurationStore#storeConfiguration(OutputStream)}. Stores/serializes
-     * the property name-value associations currently present in this <tt>ConfigurationStore</tt>
-     * into a specific <tt>OutputStream</tt> in the format represented by this instance.
+     * the property name-value associations currently present in this <code>ConfigurationStore</code>
+     * into a specific <code>OutputStream</code> in the format represented by this instance.
      *
-     * @param out the <tt>OutputStream</tt> to receive the serialized form of the property name-value
-     * associations currently present in this <tt>ConfigurationStore</tt>
+     * @param out the <code>OutputStream</code> to receive the serialized form of the property name-value
+     * associations currently present in this <code>ConfigurationStore</code>
      * @see ConfigurationStore#storeConfiguration(OutputStream)
      */
     public void storeConfiguration(OutputStream out)
@@ -465,7 +465,7 @@ public class XMLConfigurationStore implements ConfigurationStore
         private final String propertyName;
 
         /**
-         * Initializes a new <tt>PropertyReference</tt> instance which is to represent a system
+         * Initializes a new <code>PropertyReference</code> instance which is to represent a system
          * property with a specific name.
          *
          * @param propertyName the name of the system property to be represented by the new instance

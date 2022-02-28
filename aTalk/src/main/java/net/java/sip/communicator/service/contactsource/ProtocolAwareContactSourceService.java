@@ -18,10 +18,10 @@ package net.java.sip.communicator.service.contactsource;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>ProtocolAwareContactSourceService</tt> extends the basic
- * <tt>ContactSourceService</tt> interface to provide a protocol aware contact
- * source. In other words a preferred <tt>ProtocolProviderService</tt> can be
- * set for a given <tt>OperationSet</tt> class that would affect the query
+ * The <code>ProtocolAwareContactSourceService</code> extends the basic
+ * <code>ContactSourceService</code> interface to provide a protocol aware contact
+ * source. In other words a preferred <code>ProtocolProviderService</code> can be
+ * set for a given <code>OperationSet</code> class that would affect the query
  * result by excluding source contacts that has a preferred provider different
  * from the one specified as a preferred provider.
  *
@@ -32,14 +32,14 @@ public interface ProtocolAwareContactSourceService
 {
     /**
      * Sets the preferred protocol provider for this contact source. The
-     * preferred <tt>ProtocolProviderService</tt> set for a given
-     * <tt>OperationSet</tt> class would affect the query result by excluding
+     * preferred <code>ProtocolProviderService</code> set for a given
+     * <code>OperationSet</code> class would affect the query result by excluding
      * source contacts that has a preferred provider different from the one
      * specified here.
      *
-     * @param opSetClass the <tt>OperationSet</tt> class, for which the
+     * @param opSetClass the <code>OperationSet</code> class, for which the
      * preferred provider is set
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> to set
+     * @param protocolProvider the <code>ProtocolProviderService</code> to set
      */
     public void setPreferredProtocolProvider(
                                     Class<? extends OperationSet> opSetClass,

@@ -129,9 +129,9 @@ public class WhiteboardParticipantChangeEvent extends java.beans.PropertyChangeE
 	}
 
 	/**
-	 * Returns the <tt>WhiteboardParticipant</tt> that this event is about.
+	 * Returns the <code>WhiteboardParticipant</code> that this event is about.
 	 *
-	 * @return a reference to the <tt>WhiteboardParticipant</tt> that is the source of this event.
+	 * @return a reference to the <code>WhiteboardParticipant</code> that is the source of this event.
 	 */
 	public WhiteboardParticipant getSourceWhiteboardParticipant()
 	{

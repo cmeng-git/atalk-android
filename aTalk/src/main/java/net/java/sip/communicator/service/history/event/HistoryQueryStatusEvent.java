@@ -10,7 +10,7 @@ import java.util.*;
 import net.java.sip.communicator.service.history.*;
 
 /**
- * The <tt>HistoryQueryStatusEvent</tt> is triggered each time a <tt>HistoryQuery</tt> changes its status. Possible
+ * The <code>HistoryQueryStatusEvent</code> is triggered each time a <code>HistoryQuery</code> changes its status. Possible
  * statuses are: QUERY_COMPLETED, QUERY_CANCELED and QUERY_ERROR.
  *
  * @author Yana Stamcheva
@@ -43,11 +43,11 @@ public class HistoryQueryStatusEvent extends EventObject
 	private final int eventType;
 
 	/**
-	 * Creates a <tt>HistoryQueryStatusEvent</tt> by specifying the source <tt>HistoryQuery</tt> and the
-	 * <tt>eventType</tt> indicating why initially this event occurred.
+	 * Creates a <code>HistoryQueryStatusEvent</code> by specifying the source <code>HistoryQuery</code> and the
+	 * <code>eventType</code> indicating why initially this event occurred.
 	 * 
 	 * @param source
-	 *        the <tt>HistoryQuery</tt> this event is about
+	 *        the <code>HistoryQuery</code> this event is about
 	 * @param eventType
 	 *        the type of the event. One of the QUERY_XXX constants defined in this class
 	 */
@@ -58,9 +58,9 @@ public class HistoryQueryStatusEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>HistoryQuery</tt> that triggered this event.
+	 * Returns the <code>HistoryQuery</code> that triggered this event.
 	 * 
-	 * @return the <tt>HistoryQuery</tt> that triggered this event
+	 * @return the <code>HistoryQuery</code> that triggered this event
 	 */
 	public HistoryQuery getQuerySource()
 	{

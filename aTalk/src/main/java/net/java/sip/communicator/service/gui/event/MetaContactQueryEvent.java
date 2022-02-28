@@ -11,24 +11,24 @@ import java.util.*;
 import net.java.sip.communicator.service.contactlist.*;
 
 /**
- * The <tt>MetaContactQueryEvent</tt> is triggered each time a
- * <tt>MetaContact</tt> is received as a result of a <tt>MetaContactQuery</tt>.
+ * The <code>MetaContactQueryEvent</code> is triggered each time a
+ * <code>MetaContact</code> is received as a result of a <code>MetaContactQuery</code>.
  *
  * @author Yana Stamcheva
  */
 public class MetaContactQueryEvent extends EventObject
 {
     /**
-     * The <tt>MetaContact</tt> this event is about.
+     * The <code>MetaContact</code> this event is about.
      */
     private final MetaContact metaContact;
 
     /**
-     * Creates an instance of <tt>MetaGroupQueryEvent</tt> by specifying the
-     * <tt>source</tt> query this event comes from and the <tt>metaContact</tt> this event is about.
+     * Creates an instance of <code>MetaGroupQueryEvent</code> by specifying the
+     * <code>source</code> query this event comes from and the <code>metaContact</code> this event is about.
      *
-     * @param source the <tt>MetaContactQuery</tt> that triggered this event
-     * @param metaContact the <tt>MetaContact</tt> this event is about
+     * @param source the <code>MetaContactQuery</code> that triggered this event
+     * @param metaContact the <code>MetaContact</code> this event is about
      */
     public MetaContactQueryEvent(MetaContactQuery source, MetaContact metaContact)
     {
@@ -37,8 +37,8 @@ public class MetaContactQueryEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>MetaContactQuery</tt> that triggered this event.
-     * @return the <tt>MetaContactQuery</tt> that triggered this event
+     * Returns the <code>MetaContactQuery</code> that triggered this event.
+     * @return the <code>MetaContactQuery</code> that triggered this event
      */
     public MetaContactQuery getQuerySource()
     {
@@ -46,8 +46,8 @@ public class MetaContactQueryEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>MetaContact</tt> this event is about.
-     * @return the <tt>MetaContact</tt> this event is about
+     * Returns the <code>MetaContact</code> this event is about.
+     * @return the <code>MetaContact</code> this event is about
      */
     public MetaContact getMetaContact()
     {

@@ -15,8 +15,8 @@ import java.text.ParseException;
 import java.util.List;
 
 /**
- * Represents an <tt>OperationSet</tt> giving access to video-specific functionality in telephony such as
- * visual <tt>Component</tt>s displaying video and listening to dynamic availability of such <tt>Component</tt>s.
+ * Represents an <code>OperationSet</code> giving access to video-specific functionality in telephony such as
+ * visual <code>Component</code>s displaying video and listening to dynamic availability of such <code>Component</code>s.
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -25,68 +25,68 @@ import java.util.List;
 public interface OperationSetVideoTelephony extends OperationSet
 {
     /**
-     * Adds a specific <tt>VideoListener</tt> to this telephony in order to receive notifications
-     * when visual/video <tt>Component</tt>s are being added and removed for a specific <tt>CallPeer</tt>.
+     * Adds a specific <code>VideoListener</code> to this telephony in order to receive notifications
+     * when visual/video <code>Component</code>s are being added and removed for a specific <code>CallPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> whose video the specified listener is to be notified about
-     * @param listener the <tt>VideoListener</tt> to be notified when visual/video <tt>Component</tt>s are
-     * being added or removed for <tt>peer</tt>
+     * @param peer the <code>CallPeer</code> whose video the specified listener is to be notified about
+     * @param listener the <code>VideoListener</code> to be notified when visual/video <code>Component</code>s are
+     * being added or removed for <code>peer</code>
      */
     void addVideoListener(CallPeer peer, VideoListener listener);
 
     /**
-     * Gets the visual <tt>Component</tt> which depicts the local video being streamed to a specific <tt>CallPeer</tt>.
+     * Gets the visual <code>Component</code> which depicts the local video being streamed to a specific <code>CallPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> to whom the local video which is to be depicted by the returned
-     * visual <tt>Component</tt> is being streamed
-     * @return a visual <tt>Component</tt> which depicts the local video being streamed to the
-     * specified <tt>CallPeer</tt> if this telephony chooses to carry out the creation
-     * synchronously; <tt>null</tt> if this telephony chooses to create the requested visual
-     * <tt>Component</tt> asynchronously
+     * @param peer the <code>CallPeer</code> to whom the local video which is to be depicted by the returned
+     * visual <code>Component</code> is being streamed
+     * @return a visual <code>Component</code> which depicts the local video being streamed to the
+     * specified <code>CallPeer</code> if this telephony chooses to carry out the creation
+     * synchronously; <code>null</code> if this telephony chooses to create the requested visual
+     * <code>Component</code> asynchronously
      * @throws OperationFailedException if creating the component fails for whatever reason.
      */
     Component getLocalVisualComponent(CallPeer peer)
             throws OperationFailedException;
 
     /**
-     * Gets the visual/video <tt>Component</tt> available in this telephony for a specific
-     * <tt>CallPeer</tt>.
+     * Gets the visual/video <code>Component</code> available in this telephony for a specific
+     * <code>CallPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> whose video is to be retrieved
-     * @return the visual/video <tt>Component</tt> available in this telephony for the specified
-     * <tt>peer</tt> if any; otherwise, <tt>null</tt>
+     * @param peer the <code>CallPeer</code> whose video is to be retrieved
+     * @return the visual/video <code>Component</code> available in this telephony for the specified
+     * <code>peer</code> if any; otherwise, <code>null</code>
      */
     @Deprecated
     Component getVisualComponent(CallPeer peer);
 
     /**
-     * Gets the visual/video <tt>Component</tt>s available in this telephony for a specific <tt>CallPeer</tt>.
+     * Gets the visual/video <code>Component</code>s available in this telephony for a specific <code>CallPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> whose videos are to be retrieved
-     * @return the visual/video <tt>Component</tt>s available in this telephony for the specified <tt>peer</tt>
+     * @param peer the <code>CallPeer</code> whose videos are to be retrieved
+     * @return the visual/video <code>Component</code>s available in this telephony for the specified <code>peer</code>
      */
     List<Component> getVisualComponents(CallPeer peer);
 
     /**
-     * Removes a specific <tt>VideoListener</tt> from this telephony in order to no longer have it
-     * receive notifications when visual/video <tt>Component</tt>s are being added and removed for a
-     * specific <tt>CallPeer</tt>.
+     * Removes a specific <code>VideoListener</code> from this telephony in order to no longer have it
+     * receive notifications when visual/video <code>Component</code>s are being added and removed for a
+     * specific <code>CallPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> whose video the specified listener is to no longer be notified about
-     * @param listener the <tt>VideoListener</tt> to no longer be notified when visual/video
-     * <tt>Component</tt>s are being added or removed for <tt>peer</tt>
+     * @param peer the <code>CallPeer</code> whose video the specified listener is to no longer be notified about
+     * @param listener the <code>VideoListener</code> to no longer be notified when visual/video
+     * <code>Component</code>s are being added or removed for <code>peer</code>
      */
     void removeVideoListener(CallPeer peer, VideoListener listener);
 
     /**
      * Sets the indicator which determines whether the streaming of local video in a specific
-     * <tt>Call</tt> is allowed. The setting does not reflect the availability of actual video
+     * <code>Call</code> is allowed. The setting does not reflect the availability of actual video
      * capture devices, it just expresses the desire of the user to have the local video streamed in
      * the case the system is actually able to do so.
      *
-     * @param call the <tt>Call</tt> to allow/disallow the streaming of local video for
-     * @param allowed <tt>true</tt> to allow the streaming of local video for the specified <tt>Call</tt>;
-     * <tt>false</tt> to disallow it
+     * @param call the <code>Call</code> to allow/disallow the streaming of local video for
+     * @param allowed <code>true</code> to allow the streaming of local video for the specified <code>Call</code>;
+     * <code>false</code> to disallow it
      * @throws OperationFailedException if initializing local video fails.
      */
     void setLocalVideoAllowed(Call call, boolean allowed)
@@ -94,51 +94,51 @@ public interface OperationSetVideoTelephony extends OperationSet
 
     /**
      * Gets the indicator which determines whether the streaming of local video in a specific
-     * <tt>Call</tt> is allowed. The setting does not reflect the availability of actual video
+     * <code>Call</code> is allowed. The setting does not reflect the availability of actual video
      * capture devices, it just expresses the desire of the user to have the local video streamed in
      * the case the system is actually able to do so.
      *
-     * @param call the <tt>Call</tt> to get the indicator of
-     * @return <tt>true</tt> if the streaming of local video for the specified <tt>Call</tt> is
-     * allowed; otherwise, <tt>false</tt>
+     * @param call the <code>Call</code> to get the indicator of
+     * @return <code>true</code> if the streaming of local video for the specified <code>Call</code> is
+     * allowed; otherwise, <code>false</code>
      */
     boolean isLocalVideoAllowed(Call call);
 
     /**
-     * The property which indicates whether a specific <tt>Call</tt> is currently streaming the
+     * The property which indicates whether a specific <code>Call</code> is currently streaming the
      * local video (to a remote destination).
      */
     static final String LOCAL_VIDEO_STREAMING = "LOCAL_VIDEO_STREAMING";
 
     /**
-     * Gets the indicator which determines whether a specific <tt>Call</tt> is currently streaming
+     * Gets the indicator which determines whether a specific <code>Call</code> is currently streaming
      * the local video (to a remote destination).
      *
-     * @param call the <tt>Call</tt> to get the indicator of
-     * @return <tt>true</tt> if the specified <tt>Call</tt> is currently streaming the local video
-     * (to a remote destination); otherwise, <tt>false</tt>
+     * @param call the <code>Call</code> to get the indicator of
+     * @return <code>true</code> if the specified <code>Call</code> is currently streaming the local video
+     * (to a remote destination); otherwise, <code>false</code>
      */
     boolean isLocalVideoStreaming(Call call);
 
     /**
-     * Adds a specific <tt>PropertyChangeListener</tt> to the list of listeners which get notified
+     * Adds a specific <code>PropertyChangeListener</code> to the list of listeners which get notified
      * when the properties (e.g. {@link #LOCAL_VIDEO_STREAMING}) associated with a specific
-     * <tt>Call</tt> change their values.
+     * <code>Call</code> change their values.
      *
-     * @param call the <tt>Call</tt> to start listening to the changes of the property values of
-     * @param listener the <tt>PropertyChangeListener</tt> to be notified when the properties associated with
-     * the specified <tt>Call</tt> change their values
+     * @param call the <code>Call</code> to start listening to the changes of the property values of
+     * @param listener the <code>PropertyChangeListener</code> to be notified when the properties associated with
+     * the specified <code>Call</code> change their values
      */
     void addPropertyChangeListener(Call call, PropertyChangeListener listener);
 
     /**
-     * Removes a specific <tt>PropertyChangeListener</tt> from the list of listeners which get
+     * Removes a specific <code>PropertyChangeListener</code> from the list of listeners which get
      * notified when the properties (e.g. {@link #LOCAL_VIDEO_STREAMING}) associated with a specific
-     * <tt>Call</tt> change their values.
+     * <code>Call</code> change their values.
      *
-     * @param call the <tt>Call</tt> to stop listening to the changes of the property values of
-     * @param listener the <tt>PropertyChangeListener</tt> to no longer be notified when the properties
-     * associated with the specified <tt>Call</tt> change their values
+     * @param call the <code>Call</code> to stop listening to the changes of the property values of
+     * @param listener the <code>PropertyChangeListener</code> to no longer be notified when the properties
+     * associated with the specified <code>Call</code> change their values
      */
     void removePropertyChangeListener(Call call, PropertyChangeListener listener);
 
@@ -151,7 +151,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * member of could be retrieved from the CallParticipatn instance with the use of the
      * corresponding method.
      * @throws OperationFailedException with the corresponding code if we fail to create the video call.
-     * @throws ParseException if <tt>callee</tt> is not a valid sip address string.
+     * @throws ParseException if <code>callee</code> is not a valid sip address string.
      */
     Call createVideoCall(String uri)
             throws OperationFailedException, ParseException;
@@ -181,7 +181,7 @@ public interface OperationSetVideoTelephony extends OperationSet
      * member of could be retrieved from the CallParticipatn instance with the use of the
      * corresponding method.
      * @throws OperationFailedException with the corresponding code if we fail to create the video call.
-     * @throws ParseException if <tt>callee</tt> is not a valid sip address string.
+     * @throws ParseException if <code>callee</code> is not a valid sip address string.
      */
     Call createVideoCall(String uri, QualityPreset qualityPreferences)
             throws OperationFailedException, ParseException;
@@ -221,17 +221,17 @@ public interface OperationSetVideoTelephony extends OperationSet
     QualityControl getQualityControl(CallPeer peer);
 
     /**
-     * Determines the <tt>ConferenceMember</tt> which is participating in a telephony conference
-     * with a specific <tt>CallPeer</tt> as its focus and which is sending a video content/RTP
-     * stream displayed in a specific visual <tt>Component</tt>.
+     * Determines the <code>ConferenceMember</code> which is participating in a telephony conference
+     * with a specific <code>CallPeer</code> as its focus and which is sending a video content/RTP
+     * stream displayed in a specific visual <code>Component</code>.
      *
-     * @param peer the <tt>CallPeer</tt> which is the conference focus of the telephony conference to be
-     * examined in order to locate the <tt>ConferenceMember</tt> which is sending the video
-     * content/RTP stream displayed in the specified <tt>visualComponent</tt>
-     * @param visualComponent the visual <tt>Component</tt> which displays the video content/RTP stream of the
-     * <tt>ConferenceMember</tt> to be located
-     * @return the <tt>ConferenceMember</tt>, if any, which is sending the video content/RTP stream
-     * displayed in the specific <tt>visualComponent</tt>
+     * @param peer the <code>CallPeer</code> which is the conference focus of the telephony conference to be
+     * examined in order to locate the <code>ConferenceMember</code> which is sending the video
+     * content/RTP stream displayed in the specified <code>visualComponent</code>
+     * @param visualComponent the visual <code>Component</code> which displays the video content/RTP stream of the
+     * <code>ConferenceMember</code> to be located
+     * @return the <code>ConferenceMember</code>, if any, which is sending the video content/RTP stream
+     * displayed in the specific <code>visualComponent</code>
      */
     ConferenceMember getConferenceMember(CallPeer peer, Component visualComponent);
 }

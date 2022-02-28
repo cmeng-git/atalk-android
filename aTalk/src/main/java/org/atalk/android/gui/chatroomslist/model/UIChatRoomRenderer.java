@@ -27,10 +27,10 @@ import android.graphics.drawable.Drawable;
 public interface UIChatRoomRenderer
 {
     /**
-     * Return <tt>true</tt> if given contact is considered to be currently selected.
+     * Return <code>true</code> if given contact is considered to be currently selected.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
-     * @return <tt>true</tt> if given chatRoomWrapper is considered to be currently selected.
+     * @return <code>true</code> if given chatRoomWrapper is considered to be currently selected.
      */
     boolean isSelected(Object chatRoomWrapper);
 
@@ -51,10 +51,10 @@ public interface UIChatRoomRenderer
     String getStatusMessage(Object chatRoomWrapper);
 
     /**
-     * Returns <tt>true</tt> if given chatRoomWrapper name should be displayed in bold.
+     * Returns <code>true</code> if given chatRoomWrapper name should be displayed in bold.
      *
      * @param chatRoomWrapper chatRoomWrapper instance.
-     * @return <tt>true</tt> if given chatRoomWrapper name should be displayed in bold.
+     * @return <code>true</code> if given chatRoomWrapper name should be displayed in bold.
      */
     boolean isDisplayBold(Object chatRoomWrapper);
 

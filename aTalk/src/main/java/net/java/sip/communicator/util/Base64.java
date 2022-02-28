@@ -138,7 +138,7 @@ public class Base64
     }
 
     /**
-     * Prevents the initialization of <tt>Base64</tt> instances.
+     * Prevents the initialization of <code>Base64</code> instances.
      */
     private Base64()
     {

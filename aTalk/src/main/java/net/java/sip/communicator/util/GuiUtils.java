@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * The <tt>StringUtils</tt> class is used through this ui implementation for
+ * The <code>StringUtils</code> class is used through this ui implementation for
  * some special operations with strings.
  *
  * @author Yana Stamcheva
@@ -114,11 +114,11 @@ public class GuiUtils
     }
 
     /**
-     * Counts occurrences of the <tt>needle</tt> character in the given <tt>text</tt>.
+     * Counts occurrences of the <code>needle</code> character in the given <code>text</code>.
      *
      * @param text the text in which we search
      * @param needle the character we're looking for
-     * @return the count of occurrences of the <tt>needle</tt> chat in the given <tt>text</tt>
+     * @return the count of occurrences of the <code>needle</code> chat in the given <code>text</code>
      */
     public static int countOccurrences(String text, char needle)
     {
@@ -291,10 +291,10 @@ public class GuiUtils
 
     /**
      * Formats the given date as: Month DD, YYYY and appends it to the given
-     * <tt>dateStrBuf</tt> string buffer.
+     * <code>dateStrBuf</code> string buffer.
      *
      * @param date the date to format
-     * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the
+     * @param dateStrBuf the <code>StringBuffer</code>, where to append the
      * formatted date
      */
     public static void formatDate(long date, StringBuffer dateStrBuf)
@@ -309,10 +309,10 @@ public class GuiUtils
     }
 
     /**
-     * Formats the given date as: Month DD, YYYY and appends it to the given <tt>dateStrBuf</tt> string buffer.
+     * Formats the given date as: Month DD, YYYY and appends it to the given <code>dateStrBuf</code> string buffer.
      *
      * @param date the date to format
-     * @param dateStrBuf the <tt>StringBuffer</tt>, where to append the formatted date
+     * @param dateStrBuf the <code>StringBuffer</code>, where to append the formatted date
      */
     public static void formatDate(Date date, StringBuffer dateStrBuf)
     {
@@ -458,7 +458,7 @@ public class GuiUtils
      * Adds a 0 in the beginning of one digit numbers.
      *
      * @param time The time parameter could be hours, minutes or seconds.
-     * @param timeStrBuf the <tt>StringBuffer</tt> to which the formatted
+     * @param timeStrBuf the <code>StringBuffer</code> to which the formatted
      * minutes string is to be appended
      */
     private static void formatTime(int time, StringBuffer timeStrBuf)
@@ -509,8 +509,8 @@ public class GuiUtils
      * Replaces the characters that we must escape used for the created
      * filename.
      *
-     * @param string the <tt>String</tt> which is to have its characters escaped
-     * @return a <tt>String</tt> derived from the specified <tt>id</tt> by
+     * @param string the <code>String</code> which is to have its characters escaped
+     * @return a <code>String</code> derived from the specified <code>id</code> by
      * escaping characters
      */
     public static String escapeFileNameSpecialCharacters(String string)

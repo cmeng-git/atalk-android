@@ -96,12 +96,12 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      * Stores the password for the specified account. When password is null the property is cleared.
      *
      * Many threads can call this method at the same time, and the first thread may present the
-     * user with the master password prompt and create a <tt>Crypto</tt> instance based on the input
-     * (<tt>createCrypto</tt> method). This instance will be used later by all other threads.
+     * user with the master password prompt and create a <code>Crypto</code> instance based on the input
+     * (<code>createCrypto</code> method). This instance will be used later by all other threads.
      *
      * @param accountUuid account UUID
      * @param password the password to store; remove if password == null
-     * @return <tt>true</tt> if the specified <tt>password</tt> was successfully stored; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the specified <code>password</code> was successfully stored; otherwise, <code>false</code>
      * @see CredentialsStorageServiceImpl#storePassword(String, String)
      */
     public synchronized boolean storePassword(String accountUuid, String password)
@@ -131,11 +131,11 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      * decrypts it with the master password.
      *
      * Many threads can call this method at the same time, and the first thread may present the
-     * user with the master password prompt and create a <tt>Crypto</tt> instance based on the
-     * input (<tt>createCrypto</tt> method). This instance will be used later by all other threads.
+     * user with the master password prompt and create a <code>Crypto</code> instance based on the
+     * input (<code>createCrypto</code> method). This instance will be used later by all other threads.
      *
      * @param accountUuid account UUID
-     * @return the loaded password for the <tt>accountUuid</tt>
+     * @return the loaded password for the <code>accountUuid</code>
      * @see CredentialsStorageServiceImpl#createCrypto()
      */
     public synchronized String loadPassword(String accountUuid)
@@ -157,8 +157,8 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      * value in the configuration to null.
      *
      * @param accountUuid account UUID
-     * @return <tt>true</tt> if the password for the specified <tt>accountUuid</tt> was
-     * successfully removed; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the password for the specified <code>accountUuid</code> was
+     * successfully removed; otherwise, <code>false</code>
      */
     public boolean removePassword(String accountUuid)
     {
@@ -183,7 +183,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      * the MP is considered correct.
      *
      * @param master master password
-     * @return <tt>true</tt> if the password is correct; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the password is correct; <code>false</code>, otherwise
      */
     public boolean verifyMasterPassword(String master)
     {
@@ -216,7 +216,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      *
      * @param oldPassword old master password
      * @param newPassword new master password
-     * @return <tt>true</tt> if master password was changed successfully; <tt>false</tt>, otherwise
+     * @return <code>true</code> if master password was changed successfully; <code>false</code>, otherwise
      */
     public boolean changeMasterPassword(String oldPassword, String newPassword)
     {
@@ -299,7 +299,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      *
      * @param accountUuid account UUID
      * @param password unencrypted password
-     * @return <tt>true</tt> if the specified <tt>password</tt> was successfully moved; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the specified <code>password</code> was successfully moved; otherwise, <code>false</code>
      */
     private boolean movePasswordProperty(String accountUuid, String password)
     {
@@ -339,7 +339,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      * Creates a Crypto instance only when it's null, either with a user input master password or with null.
      * If the user decided not to input anything, the instance is not created.
      *
-     * @return <tt>true</tt> if the Crypto instance was created; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the Crypto instance was created; <code>false</code>, otherwise
      */
     private synchronized boolean createCrypto()
     {
@@ -381,7 +381,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
     /**
      * Displays a password prompt to the user in a loop until it is correct or the user presses the cancel button.
      *
-     * @return the entered password or <tt>null</tt> if none was provided.
+     * @return the entered password or <code>null</code> if none was provided.
      */
     private String showPasswordPrompt()
     {
@@ -441,7 +441,7 @@ public class CredentialsStorageServiceImpl implements CredentialsStorageService
      * Check if encrypted account password is saved in the configuration.
      *
      * @param accountUuid account UUID
-     * @return <tt>true</tt> if saved, <tt>false</tt> if not
+     * @return <code>true</code> if saved, <code>false</code> if not
      */
     public boolean isStoredEncrypted(String accountUuid)
     {

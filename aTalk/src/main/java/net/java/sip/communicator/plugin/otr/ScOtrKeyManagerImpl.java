@@ -38,12 +38,12 @@ public class ScOtrKeyManagerImpl implements ScOtrKeyManager
 	}
 
 	/**
-	 * Gets a copy of the list of <tt>ScOtrKeyManagerListener</tt>s registered with this instance
-	 * which may safely be iterated without the risk of a <tt>ConcurrentModificationException</tt>.
+	 * Gets a copy of the list of <code>ScOtrKeyManagerListener</code>s registered with this instance
+	 * which may safely be iterated without the risk of a <code>ConcurrentModificationException</code>.
 	 *
-	 * @return a copy of the list of <tt>ScOtrKeyManagerListener<tt>s registered with this
+	 * @return a copy of the list of <code>ScOtrKeyManagerListener<code>s registered with this
 	 * instance which may safely be iterated without the risk of a
-	 * <tt>ConcurrentModificationException</tt>
+	 * <code>ConcurrentModificationException</code>
 	 */
 	private ScOtrKeyManagerListener[] getListeners()
 	{

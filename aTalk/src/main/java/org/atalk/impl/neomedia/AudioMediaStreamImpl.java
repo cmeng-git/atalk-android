@@ -36,7 +36,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Extends <tt>MediaStreamImpl</tt> in order to provide an implementation of <tt>AudioMediaStream</tt>.
+ * Extends <code>MediaStreamImpl</code> in order to provide an implementation of <code>AudioMediaStream</code>.
  *
  * @author Lyubomir Marinov
  * @author Emil Ivov
@@ -69,9 +69,9 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     };
 
     /**
-     * A <tt>PropertyChangeNotifier<tt> which will inform this <tt>AudioStream</tt> if a selected
+     * A <code>PropertyChangeNotifier<code> which will inform this <code>AudioStream</code> if a selected
      * audio device (capture, playback or notification device) has changed. We want to listen to
-     * these events, especially for those generated after the <tt>AudioSystem</tt> has changed.
+     * these events, especially for those generated after the <code>AudioSystem</code> has changed.
      */
     private final PropertyChangeNotifier audioSystemChangeNotifier;
 
@@ -97,8 +97,8 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     private SimpleAudioLevelListener localUserAudioLevelListener;
 
     /**
-     * The <tt>VolumeControl</tt> implementation which is to control the volume (level) of the
-     * audio received in/by this <tt>AudioMediaStream</tt> and played back.
+     * The <code>VolumeControl</code> implementation which is to control the volume (level) of the
+     * audio received in/by this <code>AudioMediaStream</code> and played back.
      */
     private VolumeControl outputVolumeControl;
 
@@ -121,12 +121,12 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     private final MediaStreamTrackReceiver mediaStreamTrackReceiver = new MediaStreamTrackReceiver(this);
 
     /**
-     * Initializes a new <tt>AudioMediaStreamImpl</tt> instance which will use the specified
-     * <tt>MediaDevice</tt> for both capture and playback of audio exchanged via the specified <tt>StreamConnector</tt>.
+     * Initializes a new <code>AudioMediaStreamImpl</code> instance which will use the specified
+     * <code>MediaDevice</code> for both capture and playback of audio exchanged via the specified <code>StreamConnector</code>.
      *
-     * @param connector the <tt>StreamConnector</tt> the new instance is to use for sending and receiving audio
-     * @param device the <tt>MediaDevice</tt> the new instance is to use for both capture and playback of
-     * audio exchanged via the specified <tt>StreamConnector</tt>
+     * @param connector the <code>StreamConnector</code> the new instance is to use for sending and receiving audio
+     * @param device the <code>MediaDevice</code> the new instance is to use for both capture and playback of
+     * audio exchanged via the specified <code>StreamConnector</code>
      * @param srtpControl a control which is already created, used to control the srtp operations.
      */
     public AudioMediaStreamImpl(StreamConnector connector, MediaDevice device, SrtpControl srtpControl)
@@ -144,9 +144,9 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
 
     /**
      * Gets the time in milliseconds of the last input activity related to this
-     * <tt>AudioMediaStream</tt>. We detect either RTP or RTCP activity.
+     * <code>AudioMediaStream</code>. We detect either RTP or RTCP activity.
      *
-     * @return the time in milliseconds of the last input activity related to this <tt>AudioMediaStream</tt>
+     * @return the time in milliseconds of the last input activity related to this <code>AudioMediaStream</code>
      * @throws IOException only in case we create input stream and it fails,
      * as we always pass false to skip creating, should never be thrown.
      */
@@ -168,11 +168,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Adds a <tt>DTMFListener</tt> to this <tt>AudioMediaStream</tt> which is to receive
+     * Adds a <code>DTMFListener</code> to this <code>AudioMediaStream</code> which is to receive
      * notifications when the remote party starts sending DTMF tones to us.
      *
-     * @param listener the <tt>DTMFListener</tt> to register for notifications about the remote party
-     * starting sending of DTM tones to this <tt>AudioMediaStream</tt>
+     * @param listener the <code>DTMFListener</code> to register for notifications about the remote party
+     * starting sending of DTM tones to this <code>AudioMediaStream</code>
      * @see AudioMediaStream#addDTMFListener(DTMFListener)
      */
     public void addDTMFListener(DTMFListener listener)
@@ -187,7 +187,7 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
      * than in the super class is that CSRC levels only make sense for audio streams so we don't
      * want them enabled in any other type.
      *
-     * @param extensionID the ID assigned to <tt>rtpExtension</tt> for the lifetime of this stream.
+     * @param extensionID the ID assigned to <code>rtpExtension</code> for the lifetime of this stream.
      * @param rtpExtension the RTPExtension that is being added to this stream.
      */
     @Override
@@ -251,8 +251,8 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Delivers the <tt>audioLevels</tt> map to whoever is interested. This method is meant for use
-     * primarily by the transform engine handling incoming RTP packets (currently <tt>CsrcTransformEngine</tt>).
+     * Delivers the <code>audioLevels</code> map to whoever is interested. This method is meant for use
+     * primarily by the transform engine handling incoming RTP packets (currently <code>CsrcTransformEngine</code>).
      *
      * @param audioLevels an array mapping CSRC IDs to audio levels in consecutive elements.
      */
@@ -288,11 +288,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Performs any optional configuration on the <tt>BufferControl</tt> of the specified
-     * <tt>RTPManager</tt> which is to be used as the <tt>RTPManager</tt> of this <tt>MediaStreamImpl</tt>.
+     * Performs any optional configuration on the <code>BufferControl</code> of the specified
+     * <code>RTPManager</code> which is to be used as the <code>RTPManager</code> of this <code>MediaStreamImpl</code>.
      *
-     * @param rtpManager the <tt>RTPManager</tt> which is to be used by this <tt>MediaStreamImpl</tt>
-     * @param bufferControl the <tt>BufferControl</tt> of <tt>rtpManager</tt> on which any optional configuration
+     * @param rtpManager the <code>RTPManager</code> which is to be used by this <code>MediaStreamImpl</code>
+     * @param bufferControl the <code>BufferControl</code> of <code>rtpManager</code> on which any optional configuration
      * is to be performed
      */
     @Override
@@ -333,9 +333,9 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * A stub that allows audio oriented streams to create and keep a reference to a <tt>DtmfTransformEngine</tt>.
+     * A stub that allows audio oriented streams to create and keep a reference to a <code>DtmfTransformEngine</code>.
      *
-     * @return a <tt>DtmfTransformEngine</tt> if this is an audio oriented stream and <tt>null</tt> otherwise.
+     * @return a <code>DtmfTransformEngine</code> if this is an audio oriented stream and <code>null</code> otherwise.
      */
     @Override
     protected DtmfTransformEngine createDtmfTransformEngine()
@@ -365,8 +365,8 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
      * {@inheritDoc}
      * <p>
      * Makes sure that {@link #localUserAudioLevelListener} and {@link #streamAudioLevelListener}
-     * which have been set on this <tt>AudioMediaStream</tt> will be automatically updated when a
-     * new <tt>MediaDevice</tt> is set on this instance.
+     * which have been set on this <code>AudioMediaStream</code> will be automatically updated when a
+     * new <code>MediaDevice</code> is set on this instance.
      */
     @Override
     protected void deviceSessionChanged(MediaDeviceSession oldValue, MediaDeviceSession newValue)
@@ -406,11 +406,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Delivers the <tt>DTMF</tt> tones. The method is meant for use primarily by the transform
-     * engine handling incoming RTP packets (currently <tt>DtmfTransformEngine</tt>).
+     * Delivers the <code>DTMF</code> tones. The method is meant for use primarily by the transform
+     * engine handling incoming RTP packets (currently <code>DtmfTransformEngine</code>).
      *
      * @param tone the new tone
-     * @param end <tt>true</tt> if the tone is to be ended or <tt>false</tt> to be started
+     * @param end <code>true</code> if the tone is to be ended or <code>false</code> to be started
      */
     public void fireDTMFEvent(DTMFRtpTone tone, boolean end)
     {
@@ -425,10 +425,10 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Returns the <tt>MediaDeviceSession</tt> associated with this stream after first casting it to
-     * <tt>AudioMediaDeviceSession</tt> since this is, after all, an <tt>AudioMediaStreamImpl</tt>.
+     * Returns the <code>MediaDeviceSession</code> associated with this stream after first casting it to
+     * <code>AudioMediaDeviceSession</code> since this is, after all, an <code>AudioMediaStreamImpl</code>.
      *
-     * @return the <tt>AudioMediaDeviceSession</tt> associated with this stream.
+     * @return the <code>AudioMediaDeviceSession</code> associated with this stream.
      */
     @Override
     public AudioMediaDeviceSession getDeviceSession()
@@ -438,11 +438,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
 
     /**
      * Returns the last audio level that was measured by the underlying device session for the specified
-     * <tt>ssrc</tt> (where <tt>ssrc</tt> could also correspond to our local sync source identifier).
+     * <code>ssrc</code> (where <code>ssrc</code> could also correspond to our local sync source identifier).
      *
      * @param ssrc the SSRC ID whose last measured audio level we'd like to retrieve.
-     * @return the audio level that was last measured for the specified <tt>ssrc</tt> or
-     * <tt>-1</tt> if no level has been cached for that ID.
+     * @return the audio level that was last measured for the specified <code>ssrc</code> or
+     * <code>-1</code> if no level has been cached for that ID.
      */
     public int getLastMeasuredAudioLevel(long ssrc)
     {
@@ -487,9 +487,9 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Registers {@link #CUSTOM_CODEC_FORMATS} with a specific <tt>RTPManager</tt>.
+     * Registers {@link #CUSTOM_CODEC_FORMATS} with a specific <code>RTPManager</code>.
      *
-     * @param rtpManager the <tt>RTPManager</tt> to register {@link #CUSTOM_CODEC_FORMATS} with
+     * @param rtpManager the <code>RTPManager</code> to register {@link #CUSTOM_CODEC_FORMATS} with
      * @see MediaStreamImpl#registerCustomCodecFormats(StreamRTPManager)
      */
     @Override
@@ -508,10 +508,10 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Removes <tt>listener</tt> from the list of <tt>DTMFListener</tt>s registered with this
-     * <tt>AudioMediaStream</tt> to receive notifications about incoming DTMF tones.
+     * Removes <code>listener</code> from the list of <code>DTMFListener</code>s registered with this
+     * <code>AudioMediaStream</code> to receive notifications about incoming DTMF tones.
      *
-     * @param listener the <tt>DTMFListener</tt> to no longer be notified by this <tt>AudioMediaStream</tt>
+     * @param listener the <code>DTMFListener</code> to no longer be notified by this <code>AudioMediaStream</code>
      * about incoming DTMF tones
      * @see AudioMediaStream#removeDTMFListener(DTMFListener)
      */
@@ -521,11 +521,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Registers <tt>listener</tt> as the <tt>CsrcAudioLevelListener</tt> that will receive
+     * Registers <code>listener</code> as the <code>CsrcAudioLevelListener</code> that will receive
      * notifications for changes in the levels of conference participants that the remote party
      * could be mixing.
      *
-     * @param listener the <tt>CsrcAudioLevelListener</tt> that we'd like to register or <tt>null</tt> if
+     * @param listener the <code>CsrcAudioLevelListener</code> that we'd like to register or <code>null</code> if
      * we'd like to stop receiving notifications.
      */
     public void setCsrcAudioLevelListener(CsrcAudioLevelListener listener)
@@ -534,11 +534,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Sets <tt>listener</tt> as the <tt>SimpleAudioLevelListener</tt> registered to receive
+     * Sets <code>listener</code> as the <code>SimpleAudioLevelListener</code> registered to receive
      * notifications from our device session for changes in the levels of the audio that this
      * stream is sending out.
      *
-     * @param listener the <tt>SimpleAudioLevelListener</tt> that we'd like to register or <tt>null</tt> if
+     * @param listener the <code>SimpleAudioLevelListener</code> that we'd like to register or <code>null</code> if
      * we want to stop local audio level measurements.
      */
     public void setLocalUserAudioLevelListener(SimpleAudioLevelListener listener)
@@ -568,11 +568,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Sets <tt>listener</tt> as the <tt>SimpleAudioLevelListener</tt> registered to receive
+     * Sets <code>listener</code> as the <code>SimpleAudioLevelListener</code> registered to receive
      * notifications from our device session for changes in the levels of the party that's at the
      * other end of this stream.
      *
-     * @param listener the <tt>SimpleAudioLevelListener</tt> that we'd like to register or <tt>null</tt> if
+     * @param listener the <code>SimpleAudioLevelListener</code> that we'd like to register or <code>null</code> if
      * we want to stop stream audio level measurements.
      */
     public void setStreamAudioLevelListener(SimpleAudioLevelListener listener)
@@ -588,20 +588,20 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Starts sending the specified <tt>DTMFTone</tt> until the <tt>stopSendingDTMF()</tt>
+     * Starts sending the specified <code>DTMFTone</code> until the <code>stopSendingDTMF()</code>
      * method is called (Excepts for INBAND DTMF, which stops by itself this is why where there
      * is no need to call the stopSendingDTMF). Callers should keep in mind the fact that calling
      * this method would most likely interrupt all audio transmission until the corresponding
      * stop method is called. Also, calling this method successively without invoking the
-     * corresponding stop method between the calls will simply replace the <tt>DTMFTone</tt> from
+     * corresponding stop method between the calls will simply replace the <code>DTMFTone</code> from
      * the first call with that from the second.
      *
-     * @param tone the <tt>DTMFTone</tt> to start sending.
+     * @param tone the <code>DTMFTone</code> to start sending.
      * @param dtmfMethod The kind of DTMF used (RTP, SIP-INOF or INBAND).
      * @param minimalToneDuration The minimal DTMF tone duration.
      * @param maximalToneDuration The maximal DTMF tone duration.
      * @param volume The DTMF tone volume.
-     * @throws IllegalArgumentException if <tt>dtmfMethod</tt> is not one of {@link DTMFMethod#INBAND_DTMF},
+     * @throws IllegalArgumentException if <code>dtmfMethod</code> is not one of {@link DTMFMethod#INBAND_DTMF},
      * {@link DTMFMethod#RTP_DTMF}, and {@link DTMFMethod#SIP_INFO_DTMF}
      * @see AudioMediaStream#startSendingDTMF(DTMFTone, DTMFMethod, int, int, int)
      */
@@ -633,11 +633,11 @@ public class AudioMediaStreamImpl extends MediaStreamImpl implements AudioMediaS
     }
 
     /**
-     * Interrupts transmission of a <tt>DTMFTone</tt> started with the <tt>startSendingDTMF()</tt>
+     * Interrupts transmission of a <code>DTMFTone</code> started with the <code>startSendingDTMF()</code>
      * method. Has no effect if no tone is currently being sent.
      *
      * @param dtmfMethod The kind of DTMF used (RTP, SIP-INOF or INBAND).
-     * @throws IllegalArgumentException if <tt>dtmfMethod</tt> is not one of {@link DTMFMethod#INBAND_DTMF},
+     * @throws IllegalArgumentException if <code>dtmfMethod</code> is not one of {@link DTMFMethod#INBAND_DTMF},
      * {@link DTMFMethod#RTP_DTMF}, and {@link DTMFMethod#SIP_INFO_DTMF}
      * @see AudioMediaStream#stopSendingDTMF(DTMFMethod)
      */

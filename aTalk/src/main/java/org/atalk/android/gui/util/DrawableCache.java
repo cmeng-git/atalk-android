@@ -15,7 +15,7 @@ import org.atalk.android.aTalkApp;
 import androidx.collection.LruCache;
 
 /**
- * Implements bitmap cache using <tt>LruCache</tt> utility class. Single cache instance uses up to 1/8 of total runtime memory available.
+ * Implements bitmap cache using <code>LruCache</code> utility class. Single cache instance uses up to 1/8 of total runtime memory available.
  *
  * @author Pawel Domas
  */
@@ -28,7 +28,7 @@ public class DrawableCache
     private LruCache<String, BitmapDrawable> cache;
 
     /**
-     * Creates new instance of <tt>DrawableCache</tt>.
+     * Creates new instance of <code>DrawableCache</code>.
      */
     public DrawableCache()
     {
@@ -51,12 +51,12 @@ public class DrawableCache
     }
 
     /**
-     * Gets cached <tt>BitmapDrawable</tt> for given <tt>resId</tt>. If it doesn't exist in the cache it will be loaded and stored for later
+     * Gets cached <code>BitmapDrawable</code> for given <code>resId</code>. If it doesn't exist in the cache it will be loaded and stored for later
      * use.
      *
      * @param resId bitmap drawable resource id(it must be bitmap resource)
-     * @return <tt>BitmapDrawable</tt> for given <tt>resId</tt>
-     * @throws Resources.NotFoundException if there's no bitmap for given <tt>resId</tt>
+     * @return <code>BitmapDrawable</code> for given <code>resId</code>
+     * @throws Resources.NotFoundException if there's no bitmap for given <code>resId</code>
      */
     public BitmapDrawable getBitmapFromMemCache(Integer resId)
             throws Resources.NotFoundException
@@ -80,7 +80,7 @@ public class DrawableCache
      * Gets bitmap from the cache.
      *
      * @param key drawable key string.
-     * @return bitmap from the cache if it exists or <tt>null</tt> otherwise.
+     * @return bitmap from the cache if it exists or <code>null</code> otherwise.
      */
     public BitmapDrawable getBitmapFromMemCache(String key)
     {
@@ -88,10 +88,10 @@ public class DrawableCache
     }
 
     /**
-     * Puts given <tt>BitmapDrawable</tt> to the cache.
+     * Puts given <code>BitmapDrawable</code> to the cache.
      *
      * @param key drawable key string.
-     * @param bmp the <tt>BitmapDrawable</tt> to be cached.
+     * @param bmp the <code>BitmapDrawable</code> to be cached.
      */
     public void cacheImage(String key, BitmapDrawable bmp)
     {

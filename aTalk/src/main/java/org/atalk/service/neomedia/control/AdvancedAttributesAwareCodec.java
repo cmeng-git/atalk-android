@@ -16,7 +16,7 @@ import java.util.*;
 public interface AdvancedAttributesAwareCodec extends Control
 {
 	/**
-	 * Sets the additional attributes to <tt>attributes</tt>
+	 * Sets the additional attributes to <code>attributes</code>
 	 *
 	 * @param attributes
 	 *        The additional attributes to set

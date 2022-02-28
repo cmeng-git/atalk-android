@@ -15,7 +15,7 @@ import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 
 /**
- * The SIPCommMenuBar is a <tt>JMenuBar</tt> without border decoration that can
+ * The SIPCommMenuBar is a <code>JMenuBar</code> without border decoration that can
  * be used as a container for other components, like selector boxes that won't
  * need a menu decoration.
  *
@@ -41,7 +41,7 @@ public class SIPCommMenuBar extends JMenuBar implements Skinnable {
 	}
 
 	/**
-	 * Creates an instance of <tt>SIPCommMenuBar</tt>.
+	 * Creates an instance of <code>SIPCommMenuBar</code>.
 	 */
 	public SIPCommMenuBar() {
 		loadSkin();

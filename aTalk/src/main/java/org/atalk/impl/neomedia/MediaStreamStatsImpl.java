@@ -99,7 +99,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
      * Computes the bitrate in kbps.
      *
      * @param nbBytes The number of bytes received.
-     * @param intervalMs The number of milliseconds during which <tt>nbBytes</tt> bytes were sent or received.
+     * @param intervalMs The number of milliseconds during which <code>nbBytes</code> bytes were sent or received.
      * @return the bitrate computed in kbps (1000 bits per second)
      */
     private static double computeRateKiloBitPerSec(long nbBytes, long intervalMs)
@@ -108,10 +108,10 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     }
 
     /**
-     * Gets the <tt>JitterBufferControl</tt> of a <tt>ReceiveStream</tt>.
+     * Gets the <code>JitterBufferControl</code> of a <code>ReceiveStream</code>.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> to get the <tt>JitterBufferControl</tt> of
-     * @return the <tt>JitterBufferControl</tt> of <tt>receiveStream</tt>.
+     * @param receiveStream the <code>ReceiveStream</code> to get the <code>JitterBufferControl</code> of
+     * @return the <code>JitterBufferControl</code> of <code>receiveStream</code>.
      */
     public static JitterBufferControl getJitterBufferControl(ReceiveStream receiveStream)
     {
@@ -182,16 +182,16 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     private long nbPacketsLostUpload = 0;
 
     /**
-     * The <tt>RTCPReportListener</tt> which listens to {@link #rtcpReports}
+     * The <code>RTCPReportListener</code> which listens to {@link #rtcpReports}
      * about the sending and the receiving of RTCP sender/receiver reports and
-     * updates this <tt>MediaStreamStats</tt> with their feedback reports.
+     * updates this <code>MediaStreamStats</code> with their feedback reports.
      */
     private final RTCPReportListener rtcpReportListener = new RTCPReportAdapter()
     {
         /**
          * {@inheritDoc}
          *
-         * Updates this <tt>MediaStreamStats</tt> with the received feedback (report).
+         * Updates this <code>MediaStreamStats</code> with the received feedback (report).
          */
         @Override
         public void rtcpReportReceived(RTCPReport report)
@@ -202,7 +202,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
         /**
          * {@inheritDoc}
          *
-         * Updates this <tt>MediaStreamStats</tt> with the sent feedback (report).
+         * Updates this <code>MediaStreamStats</code> with the sent feedback (report).
          */
         @Override
         public void rtcpReportSent(RTCPReport report)
@@ -471,11 +471,11 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     }
 
     /**
-     * Returns the set of <tt>PacketQueueControls</tt> found for all the <tt>DataSource</tt>s of
-     * all the <tt>ReceiveStream</tt>s. The set contains only non-null elements.
+     * Returns the set of <code>PacketQueueControls</code> found for all the <code>DataSource</code>s of
+     * all the <code>ReceiveStream</code>s. The set contains only non-null elements.
      *
-     * @return the set of <tt>PacketQueueControls</tt> found for all the <tt>DataSource</tt>s of
-     * all the <tt>ReceiveStream</tt>s. The set contains only non-null elements.
+     * @return the set of <code>PacketQueueControls</code> found for all the <code>DataSource</code>s of
+     * all the <code>ReceiveStream</code>s. The set contains only non-null elements.
      */
     private Set<JitterBufferControl> getJitterBufferControls()
     {
@@ -496,7 +496,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Returns the delay in milliseconds introduced by the jitter buffer. Since there might be
-     * multiple <tt>ReceiveStreams</tt>, returns the biggest delay found in any of them.
+     * multiple <code>ReceiveStreams</code>, returns the biggest delay found in any of them.
      *
      * @return the delay in milliseconds introduces by the jitter buffer
      */
@@ -511,7 +511,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Returns the delay in number of packets introduced by the jitter buffer. Since there might be
-     * multiple <tt>ReceiveStreams</tt>, returns the biggest delay found in any of them.
+     * multiple <code>ReceiveStreams</code>, returns the biggest delay found in any of them.
      *
      * @return the delay in number of packets introduced by the jitter buffer
      */
@@ -544,9 +544,9 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     }
 
     /**
-     * Gets the RTP clock rate associated with the <tt>MediaStream</tt>.
+     * Gets the RTP clock rate associated with the <code>MediaStream</code>.
      *
-     * @return the RTP clock rate associated with the <tt>MediaStream</tt>.
+     * @return the RTP clock rate associated with the <code>MediaStream</code>.
      */
     private double getRtpClockRate()
     {
@@ -567,7 +567,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
      * milliseconds. Returns -1D if an appropriate RTP clock rate cannot be found.
      *
      * @param rtpTime the RTP time units to convert.
-     * @return the milliseconds corresponding to <tt>rtpTime</tt> RTP units.
+     * @return the milliseconds corresponding to <code>rtpTime</code> RTP units.
      */
     private double rtpTimeToMs(double rtpTime)
     {
@@ -709,7 +709,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Returns the total number of Protocol Data Units (PDU) discarded by the FMJ packet queue since the
-     * beginning of the session. It's the sum over all <tt>ReceiveStream</tt>s of the <tt>MediaStream</tt>
+     * beginning of the session. It's the sum over all <code>ReceiveStream</code>s of the <code>MediaStream</code>
      *
      * @return the number of discarded packets.
      */
@@ -723,8 +723,8 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Returns the number of Protocol Data Units (PDU) discarded by the FMJ packet queue since the
-     * beginning of the session because it was full. It's the sum over all <tt>ReceiveStream</tt>s
-     * of the <tt>MediaStream</tt>
+     * beginning of the session because it was full. It's the sum over all <code>ReceiveStream</code>s
+     * of the <code>MediaStream</code>
      *
      * @return the number of discarded packets because it was full.
      */
@@ -739,7 +739,7 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     /**
      * Returns the number of Protocol Data Units (PDU) discarded by the FMJ packet queue since the
      * beginning of the session because they were late. It's the sum over all
-     * <tt>ReceiveStream</tt>s of the <tt>MediaStream</tt>
+     * <code>ReceiveStream</code>s of the <code>MediaStream</code>
      *
      * @return the number of discarded packets because they were late.
      */
@@ -753,8 +753,8 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Returns the number of Protocol Data Units (PDU) discarded by the FMJ packet queue since the
-     * beginning of the session during resets. It's the sum over all <tt>ReceiveStream</tt>s of the
-     * <tt>MediaStream</tt>
+     * beginning of the session during resets. It's the sum over all <code>ReceiveStream</code>s of the
+     * <code>MediaStream</code>
      *
      * @return the number of discarded packets during resets.
      */
@@ -768,8 +768,8 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Returns the number of Protocol Data Units (PDU) discarded by the FMJ packet queue since the
-     * beginning of the session due to shrinking. It's the sum over all <tt>ReceiveStream</tt>s of
-     * the <tt>MediaStream</tt>
+     * beginning of the session due to shrinking. It's the sum over all <code>ReceiveStream</code>s of
+     * the <code>MediaStream</code>
      *
      * @return the number of discarded packets due to shrinking.
      */
@@ -783,10 +783,10 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Returns the number of packets for which FEC data was decoded. Currently this is cumulative
-     * over all <tt>ReceiveStream</tt>s.
+     * over all <code>ReceiveStream</code>s.
      *
      * @return the number of packets for which FEC data was decoded. Currently this is cumulative
-     * over all <tt>ReceiveStream</tt>s.
+     * over all <code>ReceiveStream</code>s.
      * @see MediaStreamStatsImpl#updateNbFec()
      */
     public long getNbFec()
@@ -880,9 +880,9 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     }
 
     /**
-     * Returns the number of packets in the first <tt>JitterBufferControl</tt> found via <tt>getJitterBufferControls</tt>.
+     * Returns the number of packets in the first <code>JitterBufferControl</code> found via <code>getJitterBufferControls</code>.
      *
-     * @return the number of packets in the first <tt>JitterBufferControl</tt> found via <tt>getJitterBufferControls</tt>.
+     * @return the number of packets in the first <code>JitterBufferControl</code> found via <code>getJitterBufferControls</code>.
      */
     public int getPacketQueueCountPackets()
     {
@@ -892,9 +892,9 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     }
 
     /**
-     * Returns the size of the first <tt>JitterBufferControl</tt> found via <tt>getJitterBufferControls</tt>.
+     * Returns the size of the first <code>JitterBufferControl</code> found via <code>getJitterBufferControls</code>.
      *
-     * @return the size of the first <tt>JitterBufferControl</tt> found via <tt>getJitterBufferControls</tt>.
+     * @return the size of the first <code>JitterBufferControl</code> found via <code>getJitterBufferControls</code>.
      */
     public int getPacketQueueSize()
     {
@@ -1026,9 +1026,9 @@ public class MediaStreamStatsImpl implements MediaStreamStats
 
     /**
      * Sets a specific value on {@link #rttMs}. If there is an actual difference between the old
-     * and the new values, notifies the (known) <tt>CallStatsObserver</tt>s.
+     * and the new values, notifies the (known) <code>CallStatsObserver</code>s.
      *
-     * @param rttMs the value to set on <tt>MediaStreamStatsImpl.rttMs</tt>
+     * @param rttMs the value to set on <code>MediaStreamStatsImpl.rttMs</code>
      */
     private void setRttMs(long rttMs)
     {
@@ -1100,8 +1100,8 @@ public class MediaStreamStatsImpl implements MediaStreamStats
     }
 
     /**
-     * Updates the <tt>nbFec</tt> field with the sum of FEC-decoded packets over the different
-     * <tt>ReceiveStream</tt>s
+     * Updates the <code>nbFec</code> field with the sum of FEC-decoded packets over the different
+     * <code>ReceiveStream</code>s
      */
     private void updateNbFec()
     {

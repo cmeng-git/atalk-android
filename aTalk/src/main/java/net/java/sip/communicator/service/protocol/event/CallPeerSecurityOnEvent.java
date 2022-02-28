@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.*;
 import org.atalk.service.neomedia.SrtpControl;
 
 /**
- * The <tt>CallPeerSecurityOnEvent</tt> is triggered whenever a communication with a given peer is
+ * The <code>CallPeerSecurityOnEvent</code> is triggered whenever a communication with a given peer is
  * going secure.
  *
  * @author Werner Dittmann

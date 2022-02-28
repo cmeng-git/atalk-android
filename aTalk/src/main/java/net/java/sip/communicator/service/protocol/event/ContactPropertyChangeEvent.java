@@ -51,8 +51,8 @@ public class ContactPropertyChangeEvent extends java.beans.PropertyChangeEvent
 
 	/**
 	 * Creates a ContactPropertyChangeEvent indicating that a change has occurred for property
-	 * <tt>propertyName</tt> in the <tt>source</tt> contact and that its value has changed from
-	 * <tt>oldValue</tt> to <tt>newValue</tt>.
+	 * <code>propertyName</code> in the <code>source</code> contact and that its value has changed from
+	 * <code>oldValue</code> to <code>newValue</code>.
 	 * <p>
 	 * 
 	 * @param source
@@ -71,10 +71,10 @@ public class ContactPropertyChangeEvent extends java.beans.PropertyChangeEvent
 	}
 
 	/**
-	 * Returns a reference to the <tt>Contact</tt> whose property has changed.
+	 * Returns a reference to the <code>Contact</code> whose property has changed.
 	 * <p>
 	 * 
-	 * @return a reference to the <tt>Contact</tt> whose reference has changed.
+	 * @return a reference to the <code>Contact</code> whose reference has changed.
 	 */
 	public Contact getSourceContact()
 	{
@@ -93,10 +93,10 @@ public class ContactPropertyChangeEvent extends java.beans.PropertyChangeEvent
 	}
 
 	/**
-	 * Returns a reference to the source contact parent <tt>ContactGroup</tt>.
+	 * Returns a reference to the source contact parent <code>ContactGroup</code>.
 	 * 
-	 * @return a reference to the <tt>ContactGroup</tt> instance that contains the source
-	 *         <tt>Contact</tt>.
+	 * @return a reference to the <code>ContactGroup</code> instance that contains the source
+	 *         <code>Contact</code>.
 	 */
 	public ContactGroup getParentContactGroup()
 	{

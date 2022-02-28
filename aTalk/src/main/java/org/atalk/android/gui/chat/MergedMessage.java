@@ -13,7 +13,7 @@ import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 import java.util.*;
 
 /**
- * Class merges consecutive <tt>ChatMessage</tt> instances.
+ * Class merges consecutive <code>ChatMessage</code> instances.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -26,7 +26,7 @@ public class MergedMessage implements ChatMessage
     private final ChatMessage rootMessage;
 
     /**
-     * The list of messages consecutive to this <tt>MergedMessage</tt>.
+     * The list of messages consecutive to this <code>MergedMessage</code>.
      */
     private final List<ChatMessage> children = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class MergedMessage implements ChatMessage
     private String serverMsgIds;
 
     /**
-     * Creates a new instance of <tt>MergedMessage</tt> where the given message will become its
+     * Creates a new instance of <code>MergedMessage</code> where the given message will become its
      * rootMessage on which other new messages are being merged.
      *
      * @param rootMsg the rootMessage message for this merged instance.
@@ -209,9 +209,9 @@ public class MergedMessage implements ChatMessage
     }
 
     /**
-     * Returns the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
+     * Returns the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      *
-     * @return the UID of the message that this message replaces, or <tt>null</tt> if this is a new message.
+     * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      */
     public String getCorrectedMessageUID()
     {
@@ -383,7 +383,7 @@ public class MergedMessage implements ChatMessage
      * Finds the message that should be corrected by given message instance.
      *
      * @param newMsg new message to check if it is a correction for any of merged messages.
-     * @return message that is corrected by given <tt>newMsg</tt> or <tt>null</tt> if there isn't
+     * @return message that is corrected by given <code>newMsg</code> or <code>null</code> if there isn't
      * any.
      */
     private ChatMessage findCorrectedMessage(ChatMessage newMsg)

@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import timber.log.Timber;
 
 /**
- * Represents an implementation of the <tt>libjitsi</tt> library which is stand-alone and does not utilize OSGi.
+ * Represents an implementation of the <code>libjitsi</code> library which is stand-alone and does not utilize OSGi.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -26,12 +26,12 @@ public class LibJitsiImpl extends LibJitsi
 {
     /**
      * The service instances associated with this implementation of the
-     * <tt>libjitsi</tt> library mapped by their respective type/class names.
+     * <code>libjitsi</code> library mapped by their respective type/class names.
      */
     private final Map<String, ServiceLock> services = new HashMap<>();
 
     /**
-     * Initializes a new <tt>LibJitsiImpl</tt> instance.
+     * Initializes a new <code>LibJitsiImpl</code> instance.
      */
     public LibJitsiImpl()
     {
@@ -47,11 +47,11 @@ public class LibJitsiImpl extends LibJitsi
     }
 
     /**
-     * Gets a service of a specific type associated with this implementation of the <tt>libjitsi</tt> library.
+     * Gets a service of a specific type associated with this implementation of the <code>libjitsi</code> library.
      *
      * @param serviceClass the type of the service to be retrieved
      * @return a service of the specified type if there is such an association known to this
-     * implementation of the <tt>libjitsi</tt> library; otherwise, <tt>null</tt>
+     * implementation of the <code>libjitsi</code> library; otherwise, <code>null</code>
      */
     @Override
     protected <T> T getService(Class<T> serviceClass)

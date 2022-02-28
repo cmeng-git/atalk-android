@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Android implementation of <tt>AuthenticationWindowService</tt>. This class manages authentication requests. Each
- * request data is held by the <tt>AuthWindowImpl</tt> identified by assigned request id. Request id is passed to the
- * <tt>AuthWindowActivity</tt> so that it can obtain request data and interact with the user.
+ * Android implementation of <code>AuthenticationWindowService</code>. This class manages authentication requests. Each
+ * request data is held by the <code>AuthWindowImpl</code> identified by assigned request id. Request id is passed to the
+ * <code>AuthWindowActivity</code> so that it can obtain request data and interact with the user.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -26,7 +26,7 @@ public class AuthWindowServiceImpl implements AuthenticationWindowService
     private static Map<Long, AuthWindowImpl> requestMap = new HashMap<>();
 
     /**
-     * Creates an instance of the <tt>AuthenticationWindow</tt> implementation.
+     * Creates an instance of the <code>AuthenticationWindow</code> implementation.
      *
      * @param server the server name
      * @param isUserNameEditable indicates if the user name is editable
@@ -51,10 +51,10 @@ public class AuthWindowServiceImpl implements AuthenticationWindowService
     }
 
     /**
-     * Returns <tt>AuthWindowImpl</tt> for given <tt>requestId</tt>.
+     * Returns <code>AuthWindowImpl</code> for given <code>requestId</code>.
      *
      * @param requestId the request identifier
-     * @return <tt>AuthWindowImpl</tt> identified by given <tt>requestId</tt>.
+     * @return <code>AuthWindowImpl</code> identified by given <code>requestId</code>.
      */
     static AuthWindowImpl getAuthWindow(long requestId)
     {
@@ -62,7 +62,7 @@ public class AuthWindowServiceImpl implements AuthenticationWindowService
     }
 
     /**
-     * Called when authentication request processing for given <tt>requestId</tt> is completed or canceled.
+     * Called when authentication request processing for given <code>requestId</code> is completed or canceled.
      *
      * @param requestId the request identifier
      */

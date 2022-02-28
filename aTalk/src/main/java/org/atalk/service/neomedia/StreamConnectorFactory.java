@@ -6,16 +6,16 @@
 package org.atalk.service.neomedia;
 
 /**
- * Represents a factory of <tt>StreamConnector</tt> instances.
+ * Represents a factory of <code>StreamConnector</code> instances.
  *
  * @author Lyubomir Marinov
  */
 public interface StreamConnectorFactory
 {
 	/**
-	 * Initializes a <tt>StreamConnector</tt> instance.
+	 * Initializes a <code>StreamConnector</code> instance.
 	 *
-	 * @return a <tt>StreamConnector</tt> instance
+	 * @return a <code>StreamConnector</code> instance
 	 */
 	public StreamConnector createStreamConnector();
 }

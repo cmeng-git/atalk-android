@@ -16,7 +16,7 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * A <tt>ChatRoomMemberPropertyChangeEvent</tt> is issued whenever a chat room member property has
+ * A <code>ChatRoomMemberPropertyChangeEvent</code> is issued whenever a chat room member property has
  * changed (such as the nickname for example). Event codes defined in this class describe properties
  * whose changes are being announced through this event.
  *
@@ -31,30 +31,30 @@ public class ChatRoomMemberPropertyChangeEvent extends java.beans.PropertyChange
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * The nick name of the <tt>ChatRoomMember</tt> property.
+	 * The nick name of the <code>ChatRoomMember</code> property.
 	 */
 	public static final String MEMBER_NICKNAME = "MemberNickname";
 
 	/**
-	 * The presence status of the <tt>ChatRoomMember</tt> property.
+	 * The presence status of the <code>ChatRoomMember</code> property.
 	 */
 	public static final String MEMBER_PRESENCE = "MemberPresence";
 
 	/**
-	 * The <tt>ChatRoom</tt>, to which the corresponding member belongs.
+	 * The <code>ChatRoom</code>, to which the corresponding member belongs.
 	 */
 	private ChatRoom memberChatRoom;
 
 	/**
-	 * Creates a <tt>ChatRoomMemberPropertyChangeEvent</tt> indicating that a change has occurred
-	 * for property <tt>propertyName</tt> in the <tt>source</tt> chat room member and that its value
-	 * has changed from <tt>oldValue</tt> to <tt>newValue</tt>.
+	 * Creates a <code>ChatRoomMemberPropertyChangeEvent</code> indicating that a change has occurred
+	 * for property <code>propertyName</code> in the <code>source</code> chat room member and that its value
+	 * has changed from <code>oldValue</code> to <code>newValue</code>.
 	 * <p>
 	 * 
 	 * @param source
-	 *        the <tt>ChatRoomMember</tt> whose property has changed.
+	 *        the <code>ChatRoomMember</code> whose property has changed.
 	 * @param memberChatRoom
-	 *        the <tt>ChatRoom</tt> of the member
+	 *        the <code>ChatRoom</code> of the member
 	 * @param propertyName
 	 *        the name of the property that has changed.
 	 * @param oldValue
@@ -73,7 +73,7 @@ public class ChatRoomMemberPropertyChangeEvent extends java.beans.PropertyChange
 	/**
 	 * Returns the member of the chat room, for which this event is about.
 	 *
-	 * @return the <tt>ChatRoomMember</tt> for which this event is about
+	 * @return the <code>ChatRoomMember</code> for which this event is about
 	 */
 	public ChatRoomMember getSourceChatRoomMember()
 	{

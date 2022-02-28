@@ -46,7 +46,7 @@ public class GeolocationEvent extends EventObject
 
 	/**
 	 * Creates an event instance indicating that the specified source contact has changed its
-	 * geographic location to <tt>newLocation</tt>.
+	 * geographic location to <code>newLocation</code>.
 	 *
 	 * @param sourceContact
 	 *        the contact associated with this event.
@@ -99,9 +99,9 @@ public class GeolocationEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>GeolocationOperationSet</tt> instance that is the source of this event.
+	 * Returns the <code>GeolocationOperationSet</code> instance that is the source of this event.
 	 *
-	 * @return the <tt>OperationSetGeolocation</tt> instance that is the source of this event.
+	 * @return the <code>OperationSetGeolocation</code> instance that is the source of this event.
 	 */
 	public OperationSetGeolocation getSourceGeolocationOperationSet()
 	{
@@ -111,7 +111,7 @@ public class GeolocationEvent extends EventObject
 	/**
 	 * Returns a String representation of this GeolocationContactChangeEvent
 	 *
-	 * @return A a <tt>java.lang.String</tt> representation of this
+	 * @return A a <code>java.lang.String</code> representation of this
 	 *         ContactPresenceStatusChangeEvent.
 	 */
 	@Override

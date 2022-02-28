@@ -40,12 +40,12 @@ import timber.log.Timber;
  * contructing the server. Default values are:
  *
  * <blockquote>
- * <tt>serverAddress=127.0.0.1:67</tt> <i>[address:port]</i>
+ * <code>serverAddress=127.0.0.1:67</code> <i>[address:port]</i>
  * <br>
- * <tt>serverThreads=2</tt> <i>[number of concurrent threads for servlets]</i>
+ * <code>serverThreads=2</code> <i>[number of concurrent threads for servlets]</i>
  * </blockquote>
  *
- * <p>Note: this class implements <tt>Runnable</tt> allowing it to be run
+ * <p>Note: this class implements <code>Runnable</code> allowing it to be run
  * in a dedicated thread.
  *
  * <p>Example:
@@ -108,7 +108,7 @@ public class DHCPCoreServer implements Runnable
      * Constructor
      *
      * <p>Constructor shall not be called directly. New servers are created through
-     * <tt>initServer()</tt> factory.
+     * <code>initServer()</code> factory.
      */
     private DHCPCoreServer(DHCPServlet servlet, Properties userProps)
     {
@@ -119,13 +119,13 @@ public class DHCPCoreServer implements Runnable
     /**
      * Creates and initializes a new DHCP Server.
      *
-     * <p>It instanciates the object, then calls <tt>init()</tt> method.
+     * <p>It instanciates the object, then calls <code>init()</code> method.
      *
-     * @param servlet the <tt>DHCPServlet</tt> instance processing incoming requests,
-     * must not be <tt>null</tt>.
+     * @param servlet the <code>DHCPServlet</code> instance processing incoming requests,
+     * must not be <code>null</code>.
      * @param userProps specific properties, overriding file and default properties,
-     * may be <tt>null</tt>.
-     * @return the new <tt>DHCPCoreServer</tt> instance (never null).
+     * may be <code>null</code>.
+     * @return the new <code>DHCPCoreServer</code> instance (never null).
      * @throws DHCPServerInitException unable to start the server.
      */
     public static DHCPCoreServer initServer(DHCPServlet servlet, Properties userProps)
@@ -251,7 +251,7 @@ public class DHCPCoreServer implements Runnable
     }
 
     /**
-     * Returns the <tt>InetSocketAddress</tt> for the server (client-side).
+     * Returns the <code>InetSocketAddress</code> for the server (client-side).
      *
      * <pre>
      *

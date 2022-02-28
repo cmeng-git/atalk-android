@@ -24,16 +24,16 @@ public class OrderedQueryResultSet<T> implements QueryResultSet<T>
 	 * Constructor.
 	 *
 	 * @param records
-	 *        the <tt>Set</tt> of records
+	 *        the <code>Set</code> of records
 	 */
 	public OrderedQueryResultSet(Set<T> records) {
 		this.records = new LinkedList<T>(records);
 	}
 
 	/**
-	 * Returns <tt>true</tt> if the iteration has more elements.
+	 * Returns <code>true</code> if the iteration has more elements.
 	 *
-	 * @return <tt>true</tt> if the iterator has more elements.
+	 * @return <code>true</code> if the iterator has more elements.
 	 */
 	public boolean hasNext()
 	{
@@ -67,7 +67,7 @@ public class OrderedQueryResultSet<T> implements QueryResultSet<T>
 	}
 
 	/**
-	 * A strongly-typed variant of <tt>next()</tt>.
+	 * A strongly-typed variant of <code>next()</code>.
 	 *
 	 * @return the next history record.
 	 * @throws NoSuchElementException
@@ -99,7 +99,7 @@ public class OrderedQueryResultSet<T> implements QueryResultSet<T>
 	}
 
 	/**
-	 * A strongly-typed variant of <tt>prev()</tt>.
+	 * A strongly-typed variant of <code>prev()</code>.
 	 *
 	 * @return the previous history record.
 	 * @throws NoSuchElementException

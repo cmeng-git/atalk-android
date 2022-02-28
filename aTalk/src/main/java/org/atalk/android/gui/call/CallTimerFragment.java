@@ -18,7 +18,7 @@ import java.util.*;
 
 /**
  * Fragment implements the logic responsible for updating call duration timer. It is expected that parent
- * <tt>Activity</tt> contains <tt>TextView</tt> with <tt>R.id.callTime</tt> ID.
+ * <code>Activity</code> contains <code>TextView</code> with <code>R.id.callTime</code> ID.
  *
  * @author Pawel Domas
  */
@@ -42,7 +42,7 @@ public class CallTimerFragment extends OSGiFragment
     /**
      * Must be called in order to initialize and start the timer.
      *
-     * @param callPeer the <tt>CallPeer</tt> for which we're tracking the call duration.
+     * @param callPeer the <code>CallPeer</code> for which we're tracking the call duration.
      */
     public void callPeerAdded(CallPeer callPeer)
     {

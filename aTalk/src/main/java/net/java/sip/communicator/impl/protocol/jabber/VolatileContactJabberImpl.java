@@ -49,7 +49,7 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
      *
      * @param id String the user id/address
      * @param ssclCallback a reference to the ServerStoredContactListImpl instance that created us.
-     * @param isPrivateMessagingContact if <tt>true</tt> this should be private messaging contact.
+     * @param isPrivateMessagingContact if <code>true</code> this should be private messaging contact.
      */
     VolatileContactJabberImpl(Jid id, ServerStoredContactListJabberImpl ssclCallback, boolean isPrivateMessagingContact)
     {
@@ -62,7 +62,7 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
      * @param id String the user id/address (bareJid from subscription)
      * <presence to='swan@atalk.org/atalk' from='leopard@icrypto.com' type='subscribe'/>
      * @param ssclCallback a reference to the ServerStoredContactListImpl instance that created us.
-     * @param isPrivateMessagingContact if <tt>true</tt> this should be private messaging contact.
+     * @param isPrivateMessagingContact if <code>true</code> this should be private messaging contact.
      * @param displayName the display name of the contact
      */
     VolatileContactJabberImpl(Jid id, ServerStoredContactListJabberImpl ssclCallback,
@@ -141,7 +141,7 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
     /**
      * Checks if the contact is private messaging contact or not.
      *
-     * @return <tt>true</tt> if this is private messaging contact and <tt>false</tt> if it isn't.
+     * @return <code>true</code> if this is private messaging contact and <code>false</code> if it isn't.
      */
     public boolean isPrivateMessagingContact()
     {
@@ -150,7 +150,7 @@ public class VolatileContactJabberImpl extends ContactJabberImpl
 
     /**
      * Returns the real address of the contact. If the contact is not private messaging contact the
-     * result will be the same as <tt>getAddress</tt>'s result.
+     * result will be the same as <code>getAddress</code>'s result.
      *
      * @return the real address of the contact.
      */

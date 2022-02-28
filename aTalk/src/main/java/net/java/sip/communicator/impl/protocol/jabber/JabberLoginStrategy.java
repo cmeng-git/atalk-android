@@ -31,7 +31,7 @@ interface JabberLoginStrategy
      * @param authority SecurityAuthority to obtain the password
      * @param reasonCode reason why we're preparing for login
      * @param reason the reason descriptive text why we're preparing for login
-     * @param isShowAlways <tt>true</tt> always show the credential prompt for user entry
+     * @param isShowAlways <code>true</code> always show the credential prompt for user entry
      * @return UserCredentials in case they need to be cached for this session (i.e. password is not persistent)
      * @see SecurityAuthority
      */

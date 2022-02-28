@@ -24,11 +24,11 @@ import timber.log.Timber;
  * This class is only meant for use by protocol implementations and should/could not be accessed by
  * bundles that are simply using the telephony functionalities.
  *
- * @param <T> the peer extension class like for example <tt>CallSipImpl</tt> or <tt>CallJabberImpl</tt>
- * @param <U> the media handler extension class like for example <tt>CallPeerMediaHandlerSipImpl</tt> or
- * <tt>CallPeerMediaHandlerJabberImpl</tt>
- * @param <V> the provider extension class like for example <tt>ProtocolProviderServiceSipImpl</tt> or
- * <tt>ProtocolProviderServiceJabberImpl</tt>
+ * @param <T> the peer extension class like for example <code>CallSipImpl</code> or <code>CallJabberImpl</code>
+ * @param <U> the media handler extension class like for example <code>CallPeerMediaHandlerSipImpl</code> or
+ * <code>CallPeerMediaHandlerJabberImpl</code>
+ * @param <V> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
+ * <code>ProtocolProviderServiceJabberImpl</code>
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Boris Grozev
@@ -54,15 +54,15 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     private byte[] image;
 
     /**
-     * The media handler class handles all media management for a single <tt>CallPeer</tt>. This
+     * The media handler class handles all media management for a single <code>CallPeer</code>. This
      * includes initializing and configuring streams, generating SDP, handling ICE, etc. One
-     * instance of <tt>CallPeer</tt>always corresponds to exactly one instance of
-     * <tt>CallPeerMediaHandler</tt> and both classes are only separated for reasons of readability.
+     * instance of <code>CallPeer</code>always corresponds to exactly one instance of
+     * <code>CallPeerMediaHandler</code> and both classes are only separated for reasons of readability.
      */
     private U mediaHandler;
 
     /**
-     * The <tt>PropertyChangeListener</tt> which listens to {@link CallPeerMediaHandler} for changes
+     * The <code>PropertyChangeListener</code> which listens to {@link CallPeerMediaHandler} for changes
      * in the values of its properties.
      */
     private PropertyChangeListener mediaHandlerPropertyChangeListener;
@@ -80,47 +80,47 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     protected final XMPPConnection mConnection;
 
     /**
-     * The list of <tt>SoundLevelListener</tt>s interested in level changes in the audio we are
+     * The list of <code>SoundLevelListener</code>s interested in level changes in the audio we are
      * getting from the remote peer.
      *
      * It is implemented as a copy-on-write storage because the number of additions and removals of
-     * <tt>SoundLevelListener</tt>s is expected to be far smaller than the number of audio level
+     * <code>SoundLevelListener</code>s is expected to be far smaller than the number of audio level
      * changes. The access to it is to be synchronized using
      * {@link #streamSoundLevelListenersSyncRoot}.
      */
     private List<SoundLevelListener> streamSoundLevelListeners;
 
     /**
-     * The <tt>Object</tt> to synchronize the access to {@link #streamSoundLevelListeners}.
+     * The <code>Object</code> to synchronize the access to {@link #streamSoundLevelListeners}.
      */
     private final Object streamSoundLevelListenersSyncRoot = new Object();
 
     /**
-     * The <tt>List</tt> of <tt>PropertyChangeListener</tt>s listening to this <tt>CallPeer</tt> for
+     * The <code>List</code> of <code>PropertyChangeListener</code>s listening to this <code>CallPeer</code> for
      * changes in the values of its properties related to video.
      */
     private final List<PropertyChangeListener> videoPropertyChangeListeners = new LinkedList<>();
 
     /**
-     * Represents the last Conference Information (RFC4575) document sent to this <tt>CallPeer</tt>.
+     * Represents the last Conference Information (RFC4575) document sent to this <code>CallPeer</code>.
      * This is always a document with state "full", even if the last document actually sent was a "partial"
      */
     private ConferenceInfoDocument lastConferenceInfoSent = null;
 
     /**
-     * The time (as obtained by <tt>System.currentTimeMillis()</tt>) at which a Conference
-     * Information (RFC4575) document was last sent to this <tt>CallPeer</tt>.
+     * The time (as obtained by <code>System.currentTimeMillis()</code>) at which a Conference
+     * Information (RFC4575) document was last sent to this <code>CallPeer</code>.
      */
     private long lastConferenceInfoSentTimestamp = -1;
 
     /**
-     * The last Conference Information (RFC4575) document sent to us by this <tt>CallPeer</tt>. This
+     * The last Conference Information (RFC4575) document sent to us by this <code>CallPeer</code>. This
      * is always a document with state "full", which is only gets updated by "partial" or "deleted" documents.
      */
     private ConferenceInfoDocument lastConferenceInfoReceived = null;
 
     /**
-     * Whether a conference-info document has been scheduled to be sent to this <tt>CallPeer</tt>
+     * Whether a conference-info document has been scheduled to be sent to this <code>CallPeer</code>
      */
     private boolean confInfoScheduled = false;
 
@@ -130,7 +130,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     private final Object confInfoScheduledSyncRoot = new Object();
 
     /**
-     * Creates a new call peer with address <tt>peerAddress</tt>.
+     * Creates a new call peer with address <code>peerAddress</code>.
      *
      * @param owningCall the call that contains this call peer.
      */
@@ -149,11 +149,11 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Adds a specific <tt>ConferenceMembersSoundLevelListener</tt> to the list of listeners
+     * Adds a specific <code>ConferenceMembersSoundLevelListener</code> to the list of listeners
      * interested in and notified about changes in conference members sound level.
      *
-     * @param listener the <tt>ConferenceMembersSoundLevelListener</tt> to add
-     * @throws NullPointerException if <tt>listener</tt> is <tt>null</tt>
+     * @param listener the <code>ConferenceMembersSoundLevelListener</code> to add
+     * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     public void addConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener)
     {
@@ -176,13 +176,13 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
+     * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
      * notified about changes in the sound level of the audio sent by the remote party. When the
      * first listener is being registered the method also registers its single listener with the
      * media handler so that it would receive level change events and delegate them to the listeners
      * that have registered with us.
      *
-     * @param listener the <tt>SoundLevelListener</tt> to add
+     * @param listener the <code>SoundLevelListener</code> to add
      */
     public void addStreamSoundLevelListener(SoundLevelListener listener)
     {
@@ -219,12 +219,12 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Adds a specific <tt>PropertyChangeListener</tt> to the list of listeners which get notified
-     * when the properties (e.g. LOCAL_VIDEO_STREAMING) associated with this <tt>CallPeer</tt>
+     * Adds a specific <code>PropertyChangeListener</code> to the list of listeners which get notified
+     * when the properties (e.g. LOCAL_VIDEO_STREAMING) associated with this <code>CallPeer</code>
      * change their values.
      *
-     * @param listener the <tt>PropertyChangeListener</tt> to be notified when the properties associated with
-     * the specified <tt>Call</tt> change their values
+     * @param listener the <code>PropertyChangeListener</code> to be notified when the properties associated with
+     * the specified <code>Call</code> change their values
      */
     public void addVideoPropertyChangeListener(PropertyChangeListener listener)
     {
@@ -296,10 +296,10 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Implements {@link CsrcAudioLevelListener#audioLevelsReceived(long[])}. Delivers the received
-     * audio levels to the {@link ConferenceMembersSoundLevelListener}s registered with this <tt>MediaAwareCallPeer</tt>..
+     * audio levels to the {@link ConferenceMembersSoundLevelListener}s registered with this <code>MediaAwareCallPeer</code>..
      *
      * @param audioLevels the levels that we need to dispatch to all registered
-     * <tt>ConferenceMemberSoundLevelListeners</tt>.
+     * <code>ConferenceMemberSoundLevelListeners</code>.
      */
     public void audioLevelsReceived(long[] audioLevels)
     {
@@ -427,10 +427,10 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Invokes {@link SoundLevelListener#soundLevelChanged(Object, int) on the
-     * <tt>SoundLevelListener</tt>s interested in the changes of the audio stream received from the
+     * <code>SoundLevelListener</code>s interested in the changes of the audio stream received from the
      * remote peer i.e. in {@link #streamSoundLevelListeners}.
      *
-     * @param newLevel the new value of the sound level to notify <tt>streamSoundLevelListeners</tt> about
+     * @param newLevel the new value of the sound level to notify <code>streamSoundLevelListeners</code> about
      */
     private void fireStreamSoundLevelChanged(int newLevel)
     {
@@ -482,13 +482,13 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Returns a reference to the <tt>CallPeerMediaHandler</tt> used by this peer. The media handler
-     * class handles all media management for a single <tt>CallPeer</tt>. This includes initializing
-     * and configuring streams, generating SDP, handling ICE, etc. One instance of <tt>CallPeer</tt>
-     * always corresponds to exactly one instance of <tt>CallPeerMediaHandler</tt> and both classes
+     * Returns a reference to the <code>CallPeerMediaHandler</code> used by this peer. The media handler
+     * class handles all media management for a single <code>CallPeer</code>. This includes initializing
+     * and configuring streams, generating SDP, handling ICE, etc. One instance of <code>CallPeer</code>
+     * always corresponds to exactly one instance of <code>CallPeerMediaHandler</code> and both classes
      * are only separated for reasons of readability.
      *
-     * @return a reference to the <tt>CallPeerMediaHandler</tt> instance that this peer uses for
+     * @return a reference to the <code>CallPeerMediaHandler</code> instance that this peer uses for
      * media related tips and tricks.
      */
     public U getMediaHandler()
@@ -509,7 +509,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * Returns the protocol provider that this peer belongs to.
      *
-     * @return a reference to the <tt>ProtocolProviderService</tt> that this peer belongs to.
+     * @return a reference to the <code>ProtocolProviderService</code> that this peer belongs to.
      */
     @Override
     public V getProtocolProvider()
@@ -518,12 +518,12 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Determines whether this <tt>CallPeer</tt> is participating in a telephony conference
+     * Determines whether this <code>CallPeer</code> is participating in a telephony conference
      * organized by the local user/peer utilizing the Jitsi Videobridge server-side technology.
      *
-     * @return <tt>true</tt> if this <tt>CallPeer</tt> is participating in a telephony conference
+     * @return <code>true</code> if this <code>CallPeer</code> is participating in a telephony conference
      * organized by the local user/peer utilizing the Jitsi Videobridge server-side
-     * technology; otherwise, <tt>false</tt>
+     * technology; otherwise, <code>false</code>
      */
     public final boolean isJitsiVideobridge()
     {
@@ -538,10 +538,10 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Determines whether we are currently streaming video toward whoever this
-     * <tt>MediaAwareCallPeer</tt> represents.
+     * <code>MediaAwareCallPeer</code> represents.
      *
-     * @return <tt>true</tt> if we are currently streaming video toward this <tt>CallPeer</tt> and
-     * <tt>false</tt> otherwise.
+     * @return <code>true</code> if we are currently streaming video toward this <code>CallPeer</code> and
+     * <code>false</code> otherwise.
      */
     public boolean isLocalVideoStreaming()
     {
@@ -551,8 +551,8 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * Determines whether the audio stream (if any) being sent to this peer is mute.
      *
-     * @return <tt>true</tt> if an audio stream is being sent to this peer and it is currently mute;
-     * <tt>false</tt>, otherwise
+     * @return <code>true</code> if an audio stream is being sent to this peer and it is currently mute;
+     * <code>false</code>, otherwise
      */
     @Override
     public boolean isMute()
@@ -561,8 +561,8 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Logs <tt>message</tt> and <tt>cause</tt> and sets this <tt>peer</tt>'s state to
-     * <tt>CallPeerState.FAILED</tt>
+     * Logs <code>message</code> and <code>cause</code> and sets this <code>peer</code>'s state to
+     * <code>CallPeerState.FAILED</code>
      *
      * @param message a message to log and display to the user.
      * @param throwable the exception that cause the error we are logging
@@ -574,7 +574,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Updates the state of this <tt>CallPeer</tt> to match the locally-on-hold status of our media handler.
+     * Updates the state of this <code>CallPeer</code> to match the locally-on-hold status of our media handler.
      */
     public void reevalLocalHoldStatus()
     {
@@ -599,7 +599,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Updates the state of this <tt>CallPeer</tt> to match the remotely-on-hold status of our media handler.
+     * Updates the state of this <code>CallPeer</code> to match the remotely-on-hold status of our media handler.
      */
     public void reevalRemoteHoldStatus()
     {
@@ -624,10 +624,10 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Removes a specific <tt>ConferenceMembersSoundLevelListener</tt> of the list of listeners
+     * Removes a specific <code>ConferenceMembersSoundLevelListener</code> of the list of listeners
      * interested in and notified about changes in conference members sound level.
      *
-     * @param listener the <tt>ConferenceMembersSoundLevelListener</tt> to remove
+     * @param listener the <code>ConferenceMembersSoundLevelListener</code> to remove
      */
     public void removeConferenceMembersSoundLevelListener(
             ConferenceMembersSoundLevelListener listener)
@@ -645,10 +645,10 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Removes a specific <tt>SoundLevelListener</tt> of the list of listeners interested in and
+     * Removes a specific <code>SoundLevelListener</code> of the list of listeners interested in and
      * notified about changes in stream sound level related information.
      *
-     * @param listener the <tt>SoundLevelListener</tt> to remove
+     * @param listener the <code>SoundLevelListener</code> to remove
      */
     public void removeStreamSoundLevelListener(SoundLevelListener listener)
     {
@@ -674,12 +674,12 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Removes a specific <tt>PropertyChangeListener</tt> from the list of listeners which get
+     * Removes a specific <code>PropertyChangeListener</code> from the list of listeners which get
      * notified when the properties (e.g. LOCAL_VIDEO_STREAMING) associated with this
-     * <tt>CallPeer</tt> change their values.
+     * <code>CallPeer</code> change their values.
      *
-     * @param listener the <tt>PropertyChangeListener</tt> to no longer be notified when the properties
-     * associated with the specified <tt>Call</tt> change their values
+     * @param listener the <code>PropertyChangeListener</code> to no longer be notified when the properties
+     * associated with the specified <code>Call</code> change their values
      */
     public void removeVideoPropertyChangeListener(PropertyChangeListener listener)
     {
@@ -719,7 +719,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * Indicates that the other party has timeout replying to our offer to secure the connection.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      * @param sender the security controller that caused the event
      */
     public void securityNegotiationStarted(MediaType mediaType, SrtpControl sender)
@@ -731,7 +731,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * Indicates that the other party has timeouted replying to our offer to secure the connection.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      */
     public void securityTimeout(MediaType mediaType)
     {
@@ -741,7 +741,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * Sets the security status to OFF for this call peer.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      */
     public void securityTurnedOff(MediaType mediaType)
     {
@@ -755,7 +755,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     /**
      * Sets the security status to ON for this call peer.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      * @param cipher the cipher
      * @param sender the security controller that caused the event
      */
@@ -793,7 +793,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
      * Modifies the local media setup to reflect the requested setting for the streaming of the
      * local video and then re-invites the peer represented by this class using a corresponding SDP description..
      *
-     * @param allowed <tt>true</tt> if local video transmission is allowed and <tt>false</tt> otherwise.
+     * @param allowed <code>true</code> if local video transmission is allowed and <code>false</code> otherwise.
      */
     public void setLocalVideoAllowed(boolean allowed)
     {
@@ -807,13 +807,13 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Sets a reference to the <tt>CallPeerMediaHandler</tt> used by this peer. The media handler
-     * class handles all media management for a single <tt>CallPeer</tt>. This includes initializing
-     * and configuring streams, generating SDP, handling ICE, etc. One instance of <tt>CallPeer</tt>
-     * always corresponds to exactly one instance of <tt>CallPeerMediaHandler</tt> and both classes
+     * Sets a reference to the <code>CallPeerMediaHandler</code> used by this peer. The media handler
+     * class handles all media management for a single <code>CallPeer</code>. This includes initializing
+     * and configuring streams, generating SDP, handling ICE, etc. One instance of <code>CallPeer</code>
+     * always corresponds to exactly one instance of <code>CallPeerMediaHandler</code> and both classes
      * are only separated for reasons of readability.
      *
-     * @param mediaHandler a reference to the <tt>CallPeerMediaHandler</tt> instance that this peer uses for
+     * @param mediaHandler a reference to the <code>CallPeerMediaHandler</code> instance that this peer uses for
      * media related tips and tricks.
      */
     protected void setMediaHandler(U mediaHandler)
@@ -847,7 +847,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
      * Overrides the parent set state method in order to make sure that we close our media handler
      * whenever we enter a disconnected state.
      *
-     * @param newState the <tt>CallPeerState</tt> that we are about to enter and that we pass to our predecessor.
+     * @param newState the <code>CallPeerState</code> that we are about to enter and that we pass to our predecessor.
      * @param reason a reason phrase explaining the state (e.g. if newState indicates a failure) and that
      * we pass to our predecessor.
      * @param reasonCode the code for the reason of the state change.
@@ -875,11 +875,11 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Returns the last <tt>ConferenceInfoDocument</tt> sent by us to this <tt>CallPeer</tt>. It is
-     * a document with state <tt>full</tt>
+     * Returns the last <code>ConferenceInfoDocument</code> sent by us to this <code>CallPeer</code>. It is
+     * a document with state <code>full</code>
      *
-     * @return the last <tt>ConferenceInfoDocument</tt> sent by us to this <tt>CallPeer</tt>. It is
-     * a document with state <tt>full</tt>
+     * @return the last <code>ConferenceInfoDocument</code> sent by us to this <code>CallPeer</code>. It is
+     * a document with state <code>full</code>
      */
     public ConferenceInfoDocument getLastConferenceInfoSent()
     {
@@ -887,7 +887,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Sets the last <tt>ConferenceInfoDocument</tt> sent by us to this <tt>CallPeer</tt>.
+     * Sets the last <code>ConferenceInfoDocument</code> sent by us to this <code>CallPeer</code>.
      *
      * @param confInfo the document to set.
      */
@@ -897,11 +897,11 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Gets the time (as obtained by <tt>System.currentTimeMillis()</tt>) at which we last sent a
-     * <tt>ConferenceInfoDocument</tt> to this <tt>CallPeer</tt>.
+     * Gets the time (as obtained by <code>System.currentTimeMillis()</code>) at which we last sent a
+     * <code>ConferenceInfoDocument</code> to this <code>CallPeer</code>.
      *
-     * @return the time (as obtained by <tt>System.currentTimeMillis()</tt>) at which we last sent a
-     * <tt>ConferenceInfoDocument</tt> to this <tt>CallPeer</tt>.
+     * @return the time (as obtained by <code>System.currentTimeMillis()</code>) at which we last sent a
+     * <code>ConferenceInfoDocument</code> to this <code>CallPeer</code>.
      */
     public long getLastConferenceInfoSentTimestamp()
     {
@@ -909,8 +909,8 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Sets the time (as obtained by <tt>System.currentTimeMillis()</tt>) at which we last sent a
-     * <tt>ConferenceInfoDocument</tt> to this <tt>CallPeer</tt>.
+     * Sets the time (as obtained by <code>System.currentTimeMillis()</code>) at which we last sent a
+     * <code>ConferenceInfoDocument</code> to this <code>CallPeer</code>.
      *
      * @param newTimestamp the time to set
      */
@@ -920,9 +920,9 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Gets the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>.
+     * Gets the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>.
      *
-     * @return the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>.
+     * @return the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>.
      */
     public ConferenceInfoDocument getLastConferenceInfoReceived()
     {
@@ -930,7 +930,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Gets the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>.
+     * Gets the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>.
      */
     public void setLastConferenceInfoReceived(ConferenceInfoDocument confInfo)
     {
@@ -938,10 +938,10 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Gets the <tt>version</tt> of the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>,
-     * or -1 if we haven't (yet) received a <tt>ConferenceInformationDocument</tt> from this <tt>CallPeer</tt>.
+     * Gets the <code>version</code> of the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>,
+     * or -1 if we haven't (yet) received a <code>ConferenceInformationDocument</code> from this <code>CallPeer</code>.
      *
-     * @return the last <tt>ConferenceInfoDocument</tt> sent to us by this <tt>CallPeer</tt>.
+     * @return the last <code>ConferenceInfoDocument</code> sent to us by this <code>CallPeer</code>.
      */
     public int getLastConferenceInfoReceivedVersion()
     {
@@ -949,23 +949,23 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Gets the <tt>String</tt> to be used for this <tt>CallPeer</tt> when we describe it in a
-     * <tt>ConferenceInfoDocument</tt> (e.g. the <tt>entity</tt> key attribute which to use for the
-     * <tt>user</tt> element corresponding to this <tt>CallPeer</tt>)
+     * Gets the <code>String</code> to be used for this <code>CallPeer</code> when we describe it in a
+     * <code>ConferenceInfoDocument</code> (e.g. the <code>entity</code> key attribute which to use for the
+     * <code>user</code> element corresponding to this <code>CallPeer</code>)
      *
-     * @return the <tt>String</tt> to be used for this <tt>CallPeer</tt> when we describe it in a
-     * <tt>ConferenceInfoDocument</tt> (e.g. the <tt>entity</tt> key attribute which to use
-     * for the <tt>user</tt> element corresponding to this <tt>CallPeer</tt>)
+     * @return the <code>String</code> to be used for this <code>CallPeer</code> when we describe it in a
+     * <code>ConferenceInfoDocument</code> (e.g. the <code>entity</code> key attribute which to use
+     * for the <code>user</code> element corresponding to this <code>CallPeer</code>)
      */
     public abstract String getEntity();
 
     /**
-     * Check whether a conference-info document is scheduled to be sent to this <tt>CallPeer</tt>
+     * Check whether a conference-info document is scheduled to be sent to this <code>CallPeer</code>
      * (i.e. there is a thread which will eventually (after sleeping a certain amount of time)
      * trigger a document to be sent)
      *
-     * @return <tt>true</tt> if there is a conference-info document scheduled to be sent to this
-     * <tt>CallPeer</tt> and <tt>false</tt> otherwise.
+     * @return <code>true</code> if there is a conference-info document scheduled to be sent to this
+     * <code>CallPeer</code> and <code>false</code> otherwise.
      */
     public boolean isConfInfoScheduled()
     {
@@ -976,7 +976,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
 
     /**
      * Sets the property which indicates whether a conference-info document is scheduled to be sent
-     * to this <tt>CallPeer</tt>.
+     * to this <code>CallPeer</code>.
      *
      * @param confInfoScheduled
      */
@@ -988,32 +988,32 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Returns the direction of the session for media of type <tt>mediaType</tt> that we have with
-     * this <tt>CallPeer</tt>. This is the direction of the session negotiated in the signaling
+     * Returns the direction of the session for media of type <code>mediaType</code> that we have with
+     * this <code>CallPeer</code>. This is the direction of the session negotiated in the signaling
      * protocol, and it may or may not coincide with the direction of the media stream. For example,
      * if we are the focus of a videobridge conference and another peer is sending video to us, we
-     * have a <tt>RECVONLY</tt> video stream, but <tt>SENDONLY</tt> or <tt>SENDRECV</tt> (Jingle)
+     * have a <code>RECVONLY</code> video stream, but <code>SENDONLY</code> or <code>SENDRECV</code> (Jingle)
      * sessions with the rest of the conference members. Should always return non-null.
      *
-     * @param mediaType the <tt>MediaType</tt> to use
-     * @return Returns the direction of the session for media of type <tt>mediaType</tt> that we
-     * have with this <tt>CallPeer</tt>.
+     * @param mediaType the <code>MediaType</code> to use
+     * @return Returns the direction of the session for media of type <code>mediaType</code> that we
+     * have with this <code>CallPeer</code>.
      */
     public abstract MediaDirection getDirection(MediaType mediaType);
 
     /**
      * {@inheritDoc}
      *
-     * When a <tt>ConferenceMember</tt> is removed from a conference with a Jitsi-videobridge, an
-     * RTCP BYE packet is not always sent. Therefore, if the <tt>ConferenceMember</tt> had an
+     * When a <code>ConferenceMember</code> is removed from a conference with a Jitsi-videobridge, an
+     * RTCP BYE packet is not always sent. Therefore, if the <code>ConferenceMember</code> had an
      * associated video SSRC, the stream isn't be removed until it times out, leaving a blank video
      * container in the interface for a few seconds. TODO: This works around the problem by removing
-     * the <tt>ConferenceMember</tt>'s <tt>ReceiveStream</tt> when the <tt>ConferenceMember</tt> is
+     * the <code>ConferenceMember</code>'s <code>ReceiveStream</code> when the <code>ConferenceMember</code> is
      * removed. The proper solution is to ensure that RTCP BYEs are sent whenever necessary, and
      * when it is deployed this code should be removed.
      *
-     * @param conferenceMember a <tt>ConferenceMember</tt> to be removed from the list of <tt>ConferenceMember</tt>
-     * reported by this peer. If the specified <tt>ConferenceMember</tt> is no contained in
+     * @param conferenceMember a <code>ConferenceMember</code> to be removed from the list of <code>ConferenceMember</code>
+     * reported by this peer. If the specified <code>ConferenceMember</code> is no contained in
      * the list, no event
      */
     @Override
@@ -1027,12 +1027,12 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
     }
 
     /**
-     * Converts a specific <tt>MediaType</tt> into a <tt>sessionType</tt> value in the terms of the
-     * <tt>CallPeerSecurityStatusEvent</tt> class.
+     * Converts a specific <code>MediaType</code> into a <code>sessionType</code> value in the terms of the
+     * <code>CallPeerSecurityStatusEvent</code> class.
      *
-     * @param mediaType the <tt>MediaType</tt> to be converted
-     * @return the <tt>sessionType</tt> value in the terms of the
-     * <tt>CallPeerSecurityStatusEvent</tt> class that is equivalent to the specified <tt>mediaType</tt>
+     * @param mediaType the <code>MediaType</code> to be converted
+     * @return the <code>sessionType</code> value in the terms of the
+     * <code>CallPeerSecurityStatusEvent</code> class that is equivalent to the specified <code>mediaType</code>
      */
     private static int toSessionType(MediaType mediaType)
     {

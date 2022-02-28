@@ -86,9 +86,9 @@ public interface ProtocolProviderService
     boolean isRegistered();
 
     /**
-     * Returns the <tt>XMPPConnection</tt>opened by this provider
+     * Returns the <code>XMPPConnection</code>opened by this provider
      *
-     * @return a reference to the <tt>XMPPConnection</tt> last opened by this provider.
+     * @return a reference to the <code>XMPPConnection</code> last opened by this provider.
      */
     public XMPPConnection getConnection();
 
@@ -156,8 +156,8 @@ public interface ProtocolProviderService
      * not encouraged, may also be defined by service implementors.
      *
      * @return a {@link Map} containing instances of all supported operation sets mapped against
-     * their class names (e.g. <tt>OperationSetPresence.class.getName()</tt> associated with
-     * a <tt>OperationSetPresence</tt> instance).
+     * their class names (e.g. <code>OperationSetPresence.class.getName()</code> associated with
+     * a <code>OperationSetPresence</code> instance).
      */
     Map<String, OperationSet> getSupportedOperationSets();
 
@@ -169,17 +169,17 @@ public interface ProtocolProviderService
      * OperationSet-s though not encouraged, may also be defined by service implementors.
      *
      * @return a {@link Collection} containing instances of all supported operation set classes
-     * (e.g. <tt>OperationSetPresence.class</tt>.
+     * (e.g. <code>OperationSetPresence.class</code>.
      */
     Collection<Class<? extends OperationSet>> getSupportedOperationSetClasses();
 
     /**
-     * Returns the operation set corresponding to the specified class or <tt>null</tt> if this
+     * Returns the operation set corresponding to the specified class or <code>null</code> if this
      * operation set is not supported by the provider implementation.
      *
-     * @param <T> the type which extends <tt>OperationSet</tt> and which is to be retrieved
-     * @param opsetClass the <tt>Class</tt> of the operation set that we're looking for.
-     * @return returns an OperationSet of the specified <tt>Class</tt> if the underlying
+     * @param <T> the type which extends <code>OperationSet</code> and which is to be retrieved
+     * @param opsetClass the <code>Class</code> of the operation set that we're looking for.
+     * @return returns an OperationSet of the specified <code>Class</code> if the underlying
      * implementation supports it or null otherwise.
      */
     <T extends OperationSet> T getOperationSet(Class<T> opsetClass);

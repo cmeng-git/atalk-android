@@ -8,15 +8,15 @@ package net.java.sip.communicator.service.googlecontacts;
 
 /**
  * Defines the interface for a callback function which is called by the
- * <tt>GoogleContactsService</tt> when a new <tt>GoogleContactsEntry</tt> has
+ * <code>GoogleContactsService</code> when a new <code>GoogleContactsEntry</code> has
  * been found during a search.
  */
 public interface GoogleEntryCallback {
 	/**
-	 * Notifies this <tt>GoogleEntryCallback</tt> when a new
-	 * <tt>GoogleContactsEntry</tt> has been found.
+	 * Notifies this <code>GoogleEntryCallback</code> when a new
+	 * <code>GoogleContactsEntry</code> has been found.
 	 *
-	 * @param entry the <tt>GoogleContactsEntry</tt> found
+	 * @param entry the <code>GoogleContactsEntry</code> found
 	 */
 	void callback(GoogleContactsEntry entry);
 }

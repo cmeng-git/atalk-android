@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 import net.java.sip.communicator.util.SimpleServiceActivator;
 
 /**
- * Bundle activator for Android <tt>AuthenticationWindowService</tt> impl.
+ * Bundle activator for Android <code>AuthenticationWindowService</code> impl.
  *
  * @author Pawel Domas
  */
@@ -17,7 +17,7 @@ public class AuthWindowActivator extends SimpleServiceActivator<AuthenticationWi
 {
 
 	/**
-	 * Creates new instance of <tt>AuthenticationWindowService</tt>.
+	 * Creates new instance of <code>AuthenticationWindowService</code>.
 	 */
 	public AuthWindowActivator() {
 		super(AuthenticationWindowService.class, "AuthenticationWindowService");

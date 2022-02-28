@@ -172,9 +172,9 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+     * Returns the <code>ConfigurationService</code> obtained from the bundle context.
      *
-     * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+     * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -185,9 +185,9 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>AccountManager</tt> obtained from the bundle context.
+     * Returns the <code>AccountManager</code> obtained from the bundle context.
      *
-     * @return the <tt>AccountManager</tt> obtained from the bundle context
+     * @return the <code>AccountManager</code> obtained from the bundle context
      */
     public static AccountManager getAccountManager()
     {
@@ -198,9 +198,9 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>AlertUIService</tt> obtained from the bundle context.
+     * Returns the <code>AlertUIService</code> obtained from the bundle context.
      *
-     * @return the <tt>AlertUIService</tt> obtained from the bundle context
+     * @return the <code>AlertUIService</code> obtained from the bundle context
      */
     public static AlertUIService getAlertUIService()
     {
@@ -260,7 +260,7 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Listens for <tt>ProtocolProviderService</tt> registrations.
+     * Listens for <code>ProtocolProviderService</code> registrations.
      */
     private static class ProtocolProviderRegListener implements ServiceListener
     {
@@ -295,10 +295,10 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Handles the registration of a new <tt>ProtocolProviderService</tt>. Adds the given
-     * <tt>protocolProvider</tt> to the list of queried providers.
+     * Handles the registration of a new <code>ProtocolProviderService</code>. Adds the given
+     * <code>protocolProvider</code> to the list of queried providers.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> to add
+     * @param protocolProvider the <code>ProtocolProviderService</code> to add
      */
     private static void handleProviderAdded(ProtocolProviderService protocolProvider)
     {
@@ -309,10 +309,10 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Handles the un-registration of a <tt>ProtocolProviderService</tt>. Removes the given
-     * <tt>protocolProvider</tt> from the list of queried providers.
+     * Handles the un-registration of a <code>ProtocolProviderService</code>. Removes the given
+     * <code>protocolProvider</code> from the list of queried providers.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> to remove
+     * @param protocolProvider the <code>ProtocolProviderService</code> to remove
      */
     private static void handleProviderRemoved(ProtocolProviderService protocolProvider)
     {
@@ -320,9 +320,9 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>UIService</tt> obtained from the bundle context.
+     * Returns the <code>UIService</code> obtained from the bundle context.
      *
-     * @return the <tt>UIService</tt> obtained from the bundle context
+     * @return the <code>UIService</code> obtained from the bundle context
      */
     public static UIService getUIService()
     {
@@ -333,9 +333,9 @@ public class MUCActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context.
+     * Returns the <code>GlobalDisplayDetailsService</code> obtained from the bundle context.
      *
-     * @return the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context
+     * @return the <code>GlobalDisplayDetailsService</code> obtained from the bundle context
      */
     public static GlobalDisplayDetailsService getGlobalDisplayDetailsService()
     {
